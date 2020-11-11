@@ -19,9 +19,9 @@ function ThemeStyles() {
   return (
     <style jsx>{`
       :root {
-        --theme-color: ${config.theme};
-        --theme-color-dark: ${color.darken(0.2)};
-        --theme-color-light: ${color.lighten(0.2)};
+        --theme-color: ${color.hsl.toString()};
+        --theme-color-dark: ${color.darken(0.2).hsl.toString()};
+        --theme-color-light: ${color.lighten(0.2).hsl.toString()};
       }
     `}</style>
   );
