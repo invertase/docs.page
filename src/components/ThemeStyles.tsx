@@ -17,11 +17,31 @@ function ThemeStyles() {
   }
 
   return (
-    <style jsx>{`
+    <style global jsx>{`
       :root {
-        --theme-color: ${color.hsl.toString()};
-        --theme-color-dark: ${color.darken(0.2).hsl.toString()};
-        --theme-color-light: ${color.lighten(0.2).hsl.toString()};
+        --theme-color: ${color.hex().toString()};
+        --theme-color-dark: ${color.darken(0.2).hex().toString()};
+        --theme-color-light: ${color.lighten(0.2).hex().toString()};
+      }
+
+      .text-theme-color {
+        color: var(--theme-color);
+      }
+      .text-theme-color-dark {
+        color: var(--theme-color-dark);
+      }
+      .text-theme-color-light {
+        color: var(--theme-color-light);
+      }
+
+      .bg-theme-color {
+        background-color: var(--theme-color);
+      }
+      .bg-theme-color-dark {
+        background-color: var(--theme-color-dark);
+      }
+      .bg-theme-color-light {
+        background-color: var(--theme-color-light);
       }
     `}</style>
   );

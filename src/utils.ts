@@ -16,3 +16,7 @@ export function getConfigUrl(properties: SlugProperties): string {
 export function getFileUrl(config: Config, properties: SlugProperties): string {
   return `https://raw.githubusercontent.com/${properties.owner}/${properties.repository}/${properties.branch}/${config.directory}/${properties.path}.${config.extension}`;
 }
+
+export function isClient(): boolean {
+  return typeof window !== "undefined";
+}

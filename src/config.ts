@@ -1,13 +1,14 @@
 import { createContext } from "react";
 import get from "lodash.get";
+import { DEFAULT_LAYOUT, LayoutType } from "./components/Layout";
 
 // Markdown file extension types.
 type Extension = "md" | "mdx";
 
-// A single item.
-//
-// A single string indicates a header. A tuple represents an item.
-type SidebarItem = string | [string, string];
+export type NavigationItem = [string, string];
+
+// A single item within the nav bar
+export type SidebarItem = [string, SidebarItem[]] | [string, string];
 
 /**
  * Project config.
@@ -16,6 +17,10 @@ type SidebarItem = string | [string, string];
  * repository.
  */
 export type Config = {
+  // Project name.
+  name: string;
+  // URL to project logo.
+  logo: string;
   // The directory to look for documentation. Defaults to "docs".
   directory: string;
   // The markdown file extension names. Defaults to "md".
@@ -23,34 +28,80 @@ export type Config = {
   // A color theme used for this project. Defaults to "#00bcd4".
   theme: string;
   // Docsearch Application ID. If populated, a search box with autocomplete will be rendered.
-  docsearch: string;
+  docsearch?: {
+    apiKey: string;
+    indexName: string;
+  };
+  // Header navigation
+  navigation: NavigationItem[];
   // Sidebar
   sidebar: SidebarItem[];
+  // The default layout type.
+  defaultLayout: LayoutType;
 };
 
 export const defaultConfig: Config = {
+  name: "Melos",
+  logo: "https://firebase.flutter.dev/img/flutterfire_300x.png",
   directory: "docs",
   extension: "md",
   theme: "#00bcd4",
-  docsearch: "",
-  sidebar: [],
+  navigation: [
+    ["Docs", "/docs"],
+    ["Twitter", "https://twitter.com/flutterfiredev"],
+  ],
+  sidebar: [
+    [
+      "Getting Started",
+      [
+        ["Overview", "/"],
+        ["Getting Started", "/getting-started"],
+        ["Commands", "/commands"],
+        ["Migration Guide", "/migration-guide"],
+        [
+          "Learn More",
+          [
+            ["Offical Docs", "https://google.com"],
+            ["Issues", "https://google.com"],
+          ],
+        ],
+      ],
+    ],
+  ],
+  defaultLayout: DEFAULT_LAYOUT,
 };
 
 // Merges any user config with default values.
 export function mergeConfig(json: any): Config {
   return {
+    name: get(json, "name", defaultConfig.name),
+    logo: get(json, "logo", defaultConfig.logo),
     directory: get(json, "directory", defaultConfig.directory),
     extension: get(json, "extension", defaultConfig.extension),
     theme: get(json, "theme", defaultConfig.theme),
     docsearch: get(json, "docsearch", defaultConfig.docsearch),
+    navigation: mergeNavigationConfig(json),
     sidebar: mergeSidebarConfig(json),
+    defaultLayout: get(json, "defaultLayout", defaultConfig.defaultLayout),
   };
 }
 
 function mergeSidebarConfig(json: any): SidebarItem[] {
-  return get(json, "sidebar", defaultConfig.sidebar)
-    .map((item: SidebarItem) => {
-      if (typeof item === "string") return item;
+  return defaultConfig.sidebar; // TOOD
+  // return get(json, "sidebar", defaultConfig.sidebar)
+  //   .map((item: SidebarItem) => {
+  //     if (!Array.isArray(item)) return null;
+  //     const [title, url] = item;
+  //     if (typeof title !== "string") return null;
+  //     if (typeof url !== "string") return null;
+  //     return [title, url];
+  //   })
+  //   .filter(Boolean);
+}
+
+function mergeNavigationConfig(json: any): NavigationItem[] {
+  return get(json, "navigation", defaultConfig.navigation)
+    .map((item: NavigationItem) => {
       if (!Array.isArray(item)) return null;
       const [title, url] = item;
       if (typeof title !== "string") return null;
