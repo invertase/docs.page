@@ -2,7 +2,7 @@ import { createContext } from "react";
 
 export const DEFAULT_BRANCH = "master";
 export const DEFAULT_FILE = "index";
-export const BRANCH_SPLITTER = '#';
+export const BRANCH_SPLITTER = "~";
 
 // Properties corresponding to an incoming slug.
 export type SlugProperties = {
@@ -22,12 +22,14 @@ export function getSlugProperties(slug: string[]): SlugProperties {
   let [owner, repository, ...path] = slug;
   let branch = DEFAULT_BRANCH;
 
-  // project paths containing a # mean a specific branch has been requested
+  // project paths containing a BRANCH_SPLITTER mean a specific branch has been requested
   const chunks = repository.split(BRANCH_SPLITTER);
 
-  // only projects with a single # are allowed
+  // only projects with a single BRANCH_SPLITTER are allowed
   if (chunks.length > 2) {
-    throw new Error("Invalid project path provided.");
+    throw new Error(
+      `Invalid project path provided. The path contains more than one ${BRANCH_SPLITTER} which is not allowed.`
+    );
   }
 
   // if there is a branch, assign it
@@ -35,7 +37,7 @@ export function getSlugProperties(slug: string[]): SlugProperties {
     repository = chunks[0];
     branch = chunks[1] || DEFAULT_BRANCH;
   }
-
+  
   let base = `/${owner}/${repository}`;
 
   if (branch !== DEFAULT_BRANCH) {
@@ -45,7 +47,7 @@ export function getSlugProperties(slug: string[]): SlugProperties {
   return {
     owner,
     repository,
-    branch: "master",
+    branch,
     path: path.length === 0 ? DEFAULT_FILE : path.join("/"),
     base,
   };
