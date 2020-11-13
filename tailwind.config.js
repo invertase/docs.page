@@ -9,6 +9,7 @@ module.exports = {
   },
   dark: "class",
   purge: {
+    enabled: true,
     content: ["./src/**/*.tsx"],
   },
   theme: {
@@ -60,7 +61,5 @@ module.exports = {
   variants: {
     typography: ({ variants }) => [...variants("typography"), "dark"],
   },
-  plugins: [
-    require("@tailwindcss/typography"),
-  ],
+  plugins: [require("@tailwindcss/typography")],
 };

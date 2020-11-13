@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "build": "npm run clean && next build",
+    "start": "next start",
+    "clean": "rimraf .next"
   },
   "dependencies": {
     "@octokit/graphql": "^4.5.7",
@@ -24,6 +25,7 @@
     "react": "17.0.1",
     "react-dark-mode-toggle": "^0.0.10",
     "react-dom": "17.0.1",
+    "rimraf": "^3.0.2",
     "tailwindcss": "^1.9.6",
     "use-dark-mode": "^2.3.1"
   },
