@@ -35,25 +35,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <>
       <Header />
-      <Section>
-        <WithSidebar>
-          <article
-            className={cx(
-              "px-1 lg:px-0 py-20 prose dark:prose-dark mx-auto",
-              widthMap[layout]
-            )}
-          >
-            {children}
-          </article>
-        </WithSidebar>
-      </Section>
+      <WithSidebar>
+        <article
+          className={cx(
+            "px-1 lg:px-0 py-20 prose dark:prose-dark mx-auto",
+            widthMap[layout]
+          )}
+        >
+          {children}
+        </article>
+      </WithSidebar>
     </>
-  );
-}
-
-function Section({ children }: { children: React.ReactNode }) {
-  return (
-    <section className="flex bg-white dark:bg-gray-900">{children}</section>
   );
 }
 

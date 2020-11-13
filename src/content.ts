@@ -86,9 +86,6 @@ export async function getPageContent(
     config = mergeConfig({});
   }
 
-  // // const config: Config = mergeConfig(repository.config?.text ?? {});
-  // const config: Config = defaultConfig;
-
   // Get the raw file contents
   let raw =
     repository.md?.text ?? repository.mdx?.text ?? repository.html?.text ?? "";
