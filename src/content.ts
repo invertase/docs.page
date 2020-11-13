@@ -86,6 +86,8 @@ export async function getPageContent(
     const parsed = matter(raw);
     frontmatter = parsed.data ?? {};
     content = parsed.content;
+  } else {
+    content = raw;
   }
 
   return {

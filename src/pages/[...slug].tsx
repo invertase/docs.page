@@ -8,7 +8,7 @@ import hydrate from "next-mdx-remote/hydrate";
 import mdxComponents from "../mdx";
 
 import { ThemeStyles } from "../components/ThemeStyles";
-import { Layout, } from "../components/Layout";
+import { Layout } from "../components/Layout";
 
 import { GithubGQLClient } from "../utils";
 import { defaultConfig, ConfigContext, Config } from "../config";
@@ -17,17 +17,18 @@ import {
   SlugProperties,
   SlugPropertiesContext,
 } from "../properties";
-import { Frontmatter, getPageContent } from "../content";
+import { Frontmatter, getPageContent, PageContent } from "../content";
 
 export default function Documentation({
   source,
   properties,
-  config,
-  frontmatter,
+  page,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   if (!source) {
     return <Error statusCode={404} />;
   }
+
+  const { frontmatter, config } = page;
 
   return (
     <>
@@ -42,7 +43,13 @@ export default function Documentation({
         <SlugPropertiesContext.Provider value={properties}>
           <ThemeStyles />
 
-          <Layout type={frontmatter.layout || config.defaultLayout}>
+          <Layout
+            type={
+              page.type === "html"
+                ? "bare"
+                : frontmatter.layout || config.defaultLayout
+            }
+          >
             {hydrate(source, { components: mdxComponents })}
           </Layout>
         </SlugPropertiesContext.Provider>
@@ -60,9 +67,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 type StaticProps = {
   properties: SlugProperties;
-  frontmatter: Frontmatter;
   source?: string;
-  config: Config;
+  page: PageContent;
 };
 
 export const getStaticProps: GetStaticProps<StaticProps> = async ({
@@ -74,6 +80,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
   let frontmatter = {};
   let properties: SlugProperties;
   let source = null;
+  let page: PageContent;
 
   // Only allow paths with an owner & repository
   if (slug.length >= 2) {
@@ -100,24 +107,20 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
       properties.branch = repository.branch?.name ?? "";
     }
 
-    const page = await getPageContent(properties);
-
+    page = await getPageContent(properties);
+    console.log(page);
     if (page) {
       source = await renderToString(page.content, {
         components: mdxComponents,
       });
-
-      frontmatter = page.frontmatter;
-      config = page.config;
     }
   }
 
   return {
     props: {
-      config,
-      frontmatter,
       properties,
       source,
+      page,
     },
     revalidate: 30,
   };
