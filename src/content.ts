@@ -6,6 +6,7 @@ import { LayoutType } from "./components/Layout";
 import { Config, defaultConfig, mergeConfig } from "./config";
 import { SlugProperties } from "./properties";
 import { getBoolean, getString, GithubGQLClient } from "./utils";
+import { getGitHubFiles } from "./github";
 
 export type FileType = null | "md" | "mdx" | "html";
 
@@ -29,41 +30,13 @@ export const ContentContext = createContext<PageContent | null>(null);
 export async function getPageContent(
   properties: SlugProperties
 ): Promise<PageContent | null> {
-  const { repository } = await GithubGQLClient({
-    query: `
-      query RepositoryConfig($owner: String!, $repository: String!, $config: String!, $md: String!, $mdx: String!, $html: String!) {
-        repository(owner: $owner, name: $repository) {
-          config: object(expression: $config) {
-            ... on Blob {
-              text
-            }
-          }
-          md: object(expression: $md) {
-            ... on Blob {
-              text
-            }
-          }
-          mdx: object(expression: $mdx) {
-            ... on Blob {
-              text
-            }
-          }
-          html: object(expression: $html) {
-            ... on Blob {
-              text
-            }
-          }
-        }
-      }
-    `,
-    owner: properties.owner,
-    repository: properties.repository,
-    // Not sure how to build string values with variables within GQL
-    config: `${properties.ref}:docs.yaml`,
-    md: `${properties.ref}:docs/${properties.path}.md`,
-    mdx: `${properties.ref}:docs/${properties.path}.mdx`,
-    html: `${properties.ref}:docs/${properties.path}.html`,
-  });
+  const [error, response] = await getGitHubFiles(properties);
+
+  if (error) {
+    return null;
+  }
+
+  const { repository } = response;
 
   const type = (() => {
     if (repository.md) return "md";

@@ -12,7 +12,6 @@ import { ThemeStyles } from "../components/ThemeStyles";
 import { Layout } from "../components/Layout";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 
-import { GithubGQLClient } from "../utils";
 import { ConfigContext } from "../config";
 import {
   SPLITTER,
@@ -21,6 +20,7 @@ import {
   SlugPropertiesContext,
 } from "../properties";
 import { ContentContext, getPageContent, PageContent } from "../content";
+import { getDefaultBranch, getPullRequestMetadata } from "../github";
 
 export default function Documentation({
   source,
@@ -108,25 +108,13 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
   // If no branch was found in the slug, grab the default branch name
   // from the GQL API.
   if (!properties.ref) {
-    // TODO ERROR GraphqlError: Could not resolve to a Repository with the name '12312/asdkaujsdh'.
-    const [error, response] = await A2A<any>(
-      GithubGQLClient({
-        query: `
-          query RepositoryConfig($owner: String!, $repository: String!) {
-            repository(owner: $owner, name: $repository) {
-              branch: defaultBranchRef {
-                name
-              }
-            }
-          }
-        `,
-        owner: properties.owner,
-        repository: properties.repository,
-      })
+    const [error, response] = await getDefaultBranch(
+      properties.owner,
+      properties.repository
     );
-    console.log(response);
+
     if (error) {
-      // todo convert error
+      // todo convert error - owner/repo not found
     } else {
       const { repository } = response;
       // Assign the default branch
@@ -136,37 +124,16 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
   }
   // If the ref looks like a PR
   else if (/^[0-9]*$/.test(properties.ref)) {
-    const [, response] = await A2A<any>(
-      GithubGQLClient({
-        query: `
-          query RepositoryConfig($owner: String!, $repository: String!, $pullRequest: Int!) {
-            repository(owner: $owner, name: $repository) {
-              pullRequest(number: $pullRequest) {
-                owner: headRepositoryOwner {
-                  login
-                }
-                repository: headRepository {
-                  name
-                }
-                ref: headRef {
-                  name
-                }
-              }
-            }
-          }
-        `,
-        owner: properties.owner,
-        repository: properties.repository,
-        pullRequest: parseInt(properties.ref),
-      })
+    const metadata = await getPullRequestMetadata(
+      properties.owner,
+      properties.repository,
+      parseInt(properties.ref)
     );
 
-    if (response) {
-      const { repository } = response;
-
-      properties.owner = repository.pullRequest.owner.login;
-      properties.repository = repository.pullRequest.repository.name;
-      properties.ref = repository.pullRequest.ref.name;
+    if (metadata) {
+      properties.owner = metadata.owner;
+      properties.repository = metadata.repository;
+      properties.ref = metadata.ref;
     }
   }
 
@@ -178,6 +145,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
         components: mdxComponents,
       });
     } catch (e) {
+      // TODO handle server rendering fail - such as trying to render a full HTML document
       console.log("GOT ERROR", e);
       error = {
         message: e?.message ?? "An unknown error ocurred",
