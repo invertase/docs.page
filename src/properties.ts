@@ -1,6 +1,5 @@
 import { createContext } from "react";
 
-export const DEFAULT_BRANCH = "master";
 export const DEFAULT_FILE = "index";
 export const BRANCH_SPLITTER = "~";
 
@@ -20,7 +19,7 @@ export type SlugProperties = {
 
 export function getSlugProperties(slug: string[]): SlugProperties {
   let [owner, repository, ...path] = slug;
-  let branch = DEFAULT_BRANCH;
+  let branch = '';
 
   // project paths containing a BRANCH_SPLITTER mean a specific branch has been requested
   const chunks = repository.split(BRANCH_SPLITTER);
@@ -33,16 +32,12 @@ export function getSlugProperties(slug: string[]): SlugProperties {
   }
 
   // if there is a branch, assign it
-  if (chunks.length === 2) {
+  if (chunks.length === 2 && chunks[1]) {
     repository = chunks[0];
-    branch = chunks[1] || DEFAULT_BRANCH;
+    branch = chunks[1];
   }
   
   let base = `/${owner}/${repository}`;
-
-  if (branch !== DEFAULT_BRANCH) {
-    base += `#${branch}`;
-  }
 
   return {
     owner,

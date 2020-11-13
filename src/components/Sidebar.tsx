@@ -38,7 +38,7 @@ function Iterator({ item, depth }: { item: SidebarItem; depth: number }) {
 
   // Otherwise, it's a nested element
   const links = getChildrenLinks(item[1], []);
-  console.log("links", links);
+
   const isActive = !!links.find((link) =>
     isRouteMatch(router, properties, link)
   );

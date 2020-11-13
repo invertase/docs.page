@@ -1,7 +1,6 @@
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import Error from "next/error";
 import Head from "next/head";
-import matter from "gray-matter";
 
 // TODO type definitions
 import renderToString from "next-mdx-remote/render-to-string";
@@ -9,15 +8,16 @@ import hydrate from "next-mdx-remote/hydrate";
 import mdxComponents from "../mdx";
 
 import { ThemeStyles } from "../components/ThemeStyles";
-import { Layout, LayoutType } from "../components/Layout";
+import { Layout, } from "../components/Layout";
 
-import { getConfigUrl, getFileUrl, safeGet } from "../utils";
-import { defaultConfig, mergeConfig, ConfigContext, Config } from "../config";
+import { GithubGQLClient } from "../utils";
+import { defaultConfig, ConfigContext, Config } from "../config";
 import {
   getSlugProperties,
   SlugProperties,
   SlugPropertiesContext,
 } from "../properties";
+import { Frontmatter, getPageContent } from "../content";
 
 export default function Documentation({
   source,
@@ -60,11 +60,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 
 type StaticProps = {
   properties: SlugProperties;
-  frontmatter: {
-    title?: string;
-    description?: string;
-    layout?: LayoutType;
-  };
+  frontmatter: Frontmatter;
   source?: string;
   config: Config;
 };
@@ -83,21 +79,36 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
   if (slug.length >= 2) {
     properties = getSlugProperties(params.slug as string[]);
 
-    // Get a project `config.json` file
-    const configUrl = getConfigUrl(properties);
-    const projectConfig = await safeGet<Config>(configUrl);
-    if (projectConfig) {
-      config = mergeConfig(projectConfig);
+    // If no branch was found in the slug, grab the default branch name
+    // from the GQL API.
+    if (!properties.branch) {
+      const { repository } = await GithubGQLClient({
+        query: `
+          query RepositoryConfig($owner: String!, $repository: String!) {
+            repository(owner: $owner, name: $repository) {
+              branch: defaultBranchRef {
+                name
+              }
+            }
+          }
+        `,
+        owner: properties.owner,
+        repository: properties.repository,
+      });
+
+      // Assign the default branch
+      properties.branch = repository.branch?.name ?? "";
     }
 
-    // Get a file
-    const fileUrl = getFileUrl(config, properties);
-    const file = await safeGet<string>(fileUrl);
+    const page = await getPageContent(properties);
 
-    if (file) {
-      let { content, data } = matter(file || "");
-      frontmatter = data;
-      source = await renderToString(content, { components: mdxComponents });
+    if (page) {
+      source = await renderToString(page.content, {
+        components: mdxComponents,
+      });
+
+      frontmatter = page.frontmatter;
+      config = page.config;
     }
   }
 
