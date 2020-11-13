@@ -15,9 +15,9 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>) {
 
   href = `/${properties.owner}/${properties.repository}`;
 
-  // if (properties.branch !== DEFAULT_BRANCH) {
-  //   href += `${BRANCH_SPLITTER}${properties.branch}`;
-  // }
+  if (!properties.isDefaultBranch) {
+    href += `${BRANCH_SPLITTER}${properties.branch}`;
+  }
 
   if (props.href.startsWith("/")) {
     href += props.href;

@@ -3,9 +3,10 @@ import DarkModeToggle from "react-dark-mode-toggle";
 import useDarkMode from "use-dark-mode";
 
 import { ConfigContext } from "../config";
-import { STORAGE_KEY } from "../noflash";
+import { DARK_MODE_CLASS_NAME, LIGHT_MODE_CLASS_NAME, STORAGE_KEY } from "../noflash";
 import { SlugPropertiesContext } from "../properties";
 import { isClient } from "../utils";
+
 import { Link } from "./Link";
 
 export function Header() {
@@ -23,7 +24,9 @@ export function Header() {
         )}
         <span>
           {!!config.name ? (
-            <span className="font-mono font-semibold text-lg tracking-wide">{config.name}</span>
+            <span className="font-mono font-semibold text-lg tracking-wide">
+              {config.name}
+            </span>
           ) : (
             <a
               href={`https://github.com/${repo}`}
@@ -61,6 +64,8 @@ export function Header() {
 function Toggle() {
   const darkMode = useDarkMode(false, {
     storageKey: STORAGE_KEY,
+    classNameDark: DARK_MODE_CLASS_NAME,
+    classNameLight: LIGHT_MODE_CLASS_NAME,
   });
 
   return (

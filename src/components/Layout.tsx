@@ -37,7 +37,7 @@ export function DefaultLayout({ children }: LayoutProps) {
           </div>
         </nav>
         <div className="flex-1 pl-0 desktop:pl-64">
-          <article className="px-1 lg:px-0 py-20 prose max-w-2xl mx-auto">
+          <article className="px-1 lg:px-0 py-20 prose dark:prose-dark max-w-2xl mx-auto">
             {children}
           </article>
           <Footer />

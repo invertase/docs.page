@@ -1,11 +1,13 @@
 export const STORAGE_KEY = "oss-docs-dark-mode";
+export const DARK_MODE_CLASS_NAME = "dark";
+export const LIGHT_MODE_CLASS_NAME = "light";
 
 export default `
 (function() {
   // Change these if you use something different in your hook.
   var storageKey = '${STORAGE_KEY}';
-  var classNameDark = 'dark-mode';
-  var classNameLight = 'light-mode';
+  var classNameDark = '${DARK_MODE_CLASS_NAME}';
+  var classNameLight = '${LIGHT_MODE_CLASS_NAME}';
 
   function setClassOnDocumentBody(darkMode) {
     document.body.classList.add(darkMode ? classNameDark : classNameLight);

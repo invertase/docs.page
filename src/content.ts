@@ -1,4 +1,6 @@
 import matter from "gray-matter";
+import yaml from "js-yaml";
+
 import { LayoutType } from "./components/Layout";
 import { Config, defaultConfig, mergeConfig } from "./config";
 import { SlugProperties } from "./properties";
@@ -71,9 +73,18 @@ export async function getPageContent(
     return null;
   }
 
-  // TODO convert from YAML. If fails, default config.
-  // const config: Config = mergeConfig(repository.config?.text ?? {});
-  const config: Config = defaultConfig;
+  let config: Config;
+  try {
+    const json = yaml.safeLoad(repository.config?.text ?? "");
+    console.log('config', json)
+    config = mergeConfig(json || {});
+  } catch (e) {
+    // Ignore errors for now
+    config = mergeConfig({});
+  }
+
+  // // const config: Config = mergeConfig(repository.config?.text ?? {});
+  // const config: Config = defaultConfig;
 
   // Get the raw file contents
   let raw =

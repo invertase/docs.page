@@ -13,6 +13,7 @@ import { Layout } from "../components/Layout";
 import { GithubGQLClient } from "../utils";
 import { defaultConfig, ConfigContext, Config } from "../config";
 import {
+  BRANCH_SPLITTER,
   getSlugProperties,
   SlugProperties,
   SlugPropertiesContext,
@@ -27,7 +28,7 @@ export default function Documentation({
   if (!source) {
     return <Error statusCode={404} />;
   }
-
+  console.log(properties);
   const { frontmatter, config } = page;
 
   return (
@@ -105,10 +106,11 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
 
       // Assign the default branch
       properties.branch = repository.branch?.name ?? "";
+      properties.base = `${properties.base}${BRANCH_SPLITTER}${properties.branch}`;
     }
 
     page = await getPageContent(properties);
-    
+
     if (page) {
       try {
         source = await renderToString(page.content, {

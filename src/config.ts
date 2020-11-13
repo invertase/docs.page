@@ -2,9 +2,6 @@ import { createContext } from "react";
 import get from "lodash.get";
 import { DEFAULT_LAYOUT, LayoutType } from "./components/Layout";
 
-// Markdown file extension types.
-type Extension = "md" | "mdx";
-
 export type NavigationItem = [string, string];
 
 // A single item within the nav bar
@@ -21,10 +18,6 @@ export type Config = {
   name: string;
   // URL to project logo.
   logo: string;
-  // The directory to look for documentation. Defaults to "docs".
-  directory: string;
-  // The markdown file extension names. Defaults to "md".
-  extension: Extension;
   // A color theme used for this project. Defaults to "#00bcd4".
   theme: string;
   // Docsearch Application ID. If populated, a search box with autocomplete will be rendered.
@@ -41,67 +34,71 @@ export type Config = {
 };
 
 export const defaultConfig: Config = {
-  name: "Melos",
-  logo: "https://firebase.flutter.dev/img/flutterfire_300x.png",
-  directory: "docs",
-  extension: "md",
+  name: "",
+  logo: "",
   theme: "#00bcd4",
-  navigation: [
-    ["Docs", "/docs"],
-    ["Twitter", "https://twitter.com/flutterfiredev"],
-  ],
-  sidebar: [
-    [
-      "Getting Started",
-      [
-        ["Overview", "/"],
-        ["Getting Started", "/getting-started"],
-        ["Commands", "/commands"],
-        ["Migration Guide", "/migration-guide"],
-        [
-          "Learn More",
-          [
-            ["Offical Docs", "https://google.com"],
-            ["Issues", "https://google.com"],
-          ],
-        ],
-      ],
-    ],
-  ],
+  docsearch: null,
+  navigation: [],
+  sidebar: [],
   defaultLayout: DEFAULT_LAYOUT,
 };
 
 // Merges any user config with default values.
 export function mergeConfig(json: any): Config {
   return {
-    name: get(json, "name", defaultConfig.name),
-    logo: get(json, "logo", defaultConfig.logo),
-    directory: get(json, "directory", defaultConfig.directory),
-    extension: get(json, "extension", defaultConfig.extension),
-    theme: get(json, "theme", defaultConfig.theme),
-    docsearch: get(json, "docsearch", defaultConfig.docsearch),
+    name: getString(json, "name", defaultConfig.name),
+    logo: getString(json, "logo", defaultConfig.logo),
+    theme: getString(json, "theme", defaultConfig.theme),
+    docsearch: get(json, "docsearch")
+      ? {
+          apiKey: getString(json, "docsearch.apiKey", ""),
+          indexName: getString(json, "docsearch.indexName", ""),
+        }
+      : null,
     navigation: mergeNavigationConfig(json),
     sidebar: mergeSidebarConfig(json),
-    defaultLayout: get(json, "defaultLayout", defaultConfig.defaultLayout),
+    defaultLayout: getString<LayoutType>(
+      json,
+      "defaultLayout",
+      defaultConfig.defaultLayout
+    ),
   };
 }
 
+// Merges in a user sidebar config and ensures all items are valid.
 function mergeSidebarConfig(json: any): SidebarItem[] {
-  return defaultConfig.sidebar; // TOOD
-  // return get(json, "sidebar", defaultConfig.sidebar)
-  //   .map((item: SidebarItem) => {
-  //     if (!Array.isArray(item)) return null;
-  //     const [title, url] = item;
-  //     if (typeof title !== "string") return null;
-  //     if (typeof url !== "string") return null;
-  //     return [title, url];
-  //   })
-  //   .filter(Boolean);
+  const sidebar = get(json, "sidebar", defaultConfig.sidebar);
+
+  if (!Array.isArray(sidebar)) {
+    return defaultConfig.sidebar;
+  }
+
+  function iterate(items: SidebarItem[]) {
+    return items
+      .map<SidebarItem>((item: SidebarItem) => {
+        if (!Array.isArray(item)) return null;
+        const [first, second] = item;
+        if (typeof first !== "string") return null;
+        if (typeof second === "string") return [first, second];
+        if (!Array.isArray(second)) return null;
+        return [first, iterate(second)];
+      })
+      .filter(Boolean);
+  }
+
+  return iterate(sidebar);
 }
 
+// Merges in a user navigation config and ensures all items are valid.
 function mergeNavigationConfig(json: any): NavigationItem[] {
-  return get(json, "navigation", defaultConfig.navigation)
-    .map((item: NavigationItem) => {
+  const navigation = get(json, "navigation", defaultConfig.navigation);
+
+  if (!Array.isArray(navigation)) {
+    return defaultConfig.navigation;
+  }
+
+  return navigation
+    .map<NavigationItem>((item: NavigationItem) => {
       if (!Array.isArray(item)) return null;
       const [title, url] = item;
       if (typeof title !== "string") return null;
@@ -109,6 +106,18 @@ function mergeNavigationConfig(json: any): NavigationItem[] {
       return [title, url];
     })
     .filter(Boolean);
+}
+
+// Returns a guaranteed string value from a config object
+function getString<T = string>(json: any, key: string, defaultValue: T): T {
+  const value = get<T>(json, key, defaultValue);
+
+  // If there is a custom value but it isn't a string, return the defaultValue instead.
+  if (typeof value !== "string") {
+    return defaultValue;
+  }
+
+  return value;
 }
 
 export const ConfigContext = createContext<Config>(defaultConfig);
