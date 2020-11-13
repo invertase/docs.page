@@ -18,7 +18,12 @@ import {
   SlugProperties,
   SlugPropertiesContext,
 } from "../properties";
-import { Frontmatter, getPageContent, PageContent } from "../content";
+import {
+  ContentContext,
+  Frontmatter,
+  getPageContent,
+  PageContent,
+} from "../content";
 
 export default function Documentation({
   source,
@@ -28,13 +33,12 @@ export default function Documentation({
   if (!source) {
     return <Error statusCode={404} />;
   }
-  console.log(properties);
   const { frontmatter, config } = page;
 
   return (
     <>
       <Head>
-        <base href={properties.base} />
+        <base href={properties.path} />
         <title>{frontmatter.title}</title>
         {!!frontmatter.description && (
           <meta name="description" content={frontmatter.description} />
@@ -42,17 +46,10 @@ export default function Documentation({
       </Head>
       <ConfigContext.Provider value={config}>
         <SlugPropertiesContext.Provider value={properties}>
-          <ThemeStyles />
-
-          <Layout
-            type={
-              page.type === "html"
-                ? "bare"
-                : frontmatter.layout || config.defaultLayout
-            }
-          >
-            {hydrate(source, { components: mdxComponents })}
-          </Layout>
+          <ContentContext.Provider value={page}>
+            <ThemeStyles />
+            <Layout>{hydrate(source, { components: mdxComponents })}</Layout>
+          </ContentContext.Provider>
         </SlugPropertiesContext.Provider>
       </ConfigContext.Provider>
     </>

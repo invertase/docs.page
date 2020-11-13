@@ -8,14 +8,25 @@ module.exports = {
     darkModeVariant: true,
   },
   dark: "class",
-  purge: {
-    enabled: true,
-    content: ["./src/**/*.tsx"],
-  },
+  // TODO breaks dark:hover:bg-X- in Sidebar.tsx
+  // purge: {
+  //   enabled: true,
+  //   content: ["./src/**/*.tsx"],
+  // },
   theme: {
     extend: {
       screens: {
         desktop: "940px",
+      },
+      opacity: {
+        '10': '0.1',
+        '20': '0.2',
+        '30': '0.3',
+        '40': '0.4',
+        '60': '0.6',
+        '70': '0.7',
+        '80': '0.8',
+        '90': '0.9',
       },
     },
     typography: (theme) => ({

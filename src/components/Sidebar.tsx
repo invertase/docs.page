@@ -11,7 +11,7 @@ export function Sidebar() {
   const config = useContext(ConfigContext);
 
   return (
-    <ul className="w-full">
+    <ul className="w-full dark:text-white">
       {config.sidebar.map((item) => (
         <Iterator depth={0} item={item} />
       ))}
@@ -62,7 +62,7 @@ function Title({ title, active }: { title: string; active: boolean }) {
   return (
     <li>
       <div
-        className="-mx-2 px-2 flex items-center rounded group hover:bg-gray-200 py-2"
+        className="-mx-2 px-2 flex items-center rounded group hover:bg-gray-200 dark:hover:bg-gray-900 py-2"
         role="button"
       >
         <span
@@ -114,9 +114,10 @@ function NavLink({
       <Link
         href={href}
         className={cx(
-          "-mx-2 px-2 mt-1 font-thin flex py-2 rounded hover:bg-gray-100",
+          "-mx-2 px-2 mt-1 font-thin flex py-2 rounded transition-colors duration-100",
           {
-            "text-theme-color bg-gray-100": active,
+            "text-theme-color dark:text-white bg-gray-100 dark:bg-gray-800": active,
+            "hover:bg-gray-200 dark:hover:bg-gray-700": !active,
           }
         )}
       >

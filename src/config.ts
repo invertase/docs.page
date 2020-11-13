@@ -1,6 +1,7 @@
 import { createContext } from "react";
 import get from "lodash.get";
 import { DEFAULT_LAYOUT, LayoutType } from "./components/Layout";
+import { getNumber, getString } from "./utils";
 
 export type NavigationItem = [string, string];
 
@@ -31,6 +32,8 @@ export type Config = {
   sidebar: SidebarItem[];
   // The default layout type.
   defaultLayout: LayoutType;
+  // The depth to heading tags are linked. Set to 0 to remove any linking.
+  headerDepth: number;
 };
 
 export const defaultConfig: Config = {
@@ -41,6 +44,7 @@ export const defaultConfig: Config = {
   navigation: [],
   sidebar: [],
   defaultLayout: DEFAULT_LAYOUT,
+  headerDepth: 3,
 };
 
 // Merges any user config with default values.
@@ -62,6 +66,7 @@ export function mergeConfig(json: any): Config {
       "defaultLayout",
       defaultConfig.defaultLayout
     ),
+    headerDepth: getNumber(json, "headerDepth", defaultConfig.headerDepth),
   };
 }
 
@@ -106,18 +111,6 @@ function mergeNavigationConfig(json: any): NavigationItem[] {
       return [title, url];
     })
     .filter(Boolean);
-}
-
-// Returns a guaranteed string value from a config object
-function getString<T = string>(json: any, key: string, defaultValue: T): T {
-  const value = get<T>(json, key, defaultValue);
-
-  // If there is a custom value but it isn't a string, return the defaultValue instead.
-  if (typeof value !== "string") {
-    return defaultValue;
-  }
-
-  return value;
 }
 
 export const ConfigContext = createContext<Config>(defaultConfig);
