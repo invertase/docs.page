@@ -1,10 +1,11 @@
 import React from "react";
 
+import { Header } from "../components/Header";
 import { Link } from "../components/Link";
 import { Heading } from "./Heading";
 
 export default {
-  // Override the default anchor tag
+  // HTML element overrides
   a: (props: React.HTMLProps<HTMLAnchorElement>) => <Link {...props} />,
   h1: (props: React.HTMLProps<HTMLHeadingElement>) => (
     <Heading {...props} type="h1" />
@@ -24,4 +25,7 @@ export default {
   h6: (props: React.HTMLProps<HTMLHeadingElement>) => (
     <Heading {...props} type="h6" />
   ),
+
+  // Custom MDX components
+  Header,
 };

@@ -1,7 +1,6 @@
 import React, { useContext } from "react";
 import NextLink from "next/link";
 import {
-  BRANCH_SPLITTER,
   SlugPropertiesContext,
 } from "../properties";
 
@@ -15,9 +14,9 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>) {
 
   href = `/${properties.owner}/${properties.repository}`;
 
-  if (!properties.isDefaultBranch) {
-    href += `${BRANCH_SPLITTER}${properties.branch}`;
-  }
+  // if (!properties.isDefaultBranch) {
+  //   href += `${BRANCH_SPLITTER}${properties.branch}`;
+  // }
 
   if (props.href.startsWith("/")) {
     href += props.href;

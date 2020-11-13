@@ -59,10 +59,10 @@ export async function getPageContent(
     owner: properties.owner,
     repository: properties.repository,
     // Not sure how to build string values with variables within GQL
-    config: `${properties.branch}:docs.yaml`,
-    md: `${properties.branch}:docs/${properties.path}.md`,
-    mdx: `${properties.branch}:docs/${properties.path}.mdx`,
-    html: `${properties.branch}:docs/${properties.path}.html`,
+    config: `${properties.ref}:docs.yaml`,
+    md: `${properties.ref}:docs/${properties.path}.md`,
+    mdx: `${properties.ref}:docs/${properties.path}.mdx`,
+    html: `${properties.ref}:docs/${properties.path}.html`,
   });
 
   const type = (() => {
