@@ -140,6 +140,16 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
   page = await getPageContent(properties);
 
   if (page) {
+    if (page.frontmatter.redirect) {
+      return {
+        redirect: {
+          destination: page.frontmatter.redirect,
+          permanent: true,
+        },
+        revalidate: 30,
+      };
+    }
+
     try {
       source = await renderToString(page.content, {
         components: mdxComponents,

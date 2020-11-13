@@ -15,6 +15,13 @@ module.exports = {
   // },
   theme: {
     extend: {
+      fontFamily: {
+        anton: ["Anton", "sans-serif"],
+      },
+      fontSize: {
+        '7xl': '5rem',
+        '8xl': '5rem',
+      },
       screens: {
         desktop: "940px",
       },

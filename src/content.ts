@@ -15,6 +15,7 @@ export type Frontmatter = {
   description: string;
   layout: LayoutType;
   sidebar: boolean;
+  redirect: string;
 };
 
 export type PageContent = {
@@ -90,5 +91,6 @@ function mergeFrontmatter(data: any): Frontmatter {
     description: getString(data, "description", ""),
     layout: getString<LayoutType>(data, "layout", "" as LayoutType),
     sidebar: getBoolean(data, "sidebar", true),
+    redirect: getString(data, "redirect", ""),
   };
 }
