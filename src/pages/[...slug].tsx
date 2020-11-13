@@ -108,11 +108,16 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
     }
 
     page = await getPageContent(properties);
-    console.log(page);
+    
     if (page) {
-      source = await renderToString(page.content, {
-        components: mdxComponents,
-      });
+      try {
+        source = await renderToString(page.content, {
+          components: mdxComponents,
+        });
+      } catch (e) {
+        console.log(e);
+        // TODO pass error down...
+      }
     }
   }
 
