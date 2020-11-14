@@ -2,8 +2,6 @@ import A2A from "a2a";
 import { SlugProperties } from "./properties";
 import { GithubGQLClient } from "./utils";
 
-type A2AQuery<T> = Promise<[Error | null, T]>;
-
 type DefaultBranchQuery = {
   repository: {
     branch: {
@@ -119,10 +117,17 @@ type PageFilesQuery = {
   };
 };
 
-export function getGitHubFiles(
+type Files = {
+  config?: string;
+  md?: string;
+  mdx?: string;
+  html?: string;
+};
+
+export async function getGitHubFiles(
   properties: SlugProperties
-): A2AQuery<PageFilesQuery> {
-  return A2A<PageFilesQuery>(
+): Promise<Files | null> {
+  const [error, response] = await A2A<PageFilesQuery>(
     GithubGQLClient({
       query: `
       query RepositoryConfig($owner: String!, $repository: String!, $config: String!, $md: String!, $mdx: String!, $html: String!) {
@@ -159,4 +164,15 @@ export function getGitHubFiles(
       html: `${properties.ref}:docs/${properties.path}.html`,
     })
   );
+  
+  if (error) {
+    return null;
+  }
+
+  return {
+    config: response.repository.config?.text,
+    md: response.repository.md?.text,
+    mdx: response.repository.mdx?.text,
+    html: response.repository.html?.text,
+  };
 }

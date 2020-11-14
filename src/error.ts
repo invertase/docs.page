@@ -17,14 +17,14 @@ export function repositoryNotFound(properties: SlugProperties): Error {
 export function pageNotFound(properties: SlugProperties): Error {
     return {
         code: 404,
-        message: `TODO.`,
+        message: `pageNotFound.`,
     };
 }
 
 export function renderError(properties: SlugProperties): Error {
     return {
         code: 500,
-        message: `TODO.`,
+        message: `renderError.`,
     };
 }
 
