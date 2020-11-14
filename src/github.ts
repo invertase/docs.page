@@ -2,7 +2,7 @@ import A2A from "a2a";
 import { SlugProperties } from "./properties";
 import { GithubGQLClient } from "./utils";
 
-type GitHubQuery<T> = Promise<[Error | null, T]>;
+type A2AQuery<T> = Promise<[Error | null, T]>;
 
 type DefaultBranchQuery = {
   repository: {
@@ -12,11 +12,11 @@ type DefaultBranchQuery = {
   };
 };
 
-export function getDefaultBranch(
+export async function getDefaultBranch(
   owner: string,
   repository: string
-): GitHubQuery<DefaultBranchQuery> {
-  return A2A<DefaultBranchQuery>(
+): Promise<string | null> {
+  const [error, response] = await A2A<DefaultBranchQuery>(
     GithubGQLClient({
       query: `
         query RepositoryDefaultBranch($owner: String!, $repository: String!) {
@@ -31,6 +31,12 @@ export function getDefaultBranch(
       repository,
     })
   );
+
+  if (error) {
+    return null;
+  }
+
+  return response.repository.branch.name;
 }
 
 type PullRequestQuery = {
@@ -115,7 +121,7 @@ type PageFilesQuery = {
 
 export function getGitHubFiles(
   properties: SlugProperties
-): GitHubQuery<PageFilesQuery> {
+): A2AQuery<PageFilesQuery> {
   return A2A<PageFilesQuery>(
     GithubGQLClient({
       query: `

@@ -1,7 +1,6 @@
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
-import Error from "next/error";
-import Head from "next/head";
-import A2A from "a2a";
+import NextError from "next/error";
+import NextHead from "next/head";
 
 // TODO type definitions
 import renderToString from "next-mdx-remote/render-to-string";
@@ -13,6 +12,7 @@ import { Layout } from "../components/Layout";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 
 import { ConfigContext } from "../config";
+import { Error, repositoryNotFound, redirect, pageNotFound, renderError } from "../error";
 import {
   SPLITTER,
   getSlugProperties,
@@ -33,19 +33,19 @@ export default function Documentation({
   }
 
   if (!source) {
-    return <Error statusCode={404} />;
+    return <NextError statusCode={404} />;
   }
   const { frontmatter, config } = page;
 
   return (
     <>
-      <Head>
+      <NextHead>
         <base href={properties.path} />
         <title>{frontmatter.title}</title>
         {!!frontmatter.description && (
           <meta name="description" content={frontmatter.description} />
         )}
-      </Head>
+      </NextHead>
       <ConfigContext.Provider value={config}>
         <SlugPropertiesContext.Provider value={properties}>
           <ContentContext.Provider value={page}>
@@ -69,17 +69,11 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-type ErrorProps = {
-  message: string;
-  stack: string;
-  code: string;
-};
-
 type StaticProps = {
   properties: SlugProperties;
   source?: string;
-  page: PageContent;
-  error?: ErrorProps;
+  page?: PageContent;
+  error?: Error;
 };
 
 export const getStaticProps: GetStaticProps<StaticProps> = async ({
@@ -87,38 +81,36 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
 }) => {
   const slug = params.slug as string[];
 
-  let error: ErrorProps = null;
-  let properties: SlugProperties;
+  // Anything with less than 2 parts to the slug is an invalid URL.
+  if (slug.length < 2) {
+    return redirect('/');
+  }
+
+  let error: Error;
   let source = null;
   let page: PageContent;
 
-  // Anything with less than 2 parts to the slug is an invalid URL.
-  if (slug.length < 2) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: true,
-      },
-    };
-  }
-
   // Extract the slug properties from the request.
-  properties = getSlugProperties(params.slug as string[]);
+  let properties: SlugProperties = getSlugProperties(params.slug as string[]);
 
-  // If no branch was found in the slug, grab the default branch name
+  // If no ref was found in the slug, grab the default branch name
   // from the GQL API.
   if (!properties.ref) {
-    const [error, response] = await getDefaultBranch(
+    const defaultBranch = await getDefaultBranch(
       properties.owner,
       properties.repository
     );
 
-    if (error) {
-      // todo convert error - owner/repo not found
+    if (!defaultBranch) {
+      return {
+        props: {
+          properties,
+          error: repositoryNotFound(properties),
+        },
+      };
     } else {
-      const { repository } = response;
-      // Assign the default branch
-      properties.ref = repository.branch.name;
+      // Assign the default branch to the ref
+      properties.ref = defaultBranch;
       properties.base = `${properties.base}${SPLITTER}${properties.ref}`;
     }
   }
@@ -130,6 +122,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
       parseInt(properties.ref)
     );
 
+    // If a PR was found, update the property metadata
     if (metadata) {
       properties.owner = metadata.owner;
       properties.repository = metadata.repository;
@@ -139,29 +132,29 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
 
   page = await getPageContent(properties);
 
-  if (page) {
-    if (page.frontmatter.redirect) {
-      return {
-        redirect: {
-          destination: page.frontmatter.redirect,
-          permanent: true,
-        },
-        revalidate: 30,
-      };
-    }
+  if (!page) {
+    return {
+      props: {
+        properties,
+        error: pageNotFound(properties),
+      }
+    };
+  }
 
-    try {
-      source = await renderToString(page.content, {
-        components: mdxComponents,
-      });
-    } catch (e) {
-      // TODO handle server rendering fail - such as trying to render a full HTML document
-      console.log("GOT ERROR", e);
-      error = {
-        message: e?.message ?? "An unknown error ocurred",
-        stack: e?.stack,
-        code: e?.code,
-      };
+  if (page.frontmatter.redirect) {
+    return redirect(page.frontmatter.redirect, properties);
+  }
+
+  try {
+    source = await renderToString(page.content, {
+      components: mdxComponents,
+    });
+  } catch (e) {
+    return {
+      props: {
+        properties,
+        error: renderError(properties),
+      }
     }
   }
 
