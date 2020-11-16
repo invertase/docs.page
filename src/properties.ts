@@ -42,7 +42,7 @@ export function getSlugProperties(slug: string[]): SlugProperties {
   let base = `/${owner}/${repository}`;
 
   if (ref) {
-    base += `${SPLITTER}${ref}`;
+    base += encodeURI(`${SPLITTER}${ref}`);
   }
 
   return {

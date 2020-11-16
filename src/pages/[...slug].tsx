@@ -14,13 +14,7 @@ import { Layout } from "../components/Layout";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 
 import { ConfigContext } from "../config";
-import {
-  Error,
-  repositoryNotFound,
-  redirect,
-  pageNotFound,
-  renderError,
-} from "../error";
+import { redirect, RenderError } from "../error";
 import {
   SPLITTER,
   getSlugProperties,
@@ -47,14 +41,6 @@ export default function Documentation({
   page,
   error,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
-  if (error) {
-    return <div className="text-red-500">{JSON.stringify(error)}</div>;
-  }
-
-  if (!source) {
-    return <NextError statusCode={404} />;
-  }
-  
   const { frontmatter, config } = page;
 
   return (
@@ -113,8 +99,8 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
   // Extract the slug properties from the request.
   let properties: SlugProperties = getSlugProperties(params.slug as string[]);
 
-  const domains = await getDomainsList();
-  console.log(domains);
+  const domains = await getDomainsList(process.env.NODE_ENV !== "production");
+  // TODO handle domains
 
   // If no ref was found in the slug, grab the default branch name
   // from the GQL API.
@@ -125,12 +111,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
     );
 
     if (!defaultBranch) {
-      return {
-        props: {
-          properties,
-          error: repositoryNotFound(properties),
-        },
-      };
+      throw RenderError.repositoryNotFound(properties);
     } else {
       // Assign the default branch to the ref
       properties.ref = defaultBranch;
@@ -156,12 +137,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
   page = await getPageContent(properties);
 
   if (!page) {
-    return {
-      props: {
-        properties,
-        error: pageNotFound(properties),
-      },
-    };
+    throw RenderError.pageNotFound(properties);
   }
 
   if (page.frontmatter.redirect) {
@@ -173,12 +149,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
       components: mdxComponents,
     });
   } catch (e) {
-    return {
-      props: {
-        properties,
-        error: renderError(properties),
-      },
-    };
+    throw RenderError.serverError(properties);
   }
 
   return {

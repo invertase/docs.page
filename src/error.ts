@@ -1,52 +1,47 @@
 import { SlugProperties } from "./properties";
 import { isExternalLink } from "./components/Link";
 
-export type Error = {
-    code: number;
-    message: string;
-    stack?: string;
-};
+export class RenderError {
+  public static repositoryNotFound(properties: SlugProperties) {
+    return new RenderError(404, properties);
+  }
 
-export function repositoryNotFound(properties: SlugProperties): Error {
-    return {
-        code: 404,
-        message: `The repository ${properties.owner}/${properties.repository} was not found.`,
-    };
-}
+  public static pageNotFound(properties: SlugProperties) {
+    return new RenderError(404, properties);
+  }
 
-export function pageNotFound(properties: SlugProperties): Error {
-    return {
-        code: 404,
-        message: `pageNotFound.`,
-    };
-}
+  public static serverError(properties: SlugProperties) {
+    return new RenderError(500, properties);
+  }
 
-export function renderError(properties: SlugProperties): Error {
-    return {
-        code: 500,
-        message: `renderError.`,
-    };
+  public readonly statusCode: number;
+  public readonly properties: SlugProperties;
+
+  private constructor(statusCode: number, properties?: SlugProperties) {
+    this.statusCode = statusCode;
+    this.properties = properties;
+  }
 }
 
 export function redirect(link: string, properties?: SlugProperties) {
-    let destination: string;
+  let destination: string;
 
-    if (!properties || isExternalLink(link)) {
-        destination = link;
-    } else {
-        if (!link.startsWith('/')) {
-            link = `/${link}`;
-        }
-
-        destination = `/${properties.base}${link}`;
+  if (!properties || isExternalLink(link)) {
+    destination = link;
+  } else {
+    if (!link.startsWith("/")) {
+      link = `/${link}`;
     }
 
-    return {
-        redirect: {
-            destination,
-            permanent: true,
-        },
-        // TODO: Is this used on redirect?
-        revalidate: 3600,
-    };
+    destination = `/${properties.base}${link}`;
+  }
+
+  return {
+    redirect: {
+      destination,
+      permanent: true,
+    },
+    // TODO: Is this used on redirect?
+    revalidate: 3600,
+  };
 }

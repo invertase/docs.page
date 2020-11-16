@@ -10,31 +10,42 @@ type DomainListQuery = {
   };
 };
 
-export async function getDomainsList(): Promise<string[]> {
-  const [error, response] = await A2A<DomainListQuery>(
-    GithubGQLClient({
-      query: `
-        query DomainsList($owner: String!, $repository: String!, $file: String!) {
-          repository(owner: $owner, name: $repository) {
-            file: object(expression: $file) {
-              ... on Blob {
-                text
+type Domain = [string, string];
+
+export async function getDomainsList(dev: boolean): Promise<Domain[]> {
+  let raw = "";
+
+  if (dev) {
+    // @ts-ignore
+    raw = await import("../domains.txt").then(($) => $.default);
+  } else {
+    const [error, response] = await A2A<DomainListQuery>(
+      GithubGQLClient({
+        query: `
+          query DomainsList($owner: String!, $repository: String!, $file: String!) {
+            repository(owner: $owner, name: $repository) {
+              file: object(expression: $file) {
+                ... on Blob {
+                  text
+                }
               }
             }
           }
-        }
-      `,
-      owner: "invertase",
-      repository: "docs.page",
-      file: "master:domains.txt",
-    })
-  );
+        `,
+        owner: "invertase",
+        repository: "docs.page",
+        file: "master:domains.txt",
+      })
+    );
 
-  if (error || !response.repository.file?.text) {
-    return [];
+    if (error || !response.repository.file?.text) {
+      raw = "";
+    } else {
+      raw = response.repository.file.text;
+    }
   }
 
-  return response.repository.file.text.split("\n");
+  return raw.split("\n").map<Domain>((str) => str.split(" ") as Domain);
 }
 
 type DefaultBranchQuery = {
