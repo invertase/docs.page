@@ -2,7 +2,7 @@ export function DocsDirectory() {
   return (
     <section className="">
       <div className="mx-6 py-3 border-t border-l border-r rounded-tr rounded-tl border-gray-700"></div>
-      <div className="py-3 px-3 flex items-center border rounded border-gray-700 font-mono text-sm">
+      <div className="py-3 px-3 flex items-center border rounded border-gray-700 font-mono text-sm shadow-xl">
         <svg
           height="16"
           viewBox="0 0 16 16"

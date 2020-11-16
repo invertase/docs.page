@@ -54,6 +54,7 @@ export default function Documentation({
   if (!source) {
     return <NextError statusCode={404} />;
   }
+  
   const { frontmatter, config } = page;
 
   return (
