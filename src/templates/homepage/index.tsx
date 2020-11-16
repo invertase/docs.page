@@ -5,6 +5,7 @@ import { Checkout } from "./Checkout";
 import { Heading } from "./Heading";
 import { Button } from "./Button";
 import { Feature } from "./Feature";
+import { DocsDirectory, IndexExample } from "./Skeletons";
 
 export default function IndexPage() {
   return (
@@ -55,13 +56,13 @@ export default function IndexPage() {
               <span className="bg-clip-text text-transparent bg-gradient-to-br from-purple-400 via-pink-500 to-red-500">
                 docs
               </span>{" "}
-              directory to any GitHub repository.
+              directory to your GitHub repository.
             </span>
           }
           from="from-purple-400"
           to="to-red-500"
         />
-        <div className="ml-20 mt-16 lg:flex">
+        <div className="ml-20 mt-16 lg:flex items-center">
           <div className="flex-1">
             <p className="text-lg font-thin px-3">
               docs.page sources content directly from any Open Source GitHub
@@ -73,7 +74,11 @@ export default function IndexPage() {
               of your repository.
             </p>
           </div>
-          <div className="flex-1"></div>
+          <div className="flex-1">
+            <div className="mt-10 lg:mt-0 lg:pl-8">
+              <DocsDirectory />
+            </div>
+          </div>
         </div>
       </div>
       <div className="mt-32 max-w-5xl mx-auto px-4 lg:px-0">
@@ -91,8 +96,12 @@ export default function IndexPage() {
           from="from-teal-400"
           to="to-blue-500"
         />
-        <div className="ml-20 mt-16 lg:flex">
-          <div className="flex-1"></div>
+        <div className="ml-20 mt-16 flex flex-col-reverse lg:flex-row items-center">
+          <div className="w-full flex-1">
+            <div className="pr-5 mt-10 lg:mt-0">
+              <IndexExample />
+            </div>
+          </div>
           <div className="flex-1">
             <p className="text-lg font-thin px-3">
               Create an <code className="text-blue-500">{`index.md`}</code> file
@@ -103,8 +112,8 @@ export default function IndexPage() {
             </p>
             <p className="mt-4 text-lg font-thin px-3">
               Start by writing some{" "}
-              <a href="https://www.markdownguide.org/">Markdown</a> content,
-              anything goes!
+              <a href="https://www.markdownguide.org/">Markdown</a> content.
+              Installation pages are always a great place to start!
             </p>
           </div>
         </div>
