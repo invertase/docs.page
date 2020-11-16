@@ -1,1 +1,2 @@
 firebase.flutter.dev firebaseextended/flutterfire
+melos.invertase.dev invertase/melos
