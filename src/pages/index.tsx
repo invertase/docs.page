@@ -1,4 +1,7 @@
+import React from "react";
 import Head from "next/head";
+import cx from "classnames";
+import { spawn } from "child_process";
 
 export default function IndexPage() {
   return (
@@ -34,18 +37,20 @@ export default function IndexPage() {
         </div>
       </section>
       <div className="max-w-5xl mx-auto px-4 lg:px-0">
-        <div className="flex items-center">
-          <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 shadow-xl">
-            <span className="font-anton text-white text-4xl">1</span>
-          </div>
-          <h2 className="flex-1 ml-6 text-white font-anton text-4xl">
-            Add a{" "}
-            <span className="bg-clip-text text-transparent bg-gradient-to-br from-purple-400 via-pink-500 to-red-500">
-              docs
-            </span>{" "}
-            directory to any GitHub repository.
-          </h2>
-        </div>
+        <Heading
+          step={1}
+          title={
+            <span>
+              Add a{" "}
+              <span className="bg-clip-text text-transparent bg-gradient-to-br from-purple-400 via-pink-500 to-red-500">
+                docs
+              </span>{" "}
+              directory to any GitHub repository.
+            </span>
+          }
+          from="from-purple-400"
+          to="to-red-500"
+        />
         <div className="ml-20 mt-16 lg:flex">
           <div className="flex-1">
             <p className="text-lg font-thin px-3">
@@ -63,14 +68,20 @@ export default function IndexPage() {
         </div>
       </div>
       <div className="mt-32 max-w-5xl mx-auto px-4 lg:px-0">
-        <div className="flex items-center">
-          <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-br from-teal-400 to-blue-500 shadow-xl">
-            <span className="font-anton text-white text-4xl">2</span>
-          </div>
-          <h2 className="flex-1 ml-6 text-white font-anton text-4xl">
-            Create Markdown, MDX or HTML files.
-          </h2>
-        </div>
+        <Heading
+          step={2}
+          title={
+            <span>
+              Create an index.<span className="text-teal-400">md</span>, .
+              <span className="bg-clip-text text-transparent bg-gradient-to-br from-teal-400 to-blue-500">
+                mdx
+              </span>{" "}
+              or .<span className="text-blue-400">html</span> file.
+            </span>
+          }
+          from="from-teal-400"
+          to="to-blue-500"
+        />
         <div className="ml-20 mt-16 lg:flex">
           <div className="flex-1"></div>
           <div className="flex-1">
@@ -88,14 +99,12 @@ export default function IndexPage() {
         </div>
       </div>
       <div className="mt-32 max-w-5xl mx-auto px-4 lg:px-0">
-        <div className="flex items-center">
-          <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 shadow-xl">
-            <span className="font-anton text-white text-4xl">3</span>
-          </div>
-          <h2 className="flex-1 ml-6 text-white font-anton text-4xl">
-            Checkout your new documentation!
-          </h2>
-        </div>
+        <Heading
+          step={3}
+          title="Checkout your new documentation!"
+          from="from-yellow-400"
+          to="to-orange-500"
+        />
         <div className="ml-20 mt-10 lg:flex">
           <div className="flex-1">
             <div className="px-3 mb-4">
@@ -122,12 +131,12 @@ export default function IndexPage() {
         </div>
       </div>
       <div className="mt-32 max-w-5xl mx-auto px-4 lg:px-0">
-        <div className="flex items-center">
-          <div className="w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-br from-teal-400 to-green-500 shadow-xl">
-            <span className="font-anton text-white text-4xl">4</span>
-          </div>
-          <h2 className="ml-6 text-white font-anton text-4xl">Learn more...</h2>
-        </div>
+        <Heading
+          step={4}
+          title="Learn more..."
+          from="from-teal-400"
+          to="to-green-500"
+        />
         <div className="lg:ml-20 mt-10">
           <div className="lg:flex flex-wrap text-center pl-3">
             <div className="lg:px-12 lg:w-1/2 mb-20">
@@ -164,7 +173,7 @@ export default function IndexPage() {
                 <svg width={80} height={80} viewBox="0 0 16 16">
                   <path
                     fill="currentColor"
-                    fill-rule="evenodd"
+                    fillRule="evenodd"
                     d="M7.177 3.073L9.573.677A.25.25 0 0110 .854v4.792a.25.25 0 01-.427.177L7.177 3.427a.25.25 0 010-.354zM3.75 2.5a.75.75 0 100 1.5.75.75 0 000-1.5zm-2.25.75a2.25 2.25 0 113 2.122v5.256a2.251 2.251 0 11-1.5 0V5.372A2.25 2.25 0 011.5 3.25zM11 2.5h-1V4h1a1 1 0 011 1v5.628a2.251 2.251 0 101.5 0V5A2.5 2.5 0 0011 2.5zm1 10.25a.75.75 0 111.5 0 .75.75 0 01-1.5 0zM3.75 12a.75.75 0 100 1.5.75.75 0 000-1.5z"
                   />
                 </svg>
@@ -241,5 +250,32 @@ export default function IndexPage() {
       </div>
       <div className="h-32"></div>
     </>
+  );
+}
+
+function Heading({
+  step,
+  title,
+  from,
+  to,
+}: {
+  step: number;
+  title: React.ReactNode;
+  from: string;
+  to: string;
+}) {
+  return (
+    <div className="flex items-center">
+      <div
+        className={cx(
+          "w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-br shadow-xl",
+          from,
+          to
+        )}
+      >
+        <span className="font-anton text-white text-4xl">{step}</span>
+      </div>
+      <h2 className="flex-1 ml-6 text-white font-anton text-4xl">{title}</h2>
+    </div>
   );
 }

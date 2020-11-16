@@ -43,6 +43,10 @@ function ThemeStyles() {
       .bg-theme-color-light {
         background-color: var(--theme-color-light);
       }
+
+      #nprogress .bar {
+        background: var(--theme-color) !important;
+      }
     `}</style>
   );
 }

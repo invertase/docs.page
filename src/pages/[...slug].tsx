@@ -1,18 +1,26 @@
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import NextError from "next/error";
 import NextHead from "next/head";
+import NextRouter from "next/router";
+import NProgress from "nprogress";
 
 // TODO type definitions
 import renderToString from "next-mdx-remote/render-to-string";
 import hydrate from "next-mdx-remote/hydrate";
-import mdxComponents from "../mdx";
 
+import mdxComponents from "../mdx";
 import { ThemeStyles } from "../components/ThemeStyles";
 import { Layout } from "../components/Layout";
 import { ErrorBoundary } from "../components/ErrorBoundary";
 
 import { ConfigContext } from "../config";
-import { Error, repositoryNotFound, redirect, pageNotFound, renderError } from "../error";
+import {
+  Error,
+  repositoryNotFound,
+  redirect,
+  pageNotFound,
+  renderError,
+} from "../error";
 import {
   SPLITTER,
   getSlugProperties,
@@ -21,6 +29,13 @@ import {
 } from "../properties";
 import { ContentContext, getPageContent, PageContent } from "../content";
 import { getDefaultBranch, getPullRequestMetadata } from "../github";
+
+import "nprogress/nprogress.css";
+
+NProgress.configure({ showSpinner: false });
+NextRouter.events.on("routeChangeStart", () => NProgress.start());
+NextRouter.events.on("routeChangeComplete", () => NProgress.done());
+NextRouter.events.on("routeChangeError", () => NProgress.done());
 
 export default function Documentation({
   source,
@@ -83,10 +98,10 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
 
   // Anything with less than 2 parts to the slug is an invalid URL.
   if (slug.length < 2) {
-    return redirect('/');
+    return redirect("/");
   }
 
-  let error: Error;
+  let error: Error = null;
   let source = null;
   let page: PageContent;
 
@@ -131,13 +146,13 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
   }
 
   page = await getPageContent(properties);
-
+  
   if (!page) {
     return {
       props: {
         properties,
         error: pageNotFound(properties),
-      }
+      },
     };
   }
 
@@ -154,8 +169,8 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
       props: {
         properties,
         error: renderError(properties),
-      }
-    }
+      },
+    };
   }
 
   return {
