@@ -2,6 +2,41 @@ import A2A from "a2a";
 import { SlugProperties } from "./properties";
 import { GithubGQLClient } from "./utils";
 
+type DomainListQuery = {
+  repository: {
+    file?: {
+      text: string;
+    };
+  };
+};
+
+export async function getDomainsList(): Promise<string[]> {
+  const [error, response] = await A2A<DomainListQuery>(
+    GithubGQLClient({
+      query: `
+        query DomainsList($owner: String!, $repository: String!, $file: String!) {
+          repository(owner: $owner, name: $repository) {
+            file: object(expression: $file) {
+              ... on Blob {
+                text
+              }
+            }
+          }
+        }
+      `,
+      owner: "invertase",
+      repository: "docs.page",
+      file: "master:domains.txt",
+    })
+  );
+
+  if (error || !response.repository.file?.text) {
+    return [];
+  }
+
+  return response.repository.file.text.split("\n");
+}
+
 type DefaultBranchQuery = {
   repository: {
     branch: {
@@ -164,7 +199,7 @@ export async function getGitHubFiles(
       html: `${properties.ref}:docs/${properties.path}.html`,
     })
   );
-  
+
   if (error) {
     return null;
   }

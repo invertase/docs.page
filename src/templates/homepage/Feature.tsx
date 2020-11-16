@@ -14,7 +14,9 @@ export function Feature({ href, icon, title, text }: Props) {
       <div className="flex-1 flex flex-col items-center justify-center">
         {icon}
         <h4 className="my-8 font-anton text-5xl tracking-wide">{title}</h4>
-        <p className="font-thin">{text}</p>
+        <p className="font-thin" style={{ minHeight: 90 }}>
+          {text}
+        </p>
       </div>
       <div className="mt-10">
         <Button href={href}>Learn More</Button>

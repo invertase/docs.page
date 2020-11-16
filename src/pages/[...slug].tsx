@@ -28,7 +28,11 @@ import {
   SlugPropertiesContext,
 } from "../properties";
 import { ContentContext, getPageContent, PageContent } from "../content";
-import { getDefaultBranch, getPullRequestMetadata } from "../github";
+import {
+  getDefaultBranch,
+  getDomainsList,
+  getPullRequestMetadata,
+} from "../github";
 
 import "nprogress/nprogress.css";
 
@@ -108,6 +112,9 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
   // Extract the slug properties from the request.
   let properties: SlugProperties = getSlugProperties(params.slug as string[]);
 
+  const domains = await getDomainsList();
+  console.log(domains);
+
   // If no ref was found in the slug, grab the default branch name
   // from the GQL API.
   if (!properties.ref) {
@@ -146,7 +153,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
   }
 
   page = await getPageContent(properties);
-  
+
   if (!page) {
     return {
       props: {
