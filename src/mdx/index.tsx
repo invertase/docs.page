@@ -36,7 +36,6 @@ const components = {
     );
 
     if (isValidElement(props.children) && props.children?.props?.live) {
-      console.log(props.children?.props?.children ?? "");
       return (
         <div className="rounded overflow-hidden">
           <LiveProvider

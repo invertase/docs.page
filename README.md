@@ -10,7 +10,7 @@
   - [x] Tabs / TabItem
 - [x] Code block titles
   - https://github.com/mottox2/remark-code-titles
-- [ ] Code block live
+- [x] Code block live
   - https://github.com/FormidableLabs/react-live
   - [ ] Use webpack alias for smaller bundle? Load on Client only?
   - [ ] Use fork of buble? https://github.com/facebook/docusaurus/blob/master/packages/docusaurus-theme-live-codeblock/src/index.js#L24
