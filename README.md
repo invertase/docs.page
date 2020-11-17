@@ -1,3 +1,7 @@
+## General
+
+- [ ] Tailwind purging - breaks some dark mode things, such as hover on sidebar
+
 ## Homepage
 
 - [ ] Regex needs doing to extract the owner/repo from the URL (`Checkout` component) & redirect the user

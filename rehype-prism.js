@@ -33,6 +33,9 @@ module.exports = (options) => {
       return;
     }
 
+    // Force the `live` property to false if it's not JSX
+    node.properties.live = false;
+
     let result;
     try {
       parent.properties.className = (parent.properties.className || []).concat(
@@ -40,7 +43,7 @@ module.exports = (options) => {
       );
       result = refractor.highlight(nodeToString(node), lang);
     } catch (err) {
-      if (options.ignoreMissing && /Unknown language/.test(err.message)) {
+      if (/Unknown language/.test(err.message)) {
         return;
       }
       throw err;

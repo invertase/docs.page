@@ -1,13 +1,13 @@
-import React, { useState, useEffect, isValidElement } from "react";
+import React, { isValidElement } from "react";
 import cx from "classnames";
 import hydrate from "next-mdx-remote/hydrate";
-import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live";
 
 import { Header } from "../components/Header";
 import { Link } from "../components/Link";
 
 import { Heading } from "./Heading";
 import { Tabs, TabItem, TabsContext } from "./Tabs";
+import { LiveCode, withCodeBlockTitle } from "./Code";
 
 const components = {
   // HTML element overrides
@@ -36,45 +36,13 @@ const components = {
     );
 
     if (isValidElement(props.children) && props.children?.props?.live) {
-      return (
-        <div className="rounded overflow-hidden">
-          <LiveProvider
-            code={props.children?.props?.children ?? ""}
-            scope={{ useState, useEffect }}
-          >
-            <div className="font-mono font-bold text-gray-900 px-2 py-3 bg-gray-500">
-              LIVE EDITOR
-            </div>
-            <div className="bg-gray-800">
-              <LiveEditor />
-            </div>
-            <LiveError />
-            <div>
-              <div className="font-mono font-bold text-gray-900 px-2 py-3 bg-gray-500">
-                RESULT
-              </div>
-              <style global jsx>{`
-                .live-preview * {
-                  all: unset;
-                }
-              `}</style>
-              <div className="live-preview bg-gray-800">
-                <LivePreview />
-              </div>
-            </div>
-          </LiveProvider>
-        </div>
-      );
+      return <LiveCode code={props.children?.props?.children ?? ""} />;
     }
 
     if (isValidElement(props.children) && props.children?.props?.title) {
-      return (
-        <>
-          <div className="bg-gray-800 border-gray-700 text-white font-mono border-b px-4 py-2 rounded-tr rounded-tl text-sm font-bold">
-            {props.children.props.title}
-          </div>
-          {pre("code-block-title")}
-        </>
+      return withCodeBlockTitle(
+        props.children?.props?.title,
+        pre("code-block-title")
       );
     }
 
