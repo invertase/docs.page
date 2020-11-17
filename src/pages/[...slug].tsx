@@ -6,9 +6,8 @@ import NProgress from "nprogress";
 
 // TODO type definitions
 import renderToString from "next-mdx-remote/render-to-string";
-import hydrate from "next-mdx-remote/hydrate";
 
-import mdxComponents from "../mdx";
+import mdxComponents, { Hydrate } from "../mdx";
 import { ThemeStyles } from "../components/ThemeStyles";
 import { Layout } from "../components/Layout";
 import { ErrorBoundary } from "../components/ErrorBoundary";
@@ -58,7 +57,7 @@ export default function Documentation({
             <ThemeStyles />
             <Layout>
               <ErrorBoundary>
-                {hydrate(source, { components: mdxComponents })}
+              <Hydrate source={source} />
               </ErrorBoundary>
             </Layout>
           </ContentContext.Provider>
