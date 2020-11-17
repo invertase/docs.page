@@ -145,14 +145,12 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
     source = await renderToString(page.content, {
       components: mdxComponents,
       mdxOptions: {
-        remarkPlugins: [require("remark-code-titles")],
-        rehypePlugins: [
-          require("@mapbox/rehype-prism"),
-          require("rehype-slug"),
-        ],
+        rehypePlugins: [require("../../rehype-prism"), require("rehype-slug")],
+        remarkPlugins: [require("@fec/remark-a11y-emoji")],
       },
     });
   } catch (e) {
+    console.error(e);
     throw RenderError.serverError(properties);
   }
 
