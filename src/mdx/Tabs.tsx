@@ -71,8 +71,8 @@ function useTabSynchronization(
   groupId: string,
   setState: React.Dispatch<React.SetStateAction<string>>
 ): (tab: string) => void {
-  const { tabs, updateTab } = useContext(Context);
-  const value = tabs[`${PREFIX}${groupId}`];
+  const { tabs, updateTab, prefix } = useContext(Context);
+  const value = tabs[`${prefix}${groupId}`];
 
   useEffect(() => {
     if (!groupId) return;
