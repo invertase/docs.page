@@ -8,7 +8,7 @@
 - [ ] Handle custom domains. Figure out what data is needed in order for the `Link` component to work correctly.
 - Custom components:
   - [x] Tabs / TabItem
-- [ ] Code block titles
+- [x] Code block titles
   - https://github.com/mottox2/remark-code-titles
 - [ ] Code block live
   - https://github.com/FormidableLabs/react-live
