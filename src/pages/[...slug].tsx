@@ -5,7 +5,7 @@ import NextRouter from "next/router";
 import NProgress from "nprogress";
 
 // TODO type definitions
-import renderToString from "next-mdx-remote/render-to-string";
+import serialize from "next-mdx-remote/serialize";
 
 import mdxComponents, { Hydrate } from "../mdx";
 import { ThemeStyles } from "../components/ThemeStyles";
@@ -57,7 +57,7 @@ export default function Documentation({
             <ThemeStyles />
             <Layout>
               <ErrorBoundary>
-              <Hydrate source={source} />
+                <Hydrate source={source} />
               </ErrorBoundary>
             </Layout>
           </ContentContext.Provider>
@@ -144,9 +144,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
   }
 
   try {
-    source = await renderToString(page.content, {
-      components: mdxComponents,
-    });
+    source = await serialize(page.content);
   } catch (e) {
     throw RenderError.serverError(properties);
   }

@@ -1,5 +1,5 @@
 import React from "react";
-import hydrate from "next-mdx-remote/hydrate";
+import MdxRemote from 'next-mdx-remote/mdx-remote'
 
 import { Header } from "../components/Header";
 import { Link } from "../components/Link";
@@ -40,7 +40,7 @@ export default components;
 export function Hydrate({ source }: { source: any }) {
   return (
     <TabsContext>
-      {hydrate(source, { components })}
+      <MdxRemote source={source} components={components} />
     </TabsContext>
   );
 }
