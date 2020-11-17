@@ -27,8 +27,6 @@ import {
   getPullRequestMetadata,
 } from "../github";
 
-import "nprogress/nprogress.css";
-
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on("routeChangeStart", () => NProgress.start());
 NextRouter.events.on("routeChangeComplete", () => NProgress.done());
@@ -148,7 +146,10 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
       components: mdxComponents,
       mdxOptions: {
         remarkPlugins: [require("remark-code-titles")],
-        rehypePlugins: [require("@mapbox/rehype-prism")],
+        rehypePlugins: [
+          require("@mapbox/rehype-prism"),
+          require("rehype-slug"),
+        ],
       },
     });
   } catch (e) {

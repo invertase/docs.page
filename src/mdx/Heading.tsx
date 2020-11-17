@@ -1,6 +1,4 @@
 import React, { useContext } from "react";
-import { onlyText } from "react-children-utilities";
-import slugify from "slugify";
 
 import { ConfigContext } from "../config";
 
@@ -23,16 +21,18 @@ function Heading(props: HeadingProps) {
   const config = useContext(ConfigContext);
   const type = props.type;
 
-  const id = (props.id || slugify(onlyText(props.children))).toLowerCase();
-
-  if (!id || config.headerDepth === 0 || depth[type] > config.headerDepth) {
+  if (
+    !props.id ||
+    config.headerDepth === 0 ||
+    depth[type] > config.headerDepth
+  ) {
     return React.createElement(type, props);
   }
 
   const renderChildren = (children: React.ReactNode) => (
     <span className="relative">
       <a
-        href={`#${id}`}
+        href={`#${props.id}`}
         className="absolute desktop:-ml-10 opacity-20 hover:opacity-30 transition-opacity duration-100"
         style={{
           textDecoration: "none",
@@ -46,7 +46,7 @@ function Heading(props: HeadingProps) {
 
   return (
     <span className="relative">
-      <a id={id} className="absolute -mt-16" />
+      <a id={props.id} className="absolute -mt-16" />
       {React.createElement(type, {
         ...props,
         children: renderChildren(props.children),

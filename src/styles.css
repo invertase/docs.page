@@ -10,6 +10,10 @@
     @apply bg-gray-900;
   }
 
+  pre[class*="language-"] {
+    @apply bg-gray-800;
+  }
+
   /* Removes any top margin from pre-tags if the remark-code-title markup is present */
   .remark-code-title + pre {
     margin-top: 0 !important;
