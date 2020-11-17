@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:prod": "NODE_ENV=production next dev",
     "build": "npm run clean && next build",
     "start": "next start",
     "clean": "rimraf .next"

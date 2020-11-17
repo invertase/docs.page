@@ -7,7 +7,7 @@ interface ErrorProps {
 function Error({ statusCode, properties }: ErrorProps) {
   return (
     <div className="max-w-4xl mx-auto text-center text-white py-32">
-      Error! Status Code {404} <br />
+      Error! Status Code {statusCode} <br />
     </div>
   );
 }

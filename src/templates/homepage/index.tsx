@@ -33,9 +33,9 @@ export default function IndexPage() {
           opacity: 0.8;
         }
       `}</style>
-      <section className="py-32 text-center px-4 lg:text-left">
+      <section className="py-16 lg:py-32 text-center px-4 lg:text-left">
         <div className="max-w-6xl mx-auto tracking-wider">
-          <div className="flex items-center mb-4 space-x-4">
+          <div className="flex items-center justify-center lg:justify-start mb-4 space-x-4">
             <h3 className="font-anton text-4xl bg-clip-text text-transparent bg-gradient-to-br from-gray-100 via-gray-400  to-gray-200">
               docs.page
             </h3>
@@ -80,7 +80,7 @@ export default function IndexPage() {
           from="from-purple-400"
           to="to-red-500"
         />
-        <div className="ml-20 mt-16 lg:flex items-center">
+        <div className="lg:ml-20 mt-16 lg:flex items-center">
           <div className="flex-1">
             <p className="text-lg font-thin px-3">
               docs.page sources content directly from any Open Source GitHub
@@ -114,7 +114,7 @@ export default function IndexPage() {
           from="from-teal-400"
           to="to-blue-500"
         />
-        <div className="ml-20 mt-16 flex flex-col-reverse lg:flex-row items-center">
+        <div className="lg:ml-20 mt-16 flex flex-col-reverse lg:flex-row items-center">
           <div className="w-full flex-1">
             <div className="pr-5 mt-10 lg:mt-0">
               <IndexExample />
