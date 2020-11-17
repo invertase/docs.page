@@ -57,7 +57,7 @@ export default function Documentation({
             <ThemeStyles />
             <Layout>
               <ErrorBoundary>
-              <Hydrate source={source} />
+                <Hydrate source={source} />
               </ErrorBoundary>
             </Layout>
           </ContentContext.Provider>
@@ -146,6 +146,10 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
   try {
     source = await renderToString(page.content, {
       components: mdxComponents,
+      mdxOptions: {
+        remarkPlugins: [require("remark-code-titles")],
+        rehypePlugins: [require("@mapbox/rehype-prism")],
+      },
     });
   } catch (e) {
     throw RenderError.serverError(properties);

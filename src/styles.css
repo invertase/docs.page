@@ -9,4 +9,16 @@
   body.dark {
     @apply bg-gray-900;
   }
+
+  /* Removes any top margin from pre-tags if the remark-code-title markup is present */
+  .remark-code-title + pre {
+    margin-top: 0 !important;
+    border-top-left-radius: 0 !important;
+    border-top-right-radius: 0 !important;
+  }
+
+  /* remark-code-titles only gives us a class, so lets style it with tailwind */
+  .remark-code-title {
+    @apply bg-gray-800 border-gray-700 text-white font-mono border-b px-4 py-2 rounded-tr rounded-tl text-sm font-bold;
+  }
 }
