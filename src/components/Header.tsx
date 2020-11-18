@@ -7,7 +7,7 @@ import {
   DARK_MODE_CLASS_NAME,
   LIGHT_MODE_CLASS_NAME,
   STORAGE_KEY,
-} from "../noflash";
+} from "../scripts/noflash";
 import { SlugPropertiesContext } from "../properties";
 import { isClient } from "../utils";
 

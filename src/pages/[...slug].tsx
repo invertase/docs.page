@@ -1,13 +1,9 @@
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
-import NextError from "next/error";
 import NextHead from "next/head";
 import NextRouter from "next/router";
 import NProgress from "nprogress";
 
-// TODO type definitions
-import serialize from "next-mdx-remote/serialize";
-
-import mdxComponents, { Hydrate } from "../mdx";
+import { Hydrate, serialize } from "../mdx";
 import { ThemeStyles } from "../components/ThemeStyles";
 import { Layout } from "../components/Layout";
 import { ErrorBoundary } from "../components/ErrorBoundary";
@@ -36,7 +32,6 @@ export default function Documentation({
   source,
   properties,
   page,
-  error,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const { frontmatter, config } = page;
 
@@ -76,7 +71,6 @@ type StaticProps = {
   properties: SlugProperties;
   source?: string;
   page?: PageContent;
-  error?: Error;
 };
 
 export const getStaticProps: GetStaticProps<StaticProps> = async ({
@@ -89,7 +83,6 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
     return redirect("/");
   }
 
-  let error: Error = null;
   let source = null;
   let page: PageContent;
 
@@ -142,12 +135,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
   }
 
   try {
-    source = await serialize(page.content, {
-      mdxOptions: {
-        rehypePlugins: [require("../../rehype-prism"), require("rehype-slug")],
-        remarkPlugins: [require("@fec/remark-a11y-emoji")],
-      },
-    });
+    source = await serialize(page.content);
   } catch (e) {
     console.error(e);
     throw RenderError.serverError(properties);
@@ -158,7 +146,6 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
       properties,
       source,
       page,
-      error,
     },
     revalidate: 30,
   };
