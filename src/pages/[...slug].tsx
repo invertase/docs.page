@@ -5,7 +5,7 @@ import NextRouter from "next/router";
 import NProgress from "nprogress";
 
 // TODO type definitions
-import renderToString from "next-mdx-remote/render-to-string";
+import serialize from "next-mdx-remote/serialize";
 
 import mdxComponents, { Hydrate } from "../mdx";
 import { ThemeStyles } from "../components/ThemeStyles";
@@ -142,8 +142,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
   }
 
   try {
-    source = await renderToString(page.content, {
-      components: mdxComponents,
+    source = await serialize(page.content, {
       mdxOptions: {
         rehypePlugins: [require("../../rehype-prism"), require("rehype-slug")],
         remarkPlugins: [require("@fec/remark-a11y-emoji")],

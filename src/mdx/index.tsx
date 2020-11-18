@@ -1,6 +1,6 @@
-import React, { isValidElement } from "react";
+import React from "react";
 import cx from "classnames";
-import hydrate from "next-mdx-remote/hydrate";
+import MdxRemote from "next-mdx-remote/mdx-remote";
 
 import { Header } from "../components/Header";
 import { Link } from "../components/Link";
@@ -35,11 +35,11 @@ const components = {
       <pre {...props} className={cx(props.className, className)} />
     );
 
-    if (isValidElement(props.children) && props.children?.props?.live) {
+    if (React.isValidElement(props.children) && props.children?.props?.live === 'true') {
       return <LiveCode code={props.children?.props?.children ?? ""} />;
     }
 
-    if (isValidElement(props.children) && props.children?.props?.title) {
+    if (React.isValidElement(props.children) && props.children?.props?.title) {
       return withCodeBlockTitle(
         props.children?.props?.title,
         pre("code-block-title")
@@ -58,5 +58,9 @@ const components = {
 export default components;
 
 export function Hydrate({ source }: { source: any }) {
-  return <TabsContext>{hydrate(source, { components })}</TabsContext>;
+  return (
+    <TabsContext>
+      <MdxRemote source={source} components={components} />
+    </TabsContext>
+  );
 }

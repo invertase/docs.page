@@ -1,6 +1,7 @@
 import Document, { Html, Head, Main, NextScript } from "next/document";
 
 import noflash from "../noflash";
+import syncTabs from "../sync-tabs";
 
 class MyDocument extends Document {
   render() {
@@ -11,6 +12,11 @@ class MyDocument extends Document {
           <script dangerouslySetInnerHTML={{ __html: noflash }} />
           <Main />
           <NextScript />
+          <script
+            dangerouslySetInnerHTML={{
+              __html: syncTabs,
+            }}
+          />
         </body>
       </Html>
     );
