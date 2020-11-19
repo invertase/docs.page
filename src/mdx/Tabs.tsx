@@ -143,9 +143,9 @@ export function Tabs({
   return (
     <div
       data-sync-tabs={!!groupId}
-      data-sync-tabs-group={groupId || ''}
+      data-sync-tabs-group={groupId || ""}
       data-sync-tabs-hash={hash}
-      data-sync-tabs-default={defaultValue || ''}
+      data-sync-tabs-default={defaultValue || ""}
       className="border mb-4 dark:border-gray-800 rounded p-1"
     >
       <style jsx>{`
@@ -199,11 +199,14 @@ export function Tabs({
             return null;
           }
 
+          const indexValue = values[refIndex].value;
+
           return (
             <div
+              key={indexValue}
               ref={paneRefs[refIndex]}
               role="tabpanel"
-              data-pane-value={values[refIndex].value}
+              data-pane-value={indexValue}
             >
               {child}
             </div>

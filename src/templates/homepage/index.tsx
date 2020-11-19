@@ -58,7 +58,7 @@ export default function IndexPage() {
           </div>
           <h1 className="font-anton mb-4 text-6xl lg:text-8xl bg-clip-text text-transparent bg-gradient-to-br from-gray-100 via-gray-400  to-gray-200">
             Instant{" "}
-            <span className="bg-clip-text text-transparent bg-gradient-to-br from-teal-400 to-blue-500">
+            <span className="bg-clip-text text-transparent bg-gradient-to-br from-green-400 to-blue-500">
               Open Source
             </span>{" "}
             docs <br /> with zero configuration.
@@ -105,13 +105,13 @@ export default function IndexPage() {
           title={
             <span>
               Create an{" "}
-              <span className="bg-clip-text text-transparent bg-gradient-to-br from-teal-400 to-blue-500">
+              <span className="bg-clip-text text-transparent bg-gradient-to-br from-green-400 to-blue-500">
                 index.md
               </span>{" "}
               file.
             </span>
           }
-          from="from-teal-400"
+          from="from-green-400"
           to="to-blue-500"
         />
         <div className="lg:ml-20 mt-16 flex flex-col-reverse lg:flex-row items-center">
@@ -141,7 +141,7 @@ export default function IndexPage() {
           step={3}
           title="Checkout your new documentation!"
           from="from-yellow-400"
-          to="to-orange-500"
+          to="to-yellow-500"
         />
         <div className="ml-20 mt-10 lg:flex">
           <div className="flex-1">
@@ -154,7 +154,7 @@ export default function IndexPage() {
         <Heading
           step={4}
           title="Learn more..."
-          from="from-teal-400"
+          from="from-green-400"
           to="to-green-500"
         />
         <div className="lg:ml-20 mt-10">
@@ -217,7 +217,7 @@ export default function IndexPage() {
               <div className="lg:px-12 flex flex-col items-center justify-center">
                 <Feature
                   href="/"
-                  title={<span className="text-orange-400">Components</span>}
+                  title={<span className="text-yellow-400">Components</span>}
                   text={
                     <span>
                       Use our built in React components or create your own for

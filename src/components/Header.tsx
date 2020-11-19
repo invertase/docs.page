@@ -46,7 +46,7 @@ export function Header() {
           <ul className="flex items-center space-x-6 overflow-x-auto px-3 desktop:px-0">
             {config.navigation.map(([title, url]) => (
               <li key={url}>
-                <Link href={url} className="hover:underline whitespace-no-wrap">
+                <Link href={url} className="hover:underline whitespace-nowrap">
                   {title}
                 </Link>
               </li>

@@ -1,13 +1,5 @@
 module.exports = {
-  future: {
-    removeDeprecatedGapUtilities: true,
-    purgeLayersByDefault: true,
-  },
-  // Dark mode: https://github.com/tailwindlabs/tailwindcss/pull/2279
-  experimental: {
-    darkModeVariant: true,
-  },
-  dark: "class",
+  darkMode: "class",
   // TODO breaks dark:hover:bg-X- in Sidebar.tsx
   // purge: {
   //   enabled: true,
@@ -40,28 +32,28 @@ module.exports = {
       dark: {
         // https://github.com/tailwindlabs/tailwindcss-typography/blob/master/src/styles.js
         css: {
-          color: theme("colors.gray.300"),
+          color: theme("colors.gray.200"),
           h1: {
-            color: theme("colors.gray.300"),
+            color: theme("colors.gray.200"),
           },
           h2: {
-            color: theme("colors.gray.300"),
+            color: theme("colors.gray.200"),
           },
           h3: {
-            color: theme("colors.gray.300"),
+            color: theme("colors.gray.200"),
           },
           h4: {
-            color: theme("colors.gray.300"),
+            color: theme("colors.gray.200"),
           },
           h5: {
-            color: theme("colors.gray.300"),
+            color: theme("colors.gray.200"),
           },
           h6: {
-            color: theme("colors.gray.300"),
+            color: theme("colors.gray.200"),
           },
           blockquote: {
             borderColor: "var(--theme-color)",
-            color: theme("colors.gray.300"),
+            color: theme("colors.gray.200"),
           },
           a: {
             color: "var(--theme-color)",

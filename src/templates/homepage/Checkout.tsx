@@ -47,9 +47,9 @@ export function Checkout() {
         <button
           type="button"
           className={cx(
-            "px-8 py-3 rounded bg-gradient-to-br from-yellow-500 to-orange-600 text-white font-semibold",
+            "px-8 py-3 rounded bg-gradient-to-br from-yellow-500 to-yellow-600 text-white font-semibold",
             {
-              "hover:from-yellow-600 hover:to-orange-700": valid === true,
+              "hover:from-yellow-600 hover:to-yellow-700": valid === true,
               "cursor-not-allowed opacity-50": !valid,
             }
           )}

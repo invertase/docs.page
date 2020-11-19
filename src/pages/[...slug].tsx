@@ -48,7 +48,6 @@ export default function Documentation({
             <ThemeStyles />
             <Layout>
               <ErrorBoundary>
-                Hello
                 <Hydrate source={source} />
               </ErrorBoundary>
             </Layout>
