@@ -3,7 +3,9 @@ import NextHead from "next/head";
 import NextRouter from "next/router";
 import NProgress from "nprogress";
 
-import { Hydrate, serialize } from "../mdx";
+import mdxSerialize from "next-mdx-remote/serialize";
+import { Hydrate } from "../mdx";
+
 import { ThemeStyles } from "../components/ThemeStyles";
 import { Layout } from "../components/Layout";
 import { ErrorBoundary } from "../components/ErrorBoundary";
@@ -17,11 +19,7 @@ import {
   SlugPropertiesContext,
 } from "../properties";
 import { ContentContext, getPageContent, PageContent } from "../content";
-import {
-  getDefaultBranch,
-  getDomainsList,
-  getPullRequestMetadata,
-} from "../github";
+import { getDefaultBranch, getPullRequestMetadata } from "../github";
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on("routeChangeStart", () => NProgress.start());
@@ -34,7 +32,7 @@ export default function Documentation({
   page,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const { frontmatter, config } = page;
-
+  
   return (
     <>
       <NextHead>
@@ -50,6 +48,7 @@ export default function Documentation({
             <ThemeStyles />
             <Layout>
               <ErrorBoundary>
+                Hello
                 <Hydrate source={source} />
               </ErrorBoundary>
             </Layout>
@@ -89,8 +88,8 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
   // Extract the slug properties from the request.
   let properties: SlugProperties = getSlugProperties(params.slug as string[]);
 
-  const domains = await getDomainsList(process.env.NODE_ENV !== "production");
-  // TODO handle domains
+  // // const domains = await getDomainsList(process.env.NODE_ENV !== "production");
+  // // TODO handle domains
 
   // If no ref was found in the slug, grab the default branch name
   // from the GQL API.
@@ -135,7 +134,12 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
   }
 
   try {
-    source = await serialize(page.content);
+    source = await mdxSerialize(page.content, {
+      mdxOptions: {
+        rehypePlugins: [require("../../rehype-prism"), require("rehype-slug")],
+        remarkPlugins: [require("@fec/remark-a11y-emoji")],
+      },
+    })
   } catch (e) {
     console.error(e);
     throw RenderError.serverError(properties);

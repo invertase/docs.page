@@ -1,51 +1,60 @@
 export default `
 (function() {
-  // TODO
-  // Get all "data-sync-tabs" elements
-  // Get the hash & groupId from each element
-  // See if there is anything in local storage
-  //   If not:
-  //     See if there is a "data-default-value" item, if so, set it as the default
-  //     If there is no value, use the first child "data" key
-  //   If yes:
-  //     Loop over each child and apply the styles (see below) based on that value
+  // Get all elements with the "data-sync-tabs=true" property
+  const tabElements = document.querySelectorAll("[data-sync-tabs=true");
 
-  
-  for (let i = 0; i < localStorage.length; i += 1) {
-    const storageKey = localStorage.key(i);
-    if (storageKey.startsWith('docs.page.tabs')) {
-      const value = localStorage.getItem(storageKey);
-      const els = document.querySelectorAll("[data-tabs-id='" + storageKey + "']");
+  tabElements.forEach((tabElement) => {
+    const groupId = tabElement.dataset.syncTabsGroup;
+    const hash = tabElement.dataset.syncTabsHash;
+    const key = "docs.page.tabs." + hash + "." + groupId;
+    let localStorageItem;
 
-      if (els.length) {
-        els.forEach((el) => {
-          const [tabs, panes] = el.children;
-          console.log('value', value);
-          if (!value) {
-            console.log('adding to 0 index');
-            tabs[0].classList.add('active');
-          } else {
-            for (let element of tabs.children) {
-              if (element.dataset.tabValue === value) {
-                element.classList.add('active');
-              }
-            }
-          }
+    try {
+      localStorageItem = localStorage.getItem(key);
+    } catch (e) {}
 
-          let pi = 0;
-          for (let element of panes.children) {
-            if (!value && pi > 0) {
-              element.classList.add('hidden');
-            } else if (element.dataset.paneValue !== value) {
-              element.classList.add('hidden');
-            }
+    const [tabs, panes] = tabElement.children;
 
-            pi++;
-          }
-        });
+    // If an item in local storage exists for this key, update the tabs & panes
+    if (localStorageItem) {
+      for (let element of tabs.children) {
+        if (element.dataset.tabValue === localStorageItem) {
+          element.classList.add('active');
+        }
+      }
+
+      for (let element of panes.children) {
+        if (element.dataset.paneValue !== localStorageItem) {
+          element.classList.add('hidden');
+        }
       }
     }
-  }
 
+    // If no local storage item exists, apply any defaults
+    if (!localStorageItem) {
+      const defaultValue = tabElement.dataset.syncTabsDefault;
+
+      // If no default value, use the first element
+      if (!defaultValue) {
+        tabs[0].classList.add('active');
+
+        for (let i = 0; i < panes.length; i++) {
+          if (i > 0) panes[i].classList.add('hidden');
+        }
+      } else {
+        for (let element of tabs.children) {
+          if (element.dataset.tabValue === defaultValue) {
+            element.classList.add('active');
+          }
+        }
+
+        for (let element of panes.children) {
+          if (element.dataset.paneValue !== defaultValue) {
+            element.classList.add('hidden');
+          }
+        }
+      }
+    }
+  });
 })();
 `;

@@ -1,6 +1,5 @@
 import React from "react";
 import cx from "classnames";
-import mdxSerialize from "next-mdx-remote/serialize";
 import MdxRemote from "next-mdx-remote/mdx-remote";
 
 import { Header } from "../components/Header";
@@ -64,11 +63,3 @@ export function Hydrate({ source }: { source: any }) {
   );
 }
 
-export function serialize(markdown: string) {
-  return mdxSerialize(markdown, {
-    mdxOptions: {
-      rehypePlugins: [require("../../rehype-prism"), require("rehype-slug")],
-      remarkPlugins: [require("@fec/remark-a11y-emoji")],
-    },
-  })
-}

@@ -153,7 +153,7 @@ export function Tabs({
   });
 
   function onChangeTab(tab: string) {
-    console.log('onChangeTab', tab);
+    console.log("onChangeTab", tab);
     tabRefs.forEach((ref) => {
       if (ref.current.dataset.tabValue === tab) {
         ref.current.classList.add("active");
@@ -181,8 +181,11 @@ export function Tabs({
 
   return (
     <div
+      data-sync-tabs={!!groupId}
+      data-sync-tabs-group={groupId || ''}
+      data-sync-tabs-hash={hash}
+      data-sync-tabs-default={defaultValue || ''}
       className="border mb-4 dark:border-gray-800 rounded p-1"
-      data-tabs-id={groupId ? `${PREFIX}.${hash}.${groupId}` : ""}
     >
       <style jsx>{`
         div[role="tab"].active {
