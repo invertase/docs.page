@@ -24,6 +24,8 @@ const Context = createContext<ContextProps>({
   updateTab: () => {},
 });
 
+// Provides context to all <Tabs /> components to allow for listening to
+// changes on synchronized tabs.
 export function TabsContext({ children }: { children: React.ReactNode }) {
   const [tabs, setTabs] = useState({});
 
@@ -45,47 +47,6 @@ export function TabsContext({ children }: { children: React.ReactNode }) {
     </Context.Provider>
   );
 }
-
-// // Provides context to all <Tabs /> components.
-// // Once the window is available, all local storage keys matching the prefix
-// // are populated in
-// export function TabsContext({ children }: { children: React.ReactNode }) {
-//   const { hash } = useContext(SlugPropertiesContext);
-//   const [data, setData] = useState({});
-
-//   const updateTab = useCallback((groupId: string, value: string) => {
-//     const key = `${PREFIX}.${hash}.${groupId}`;
-//     localStorage.setItem(key, value);
-//     setData((obj) => ({
-//       ...obj,
-//       [key]: value,
-//     }));
-//   }, []);
-
-//   useEffect(() => {
-//     const out = {};
-//     for (let i = 0; i < localStorage.length; i += 1) {
-//       const storageKey = localStorage.key(i) as string;
-//       if (storageKey.startsWith(`${PREFIX}.${hash}`)) {
-//         const item = localStorage.getItem(storageKey);
-//         out[storageKey] = item;
-//       }
-//     }
-//     setData(out);
-//   }, []);
-
-//   return (
-//     <Context.Provider
-//       value={{
-//         prefix: `${PREFIX}.${hash}`,
-//         tabs: data,
-//         updateTab,
-//       }}
-//     >
-//       {children}
-//     </Context.Provider>
-//   );
-// }
 
 // Hook which provides access to any current stored local storage key
 // for a provided groupId. Also accepts a local state dispatch and updates it.
