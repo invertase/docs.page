@@ -50,7 +50,7 @@ export function getBoolean(
   defaultValue: boolean
 ): boolean {
   const value = get<boolean>(json, key, defaultValue);
-
+  
   // If there is a custom value but it isn't a string, return the defaultValue instead.
   if (typeof value === "string") {
     if (value === "false") return false;
@@ -62,5 +62,5 @@ export function getBoolean(
     return defaultValue;
   }
 
-  return defaultValue;
+  return value;
 }

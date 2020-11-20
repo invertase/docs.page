@@ -32,7 +32,7 @@ export default function Documentation({
   page,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const { frontmatter, config } = page;
-  
+
   return (
     <>
       <NextHead>
@@ -135,10 +135,13 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
   try {
     source = await mdxSerialize(page.content, {
       mdxOptions: {
-        rehypePlugins: [require("../../rehype-prism"), require("rehype-slug")],
+        rehypePlugins: [
+          require("../../rehype-prism"), // Using local version to handle `react-live`
+          require("rehype-slug"),
+        ],
         remarkPlugins: [require("@fec/remark-a11y-emoji")],
       },
-    })
+    });
   } catch (e) {
     console.error(e);
     throw RenderError.serverError(properties);

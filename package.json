@@ -7,7 +7,8 @@
     "dev:prod": "NODE_ENV=production next dev",
     "build": "npm run clean && next build",
     "start": "next start",
-    "clean": "rimraf .next"
+    "clean": "rimraf .next",
+    "test": "jest"
   },
   "dependencies": {
     "@fec/remark-a11y-emoji": "^2.0.0",
@@ -17,6 +18,7 @@
     "@tailwindcss/typography": "^0.2.0",
     "@types/classnames": "^2.2.11",
     "@types/color": "^3.0.1",
+    "@types/jest": "^26.0.15",
     "@types/js-yaml": "^3.12.5",
     "@types/lodash.get": "^4.4.6",
     "@types/nprogress": "^0.2.0",
@@ -38,10 +40,12 @@
     "react-dark-mode-toggle": "^0.0.10",
     "react-dom": "17.0.1",
     "react-live": "^2.2.3",
+    "react-test-renderer": "^17.0.1",
     "refractor": "^3.2.0",
     "rehype-slug": "^4.0.1",
     "rimraf": "^3.0.2",
     "tailwindcss": "^2.0.1",
+    "ts-jest": "^26.4.4",
     "unist-util-visit": "^2.0.3",
     "use-dark-mode": "^2.3.1"
   },
