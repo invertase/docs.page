@@ -28,6 +28,14 @@ module.exports = {
         90: "0.9",
       },
       typography: (theme) => ({
+        DEFAULT: {
+          css: {
+            img: {
+              marginLeft: 'auto',
+              marginRight: 'auto',
+            }
+          }
+        },
         dark: {
           // https://github.com/tailwindlabs/tailwindcss-typography/blob/master/src/styles.js
           css: {

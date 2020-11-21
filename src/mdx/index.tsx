@@ -8,6 +8,7 @@ import { Link } from "../components/Link";
 import { Heading } from "./Heading";
 import { Tabs, TabItem, TabsContext } from "./Tabs";
 import { LiveCode, withCodeBlockTitle } from "./Code";
+import { Image } from "./Image";
 
 const components = {
   // HTML element overrides
@@ -30,13 +31,10 @@ const components = {
   h6: (props: React.HTMLProps<HTMLHeadingElement>) => (
     <Heading {...props} type="h6" />
   ),
+  img: (props: React.HTMLProps<HTMLImageElement>) => <Image {...props} />,
   pre: (props: React.HTMLProps<HTMLPreElement>) => {
     const pre = (className?: string) => (
-      <div>
-        {" "}
-        {/* Wrapping in a div prevents the `prose` class from removing margins */}
-        <pre {...props} className={cx("mb-4", props.className, className)} />
-      </div>
+      <pre {...props} className={cx("mb-4", props.className, className)} />
     );
 
     // @ts-ignore
@@ -58,6 +56,7 @@ const components = {
   Header,
   Tabs,
   TabItem,
+  Image,
 };
 
 export function Hydrate({ source }: { source: any }) {

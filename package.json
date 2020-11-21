@@ -44,6 +44,7 @@
     "react-dark-mode-toggle": "^0.0.10",
     "react-dom": "17.0.1",
     "react-live": "^2.2.3",
+    "react-medium-image-zoom": "^4.3.1",
     "react-test-renderer": "^17.0.1",
     "refractor": "^3.2.0",
     "rehype-slug": "^4.0.1",
@@ -52,7 +53,8 @@
     "tailwindcss": "^2.0.1",
     "ts-jest": "^26.4.4",
     "unist-util-visit": "^2.0.3",
-    "use-dark-mode": "^2.3.1"
+    "use-dark-mode": "^2.3.1",
+    "valid-data-url": "^3.0.1"
   },
   "devDependencies": {
     "@types/node": "^14.14.7",
