@@ -2,6 +2,7 @@ import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
 import NextHead from "next/head";
 import NextRouter from "next/router";
 import NProgress from "nprogress";
+import DOMPurify from "isomorphic-dompurify";
 
 import mdxSerialize from "next-mdx-remote/serialize";
 import { Hydrate } from "../mdx";
@@ -48,7 +49,14 @@ export default function Documentation({
             <ThemeStyles />
             <Layout>
               <ErrorBoundary>
-                <Hydrate source={source} />
+                {page.type === "html" && (
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: DOMPurify.sanitize(source),
+                    }}
+                  />
+                )}
+                {page.type !== "html" && <Hydrate source={source} />}
               </ErrorBoundary>
             </Layout>
           </ContentContext.Provider>
@@ -133,15 +141,23 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
   }
 
   try {
-    source = await mdxSerialize(page.content, {
-      mdxOptions: {
-        rehypePlugins: [
-          require("../../rehype-prism"), // Using local version to handle `react-live`
-          require("rehype-slug"),
-        ],
-        remarkPlugins: [require("@fec/remark-a11y-emoji")],
-      },
-    });
+    if (page.type === "html") {
+      source = page.content;
+    } else {
+      source = await mdxSerialize(page.content, {
+        mdxOptions: {
+          rehypePlugins: [
+            require("../../rehype-prism"), // Using local version to handle `react-live`
+            require("../../rehype-prose"),
+            require("rehype-slug"),
+          ],
+          remarkPlugins: [
+            require("@fec/remark-a11y-emoji"),
+            require("remark-admonitions"),
+          ],
+        },
+      });
+    }
   } catch (e) {
     console.error(e);
     throw RenderError.serverError(properties);

@@ -32,10 +32,15 @@ const components = {
   ),
   pre: (props: React.HTMLProps<HTMLPreElement>) => {
     const pre = (className?: string) => (
-      <pre {...props} className={cx(props.className, className)} />
+      <div>
+        {" "}
+        {/* Wrapping in a div prevents the `prose` class from removing margins */}
+        <pre {...props} className={cx("mb-4", props.className, className)} />
+      </div>
     );
 
-    if (React.isValidElement(props.children) && props.children?.props?.live === 'true') {
+    // @ts-ignore
+    if (React.isValidElement(props.children) && props.live === "true") {
       return <LiveCode code={props.children?.props?.children ?? ""} />;
     }
 
@@ -62,4 +67,3 @@ export function Hydrate({ source }: { source: any }) {
     </TabsContext>
   );
 }
-

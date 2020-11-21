@@ -3,7 +3,7 @@ import { LiveProvider, LiveEditor, LiveError, LivePreview } from "react-live";
 
 export function LiveCode({ code }: { code: string }) {
   return (
-    <div className="rounded overflow-hidden">
+    <div className="no-prose rounded overflow-hidden">
       <LiveProvider code={code} scope={{ useState, useEffect, cloneElement }}>
         <div className="font-mono font-bold text-gray-900 px-2 py-3 bg-gray-500">
           LIVE EDITOR
@@ -16,12 +16,7 @@ export function LiveCode({ code }: { code: string }) {
           <div className="font-mono font-bold text-gray-900 px-2 py-3 bg-gray-500">
             RESULT
           </div>
-          <style global jsx>{`
-            .live-preview * {
-              all: unset;
-            }
-          `}</style>
-          <div className="live-preview bg-gray-800">
+          <div className="bg-gray-800 text-white">
             <LivePreview />
           </div>
         </div>

@@ -8,7 +8,7 @@
 
 ## pages/[...slug].tsx
 
-- [ ] `.html` files should not go through MDX render, otherwise they need to be JSX.
+- [x] `.html` files should not go through MDX render, otherwise they need to be JSX.
 - [ ] Handle custom domains. Figure out what data is needed in order for the `Link` component to work correctly.
 - Custom components:
   - [x] Tabs / TabItem
@@ -16,11 +16,12 @@
   - https://github.com/mottox2/remark-code-titles
 - [x] Code block live
   - https://github.com/FormidableLabs/react-live
-  - [ ] Use webpack alias for smaller bundle? Load on Client only?
-  - [ ] Use fork of buble? https://github.com/facebook/docusaurus/blob/master/packages/docusaurus-theme-live-codeblock/src/index.js#L24
-- [ ] Syntax highlighting
+  - [x] Use webpack alias for smaller bundle? Load on Client only?
+  - [x] Use fork of buble? https://github.com/facebook/docusaurus/blob/master/packages/docusaurus-theme-live-codeblock/src/index.js#L24
+- [x] Syntax highlighting
   - Use Rehype plugin during server rendering? https://github.com/mapbox/rehype-prism
   - Client needs to pull in styles
+- [ ] Line highlighting in code
 - [ ] Assets (img component) - can we somehow link to the raw file on git? Easier way?
 - [ ] Link component not handling default branch?
 - [ ] Sidebar nested items need testing - toggle not working yet

@@ -16,9 +16,4 @@
     border-top-left-radius: 0 !important;
     border-top-right-radius: 0 !important;
   }
-
-  /* remark-code-titles only gives us a class, so lets style it with tailwind */
-  .remark-code-title {
-    @apply bg-gray-800 border-gray-700 text-white font-mono border-b px-4 py-2 rounded-tr rounded-tl text-sm font-bold;
-  }
 }

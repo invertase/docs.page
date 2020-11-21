@@ -38,7 +38,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <WithSidebar>
         <article
           className={cx(
-            "px-1 lg:px-0 py-20 prose dark:prose-dark mx-auto",
+            "px-1 lg:px-0 py-20 mx-auto",
             widthMap[layout]
           )}
         >

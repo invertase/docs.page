@@ -30,12 +30,12 @@ module.exports = (options) => {
     
     // If the lang is jsx and the user has added the `live` tag, ignore this node
     if (lang === 'jsx' && node.properties.live === true) {
-      node.properties.live = 'true';
+      parent.properties.live = 'true';
       return;
     }
 
     // Force the `live` property to false (as string) if it's not JSX
-    node.properties.live = 'false';
+    parent.properties.live = 'false';
 
     let result;
     try {

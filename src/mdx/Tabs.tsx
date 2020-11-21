@@ -175,7 +175,7 @@ export function Tabs({
                 else setSelected(value);
               }}
               className={
-                "cursor-pointer px-5 py-5 rounded font-bold hover:bg-gray-200 dark:hover:bg-gray-800"
+                "cursor-pointer px-5 py-5 rounded font-bold dark:text-white hover:bg-gray-200 dark:hover:bg-gray-800"
               }
             >
               {label}
@@ -203,6 +203,7 @@ export function Tabs({
 
           return (
             <div
+              className="prose dark:prose-dark max-w-none"
               key={indexValue}
               ref={paneRefs[refIndex]}
               role="tabpanel"

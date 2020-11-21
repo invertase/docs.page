@@ -27,46 +27,46 @@ module.exports = {
         80: "0.8",
         90: "0.9",
       },
-    },
-    typography: (theme) => ({
-      dark: {
-        // https://github.com/tailwindlabs/tailwindcss-typography/blob/master/src/styles.js
-        css: {
-          color: theme("colors.gray.200"),
-          h1: {
+      typography: (theme) => ({
+        dark: {
+          // https://github.com/tailwindlabs/tailwindcss-typography/blob/master/src/styles.js
+          css: {
             color: theme("colors.gray.200"),
-          },
-          h2: {
-            color: theme("colors.gray.200"),
-          },
-          h3: {
-            color: theme("colors.gray.200"),
-          },
-          h4: {
-            color: theme("colors.gray.200"),
-          },
-          h5: {
-            color: theme("colors.gray.200"),
-          },
-          h6: {
-            color: theme("colors.gray.200"),
-          },
-          blockquote: {
-            borderColor: "var(--theme-color)",
-            color: theme("colors.gray.200"),
-          },
-          a: {
-            color: "var(--theme-color)",
-            "&:hover": {
-              color: "var(--theme-color-light)",
+            h1: {
+              color: theme("colors.gray.200"),
+            },
+            h2: {
+              color: theme("colors.gray.200"),
+            },
+            h3: {
+              color: theme("colors.gray.200"),
+            },
+            h4: {
+              color: theme("colors.gray.200"),
+            },
+            h5: {
+              color: theme("colors.gray.200"),
+            },
+            h6: {
+              color: theme("colors.gray.200"),
+            },
+            blockquote: {
+              borderColor: "var(--theme-color)",
+              color: theme("colors.gray.200"),
+            },
+            a: {
+              color: "var(--theme-color)",
+              "&:hover": {
+                color: "var(--theme-color-light)",
+              },
+            },
+            "p code": {
+              color: "var(--theme-color)",
             },
           },
-          "p code": {
-            color: "var(--theme-color)",
-          },
         },
-      },
-    }),
+      }),
+    },
   },
   variants: {
     typography: ({ variants }) => [...variants("typography"), "dark"],
