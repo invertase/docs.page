@@ -4,8 +4,8 @@ import Head from "next/head";
 import A2A from "a2a";
 
 // TODO type definitions
-import renderToString from "next-mdx-remote/render-to-string";
-import hydrate from "next-mdx-remote/hydrate";
+// import renderToString from "next-mdx-remote/render-to-string";
+// import hydrate from "next-mdx-remote/hydrate";
 
 export default function Debug({}: InferGetStaticPropsType<
   typeof getStaticProps

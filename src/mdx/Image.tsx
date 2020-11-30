@@ -13,7 +13,6 @@ interface ImageProps extends React.HTMLProps<HTMLImageElement> {
 // https://raw.githubusercontent.com/Ehesp/testing/main/docs/rnfb-logo.png
 
 export function Image({ zoom = true, caption, ...props }: ImageProps) {
-  console.log(zoom);
   const properties = useContext(SlugPropertiesContext);
 
   let src = props.src ?? "";
@@ -38,7 +37,7 @@ function withFigure(child: React.ReactElement, caption?: string) {
   return (
     <figure>
       {child}
-      {!!caption && <figcaption className="text-sm italic my-3 dark:text-white">{caption}</figcaption>}
+      {!!caption && <figcaption className="text-center text-sm italic my-3 dark:text-white">{caption}</figcaption>}
     </figure>
   );
 }

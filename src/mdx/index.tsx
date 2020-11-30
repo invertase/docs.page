@@ -9,6 +9,7 @@ import { Heading } from "./Heading";
 import { Tabs, TabItem, TabsContext } from "./Tabs";
 import { LiveCode, withCodeBlockTitle } from "./Code";
 import { Image } from "./Image";
+import { YouTube } from "./YouTube";
 
 const components = {
   // HTML element overrides
@@ -57,6 +58,7 @@ const components = {
   Tabs,
   TabItem,
   Image,
+  YouTube,
 };
 
 export function Hydrate({ source }: { source: any }) {

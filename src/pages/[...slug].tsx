@@ -95,9 +95,6 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
   // Extract the slug properties from the request.
   let properties: SlugProperties = getSlugProperties(params.slug as string[]);
 
-  // // const domains = await getDomainsList(process.env.NODE_ENV !== "production");
-  // // TODO handle domains
-
   // If no ref was found in the slug, grab the default branch name
   // from the GQL API.
   if (!properties.ref) {
