@@ -109,6 +109,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
       // Assign the default branch to the ref
       properties.ref = defaultBranch;
       properties.base = `${properties.base}${SPLITTER}${properties.ref}`;
+      properties.isDefaultBranch = true;
     }
   }
   // If the ref looks like a PR

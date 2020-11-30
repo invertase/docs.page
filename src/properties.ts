@@ -1,4 +1,5 @@
 import { createContext } from "react";
+import { hash } from "./utils";
 
 export const DEFAULT_FILE = "index";
 export const SPLITTER = "~";
@@ -56,18 +57,6 @@ export function getSlugProperties(slug: string[]): SlugProperties {
     base,
     hash: hash(`${owner}/${repository}`),
   };
-}
-
-function hash(value: string) {
-  let hash = 0,
-    i: number,
-    chr: number;
-  for (i = 0; i < value.length; i++) {
-    chr = value.charCodeAt(i);
-    hash = (hash << 5) - hash + chr;
-    hash |= 0; // Convert to 32bit integer
-  }
-  return hash.toString();
 }
 
 export const SlugPropertiesContext = createContext<SlugProperties>({
