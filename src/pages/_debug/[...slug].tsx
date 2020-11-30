@@ -19,14 +19,14 @@ export default function Debug({
   page,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
-    <>
+    <div className="my-10 space-y-10">
       {!properties.ref && <Error>Repository not found</Error>}
       {!page && properties.ref && <Error>Page not found</Error>}
 
       <RepoInfo properties={properties} />
       {error && <RenderError error={error} />}
       {page && <Configuration config={page.config} />}
-    </>
+    </div>
   );
 }
 
