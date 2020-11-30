@@ -113,7 +113,7 @@ function replaceVariables(variables: object, value: string) {
       VERSION_REGEX.lastIndex++;
     }
 
-    output = output.replace(m[0], get(variables, m[1], `{{ ${m[1]} }}`));
+    output = output.replace(m[0], get(variables, m[1], ''));
   }
 
   return output;
