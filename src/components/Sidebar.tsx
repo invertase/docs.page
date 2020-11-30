@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useCallback, useContext, useState } from "react";
 import cx from "classnames";
 import { NextRouter, useRouter } from "next/router";
 
@@ -12,8 +12,8 @@ export function Sidebar() {
 
   return (
     <ul className="w-full dark:text-white">
-      {config.sidebar.map((item) => (
-        <Iterator depth={0} item={item} />
+      {config.sidebar.map((item, index) => (
+        <Iterator key={index} depth={1} item={item} />
       ))}
     </ul>
   );
@@ -37,65 +37,106 @@ function Iterator({ item, depth }: { item: SidebarItem; depth: number }) {
   }
 
   // Otherwise, it's a nested element
-  const links = getChildrenLinks(item[1], []);
+  const links = getChildrenLinks(item[1]);
 
   const isActive = !!links.find((link) =>
     isRouteMatch(router, properties, link)
   );
 
   return (
-    <ul>
-      <li>
-        <Title active={isActive} title={item[0]} />
-        <ul style={{ paddingLeft: `${(depth + 1) / 2}rem` }}>
-          {item[1].map((subItem) => (
-            <Iterator depth={depth + 1} item={subItem} />
-          ))}
-        </ul>
-      </li>
-    </ul>
+    <NavigationList
+      isInitiallyActive={isActive}
+      title={item[0]}
+      depth={depth}
+      items={item[1]}
+    />
+  );
+}
+
+function NavigationList({
+  title,
+  isInitiallyActive,
+  depth,
+  items,
+}: {
+  title: string;
+  isInitiallyActive: boolean;
+  depth: number;
+  items: SidebarItem[];
+}) {
+  const [isActive, setIsActive] = useState<boolean>(isInitiallyActive);
+
+  const onToggle = useCallback(() => {
+    setIsActive(($) => !$);
+  }, [isInitiallyActive]);
+
+  return (
+    <li className="mt-1">
+      <Title title={title} active={isActive} onToggle={onToggle} />
+      <ul
+        className={cx({
+          "overflow-hidden h-0": !isActive,
+        })}
+        style={{ marginLeft: `${depth / 2}rem` }}
+      >
+        {items.map((subItem, index) => (
+          <Iterator
+            key={`${depth}-${index.toString()}`}
+            depth={depth + 1}
+            item={subItem}
+          />
+        ))}
+      </ul>
+    </li>
   );
 }
 
 // Toggable title in the sidebar
-function Title({ title, active }: { title: string; active: boolean }) {
+function Title({
+  title,
+  active,
+  onToggle,
+}: {
+  title: string;
+  active: boolean;
+  onToggle: () => void;
+}) {
   return (
-    <li>
-      <div
-        className="-mx-2 px-2 flex items-center rounded group hover:bg-gray-200 dark:hover:bg-gray-900 py-2"
-        role="button"
+    <div
+      className="-ml-2 px-2 flex items-center rounded group hover:bg-gray-200 dark:hover:bg-gray-900 py-2"
+      role="button"
+      onClick={() => onToggle()}
+    >
+      <span
+        className={cx("flex-1", {
+          "text-theme-color": active,
+        })}
       >
-        <span
-          className={cx("flex-1", {
-            "text-theme-color": active,
-          })}
+        {title}
+      </span>
+      <span
+        className={cx("transform transition-rotate duration-100", {
+          "rotate-90": active,
+        })}
+        style={{ width: 20, height: 20 }}
+      >
+        <svg
+          width={20}
+          height={20}
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
         >
-          {title}
-        </span>
-        <span
-          className={cx("transform transition-rotate duration-100", {
-            "rotate-00": true,
-          })}
-          style={{ width: 20, height: 20 }}
-        >
-          <svg
-            width="20"
-            height="20"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
-        </span>
-      </div>
-    </li>
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+      </span>
+    </div>
   );
 }
 
@@ -110,11 +151,11 @@ function NavLink({
   active: boolean;
 }) {
   return (
-    <span>
+    <li className="-ml-2 mt-1">
       <Link
         href={href}
         className={cx(
-          "-mx-2 px-2 mt-1 font-thin flex py-2 rounded transition-colors duration-100",
+          "font-thin flex px-2 py-2 rounded transition-colors duration-100",
           {
             "text-theme-color dark:text-white bg-gray-100 dark:bg-gray-800": active,
             "hover:bg-gray-200 dark:hover:bg-gray-700": !active,
@@ -123,7 +164,7 @@ function NavLink({
       >
         {children}
       </Link>
-    </span>
+    </li>
   );
 }
 
@@ -135,7 +176,7 @@ function NavLink({
  */
 function getChildrenLinks(
   items: SidebarItem[],
-  initialLinks: string[]
+  initialLinks: string[] = []
 ): string[] {
   let links: string[] = [...initialLinks];
 
