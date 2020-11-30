@@ -1,6 +1,7 @@
 import { createContext } from "react";
 import matter from "gray-matter";
 import yaml from "js-yaml";
+import get from "lodash.get";
 
 import { LayoutType } from "./components/Layout";
 import { Config, mergeConfig } from "./config";
@@ -64,8 +65,7 @@ export async function getPageContent(
   }
 
   // Get the raw file contents
-  let raw =
-    files.md ?? files.mdx ?? files.html ?? "";
+  let raw = files.md ?? files.mdx ?? files.html ?? "";
 
   // Only MD/MDX pages can have frontmatter
   let frontmatter: Frontmatter;
@@ -78,6 +78,9 @@ export async function getPageContent(
     frontmatter = mergeFrontmatter({});
     content = raw;
   }
+
+  // Find & Replace any "{{ variable }}" values within the content
+  content = replaceVariables(config.variables, content);
 
   return {
     config,
@@ -96,4 +99,22 @@ function mergeFrontmatter(data: any): Frontmatter {
     sidebar: getBoolean(data, "sidebar", true),
     redirect: getString(data, "redirect", ""),
   };
+}
+
+const VERSION_REGEX = /{{\s([a-zA-Z0-9_.]*)\s}}/gm;
+
+function replaceVariables(variables: object, value: string) {
+  let output = value;
+  let m: RegExpExecArray;
+
+  while ((m = VERSION_REGEX.exec(value)) !== null) {
+    // This is necessary to avoid infinite loops with zero-width matches
+    if (m.index === VERSION_REGEX.lastIndex) {
+      VERSION_REGEX.lastIndex++;
+    }
+
+    output = output.replace(m[0], get(variables, m[1], `{{ ${m[1]} }}`));
+  }
+
+  return output;
 }

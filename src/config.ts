@@ -34,6 +34,8 @@ export type Config = {
   defaultLayout: LayoutType;
   // The depth to heading tags are linked. Set to 0 to remove any linking.
   headerDepth: number;
+  // Variables which can be injected into the pages content.
+  variables: object;
 };
 
 export const defaultConfig: Config = {
@@ -45,6 +47,7 @@ export const defaultConfig: Config = {
   sidebar: [],
   defaultLayout: DEFAULT_LAYOUT,
   headerDepth: 3,
+  variables: {},
 };
 
 // Merges any user config with default values.
@@ -67,6 +70,7 @@ export function mergeConfig(json: any): Config {
       defaultConfig.defaultLayout
     ),
     headerDepth: getNumber(json, "headerDepth", defaultConfig.headerDepth),
+    variables: get(json, "variables") ?? defaultConfig.variables,
   };
 }
 
