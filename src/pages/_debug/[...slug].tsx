@@ -1,45 +1,31 @@
-import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
-import Error from "next/error";
-import Head from "next/head";
-import A2A from "a2a";
+import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
+import { getPageContent, PageContent } from '../../content';
+import { getSlugProperties, SlugProperties, SPLITTER } from '../../properties';
+import { getDefaultBranch, getPullRequestMetadata } from '../../github';
+import mdxSerialize from 'next-mdx-remote/serialize';
+import { RepoInfo } from './components/RepoInfo';
+import { Configuration } from './components/Configuration';
+import { Error } from './components/Error';
+import React from 'react';
+import { RenderError } from './components/RenderError';
 
 // TODO type definitions
 // import renderToString from "next-mdx-remote/render-to-string";
 // import hydrate from "next-mdx-remote/hydrate";
 
-export default function Debug({}: InferGetStaticPropsType<
-  typeof getStaticProps
->) {
+export default function Debug({
+  error,
+  properties,
+  page,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
     <>
-      <section className="mx-auto mt-20 max-w-3xl border rounded font-mono divide-y">
-        <div className="flex p-3">
-          <div className="flex-1">Owner</div>
-          <div>invertase</div>
-        </div>
-        <div className="flex p-3">
-          <div className="flex-1">Repository</div>
-          <div>melos</div>
-        </div>
-        <div className="flex p-3">
-          <div className="flex-1">Ref (branch)</div>
-          <div>docs-testing</div>
-        </div>
-        <div className="flex p-3">
-          <div className="flex-1">Config</div>
-          <div>docs.yaml</div>
-        </div>
-      </section>
-      <section className="mx-auto mt-10 max-w-5xl border rounded font-mono">
-        <div className="flex divide-x">
-          <div className="flex-1 p-4">
-            <pre>Config Input</pre>
-          </div>
-          <div className="flex-1 p-4">
-            <pre>Out</pre>
-          </div>
-        </div>
-      </section>
+      {!properties.ref && <Error>Repository not found</Error>}
+      {!page && properties.ref && <Error>Page not found</Error>}
+
+      <RepoInfo properties={properties} />
+      {error && <RenderError error={error} />}
+      {page && <Configuration config={page.config} />}
     </>
   );
 }
@@ -47,17 +33,85 @@ export default function Debug({}: InferGetStaticPropsType<
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
     paths: [],
-    fallback: "blocking",
+    fallback: 'blocking',
   };
 };
 
-type StaticProps = {};
+type StaticProps = {
+  error?: object;
+  source?: any;
+  properties?: any;
+  page?: any;
+};
 
-export const getStaticProps: GetStaticProps<StaticProps> = async ({
-  params,
-}) => {
+export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) => {
+  let source = null;
+  let error = null;
+  let page: PageContent;
+
+  // Extract the slug properties from the request.
+  let properties: SlugProperties = getSlugProperties(params.slug as string[]);
+
+  // If no ref was found in the slug, grab the default branch name
+  // from the GQL API.
+  if (!properties.ref) {
+    const defaultBranch = await getDefaultBranch(properties.owner, properties.repository);
+
+    if (!defaultBranch) {
+      properties.ref = null;
+    } else {
+      // Assign the default branch to the ref
+      properties.ref = defaultBranch;
+      properties.base = `${properties.base}${SPLITTER}${properties.ref}`;
+    }
+  }
+  // If the ref looks like a PR
+  else if (/^[0-9]*$/.test(properties.ref)) {
+    const metadata = await getPullRequestMetadata(
+      properties.owner,
+      properties.repository,
+      parseInt(properties.ref),
+    );
+
+    // If a PR was found, update the property metadata
+    if (metadata) {
+      properties.owner = metadata.owner;
+      properties.repository = metadata.repository;
+      properties.ref = metadata.ref;
+    }
+  }
+
+  page = await getPageContent(properties);
+  if (page) {
+    try {
+      if (page.type === 'html') {
+        source = page.content;
+      } else {
+        source = await mdxSerialize(page.content, {
+          mdxOptions: {
+            rehypePlugins: [
+              require('../../../rehype-prism'), // Using local version to handle `react-live`
+              require('../../../rehype-prose'),
+              require('rehype-slug'),
+            ],
+            remarkPlugins: [require('@fec/remark-a11y-emoji'), require('remark-admonitions')],
+          },
+        });
+      }
+    } catch (e) {
+      error = { code: e.code, message: e.message, stack: e.stack };
+    }
+  } else {
+    console.error('No page content found');
+  }
+
   return {
-    props: {},
-    revalidate: 5,
+    props: {
+      properties,
+      source,
+      page,
+      error,
+    },
+    revalidate: 3,
   };
 };
