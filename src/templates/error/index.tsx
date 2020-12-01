@@ -63,12 +63,11 @@ export function DocumentNotFound({ properties }: { properties: SlugProperties })
 }
 
 export function ServerError({ properties }: { properties?: SlugProperties }) {
-  const { owner, repository, path } = properties;
   return (
     <ErrorPage title="500" subtitle="Whoops! Something went wrong">
       <>
         Oh dear, looks like our cogs stopped working.
-        {owner && repository && (
+        {properties?.owner && properties?.repository && (
           <>
             <br />
             <br />
@@ -76,14 +75,14 @@ export function ServerError({ properties }: { properties?: SlugProperties }) {
             <a
               className="font-mono underline hover:opacity-75"
               target="_blank"
-              href={`https://docs.page/_debug/${owner}/${repository}/${path}`}
+              href={`https://docs.page/_debug/${properties?.owner}/${properties?.repository}/${properties?.path}`}
             >
               debug tool
             </a>{' '}
             to identify the issue
           </>
         )}
-        {!owner && !repository && (
+        {!properties?.owner && !properties?.repository && (
           <>
             <br />
             <br />

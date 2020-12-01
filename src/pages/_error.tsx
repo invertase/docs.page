@@ -18,16 +18,16 @@ interface ErrorProps {
 
 // TODO make me pretty!
 function Error({ statusCode, errorType, properties }: ErrorProps) {
-  if (statusCode == 404) {
-    return <PageNotFound />;
-  }
-
   if (errorType === ErrorType.repositoryNotFound) {
     return <RepositoryNotFound properties={properties} />;
   }
 
   if (errorType === ErrorType.pageNotFound) {
     return <DocumentNotFound properties={properties} />;
+  }
+
+  if (statusCode == 404) {
+    return <PageNotFound />;
   }
 
   return <ServerError properties={properties} />;
