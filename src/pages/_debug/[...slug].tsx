@@ -1,5 +1,5 @@
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
-import { ContentContext, getPageContent, PageContent } from '../../content';
+import { getPageContent, PageContent } from '../../content';
 import {
   getSlugProperties,
   SlugProperties,
@@ -8,11 +8,11 @@ import {
 } from '../../properties';
 import { getDefaultBranch, getPullRequestMetadata } from '../../github';
 import mdxSerialize from 'next-mdx-remote/serialize';
-import { RepoInfo } from './components/RepoInfo';
-import { Configuration } from './components/Configuration';
-import { Error } from './components/Error';
+import { RepoInfo } from '../../templates/debug/RepoInfo';
+import { Configuration } from '../../templates/debug/Configuration';
+import { Error } from '../../templates/debug/Error';
 import React from 'react';
-import { RenderError } from './components/RenderError';
+import { RenderError } from '../../templates/debug/RenderError';
 import { serializeError } from 'serialize-error';
 import { Header } from '../../components/Header';
 import NextHead from 'next/head';

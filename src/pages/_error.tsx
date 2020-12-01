@@ -1,9 +1,9 @@
-import { NextPageContext } from "next";
-import NextHead from "next/head";
-import { ErrorType } from "../error";
-import { SlugProperties } from "../properties";
+import { NextPageContext } from 'next';
+import NextHead from 'next/head';
+import { ErrorType } from '../error';
+import { SlugProperties } from '../properties';
 
-import { RepositoryNotFound } from "../templates/error";
+import { RepositoryNotFound } from '../templates/error';
 
 interface ErrorProps {
   statusCode: number;
@@ -13,7 +13,9 @@ interface ErrorProps {
 
 // TODO make me pretty!
 function Error({ statusCode, errorType, properties }: ErrorProps) {
+  console.log('ERROR');
   if (errorType === ErrorType.repositoryNotFound) {
+    console.log('Repo not found');
     return <RepositoryNotFound properties={properties} />;
   }
 
@@ -23,9 +25,7 @@ function Error({ statusCode, errorType, properties }: ErrorProps) {
 
   return (
     <>
-      <div className="max-w-4xl mx-auto text-center text-white py-32">
-        Server Error
-      </div>
+      <div className="max-w-4xl mx-auto text-center py-32">Server Error</div>
     </>
   );
 }

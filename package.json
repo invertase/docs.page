@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:prod": "NODE_ENV=production next dev",
+    "dev:prod": "cross-env NODE_ENV=production next dev",
     "build": "npm run clean && next build",
     "start": "next start",
     "serve": "npm run build && npm run start",
@@ -63,6 +63,7 @@
   "devDependencies": {
     "@types/node": "^14.14.7",
     "@types/react": "^16.9.56",
+    "cross-env": "^7.0.2",
     "jest": "^26.6.3",
     "prettier": "2.2.1",
     "typescript": "^4.0.5"
