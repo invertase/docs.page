@@ -8,6 +8,7 @@ import { Configuration } from './components/Configuration';
 import { Error } from './components/Error';
 import React from 'react';
 import { RenderError } from './components/RenderError';
+import { serializeError } from 'serialize-error';
 
 // TODO type definitions
 // import renderToString from "next-mdx-remote/render-to-string";
@@ -99,7 +100,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
         });
       }
     } catch (e) {
-      error = { code: e.code, message: e.message, stack: e.stack };
+      error = serializeError(e);
     }
   } else {
     console.error('No page content found');
