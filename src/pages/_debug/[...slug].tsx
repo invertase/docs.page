@@ -1,6 +1,11 @@
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
-import { getPageContent, PageContent } from '../../content';
-import { getSlugProperties, SlugProperties, SPLITTER } from '../../properties';
+import { ContentContext, getPageContent, PageContent } from '../../content';
+import {
+  getSlugProperties,
+  SlugProperties,
+  SlugPropertiesContext,
+  SPLITTER,
+} from '../../properties';
 import { getDefaultBranch, getPullRequestMetadata } from '../../github';
 import mdxSerialize from 'next-mdx-remote/serialize';
 import { RepoInfo } from './components/RepoInfo';
@@ -9,6 +14,9 @@ import { Error } from './components/Error';
 import React from 'react';
 import { RenderError } from './components/RenderError';
 import { serializeError } from 'serialize-error';
+import { Header } from '../../components/Header';
+import NextHead from 'next/head';
+import { ThemeStyles } from '../../components/ThemeStyles';
 
 // TODO type definitions
 // import renderToString from "next-mdx-remote/render-to-string";
@@ -20,14 +28,25 @@ export default function Debug({
   page,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   return (
-    <div className="my-10 space-y-10">
-      {!properties.ref && <Error>Repository not found</Error>}
-      {!page && properties.ref && <Error>Page not found</Error>}
+    <>
+      <NextHead>
+        <base href={properties.path} />
+        <title>
+          Debug Mode | {properties.owner}/{properties.repository}
+        </title>
+      </NextHead>
+      <SlugPropertiesContext.Provider value={properties}>
+        <Header debug />
+        <div className="my-10 space-y-10">
+          {!properties.ref && <Error>Repository not found</Error>}
+          {!page && properties.ref && <Error>Page not found</Error>}
 
-      <RepoInfo properties={properties} />
-      {error && <RenderError error={error} />}
-      {page && <Configuration config={page.config} />}
-    </div>
+          <RepoInfo properties={properties} />
+          {error && <RenderError error={error} />}
+          {page && <Configuration config={page.config} />}
+        </div>
+      </SlugPropertiesContext.Provider>
+    </>
   );
 }
 

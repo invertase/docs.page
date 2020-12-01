@@ -14,23 +14,22 @@ const convert = new Convert({
 function RenderError({ error }: { error: any }) {
   const e = deserializeError(error);
   const stack = new StackTracey(e).withSources().clean();
-
   const msg = String(error && error.message);
 
   return (
     <section className="mx-auto max-w-5xl border rounded font-mono divide-y">
       <Row title="Error Message" header />
-      <div className="flex p-3">
+      <div className="flex p-3 bg-white">
         <RenderMessage message={msg} />
       </div>
-      <Row title="Stack Trace" header />
-      {stack.items.map((e, i) => {
-        return (
-          <div className="flex p-3">
-            <RenderStackEntry entry={e} i={i} />
-          </div>
-        );
-      })}
+      {/*<Row title="Stack Trace" header />*/}
+      {/*{stack.items.map((e, i) => {*/}
+      {/*  return (*/}
+      {/*    <div className="flex p-3">*/}
+      {/*      <RenderStackEntry entry={e} i={i} />*/}
+      {/*    </div>*/}
+      {/*  );*/}
+      {/*})}*/}
     </section>
   );
 }

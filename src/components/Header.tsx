@@ -9,7 +9,7 @@ import { isClient } from '../utils';
 
 import { Link } from './Link';
 
-export function Header() {
+export function Header({ debug = false }: { debug?: boolean }) {
   const config = useContext(ConfigContext);
   const properties = useContext(SlugPropertiesContext);
   const repo = `${properties.owner}/${properties.repository}`;
@@ -27,7 +27,7 @@ export function Header() {
             <span className="font-mono font-semibold text-lg tracking-wide">{config.name}</span>
           ) : (
             <a href={`https://github.com/${repo}`} className="font-mono hover:underline">
-              {repo}
+              {debug ? `Debug Mode | ${repo}` : repo}
             </a>
           )}
         </span>

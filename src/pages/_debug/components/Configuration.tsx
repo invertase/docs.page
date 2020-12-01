@@ -4,7 +4,7 @@ import { Row } from './Row';
 
 function Configuration({ config }: { config: Config }) {
   return (
-    <section className="mx-auto max-w-5xl border rounded font-mono divide-y">
+    <section className="mx-auto max-w-5xl border rounded font-mono divide-y bg-white">
       <Row title="Configuration" header />
       <Row title="Name">{config.name}</Row>
       <Row title="Logo">{config.logo}</Row>
