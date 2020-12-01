@@ -77,9 +77,9 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
 
   // Anything with less than 2 parts to the slug is an invalid URL.
   // TODO: Uncomment in production
-  // if (slug.length < 2) {
-  //   return redirect('/');
-  // }
+  if (slug.length < 2) {
+    return redirect('/');
+  }
 
   let source = null;
   let page: PageContent;

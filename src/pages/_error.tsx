@@ -16,7 +16,6 @@ interface ErrorProps {
   properties?: SlugProperties;
 }
 
-// TODO make me pretty!
 function Error({ statusCode, errorType, properties }: ErrorProps) {
   if (errorType === ErrorType.repositoryNotFound) {
     return <RepositoryNotFound properties={properties} />;
