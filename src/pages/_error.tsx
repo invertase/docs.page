@@ -3,7 +3,12 @@ import NextHead from 'next/head';
 import { ErrorType } from '../error';
 import { SlugProperties } from '../properties';
 
-import { RepositoryNotFound } from '../templates/error';
+import {
+  RepositoryNotFound,
+  DocumentNotFound,
+  ServerError,
+  PageNotFound,
+} from '../templates/error';
 
 interface ErrorProps {
   statusCode: number;
@@ -13,21 +18,19 @@ interface ErrorProps {
 
 // TODO make me pretty!
 function Error({ statusCode, errorType, properties }: ErrorProps) {
-  console.log('ERROR');
+  if (statusCode == 404) {
+    return <PageNotFound />;
+  }
+
   if (errorType === ErrorType.repositoryNotFound) {
-    console.log('Repo not found');
     return <RepositoryNotFound properties={properties} />;
   }
 
-  // if (errorType === ErrorType.pageNotFound) {
-  //   return <PageNotFound properties={properties} />;
-  // }
+  if (errorType === ErrorType.pageNotFound) {
+    return <DocumentNotFound properties={properties} />;
+  }
 
-  return (
-    <>
-      <div className="max-w-4xl mx-auto text-center py-32">Server Error</div>
-    </>
-  );
+  return <ServerError properties={properties} />;
 }
 
 Error.getInitialProps = ({ res, err }: NextPageContext) => {

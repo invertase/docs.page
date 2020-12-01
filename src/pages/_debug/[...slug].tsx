@@ -16,7 +16,6 @@ import { RenderError } from '../../templates/debug/RenderError';
 import { serializeError } from 'serialize-error';
 import { Header } from '../../components/Header';
 import NextHead from 'next/head';
-import { ThemeStyles } from '../../components/ThemeStyles';
 
 // TODO type definitions
 // import renderToString from "next-mdx-remote/render-to-string";

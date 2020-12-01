@@ -1,4 +1,4 @@
-import { Config, SidebarItem } from '../../../config';
+import { Config, SidebarItem } from '../../config';
 import React from 'react';
 import { Row } from './Row';
 
