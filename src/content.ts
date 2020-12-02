@@ -1,15 +1,15 @@
-import { createContext } from "react";
-import matter from "gray-matter";
-import yaml from "js-yaml";
-import get from "lodash.get";
+import { createContext } from 'react';
+import matter from 'gray-matter';
+import yaml from 'js-yaml';
+import get from 'lodash.get';
 
-import { LayoutType } from "./components/Layout";
-import { Config, mergeConfig } from "./config";
-import { SlugProperties } from "./properties";
-import { getBoolean, getString } from "./utils";
-import { getGitHubFiles } from "./github";
+import { LayoutType } from './components/Layout';
+import { Config, mergeConfig } from './config';
+import { Properties, SlugProperties } from './properties';
+import { getBoolean, getString } from './utils';
+import { getGitHubFiles } from './github';
 
-export type FileType = null | "md" | "mdx" | "html";
+export type FileType = null | 'md' | 'mdx' | 'html';
 
 export type Frontmatter = {
   title: string;
@@ -29,9 +29,7 @@ export type PageContent = {
 
 export const ContentContext = createContext<PageContent | null>(null);
 
-export async function getPageContent(
-  properties: SlugProperties
-): Promise<PageContent | null> {
+export async function getPageContent(properties: Properties): Promise<PageContent | null> {
   const files = await getGitHubFiles(properties);
 
   if (!files) {
@@ -39,9 +37,9 @@ export async function getPageContent(
   }
 
   const type = (() => {
-    if (files.md) return "md";
-    if (files.mdx) return "mdx";
-    if (files.html) return "html";
+    if (files.md) return 'md';
+    if (files.mdx) return 'mdx';
+    if (files.html) return 'html';
     return null;
   })();
 
@@ -65,12 +63,12 @@ export async function getPageContent(
   }
 
   // Get the raw file contents
-  let raw = files.md ?? files.mdx ?? files.html ?? "";
+  let raw = files.md ?? files.mdx ?? files.html ?? '';
 
   // Only MD/MDX pages can have frontmatter
   let frontmatter: Frontmatter;
-  let content = "";
-  if (type === "md" || type === "mdx") {
+  let content = '';
+  if (type === 'md' || type === 'mdx') {
     const parsed = matter(raw);
     frontmatter = mergeFrontmatter(parsed.data ?? {});
     content = parsed.content;
@@ -93,11 +91,11 @@ export async function getPageContent(
 
 function mergeFrontmatter(data: any): Frontmatter {
   return {
-    title: getString(data, "title", ""),
-    description: getString(data, "description", ""),
-    layout: getString<LayoutType>(data, "layout", "" as LayoutType),
-    sidebar: getBoolean(data, "sidebar", true),
-    redirect: getString(data, "redirect", ""),
+    title: getString(data, 'title', ''),
+    description: getString(data, 'description', ''),
+    layout: getString<LayoutType>(data, 'layout', '' as LayoutType),
+    sidebar: getBoolean(data, 'sidebar', true),
+    redirect: getString(data, 'redirect', ''),
   };
 }
 

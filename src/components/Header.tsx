@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import cx from 'classnames';
 import DarkModeToggle from 'react-dark-mode-toggle';
 import useDarkMode from 'use-dark-mode';
 
@@ -7,7 +8,8 @@ import { DARK_MODE_CLASS_NAME, LIGHT_MODE_CLASS_NAME, STORAGE_KEY } from '../scr
 import { SlugPropertiesContext } from '../properties';
 import { isClient } from '../utils';
 
-import { Link } from './Link';
+import { ExternalLink, Link } from './Link';
+import { Branch, PullRequest } from './Icons';
 
 export function Header({ debug = false }: { debug?: boolean }) {
   const config = useContext(ConfigContext);
@@ -46,9 +48,25 @@ export function Header({ debug = false }: { debug?: boolean }) {
         )}
         <div className="hidden desktop:flex items-center space-x-6">
           {!!config.name && (
-            <a href={`https://github.com/${repo}`} className="hover:underline">
+            <ExternalLink href={`https://github.com/${repo}`} className="hover:underline">
               {repo}
-            </a>
+            </ExternalLink>
+          )}
+          {!properties.isDefaultBranch && (
+            <ExternalLink
+              href={`https://github.com/${repo}/tree/${properties.ref}`}
+              className={cx(
+                'flex px-3 py-2 text-xs rounded-lg shadow text-white transition-colors',
+                {
+                  'bg-green-500 hover:bg-green-400 ': properties.refType === 'branch',
+                  'bg-blue-500 hover:bg-blue-400 ': properties.refType === 'pull-request',
+                },
+              )}
+            >
+              {properties.refType === 'pull-request' && <PullRequest size={16} />}
+              {properties.refType === 'branch' && <Branch size={16} className="text-white" />}
+              <span className="pl-1">{properties.ref}</span>
+            </ExternalLink>
           )}
           <Toggle />
         </div>

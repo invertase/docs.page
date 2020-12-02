@@ -1,9 +1,6 @@
-import React, { useContext } from "react";
-import NextLink from "next/link";
-import {
-  SlugPropertiesContext,
-  SPLITTER,
-} from "../properties";
+import React, { useContext } from 'react';
+import NextLink from 'next/link';
+import { SlugPropertiesContext, SPLITTER } from '../properties';
 
 export function Link(props: React.HTMLProps<HTMLAnchorElement>) {
   if (isExternalLink(props.href)) {
@@ -19,7 +16,7 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>) {
     href += `${SPLITTER}${properties.ref}`;
   }
 
-  if (props.href.startsWith("/")) {
+  if (props.href.startsWith('/')) {
     href += props.href;
   } else {
     href += `/${props.href}`;
@@ -32,6 +29,10 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>) {
   );
 }
 
+export function ExternalLink(props: React.HTMLProps<HTMLAnchorElement>) {
+  return <a {...props} target="_blank" rel="noopener" />;
+}
+
 export function isExternalLink(link: string): boolean {
-  return link.startsWith("http://") || link.startsWith("https://");
+  return link.startsWith('http://') || link.startsWith('https://');
 }

@@ -114,7 +114,6 @@ export function Tabs({
   });
 
   function onChangeTab(tab: string) {
-    console.log("onChangeTab", tab);
     tabRefs.forEach((ref) => {
       if (ref.current.dataset.tabValue === tab) {
         ref.current.classList.add("active");

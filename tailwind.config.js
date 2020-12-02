@@ -62,7 +62,7 @@ module.exports = {
               color: theme('colors.gray.200'),
             },
             'h1 code, h2 code, h3 code, h4 code, h5 code, h6 code': {
-              color: theme("colors.gray.200"),
+              color: theme('colors.gray.200'),
             },
             blockquote: {
               borderColor: 'var(--theme-color)',

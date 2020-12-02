@@ -1,4 +1,4 @@
-import { SlugProperties } from './properties';
+import { Properties, SlugProperties } from './properties';
 import { isExternalLink } from './components/Link';
 
 export enum ErrorType {
@@ -7,30 +7,30 @@ export enum ErrorType {
   serverError,
 }
 export class RenderError {
-  public static repositoryNotFound(properties: SlugProperties) {
+  public static repositoryNotFound(properties: Properties) {
     return new RenderError(404, ErrorType.repositoryNotFound, properties);
   }
 
-  public static pageNotFound(properties: SlugProperties) {
+  public static pageNotFound(properties: Properties) {
     return new RenderError(404, ErrorType.pageNotFound, properties);
   }
 
-  public static serverError(properties: SlugProperties) {
+  public static serverError(properties: Properties) {
     return new RenderError(500, ErrorType.serverError, properties);
   }
 
   public readonly statusCode: number;
   public readonly errorType: ErrorType;
-  public readonly properties: SlugProperties;
+  public readonly properties?: SlugProperties;
 
-  private constructor(statusCode: number, errorType: ErrorType, properties?: SlugProperties) {
+  private constructor(statusCode: number, errorType: ErrorType, properties?: Properties) {
     this.statusCode = statusCode;
     this.errorType = errorType;
-    this.properties = properties;
+    this.properties = properties?.toObject();
   }
 }
 
-export function redirect(link: string, properties?: SlugProperties) {
+export function redirect(link: string, properties?: Properties) {
   let destination: string;
 
   if (!properties || isExternalLink(link)) {

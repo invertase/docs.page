@@ -13,7 +13,7 @@ import { ErrorBoundary } from '../components/ErrorBoundary';
 
 import { ConfigContext } from '../config';
 import { redirect, RenderError } from '../error';
-import { SPLITTER, getSlugProperties, SlugProperties, SlugPropertiesContext } from '../properties';
+import { SlugProperties, SlugPropertiesContext, Properties } from '../properties';
 import { ContentContext, getPageContent, PageContent } from '../content';
 import { getDefaultBranch, getPullRequestMetadata } from '../github';
 
@@ -76,7 +76,6 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
   const slug = params.slug as string[];
 
   // Anything with less than 2 parts to the slug is an invalid URL.
-  // TODO: Uncomment in production
   if (slug.length < 2) {
     return redirect('/');
   }
@@ -85,7 +84,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
   let page: PageContent;
 
   // Extract the slug properties from the request.
-  let properties: SlugProperties = getSlugProperties(params.slug as string[]);
+  const properties = new Properties(params.slug as string[]);
 
   // If no ref was found in the slug, grab the default branch name
   // from the GQL API.
@@ -95,10 +94,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
     if (!defaultBranch) {
       throw RenderError.repositoryNotFound(properties);
     } else {
-      // Assign the default branch to the ref
-      properties.ref = defaultBranch;
-      properties.base = `${properties.base}${SPLITTER}${properties.ref}`;
-      properties.isDefaultBranch = true;
+      properties.setDefaultBranch(defaultBranch);
     }
   }
   // If the ref looks like a PR
@@ -111,9 +107,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
 
     // If a PR was found, update the property metadata
     if (metadata) {
-      properties.owner = metadata.owner;
-      properties.repository = metadata.repository;
-      properties.ref = metadata.ref;
+      properties.setPullRequestMetadata(metadata);
     }
   }
 
@@ -148,7 +142,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
 
   return {
     props: {
-      properties,
+      properties: properties.toObject(),
       source,
       page,
     },

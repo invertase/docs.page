@@ -1,6 +1,6 @@
-import A2A from "a2a";
-import { SlugProperties } from "./properties";
-import { GithubGQLClient } from "./utils";
+import A2A from 'a2a';
+import { Properties, SlugProperties } from './properties';
+import { GithubGQLClient } from './utils';
 
 // type DomainListQuery = {
 //   repository: {
@@ -56,10 +56,7 @@ type DefaultBranchQuery = {
   };
 };
 
-export async function getDefaultBranch(
-  owner: string,
-  repository: string
-): Promise<string | null> {
+export async function getDefaultBranch(owner: string, repository: string): Promise<string | null> {
   const [error, response] = await A2A<DefaultBranchQuery>(
     GithubGQLClient({
       query: `
@@ -73,7 +70,7 @@ export async function getDefaultBranch(
       `,
       owner,
       repository,
-    })
+    }),
   );
 
   if (error) {
@@ -99,7 +96,7 @@ type PullRequestQuery = {
   };
 };
 
-type PullRequestMetadata = {
+export type PullRequestMetadata = {
   owner: string;
   repository: string;
   ref: string;
@@ -108,7 +105,7 @@ type PullRequestMetadata = {
 export async function getPullRequestMetadata(
   owner: string,
   repository: string,
-  pullRequest: number
+  pullRequest: number,
 ): Promise<PullRequestMetadata | null> {
   const [error, response] = await A2A<PullRequestQuery>(
     GithubGQLClient({
@@ -132,7 +129,7 @@ export async function getPullRequestMetadata(
       owner: owner,
       repository: repository,
       pullRequest: pullRequest,
-    })
+    }),
   );
 
   if (error || !response) {
@@ -170,9 +167,7 @@ type Files = {
   html?: string;
 };
 
-export async function getGitHubFiles(
-  properties: SlugProperties
-): Promise<Files | null> {
+export async function getGitHubFiles(properties: Properties): Promise<Files | null> {
   const [error, response] = await A2A<PageFilesQuery>(
     GithubGQLClient({
       query: `
@@ -208,7 +203,7 @@ export async function getGitHubFiles(
       md: `${properties.ref}:docs/${properties.path}.md`,
       mdx: `${properties.ref}:docs/${properties.path}.mdx`,
       html: `${properties.ref}:docs/${properties.path}.html`,
-    })
+    }),
   );
 
   if (error) {

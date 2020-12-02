@@ -8,7 +8,7 @@ import { Feature } from "./Feature";
 import { DocsDirectory, IndexExample } from "./Skeletons";
 import {
   Adjustments,
-  Branch,
+  PullRequest,
   GlobeAlt,
   Template,
 } from "../../components/Icons";
@@ -190,7 +190,7 @@ export default function IndexPage() {
                       requests. Use our GitHub bot for seamless integration.
                     </span>
                   }
-                  icon={<Branch size={80} className="text-white" />}
+                  icon={<PullRequest size={80} className="text-white" />}
                 />
               </div>
             </div>
