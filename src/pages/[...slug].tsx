@@ -1,31 +1,26 @@
-import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from "next";
-import NextHead from "next/head";
-import NextRouter from "next/router";
-import NProgress from "nprogress";
-import DOMPurify from "isomorphic-dompurify";
+import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
+import NextHead from 'next/head';
+import NextRouter from 'next/router';
+import NProgress from 'nprogress';
+import DOMPurify from 'isomorphic-dompurify';
 
-import mdxSerialize from "next-mdx-remote/serialize";
-import { Hydrate } from "../mdx";
+import mdxSerialize from 'next-mdx-remote/serialize';
+import { Hydrate } from '../mdx';
 
-import { ThemeStyles } from "../components/ThemeStyles";
-import { Layout } from "../components/Layout";
-import { ErrorBoundary } from "../components/ErrorBoundary";
+import { ThemeStyles } from '../components/ThemeStyles';
+import { Layout } from '../components/Layout';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 
-import { ConfigContext } from "../config";
-import { redirect, RenderError } from "../error";
-import {
-  SPLITTER,
-  getSlugProperties,
-  SlugProperties,
-  SlugPropertiesContext,
-} from "../properties";
-import { ContentContext, getPageContent, PageContent } from "../content";
-import { getDefaultBranch, getPullRequestMetadata } from "../github";
+import { ConfigContext } from '../config';
+import { redirect, RenderError } from '../error';
+import { SPLITTER, getSlugProperties, SlugProperties, SlugPropertiesContext } from '../properties';
+import { ContentContext, getPageContent, PageContent } from '../content';
+import { getDefaultBranch, getPullRequestMetadata } from '../github';
 
 NProgress.configure({ showSpinner: false });
-NextRouter.events.on("routeChangeStart", () => NProgress.start());
-NextRouter.events.on("routeChangeComplete", () => NProgress.done());
-NextRouter.events.on("routeChangeError", () => NProgress.done());
+NextRouter.events.on('routeChangeStart', () => NProgress.start());
+NextRouter.events.on('routeChangeComplete', () => NProgress.done());
+NextRouter.events.on('routeChangeError', () => NProgress.done());
 
 export default function Documentation({
   source,
@@ -39,9 +34,7 @@ export default function Documentation({
       <NextHead>
         <base href={properties.path} />
         <title>{frontmatter.title}</title>
-        {!!frontmatter.description && (
-          <meta name="description" content={frontmatter.description} />
-        )}
+        {!!frontmatter.description && <meta name="description" content={frontmatter.description} />}
       </NextHead>
       <ConfigContext.Provider value={config}>
         <SlugPropertiesContext.Provider value={properties}>
@@ -49,14 +42,14 @@ export default function Documentation({
             <ThemeStyles />
             <Layout>
               <ErrorBoundary>
-                {page.type === "html" && (
+                {page.type === 'html' && (
                   <div
                     dangerouslySetInnerHTML={{
                       __html: DOMPurify.sanitize(source),
                     }}
                   />
                 )}
-                {page.type !== "html" && <Hydrate source={source} />}
+                {page.type !== 'html' && <Hydrate source={source} />}
               </ErrorBoundary>
             </Layout>
           </ContentContext.Provider>
@@ -69,7 +62,7 @@ export default function Documentation({
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
     paths: [],
-    fallback: "blocking",
+    fallback: 'blocking',
   };
 };
 
@@ -79,14 +72,13 @@ type StaticProps = {
   page?: PageContent;
 };
 
-export const getStaticProps: GetStaticProps<StaticProps> = async ({
-  params,
-}) => {
+export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) => {
   const slug = params.slug as string[];
 
   // Anything with less than 2 parts to the slug is an invalid URL.
+  // TODO: Uncomment in production
   if (slug.length < 2) {
-    return redirect("/");
+    return redirect('/');
   }
 
   let source = null;
@@ -98,10 +90,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
   // If no ref was found in the slug, grab the default branch name
   // from the GQL API.
   if (!properties.ref) {
-    const defaultBranch = await getDefaultBranch(
-      properties.owner,
-      properties.repository
-    );
+    const defaultBranch = await getDefaultBranch(properties.owner, properties.repository);
 
     if (!defaultBranch) {
       throw RenderError.repositoryNotFound(properties);
@@ -117,7 +106,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
     const metadata = await getPullRequestMetadata(
       properties.owner,
       properties.repository,
-      parseInt(properties.ref)
+      parseInt(properties.ref),
     );
 
     // If a PR was found, update the property metadata
@@ -139,25 +128,21 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({
   }
 
   try {
-    if (page.type === "html") {
+    if (page.type === 'html') {
       source = page.content;
     } else {
       source = await mdxSerialize(page.content, {
         mdxOptions: {
           rehypePlugins: [
-            require("../../rehype-prism"), // Using local version to handle `react-live`
-            require("../../rehype-prose"),
-            require("rehype-slug"),
+            require('../../rehype-prism'), // Using local version to handle `react-live`
+            require('../../rehype-prose'),
+            require('rehype-slug'),
           ],
-          remarkPlugins: [
-            require("@fec/remark-a11y-emoji"),
-            require("remark-admonitions"),
-          ],
+          remarkPlugins: [require('@fec/remark-a11y-emoji'), require('remark-admonitions')],
         },
       });
     }
   } catch (e) {
-    console.error(e);
     throw RenderError.serverError(properties);
   }
 

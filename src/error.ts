@@ -1,5 +1,5 @@
-import { SlugProperties } from "./properties";
-import { isExternalLink } from "./components/Link";
+import { SlugProperties } from './properties';
+import { isExternalLink } from './components/Link';
 
 export enum ErrorType {
   repositoryNotFound,
@@ -23,11 +23,7 @@ export class RenderError {
   public readonly errorType: ErrorType;
   public readonly properties: SlugProperties;
 
-  private constructor(
-    statusCode: number,
-    errorType: ErrorType,
-    properties?: SlugProperties
-  ) {
+  private constructor(statusCode: number, errorType: ErrorType, properties?: SlugProperties) {
     this.statusCode = statusCode;
     this.errorType = errorType;
     this.properties = properties;
@@ -40,7 +36,7 @@ export function redirect(link: string, properties?: SlugProperties) {
   if (!properties || isExternalLink(link)) {
     destination = link;
   } else {
-    if (!link.startsWith("/")) {
+    if (!link.startsWith('/')) {
       link = `/${link}`;
     }
 
