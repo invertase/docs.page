@@ -1,12 +1,13 @@
-import React, { useContext } from "react";
-import Color from "color";
-import { ConfigContext, defaultConfig } from "../config";
+import React from 'react';
+import Color from 'color';
+import { defaultConfig } from '../config';
+import { useConfig } from '../hooks';
 
 function ThemeStyles() {
-  const config = useContext(ConfigContext);
+  const config = useConfig();
 
   if (!config) {
-    throw new Error("ThemeStyles component must a child of ConfigContext");
+    throw new Error('ThemeStyles component must a child of ConfigContext');
   }
 
   let color: Color;

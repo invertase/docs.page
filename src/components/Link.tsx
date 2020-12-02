@@ -1,13 +1,15 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import NextLink from 'next/link';
-import { SlugPropertiesContext, SPLITTER } from '../properties';
+import { SPLITTER } from '../properties';
+import { useSlugProperties } from '../hooks';
 
 export function Link(props: React.HTMLProps<HTMLAnchorElement>) {
+  const properties = useSlugProperties();
+
   if (isExternalLink(props.href)) {
     return <a {...props} target="_blank" rel="noopener" />;
   }
 
-  const properties = useContext(SlugPropertiesContext);
   let { href, ...anchorProps } = props;
 
   href = `/${properties.owner}/${properties.repository}`;

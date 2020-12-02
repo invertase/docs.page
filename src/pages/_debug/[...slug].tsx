@@ -1,8 +1,8 @@
+import React from 'react';
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import { getPageContent, PageContent } from '../../content';
 import {
-  getSlugProperties,
-  SlugProperties,
+  Properties,
   SlugPropertiesContext,
   SPLITTER,
 } from '../../properties';
@@ -11,7 +11,6 @@ import mdxSerialize from 'next-mdx-remote/serialize';
 import { RepoInfo } from '../../templates/debug/RepoInfo';
 import { Configuration } from '../../templates/debug/Configuration';
 import { Error } from '../../templates/debug/Error';
-import React from 'react';
 import { RenderError } from '../../templates/debug/RenderError';
 import { serializeError } from 'serialize-error';
 import { Header } from '../../components/Header';
@@ -69,7 +68,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
   let page: PageContent;
 
   // Extract the slug properties from the request.
-  let properties: SlugProperties = getSlugProperties(params.slug as string[]);
+  let properties = new Properties(params.slug as string[]);
 
   // If no ref was found in the slug, grab the default branch name
   // from the GQL API.
@@ -85,7 +84,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
     }
   }
   // If the ref looks like a PR
-  else if (/^[0-9]*$/.test(properties.ref)) {
+  else if (properties.isPullRequest()) {
     const metadata = await getPullRequestMetadata(
       properties.owner,
       properties.repository,
@@ -126,7 +125,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
 
   return {
     props: {
-      properties,
+      properties: properties.toObject(),
       source,
       page,
       error,

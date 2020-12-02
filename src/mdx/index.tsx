@@ -6,7 +6,7 @@ import { Header } from '../components/Header';
 import { Link } from '../components/Link';
 
 import { Heading } from './Heading';
-import { Tabs, TabItem, TabsContext } from './Tabs';
+import { TabsContainer, TabItem } from './Tabs';
 import { LiveCode, Pre, PreProps, withCodeBlockTitle } from './Code';
 import { Image } from './Image';
 import { YouTube } from './YouTube';
@@ -20,7 +20,9 @@ const components = {
   h4: (props: React.HTMLProps<HTMLHeadingElement>) => <Heading {...props} type="h4" />,
   h5: (props: React.HTMLProps<HTMLHeadingElement>) => <Heading {...props} type="h5" />,
   h6: (props: React.HTMLProps<HTMLHeadingElement>) => <Heading {...props} type="h6" />,
-  img: (props: React.HTMLProps<HTMLImageElement>) => <Image {...props} />,
+  img: (
+    props: React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
+  ) => <Image {...props} />,
   pre: (props: PreProps) => {
     const pre = (className?: string) => (
       <Pre {...props} className={cx(props.className, className)} copy={props.raw} />
@@ -39,16 +41,12 @@ const components = {
 
   // Custom MDX components
   Header,
-  Tabs,
+  Tabs: TabsContainer,
   TabItem,
   Image,
   YouTube,
 };
 
 export function Hydrate({ source }: { source: any }) {
-  return (
-    <TabsContext>
-      <MdxRemote source={source} components={components} />
-    </TabsContext>
-  );
+  return <MdxRemote source={source} components={components} />;
 }

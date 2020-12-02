@@ -6,12 +6,12 @@ import React, {
   useCallback,
   createRef,
   RefObject,
-} from "react";
-import cx from "classnames";
-import { SlugPropertiesContext } from "../properties";
+} from 'react';
+import cx from 'classnames';
+import { SlugPropertiesContext } from '../properties';
 
 // The prefix within local storage for all <Tabs /> components
-const PREFIX = "docs.page.tabs";
+const PREFIX = 'docs.page.tabs';
 
 type ContextProps = {
   tabs: { [key: string]: string };
@@ -30,7 +30,7 @@ export function TabsContext({ children }: { children: React.ReactNode }) {
   const [tabs, setTabs] = useState({});
 
   const updateTab = useCallback((key: string, value: string) => {
-    setTabs(($) => ({
+    setTabs($ => ({
       ...$,
       [key]: value,
     }));
@@ -52,7 +52,7 @@ export function TabsContext({ children }: { children: React.ReactNode }) {
 // for a provided groupId. Also accepts a local state dispatch and updates it.
 function useTabSynchronization(
   groupId: string,
-  setState: React.Dispatch<React.SetStateAction<string>>
+  setState: React.Dispatch<React.SetStateAction<string>>,
 ): (tab: string) => void {
   const { hash } = useContext(SlugPropertiesContext);
   const { tabs, updateTab } = useContext(Context);
@@ -65,7 +65,7 @@ function useTabSynchronization(
       localStorage.setItem(key, tab);
       updateTab(key, tab);
     },
-    [key, groupId]
+    [key, groupId],
   );
 
   useEffect(() => {
@@ -90,20 +90,22 @@ type TabsProps = {
   className?: string;
 };
 
-export function Tabs({
-  groupId,
-  defaultValue,
-  values,
-  children,
-  className,
-}: TabsProps) {
+// Wraps each `<Tabs />` component within Context.
+export function TabsContainer(props: TabsProps) {
+  return (
+    <TabsContext>
+      <Tabs {...props} />
+    </TabsContext>
+  );
+}
+
+function Tabs({ groupId, defaultValue, values, children, className }: TabsProps) {
   const { hash } = useContext(SlugPropertiesContext);
   const [selected, setSelected] = useState<string>(() => {
     if (groupId) return null;
     return defaultValue || values[0].value;
   });
   const synchronize = useTabSynchronization(groupId, setSelected);
-
   const tabRefs: RefObject<HTMLDivElement>[] = [];
   const paneRefs: RefObject<HTMLDivElement>[] = [];
 
@@ -114,19 +116,19 @@ export function Tabs({
   });
 
   function onChangeTab(tab: string) {
-    tabRefs.forEach((ref) => {
+    tabRefs.forEach(ref => {
       if (ref.current.dataset.tabValue === tab) {
-        ref.current.classList.add("active");
+        ref.current.classList.add('active');
       } else {
-        ref.current.classList.remove("active");
+        ref.current.classList.remove('active');
       }
     });
 
     paneRefs.forEach((ref, ri) => {
       if (ref.current.dataset.paneValue === tab) {
-        ref.current.classList.remove("hidden");
+        ref.current.classList.remove('hidden');
       } else {
-        ref.current.classList.add("hidden");
+        ref.current.classList.add('hidden');
       }
     });
   }
@@ -142,23 +144,19 @@ export function Tabs({
   return (
     <div
       data-sync-tabs={!!groupId}
-      data-sync-tabs-group={groupId || ""}
+      data-sync-tabs-group={groupId || ''}
       data-sync-tabs-hash={hash}
-      data-sync-tabs-default={defaultValue || ""}
+      data-sync-tabs-default={defaultValue || ''}
       className="border mb-4 dark:border-gray-800 rounded p-1"
     >
       <style jsx>{`
-        div[role="tab"].active {
+        div[role='tab'].active {
           border-bottom-width: 4px;
           color: var(--theme-color);
           border-color: var(--theme-color);
         }
       `}</style>
-      <div
-        role="tablist"
-        aria-orientation="horizontal"
-        className={cx("flex", className)}
-      >
+      <div role="tablist" aria-orientation="horizontal" className={cx('flex', className)}>
         {values.map(({ value, label }, index) => {
           // const active = value === selected;
 
@@ -174,7 +172,7 @@ export function Tabs({
                 else setSelected(value);
               }}
               className={
-                "cursor-pointer px-5 py-5 rounded font-bold dark:text-white hover:bg-gray-200 dark:hover:bg-gray-800"
+                'cursor-pointer px-5 py-5 rounded font-bold dark:text-white hover:bg-gray-200 dark:hover:bg-gray-800'
               }
             >
               {label}
@@ -183,7 +181,7 @@ export function Tabs({
         })}
       </div>
       <div className="p-3">
-        {children.map((child, index: number) => {
+        {children.map(child => {
           const value = child.props.value;
 
           // It's not a <TabItem /> or the `value` prop is missing, so ignore.
@@ -191,7 +189,7 @@ export function Tabs({
             return null;
           }
 
-          const refIndex = values.findIndex(($) => $.value === value);
+          const refIndex = values.findIndex($ => $.value === value);
 
           // It's a <TabItem /> with a `value` prop, but we cant match the value.
           if (refIndex < 0) {

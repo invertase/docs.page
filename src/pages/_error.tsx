@@ -41,9 +41,9 @@ Error.getInitialProps = ({ res, err }: NextPageContext) => {
 
   return {
     statusCode,
-    // @ts-ignore
+    // @ts-ignore - custom error provided
     errorType: err?.errorType,
-    // @ts-ignore
+    // @ts-ignore - custom error provided
     properties: err?.properties,
   };
 };

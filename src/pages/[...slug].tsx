@@ -14,8 +14,10 @@ import { ErrorBoundary } from '../components/ErrorBoundary';
 import { ConfigContext } from '../config';
 import { redirect, RenderError } from '../error';
 import { SlugProperties, SlugPropertiesContext, Properties } from '../properties';
-import { ContentContext, getPageContent, PageContent } from '../content';
+import { PageContentContext, getPageContent, PageContent } from '../content';
 import { getDefaultBranch, getPullRequestMetadata } from '../github';
+import React from 'react';
+import { useHeadTags } from '../hooks';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', () => NProgress.start());
@@ -27,18 +29,14 @@ export default function Documentation({
   properties,
   page,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const { frontmatter, config } = page;
+  const tags = useHeadTags(properties, page);
 
   return (
     <>
-      <NextHead>
-        <base href={properties.path} />
-        <title>{frontmatter.title}</title>
-        {!!frontmatter.description && <meta name="description" content={frontmatter.description} />}
-      </NextHead>
-      <ConfigContext.Provider value={config}>
+      <NextHead>{tags}</NextHead>
+      <ConfigContext.Provider value={page.config}>
         <SlugPropertiesContext.Provider value={properties}>
-          <ContentContext.Provider value={page}>
+          <PageContentContext.Provider value={page}>
             <ThemeStyles />
             <Layout>
               <ErrorBoundary>
@@ -52,7 +50,7 @@ export default function Documentation({
                 {page.type !== 'html' && <Hydrate source={source} />}
               </ErrorBoundary>
             </Layout>
-          </ContentContext.Provider>
+          </PageContentContext.Provider>
         </SlugPropertiesContext.Provider>
       </ConfigContext.Provider>
     </>
@@ -98,7 +96,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
     }
   }
   // If the ref looks like a PR
-  else if (/^[0-9]*$/.test(properties.ref)) {
+  else if (properties.isPullRequest()) {
     const metadata = await getPullRequestMetadata(
       properties.owner,
       properties.repository,
@@ -128,7 +126,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
       source = await mdxSerialize(page.content, {
         mdxOptions: {
           rehypePlugins: [
-            require('../../rehype-prism'), // Using local version to handle `react-live`
+            require('../../rehype-prism'),
             require('../../rehype-prose'),
             require('rehype-slug'),
           ],
@@ -137,6 +135,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
       });
     }
   } catch (e) {
+    console.log(e);
     throw RenderError.serverError(properties);
   }
 

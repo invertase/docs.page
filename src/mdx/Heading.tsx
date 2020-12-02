@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 
 import { ConfigContext } from '../config';
+import { useConfig } from '../hooks';
 
 type HeadingType = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 
@@ -18,7 +19,7 @@ const depth: { [key in HeadingType]: number } = {
 };
 
 function Heading(props: HeadingProps) {
-  const config = useContext(ConfigContext);
+  const config = useConfig();
   const type = props.type;
 
   if (!props.id || type === 'h1' || config.headerDepth === 0 || depth[type] > config.headerDepth) {

@@ -1,40 +1,33 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import cx from 'classnames';
 import DarkModeToggle from 'react-dark-mode-toggle';
 import useDarkMode from 'use-dark-mode';
 
-import { ConfigContext } from '../config';
 import { DARK_MODE_CLASS_NAME, LIGHT_MODE_CLASS_NAME, STORAGE_KEY } from '../scripts/noflash';
-import { SlugPropertiesContext } from '../properties';
 import { isClient } from '../utils';
 
 import { ExternalLink, Link } from './Link';
-import { Branch, PullRequest } from './Icons';
+import { Branch, GitHub, PullRequest } from './Icons';
+import { useConfig, useSlugProperties } from '../hooks';
+import { Search } from './Search';
 
 export function Header({ debug = false }: { debug?: boolean }) {
-  const config = useContext(ConfigContext);
-  const properties = useContext(SlugPropertiesContext);
+  const config = useConfig();
+  const properties = useSlugProperties();
   const repo = `${properties.owner}/${properties.repository}`;
 
   return (
-    <header className="desktop:px-4 sticky top-0 z-10 desktop:flex items-center justify-center h-32 desktop:h-16 bg-white text-sm dark:bg-gray-800 text-gray-900 dark:text-white border-b dark:border-gray-800 transition duration-1000 ease-in-out">
-      <div className="flex-1 flex items-center justify-center desktop:justify-start space-x-4 h-16">
-        {!!config.logo && (
-          <Link href="/" className="h-10 w-10">
-            <img src={config.logo} alt={repo} style={{ maxHeight: '100%' }} />
-          </Link>
-        )}
+    <header className="desktop:px-4 sticky top-0 z-10 flex items-center h-16 bg-white text-sm dark:bg-gray-800 text-gray-900 dark:text-white border-b dark:border-gray-800 transition duration-1000 ease-in-out">
+      <div className="flex-1 flex items-center space-x-4 h-16">
         <span>
-          {!!config.name ? (
-            <span className="font-mono font-semibold text-lg tracking-wide">{config.name}</span>
-          ) : (
-            <a href={`https://github.com/${repo}`} className="font-mono hover:underline">
-              {debug ? `Debug Mode | ${repo}` : repo}
-            </a>
-          )}
+          <span className="font-mono text-lg">
+            <Link href="/" className="font-mono hover:underline">
+              {config.name || repo}
+            </Link>
+          </span>
         </span>
       </div>
-      <div className="flex items-center justify-center desktop:justify-start space-x-6 font-mono h-16">
+      <div className="flex items-center justify-center space-x-6 font-mono h-16">
         {config.navigation.length > 0 && (
           <ul className="flex items-center space-x-6 overflow-x-auto px-3 desktop:px-0">
             {config.navigation.map(([title, url]) => (
@@ -48,8 +41,11 @@ export function Header({ debug = false }: { debug?: boolean }) {
         )}
         <div className="hidden desktop:flex items-center space-x-6">
           {!!config.name && (
-            <ExternalLink href={`https://github.com/${repo}`} className="hover:underline">
-              {repo}
+            <ExternalLink
+              href={`https://github.com/${repo}`}
+              className="group flex items-center hover:underline"
+            >
+              <GitHub size={26} className="text-black dark:text-white hover:opacity-80" />
             </ExternalLink>
           )}
           {!properties.isDefaultBranch && (
@@ -67,6 +63,9 @@ export function Header({ debug = false }: { debug?: boolean }) {
               {properties.refType === 'branch' && <Branch size={16} className="text-white" />}
               <span className="pl-1">{properties.ref}</span>
             </ExternalLink>
+          )}
+          {!!config.docsearch && (
+            <Search apiKey={config.docsearch.apiKey} indexName={config.docsearch.indexName} />
           )}
           <Toggle />
         </div>

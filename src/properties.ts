@@ -60,6 +60,10 @@ export class Properties {
     this.ref = metadata.ref;
   }
 
+  public isPullRequest() {
+    return /^[0-9]*$/.test(this.ref);
+  }
+
   toObject(): SlugProperties {
     return {
       owner: this.owner,
@@ -67,7 +71,7 @@ export class Properties {
       url: `https://github.com/${this.owner}/${this.repository}`,
       isDefaultBranch: this.isDefaultBranch,
       ref: this.ref,
-      refType: /^[0-9]*$/.test(this.ref) ? 'pull-request' : 'branch',
+      refType: this.isPullRequest() ? 'pull-request' : 'branch',
       path: this.path,
       base: this.base,
       hash: hash(`${this.owner}/${this.repository}`),

@@ -1,14 +1,15 @@
-import React, { useCallback, useContext, useState } from "react";
-import cx from "classnames";
-import { NextRouter, useRouter } from "next/router";
+import React, { useCallback, useState } from 'react';
+import cx from 'classnames';
+import { NextRouter, useRouter } from 'next/router';
 
-import { ConfigContext, SidebarItem } from "../config";
-import { isExternalLink, Link } from "./Link";
-import { SlugProperties, SlugPropertiesContext } from "../properties";
+import { SidebarItem } from '../config';
+import { isExternalLink, Link } from './Link';
+import { SlugProperties } from '../properties';
+import { useConfig, useSlugProperties } from '../hooks';
 
 // Sidebar wrapper - iterates the config and renders a sidebar.
 export function Sidebar() {
-  const config = useContext(ConfigContext);
+  const config = useConfig();
 
   return (
     <ul className="w-full dark:text-white">
@@ -22,15 +23,12 @@ export function Sidebar() {
 // The [SidebarItem] iterator, returns a [Title] or [NavLink].
 function Iterator({ item, depth }: { item: SidebarItem; depth: number }) {
   const router = useRouter();
-  const properties = useContext(SlugPropertiesContext);
+  const properties = useSlugProperties();
 
   // If [string, string] render as a Link
-  if (typeof item[1] === "string") {
+  if (typeof item[1] === 'string') {
     return (
-      <NavLink
-        href={item[1]}
-        active={isRouteMatch(router, properties, item[1])}
-      >
+      <NavLink href={item[1]} active={isRouteMatch(router, properties, item[1])}>
         {item[0]}
       </NavLink>
     );
@@ -39,17 +37,10 @@ function Iterator({ item, depth }: { item: SidebarItem; depth: number }) {
   // Otherwise, it's a nested element
   const links = getChildrenLinks(item[1]);
 
-  const isActive = !!links.find((link) =>
-    isRouteMatch(router, properties, link)
-  );
+  const isActive = !!links.find(link => isRouteMatch(router, properties, link));
 
   return (
-    <NavigationList
-      isInitiallyActive={isActive}
-      title={item[0]}
-      depth={depth}
-      items={item[1]}
-    />
+    <NavigationList isInitiallyActive={isActive} title={item[0]} depth={depth} items={item[1]} />
   );
 }
 
@@ -67,7 +58,7 @@ function NavigationList({
   const [isActive, setIsActive] = useState<boolean>(isInitiallyActive);
 
   const onToggle = useCallback(() => {
-    setIsActive(($) => !$);
+    setIsActive($ => !$);
   }, [isInitiallyActive]);
 
   return (
@@ -75,16 +66,12 @@ function NavigationList({
       <Title title={title} active={isActive} onToggle={onToggle} />
       <ul
         className={cx({
-          "overflow-hidden h-0": !isActive,
+          'overflow-hidden h-0': !isActive,
         })}
         style={{ marginLeft: `${depth / 2}rem` }}
       >
         {items.map((subItem, index) => (
-          <Iterator
-            key={`${depth}-${index.toString()}`}
-            depth={depth + 1}
-            item={subItem}
-          />
+          <Iterator key={`${depth}-${index.toString()}`} depth={depth + 1} item={subItem} />
         ))}
       </ul>
     </li>
@@ -108,15 +95,15 @@ function Title({
       onClick={() => onToggle()}
     >
       <span
-        className={cx("flex-1", {
-          "text-theme-color": active,
+        className={cx('flex-1', {
+          'text-theme-color': active,
         })}
       >
         {title}
       </span>
       <span
-        className={cx("transform transition-rotate duration-100", {
-          "rotate-90": active,
+        className={cx('transform transition-rotate duration-100', {
+          'rotate-90': active,
         })}
         style={{ width: 20, height: 20 }}
       >
@@ -128,12 +115,7 @@ function Title({
           viewBox="0 0 24 24"
           stroke="currentColor"
         >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9 5l7 7-7 7"
-          />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
       </span>
     </div>
@@ -141,26 +123,15 @@ function Title({
 }
 
 // A single navigation URL in the sidebar.
-function NavLink({
-  href,
-  children,
-  active,
-}: {
-  href: string;
-  children: string;
-  active: boolean;
-}) {
+function NavLink({ href, children, active }: { href: string; children: string; active: boolean }) {
   return (
     <li className="-ml-2 mt-1">
       <Link
         href={href}
-        className={cx(
-          "font-thin flex px-2 py-2 rounded transition-colors duration-100",
-          {
-            "text-theme-color dark:text-white bg-gray-100 dark:bg-gray-800": active,
-            "hover:bg-gray-200 dark:hover:bg-gray-700": !active,
-          }
-        )}
+        className={cx('font-thin flex px-2 py-2 rounded transition-colors duration-100', {
+          'text-theme-color dark:text-white bg-gray-100 dark:bg-gray-800': active,
+          'hover:bg-gray-200 dark:hover:bg-gray-700': !active,
+        })}
       >
         {children}
       </Link>
@@ -174,14 +145,11 @@ function NavLink({
  * @param items
  * @param initialLinks
  */
-function getChildrenLinks(
-  items: SidebarItem[],
-  initialLinks: string[] = []
-): string[] {
+function getChildrenLinks(items: SidebarItem[], initialLinks: string[] = []): string[] {
   let links: string[] = [...initialLinks];
 
   items.forEach((item: SidebarItem) => {
-    if (typeof item[1] === "string") links.push(item[1]);
+    if (typeof item[1] === 'string') links.push(item[1]);
     else links = [...links, ...getChildrenLinks(item[1], links)];
   });
 
@@ -195,16 +163,12 @@ function getChildrenLinks(
  * @param properties
  * @param link
  */
-function isRouteMatch(
-  router: NextRouter,
-  properties: SlugProperties,
-  link: string
-) {
+function isRouteMatch(router: NextRouter, properties: SlugProperties, link: string) {
   // External links can never be active
   if (isExternalLink(link)) {
     return false;
   }
 
-  const currentPath = `/${(router.query.slug as string[]).join("/")}`;
+  const currentPath = `/${(router.query.slug as string[]).join('/')}`;
   return currentPath === `${properties.base}${link}`;
 }

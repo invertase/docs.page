@@ -14,6 +14,7 @@ export type FileType = null | 'md' | 'mdx' | 'html';
 export type Frontmatter = {
   title: string;
   description: string;
+  image: string;
   layout: LayoutType;
   sidebar: boolean;
   redirect: string;
@@ -27,7 +28,7 @@ export type PageContent = {
   content: string;
 };
 
-export const ContentContext = createContext<PageContent | null>(null);
+export const PageContentContext = createContext<PageContent | null>(null);
 
 export async function getPageContent(properties: Properties): Promise<PageContent | null> {
   const files = await getGitHubFiles(properties);
@@ -93,6 +94,7 @@ function mergeFrontmatter(data: any): Frontmatter {
   return {
     title: getString(data, 'title', ''),
     description: getString(data, 'description', ''),
+    image: getString(data, 'image', ''),
     layout: getString<LayoutType>(data, 'layout', '' as LayoutType),
     sidebar: getBoolean(data, 'sidebar', true),
     redirect: getString(data, 'redirect', ''),

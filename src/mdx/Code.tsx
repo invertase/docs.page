@@ -29,7 +29,14 @@ export function Pre(props: PreProps) {
     <div className="relative group">
       <pre {...preProps} className={cx('relative z-0 mb-4', props.className)} />
       {!!copy && (
-        <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute top-0 right-0 mr-2 mt-2">
+        <div
+          className={cx(
+            'opacity-0 group-hover:opacity-100 transition-opacity absolute top-0 right-0 mr-2 mt-2',
+            {
+              'opacity-100': copied,
+            },
+          )}
+        >
           <CopyToClipboard text={copy} onCopy={() => setCopied(true)}>
             <button className="text-xs font-mono bg-gray-900 hover:bg-black transition-colors px-3 py-2 rounded-lg">
               {copied ? 'Copied' : 'Copy'}

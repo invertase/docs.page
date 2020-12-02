@@ -1,34 +1,35 @@
-import React, { useContext } from "react";
-import cx from "classnames";
+import React from 'react';
+import cx from 'classnames';
 
-import { Header } from "./Header";
-import { Sidebar } from "./Sidebar";
-import { ConfigContext } from "../config";
-import { ContentContext } from "../content";
+import { Header } from './Header';
+import { Sidebar } from './Sidebar';
+import { Footer } from './Footer';
+import { Divider } from './Divider';
+import { useConfig, usePageContent } from '../hooks';
 
-export type LayoutType = "default" | "wide" | "full" | "bare";
+export type LayoutType = 'default' | 'wide' | 'full' | 'bare';
 
-export const DEFAULT_LAYOUT: LayoutType = "default";
+export const DEFAULT_LAYOUT: LayoutType = 'default';
 
 const widthMap: { [key in LayoutType] } = {
-  default: "max-w-2xl",
-  wide: "max-w-6xl",
-  full: "max-w-full",
-  bare: "",
+  default: 'max-w-2xl',
+  wide: 'max-w-6xl',
+  full: 'max-w-full',
+  bare: '',
 };
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const config = useContext(ConfigContext);
-  const page = useContext(ContentContext);
+  const config = useConfig();
+  const page = usePageContent();
 
   if (!page || !config) {
-    throw new Error("Layout must be a child of: ConfigContext, ContentContext");
+    throw new Error('Layout must be a child of: ConfigContext, ContentContext');
   }
 
   // First check the frontmatter for a layout, then fallback to the config
   const layout = page.frontmatter.layout || config.defaultLayout;
 
-  if (page.type === "html" || layout === "bare") {
+  if (page.type === 'html' || layout === 'bare') {
     return <div>{children}</div>;
   }
 
@@ -36,13 +37,10 @@ export function Layout({ children }: { children: React.ReactNode }) {
     <>
       <Header />
       <WithSidebar>
-        <article
-          className={cx(
-            "px-1 lg:px-0 py-20 mx-auto",
-            widthMap[layout]
-          )}
-        >
+        <article className={cx('px-2 lg:px-0 py-20 mx-auto', widthMap[layout])}>
           {children}
+          <Divider />
+          <Footer />
         </article>
       </WithSidebar>
     </>
@@ -51,11 +49,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 function WithSidebar({ children }: { children: React.ReactNode }) {
   // Check first whether there is a sidebar to render
-  let enabled = useContext(ConfigContext).sidebar.length > 0;
+  let enabled = useConfig().sidebar.length > 0;
+  const content = usePageContent();
 
   // If there is a sidebar, check whether the frontmatter has enabled/disabled it
   if (enabled) {
-    enabled = useContext(ContentContext).frontmatter.sidebar;
+    enabled = content.frontmatter.sidebar;
   }
 
   return (
@@ -68,8 +67,8 @@ function WithSidebar({ children }: { children: React.ReactNode }) {
         </nav>
       )}
       <div
-        className={cx("flex-1", {
-          "pl-0 desktop:pl-64": enabled,
+        className={cx('flex-1', {
+          'pl-0 desktop:pl-64': enabled,
         })}
       >
         {children}
