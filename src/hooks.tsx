@@ -43,6 +43,10 @@ export function useHeadTags(properties: SlugProperties, page: PageContent) {
     <meta name="twitter:card" content="summary_large_image" />,
   ];
 
+  if (config.logo) {
+    tags.push(<link rel="icon" type="image/png" href={config.logo} />);
+  }
+
   if (frontmatter.description) {
     tags.push(<meta name="description" content={frontmatter.description} />);
     tags.push(<meta property="og:description" content={frontmatter.description} />);

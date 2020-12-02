@@ -16,10 +16,6 @@ import { serializeError } from 'serialize-error';
 import { Header } from '../../components/Header';
 import NextHead from 'next/head';
 
-// TODO type definitions
-// import renderToString from "next-mdx-remote/render-to-string";
-// import hydrate from "next-mdx-remote/hydrate";
-
 export default function Debug({
   error,
   properties,
