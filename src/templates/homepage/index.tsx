@@ -62,7 +62,7 @@ export default function IndexPage() {
               </svg>
             </a>
           </div>
-          <h1 className="font-anton mb-4 text-6xl lg:text-8xl bg-clip-text text-transparent bg-gradient-to-br from-gray-100 via-gray-400  to-gray-200">
+          <h1 className="font-anton mb-4 text-6xl lg:text-8xl bg-clip-text text-transparent bg-gradient-to-br from-gray-100 via-gray-300  to-gray-200">
             Instant{" "}
             <span className="bg-clip-text text-transparent bg-gradient-to-br from-green-400 to-blue-500">
               Open Source
@@ -149,7 +149,7 @@ export default function IndexPage() {
           from="from-yellow-400"
           to="to-yellow-500"
         />
-        <div className="ml-20 mt-10 lg:flex">
+        <div className="lg:ml-20 mt-10 lg:flex">
           <div className="flex-1">
             <Checkout />
           </div>

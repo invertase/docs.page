@@ -23,7 +23,7 @@ export function Heading({
       >
         <span className="font-anton text-white text-4xl">{step}</span>
       </div>
-      <h2 className="flex-1 ml-6 text-white font-anton text-4xl">{title}</h2>
+      <h2 className="flex-1 ml-6 text-white font-anton text-4xl leading-relaxed">{title}</h2>
     </div>
   );
 }
