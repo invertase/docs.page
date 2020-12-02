@@ -22,12 +22,15 @@ export function Pre(props: PreProps) {
     }
   }, [copied]);
 
+  // Extract non-default properties
+  const { raw, copy, live, ...preProps } = props;
+
   return (
     <div className="relative group">
-      <pre {...props} className={cx('relative z-0 mb-4', props.className)} />
-      {!!props.copy && (
+      <pre {...preProps} className={cx('relative z-0 mb-4', props.className)} />
+      {!!copy && (
         <div className="opacity-0 group-hover:opacity-100 transition-opacity absolute top-0 right-0 mr-2 mt-2">
-          <CopyToClipboard text={props.copy} onCopy={() => setCopied(true)}>
+          <CopyToClipboard text={copy} onCopy={() => setCopied(true)}>
             <button className="text-xs font-mono bg-gray-900 hover:bg-black transition-colors px-3 py-2 rounded-lg">
               {copied ? 'Copied' : 'Copy'}
             </button>
