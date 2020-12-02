@@ -1,8 +1,8 @@
-import React, { useContext } from "react";
+import React, { useContext } from 'react';
 
-import { ConfigContext } from "../config";
+import { ConfigContext } from '../config';
 
-type HeadingType = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
+type HeadingType = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 
 interface HeadingProps extends React.HTMLProps<HTMLHeadingElement> {
   type: HeadingType;
@@ -21,26 +21,19 @@ function Heading(props: HeadingProps) {
   const config = useContext(ConfigContext);
   const type = props.type;
 
-  if (
-    !props.id ||
-    config.headerDepth === 0 ||
-    depth[type] > config.headerDepth
-  ) {
+  if (!props.id || type === 'h1' || config.headerDepth === 0 || depth[type] > config.headerDepth) {
     return React.createElement(type, props);
   }
 
   const renderChildren = (children: React.ReactNode) => (
-    <span className="relative">
+    <span className="flex group">
+      <span>{children}</span>
       <a
         href={`#${props.id}`}
-        className="absolute desktop:-ml-10 opacity-20 hover:opacity-30 transition-opacity duration-100"
-        style={{
-          textDecoration: "none",
-        }}
+        className="opacity-0 group-hover:opacity-100 ml-3 transition-opacity duration-100"
       >
         #
       </a>
-      <span className="pl-8 desktop:pl-0">{children}</span>
     </span>
   );
 

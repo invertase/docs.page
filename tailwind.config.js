@@ -74,7 +74,7 @@ module.exports = {
                 color: 'var(--theme-color-light)',
               },
             },
-            'p code': {
+            'p code, li code, td code': {
               color: 'var(--theme-color)',
             },
           },
