@@ -18,6 +18,7 @@ import { PageContentContext, getPageContent, PageContent } from '../content';
 import { getDefaultBranch, getPullRequestMetadata } from '../github';
 import React from 'react';
 import { useHeadTags } from '../hooks';
+import { CustomDomain, CustomDomainContext, getCustomDomain } from '../domain';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', () => NProgress.start());
@@ -25,6 +26,7 @@ NextRouter.events.on('routeChangeComplete', () => NProgress.done());
 NextRouter.events.on('routeChangeError', () => NProgress.done());
 
 export default function Documentation({
+  domain,
   source,
   properties,
   page,
@@ -34,25 +36,27 @@ export default function Documentation({
   return (
     <>
       <NextHead>{tags}</NextHead>
-      <ConfigContext.Provider value={page.config}>
-        <SlugPropertiesContext.Provider value={properties}>
-          <PageContentContext.Provider value={page}>
-            <ThemeStyles />
-            <Layout>
-              <ErrorBoundary>
-                {page.type === 'html' && (
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: DOMPurify.sanitize(source),
-                    }}
-                  />
-                )}
-                {page.type !== 'html' && <Hydrate source={source} />}
-              </ErrorBoundary>
-            </Layout>
-          </PageContentContext.Provider>
-        </SlugPropertiesContext.Provider>
-      </ConfigContext.Provider>
+      <CustomDomainContext.Provider value={domain}>
+        <ConfigContext.Provider value={page.config}>
+          <SlugPropertiesContext.Provider value={properties}>
+            <PageContentContext.Provider value={page}>
+              <ThemeStyles />
+              <Layout>
+                <ErrorBoundary>
+                  {page.type === 'html' && (
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: DOMPurify.sanitize(source),
+                      }}
+                    />
+                  )}
+                  {page.type !== 'html' && <Hydrate source={source} />}
+                </ErrorBoundary>
+              </Layout>
+            </PageContentContext.Provider>
+          </SlugPropertiesContext.Provider>
+        </ConfigContext.Provider>
+      </CustomDomainContext.Provider>
     </>
   );
 }
@@ -65,6 +69,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 type StaticProps = {
+  domain: CustomDomain;
   properties: SlugProperties;
   source?: string;
   page?: PageContent;
@@ -141,6 +146,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
 
   return {
     props: {
+      domain: await getCustomDomain(properties),
       properties: properties.toObject(),
       source,
       page,

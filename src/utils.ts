@@ -7,6 +7,10 @@ export const GithubGQLClient = graphql.defaults({
   },
 });
 
+export function isProduction(): boolean {
+  return process.env.NODE_ENV === 'production';
+}
+
 export function isClient(): boolean {
   return typeof window !== "undefined";
 }

@@ -1,52 +1,52 @@
 import A2A from 'a2a';
-import { Properties, SlugProperties } from './properties';
+import { Properties } from './properties';
 import { GithubGQLClient } from './utils';
 
-// type DomainListQuery = {
-//   repository: {
-//     file?: {
-//       text: string;
-//     };
-//   };
-// };
+type DomainListQuery = {
+  repository: {
+    file?: {
+      text: string;
+    };
+  };
+};
 
-// type Domain = [string, string];
+// [domain, repository]
+export type DomainListItem = [string, string];
 
-// export async function getDomainsList(dev: boolean): Promise<Domain[]> {
-//   let raw = "";
+export async function getDomainsList(): Promise<DomainListItem[]> {
+  let raw = '';
 
-//   if (dev) {
-//     // @ts-ignore
-//     raw = await import("../domains.txt").then(($) => $.default);
-//   } else {
-//     const [error, response] = await A2A<DomainListQuery>(
-//       GithubGQLClient({
-//         query: `
-//           query DomainsList($owner: String!, $repository: String!, $file: String!) {
-//             repository(owner: $owner, name: $repository) {
-//               file: object(expression: $file) {
-//                 ... on Blob {
-//                   text
-//                 }
-//               }
-//             }
-//           }
-//         `,
-//         owner: "invertase",
-//         repository: "docs.page",
-//         file: "master:domains.txt",
-//       })
-//     );
+  const [error, response] = await A2A<DomainListQuery>(
+    GithubGQLClient({
+      query: `
+          query DomainsList($owner: String!, $repository: String!, $file: String!) {
+            repository(owner: $owner, name: $repository) {
+              file: object(expression: $file) {
+                ... on Blob {
+                  text
+                }
+              }
+            }
+          }
+        `,
+      owner: 'invertase',
+      repository: 'docs.page',
+      file: 'master:domains.txt',
+    }),
+  );
 
-//     if (error || !response.repository.file?.text) {
-//       raw = "";
-//     } else {
-//       raw = response.repository.file.text;
-//     }
-//   }
+  if (error) {
+    console.error('Unable to fetch domains list', error);
+  }
 
-//   return raw.split("\n").map<Domain>((str) => str.split(" ") as Domain);
-// }
+  if (error || !response.repository?.file?.text) {
+    raw = '';
+  } else {
+    raw = response.repository.file.text;
+  }
+
+  return raw.split('\n').map<DomainListItem>(str => str.split(' ') as DomainListItem);
+}
 
 type DefaultBranchQuery = {
   repository: {

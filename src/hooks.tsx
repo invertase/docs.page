@@ -1,8 +1,13 @@
 import { useContext } from 'react';
 import { Config, ConfigContext } from './config';
 import { PageContent, PageContentContext } from './content';
+import { CustomDomain, CustomDomainContext } from './domain';
 import { SlugProperties, SlugPropertiesContext } from './properties';
 import googleAnalytics from './scripts/google-analytics';
+
+export function useCustomDomain(): CustomDomain {
+  return useContext(CustomDomainContext);
+}
 
 export function useSlugProperties(): SlugProperties {
   return useContext(SlugPropertiesContext);
