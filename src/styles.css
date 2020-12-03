@@ -5,11 +5,9 @@
 @layer base {
   body {
     @apply bg-white;
-    transition: background-color 1s ease;
   }
   body.dark {
     @apply bg-gray-900;
-    transition: background-color 1s ease;
   }
 
   /* Removes any top margin from pre-tags if a title present */
