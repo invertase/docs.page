@@ -212,7 +212,6 @@ export default function IndexPage() {
             <div className="lg:px-12 lg:w-1/2 mb-20">
               <div className="lg:px-12 flex flex-col items-center justify-center">
                 <Feature
-                  href="/"
                   title={<span className="text-green-400">Domains</span>}
                   text={
                     <span>

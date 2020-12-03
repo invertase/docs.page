@@ -1,8 +1,8 @@
-import React from "react";
-import { Button } from "./Button";
+import React from 'react';
+import { Button } from './Button';
 
 type Props = {
-  href: string;
+  href?: string;
   icon: React.ReactElement;
   title: string | React.ReactElement;
   text: React.ReactNode;
@@ -19,7 +19,8 @@ export function Feature({ href, icon, title, text }: Props) {
         </p>
       </div>
       <div className="mt-10">
-        <Button href={href}>Learn More</Button>
+        {!!href && <Button href={href}>Learn More</Button>}
+        {!href && <div className="text-gray-400">Coming Soon...</div>}
       </div>
     </div>
   );

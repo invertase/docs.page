@@ -6,6 +6,7 @@ import { Sidebar } from './Sidebar';
 import { Footer } from './Footer';
 import { Divider } from './Divider';
 import { useConfig, usePageContent } from '../hooks';
+import { JumpToTop } from './JumpToTop';
 
 export type LayoutType = 'default' | 'wide' | 'full' | 'bare';
 
@@ -37,11 +38,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
     <>
       <Header />
       <WithSidebar>
-        <article className={cx('prose dark:prose-dark px-2 lg:px-0 py-20 mx-auto', widthMap[layout])}>
+        <article
+          className={cx('prose dark:prose-dark px-2 lg:px-0 py-20 mx-auto', widthMap[layout])}
+        >
           {children}
           <Divider />
           <Footer />
         </article>
+        <JumpToTop />
       </WithSidebar>
     </>
   );

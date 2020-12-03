@@ -10,7 +10,7 @@ import { Branch, GitHub, PullRequest } from './Icons';
 import { useConfig, useNoSSR, useSlugProperties } from '../hooks';
 import { Search } from './Search';
 
-export function Header({ debug = false }: { debug?: boolean }) {
+export function Header() {
   const config = useConfig();
   const properties = useSlugProperties();
   const repo = `${properties.owner}/${properties.repository}`;
