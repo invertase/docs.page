@@ -46,7 +46,7 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>) {
   }
 
   return (
-    <NextLink href={href}>
+    <NextLink href={href} prefetch={false}>
       <a {...anchorProps}>{props.children}</a>
     </NextLink>
   );
