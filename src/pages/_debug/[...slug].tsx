@@ -30,7 +30,7 @@ export default function Debug({
         </title>
       </NextHead>
       <SlugPropertiesContext.Provider value={properties}>
-        <Header debug />
+        <Header />
         <div className="my-10 space-y-10">
           {!properties.ref && <Error>Repository not found</Error>}
           {!page && properties.ref && <Error>Page not found</Error>}

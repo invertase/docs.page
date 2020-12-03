@@ -171,7 +171,7 @@ export default function IndexPage() {
                 title={<span className="text-blue-500">Configure</span>}
                 text={
                   <span>
-                    Add a <code className="text-blue-400">docs.yaml</code> file
+                    Add a <code className="text-blue-400">docs.json</code> file
                     to the roof of the repository to configure your project by
                     adding a theme, search, navigation, analytics and more.
                   </span>

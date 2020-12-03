@@ -1,0 +1,12 @@
+{
+  "name": "docs.page",
+  "theme": "#36B9B9",
+  "sidebar": [
+    ["Overview", "/"],
+    ["Getting Started", "/getting-started"],
+    ["Configuration", "/configuration"],
+    ["Previews", "/previews"],
+    ["Components", "/components"],
+    ["Debugging", "/debugging"]
+  ]
+}
