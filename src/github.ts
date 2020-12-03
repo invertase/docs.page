@@ -198,8 +198,7 @@ export async function getGitHubFiles(properties: Properties): Promise<Files | nu
     `,
       owner: properties.owner,
       repository: properties.repository,
-      // Not sure how to build string values with variables within GQL
-      config: `${properties.ref}:docs.yaml`,
+      config: `${properties.ref}:docs.json`,
       md: `${properties.ref}:docs/${properties.path}.md`,
       mdx: `${properties.ref}:docs/${properties.path}.mdx`,
       html: `${properties.ref}:docs/${properties.path}.html`,

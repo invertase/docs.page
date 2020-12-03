@@ -1,6 +1,5 @@
 import { createContext } from 'react';
 import matter from 'gray-matter';
-import yaml from 'js-yaml';
 import get from 'lodash.get';
 
 import { LayoutType } from './components/Layout';
@@ -52,7 +51,7 @@ export async function getPageContent(properties: Properties): Promise<PageConten
   let config: Config;
   if (files.config) {
     try {
-      const json = yaml.safeLoad(files.config);
+      const json = JSON.parse(files.config);
       config = mergeConfig(json || {});
     } catch (e) {
       // Ignore errors
@@ -101,16 +100,16 @@ function mergeFrontmatter(data: any): Frontmatter {
   };
 }
 
-const VERSION_REGEX = /{{\s([a-zA-Z0-9_.]*)\s}}/gm;
+const VARIABLE_REGEX = /{{\s([a-zA-Z0-9_.]*)\s}}/gm;
 
 function replaceVariables(variables: object, value: string) {
   let output = value;
   let m: RegExpExecArray;
 
-  while ((m = VERSION_REGEX.exec(value)) !== null) {
+  while ((m = VARIABLE_REGEX.exec(value)) !== null) {
     // This is necessary to avoid infinite loops with zero-width matches
-    if (m.index === VERSION_REGEX.lastIndex) {
-      VERSION_REGEX.lastIndex++;
+    if (m.index === VARIABLE_REGEX.lastIndex) {
+      VARIABLE_REGEX.lastIndex++;
     }
 
     output = output.replace(m[0], get(variables, m[1], ''));
