@@ -53,6 +53,7 @@
     "refractor": "^3.2.0",
     "rehype-slug": "^4.0.1",
     "remark-admonitions": "^1.2.1",
+    "remark-unwrap-images": "^2.0.0",
     "rimraf": "^3.0.2",
     "serialize-error": "^7.0.1",
     "stacktracey": "^2.0.15",

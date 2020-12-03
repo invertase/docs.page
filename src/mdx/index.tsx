@@ -6,7 +6,7 @@ import { Header } from '../components/Header';
 import { Link } from '../components/Link';
 
 import { Heading } from './Heading';
-import { TabsContainer, TabItem } from './Tabs';
+import { Tabs, TabItem, TabsContext } from './Tabs';
 import { LiveCode, Pre, PreProps, withCodeBlockTitle } from './Code';
 import { Image } from './Image';
 import { YouTube } from './YouTube';
@@ -41,12 +41,16 @@ const components = {
 
   // Custom MDX components
   Header,
-  Tabs: TabsContainer,
+  Tabs,
   TabItem,
   Image,
   YouTube,
 };
 
 export function Hydrate({ source }: { source: any }) {
-  return <MdxRemote source={source} components={components} />;
+  return (
+    <TabsContext>
+      <MdxRemote source={source} components={components} />
+    </TabsContext>
+  );
 }

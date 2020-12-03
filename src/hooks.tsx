@@ -1,9 +1,10 @@
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Config, ConfigContext } from './config';
 import { PageContent, PageContentContext } from './content';
 import { CustomDomain, CustomDomainContext } from './domain';
 import { SlugProperties, SlugPropertiesContext } from './properties';
 import googleAnalytics from './scripts/google-analytics';
+import { isProduction } from './utils';
 
 export function useCustomDomain(): CustomDomain {
   return useContext(CustomDomainContext);
@@ -19,6 +20,12 @@ export function usePageContent(): PageContent {
 
 export function useConfig(): Config {
   return useContext(ConfigContext);
+}
+
+export function useNoSSR() {
+  const [ready, setReady] = useState<boolean>(false);
+  useEffect(() => setReady(true), []);
+  return ready;
 }
 
 // Returns a GitHub URL to edit the current page
@@ -39,52 +46,70 @@ export function useHeadTags(properties: SlugProperties, page: PageContent) {
   })();
 
   const tags = [
-    <title>{title}</title>,
-    <meta property="og:site_name" content="docs.page" />,
-    <meta property="og:title" content={title} />,
-    <meta property="og:url" content={`https://docs.page${properties.base}/${properties.path}`} />,
-    <meta name="twitter:title" content={title} />,
-    <meta name="twitter:image:alt" content={title} />,
-    <meta name="twitter:card" content="summary_large_image" />,
+    <title key="title">{title}</title>,
+    <meta key="og:site_name" property="og:site_name" content="docs.page" />,
+    <meta key="og:title" property="og:title" content={title} />,
+    <meta
+      key="og:url"
+      property="og:url"
+      content={`https://docs.page${properties.base}/${properties.path}`}
+    />,
+    <meta key="twitter:title" name="twitter:title" content={title} />,
+    <meta key="twitter:image:alt" name="twitter:image:alt" content={title} />,
+    <meta key="twitter:card" name="twitter:card" content="summary_large_image" />,
   ];
 
   if (config.logo) {
-    tags.push(<link rel="icon" type="image/png" href={config.logo} />);
+    tags.push(<link key="favicon" rel="icon" type="image/png" href={config.logo} />);
   }
 
   if (frontmatter.description) {
-    tags.push(<meta name="description" content={frontmatter.description} />);
-    tags.push(<meta property="og:description" content={frontmatter.description} />);
-    tags.push(<meta name="twitter:description" content={frontmatter.description} />);
+    tags.push(<meta key="description" name="description" content={frontmatter.description} />);
+    tags.push(
+      <meta key="og:description" property="og:description" content={frontmatter.description} />,
+    );
+    tags.push(
+      <meta
+        key="twitter:description"
+        name="twitter:description"
+        content={frontmatter.description}
+      />,
+    );
   }
 
   if (frontmatter.image) {
-    tags.push(<meta property="og:image" content={frontmatter.image} />);
+    tags.push(<meta key="og:image:frontmatter" property="og:image" content={frontmatter.image} />);
   } else if (config.socialPreview) {
-    tags.push(<meta property="og:image" content={config.socialPreview} />);
+    tags.push(<meta key="og:image:config" property="og:image" content={config.socialPreview} />);
   }
 
-  if (config.googleAnalytics) {
+  if (isProduction() && config.googleAnalytics) {
     tags.push(
       <script
+        key="config:googleAnalytics"
         async
         src={`https://www.googletagmanager.com/gtag/js?id=${config.googleAnalytics}`}
       />,
     );
     tags.push(
-      <script dangerouslySetInnerHTML={{ __html: googleAnalytics(config.googleAnalytics) }} />,
+      <script
+        key="config:googleAnalytics:script"
+        dangerouslySetInnerHTML={{ __html: googleAnalytics(config.googleAnalytics) }}
+      />,
     );
   }
 
   if (config.docsearch) {
     tags.push(
       <link
+        key="config:docsearch:css"
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css"
       />,
     );
     tags.push(
       <script
+        key="config:docsearch:js"
         type="text/javascript"
         src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"
       />,

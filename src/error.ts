@@ -34,13 +34,20 @@ export function redirect(link: string, properties?: Properties) {
   let destination: string;
 
   if (!properties || isExternalLink(link)) {
+    // If it is an external link or the slug properties have not been provided,
+    // redirect with the exact link.
     destination = link;
   } else {
+    // Ensure internal link starts with a `/`
     if (!link.startsWith('/')) {
       link = `/${link}`;
     }
 
-    destination = `/${properties.base}${link}`;
+    if (properties.isDefaultBranch) {
+      destination = `/${properties.owner}/${properties.repository}${link}`;
+    } else {
+      destination = `${properties.base}${link}`;
+    }
   }
 
   return {

@@ -1,3 +1,4 @@
+import React from 'react';
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import NextHead from 'next/head';
 import NextRouter from 'next/router';
@@ -16,14 +17,14 @@ import { redirect, RenderError } from '../error';
 import { SlugProperties, SlugPropertiesContext, Properties } from '../properties';
 import { PageContentContext, getPageContent, PageContent } from '../content';
 import { getDefaultBranch, getPullRequestMetadata } from '../github';
-import React from 'react';
 import { useHeadTags } from '../hooks';
-import { CustomDomain, CustomDomainContext, getCustomDomain } from '../domain';
+import { CustomDomain, CustomDomainContext } from '../domain';
+import { routeChangeComplete, routeChangeError, routeChangeStart } from '../utils';
 
 NProgress.configure({ showSpinner: false });
-NextRouter.events.on('routeChangeStart', () => NProgress.start());
-NextRouter.events.on('routeChangeComplete', () => NProgress.done());
-NextRouter.events.on('routeChangeError', () => NProgress.done());
+NextRouter.events.on('routeChangeStart', routeChangeStart);
+NextRouter.events.on('routeChangeComplete', routeChangeComplete);
+NextRouter.events.on('routeChangeError', routeChangeError);
 
 export default function Documentation({
   domain,
@@ -135,7 +136,11 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
             require('../../rehype-prose'),
             require('rehype-slug'),
           ],
-          remarkPlugins: [require('@fec/remark-a11y-emoji'), require('remark-admonitions')],
+          remarkPlugins: [
+            require('remark-unwrap-images'),
+            require('@fec/remark-a11y-emoji'),
+            require('remark-admonitions'),
+          ],
         },
       });
     }

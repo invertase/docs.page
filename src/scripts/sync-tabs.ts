@@ -14,7 +14,7 @@
 */
 
 export default `
-(function() {
+function syncTabs() {
   // Get all elements with the "data-sync-tabs=true" property
   const tabElements = document.querySelectorAll("[data-sync-tabs=true");
 
@@ -71,5 +71,9 @@ export default `
       }
     }
   });
-})();
+}
+
+window._docs_page = window._docs_page || {};
+window._docs_page.syncTabs = syncTabs;
+(syncTabs)();
 `;

@@ -90,16 +90,7 @@ type TabsProps = {
   className?: string;
 };
 
-// Wraps each `<Tabs />` component within Context.
-export function TabsContainer(props: TabsProps) {
-  return (
-    <TabsContext>
-      <Tabs {...props} />
-    </TabsContext>
-  );
-}
-
-function Tabs({ groupId, defaultValue, values, children, className }: TabsProps) {
+export function Tabs({ groupId, defaultValue, values, children, className }: TabsProps) {
   const { hash } = useContext(SlugPropertiesContext);
   const [selected, setSelected] = useState<string>(() => {
     if (groupId) return null;

@@ -1,7 +1,7 @@
-import Document, { Html, Head, Main, NextScript } from "next/document";
+import Document, { Html, Head, Main, NextScript } from 'next/document';
 
-import noflash from "../scripts/noflash";
-import syncTabs from "../scripts/sync-tabs";
+import noflash from '../scripts/noflash';
+import syncTabs from '../scripts/sync-tabs';
 
 class _Document extends Document {
   render() {

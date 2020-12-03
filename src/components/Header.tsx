@@ -4,11 +4,10 @@ import DarkModeToggle from 'react-dark-mode-toggle';
 import useDarkMode from 'use-dark-mode';
 
 import { DARK_MODE_CLASS_NAME, LIGHT_MODE_CLASS_NAME, STORAGE_KEY } from '../scripts/noflash';
-import { isClient } from '../utils';
 
 import { ExternalLink, Link } from './Link';
 import { Branch, GitHub, PullRequest } from './Icons';
-import { useConfig, useSlugProperties } from '../hooks';
+import { useConfig, useNoSSR, useSlugProperties } from '../hooks';
 import { Search } from './Search';
 
 export function Header({ debug = false }: { debug?: boolean }) {
@@ -75,6 +74,7 @@ export function Header({ debug = false }: { debug?: boolean }) {
 }
 
 function Toggle() {
+  const ready = useNoSSR();
   const darkMode = useDarkMode(false, {
     storageKey: STORAGE_KEY,
     classNameDark: DARK_MODE_CLASS_NAME,
@@ -83,7 +83,7 @@ function Toggle() {
 
   return (
     <div className="flex items-center" style={{ width: 70 }}>
-      {isClient() && (
+      {ready && (
         <DarkModeToggle
           onChange={checked => {
             if (checked) darkMode.enable();
