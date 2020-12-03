@@ -146,7 +146,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
 
   return {
     props: {
-      domain: await getCustomDomain(properties),
+      domain: null, // await getCustomDomain(properties),
       properties: properties.toObject(),
       source,
       page,
