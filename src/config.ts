@@ -47,11 +47,7 @@ export const defaultConfig: Config = {
   logo: '',
   socialPreview: '',
   theme: '#00bcd4',
-  // docsearch: null,
-  docsearch: {
-    indexName: 'flutterfire',
-    apiKey: '61eba190d4380f3db4e11d21b70e7608',
-  },
+  docsearch: null,
   navigation: [],
   sidebar: [],
   defaultLayout: DEFAULT_LAYOUT,
