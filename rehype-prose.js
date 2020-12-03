@@ -1,5 +1,5 @@
 const visit = require("unist-util-visit");
-const { select, selectAll } = require("hast-util-select");
+const { selectAll } = require("hast-util-select");
 const parseSelector = require("hast-util-parse-selector");
 
 const selector = ".markdown > *";

@@ -1,10 +1,8 @@
-import React, { useState, useEffect, cloneElement } from 'react';
+import React, { useState, useEffect } from 'react';
 import cx from 'classnames';
-import { LiveProvider, LiveEditor, LiveError, LivePreview } from 'react-live';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
 export interface PreProps extends React.HTMLProps<HTMLPreElement> {
-  live?: 'true' | 'false';
   raw?: string;
   copy?: string;
 }
@@ -23,7 +21,7 @@ export function Pre(props: PreProps) {
   }, [copied]);
 
   // Extract non-default properties
-  const { raw, copy, live, ...preProps } = props;
+  const { raw, copy, ...preProps } = props;
 
   return (
     <div className="relative group">
@@ -44,26 +42,6 @@ export function Pre(props: PreProps) {
           </CopyToClipboard>
         </div>
       )}
-    </div>
-  );
-}
-
-export function LiveCode({ code }: { code: string }) {
-  return (
-    <div className="no-prose rounded overflow-hidden">
-      <LiveProvider code={code} scope={{ useState, useEffect, cloneElement }}>
-        <div className="font-mono font-bold text-gray-900 px-2 py-3 bg-gray-500">LIVE EDITOR</div>
-        <div className="bg-gray-800">
-          <LiveEditor />
-        </div>
-        <LiveError />
-        <div>
-          <div className="font-mono font-bold text-gray-900 px-2 py-3 bg-gray-500">RESULT</div>
-          <div className="bg-gray-800 text-white">
-            <LivePreview />
-          </div>
-        </div>
-      </LiveProvider>
     </div>
   );
 }

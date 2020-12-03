@@ -7,7 +7,7 @@ import { Link } from '../components/Link';
 
 import { Heading } from './Heading';
 import { Tabs, TabItem, TabsContext } from './Tabs';
-import { LiveCode, Pre, PreProps, withCodeBlockTitle } from './Code';
+import { Pre, PreProps, withCodeBlockTitle } from './Code';
 import { Image } from './Image';
 import { YouTube } from './YouTube';
 
@@ -27,10 +27,6 @@ const components = {
     const pre = (className?: string) => (
       <Pre {...props} className={cx(props.className, className)} copy={props.raw} />
     );
-
-    if (React.isValidElement(props.children) && props.live === 'true') {
-      return <LiveCode code={props.children?.props?.children ?? ''} />;
-    }
 
     if (React.isValidElement(props.children) && props.children?.props?.title) {
       return withCodeBlockTitle(props.children?.props?.title, pre('code-block-title'));

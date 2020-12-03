@@ -1,9 +1,5 @@
 /**
  * Modified version of https://github.com/mapbox/rehype-prism
- *
- * Instead of converting every single code block with a language tag with refractor,
- * we first check whether the `live` tag is present, which leaves the code untouched
- * to allow `react-live` to handle the formatting and output.
  */
 
 const visit = require('unist-util-visit');
@@ -27,15 +23,6 @@ module.exports = options => {
     if (lang === null) {
       return;
     }
-
-    // If the lang is jsx and the user has added the `live` tag, ignore this node
-    if (lang === 'jsx' && node.properties.live === true) {
-      parent.properties.live = 'true';
-      return;
-    }
-
-    // Force the `live` property to false (as string) if it's not JSX
-    parent.properties.live = 'false';
 
     // Raw value of the `code` block - used for copy/paste
     parent.properties.raw = '';

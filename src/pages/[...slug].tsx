@@ -133,7 +133,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
         mdxOptions: {
           rehypePlugins: [
             require('../../rehype-prism'),
-            require('../../rehype-prose'),
+            // require('../../rehype-prose'),
             require('rehype-slug'),
           ],
           remarkPlugins: [

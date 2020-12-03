@@ -16,7 +16,7 @@ export function Header({ debug = false }: { debug?: boolean }) {
   const repo = `${properties.owner}/${properties.repository}`;
 
   return (
-    <header className="desktop:px-4 sticky top-0 z-10 flex items-center h-16 bg-white text-sm dark:bg-gray-800 text-gray-900 dark:text-white border-b dark:border-gray-800 transition duration-1000 ease-in-out">
+    <header className="desktop:px-4 sticky top-0 z-10 flex items-center h-16 bg-white text-sm dark:bg-gray-800 text-gray-900 dark:text-white border-b dark:border-gray-800">
       <div className="flex-1 flex items-center space-x-4 h-16">
         <span>
           <span className="font-mono text-lg">
