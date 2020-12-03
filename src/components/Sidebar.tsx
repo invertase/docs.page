@@ -102,10 +102,12 @@ function Title({
         {title}
       </span>
       <span
-        className={cx('transform transition-rotate duration-100', {
-          'rotate-90': active,
-        })}
-        style={{ width: 20, height: 20 }}
+        style={{
+          width: 20,
+          height: 20,
+          transform: `rotate(${active ? '90deg' : '0deg'})`,
+          transition: 'transform .1s ease-in-out',
+        }}
       >
         <svg
           width={20}
