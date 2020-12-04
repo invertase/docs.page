@@ -16,60 +16,80 @@ export function Header() {
   const repo = `${properties.owner}/${properties.repository}`;
 
   return (
-    <header className="desktop:px-4 sticky top-0 z-10 flex items-center h-16 bg-white text-sm dark:bg-gray-800 text-gray-900 dark:text-white border-b dark:border-gray-800">
-      <div className="flex-1 flex items-center space-x-4 h-16">
-        <span>
-          <span className="font-mono text-lg">
-            <Link href="/" className="font-mono hover:underline">
-              {config.name || repo}
-            </Link>
-          </span>
-        </span>
-      </div>
-      <div className="flex items-center justify-center space-x-6 font-mono h-16">
-        {config.navigation.length > 0 && (
-          <ul className="flex items-center space-x-6 overflow-x-auto px-3 desktop:px-0">
-            {config.navigation.map(([title, url]) => (
-              <li key={url}>
-                <Link href={url} className="hover:underline whitespace-nowrap">
-                  {title}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-        <div className="hidden desktop:flex items-center space-x-6">
-          {!!config.name && (
-            <ExternalLink
-              href={`https://github.com/${repo}`}
-              className="group flex items-center hover:underline"
-            >
-              <GitHub size={26} className="text-black dark:text-white hover:opacity-80" />
-            </ExternalLink>
-          )}
-          {!properties.isDefaultBranch && (
-            <ExternalLink
-              href={`https://github.com/${repo}/tree/${properties.ref}`}
-              className={cx(
-                'flex px-3 py-2 text-xs rounded-lg shadow text-white transition-colors',
-                {
-                  'bg-green-500 hover:bg-green-400 ': properties.refType === 'branch',
-                  'bg-blue-500 hover:bg-blue-400 ': properties.refType === 'pull-request',
-                },
-              )}
-            >
-              {properties.refType === 'pull-request' && <PullRequest size={16} />}
-              {properties.refType === 'branch' && <Branch size={16} className="text-white" />}
-              <span className="pl-1">{properties.ref}</span>
-            </ExternalLink>
-          )}
-          {!!config.docsearch && (
-            <Search apiKey={config.docsearch.apiKey} indexName={config.docsearch.indexName} />
-          )}
-          <Toggle />
+    <header className="px-4 sticky top-0 z-10 bg-white text-sm dark:bg-gray-800 text-gray-900 dark:text-white border-b dark:border-gray-800">
+      <div className="flex items-center h-16">
+        <Link href="/" className="flex-1 text-lg mr-1 font-mono hover:underline truncate">
+          {config.name || repo}
+        </Link>
+        <div className="hidden desktop:flex items-center justify-center space-x-6 font-mono overflow-auto">
+          <Navigation />
         </div>
+        <Utils />
+      </div>
+      <div className="block desktop:hidden">
+        <Navigation />
       </div>
     </header>
+  );
+}
+
+function Navigation() {
+  const config = useConfig();
+
+  return (
+    config.navigation.length > 0 && (
+      <ul className="flex items-center overflow-x-auto h-16 desktop:mr-4">
+        {config.navigation.map(([title, url]) => (
+          <li key={url}>
+            <Link href={url} className="transition-colors hover:bg-gray-200 dark:hover:bg-gray-900 whitespace-nowrap px-4 py-2 rounded desktop:ml-1">
+              {title}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    )
+  );
+}
+
+function Utils() {
+  const config = useConfig();
+  const properties = useSlugProperties();
+  const repo = `${properties.owner}/${properties.repository}`;
+
+  return (
+    <div className="flex items-center space-x-6">
+      <ExternalLink
+        href={`https://github.com/${repo}`}
+        className="group flex items-center hover:underline"
+      >
+        <GitHub size={26} className="text-black dark:text-white hover:opacity-80" />
+      </ExternalLink>
+      {!properties.isDefaultBranch && (
+        <ExternalLink
+          href={`https://github.com/${repo}/tree/${properties.ref}`}
+          className={cx(
+            'flex px-3 py-2 text-xs rounded-lg shadow text-white transition-colors whitespace-nowrap',
+            {
+              'bg-green-500 hover:bg-green-400 ': properties.refType === 'branch',
+              'bg-blue-500 hover:bg-blue-400 ': properties.refType === 'pull-request',
+            },
+          )}
+        >
+          {properties.refType === 'pull-request' && <PullRequest size={16} />}
+          {properties.refType === 'branch' && <Branch size={16} className="text-white" />}
+          <span className="pl-1">
+            {properties.ref.slice(0, 25)}
+            {properties.ref.length > 25 ? '...' : ''}
+          </span>
+        </ExternalLink>
+      )}
+      {!!config.docsearch && (
+        <Search apiKey={config.docsearch.apiKey} indexName={config.docsearch.indexName} />
+      )}
+      <div className="hidden desktop:block">
+        <Toggle />
+      </div>
+    </div>
   );
 }
 
