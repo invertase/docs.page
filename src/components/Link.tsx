@@ -10,9 +10,14 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>) {
   const customDomain = useCustomDomain();
   const properties = useSlugProperties();
 
+  if (isHashLink(props.href)) {
+    return <a {...props} />;
+  }
+
   if (isExternalLink(props.href)) {
     return <a {...props} target="_blank" rel="noopener" />;
   }
+
   // Custom domains are only used in production
   const isUsingCustomDomain: boolean = isProduction() && !!customDomain;
 
@@ -58,4 +63,8 @@ export function ExternalLink(props: React.HTMLProps<HTMLAnchorElement>) {
 
 export function isExternalLink(link: string): boolean {
   return link.startsWith('http://') || link.startsWith('https://');
+}
+
+export function isHashLink(link: string): boolean {
+  return link.startsWith('#');
 }

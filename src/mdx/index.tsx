@@ -10,6 +10,7 @@ import { Tabs, TabItem, TabsContext } from './Tabs';
 import { Pre, PreProps, withCodeBlockTitle } from './Code';
 import { Image } from './Image';
 import { YouTube } from './YouTube';
+import { usePageContent } from '../hooks';
 
 const components = {
   // HTML element overrides
@@ -33,6 +34,19 @@ const components = {
     }
 
     return pre();
+  },
+  nav: (props: React.HTMLProps<HTMLDivElement>) => {
+    const tableOfContents = usePageContent().frontmatter.tableOfContents;
+
+    if (tableOfContents && props.className.includes('toc')) {
+      return (
+        <>
+          <h3>Table of contents</h3>
+          <nav {...props} className="toc mb-12 text-xs" />
+        </>
+      );
+    }
+    return null;
   },
 
   // Custom MDX components

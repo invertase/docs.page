@@ -16,6 +16,17 @@ export const GithubGQLClient = graphql.defaults({
   },
 });
 
+export function headerDepthToHeaderList(depth: number): string[] {
+  const list = [];
+  if (depth === 0) return list;
+
+  for (let i = 1; i <= depth; i++) {
+    list.push(`h${i}`);
+  }
+
+  return list;
+}
+
 export function routeChangeStart() {
   NProgress.start();
 }

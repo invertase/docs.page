@@ -33,7 +33,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   if (page.type === 'html' || layout === 'bare') {
     return <div>{children}</div>;
   }
-
+  console.log(page.frontmatter);
   return (
     <>
       <Header />
@@ -42,6 +42,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           className={cx('prose dark:prose-dark px-2 lg:px-0 py-20 mx-auto', widthMap[layout])}
         >
           {children}
+
           <Divider />
           <Footer />
         </article>

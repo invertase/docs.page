@@ -33,6 +33,9 @@ module.exports = {
       typography: theme => ({
         DEFAULT: {
           css: {
+            'nav.toc ol > li::before': {
+              content: '"#"',
+            },
             img: {
               marginLeft: 'auto',
               marginRight: 'auto',

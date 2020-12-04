@@ -1,0 +1,60 @@
+---
+title: Contributing
+description: Learn how to run docs.page locally and help contribute to the project.
+---
+
+# Contributing
+
+Learn how to run docs.page locally and help contribute to the project.
+
+## Running locally
+
+Firstly, fork the [https://github.com/invertase/docs.page](https://github.com/invertase/docs.page) repository.
+Once forked, clone the repository locally: 
+
+```bash
+git clone git@github.com:invertase/docs.page.git
+```
+
+Within the cloned directory, install the projects dependencies with NPM/Yarn:
+
+```bash
+npm install
+# or
+yarn
+```
+
+Before running, you must add a GitHub personal access token as an environment variable. This token allows API calls
+to be made via GitHub. Create a `.env` file at the root of the project:
+
+```txt title=.env
+GITHUB_PAT=ABC...
+```
+
+> You can create a new token on your [GitHub settings](https://github.com/settings/tokens).
+
+Now run the project:
+
+```bash
+npm run dev
+```
+
+## Structure
+
+Aside from the projects homepage, all requests are sent via the `src/pages/[...slug].tsx` file. If production a cached version of the statically generated HTML output will be served, or created then cached. In development however, the page is
+built on each request. Therefore load times might seem a bit slower than expected.
+
+> Learn more about this at [Next.js](https://nextjs.org/docs/basic-features/data-fetching#getstaticprops-static-generation).
+
+Each request is sent via the `getStaticProps` function, which performs a number of tasks:
+
+- Extracting the expected GitHub repository from the request.
+- Extracting, or fetching the GitHub reference for the request.
+- Identifying whether the reference is a Pull Request, or Branch.
+- Fetching the contents of the page via the GitHub API.
+- Transforming the page content into MDX.
+- Handling errors, such as render problems or 404 requests.
+
+### MDX Components
+
+### Error handling

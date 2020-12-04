@@ -19,7 +19,12 @@ import { PageContentContext, getPageContent, PageContent } from '../content';
 import { getDefaultBranch, getPullRequestMetadata } from '../github';
 import { useHeadTags } from '../hooks';
 import { CustomDomain, CustomDomainContext } from '../domain';
-import { routeChangeComplete, routeChangeError, routeChangeStart } from '../utils';
+import {
+  headerDepthToHeaderList,
+  routeChangeComplete,
+  routeChangeError,
+  routeChangeStart,
+} from '../utils';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', routeChangeStart);
@@ -133,8 +138,13 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
         mdxOptions: {
           rehypePlugins: [
             require('../../rehype-prism'),
-            // require('../../rehype-prose'),
             require('rehype-slug'),
+            [
+              require('@jsdevtools/rehype-toc'),
+              {
+                headings: headerDepthToHeaderList(page.config.headerDepth),
+              },
+            ],
           ],
           remarkPlugins: [
             require('remark-unwrap-images'),
