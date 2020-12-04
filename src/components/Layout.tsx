@@ -39,7 +39,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <Header />
       <WithSidebar>
         <article
-          className={cx('prose dark:prose-dark px-2 lg:px-0 py-20 mx-auto', widthMap[layout])}
+          className={cx('prose dark:prose-dark px-2 lg:px-0 py-6 desktop:py-20 mx-auto', widthMap[layout])}
         >
           {children}
 

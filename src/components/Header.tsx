@@ -1,14 +1,11 @@
 import React from 'react';
 import cx from 'classnames';
-import DarkModeToggle from 'react-dark-mode-toggle';
-import useDarkMode from 'use-dark-mode';
-
-import { DARK_MODE_CLASS_NAME, LIGHT_MODE_CLASS_NAME, STORAGE_KEY } from '../scripts/noflash';
 
 import { ExternalLink, Link } from './Link';
 import { Branch, GitHub, PullRequest } from './Icons';
-import { useConfig, useNoSSR, useSlugProperties } from '../hooks';
+import { DarkModeToggle } from './DarkModeToggle';
 import { Search } from './Search';
+import { useConfig, useSlugProperties } from '../hooks';
 
 export function Header() {
   const config = useConfig();
@@ -17,7 +14,7 @@ export function Header() {
 
   return (
     <header className="px-4 sticky top-0 z-10 bg-white text-sm dark:bg-gray-800 text-gray-900 dark:text-white border-b dark:border-gray-800">
-      <div className="flex items-center h-16">
+      <div className="flex items-center h-12 desktop:h-16">
         <Link href="/" className="flex-1 text-lg mr-1 font-mono hover:underline truncate">
           {config.name || repo}
         </Link>
@@ -38,10 +35,13 @@ function Navigation() {
 
   return (
     config.navigation.length > 0 && (
-      <ul className="flex items-center overflow-x-auto h-16 desktop:mr-4">
+      <ul className="flex items-center justify-center desktop:justify-start overflow-x-auto h-12 desktop:h-16 desktop:mr-4">
         {config.navigation.map(([title, url]) => (
           <li key={url}>
-            <Link href={url} className="transition-colors hover:bg-gray-200 dark:hover:bg-gray-900 whitespace-nowrap px-4 py-2 rounded desktop:ml-1">
+            <Link
+              href={url}
+              className="transition-colors hover:bg-gray-200 dark:hover:bg-gray-900 whitespace-nowrap px-4 py-2 rounded desktop:ml-1"
+            >
               {title}
             </Link>
           </li>
@@ -87,32 +87,8 @@ function Utils() {
         <Search apiKey={config.docsearch.apiKey} indexName={config.docsearch.indexName} />
       )}
       <div className="hidden desktop:block">
-        <Toggle />
+        <DarkModeToggle />
       </div>
-    </div>
-  );
-}
-
-function Toggle() {
-  const ready = useNoSSR();
-  const darkMode = useDarkMode(false, {
-    storageKey: STORAGE_KEY,
-    classNameDark: DARK_MODE_CLASS_NAME,
-    classNameLight: LIGHT_MODE_CLASS_NAME,
-  });
-
-  return (
-    <div className="flex items-center" style={{ width: 70 }}>
-      {ready && (
-        <DarkModeToggle
-          onChange={checked => {
-            if (checked) darkMode.enable();
-            else darkMode.disable();
-          }}
-          checked={darkMode.value}
-          size={70}
-        />
-      )}
     </div>
   );
 }

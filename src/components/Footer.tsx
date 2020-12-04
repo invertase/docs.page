@@ -1,5 +1,6 @@
 import React from 'react';
 import { useEditUrl } from '../hooks';
+import { DarkModeToggle } from './DarkModeToggle';
 import { Pencil } from './Icons';
 import { ExternalLink } from './Link';
 
@@ -9,10 +10,15 @@ function Footer() {
   return (
     <footer className="flex dark:text-white font-mono text-sm">
       <div className="flex-1">
-        Powered by{' '}
-        <ExternalLink href="https://docs.page" className="font-bold hover:underline">
-          docs.page
-        </ExternalLink>
+        <div>
+          Powered by{' '}
+          <ExternalLink href="https://docs.page" className="font-bold hover:underline">
+            docs.page
+          </ExternalLink>
+        </div>
+        <div className="desktop:hidden mt-4">
+          <DarkModeToggle />
+        </div>
       </div>
       <ExternalLink href={edit} className="flex hover:underline">
         <Pencil size={16} />
