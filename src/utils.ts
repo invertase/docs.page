@@ -35,7 +35,6 @@ export function routeChangeComplete() {
   NProgress.done();
   // Trigger the sync-tabs script to run on client route changes
   if (window._docs_page.syncTabs) {
-    console.log('HERE');
     window._docs_page.syncTabs();
   }
 }

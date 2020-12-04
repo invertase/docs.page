@@ -33,7 +33,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   if (page.type === 'html' || layout === 'bare') {
     return <div>{children}</div>;
   }
-  console.log(page.frontmatter);
+  
   return (
     <>
       <Header />
