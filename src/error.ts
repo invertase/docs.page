@@ -6,6 +6,13 @@ export enum ErrorType {
   pageNotFound,
   serverError,
 }
+
+export interface IRenderError {
+  statusCode: number;
+  errorType: ErrorType;
+  properties?: SlugProperties;
+}
+
 export class RenderError {
   public static repositoryNotFound(properties: Properties) {
     return new RenderError(404, ErrorType.repositoryNotFound, properties);
@@ -21,12 +28,20 @@ export class RenderError {
 
   public readonly statusCode: number;
   public readonly errorType: ErrorType;
-  public readonly properties?: SlugProperties;
+  public readonly properties?: Properties;
 
   private constructor(statusCode: number, errorType: ErrorType, properties?: Properties) {
     this.statusCode = statusCode;
     this.errorType = errorType;
-    this.properties = properties?.toObject();
+    this.properties = properties;
+  }
+
+  public toObject(): IRenderError {
+    return {
+      statusCode: this.statusCode,
+      errorType: this.errorType,
+      properties: this.properties?.toObject(),
+    };
   }
 }
 

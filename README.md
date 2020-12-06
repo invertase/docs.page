@@ -5,6 +5,7 @@
 ## Homepage
 
 - [ ] Regex needs doing to extract the owner/repo from the URL (`Checkout` component) & redirect the user
+- [ ] Add minimal footer to homepage (just a few links, keep it clean)
 
 ## pages/[...slug].tsx
 
@@ -21,17 +22,26 @@
 - [x] Syntax highlighting
   - Use Rehype plugin during server rendering? https://github.com/mapbox/rehype-prism
   - Client needs to pull in styles
-- [ ] Line highlighting in code
-- [ ] Assets (img component) - can we somehow link to the raw file on git? Easier way?
-- [ ] Link component not handling default branch?
-- [ ] Sidebar nested items need testing - toggle not working yet
+- [ ] Line highlighting in code - plugin?
+- [x] Assets (img component) - can we somehow link to the raw file on git? Easier way?
+- [x] Link component not handling default branch?
+- [x] Sidebar nested items need testing - toggle not working yet
 - [ ] Enable navbar dropdown somehow?
+- Table of contents
+  - [ ] No underlines (only on hover)
+  - [ ]Hide the h1 tags (see `rehypePlugins` options; thought I handled this)
+  - [ ] Bold lines with children (might be doable via tailwind.config.js)
 
 ## pages/_debug/[...slug].tsx
 
 - [ ] Needs overall implementation. Pull data/responses from everywhere and show output on the page.
+- [ ] Ensure it has a `noindex` metatag
+- [ ] Not working with 404 repos/errors (/_debug/ehesp/testingh)
+- [ ] Display list of generated meta tags (`getHeadTags`)
 
-## pages/_error.tsx
+# Error Page
 
-- [ ] Needs overall implementation:
-   - Currently a custom error is thrown within `getStaticProps` which should be passed along to this component, where the details can be extracted.
+- [ ] "The page, index was not found in the ehesp/testingh repository. " doesn't make sense - the repo isn't there so the page will never exist, still says "Document not found"
+- [ ] Add minimal footer (same as homepage)
+- [ ] Can we somehow make it look a bit better? "404" text above the box, a bigger, colored?
+- [ ]

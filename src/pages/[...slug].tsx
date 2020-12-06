@@ -10,14 +10,14 @@ import { Hydrate } from '../mdx';
 
 import { ThemeStyles } from '../components/ThemeStyles';
 import { Layout } from '../components/Layout';
-import { ErrorBoundary } from '../components/ErrorBoundary';
+import { Error, ErrorBoundary } from '../templates/error';
 
 import { ConfigContext } from '../config';
-import { redirect, RenderError } from '../error';
+import { IRenderError, redirect, RenderError } from '../error';
 import { SlugProperties, SlugPropertiesContext, Properties } from '../properties';
 import { PageContentContext, getPageContent, PageContent } from '../content';
 import { getDefaultBranch, getPullRequestMetadata } from '../github';
-import { useHeadTags } from '../hooks';
+import { getHeadTags } from '../hooks';
 import { CustomDomain, CustomDomainContext } from '../domain';
 import {
   headerDepthToHeaderList,
@@ -32,12 +32,18 @@ NextRouter.events.on('routeChangeComplete', routeChangeComplete);
 NextRouter.events.on('routeChangeError', routeChangeError);
 
 export default function Documentation({
-  domain,
+  domain, // TODO custom domains
   source,
   properties,
   page,
+  error,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
-  const tags = useHeadTags(properties, page);
+  console.log(error);
+  if (error) {
+    return <Error {...error} />;
+  }
+
+  const tags = getHeadTags(properties, page);
 
   return (
     <>
@@ -79,6 +85,7 @@ type StaticProps = {
   properties: SlugProperties;
   source?: string;
   page?: PageContent;
+  error?: IRenderError;
 };
 
 export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) => {
@@ -90,6 +97,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
   }
 
   let source = null;
+  let error: RenderError = null;
   let page: PageContent;
 
   // Extract the slug properties from the request.
@@ -101,7 +109,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
     const defaultBranch = await getDefaultBranch(properties.owner, properties.repository);
 
     if (!defaultBranch) {
-      throw RenderError.repositoryNotFound(properties);
+      error = RenderError.repositoryNotFound(properties);
     } else {
       properties.setDefaultBranch(defaultBranch);
     }
@@ -123,40 +131,38 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
   page = await getPageContent(properties);
 
   if (!page) {
-    throw RenderError.pageNotFound(properties);
-  }
-
-  if (page.frontmatter.redirect) {
+    error = RenderError.pageNotFound(properties);
+  } else if (page.frontmatter.redirect) {
     return redirect(page.frontmatter.redirect, properties);
-  }
-
-  try {
-    if (page.type === 'html') {
-      source = page.content;
-    } else {
-      source = await mdxSerialize(page.content, {
-        mdxOptions: {
-          rehypePlugins: [
-            require('../../rehype-prism'),
-            require('rehype-slug'),
-            [
-              require('@jsdevtools/rehype-toc'),
-              {
-                headings: headerDepthToHeaderList(page.config.headerDepth),
-              },
+  } else {
+    try {
+      if (page.type === 'html') {
+        source = page.content;
+      } else {
+        source = await mdxSerialize(page.content, {
+          mdxOptions: {
+            rehypePlugins: [
+              require('../../rehype-prism'),
+              require('rehype-slug'),
+              [
+                require('@jsdevtools/rehype-toc'),
+                {
+                  headings: headerDepthToHeaderList(page.config.headerDepth),
+                },
+              ],
             ],
-          ],
-          remarkPlugins: [
-            require('remark-unwrap-images'),
-            require('@fec/remark-a11y-emoji'),
-            require('remark-admonitions'),
-          ],
-        },
-      });
+            remarkPlugins: [
+              require('remark-unwrap-images'),
+              require('@fec/remark-a11y-emoji'),
+              require('remark-admonitions'),
+            ],
+          },
+        });
+      }
+    } catch (e) {
+      console.log('!!!', e);
+      error = RenderError.serverError(properties);
     }
-  } catch (e) {
-    console.log(e);
-    throw RenderError.serverError(properties);
   }
 
   return {
@@ -165,6 +171,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
       properties: properties.toObject(),
       source,
       page,
+      error: error?.toObject() ?? null,
     },
     revalidate: 30,
   };

@@ -26,6 +26,10 @@ export type PageContent = {
   frontmatter: Frontmatter;
   raw: string;
   content: string;
+  flags: {
+    hasConfig: boolean;
+    hasFrontmatter: boolean;
+  };
 };
 
 export const PageContentContext = createContext<PageContent | null>(null);
@@ -67,10 +71,12 @@ export async function getPageContent(properties: Properties): Promise<PageConten
   let raw = files.md ?? files.mdx ?? files.html ?? '';
 
   // Only MD/MDX pages can have frontmatter
+  let hasFrontmatter = false;
   let frontmatter: Frontmatter;
   let content = '';
   if (type === 'md' || type === 'mdx') {
     const parsed = matter(raw);
+    hasFrontmatter = true;
     frontmatter = mergeFrontmatter(parsed.data ?? {});
     content = parsed.content;
   } else {
@@ -87,6 +93,10 @@ export async function getPageContent(properties: Properties): Promise<PageConten
     frontmatter,
     raw,
     content,
+    flags: {
+      hasConfig: !!files.config,
+      hasFrontmatter,
+    },
   };
 }
 

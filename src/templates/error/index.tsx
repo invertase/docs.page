@@ -1,7 +1,35 @@
 import React, { ReactChild } from 'react';
+import NextHead from 'next/head';
+
+import { ErrorType, IRenderError } from '../../error';
 
 import { SlugProperties } from '../../properties';
 import { QuickLinks } from './QuickLinks';
+
+export * from './ErrorBoundary';
+
+export function Error({ statusCode, errorType, properties }: IRenderError) {
+  let child: React.ReactElement;
+
+  if (errorType === ErrorType.repositoryNotFound) {
+    child = <RepositoryNotFound properties={properties} />;
+  } else if (errorType === ErrorType.pageNotFound) {
+    child = <DocumentNotFound properties={properties} />;
+  } else if (statusCode == 404) {
+    child = <PageNotFound />;
+  } else {
+    child = <ServerError properties={properties} />;
+  }
+
+  return (
+    <>
+      <NextHead>
+        <meta key="noindex" name="robots" content="noindex" />
+      </NextHead>
+      {child}
+    </>
+  );
+}
 
 export function RepositoryNotFound({ properties }: { properties: SlugProperties }) {
   const { owner, repository } = properties;

@@ -35,7 +35,7 @@ export function useEditUrl(): string {
   return `${properties.url}/edit/${properties.ref}/docs/${properties.path}.${fileType}`;
 }
 
-export function useHeadTags(properties: SlugProperties, page: PageContent) {
+export function getHeadTags(properties: SlugProperties, page?: PageContent) {
   const { frontmatter, config } = page;
 
   const title = (() => {
@@ -47,6 +47,7 @@ export function useHeadTags(properties: SlugProperties, page: PageContent) {
 
   const tags = [
     <title key="title">{title}</title>,
+    <meta name="theme-color" content={config.theme} />,
     <meta key="og:site_name" property="og:site_name" content="docs.page" />,
     <meta key="og:title" property="og:title" content={title} />,
     <meta
@@ -58,6 +59,11 @@ export function useHeadTags(properties: SlugProperties, page: PageContent) {
     <meta key="twitter:image:alt" name="twitter:image:alt" content={title} />,
     <meta key="twitter:card" name="twitter:card" content="summary_large_image" />,
   ];
+
+  // If the page isn't on the default branch, or if the user has no `docs.json` config, set a `noindex` meta tag
+  if (!properties.isDefaultBranch || !page.flags.hasConfig) {
+    tags.push(<meta key="noindex" name="robots" content="noindex" />);
+  }
 
   if (config.logo) {
     tags.push(<link key="favicon" rel="icon" type="image/png" href={config.logo} />);
