@@ -1,11 +1,9 @@
 import React from 'react';
-import { DarkModeToggle } from './DarkModeToggle';
-import { Pencil } from './Icons';
 import { ExternalLink, Link } from './Link';
 
 function SiteFooter() {
   return (
-    <footer className="flex dark:text-white font-mono text-sm mb-5 pt-4 border-t border-gray-700">
+    <footer className="flex dark:text-white text-sm mb-5 pt-4 border-t border-gray-700">
       <div className="flex-1">
         <div>
           © 2020{' '}

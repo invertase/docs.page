@@ -38,7 +38,6 @@ export default function Documentation({
   page,
   error,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
-  console.log(error);
   if (error) {
     return <Error {...error} />;
   }
