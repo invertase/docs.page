@@ -26,11 +26,14 @@
 - [x] Assets (img component) - can we somehow link to the raw file on git? Easier way?
 - [x] Link component not handling default branch?
 - [x] Sidebar nested items need testing - toggle not working yet
-- [ ] Enable navbar dropdown somehow?
+- [x] Enable navbar dropdown somehow?
 - Table of contents
   - [ ] No underlines (only on hover)
   - [ ] Hide the h1 tags (see `rehypePlugins` options; thought I handled this)
   - [ ] Bold lines with children (might be doable via tailwind.config.js)
+- [ ] Render assumes repo exists if a branch/pr exists, causing incorrect error pages
+  - `/invertase/mellos~docs-testing` causes a document not found error rather than repo not found
+
 
 ## pages/_debug/[...slug].tsx
 
