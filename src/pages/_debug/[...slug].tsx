@@ -1,11 +1,7 @@
 import React from 'react';
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import { getPageContent, PageContent } from '../../content';
-import {
-  Properties,
-  SlugPropertiesContext,
-  SPLITTER,
-} from '../../properties';
+import { Properties, SlugPropertiesContext, SPLITTER } from '../../properties';
 import { getDefaultBranch, getPullRequestMetadata } from '../../github';
 import mdxSerialize from 'next-mdx-remote/serialize';
 import { RepoInfo } from '../../templates/debug/RepoInfo';
@@ -25,6 +21,7 @@ export default function Debug({
     <>
       <NextHead>
         <base href={properties.path} />
+        <meta name="robots" content="noindex" />
         <title>
           Debug Mode | {properties.owner}/{properties.repository}
         </title>
