@@ -42,5 +42,6 @@
 # Error Page
 
 - [x] "The page, index was not found in the ehesp/testingh repository. " doesn't make sense - the repo isn't there so the page will never exist, still says "Document not found"
-- [ ] Add minimal footer (same as homepage)
+- [x] Add minimal footer (same as homepage)
+- [ ] Configure footer links
 - [x] Can we somehow make it look a bit better? "404" text above the box, a bigger, colored?

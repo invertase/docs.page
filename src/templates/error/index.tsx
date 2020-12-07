@@ -5,6 +5,7 @@ import { ErrorType, IRenderError } from '../../error';
 
 import { SlugProperties } from '../../properties';
 import { QuickLinks } from './QuickLinks';
+import { SiteFooter } from '../../components/SiteFooter';
 
 export * from './ErrorBoundary';
 
@@ -158,9 +159,9 @@ export function PageNotFound() {
 function ErrorPage({ children, code }: { code: String; children: ReactChild }) {
   return (
     <>
-      <section className="py-16 lg:pt-28 text-center lg:text-left space-y-32">
+      <section className="pt-16 lg:pt-20 text-center lg:text-left space-y-32">
         <div className="max-w-5xl mx-auto tracking-wider">
-          <h1 className="font-anton mb-4  bg-clip-text text-transparent bg-gradient-to-br from-gray-100 via-gray-300  to-gray-200">
+          <h1 className="font-anton mb-4  bg-clip-text text-transparent bg-gradient-to-br dark:from-gray-100 dark:via-gray-300  dark:to-gray-200 from-gray-900 via-gray-500 to-gray-700">
             <span className="bg-clip-text text-transparent bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 text-6xl lg:text-9xl">
               {ERROR_TYPES[`${code}`].title}
             </span>
@@ -177,6 +178,9 @@ function ErrorPage({ children, code }: { code: String; children: ReactChild }) {
         </div>
         <div className="px-4 lg:px-0 max-w-5xl mx-auto">
           <QuickLinks />
+        </div>
+        <div className="px-4 lg:px-0 max-w-5xl mx-auto">
+          <SiteFooter />
         </div>
       </section>
     </>
