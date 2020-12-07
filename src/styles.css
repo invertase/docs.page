@@ -16,4 +16,12 @@
     border-top-left-radius: 0 !important;
     border-top-right-radius: 0 !important;
   }
+
+  .toc-link {
+    text-decoration: none !important;
+  }
+
+  .toc-link:hover{
+    text-decoration: underline !important;
+  }
 }

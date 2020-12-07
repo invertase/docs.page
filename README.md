@@ -29,7 +29,8 @@
 - [x] Sidebar nested items need testing - toggle not working yet
 - [x] Enable navbar dropdown somehow?
 - Table of contents
-  - [ ] No underlines (only on hover)
+  - [x] No underlines (only on hover)
+    - Did via css
   - [ ] Hide the h1 tags (see `rehypePlugins` options; thought I handled this)
   - [ ] Bold lines with children (might be doable via tailwind.config.js)
 - [ ] Render assumes repo exists if a branch/pr exists, causing incorrect error pages
