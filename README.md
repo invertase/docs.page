@@ -31,7 +31,8 @@
 - Table of contents
   - [x] No underlines (only on hover)
     - Did via css
-  - [ ] Hide the h1 tags (see `rehypePlugins` options; thought I handled this)
+  - [x] Hide the h1 tags (see `rehypePlugins` options; thought I handled this)
+    - Started at 1 instead of 2 in loop
   - [ ] Bold lines with children (might be doable via tailwind.config.js)
 - [ ] Render assumes repo exists if a branch/pr exists, causing incorrect error pages
   - `/invertase/mellos~docs-testing` causes a document not found error rather than repo not found
