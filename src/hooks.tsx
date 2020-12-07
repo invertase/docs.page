@@ -122,7 +122,5 @@ export function getHeadTags(properties: SlugProperties, page?: PageContent) {
     );
   }
 
-  console.log(tags);
-
   return tags;
 }
