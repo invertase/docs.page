@@ -11,13 +11,19 @@ import { RenderError } from '../../templates/debug/RenderError';
 import { serializeError } from 'serialize-error';
 import { Header } from '../../components/Header';
 import NextHead from 'next/head';
+import { getHeadTags } from '../../hooks';
+import { MetaTags } from '../../templates/debug/MetaTags';
 
 export default function Debug({
   error,
   properties,
   page,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
-  console.log(properties);
+  let tags = null;
+  if (properties.ref) {
+    tags = getHeadTags(properties, page);
+  }
+
   return (
     <>
       <NextHead>
@@ -34,8 +40,14 @@ export default function Debug({
           {!page && properties.ref && <Error>Page not found</Error>}
 
           <RepoInfo properties={properties} />
+
           {error && <RenderError error={error} />}
-          {page && <Configuration config={page.config} />}
+          {page && (
+            <>
+              <Configuration config={page.config} />
+              <MetaTags tags={tags} />
+            </>
+          )}
         </div>
       </SlugPropertiesContext.Provider>
     </>
@@ -63,6 +75,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
 
   // Extract the slug properties from the request.
   let properties = new Properties(params.slug as string[]);
+  console.log(properties);
 
   // If no ref was found in the slug, grab the default branch name
   // from the GQL API.
@@ -114,6 +127,9 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
       error = serializeError(e);
     }
   } else {
+    // TODO: Temporary workaround to check if repo exists if user has given a branch or PR
+    const defaultBranch = await getDefaultBranch(properties.owner, properties.repository);
+    if (!defaultBranch) properties.ref = null;
     console.error('No page content found');
   }
 
