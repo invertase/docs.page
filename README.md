@@ -5,7 +5,7 @@
 ## Homepage
 
 - [ ] Regex needs doing to extract the owner/repo from the URL (`Checkout` component) & redirect the user
-- [ ] Add minimal footer to homepage (just a few links, keep it clean)
+- [x] Add minimal footer to homepage (just a few links, keep it clean)
 
 ## pages/[...slug].tsx
 
@@ -29,7 +29,7 @@
 - [ ] Enable navbar dropdown somehow?
 - Table of contents
   - [ ] No underlines (only on hover)
-  - [ ]Hide the h1 tags (see `rehypePlugins` options; thought I handled this)
+  - [ ] Hide the h1 tags (see `rehypePlugins` options; thought I handled this)
   - [ ] Bold lines with children (might be doable via tailwind.config.js)
 
 ## pages/_debug/[...slug].tsx

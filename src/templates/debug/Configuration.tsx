@@ -7,7 +7,11 @@ function Configuration({ config }: { config: Config }) {
     <section className="mx-auto max-w-5xl border rounded font-mono divide-y bg-white">
       <Row title="Configuration" header />
       <Row title="Name">{config.name}</Row>
-      <Row title="Logo">{config.logo}</Row>
+      <Row title="Logo">
+        <div className="flex flex-row items-center justify-end h-10 desktop:h-12">
+          <img src={config.logo} alt={config.name} style={{ maxHeight: '100%' }} />
+        </div>
+      </Row>
       <Row title="Theme">
         <div className="flex flex-row items-center space-x-2 justify-end">
           <div
