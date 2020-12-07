@@ -8,6 +8,13 @@ import { QuickLinks } from './QuickLinks';
 
 export * from './ErrorBoundary';
 
+const ERROR_TYPES = {
+  repo: { title: '404', subtitle: 'Repository Not Found' },
+  document: { title: '404', subtitle: 'Document Not Found' },
+  page: { title: '404', subtitle: 'Page Not Found' },
+  server: { title: '500', subtitle: 'Whoops! Something Went Wrong' },
+};
+
 export function Error({ statusCode, errorType, properties }: IRenderError) {
   let child: React.ReactElement;
 
@@ -25,6 +32,8 @@ export function Error({ statusCode, errorType, properties }: IRenderError) {
     <>
       <NextHead>
         <meta key="noindex" name="robots" content="noindex" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" />
+        <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet" />
       </NextHead>
       {child}
     </>
@@ -35,7 +44,7 @@ export function RepositoryNotFound({ properties }: { properties: SlugProperties 
   const { owner, repository } = properties;
 
   return (
-    <ErrorPage title="404?" subtitle="Repository Not Found">
+    <ErrorPage code="repo">
       <>
         The GitHub repository{' '}
         <a
@@ -59,7 +68,7 @@ export function DocumentNotFound({ properties }: { properties: SlugProperties })
   const { owner, repository, path } = properties;
 
   return (
-    <ErrorPage title="404?" subtitle="Document Not Found">
+    <ErrorPage code="document">
       <>
         The page,{' '}
         <a
@@ -92,7 +101,7 @@ export function DocumentNotFound({ properties }: { properties: SlugProperties })
 
 export function ServerError({ properties }: { properties?: SlugProperties }) {
   return (
-    <ErrorPage title="500" subtitle="Whoops! Something went wrong">
+    <ErrorPage code="server">
       <>
         Oh dear, looks like our cogs stopped working.
         {properties?.owner && properties?.repository && (
@@ -131,7 +140,7 @@ export function ServerError({ properties }: { properties?: SlugProperties }) {
 
 export function PageNotFound() {
   return (
-    <ErrorPage title="404" subtitle="Page Not Found">
+    <ErrorPage code="page">
       <>
         This is not the page you're looking for. Think there should be a page here?{' '}
         <a
@@ -146,25 +155,30 @@ export function PageNotFound() {
   );
 }
 
-function ErrorPage({
-  title,
-  subtitle,
-  children,
-}: {
-  title: String;
-  subtitle?: String;
-  children: ReactChild;
-}) {
+function ErrorPage({ children, code }: { code: String; children: ReactChild }) {
   return (
     <>
-      <div className="p-6 max-w-2xl mx-auto my-24 border border-gray-700 rounded dark:text-white">
-        <div>
-          <h1 className="text-7xl font-semibold text-center leading-none opacity-50">{title}</h1>
-          {subtitle && <h2 className="text-3xl font-semibold mb-6 text-center">{subtitle}</h2>}
-          <p className="dark:text-gray-200">{children}</p>
+      <section className="py-16 lg:py-32 text-center lg:text-left space-y-32">
+        <div className="max-w-5xl mx-auto tracking-wider">
+          <h1 className="font-anton mb-4 text-6xl lg:text-8xl bg-clip-text text-transparent bg-gradient-to-br from-gray-100 via-gray-300  to-gray-200">
+            <span className="bg-clip-text text-transparent bg-gradient-to-br from-purple-400 via-pink-500 to-red-500">
+              {ERROR_TYPES[`${code}`].title}
+            </span>
+            <br />
+            {ERROR_TYPES[`${code}`].subtitle}
+          </h1>
         </div>
-      </div>
-      <QuickLinks />
+        <div className="px-4 lg:px-0 max-w-5xl mx-auto">
+          <div className="mt-16 lg:flex items-center border rounded-lg p-12">
+            <div className="flex-1 dark:text-white">
+              <p className="text-lg font-thin px-3 ">{children}</p>
+            </div>
+          </div>
+        </div>
+        <div className="px-4 lg:px-0 max-w-5xl mx-auto">
+          <QuickLinks />
+        </div>
+      </section>
     </>
   );
 }
