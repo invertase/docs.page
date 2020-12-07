@@ -16,7 +16,10 @@ export function Header() {
     <header className="px-4 sticky top-0 z-10 bg-white text-sm dark:bg-gray-800 text-gray-900 dark:text-white border-b dark:border-gray-800">
       <div className="flex items-center h-12 desktop:h-16">
         <Link href="/" className="flex-1 text-lg mr-1 font-mono hover:underline truncate">
-          {config.name || repo}
+          <div className="flex h-12 desktop:h-16 items-center space-x-4">
+            {!!config.logo && <img src={config.logo} alt={repo} style={{ maxHeight: '60%' }} />}
+            <span>{config.name || repo}</span>
+          </div>
         </Link>
         <div className="hidden desktop:flex items-center justify-center space-x-6 font-mono overflow-auto">
           <Navigation />
