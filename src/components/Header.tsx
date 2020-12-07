@@ -67,7 +67,7 @@ function Utils() {
       >
         <GitHub size={26} className="text-black dark:text-white hover:opacity-80" />
       </ExternalLink>
-      {!properties.isDefaultBranch && (
+      {!properties.isDefaultBranch && properties.ref && (
         <ExternalLink
           href={`https://github.com/${repo}/tree/${properties.ref}`}
           className={cx(

@@ -17,6 +17,7 @@ export default function Debug({
   properties,
   page,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
+  console.log(properties);
   return (
     <>
       <NextHead>
