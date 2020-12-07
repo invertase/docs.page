@@ -158,14 +158,14 @@ export function PageNotFound() {
 function ErrorPage({ children, code }: { code: String; children: ReactChild }) {
   return (
     <>
-      <section className="py-16 lg:py-32 text-center lg:text-left space-y-32">
+      <section className="py-16 lg:pt-28 text-center lg:text-left space-y-32">
         <div className="max-w-5xl mx-auto tracking-wider">
-          <h1 className="font-anton mb-4 text-6xl lg:text-8xl bg-clip-text text-transparent bg-gradient-to-br from-gray-100 via-gray-300  to-gray-200">
-            <span className="bg-clip-text text-transparent bg-gradient-to-br from-purple-400 via-pink-500 to-red-500">
+          <h1 className="font-anton mb-4  bg-clip-text text-transparent bg-gradient-to-br from-gray-100 via-gray-300  to-gray-200">
+            <span className="bg-clip-text text-transparent bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 text-6xl lg:text-9xl">
               {ERROR_TYPES[`${code}`].title}
             </span>
             <br />
-            {ERROR_TYPES[`${code}`].subtitle}
+            <span className="text-5xl lg:text-7xl">{ERROR_TYPES[`${code}`].subtitle}</span>
           </h1>
         </div>
         <div className="px-4 lg:px-0 max-w-5xl mx-auto">
