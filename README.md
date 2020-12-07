@@ -36,7 +36,7 @@
 
 - [ ] Needs overall implementation. Pull data/responses from everywhere and show output on the page.
 - [x] Ensure it has a `noindex` metatag
-- [ ] Not working with 404 repos/errors (/_debug/ehesp/testingh)
+- [x] Not working with 404 repos/errors (/_debug/ehesp/testingh)
 - [ ] Display list of generated meta tags (`getHeadTags`)
 
 # Error Page
