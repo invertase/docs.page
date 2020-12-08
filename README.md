@@ -30,10 +30,11 @@
 - [x] Enable navbar dropdown somehow?
 - Table of contents
   - [x] No underlines (only on hover)
-    - Did via css
   - [x] Hide the h1 tags (see `rehypePlugins` options; thought I handled this)
     - Started at 1 instead of 2 in loop
-  - [ ] Bold lines with children (might be doable via tailwind.config.js)
+  - [x] Bold lines with children (might be doable via tailwind.config.js)
+    - [ ] Fix dark/link font link colours (manually set in tailwind.config.js at the moment)
+  - [x] Toggle TOC visibility
 - [ ] Render assumes repo exists if a branch/pr exists, causing incorrect error pages
   - `/invertase/mellos~docs-testing` causes a document not found error rather than repo not found
 

@@ -6,6 +6,7 @@
   body {
     @apply bg-white;
   }
+
   body.dark {
     @apply bg-gray-900;
   }
@@ -15,13 +16,5 @@
     margin-top: 0 !important;
     border-top-left-radius: 0 !important;
     border-top-right-radius: 0 !important;
-  }
-
-  .toc-link {
-    text-decoration: none !important;
-  }
-
-  .toc-link:hover{
-    text-decoration: underline !important;
   }
 }
