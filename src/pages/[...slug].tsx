@@ -3,7 +3,6 @@ import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import NextHead from 'next/head';
 import NextRouter from 'next/router';
 import NProgress from 'nprogress';
-import DOMPurify from 'isomorphic-dompurify';
 
 import mdxSerialize from 'next-mdx-remote/serialize';
 import { Hydrate } from '../mdx';
@@ -53,16 +52,7 @@ export default function Documentation({
             <PageContentContext.Provider value={page}>
               <ThemeStyles />
               <Layout>
-                <ErrorBoundary>
-                  {page.type === 'html' && (
-                    <div
-                      dangerouslySetInnerHTML={{
-                        __html: DOMPurify.sanitize(source),
-                      }}
-                    />
-                  )}
-                  {page.type !== 'html' && <Hydrate source={source} />}
-                </ErrorBoundary>
+                <ErrorBoundary>{page.type !== 'html' && <Hydrate source={source} />}</ErrorBoundary>
               </Layout>
             </PageContentContext.Provider>
           </SlugPropertiesContext.Provider>
@@ -154,6 +144,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
                 ],
               ],
               remarkPlugins: [
+                require('../../remark-sanitize-jsx'),
                 require('remark-unwrap-images'),
                 require('@fec/remark-a11y-emoji'),
                 require('remark-admonitions'),

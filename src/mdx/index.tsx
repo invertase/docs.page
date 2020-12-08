@@ -4,13 +4,13 @@ import MdxRemote from 'next-mdx-remote/mdx-remote';
 
 import { Header } from '../components/Header';
 import { Link } from '../components/Link';
+import { TableOfContents } from '../components/TableOfContents';
 
 import { Heading } from './Heading';
 import { Tabs, TabItem, TabsContext } from './Tabs';
 import { Pre, PreProps, withCodeBlockTitle } from './Code';
 import { Image } from './Image';
 import { YouTube } from './YouTube';
-import { TableOfContents } from './TableOfContents';
 import { usePageContent } from '../hooks';
 
 const components = {
@@ -42,6 +42,7 @@ const components = {
     if (tableOfContents && props.className.includes('toc')) {
       return <TableOfContents {...props} />;
     }
+    
     return null;
   },
 

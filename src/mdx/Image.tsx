@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { CSSProperties, useContext } from 'react';
 import validDataUrl from 'valid-data-url';
 import Zoom from 'react-medium-image-zoom';
 
@@ -11,7 +11,10 @@ interface ImageProps
   zoom?: boolean;
 }
 
-// https://raw.githubusercontent.com/Ehesp/testing/main/docs/rnfb-logo.png
+const className: string = 'mx-auto';
+const style: CSSProperties = {
+  maxHeight: 600,
+};
 
 export function Image({ zoom = false, caption, ...props }: ImageProps) {
   const properties = useContext(SlugPropertiesContext);
@@ -26,12 +29,13 @@ export function Image({ zoom = false, caption, ...props }: ImageProps) {
     withFigure(zoom ? withZoom(child) : child, caption);
 
   if (isExternalLink(src) || validDataUrl(src)) {
-    return wrapper(<img {...props} src={src} alt={props.alt ?? ''} className="mx-auto" />);
+    return wrapper(
+      <img {...props} src={src} alt={props.alt ?? ''} className={className} style={style} />,
+    );
   }
 
   let url = `https://raw.githubusercontent.com/${properties.owner}/${properties.repository}/${properties.ref}/docs/${src}`;
-
-  return wrapper(<img {...props} src={url} alt={props.alt} className="mx-auto" />);
+  return wrapper(<img {...props} src={url} alt={props.alt} className={className} style={style} />);
 }
 
 function withFigure(child: React.ReactElement, caption?: string) {

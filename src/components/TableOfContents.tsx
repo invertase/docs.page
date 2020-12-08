@@ -1,6 +1,6 @@
 import React from 'react';
 import cx from 'classnames';
-import { EyeOff } from '../components/Icons';
+import { EyeOff } from './Icons';
 import { useLocalStorageToggle } from '../hooks';
 
 function TableOfContents(props: React.HTMLProps<HTMLDivElement>) {
