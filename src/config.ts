@@ -48,6 +48,7 @@ export const defaultConfig: Config = {
   name: '',
   logo: '',
   socialPreview: '',
+  twitter: '',
   theme: '#00bcd4',
   docsearch: null,
   navigation: [],

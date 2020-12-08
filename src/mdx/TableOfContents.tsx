@@ -1,22 +1,31 @@
-import React, { useState } from 'react';
-import { Eye, EyeOff } from '../components/Icons';
+import React from 'react';
 import cx from 'classnames';
+import { EyeOff } from '../components/Icons';
+import { useLocalStorageToggle } from '../hooks';
 
 function TableOfContents(props: React.HTMLProps<HTMLDivElement>) {
-  const [visible, setVisible] = useState<boolean>(true);
+  const [ref, toggle] = useLocalStorageToggle('table-of-contents');
+
   return (
     <div className="mb-8">
-      <div className="toc flex items-center space-x-4">
+      <div className="toc flex items-end">
         <h3 className="">Table of contents</h3>
-        <div onClick={() => setVisible($ => !$)}>
-          <>
-            {visible && <Eye size={20} />}
-            {!visible && <EyeOff size={20} />}
-          </>
-        </div>
+        <Toggle label={<EyeOff size={14} />} onClick={() => toggle()} />
       </div>
-      {!visible && <span className="text-xs">Table of Contents is hidden</span>}
-      <nav {...props} className={cx('toc mb-12 text-sm', { hidden: !visible })} />
+      <nav ref={ref} {...props} className="toc mb-12 text-sm" />
+    </div>
+  );
+}
+
+function Toggle({ label, onClick }: { label: React.ReactElement; onClick: () => void }) {
+  return (
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={() => onClick()}
+      className="mb-2 ml-4 font-mono text-xs px-2 py-1 rounded transition-colors bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"
+    >
+      {label}
     </div>
   );
 }
