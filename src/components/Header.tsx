@@ -12,18 +12,31 @@ export function Header() {
   const config = useConfig();
   const properties = useSlugProperties();
   const repo = `${properties.owner}/${properties.repository}`;
-  console.log(config);
 
   return (
     <header className="px-4 sticky top-0 z-10 bg-white text-sm dark:bg-gray-800 text-gray-900 dark:text-white border-b dark:border-gray-800">
       <div className="flex items-center h-16">
         <Link href="/" className="flex-1 text-lg mr-1 font-mono hover:underline truncate">
           <div className="flex h-12 desktop:h-16 items-center space-x-4">
-            {!config.logoDark && config.logo && (
-              <img src={config.logo} alt={repo} style={{ maxHeight: '60%' }} />
-            )}
-            {config.logoDark && (
-              <img src={config.logoDark} alt={repo} style={{ maxHeight: '60%' }} />
+            {!!config.logo && (
+              <>
+                <img
+                  src={config.logo}
+                  alt={repo}
+                  style={{ maxHeight: '60%' }}
+                  className={cx({
+                    'dark:hidden': !!config.logoDark,
+                  })}
+                />
+                {!!config.logoDark && (
+                  <img
+                    src={config.logoDark}
+                    alt={repo}
+                    style={{ maxHeight: '60%' }}
+                    className="hidden dark:block"
+                  />
+                )}
+              </>
             )}
             <span>{config.name || repo}</span>
           </div>
