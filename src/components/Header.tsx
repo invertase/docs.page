@@ -26,9 +26,11 @@ export function Header() {
           <Navigation />
         </div>
         <Utils />
-        <div className="flex desktop:hidden ml-4">
-          <MobileNavigation />
-        </div>
+        {config.navigation.length > 0 && (
+          <div className="flex desktop:hidden ml-4">
+            <MobileNavigation />
+          </div>
+        )}
       </div>
     </header>
   );
