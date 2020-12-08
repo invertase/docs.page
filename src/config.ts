@@ -19,6 +19,8 @@ export type Config = {
   name: string;
   // URL to project logo.
   logo: string;
+  // URL to project logo for dark mode
+  logoDark: string;
   // Image to display as the social preview on shared URLs
   socialPreview: string;
   // Twitter tag for use in the header.
@@ -47,6 +49,7 @@ export type Config = {
 export const defaultConfig: Config = {
   name: '',
   logo: '',
+  logoDark: '',
   socialPreview: '',
   twitter: '',
   theme: '#00bcd4',
@@ -64,6 +67,7 @@ export function mergeConfig(json: any): Config {
   return {
     name: getString(json, 'name', defaultConfig.name),
     logo: getString(json, 'logo', defaultConfig.logo),
+    logoDark: getString(json, 'logoDark', defaultConfig.logoDark),
     socialPreview: getString(json, 'socialPreview', defaultConfig.socialPreview),
     twitter: getString(json, 'twitter', defaultConfig.twitter),
     theme: getString(json, 'theme', defaultConfig.theme),
