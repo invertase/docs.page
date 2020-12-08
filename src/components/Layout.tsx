@@ -33,13 +33,16 @@ export function Layout({ children }: { children: React.ReactNode }) {
   if (page.type === 'html' || layout === 'bare') {
     return <div>{children}</div>;
   }
-  
+
   return (
     <>
       <Header />
       <WithSidebar>
         <article
-          className={cx('prose dark:prose-dark px-2 lg:px-0 py-6 desktop:py-20 mx-auto', widthMap[layout])}
+          className={cx(
+            'prose dark:prose-dark px-2 lg:px-0 py-6 desktop:py-20 mx-auto',
+            widthMap[layout],
+          )}
         >
           {children}
 
@@ -65,10 +68,8 @@ function WithSidebar({ children }: { children: React.ReactNode }) {
   return (
     <>
       {enabled && (
-        <nav className="fixed inset-y-0 w-64 hidden desktop:block">
-          <div className="flex h-full mt-16 overflow-y-auto overflow-x-hidden border-r dark:border-gray-700 p-4">
-            <Sidebar />
-          </div>
+        <nav className="fixed inset-y-0 w-64 hidden desktop:block mt-16 overflow-y-auto overflow-x-hidden border-r dark:border-gray-700">
+          <Sidebar />
         </nav>
       )}
       <div
