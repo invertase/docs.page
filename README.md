@@ -37,6 +37,7 @@
   - [x] Toggle TOC visibility
 - [ ] Render assumes repo exists if a branch/pr exists, causing incorrect error pages
   - `/invertase/mellos~docs-testing` causes a document not found error rather than repo not found
+- [x] Fix `dark:hidden` for swapping logo out
 
 
 ## pages/_debug/[...slug].tsx

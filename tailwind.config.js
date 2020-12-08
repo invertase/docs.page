@@ -107,6 +107,7 @@ module.exports = {
     },
   },
   variants: {
+    display: ({ variants }) => [...variants('display'), 'dark'],
     typography: ({ variants }) => [...variants('typography'), 'dark'],
   },
   plugins: [require('@tailwindcss/typography')],
