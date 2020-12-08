@@ -45,11 +45,11 @@ module.exports = {
                 textDecoration: 'underline',
               },
             },
-            'nav a.toc-link-h3': {
-              fontWeight: 300,
-            },
-            'nav a.toc-link-h2': {
+            'nav.toc ol > li a': {
               fontWeight: 700,
+            },
+            'nav.toc ol > li > ol > li a': {
+              fontWeight: 300,
             },
             'div.toc h3': {
               margin: 0,
