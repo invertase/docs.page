@@ -3,11 +3,10 @@ import Head from 'next/head';
 
 import { Checkout } from './Checkout';
 import { Heading } from './Heading';
-import { Button } from './Button';
 import { Feature } from './Feature';
 import { DocsDirectory, IndexExample } from './Skeletons';
 import { Adjustments, PullRequest, GlobeAlt, Template } from '../../components/Icons';
-import { SiteFooter } from '../../components/SiteFooter';
+import { Footer } from './Footer';
 
 export default function IndexPage() {
   return (
@@ -205,7 +204,7 @@ export default function IndexPage() {
         </div>
       </div>
       <div className="mt-32 max-w-5xl mx-auto px-4 lg:px-0">
-        <SiteFooter />
+        <Footer />
       </div>
     </>
   );

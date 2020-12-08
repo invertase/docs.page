@@ -5,7 +5,6 @@ import { ErrorType, IRenderError } from '../../error';
 
 import { SlugProperties } from '../../properties';
 import { QuickLinks } from './QuickLinks';
-import { SiteFooter } from '../../components/SiteFooter';
 
 export * from './ErrorBoundary';
 
@@ -178,9 +177,6 @@ function ErrorPage({ children, code }: { code: String; children: ReactChild }) {
         </div>
         <div className="px-4 lg:px-0 max-w-5xl mx-auto">
           <QuickLinks />
-        </div>
-        <div className="px-4 lg:px-0 max-w-5xl mx-auto">
-          <SiteFooter />
         </div>
       </section>
     </>
