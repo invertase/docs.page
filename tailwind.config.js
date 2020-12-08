@@ -64,22 +64,7 @@ module.exports = {
           // https://github.com/tailwindlabs/tailwindcss-typography/blob/master/src/styles.js
           css: {
             color: theme('colors.gray.200'),
-            h1: {
-              color: theme('colors.gray.200'),
-            },
-            h2: {
-              color: theme('colors.gray.200'),
-            },
-            h3: {
-              color: theme('colors.gray.200'),
-            },
-            h4: {
-              color: theme('colors.gray.200'),
-            },
-            h5: {
-              color: theme('colors.gray.200'),
-            },
-            h6: {
+            'h1, h2, h3, h4, h5, h6': {
               color: theme('colors.gray.200'),
             },
             'h1 code, h2 code, h3 code, h4 code, h5 code, h6 code': {
