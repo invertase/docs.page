@@ -38,7 +38,6 @@ export default function Documentation({
   page,
   error,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
-  console.log(error);
   if (error) {
     return <Error {...error} />;
   }
@@ -109,6 +108,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
     const defaultBranch = await getDefaultBranch(properties.owner, properties.repository);
 
     if (!defaultBranch) {
+      console.error('Repo not found');
       error = RenderError.repositoryNotFound(properties);
     } else {
       properties.setDefaultBranch(defaultBranch);
@@ -130,38 +130,41 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
 
   page = await getPageContent(properties);
 
-  if (!page) {
-    error = RenderError.pageNotFound(properties);
-  } else if (page.frontmatter.redirect) {
-    return redirect(page.frontmatter.redirect, properties);
-  } else {
-    try {
-      if (page.type === 'html') {
-        source = page.content;
-      } else {
-        source = await mdxSerialize(page.content, {
-          mdxOptions: {
-            rehypePlugins: [
-              require('../../rehype-prism'),
-              require('rehype-slug'),
-              [
-                require('@jsdevtools/rehype-toc'),
-                {
-                  headings: headerDepthToHeaderList(page.config.headerDepth),
-                },
+  if (!error) {
+    if (!page) {
+      console.error('Page not found');
+      error = RenderError.pageNotFound(properties);
+    } else if (page.frontmatter.redirect) {
+      return redirect(page.frontmatter.redirect, properties);
+    } else {
+      try {
+        if (page.type === 'html') {
+          source = page.content;
+        } else {
+          source = await mdxSerialize(page.content, {
+            mdxOptions: {
+              rehypePlugins: [
+                require('../../rehype-prism'),
+                require('rehype-slug'),
+                [
+                  require('@jsdevtools/rehype-toc'),
+                  {
+                    headings: headerDepthToHeaderList(page.config.headerDepth),
+                  },
+                ],
               ],
-            ],
-            remarkPlugins: [
-              require('remark-unwrap-images'),
-              require('@fec/remark-a11y-emoji'),
-              require('remark-admonitions'),
-            ],
-          },
-        });
+              remarkPlugins: [
+                require('remark-unwrap-images'),
+                require('@fec/remark-a11y-emoji'),
+                require('remark-admonitions'),
+              ],
+            },
+          });
+        }
+      } catch (e) {
+        console.log('!!!', e);
+        error = RenderError.serverError(properties);
       }
-    } catch (e) {
-      console.log('!!!', e);
-      error = RenderError.serverError(properties);
     }
   }
 

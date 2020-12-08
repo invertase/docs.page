@@ -1,4 +1,11 @@
-import { useContext, useEffect, useState } from 'react';
+import React, {
+  MutableRefObject,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { Config, ConfigContext } from './config';
 import { PageContent, PageContentContext } from './content';
 import { CustomDomain, CustomDomainContext } from './domain';
@@ -35,6 +42,23 @@ export function useEditUrl(): string {
   return `${properties.url}/edit/${properties.ref}/docs/${properties.path}.${fileType}`;
 }
 
+export function useLocalStorageToggle(
+  key: string,
+): [MutableRefObject<HTMLDivElement>, () => void, boolean] {
+  const ref = useRef<HTMLDivElement>();
+  const [visible, setVisible] = useState<boolean>();
+
+  const onToggle = useCallback(() => {
+    const el = ref.current;
+    el.classList.toggle('hidden');
+    const isVisible = !el.classList.contains('hidden');
+    window.localStorage.setItem(`docs.page.${key}`, isVisible ? 'true' : 'false');
+    setVisible(isVisible);
+  }, [key]);
+
+  return [ref, onToggle, visible];
+}
+
 export function getHeadTags(properties: SlugProperties, page?: PageContent) {
   const { frontmatter, config } = page;
 
@@ -47,7 +71,7 @@ export function getHeadTags(properties: SlugProperties, page?: PageContent) {
 
   const tags = [
     <title key="title">{title}</title>,
-    <meta name="theme-color" content={config.theme} />,
+    <meta key="theme-color" name="theme-color" content={config.theme} />,
     <meta key="og:site_name" property="og:site_name" content="docs.page" />,
     <meta key="og:title" property="og:title" content={title} />,
     <meta

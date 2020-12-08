@@ -20,7 +20,7 @@ export function headerDepthToHeaderList(depth: number): string[] {
   const list = [];
   if (depth === 0) return list;
 
-  for (let i = 1; i <= depth; i++) {
+  for (let i = 2; i <= depth; i++) {
     list.push(`h${i}`);
   }
 
@@ -104,4 +104,3 @@ export function hash(value: string): string {
   }
   return hash.toString();
 }
-

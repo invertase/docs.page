@@ -1,11 +1,12 @@
 ## General
 
 - [ ] Tailwind purging - breaks some dark mode things, such as hover on sidebar
+- [ ] docs.page documentation
 
 ## Homepage
 
-- [ ] Regex needs doing to extract the owner/repo from the URL (`Checkout` component) & redirect the user
-- [ ] Add minimal footer to homepage (just a few links, keep it clean)
+- [x] Regex needs doing to extract the owner/repo from the URL (`Checkout` component) & redirect the user
+- [x] Add minimal footer to homepage (just a few links, keep it clean)
 
 ## pages/[...slug].tsx
 
@@ -20,28 +21,36 @@
   - [x] Use webpack alias for smaller bundle? Load on Client only?
   - [x] Use fork of buble? https://github.com/facebook/docusaurus/blob/master/packages/docusaurus-theme-live-codeblock/src/index.js#L24
 - [x] Syntax highlighting
-  - Use Rehype plugin during server rendering? https://github.com/mapbox/rehype-prism
+  - Use Rehype plugin duricompng server rendering? https://github.com/mapbox/rehype-prism
   - Client needs to pull in styles
 - [ ] Line highlighting in code - plugin?
 - [x] Assets (img component) - can we somehow link to the raw file on git? Easier way?
 - [x] Link component not handling default branch?
 - [x] Sidebar nested items need testing - toggle not working yet
-- [ ] Enable navbar dropdown somehow?
+- [x] Enable navbar dropdown somehow?
 - Table of contents
-  - [ ] No underlines (only on hover)
-  - [ ]Hide the h1 tags (see `rehypePlugins` options; thought I handled this)
-  - [ ] Bold lines with children (might be doable via tailwind.config.js)
+  - [x] No underlines (only on hover)
+  - [x] Hide the h1 tags (see `rehypePlugins` options; thought I handled this)
+    - Started at 1 instead of 2 in loop
+  - [x] Bold lines with children (might be doable via tailwind.config.js)
+    - [ ] Fix dark/link font link colours (manually set in tailwind.config.js at the moment)
+  - [x] Toggle TOC visibility
+- [ ] Render assumes repo exists if a branch/pr exists, causing incorrect error pages
+  - `/invertase/mellos~docs-testing` causes a document not found error rather than repo not found
+- [x] Fix `dark:hidden` for swapping logo out
+
 
 ## pages/_debug/[...slug].tsx
 
 - [ ] Needs overall implementation. Pull data/responses from everywhere and show output on the page.
-- [ ] Ensure it has a `noindex` metatag
-- [ ] Not working with 404 repos/errors (/_debug/ehesp/testingh)
-- [ ] Display list of generated meta tags (`getHeadTags`)
+- [x] Ensure it has a `noindex` metatag
+- [x] Not working with 404 repos/errors (/_debug/ehesp/testingh)
+- [x] Display list of generated meta tags (`getHeadTags`)
+- [ ] Render assumes repo exists if a branch/pr exists, causing server errors (Temp workaround in place)
 
 # Error Page
 
-- [ ] "The page, index was not found in the ehesp/testingh repository. " doesn't make sense - the repo isn't there so the page will never exist, still says "Document not found"
-- [ ] Add minimal footer (same as homepage)
-- [ ] Can we somehow make it look a bit better? "404" text above the box, a bigger, colored?
-- [ ]
+- [x] "The page, index was not found in the ehesp/testingh repository. " doesn't make sense - the repo isn't there so the page will never exist, still says "Document not found"
+- [x] Add minimal footer (same as homepage)
+- [ ] Configure footer links
+- [x] Can we somehow make it look a bit better? "404" text above the box, a bigger, colored?

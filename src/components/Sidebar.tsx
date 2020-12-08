@@ -12,7 +12,7 @@ export function Sidebar() {
   const config = useConfig();
 
   return (
-    <ul className="w-full dark:text-white">
+    <ul className="w-full p-4 dark:text-white mb-4">
       {config.sidebar.map((item, index) => (
         <Iterator key={index} depth={1} item={item} />
       ))}
@@ -130,8 +130,8 @@ function NavLink({ href, children, active }: { href: string; children: string; a
     <li className="-ml-2 mt-1">
       <Link
         href={href}
-        className={cx('font-thin flex px-2 py-2 rounded transition-colors duration-100', {
-          'text-theme-color dark:text-white bg-gray-100 dark:bg-gray-800': active,
+        className={cx('flex px-2 py-2 rounded transition-colors duration-100', {
+          'text-gray-900 dark:text-white bg-gray-200 dark:bg-gray-700': active,
           'hover:bg-gray-200 dark:hover:bg-gray-700': !active,
         })}
       >
@@ -171,6 +171,12 @@ function isRouteMatch(router: NextRouter, properties: SlugProperties, link: stri
     return false;
   }
 
+  let path = properties.base;
+
+  if (link !== '/') {
+    path = `${path}${link}`;
+  }
+
   const currentPath = `/${(router.query.slug as string[]).join('/')}`;
-  return currentPath === `${properties.base}${link}`;
+  return currentPath === path;
 }

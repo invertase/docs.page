@@ -11,7 +11,7 @@ interface RowProps {
 function Row({ title, children, header = false, highlight }: RowProps) {
   return (
     <div
-      className={cx('flex', {
+      className={cx('flex items-center', {
         'font-bold text-center text-lg bg-gray-100': header,
         'divide-x': !header,
       })}

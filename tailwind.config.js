@@ -35,6 +35,24 @@ module.exports = {
           css: {
             'nav.toc ol > li::before': {
               content: '"#"',
+              color: 'var(--theme-color)',
+              fontWeight: 700,
+            },
+            'nav a': {
+              textDecoration: 'none',
+              color: 'black !important',
+              '&:hover': {
+                textDecoration: 'underline',
+              },
+            },
+            'nav.toc ol > li a': {
+              fontWeight: 700,
+            },
+            'nav.toc ol > li > ol > li a': {
+              fontWeight: 300,
+            },
+            'div.toc h3': {
+              margin: 0,
             },
             img: {
               marginLeft: 'auto',
@@ -46,22 +64,7 @@ module.exports = {
           // https://github.com/tailwindlabs/tailwindcss-typography/blob/master/src/styles.js
           css: {
             color: theme('colors.gray.200'),
-            h1: {
-              color: theme('colors.gray.200'),
-            },
-            h2: {
-              color: theme('colors.gray.200'),
-            },
-            h3: {
-              color: theme('colors.gray.200'),
-            },
-            h4: {
-              color: theme('colors.gray.200'),
-            },
-            h5: {
-              color: theme('colors.gray.200'),
-            },
-            h6: {
+            'h1, h2, h3, h4, h5, h6': {
               color: theme('colors.gray.200'),
             },
             'h1 code, h2 code, h3 code, h4 code, h5 code, h6 code': {
@@ -80,12 +83,16 @@ module.exports = {
             'p code, li code, td code': {
               color: 'var(--theme-color)',
             },
+            'nav a': {
+              color: 'white !important',
+            },
           },
         },
       }),
     },
   },
   variants: {
+    display: ({ variants }) => [...variants('display'), 'dark'],
     typography: ({ variants }) => [...variants('typography'), 'dark'],
   },
   plugins: [require('@tailwindcss/typography')],

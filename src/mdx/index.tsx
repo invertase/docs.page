@@ -10,6 +10,7 @@ import { Tabs, TabItem, TabsContext } from './Tabs';
 import { Pre, PreProps, withCodeBlockTitle } from './Code';
 import { Image } from './Image';
 import { YouTube } from './YouTube';
+import { TableOfContents } from './TableOfContents';
 import { usePageContent } from '../hooks';
 
 const components = {
@@ -39,12 +40,7 @@ const components = {
     const tableOfContents = usePageContent().frontmatter.tableOfContents;
 
     if (tableOfContents && props.className.includes('toc')) {
-      return (
-        <>
-          <h3>Table of contents</h3>
-          <nav {...props} className="toc mb-12 text-xs" />
-        </>
-      );
+      return <TableOfContents {...props} />;
     }
     return null;
   },

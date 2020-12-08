@@ -36,7 +36,7 @@ export function Pre(props: PreProps) {
           )}
         >
           <CopyToClipboard text={copy} onCopy={() => setCopied(true)}>
-            <button className="text-xs font-mono bg-gray-900 hover:bg-black transition-colors px-3 py-2 rounded-lg">
+            <button className="text-white text-xs font-mono bg-gray-900 hover:bg-black transition-colors px-3 py-2 rounded-lg">
               {copied ? 'Copied' : 'Copy'}
             </button>
           </CopyToClipboard>

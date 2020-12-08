@@ -13,10 +13,10 @@ function RepoInfo({ properties }) {
         <div className="flex-1">Ref (branch)</div>
         <div>{properties.ref || 'Repository not found'}</div>
       </div>
-      <div className="flex p-3">
-        <div className="flex-1">Config</div>
-        <div>docs.yaml</div>
-      </div>
+      {/*<div className="flex p-3">*/}
+      {/*  <div className="flex-1">Config</div>*/}
+      {/*  <div>docs.yaml</div>*/}
+      {/*</div>*/}
     </section>
   );
 }
