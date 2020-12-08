@@ -21,6 +21,8 @@ export type Config = {
   logo: string;
   // Image to display as the social preview on shared URLs
   socialPreview: string;
+  // Twitter tag for use in the header.
+  twitter: string;
   // A color theme used for this project. Defaults to "#00bcd4".
   theme: string;
   // Docsearch Application ID. If populated, a search box with autocomplete will be rendered.
@@ -62,6 +64,7 @@ export function mergeConfig(json: any): Config {
     name: getString(json, 'name', defaultConfig.name),
     logo: getString(json, 'logo', defaultConfig.logo),
     socialPreview: getString(json, 'socialPreview', defaultConfig.socialPreview),
+    twitter: getString(json, 'twitter', defaultConfig.twitter),
     theme: getString(json, 'theme', defaultConfig.theme),
     docsearch: get(json, 'docsearch')
       ? {

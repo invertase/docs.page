@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import cx from 'classnames';
 
 import { ExternalLink, Link } from './Link';
-import { Branch, GitHub, MenuOpen, PullRequest } from './Icons';
+import { Branch, GitHub, MenuOpen, PullRequest, Twitter } from './Icons';
 import { DarkModeToggle } from './DarkModeToggle';
 import { Search } from './Search';
 import { useConfig, useSlugProperties } from '../hooks';
@@ -102,6 +102,14 @@ function Utils() {
 
   return (
     <div className="flex items-center space-x-6">
+      {!!config.twitter && (
+        <ExternalLink
+          href={`https://twitter.com/${config.twitter}`}
+          className="group flex items-center hover:underline"
+        >
+          <Twitter size={28} className="text-blue-500 dark:text-white hover:opacity-80" />
+        </ExternalLink>
+      )}
       <ExternalLink
         href={`https://github.com/${repo}`}
         className="group flex items-center hover:underline"
