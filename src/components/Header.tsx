@@ -24,7 +24,9 @@ export function Header() {
                   src={config.logo}
                   alt={repo}
                   style={{ maxHeight: '60%' }}
-                  className="dark:hidden"
+                  className={cx({
+                    'dark:hidden': !!config.logoDark,
+                  })}
                 />
                 {!!config.logoDark && (
                   <img
