@@ -130,7 +130,7 @@ function NavLink({ href, children, active }: { href: string; children: string; a
     <li className="-ml-2 mt-1">
       <Link
         href={href}
-        className={cx('flex px-2 py-2 rounded transition-colors duration-100', {
+        className={cx('flex px-2 py-2 rounded', {
           'text-gray-900 dark:text-white bg-gray-200 dark:bg-gray-700': active,
           'hover:bg-gray-200 dark:hover:bg-gray-700': !active,
         })}

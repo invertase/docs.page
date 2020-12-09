@@ -67,11 +67,11 @@ module.exports = {
           // https://github.com/tailwindlabs/tailwindcss-typography/blob/master/src/styles.js
           css: {
             color: theme('colors.gray.200'),
-            'h1, h2, h3, h4, h5, h6': {
+            'h1, h2, h3, h4, h5, h6, strong, b, u, th, td': {
               color: theme('colors.gray.200'),
             },
             'h1 code, h2 code, h3 code, h4 code, h5 code, h6 code': {
-              color: theme('colors.gray.200'),
+              color: theme('colors.gray.300'),
             },
             blockquote: {
               borderColor: 'var(--theme-color)',
