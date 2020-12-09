@@ -3,6 +3,8 @@ title: Overview
 description: Instant Open Source docs with zero configuration.
 ---
 
+> This documentation is currently work in progress.
+
 # docs.page
 
 docs.page is a free Open Source project, allowing you to create instant, fast, beautiful documentation with zero configuration.
@@ -24,7 +26,7 @@ Using GitHub README files or Wiki's is a great place to start, however common is
 - Documentation isn't searchable.
 - Adding navigation is tricky, slow and repetitive.
 
-Existing solutions such as GitHub pages, or building a custom documentation website help solve these problems, 
+Existing solutions such as GitHub pages, or building a custom documentation website help solve these problems,
 however also come with additional overhead:
 
 - The websites need to be hosted somewhere.
