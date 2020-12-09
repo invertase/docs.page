@@ -30,7 +30,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
   // First check the frontmatter for a layout, then fallback to the config
   const layout = page.frontmatter.layout || config.defaultLayout;
 
-  if (page.type === 'html' || layout === 'bare') {
+  if (layout === 'bare') {
     return <div>{children}</div>;
   }
 

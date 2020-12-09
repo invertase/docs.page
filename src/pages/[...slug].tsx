@@ -52,7 +52,9 @@ export default function Documentation({
             <PageContentContext.Provider value={page}>
               <ThemeStyles />
               <Layout>
-                <ErrorBoundary>{page.type !== 'html' && <Hydrate source={source} />}</ErrorBoundary>
+                <ErrorBoundary>
+                  <Hydrate source={source} />
+                </ErrorBoundary>
               </Layout>
             </PageContentContext.Provider>
           </SlugPropertiesContext.Provider>
@@ -128,30 +130,35 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
       return redirect(page.frontmatter.redirect, properties);
     } else {
       try {
-        if (page.type === 'html') {
-          source = page.content;
-        } else {
-          source = await mdxSerialize(page.content, {
-            mdxOptions: {
-              rehypePlugins: [
-                require('../../rehype-prism'),
-                require('rehype-slug'),
-                [
-                  require('@jsdevtools/rehype-toc'),
-                  {
-                    headings: headerDepthToHeaderList(page.config.headerDepth),
-                  },
-                ],
-              ],
-              remarkPlugins: [
-                require('../../remark-sanitize-jsx'),
-                require('remark-unwrap-images'),
-                require('@fec/remark-a11y-emoji'),
-                require('remark-admonitions'),
-              ],
-            },
-          });
-        }
+        source = await mdxSerialize(page.content, {
+          mdxOptions: {
+            rehypePlugins: [
+              // Convert `pre` blogs into prism formatting
+              require('../../rehype-prism'),
+              // Add an `id` to all heading tags
+              require('rehype-slug'),
+              // Create a table of contents above the page
+              page.frontmatter.tableOfContents
+                ? [
+                    require('@jsdevtools/rehype-toc'),
+                    {
+                      headings: headerDepthToHeaderList(page.config.headerDepth),
+                    },
+                  ]
+                : [],
+              // Make emojis accessible
+              require('rehype-accessible-emojis').rehypeAccessibleEmojis,
+            ],
+            remarkPlugins: [
+              // Sanitize any JSX nodes within MD
+              require('../../remark-sanitize-jsx'),
+              // Ensure any `img` tags are not wrapped in `p` tags
+              require('remark-unwrap-images'),
+              // Convert any admonition to HTML
+              require('remark-admonitions'),
+            ],
+          },
+        });
       } catch (e) {
         console.log('!!!', e);
         error = RenderError.serverError(properties);

@@ -164,14 +164,13 @@ type Files = {
   config?: string;
   md?: string;
   mdx?: string;
-  html?: string;
 };
 
 export async function getGitHubFiles(properties: Properties): Promise<Files | null> {
   const [error, response] = await A2A<PageFilesQuery>(
     GithubGQLClient({
       query: `
-      query RepositoryConfig($owner: String!, $repository: String!, $config: String!, $md: String!, $mdx: String!, $html: String!) {
+      query RepositoryConfig($owner: String!, $repository: String!, $config: String!, $md: String!, $mdx: String!) {
         repository(owner: $owner, name: $repository) {
           config: object(expression: $config) {
             ... on Blob {
@@ -188,11 +187,6 @@ export async function getGitHubFiles(properties: Properties): Promise<Files | nu
               text
             }
           }
-          html: object(expression: $html) {
-            ... on Blob {
-              text
-            }
-          }
         }
       }
     `,
@@ -201,11 +195,11 @@ export async function getGitHubFiles(properties: Properties): Promise<Files | nu
       config: `${properties.ref}:docs.json`,
       md: `${properties.ref}:docs/${properties.path}.md`,
       mdx: `${properties.ref}:docs/${properties.path}.mdx`,
-      html: `${properties.ref}:docs/${properties.path}.html`,
     }),
   );
 
   if (error) {
+    console.error(error);
     return null;
   }
 
@@ -213,6 +207,5 @@ export async function getGitHubFiles(properties: Properties): Promise<Files | nu
     config: response.repository.config?.text,
     md: response.repository.md?.text,
     mdx: response.repository.mdx?.text,
-    html: response.repository.html?.text,
   };
 }

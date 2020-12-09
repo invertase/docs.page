@@ -16,7 +16,7 @@ export function Header() {
   return (
     <header className="px-4 sticky top-0 z-10 bg-white text-sm dark:bg-gray-800 text-gray-900 dark:text-white border-b dark:border-gray-800">
       <div className="flex items-center h-16">
-        <Link href="/" className="flex-1 text-lg mr-1 font-mono hover:underline truncate">
+        <Link href="/" className="flex-1 mr-1 font-mono hover:underline truncate">
           <div className="flex h-12 desktop:h-16 items-center space-x-4">
             {!!config.logo && (
               <>

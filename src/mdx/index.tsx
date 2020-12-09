@@ -11,7 +11,6 @@ import { Tabs, TabItem, TabsContext } from './Tabs';
 import { Pre, PreProps, withCodeBlockTitle } from './Code';
 import { Image } from './Image';
 import { YouTube } from './YouTube';
-import { usePageContent } from '../hooks';
 
 const components = {
   // HTML element overrides
@@ -37,13 +36,11 @@ const components = {
     return pre();
   },
   nav: (props: React.HTMLProps<HTMLDivElement>) => {
-    const tableOfContents = usePageContent().frontmatter.tableOfContents;
-
-    if (tableOfContents && props.className.includes('toc')) {
+    if (props.className.includes('toc')) {
       return <TableOfContents {...props} />;
     }
-    
-    return null;
+
+    return <nav {...props} />;
   },
 
   // Custom MDX components

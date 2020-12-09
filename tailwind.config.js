@@ -51,8 +51,11 @@ module.exports = {
             'nav.toc ol > li > ol > li a': {
               fontWeight: 300,
             },
-            'div.toc h3': {
+            'nav.toc h3': {
               margin: 0,
+            },
+            'nav.toc span[role="img"]': {
+              marginRight: '0.5rem',
             },
             img: {
               marginLeft: 'auto',

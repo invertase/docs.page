@@ -12,7 +12,6 @@
     "test": "jest"
   },
   "dependencies": {
-    "@fec/remark-a11y-emoji": "^2.0.0",
     "@jsdevtools/rehype-toc": "^3.0.2",
     "@mapbox/rehype-prism": "^0.5.0",
     "@octokit/graphql": "^4.5.7",
@@ -47,6 +46,7 @@
     "react-medium-image-zoom": "^4.3.1",
     "react-test-renderer": "^17.0.1",
     "refractor": "^3.2.0",
+    "rehype-accessible-emojis": "^0.3.2",
     "rehype-slug": "^4.0.1",
     "remark-admonitions": "^1.2.1",
     "remark-unwrap-images": "^2.0.0",
