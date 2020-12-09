@@ -44,6 +44,7 @@ const components = {
   },
 
   // Custom MDX components
+  Heading,
   Header,
   Tabs,
   TabItem,
