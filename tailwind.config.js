@@ -1,10 +1,6 @@
 module.exports = {
   darkMode: 'class',
-  // TODO breaks dark:hover:bg-X- in Sidebar.tsx
-  // purge: {
-  //   enabled: true,
-  //   content: ["./src/**/*.tsx"],
-  // },
+  purge: ['./src/**/*.tsx', './src/**/*.ts', '.src/**/*.css'],
   theme: {
     rotate: {
       270: '270deg',
