@@ -96,8 +96,7 @@ export function getHeadTags(properties: SlugProperties, page?: PageContent) {
     <meta key="twitter:card" name="twitter:card" content="summary_large_image" />,
   ];
 
-  // If the page isn't on the default branch, or if the user has no `docs.json` config, set a `noindex` meta tag
-  if (!properties.isDefaultBranch || !page.flags.hasConfig) {
+  if (!page.flags.isFork && properties.isDefaultBranch && page.flags.hasConfig) {
     tags.push(<meta key="noindex" name="robots" content="noindex" />);
   }
 

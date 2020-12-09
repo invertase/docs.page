@@ -6,7 +6,7 @@ import { LayoutType } from './components/Layout';
 import { Config, mergeConfig } from './config';
 import { Properties, SlugProperties } from './properties';
 import { getBoolean, getString } from './utils';
-import { getGitHubFiles } from './github';
+import { getGitHubContents } from './github';
 
 export type FileType = null | 'md' | 'mdx';
 
@@ -29,21 +29,22 @@ export type PageContent = {
   flags: {
     hasConfig: boolean;
     hasFrontmatter: boolean;
+    isFork: boolean;
   };
 };
 
 export const PageContentContext = createContext<PageContent | null>(null);
 
 export async function getPageContent(properties: Properties): Promise<PageContent | null> {
-  const files = await getGitHubFiles(properties);
+  const contents = await getGitHubContents(properties);
 
-  if (!files) {
+  if (!contents) {
     return null;
   }
 
   const type = (() => {
-    if (files.md) return 'md';
-    if (files.mdx) return 'mdx';
+    if (contents.md) return 'md';
+    if (contents.mdx) return 'mdx';
     return null;
   })();
 
@@ -53,9 +54,9 @@ export async function getPageContent(properties: Properties): Promise<PageConten
   }
 
   let config: Config;
-  if (files.config) {
+  if (contents.config) {
     try {
-      const json = JSON.parse(files.config);
+      const json = JSON.parse(contents.config);
       config = mergeConfig(json || {});
     } catch (e) {
       console.error(e);
@@ -68,7 +69,7 @@ export async function getPageContent(properties: Properties): Promise<PageConten
   }
 
   // Get the raw file contents
-  let raw = files.md ?? files.mdx ?? '';
+  let raw = contents.md ?? contents.mdx ?? '';
 
   // Only MD/MDX pages can have frontmatter
   let hasFrontmatter = false;
@@ -94,8 +95,9 @@ export async function getPageContent(properties: Properties): Promise<PageConten
     raw,
     content,
     flags: {
-      hasConfig: !!files.config,
+      hasConfig: !!contents.config,
       hasFrontmatter,
+      isFork: contents.isFork,
     },
   };
 }

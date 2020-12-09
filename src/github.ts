@@ -143,8 +143,9 @@ export async function getPullRequestMetadata(
   };
 }
 
-type PageFilesQuery = {
+type PageContentsQuery = {
   repository: {
+    isFork: boolean;
     config?: {
       text: string;
     };
@@ -160,18 +161,20 @@ type PageFilesQuery = {
   };
 };
 
-type Files = {
+type Contents = {
+  isFork: boolean;
   config?: string;
   md?: string;
   mdx?: string;
 };
 
-export async function getGitHubFiles(properties: Properties): Promise<Files | null> {
-  const [error, response] = await A2A<PageFilesQuery>(
+export async function getGitHubContents(properties: Properties): Promise<Contents | null> {
+  const [error, response] = await A2A<PageContentsQuery>(
     GithubGQLClient({
       query: `
       query RepositoryConfig($owner: String!, $repository: String!, $config: String!, $md: String!, $mdx: String!) {
         repository(owner: $owner, name: $repository) {
+          isFork
           config: object(expression: $config) {
             ... on Blob {
               text
@@ -204,6 +207,7 @@ export async function getGitHubFiles(properties: Properties): Promise<Files | nu
   }
 
   return {
+    isFork: response.repository.isFork,
     config: response.repository.config?.text,
     md: response.repository.md?.text,
     mdx: response.repository.mdx?.text,
