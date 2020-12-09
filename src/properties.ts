@@ -50,7 +50,7 @@ export class Properties {
 
   public setDefaultBranch(defaultBranch: string) {
     this.ref = defaultBranch;
-    this.base = `${this.base}${SPLITTER}${this.ref}`;
+    this.base = `/${this.owner}/${this.repository}`;
     this.isDefaultBranch = true;
   }
 

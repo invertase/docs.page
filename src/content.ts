@@ -58,6 +58,7 @@ export async function getPageContent(properties: Properties): Promise<PageConten
       const json = JSON.parse(files.config);
       config = mergeConfig(json || {});
     } catch (e) {
+      console.error(e);
       // Ignore errors
     }
   }

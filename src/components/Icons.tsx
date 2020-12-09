@@ -262,6 +262,7 @@ export function EyeOff({ size, className, style }: IconProps) {
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
+        fill="currentColor"
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth="2"
@@ -276,9 +277,48 @@ export function Issue({ size, className, style }: IconProps) {
     <svg width={size} height={size} className={className} style={style} viewBox="0 0 16 16">
       <path
         fill="currentColor"
-        fill-rule="evenodd"
+        fillRule="evenodd"
         d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13zM0 8a8 8 0 1116 0A8 8 0 010 8zm9 3a1 1 0 11-2 0 1 1 0 012 0zm-.25-6.25a.75.75 0 00-1.5 0v3.5a.75.75 0 001.5 0v-3.5z"
       />
+    </svg>
+  );
+}
+
+export function SearchCircle({ size, className, style }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      className={className}
+      style={style}
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+      />
+    </svg>
+  );
+}
+
+export function Close({ size, className, style }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      className={className}
+      style={style}
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
     </svg>
   );
 }

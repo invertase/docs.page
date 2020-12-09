@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import cx from 'classnames';
+import useOnClickOutside from 'use-onclickoutside';
 
 import { ExternalLink, Link } from './Link';
 import { Branch, GitHub, MenuOpen, PullRequest, Twitter } from './Icons';
@@ -45,11 +46,7 @@ export function Header() {
           <Navigation />
         </div>
         <Utils />
-        {config.navigation.length > 0 && (
-          <div className="flex desktop:hidden ml-4">
-            <MobileNavigation />
-          </div>
-        )}
+        <MobileNavigation />
       </div>
     </header>
   );
@@ -77,33 +74,35 @@ function Navigation() {
 }
 
 function MobileNavigation() {
+  const ref = React.useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState<boolean>(false);
   const config = useConfig();
 
+  useOnClickOutside(ref, () => setOpen(false));
+
+  if (config.navigation.length === 0) {
+    return null;
+  }
+
   return (
-    <>
-      {open && (
-        <div onClick={() => setOpen($ => !$)}>
-          <MenuOpen size={24} />
-        </div>
-      )}
-      {!open && (
-        <div onClick={() => setOpen($ => !$)}>
-          <Menu size={24} />
-        </div>
-      )}
+    <div className="flex desktop:hidden ml-4">
+      <div role="button" tabIndex={0} onClick={() => setOpen($ => !$)}>
+        {open && <MenuOpen size={24} />}
+        {!open && <Menu size={24} />}
+      </div>
       <div
-        className={cx('absolute right-0 bg-gray-800 bg-opacity-85 top-16 w-1/2 shadow-inner', {
+        ref={ref}
+        className={cx('absolute inset-x-0 bg-white dark:bg-gray-800 top-16 shadow-xl', {
           hidden: !open,
         })}
       >
         {config.navigation.length > 0 && (
           <ul className="items-center justify-center overflow-x-auto">
             {config.navigation.map(([title, url]) => (
-              <li key={url} className="py-4 px-4 h-12 text-right w-full">
+              <li key={url} className="border-t dark:border-gray-700">
                 <Link
                   href={url}
-                  className="transition-colors hover:bg-gray-200 dark:hover:bg-gray-900 whitespace-nowrap px-4 py-2 rounded w-full"
+                  className="block text-center transition-colors hover:bg-gray-200 dark:hover:bg-gray-900 whitespace-nowrap p-4 w-full"
                 >
                   {title}
                 </Link>
@@ -112,7 +111,7 @@ function MobileNavigation() {
           </ul>
         )}
       </div>
-    </>
+    </div>
   );
 }
 
@@ -122,7 +121,7 @@ function Utils() {
   const repo = `${properties.owner}/${properties.repository}`;
 
   return (
-    <div className="flex items-center space-x-6">
+    <div className="flex items-center">
       {!!config.twitter && (
         <ExternalLink
           href={`https://twitter.com/${config.twitter}`}
@@ -133,33 +132,35 @@ function Utils() {
       )}
       <ExternalLink
         href={`https://github.com/${repo}`}
-        className="group flex items-center hover:underline"
+        className="pl-4 group flex items-center hover:underline"
       >
         <GitHub size={26} className="text-black dark:text-white hover:opacity-80" />
       </ExternalLink>
       {!properties.isDefaultBranch && properties.ref && (
-        <ExternalLink
-          href={`https://github.com/${repo}/tree/${properties.ref}`}
-          className={cx(
-            'flex px-3 py-2 text-xs rounded-lg shadow text-white transition-colors whitespace-nowrap',
-            {
-              'bg-green-500 hover:bg-green-400 ': properties.refType === 'branch',
-              'bg-blue-500 hover:bg-blue-400 ': properties.refType === 'pull-request',
-            },
-          )}
-        >
-          {properties.refType === 'pull-request' && <PullRequest size={16} />}
-          {properties.refType === 'branch' && <Branch size={16} className="text-white" />}
-          <span className="pl-1">
-            {properties.ref.slice(0, 25)}
-            {properties.ref.length > 25 ? '...' : ''}
-          </span>
-        </ExternalLink>
+        <div className="pl-4">
+          <ExternalLink
+            href={`https://github.com/${repo}/tree/${properties.ref}`}
+            className={cx(
+              'flex px-3 py-2 text-xs rounded-lg shadow text-white transition-colors whitespace-nowrap',
+              {
+                'bg-green-500 hover:bg-green-400 ': properties.refType === 'branch',
+                'bg-blue-500 hover:bg-blue-400 ': properties.refType === 'pull-request',
+              },
+            )}
+          >
+            {properties.refType === 'pull-request' && <PullRequest size={16} />}
+            {properties.refType === 'branch' && <Branch size={16} className="text-white" />}
+            <span className="pl-1">
+              {properties.ref.slice(0, 25)}
+              {properties.ref.length > 25 ? '...' : ''}
+            </span>
+          </ExternalLink>
+        </div>
       )}
       {!!config.docsearch && (
         <Search apiKey={config.docsearch.apiKey} indexName={config.docsearch.indexName} />
       )}
-      <div className="hidden desktop:block">
+      <div className="hidden desktop:block pl-4">
         <DarkModeToggle />
       </div>
     </div>

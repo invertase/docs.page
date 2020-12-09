@@ -58,6 +58,7 @@
     "ts-jest": "^26.4.4",
     "unist-util-visit": "^2.0.3",
     "use-dark-mode": "^2.3.1",
+    "use-onclickoutside": "^0.3.1",
     "valid-data-url": "^3.0.1"
   },
   "devDependencies": {
