@@ -2,7 +2,6 @@ import React from 'react';
 import cx from 'classnames';
 import MdxRemote from 'next-mdx-remote/mdx-remote';
 
-import { Header } from '../components/Header';
 import { Link } from '../components/Link';
 import { TableOfContents } from '../components/TableOfContents';
 
@@ -45,7 +44,6 @@ const components = {
 
   // Custom MDX components
   Heading,
-  Header,
   Tabs,
   TabItem,
   Image,
