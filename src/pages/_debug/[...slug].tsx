@@ -109,20 +109,16 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
   page = await getPageContent(properties);
   if (page) {
     try {
-      if (page.type === 'html') {
-        source = page.content;
-      } else {
-        source = await mdxSerialize(page.content, {
-          mdxOptions: {
-            rehypePlugins: [
-              require('../../../rehype-prism'), // Using local version to handle `react-live`
-              require('../../../rehype-prose'),
-              require('rehype-slug'),
-            ],
-            remarkPlugins: [require('@fec/remark-a11y-emoji'), require('remark-admonitions')],
-          },
-        });
-      }
+      source = await mdxSerialize(page.content, {
+        mdxOptions: {
+          rehypePlugins: [
+            require('../../../rehype-prism'), // Using local version to handle `react-live`
+            require('../../../rehype-prose'),
+            require('rehype-slug'),
+          ],
+          remarkPlugins: [require('@fec/remark-a11y-emoji'), require('remark-admonitions')],
+        },
+      });
     } catch (e) {
       error = serializeError(e);
     }
