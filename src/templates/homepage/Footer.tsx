@@ -3,11 +3,14 @@ import { ExternalLink, Link } from '../../components/Link';
 
 export function Footer() {
   return (
-    <footer className="flex font-mono text-gray-500 hover:text-gray-300 transition-colors text-sm mb-5 py-4">
+    <footer className="flex font-mono text-white opacity-50 hover:opacity-100 transition-opacity text-sm mb-5 py-4">
       <div className="flex-1">
-        <div>© {new Date().getFullYear()} Invertase</div>
+        <div>© {new Date().getFullYear()} Invertase | docs.page</div>
       </div>
-      <div className="flex space-x-6">
+      <div className="flex items-center space-x-6">
+        <ExternalLink href="https://docs.page" className="hover:underline">
+          <img src="/docs-page-logo.png" alt="docs.page" className="h-6" />
+        </ExternalLink>
         <ExternalLink href="https://github.com/invertase/docs.page" className="hover:underline">
           GitHub
         </ExternalLink>

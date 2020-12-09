@@ -1,56 +1,64 @@
-## General
+<p align="center">
+  <img src="https://docs.page/docs-page-logo.png" alt="docs.page" style="max-height: 60px;" /> <br /><br />
+  <span>Instant Open Source docs with zero configuration.</span>
+</p>
 
-- [ ] Tailwind purging - breaks some dark mode things, such as hover on sidebar
-- [ ] docs.page documentation
+<p align="center">
+  <a href="https://docs.page"><img src="https://img.shields.io/badge/powered%20by-docs.page-34C4AC.svg?style=flat-square" alt="docs.page" /></a>
+</p>
 
-## Homepage
+---
 
-- [x] Regex needs doing to extract the owner/repo from the URL (`Checkout` component) & redirect the user
-- [x] Add minimal footer to homepage (just a few links, keep it clean)
+- [Homepage](https://docs.page)
+- [Getting Started](https://docs.page/invertase/docs.page)
+- [Configuration](https://docs.page/invertase/docs.page/configuration)
+- [Custom Components](https://docs.page/invertase/docs.page/components)
+- [Previews](https://docs.page/invertase/docs.page/previews)
+- [Debugging](https://docs.page/invertase/docs.page/debugging)
+- Custom Domains (coming soon)
 
-## pages/[...slug].tsx
+---
 
-- [x] `.html` files should not go through MDX render, otherwise they need to be JSX.
-- [ ] Handle custom domains. Figure out what data is needed in order for the `Link` component to work correctly.
-- Custom components:
-  - [x] Tabs / TabItem
-- [x] Code block titles
-  - https://github.com/mottox2/remark-code-titles
-- [x] Code block live
-  - https://github.com/FormidableLabs/react-live
-  - [x] Use webpack alias for smaller bundle? Load on Client only?
-  - [x] Use fork of buble? https://github.com/facebook/docusaurus/blob/master/packages/docusaurus-theme-live-codeblock/src/index.js#L24
-- [x] Syntax highlighting
-  - Use Rehype plugin duricompng server rendering? https://github.com/mapbox/rehype-prism
-  - Client needs to pull in styles
-- [ ] Line highlighting in code - plugin?
-- [x] Assets (img component) - can we somehow link to the raw file on git? Easier way?
-- [x] Link component not handling default branch?
-- [x] Sidebar nested items need testing - toggle not working yet
-- [x] Enable navbar dropdown somehow?
-- Table of contents
-  - [x] No underlines (only on hover)
-  - [x] Hide the h1 tags (see `rehypePlugins` options; thought I handled this)
-    - Started at 1 instead of 2 in loop
-  - [x] Bold lines with children (might be doable via tailwind.config.js)
-    - [ ] Fix dark/link font link colours (manually set in tailwind.config.js at the moment)
-  - [x] Toggle TOC visibility
-- [ ] Render assumes repo exists if a branch/pr exists, causing incorrect error pages
-  - `/invertase/mellos~docs-testing` causes a document not found error rather than repo not found
-- [x] Fix `dark:hidden` for swapping logo out
+## About 
 
+docs.page is a free Open Source project, allowing you to create instant, fast, beautiful documentation with zero configuration.
 
-## pages/_debug/[...slug].tsx
+Documentation is an important aspect for many projects, however creating a custom documentation website
+for each project is time consuming. Many common solutions to problems have to be duplicated, along with 
+dealing with overheads such as website maintenance & hosting.
 
-- [ ] Needs overall implementation. Pull data/responses from everywhere and show output on the page.
-- [x] Ensure it has a `noindex` metatag
-- [x] Not working with 404 repos/errors (/_debug/ehesp/testingh)
-- [x] Display list of generated meta tags (`getHeadTags`)
-- [ ] Render assumes repo exists if a branch/pr exists, causing server errors (Temp workaround in place)
+Solutions such as [Jekyll](https://jekyllrb.com/docs/github-pages/), [Docusaurus](https://docusaurus.io/),
+[docsify](https://docsify.js.org/#/) and many others are great projects, however still require custom setup for each project.
 
-# Error Page
+This project delivers instant documentation websites with the content sourced directly from any public
+GitHub repository. Features include:
 
-- [x] "The page, index was not found in the ehesp/testingh repository. " doesn't make sense - the repo isn't there so the page will never exist, still says "Document not found"
-- [x] Add minimal footer (same as homepage)
-- [ ] Configure footer links
-- [x] Can we somehow make it look a bit better? "404" text above the box, a bigger, colored?
+- Branch & Pull Request previewing.
+- GitHub Pull Request bot for previewing automation.
+- Dark / Light mode support.
+- [MDX](https://github.com/mdx-js/mdx) components such as Tabs (useful for projects with multiple languages).
+- Server Side Rendered (SSR) pages (powered by [Next.js](https://nextjs.org/) & [Vervel](https://vercel.com)).
+- Support for adding search via [Docsearch](https://docsearch.algolia.com/).
+- Managing common project variables.
+- Many [configurable](https://docs.page/invertase/docs.page/configuration) options, such as sidebars, Google Analytics are more.
+
+## Should I use docs.page?
+
+docs.page is a simple way to generate a documentation with zero effort. It generally works for documentation websites with a lot of Markdown based content. If you require features which are more specific to your own project a custom solution might work better.
+
+## License
+
+- See [LICENSE](/LICENSE)
+
+---
+
+<p>
+  <img align="left" width="75px" src="https://static.invertase.io/assets/invertase-logo-small.png">
+  <p align="left">
+    Built and maintained with 💛 by <a href="https://invertase.io">Invertase</a>.
+  </p>
+  <p align="left">
+    <a href="https://invertase.link/discord"><img src="https://img.shields.io/discord/295953187817521152.svg?style=flat-square&colorA=7289da&label=Chat%20on%20Discord" alt="Chat on Discord"></a>
+    <a href="https://twitter.com/invertaseio"><img src="https://img.shields.io/twitter/follow/invertaseio.svg?style=flat-square&colorA=1da1f2&colorB=&label=Follow%20on%20Twitter" alt="Follow on Twitter"></a>
+  </p>
+</p>

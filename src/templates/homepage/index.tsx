@@ -12,9 +12,33 @@ export default function IndexPage() {
   return (
     <>
       <Head>
-        <title>docs.page | Zero configuration GitHub documentation websites</title>
+        <title>docs.page | Instant Open Source docs with zero configuration.</title>
         <link rel="preconnect" href="https://fonts.gstatic.com" />
         <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet" />
+
+        <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png" />
+        <link rel="manifest" href="/favicons/site.webmanifest" />
+        <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#5bbad5" />
+        <meta name="msapplication-TileColor" content="#da532c" />
+        <meta name="theme-color" content="#ffffff" />
+
+        <meta property="og:title" content="docs.page" />
+        <meta
+          property="og:description"
+          content="Instant Open Source docs with zero configuration."
+        />
+        <meta property="og:image" content="http://docs.page/docs-page-social.png" />
+        <meta property="og:url" content="http://docs.page" />
+
+        <meta name="twitter:title" content="docs.page" />
+        <meta
+          name="twitter:description"
+          content="Instant Open Source docs with zero configuration."
+        />
+        <meta name="twitter:image" content="http://docs.page/docs-page-social.png" />
+        <meta name="twitter:card" content="summary_large_image" />
       </Head>
       <style global jsx>{`
         body {
