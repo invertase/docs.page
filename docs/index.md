@@ -18,10 +18,10 @@ View the [Getting Started](/getting-started) documentation to learn more.
 
 At [Invertase](https://invertase.io) we're always building new Open Source products for the community.
 One of the most important yet undervalued aspects of a successful Open Source product is documentation.
-Using GitHub README files or Wiki's is a great place to start, however common issues quickly start to arise.
+Using GitHub README files or Wiki's is a great place to start, however common issues quickly start to arise:
 
-- Documentation isn't searchable.
 - Markdown only supports basic HTML.
+- Documentation isn't searchable.
 - Adding navigation is tricky, slow and repetitive.
 
 Existing solutions such as GitHub pages, or building a custom documentation website help solve these problems, 
