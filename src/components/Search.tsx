@@ -41,7 +41,7 @@ export function Search({ apiKey, indexName }: SearchProps) {
         }
       `}</style>
       <div
-        className="desktop:hidden pl-4"
+        className="desktop:hidden pl-6"
         role="button"
         tabIndex={0}
         onClick={() => setVisible(true)}
@@ -49,7 +49,7 @@ export function Search({ apiKey, indexName }: SearchProps) {
         <SearchCircle size={26} />
       </div>
       <div
-        className={cx('desktop:block pl-4', {
+        className={cx('desktop:block pl-6', {
           hidden: !visible,
           'absolute inset-0 z-50 bg-white dark:bg-gray-800 flex items-center px-4': visible,
         })}
@@ -60,7 +60,7 @@ export function Search({ apiKey, indexName }: SearchProps) {
           placeholder="Search..."
           className={cx('w-full appearance-none bg-gray-200 dark:bg-gray-900 px-3 py-2 rounded-lg')}
         />
-        <div className="desktop:hidden pl-4" role="button" onClick={() => setVisible(false)}>
+        <div className="desktop:hidden pl-6" role="button" onClick={() => setVisible(false)}>
           <Close size={26} />
         </div>
       </div>

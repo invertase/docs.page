@@ -131,12 +131,12 @@ function Utils() {
       )}
       <ExternalLink
         href={`https://github.com/${repo}`}
-        className="pl-4 group flex items-center hover:underline"
+        className="pl-6 group flex items-center hover:underline"
       >
         <GitHub size={26} className="text-black dark:text-white hover:opacity-80" />
       </ExternalLink>
       {!properties.isDefaultBranch && properties.ref && (
-        <div className="pl-4">
+        <div className="pl-6">
           <ExternalLink
             href={`https://github.com/${repo}/tree/${properties.ref}`}
             className={cx(
