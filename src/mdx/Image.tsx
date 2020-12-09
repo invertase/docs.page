@@ -1,9 +1,9 @@
-import React, { CSSProperties, useContext } from 'react';
+import React, { CSSProperties } from 'react';
 import validDataUrl from 'valid-data-url';
 import Zoom from 'react-medium-image-zoom';
 
 import { isExternalLink } from '../components/Link';
-import { SlugPropertiesContext } from '../properties';
+import { useConfig, useSlugProperties } from '../hooks';
 
 interface ImageProps
   extends React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement> {
@@ -16,8 +16,10 @@ const style: CSSProperties = {
   maxHeight: 600,
 };
 
-export function Image({ zoom = false, caption, ...props }: ImageProps) {
-  const properties = useContext(SlugPropertiesContext);
+export function Image({ zoom, caption, ...props }: ImageProps) {
+  const config = useConfig();
+  const properties = useSlugProperties();
+  const zoomEnabled = zoom ?? config.zoomImages;
 
   let src = props.src ?? '';
 
@@ -26,7 +28,7 @@ export function Image({ zoom = false, caption, ...props }: ImageProps) {
   }
 
   const wrapper = (child: React.ReactElement) =>
-    withFigure(zoom ? withZoom(child) : child, caption);
+    withFigure(zoomEnabled ? withZoom(child) : child, caption);
 
   if (isExternalLink(src) || validDataUrl(src)) {
     return wrapper(

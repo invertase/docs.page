@@ -1,7 +1,7 @@
 import { createContext } from 'react';
 import get from 'lodash.get';
 import { DEFAULT_LAYOUT, LayoutType } from './components/Layout';
-import { getNumber, getString } from './utils';
+import { getBoolean, getNumber, getString } from './utils';
 
 export type NavigationItem = [string, string];
 
@@ -44,6 +44,8 @@ export type Config = {
   variables: object;
   // Adds Google Analytics tracking ID to the page
   googleAnalytics: string;
+  // Whether zoomable images are enabled by default
+  zoomImages: boolean;
 };
 
 export const defaultConfig: Config = {
@@ -60,6 +62,7 @@ export const defaultConfig: Config = {
   headerDepth: 3,
   variables: {},
   googleAnalytics: '',
+  zoomImages: false,
 };
 
 // Merges any user config with default values.
@@ -83,6 +86,7 @@ export function mergeConfig(json: any): Config {
     headerDepth: getNumber(json, 'headerDepth', defaultConfig.headerDepth),
     variables: get(json, 'variables', defaultConfig.variables),
     googleAnalytics: getString(json, 'googleAnalytics', defaultConfig.googleAnalytics),
+    zoomImages: getBoolean(json, 'zoomImages', defaultConfig.zoomImages),
   };
 }
 
