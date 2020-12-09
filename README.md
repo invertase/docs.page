@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://docs.page/docs-page-logo.png" alt="docs.page" style="max-height: 60px;" /> <br /><br />
+  <img src="https://docs.page/docs-page-logo.png" alt="docs.page" height="120" /> <br /><br />
   <span>Instant Open Source docs with zero configuration.</span>
 </p>
 
