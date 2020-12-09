@@ -32,6 +32,7 @@
     "hast-util-parse-selector": "^2.2.5",
     "hast-util-select": "^4.0.1",
     "hast-util-to-string": "^1.0.4",
+    "is-html": "^2.0.0",
     "isomorphic-dompurify": "^0.9.0",
     "lodash.get": "^4.4.2",
     "next": "10.0.1",
