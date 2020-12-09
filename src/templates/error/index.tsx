@@ -1,10 +1,16 @@
 import React, { ReactChild } from 'react';
 import NextHead from 'next/head';
+import Link from 'next/link';
 
 import { ErrorType, IRenderError } from '../../error';
+import { Footer } from '../homepage/Footer';
 
 import { SlugProperties } from '../../properties';
 import { QuickLinks } from './QuickLinks';
+import { Title } from './Title';
+import { DarkModeToggle } from '../../components/DarkModeToggle';
+import { useDebugUrl } from '../../hooks';
+import { ExternalLink } from '../../components/Link';
 
 export * from './ErrorBoundary';
 
@@ -15,18 +21,18 @@ const ERROR_TYPES = {
   server: { title: '500', subtitle: 'Whoops! Something Went Wrong' },
 };
 
-export function Error({ statusCode, errorType, properties }: IRenderError) {
-  let child: React.ReactElement;
+export function Error(error: IRenderError) {
+  // let child: React.ReactElement;
 
-  if (errorType === ErrorType.repositoryNotFound) {
-    child = <RepositoryNotFound properties={properties} />;
-  } else if (errorType === ErrorType.pageNotFound) {
-    child = <DocumentNotFound properties={properties} />;
-  } else if (statusCode == 404) {
-    child = <PageNotFound />;
-  } else {
-    child = <ServerError properties={properties} />;
-  }
+  // if (errorType === ErrorType.repositoryNotFound) {
+  //   child = <RepositoryNotFound properties={properties} />;
+  // } else if (errorType === ErrorType.pageNotFound) {
+  //   child = <DocumentNotFound properties={properties} />;
+  // } else if (statusCode == 404) {
+  //   child = <PageNotFound />;
+  // } else {
+  //   child = <ServerError properties={properties} />;
+  // }
 
   return (
     <>
@@ -35,150 +41,103 @@ export function Error({ statusCode, errorType, properties }: IRenderError) {
         <link rel="preconnect" href="https://fonts.gstatic.com" />
         <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet" />
       </NextHead>
-      {child}
-    </>
-  );
-}
-
-export function RepositoryNotFound({ properties }: { properties: SlugProperties }) {
-  const { owner, repository } = properties;
-
-  return (
-    <ErrorPage code="repo">
-      <>
-        The GitHub repository{' '}
-        <a
-          className="font-mono underline hover:opacity-75"
-          target="_blank"
-          href={`https://github.com/${owner}/${repository}`}
-        >
-          {owner}/{repository}
-        </a>{' '}
-        was not found. To get started, create a new repository on{' '}
-        <a className="font-mono underline hover:opacity-75" href="https://github.com/new">
-          GitHub
-        </a>
-        .
-      </>
-    </ErrorPage>
-  );
-}
-
-export function DocumentNotFound({ properties }: { properties: SlugProperties }) {
-  const { owner, repository, path } = properties;
-
-  return (
-    <ErrorPage code="document">
-      <>
-        The page,{' '}
-        <a
-          className="font-mono underline hover:opacity-75"
-          target="_blank"
-          href={`https://github.com/${owner}/${repository}/${path}`}
-        >
-          {path}
-        </a>{' '}
-        was not found in the{' '}
-        <a
-          className="font-mono underline hover:opacity-75"
-          target="_blank"
-          href={`https://github.com/${owner}/${repository}`}
-        >
-          {owner}/{repository}
-        </a>{' '}
-        repository. To get started, create a file called {path} on the{' '}
-        <a
-          className="font-mono underline hover:opacity-75"
-          href="https://github.com/greghesp/testing/new/main"
-        >
-          GitHub Repo
-        </a>
-        .
-      </>
-    </ErrorPage>
-  );
-}
-
-export function ServerError({ properties }: { properties?: SlugProperties }) {
-  return (
-    <ErrorPage code="server">
-      <>
-        Oh dear, looks like our cogs stopped working.
-        {properties?.owner && properties?.repository && (
-          <>
-            <br />
-            <br />
-            It seems your documents failed to build. Try using our{' '}
-            <a
-              className="font-mono underline hover:opacity-75"
-              target="_blank"
-              href={`https://docs.page/_debug/${properties?.owner}/${properties?.repository}/${properties?.path}`}
-            >
-              debug tool
-            </a>{' '}
-            to identify the issue
-          </>
-        )}
-        {!properties?.owner && !properties?.repository && (
-          <>
-            <br />
-            <br />
-            If you don't think this should have happened, you can always{' '}
-            <a
-              className="font-mono underline hover:opacity-75"
-              target="_blank"
-              href={`https://github.com/invertase/docs.page/issues`}
-            >
-              report an issue
-            </a>
-          </>
-        )}
-      </>
-    </ErrorPage>
-  );
-}
-
-export function PageNotFound() {
-  return (
-    <ErrorPage code="page">
-      <>
-        This is not the page you're looking for. Think there should be a page here?{' '}
-        <a
-          className="font-mono underline hover:opacity-75"
-          target="_blank"
-          href={`https://github.com/invertase/docs.page/issues`}
-        >
-          Report an issue
-        </a>
-      </>
-    </ErrorPage>
-  );
-}
-
-function ErrorPage({ children, code }: { code: String; children: ReactChild }) {
-  return (
-    <>
-      <section className="pt-16 lg:pt-20 text-center lg:text-left space-y-32">
-        <div className="max-w-5xl mx-auto tracking-wider">
-          <h1 className="font-anton mb-4  bg-clip-text text-transparent bg-gradient-to-br dark:from-gray-100 dark:via-gray-300  dark:to-gray-200 from-gray-900 via-gray-500 to-gray-700">
-            <span className="bg-clip-text text-transparent bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 text-6xl lg:text-9xl">
-              {ERROR_TYPES[`${code}`].title}
-            </span>
-            <br />
-            <span className="text-5xl lg:text-7xl">{ERROR_TYPES[`${code}`].subtitle}</span>
-          </h1>
+      <div className="py-2 bg-gray-800">
+        <div className="max-w-4xl mx-auto flex justify-end px-2">
+          <DarkModeToggle />
         </div>
-        <div className="px-4 lg:px-0 max-w-5xl mx-auto">
-          <div className="mt-16 lg:flex items-center border rounded-lg p-12">
-            <div className="flex-1 dark:text-white">
-              <p className="text-lg font-thin px-3 ">{children}</p>
-            </div>
-          </div>
+      </div>
+      <section className="mt-20 max-w-4xl mx-auto px-2">
+        <Title statusCode={error.statusCode} />
+        <div className="my-16 prose dark:prose-dark prose-lg max-w-none">
+          {error.statusCode === 500 && <ServerError {...error} />}
+          {error.statusCode !== 500 && <NotFound {...error} />}
         </div>
-        <div className="px-4 lg:px-0 max-w-5xl mx-auto">
-          <QuickLinks />
-        </div>
+        <QuickLinks />
+        <Footer />
       </section>
     </>
   );
+}
+
+export function ServerError({ properties }: IRenderError) {
+  const debugUrl = useDebugUrl(properties);
+
+  return (
+    <>
+      <p>Something went wrong whilst building the page.</p>
+      <p>
+        The could have happened because of an issue with the remote Markdown content, or something
+        internal. To help fix this problem, you can{' '}
+        <Link href={debugUrl}>
+          <a>debug</a>
+        </Link>{' '}
+        this page or{' '}
+        <ExternalLink href="https://github.com/invertase/docs.page/issues">
+          report an issue
+        </ExternalLink>
+        .
+      </p>
+    </>
+  );
+}
+
+export function NotFound({ properties, errorType }: IRenderError) {
+  const debugUrl = useDebugUrl(properties);
+
+  if (errorType === ErrorType.repositoryNotFound) {
+    return (
+      <>
+        <p>
+          The GitHub repository{' '}
+          <ExternalLink href={properties.url}>
+            {properties.owner}/{properties.repository}
+          </ExternalLink>{' '}
+          was not found.
+        </p>
+        <p>
+          To get started, create a new repository on{' '}
+          <ExternalLink href="https://github.com/new">GitHub</ExternalLink>. If you were expecting a
+          If you were expecting a page to be here, you can{' '}
+          <Link href={debugUrl}>
+            <a>debug</a>
+          </Link>{' '}
+          this page or{' '}
+          <ExternalLink href="https://github.com/invertase/docs.page/issues">
+            report an issue
+          </ExternalLink>
+          .
+        </p>
+      </>
+    );
+  }
+
+  if (errorType === ErrorType.pageNotFound) {
+    return (
+      <>
+        <p>
+          No valid file matching the path <code>/{properties.path}</code> could be found.
+        </p>
+        <p>
+          To get started, create a new <code>.md</code> or <code>.mdx</code> you can create a new
+          file on{' '}
+          <ExternalLink
+            href={`https://github.com/${properties.owner}/${properties.repository}/new/${properties.ref}/docs/${properties.path}`}
+          >
+            GitHub
+          </ExternalLink>
+          . If you were expecting a page to be here, you can{' '}
+          <Link href={debugUrl}>
+            <a>debug</a>
+          </Link>{' '}
+          this page or{' '}
+          <ExternalLink href="https://github.com/invertase/docs.page/issues">
+            report an issue
+          </ExternalLink>
+          .
+        </p>
+      </>
+    );
+  }
+
+  return null;
 }

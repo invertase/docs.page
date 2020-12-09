@@ -10,7 +10,7 @@ export enum ErrorType {
 export interface IRenderError {
   statusCode: number;
   errorType: ErrorType;
-  properties?: SlugProperties;
+  properties: SlugProperties;
 }
 
 export class RenderError {
@@ -30,7 +30,7 @@ export class RenderError {
   public readonly errorType: ErrorType;
   public readonly properties?: Properties;
 
-  private constructor(statusCode: number, errorType: ErrorType, properties?: Properties) {
+  private constructor(statusCode: number, errorType: ErrorType, properties: Properties) {
     this.statusCode = statusCode;
     this.errorType = errorType;
     this.properties = properties;
@@ -40,7 +40,7 @@ export class RenderError {
     return {
       statusCode: this.statusCode,
       errorType: this.errorType,
-      properties: this.properties?.toObject(),
+      properties: this.properties.toObject(),
     };
   }
 }

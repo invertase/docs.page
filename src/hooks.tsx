@@ -42,6 +42,10 @@ export function useEditUrl(): string {
   return `${properties.url}/edit/${properties.ref}/docs/${properties.path}.${fileType}`;
 }
 
+export function useDebugUrl(properties: SlugProperties): string {
+  return `/_debug${properties.base}/${properties.path}`;
+}
+
 export function useLocalStorageToggle(
   key: string,
 ): [MutableRefObject<HTMLDivElement>, () => void, boolean] {
