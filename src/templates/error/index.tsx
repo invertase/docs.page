@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { ErrorType, IRenderError } from '../../error';
 import { Footer } from '../homepage/Footer';
 
-import { SlugProperties } from '../../properties';
 import { QuickLinks } from './QuickLinks';
 import { Title } from './Title';
 import { DarkModeToggle } from '../../components/DarkModeToggle';
@@ -14,26 +13,7 @@ import { ExternalLink } from '../../components/Link';
 
 export * from './ErrorBoundary';
 
-const ERROR_TYPES = {
-  repo: { title: '404', subtitle: 'Repository Not Found' },
-  document: { title: '404', subtitle: 'Document Not Found' },
-  page: { title: '404', subtitle: 'Page Not Found' },
-  server: { title: '500', subtitle: 'Whoops! Something Went Wrong' },
-};
-
 export function Error(error: IRenderError) {
-  // let child: React.ReactElement;
-
-  // if (errorType === ErrorType.repositoryNotFound) {
-  //   child = <RepositoryNotFound properties={properties} />;
-  // } else if (errorType === ErrorType.pageNotFound) {
-  //   child = <DocumentNotFound properties={properties} />;
-  // } else if (statusCode == 404) {
-  //   child = <PageNotFound />;
-  // } else {
-  //   child = <ServerError properties={properties} />;
-  // }
-
   return (
     <>
       <NextHead>
@@ -48,7 +28,7 @@ export function Error(error: IRenderError) {
       </div>
       <section className="mt-20 max-w-4xl mx-auto px-2">
         <Title statusCode={error.statusCode} />
-        <div className="my-16 prose dark:prose-dark prose-lg max-w-none">
+        <div className="my-16 prose dark:prose-dark max-w-none">
           {error.statusCode === 500 && <ServerError {...error} />}
           {error.statusCode !== 500 && <NotFound {...error} />}
         </div>
