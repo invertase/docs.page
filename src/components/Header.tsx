@@ -3,11 +3,10 @@ import cx from 'classnames';
 import useOnClickOutside from 'use-onclickoutside';
 
 import { ExternalLink, Link } from './Link';
-import { Branch, GitHub, MenuOpen, PullRequest, Twitter } from './Icons';
+import { Branch, GitHub, Menu, MenuOpenRight, PullRequest, Twitter } from './Icons';
 import { DarkModeToggle } from './DarkModeToggle';
 import { Search } from './Search';
 import { useConfig, useSlugProperties } from '../hooks';
-import { Menu } from './Icons';
 
 export function Header() {
   const config = useConfig();
@@ -87,7 +86,7 @@ function MobileNavigation() {
   return (
     <div className="flex desktop:hidden ml-4">
       <div role="button" tabIndex={0} onClick={() => setOpen($ => !$)}>
-        {open && <MenuOpen size={24} />}
+        {open && <MenuOpenRight size={24} />}
         {!open && <Menu size={24} />}
       </div>
       <div

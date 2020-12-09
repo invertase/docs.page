@@ -46,6 +46,14 @@ export function useDebugUrl(properties: SlugProperties): string {
   return `/_debug${properties.base}/${properties.path}`;
 }
 
+export function useBodyScrollLock(lock: boolean): void {
+  useEffect(() => {
+    const el = window.document.body;
+    if (lock) el.style.overflowY = 'hidden';
+    if (!lock) el.style.overflowY = 'auto';
+  }, [lock]);
+}
+
 export function useLocalStorageToggle(
   key: string,
 ): [MutableRefObject<HTMLDivElement>, () => void, boolean] {

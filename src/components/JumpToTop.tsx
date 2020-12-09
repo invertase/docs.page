@@ -40,7 +40,7 @@ export function JumpToTop() {
   return (
     <div
       className={cx(
-        'fixed w-12 h-12 rounded-full right-0 bottom-0 mr-4 mb-4 cursor-pointer bg-theme-color shadow hover:shadow-xl transition-opacity',
+        'hidden desktop:block fixed w-12 h-12 rounded-full right-0 bottom-0 mr-4 mb-4 cursor-pointer bg-theme-color shadow hover:shadow-xl transition-opacity',
         {
           'opacity-0 pointer-events-none': !visible,
           'opacity-100 pointer-events-auto': visible,

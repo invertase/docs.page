@@ -51,7 +51,7 @@ export function Search({ apiKey, indexName }: SearchProps) {
       <div
         className={cx('desktop:block pl-4', {
           hidden: !visible,
-          'absolute inset-0 z-50 bg-white flex items-center px-4': visible,
+          'absolute inset-0 z-50 bg-white dark:bg-gray-800 flex items-center px-4': visible,
         })}
       >
         <input

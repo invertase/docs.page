@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import cx from 'classnames';
+import useOnClickOutside from 'use-onclickoutside';
 
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { Footer } from './Footer';
 import { Divider } from './Divider';
-import { useConfig, usePageContent } from '../hooks';
+import { useBodyScrollLock, useConfig, usePageContent } from '../hooks';
 import { JumpToTop } from './JumpToTop';
+import { Menu, Close } from './Icons';
 
 export type LayoutType = 'default' | 'wide' | 'full' | 'bare';
 
@@ -56,6 +58,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 function WithSidebar({ children }: { children: React.ReactNode }) {
+  const ref = React.useRef<HTMLDivElement>(null);
+  const [open, setOpen] = useState<boolean>(false);
+
+  useOnClickOutside(ref, () => setOpen(false));
+  useBodyScrollLock(open);
+
   // Check first whether there is a sidebar to render
   let enabled = useConfig().sidebar.length > 0;
   const content = usePageContent();
@@ -68,7 +76,16 @@ function WithSidebar({ children }: { children: React.ReactNode }) {
   return (
     <>
       {enabled && (
-        <nav className="fixed inset-y-0 w-64 hidden desktop:block mt-16 overflow-y-auto overflow-x-hidden border-r dark:border-gray-700">
+        <nav
+          ref={ref}
+          className={cx(
+            'desktop:ml-0 fixed z-20 inset-y-0 w-64 mt-16 overflow-y-auto overflow-x-hidden border-r bg-white dark:bg-gray-900 dark:border-gray-700',
+            {
+              'ml-0': open,
+              '-ml-64': !open,
+            },
+          )}
+        >
           <Sidebar />
         </nav>
       )}
@@ -78,6 +95,20 @@ function WithSidebar({ children }: { children: React.ReactNode }) {
         })}
       >
         {children}
+      </div>
+      <div
+        className={cx('desktop:hidden fixed inset-0 z-10 bg-black transition-colors top-16', {
+          'opacity-60': open,
+          'opacity-0 pointer-events-none': !open,
+        })}
+      />
+      <div
+        className="desktop:hidden fixed bottom-0 right-0 bg-theme-color mb-6 mr-6 px-4 py-2 rounded shadow text-white"
+        role="button"
+        onClick={() => setOpen($ => !$)}
+      >
+        {open && <Close size={20} />}
+        {!open && <Menu size={20} />}
       </div>
     </>
   );

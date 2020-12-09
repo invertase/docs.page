@@ -199,7 +199,7 @@ export function Menu({ size, className, style }: IconProps) {
   );
 }
 
-export function MenuOpen({ size, className, style }: IconProps) {
+export function MenuOpenRight({ size, className, style }: IconProps) {
   return (
     <svg
       width={size}
