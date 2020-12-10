@@ -17,45 +17,41 @@
     border-top-left-radius: 0 !important;
     border-top-right-radius: 0 !important;
   }
+}
 
-  .admonition {
-    @apply mb-4 p-6 text-gray-800 rounded-lg shadow;
-  }
+.admonition {
+  @apply mb-4 p-6 text-gray-800 rounded-lg shadow;
+}
 
-  .admonition h5 {
-    @apply flex items-center uppercase font-medium text-lg mb-4;
-    @apply text-gray-800 !important;
-  }
+.admonition h5 {
+  @apply flex items-center uppercase font-medium text-lg mb-4;
+  @apply text-gray-800 !important;
+}
 
-  .admonition h5 svg {
-    @apply w-6 h-6;
-  }
+.admonition h5 svg {
+  @apply w-6 h-6;
+}
 
-  .admonition p {
-    @apply m-0 !important;
-  }
+.admonition p {
+  @apply m-0 !important;
+}
 
-  .admonition h5 .admonition-icon {
-    @apply inline-block mr-2;
-  }
+.admonition h5 .admonition-icon {
+  @apply inline-block mr-2;
+}
 
-  .admonition.admonition-note {
-    @apply bg-gray-100 dark:bg-white;
-  }
-
-  .admonition.admonition-tip {
-    @apply bg-blue-400;
-  }
-
-  .admonition.admonition-info {
-    @apply bg-green-500;
-  }
-
-  .admonition.admonition-caution {
-    @apply bg-yellow-400;
-  }
-
-  .admonition.admonition-danger {
-    @apply bg-red-400;
-  }
+.admonition-note {
+  @apply bg-gray-100 dark:bg-white;
+}
+.admonition-tip {
+  @apply bg-blue-400;
+}
+.admonition-info {
+  @apply bg-green-500;
+}
+.admonition-caution {
+  @apply bg-yellow-400;
+}
+.admonition-danger {
+  @apply bg-red-400;
 }
