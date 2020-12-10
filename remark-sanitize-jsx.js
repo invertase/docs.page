@@ -18,6 +18,8 @@ function closeTags() {
       node.value = sanitizeHtml(node.value, {
         allowedTags: [...sanitizeHtml.defaults.allowedTags, 'img'],
       });
+    } else {
+      // TODO: validate any MDX nodes, remove if not found to reduce error page chance
     }
   }
 }
