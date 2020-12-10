@@ -6,7 +6,7 @@ import { ExternalLink, Link } from './Link';
 import { Branch, GitHub, Menu, MenuOpenRight, PullRequest, Twitter } from './Icons';
 import { DarkModeToggle } from './DarkModeToggle';
 import { Search } from './Search';
-import { useConfig, useSlugProperties } from '../hooks';
+import { useConfig, usePageContent, useSlugProperties } from '../hooks';
 
 export function Header() {
   const config = useConfig();
@@ -52,7 +52,7 @@ function Navigation() {
     config.navigation.length > 0 && (
       <ul className="flex items-center justify-center desktop:justify-start overflow-x-auto h-12 desktop:h-16 desktop:mr-4">
         {config.navigation.map(([title, url]) => (
-          <li key={url}>
+          <li key={title + url}>
             <Link
               href={url}
               className="transition-colors hover:bg-gray-200 dark:hover:bg-gray-900 whitespace-nowrap px-4 py-2 rounded desktop:ml-1"
@@ -129,7 +129,7 @@ function Utils() {
       >
         <GitHub size={26} className="text-black dark:text-white hover:opacity-80" />
       </ExternalLink>
-      {!properties.isDefaultBranch && properties.ref && (
+      {!properties.isBaseBranch && (
         <div className="pl-6">
           <ExternalLink
             href={`https://github.com/${repo}/tree/${properties.ref}`}

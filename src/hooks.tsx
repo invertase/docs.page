@@ -39,11 +39,7 @@ export function useNoSSR() {
 export function useEditUrl(): string {
   const properties = useSlugProperties();
   const fileType = usePageContent().type;
-  return `${properties.url}/edit/${properties.ref}/docs/${properties.path}.${fileType}`;
-}
-
-export function useDebugUrl(properties: SlugProperties): string {
-  return `/_debug${properties.base}/${properties.path}`;
+  return `${properties.githubUrl}/edit/${properties.ref}/docs/${properties.path}.${fileType}`;
 }
 
 export function useBodyScrollLock(lock: boolean): void {
@@ -96,7 +92,7 @@ export function getHeadTags(properties: SlugProperties, page?: PageContent) {
     <meta key="twitter:card" name="twitter:card" content="summary_large_image" />,
   ];
 
-  if (!page.flags.isFork && properties.isDefaultBranch && page.flags.hasConfig) {
+  if (!page.flags.isFork && properties.isBaseBranch && page.flags.hasConfig) {
     tags.push(<meta key="noindex" name="robots" content="noindex" />);
   }
 

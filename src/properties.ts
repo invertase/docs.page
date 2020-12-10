@@ -3,21 +3,21 @@ import { PullRequestMetadata } from './github';
 import { hash } from './utils';
 
 export const DEFAULT_FILE = 'index';
+export const DEFAULT_BRANCH_REF = 'HEAD';
 export const SPLITTER = '~';
 
-type RefType = 'branch' | 'pull-request';
+type RefType = null | 'branch' | 'pull-request';
 
 export class Properties {
   owner: string;
   repository: string;
-  isDefaultBranch: boolean = false;
   ref: string;
   path: string;
   base: string;
 
   public constructor(params: string[]) {
     let [owner, repository, ...path] = params;
-    let ref = '';
+    let ref = DEFAULT_BRANCH_REF;
 
     // project paths containing a SPLITTER mean a specific branch has been requested
     const chunks = repository.split(SPLITTER);
@@ -48,12 +48,6 @@ export class Properties {
     this.base = base;
   }
 
-  public setDefaultBranch(defaultBranch: string) {
-    this.ref = defaultBranch;
-    this.base = `/${this.owner}/${this.repository}`;
-    this.isDefaultBranch = true;
-  }
-
   public setPullRequestMetadata(metadata: PullRequestMetadata) {
     this.owner = metadata.owner;
     this.repository = metadata.repository;
@@ -66,14 +60,15 @@ export class Properties {
 
   toObject(): SlugProperties {
     return {
+      isBaseBranch: this.ref === DEFAULT_BRANCH_REF,
       owner: this.owner,
       repository: this.repository,
-      url: `https://github.com/${this.owner}/${this.repository}`,
-      isDefaultBranch: this.isDefaultBranch,
+      githubUrl: `https://github.com/${this.owner}/${this.repository}`,
+      debugUrl: `/_debug/${this.base}${this.path}`,
       ref: this.ref,
       refType: this.isPullRequest() ? 'pull-request' : 'branch',
-      path: this.path,
       base: this.base,
+      path: this.path,
       hash: hash(`${this.owner}/${this.repository}`),
     };
   }
@@ -81,18 +76,19 @@ export class Properties {
 
 // Properties corresponding to an incoming slug.
 export type SlugProperties = {
+  isBaseBranch: boolean;
   // The project owner, e.g. "invertase"
   owner: string;
   // The repository name, e.g. "melos"
   repository: string;
   // The URL of the repository on GitHub
-  url: string;
+  githubUrl: string;
+  // The URL to debug the page
+  debugUrl: string;
   // The branch/PR the request is for
   ref: string;
-
+  // The type of reference
   refType: RefType;
-  // A value representing whether the current slug is pointing at the default repository branch.
-  isDefaultBranch: boolean;
   // The path of the content
   path: string;
   // Base path for this project
@@ -102,12 +98,13 @@ export type SlugProperties = {
 };
 
 export const SlugPropertiesContext = createContext<SlugProperties>({
+  isBaseBranch: true,
   owner: '',
   repository: '',
-  url: '',
-  isDefaultBranch: false,
+  githubUrl: '',
+  debugUrl: '',
   ref: '',
-  refType: 'branch',
+  refType: null,
   path: '',
   base: '',
   hash: '',

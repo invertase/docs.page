@@ -1,4 +1,4 @@
-import React, { ReactChild } from 'react';
+import React from 'react';
 import NextHead from 'next/head';
 import Link from 'next/link';
 
@@ -8,7 +8,6 @@ import { Footer } from '../homepage/Footer';
 import { QuickLinks } from './QuickLinks';
 import { Title } from './Title';
 import { DarkModeToggle } from '../../components/DarkModeToggle';
-import { useDebugUrl } from '../../hooks';
 import { ExternalLink } from '../../components/Link';
 
 export * from './ErrorBoundary';
@@ -40,15 +39,13 @@ export function Error(error: IRenderError) {
 }
 
 export function ServerError({ properties }: IRenderError) {
-  const debugUrl = useDebugUrl(properties);
-
   return (
     <>
       <p>Something went wrong whilst building the page.</p>
       <p>
         The could have happened because of an issue with the remote Markdown content, or something
         internal. To help fix this problem, you can{' '}
-        <Link href={debugUrl}>
+        <Link href={properties.debugUrl}>
           <a>debug</a>
         </Link>{' '}
         this page or{' '}
@@ -62,14 +59,12 @@ export function ServerError({ properties }: IRenderError) {
 }
 
 export function NotFound({ properties, errorType }: IRenderError) {
-  const debugUrl = useDebugUrl(properties);
-
   if (errorType === ErrorType.repositoryNotFound) {
     return (
       <>
         <p>
           The GitHub repository{' '}
-          <ExternalLink href={properties.url}>
+          <ExternalLink href={properties.githubUrl}>
             {properties.owner}/{properties.repository}
           </ExternalLink>{' '}
           was not found.
@@ -78,7 +73,7 @@ export function NotFound({ properties, errorType }: IRenderError) {
           To get started, create a new repository on{' '}
           <ExternalLink href="https://github.com/new">GitHub</ExternalLink>. If you were expecting a
           If you were expecting a page to be here, you can{' '}
-          <Link href={debugUrl}>
+          <Link href={properties.debugUrl}>
             <a>debug</a>
           </Link>{' '}
           this page or{' '}
@@ -106,7 +101,7 @@ export function NotFound({ properties, errorType }: IRenderError) {
             GitHub
           </ExternalLink>
           . If you were expecting a page to be here, you can{' '}
-          <Link href={debugUrl}>
+          <Link href={properties.debugUrl}>
             <a>debug</a>
           </Link>{' '}
           this page or{' '}

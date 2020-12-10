@@ -58,11 +58,7 @@ export function redirect(link: string, properties?: Properties) {
       link = `/${link}`;
     }
 
-    if (properties.isDefaultBranch) {
-      destination = `/${properties.owner}/${properties.repository}${link}`;
-    } else {
-      destination = `${properties.base}${link}`;
-    }
+    destination = `${properties.base}${link}`;
   }
 
   return {

@@ -29,11 +29,11 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>) {
     href = `/${properties.owner}/${properties.repository}`;
 
     // Add a ref to the current href, if the branch is not default
-    if (!properties.isDefaultBranch) {
+    if (!properties.isBaseBranch) {
       href += `${SPLITTER}${properties.ref}`;
     }
   } else {
-    if (!properties.isDefaultBranch) {
+    if (!properties.isBaseBranch) {
       // Add the ref to the start of the href with a custom domain
       href = `/${SPLITTER}${properties.ref}`;
     }

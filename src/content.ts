@@ -4,7 +4,7 @@ import get from 'lodash.get';
 
 import { LayoutType } from './components/Layout';
 import { Config, mergeConfig } from './config';
-import { Properties, SlugProperties } from './properties';
+import { Properties } from './properties';
 import { getBoolean, getString } from './utils';
 import { getGitHubContents } from './github';
 
@@ -21,6 +21,7 @@ export type Frontmatter = {
 };
 
 export type PageContent = {
+  baseBranch: string;
   config: Config;
   type: FileType;
   frontmatter: Frontmatter;
@@ -89,6 +90,7 @@ export async function getPageContent(properties: Properties): Promise<PageConten
   content = replaceVariables(config.variables, content);
 
   return {
+    baseBranch: contents.baseBranch,
     config,
     type,
     frontmatter,

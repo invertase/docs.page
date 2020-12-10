@@ -145,6 +145,9 @@ export async function getPullRequestMetadata(
 
 type PageContentsQuery = {
   repository: {
+    baseBranch: {
+      name: string;
+    };
     isFork: boolean;
     config?: {
       text: string;
@@ -163,6 +166,7 @@ type PageContentsQuery = {
 
 type Contents = {
   isFork: boolean;
+  baseBranch: string;
   config?: string;
   md?: string;
   mdx?: string;
@@ -174,6 +178,9 @@ export async function getGitHubContents(properties: Properties): Promise<Content
       query: `
       query RepositoryConfig($owner: String!, $repository: String!, $config: String!, $md: String!, $mdx: String!) {
         repository(owner: $owner, name: $repository) {
+          baseBranch: defaultBranchRef {
+            name
+          }
           isFork
           config: object(expression: $config) {
             ... on Blob {
@@ -208,6 +215,7 @@ export async function getGitHubContents(properties: Properties): Promise<Content
 
   return {
     isFork: response.repository.isFork,
+    baseBranch: response.repository.baseBranch.name,
     config: response.repository.config?.text,
     md: response.repository.md?.text,
     mdx: response.repository.mdx?.text,

@@ -94,20 +94,9 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
   // Extract the slug properties from the request.
   const properties = new Properties(params.slug as string[]);
 
-  // If no ref was found in the slug, grab the default branch name
-  // from the GQL API.
-  if (!properties.ref) {
-    const defaultBranch = await getDefaultBranch(properties.owner, properties.repository);
-
-    if (!defaultBranch) {
-      console.error('Repo not found');
-      error = RenderError.repositoryNotFound(properties);
-    } else {
-      properties.setDefaultBranch(defaultBranch);
-    }
-  }
-  // If the ref looks like a PR
-  else if (properties.isPullRequest()) {
+  // If the ref looks like a PR, update the details to point towards
+  // the PR owner (which might be a different repo)
+  if (properties.isPullRequest()) {
     const metadata = await getPullRequestMetadata(
       properties.owner,
       properties.repository,
