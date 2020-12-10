@@ -1,5 +1,5 @@
 import { Properties, SlugProperties } from './properties';
-import { isExternalLink } from './components/Link';
+import { isExternalLink } from '../components/Link';
 
 export enum ErrorType {
   repositoryNotFound,

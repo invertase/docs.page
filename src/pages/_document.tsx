@@ -3,7 +3,7 @@ import Document, { Html, Head, Main, NextScript } from 'next/document';
 import noflash from '../scripts/noflash';
 import syncTabs from '../scripts/sync-tabs';
 
-class _Document extends Document {
+export default class CustomDocument extends Document {
   render() {
     return (
       <Html>
@@ -22,5 +22,3 @@ class _Document extends Document {
     );
   }
 }
-
-export default _Document;

@@ -2,7 +2,7 @@ import React from 'react';
 import NextHead from 'next/head';
 import Link from 'next/link';
 
-import { ErrorType, IRenderError } from '../../error';
+import { ErrorType, IRenderError } from '../../utils/error';
 import { Footer } from '../homepage/Footer';
 
 import { QuickLinks } from './QuickLinks';

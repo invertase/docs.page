@@ -20,6 +20,13 @@ declare global {
   }
 }
 
+/**
+ * A wrapper around https://docsearch.algolia.com
+ * 
+ * If the `docsearch` config is provided, the JS/CSS will be automatically
+ * injected into the page, allowing the `window.docsearch` function to be triggered
+ * on page load.
+ */
 export function Search({ apiKey, indexName }: SearchProps) {
   const [visible, setVisible] = useState<boolean>(false);
 

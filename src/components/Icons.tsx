@@ -1,3 +1,7 @@
+/**
+ * Credit: https://heroicons.com 
+ */
+
 import { CSSProperties } from 'react';
 
 interface IconProps {

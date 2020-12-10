@@ -1,8 +1,13 @@
 import React from 'react';
 import Color from 'color';
-import { defaultConfig } from '../config';
+import { defaultConfig } from '../utils/config';
 import { useConfig } from '../hooks';
 
+/**
+ * Once the configuration options are fetched for the page,
+ * this component injects a few CSS classes into the scope based
+ * on the provided theme.
+ */
 function ThemeStyles() {
   const config = useConfig();
 

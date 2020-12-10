@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 
-import { ConfigContext } from '../config';
+import { ConfigContext } from '../utils/config';
 import { useConfig } from '../hooks';
 
 type HeadingType = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';

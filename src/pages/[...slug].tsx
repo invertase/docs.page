@@ -11,13 +11,13 @@ import { ThemeStyles } from '../components/ThemeStyles';
 import { Layout } from '../components/Layout';
 import { Error, ErrorBoundary } from '../templates/error';
 
-import { ConfigContext } from '../config';
-import { IRenderError, redirect, RenderError } from '../error';
-import { SlugProperties, SlugPropertiesContext, Properties } from '../properties';
-import { PageContentContext, getPageContent, PageContent } from '../content';
-import { getDefaultBranch, getPullRequestMetadata } from '../github';
-import { getHeadTags } from '../hooks';
-import { CustomDomain, CustomDomainContext } from '../domain';
+import { ConfigContext } from '../utils/config';
+import { IRenderError, redirect, RenderError } from '../utils/error';
+import { SlugProperties, SlugPropertiesContext, Properties } from '../utils/properties';
+import { PageContentContext, getPageContent, PageContent } from '../utils/content';
+import { getPullRequestMetadata } from '../utils/github';
+import { CustomDomain, CustomDomainContext } from '../utils/domain';
+import { getHeadTags } from '../utils/html';
 import {
   headerDepthToHeaderList,
   routeChangeComplete,
@@ -149,7 +149,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
           },
         });
       } catch (e) {
-        console.log('!!!', e);
+        console.log(e);
         error = RenderError.serverError(properties);
       }
     }

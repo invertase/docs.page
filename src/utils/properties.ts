@@ -1,6 +1,6 @@
 import { createContext } from 'react';
 import { PullRequestMetadata } from './github';
-import { hash } from './utils';
+import { hash } from '.';
 
 export const DEFAULT_FILE = 'index';
 export const DEFAULT_BRANCH_REF = 'HEAD';

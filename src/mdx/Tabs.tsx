@@ -8,7 +8,7 @@ import React, {
   RefObject,
 } from 'react';
 import cx from 'classnames';
-import { SlugPropertiesContext } from '../properties';
+import { SlugPropertiesContext } from '../utils/properties';
 
 // The prefix within local storage for all <Tabs /> components
 const PREFIX = 'docs.page.tabs';

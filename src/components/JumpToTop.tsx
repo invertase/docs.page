@@ -5,6 +5,10 @@ import { ChevronDoubleUp } from './Icons';
 
 const THRESHOLD = 300;
 
+/**
+ * Hook which returns a `boolean` value, representing
+ * whether the button should be visible or not.
+ */
 function useJumpToTop(): boolean {
   const [visible, setVisible] = useState<boolean>(false);
   const y = useWindowScroll();
@@ -22,6 +26,10 @@ function useJumpToTop(): boolean {
   return visible;
 }
 
+/**
+ * Adds a Floating Action Button to the page whenever the `y` scroll
+ * position exceeds that of the threshold. 
+ */
 export function JumpToTop() {
   const visible = useJumpToTop();
 

@@ -2,10 +2,10 @@ import { createContext } from 'react';
 import matter from 'gray-matter';
 import get from 'lodash.get';
 
-import { LayoutType } from './components/Layout';
+import { LayoutType } from '../components/Layout';
 import { Config, mergeConfig } from './config';
 import { Properties } from './properties';
-import { getBoolean, getString } from './utils';
+import { getBoolean, getString } from '.';
 import { getGitHubContents } from './github';
 
 export type FileType = null | 'md' | 'mdx';

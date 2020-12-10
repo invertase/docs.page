@@ -1,141 +1,146 @@
 import React from 'react';
-import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
-import { getPageContent, PageContent } from '../../content';
-import { Properties, SlugPropertiesContext, SPLITTER } from '../../properties';
-import { getDefaultBranch, getPullRequestMetadata } from '../../github';
-import mdxSerialize from 'next-mdx-remote/serialize';
-import { RepoInfo } from '../../templates/debug/RepoInfo';
-import { Configuration } from '../../templates/debug/Configuration';
-import { Error } from '../../templates/debug/Error';
-import { RenderError } from '../../templates/debug/RenderError';
-import { serializeError } from 'serialize-error';
-import { Header } from '../../components/Header';
-import NextHead from 'next/head';
-import { getHeadTags } from '../../hooks';
-import { MetaTags } from '../../templates/debug/MetaTags';
 
-export default function Debug({
-  error,
-  properties,
-  page,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
-  let tags = null;
-  if (properties.ref) {
-    tags = getHeadTags(properties, page);
-  }
-
-  return (
-    <>
-      <NextHead>
-        <base href={properties.path} />
-        <meta name="robots" content="noindex" />
-        <title>
-          Debug Mode | {properties.owner}/{properties.repository}
-        </title>
-      </NextHead>
-      <SlugPropertiesContext.Provider value={properties}>
-        <Header />
-        <div className="my-10 space-y-10">
-          {!properties.ref && <Error>Repository not found</Error>}
-          {!page && properties.ref && <Error>Page not found</Error>}
-
-          <RepoInfo properties={properties} />
-
-          {error && <RenderError error={error} />}
-          {page && (
-            <>
-              <Configuration config={page.config} />
-              <MetaTags tags={tags} />
-            </>
-          )}
-        </div>
-      </SlugPropertiesContext.Provider>
-    </>
-  );
+export default function DebugPage() {
+  return <div>Debug</div>;
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  return {
-    paths: [],
-    fallback: 'blocking',
-  };
-};
+// import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
+// import { getPageContent, PageContent } from '../../utils/content';
+// import { Properties, SlugPropertiesContext, SPLITTER } from '../../utils/properties';
+// import { getDefaultBranch, getPullRequestMetadata } from '../../utils/github';
+// import mdxSerialize from 'next-mdx-remote/serialize';
+// import { RepoInfo } from '../../templates/debug/RepoInfo';
+// import { Configuration } from '../../templates/debug/Configuration';
+// import { Error } from '../../templates/debug/Error';
+// import { RenderError } from '../../templates/debug/RenderError';
+// import { serializeError } from 'serialize-error';
+// import { Header } from '../../components/Header';
+// import NextHead from 'next/head';
+// import { getHeadTags } from '../../hooks';
+// import { MetaTags } from '../../templates/debug/MetaTags';
 
-type StaticProps = {
-  error?: object;
-  source?: any;
-  properties?: any;
-  page?: any;
-};
+// export default function Debug({
+//   error,
+//   properties,
+//   page,
+// }: InferGetStaticPropsType<typeof getStaticProps>) {
+//   let tags = null;
+//   if (properties.ref) {
+//     tags = getHeadTags(properties, page);
+//   }
 
-export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) => {
-  let source = null;
-  let error = null;
-  let page: PageContent;
+//   return (
+//     <>
+//       <NextHead>
+//         <base href={properties.path} />
+//         <meta name="robots" content="noindex" />
+//         <title>
+//           Debug Mode | {properties.owner}/{properties.repository}
+//         </title>
+//       </NextHead>
+//       <SlugPropertiesContext.Provider value={properties}>
+//         <Header />
+//         <div className="my-10 space-y-10">
+//           {!properties.ref && <Error>Repository not found</Error>}
+//           {!page && properties.ref && <Error>Page not found</Error>}
 
-  // Extract the slug properties from the request.
-  let properties = new Properties(params.slug as string[]);
-  console.log(properties);
+//           <RepoInfo properties={properties} />
 
-  // If no ref was found in the slug, grab the default branch name
-  // from the GQL API.
-  if (!properties.ref) {
-    const defaultBranch = await getDefaultBranch(properties.owner, properties.repository);
+//           {error && <RenderError error={error} />}
+//           {page && (
+//             <>
+//               <Configuration config={page.config} />
+//               <MetaTags tags={tags} />
+//             </>
+//           )}
+//         </div>
+//       </SlugPropertiesContext.Provider>
+//     </>
+//   );
+// }
 
-    if (!defaultBranch) {
-      properties.ref = null;
-    } else {
-      // Assign the default branch to the ref
-      properties.ref = defaultBranch;
-      properties.base = `${properties.base}${SPLITTER}${properties.ref}`;
-    }
-  }
-  // If the ref looks like a PR
-  else if (properties.isPullRequest()) {
-    const metadata = await getPullRequestMetadata(
-      properties.owner,
-      properties.repository,
-      parseInt(properties.ref),
-    );
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   return {
+//     paths: [],
+//     fallback: 'blocking',
+//   };
+// };
 
-    // If a PR was found, update the property metadata
-    if (metadata) {
-      properties.owner = metadata.owner;
-      properties.repository = metadata.repository;
-      properties.ref = metadata.ref;
-    }
-  }
+// type StaticProps = {
+//   error?: object;
+//   source?: any;
+//   properties?: any;
+//   page?: any;
+// };
 
-  page = await getPageContent(properties);
-  if (page) {
-    try {
-      source = await mdxSerialize(page.content, {
-        mdxOptions: {
-          rehypePlugins: [
-            require('../../../rehype-prism'), // Using local version to handle `react-live`
-            require('../../../rehype-prose'),
-            require('rehype-slug'),
-          ],
-          remarkPlugins: [require('@fec/remark-a11y-emoji'), require('remark-admonitions')],
-        },
-      });
-    } catch (e) {
-      error = serializeError(e);
-    }
-  } else {
-    // TODO: Temporary workaround to check if repo exists if user has given a branch or PR
-    const defaultBranch = await getDefaultBranch(properties.owner, properties.repository);
-    if (!defaultBranch) properties.ref = null;
-    console.error('No page content found');
-  }
+// export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) => {
+//   let source = null;
+//   let error = null;
+//   let page: PageContent;
 
-  return {
-    props: {
-      properties: properties.toObject(),
-      source,
-      page,
-      error,
-    },
-    revalidate: 3,
-  };
-};
+//   // Extract the slug properties from the request.
+//   let properties = new Properties(params.slug as string[]);
+//   console.log(properties);
+
+//   // If no ref was found in the slug, grab the default branch name
+//   // from the GQL API.
+//   if (!properties.ref) {
+//     const defaultBranch = await getDefaultBranch(properties.owner, properties.repository);
+
+//     if (!defaultBranch) {
+//       properties.ref = null;
+//     } else {
+//       // Assign the default branch to the ref
+//       properties.ref = defaultBranch;
+//       properties.base = `${properties.base}${SPLITTER}${properties.ref}`;
+//     }
+//   }
+//   // If the ref looks like a PR
+//   else if (properties.isPullRequest()) {
+//     const metadata = await getPullRequestMetadata(
+//       properties.owner,
+//       properties.repository,
+//       parseInt(properties.ref),
+//     );
+
+//     // If a PR was found, update the property metadata
+//     if (metadata) {
+//       properties.owner = metadata.owner;
+//       properties.repository = metadata.repository;
+//       properties.ref = metadata.ref;
+//     }
+//   }
+
+//   page = await getPageContent(properties);
+//   if (page) {
+//     try {
+//       source = await mdxSerialize(page.content, {
+//         mdxOptions: {
+//           rehypePlugins: [
+//             require('../../../rehype-prism'), // Using local version to handle `react-live`
+//             require('../../../rehype-prose'),
+//             require('rehype-slug'),
+//           ],
+//           remarkPlugins: [require('@fec/remark-a11y-emoji'), require('remark-admonitions')],
+//         },
+//       });
+//     } catch (e) {
+//       error = serializeError(e);
+//     }
+//   } else {
+//     // TODO: Temporary workaround to check if repo exists if user has given a branch or PR
+//     const defaultBranch = await getDefaultBranch(properties.owner, properties.repository);
+//     if (!defaultBranch) properties.ref = null;
+//     console.error('No page content found');
+//   }
+
+//   return {
+//     props: {
+//       properties: properties.toObject(),
+//       source,
+//       page,
+//       error,
+//     },
+//     revalidate: 3,
+//   };
+// };

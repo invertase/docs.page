@@ -1,7 +1,7 @@
 import { createContext } from 'react';
 import get from 'lodash.get';
-import { DEFAULT_LAYOUT, LayoutType } from './components/Layout';
-import { getBoolean, getNumber, getString } from './utils';
+import { DEFAULT_LAYOUT, LayoutType } from '../components/Layout';
+import { getBoolean, getNumber, getString } from '.';
 
 export type NavigationItem = [string, string];
 

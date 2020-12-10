@@ -2,9 +2,9 @@ import React, { useCallback, useState } from 'react';
 import cx from 'classnames';
 import { NextRouter, useRouter } from 'next/router';
 
-import { SidebarItem } from '../config';
+import { SidebarItem } from '../utils/config';
 import { isExternalLink, Link } from './Link';
-import { SlugProperties } from '../properties';
+import { SlugProperties } from '../utils/properties';
 import { useConfig, useSlugProperties } from '../hooks';
 
 // Sidebar wrapper - iterates the config and renders a sidebar.
@@ -78,7 +78,9 @@ function NavigationList({
   );
 }
 
-// Toggable title in the sidebar
+/**
+ * Toggable title in the sidebar
+ */
 function Title({
   title,
   active,
@@ -92,6 +94,7 @@ function Title({
     <div
       className="-ml-2 px-2 flex items-center rounded group hover:bg-gray-200 dark:hover:bg-gray-900 py-2"
       role="button"
+      tabIndex={0}
       onClick={() => onToggle()}
     >
       <span
@@ -124,7 +127,9 @@ function Title({
   );
 }
 
-// A single navigation URL in the sidebar.
+/**
+ * A single navigation URL in the sidebar.
+ */
 function NavLink({ href, children, active }: { href: string; children: string; active: boolean }) {
   return (
     <li className="-ml-2 mt-1">

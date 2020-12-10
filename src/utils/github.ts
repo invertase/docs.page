@@ -1,6 +1,6 @@
 import A2A from 'a2a';
 import { Properties } from './properties';
-import { GithubGQLClient } from './utils';
+import { GithubGQLClient } from '.';
 
 type DomainListQuery = {
   repository: {
@@ -46,38 +46,6 @@ export async function getDomainsList(): Promise<DomainListItem[]> {
   }
 
   return raw.split('\n').map<DomainListItem>(str => str.split(' ') as DomainListItem);
-}
-
-type DefaultBranchQuery = {
-  repository: {
-    branch: {
-      name: string;
-    };
-  };
-};
-
-export async function getDefaultBranch(owner: string, repository: string): Promise<string | null> {
-  const [error, response] = await A2A<DefaultBranchQuery>(
-    GithubGQLClient({
-      query: `
-        query RepositoryDefaultBranch($owner: String!, $repository: String!) {
-          repository(owner: $owner, name: $repository) {
-            branch: defaultBranchRef {
-              name
-            }
-          }
-        }
-      `,
-      owner,
-      repository,
-    }),
-  );
-
-  if (error) {
-    return null;
-  }
-
-  return response.repository.branch.name;
 }
 
 type PullRequestQuery = {

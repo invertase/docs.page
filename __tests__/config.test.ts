@@ -1,4 +1,4 @@
-import { mergeConfig } from "../src/config";
+import { mergeConfig } from "../src/utils/config";
 
 function isValidConfigTypes(config: any) {
   expect(typeof config.name).toBe("string");
