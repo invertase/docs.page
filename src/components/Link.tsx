@@ -12,8 +12,8 @@ import { useRouter } from 'next/router';
  * Links on pages needs to be relative to the repository rather than
  * the root, so several checks are in place to alter the provided
  * `href`.
- * 
- * Prefetching is disabled by default on Links, since pages are not 
+ *
+ * Prefetching is disabled by default on Links, since pages are not
  * prebuilt at build time.
  */
 export function Link(props: React.HTMLProps<HTMLAnchorElement>) {
@@ -44,9 +44,11 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>) {
   //     href += `${SPLITTER}${properties.ref}`;
   //   }
 
+  href = `/${properties.owner}/${properties.repository}`;
+
+  // Add a ref to the current href, if the branch is not default
   if (!properties.isBaseBranch) {
-    // Add the ref to the start of the href with a custom domain
-    href = `/${SPLITTER}${properties.ref}`;
+    href += `${SPLITTER}${properties.ref}`;
   }
 
   // Ensure href passed by user starts with a `/`
@@ -55,6 +57,8 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>) {
   } else {
     href += `/${props.href}`;
   }
+
+  console.log(href)
 
   // if (isUsingCustomDomain) {
   //   href = `https://${customDomain}${href}`;

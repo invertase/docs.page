@@ -17,7 +17,7 @@ export function Header() {
     <header className="px-4 sticky top-0 z-10 bg-white text-sm dark:bg-gray-800 text-gray-900 dark:text-white border-b dark:border-gray-800">
       <div className="flex items-center h-16">
         <Link href="/" className="flex-1 mr-1 font-mono hover:underline truncate">
-          <div className="flex h-12 desktop:h-16 items-center py-4">
+          <div className="flex h-16 items-center py-4">
             {!!config.logo && (
               <>
                 <img
@@ -32,7 +32,7 @@ export function Header() {
                 )}
               </>
             )}
-            <span className="pl-">{config.name || repo}</span>
+            <span className="pl-4">{config.name || repo}</span>
           </div>
         </Link>
         <div className="hidden desktop:flex items-center justify-center space-x-6 font-mono overflow-auto">

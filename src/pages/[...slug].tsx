@@ -4,7 +4,6 @@ import NextHead from 'next/head';
 import NextRouter from 'next/router';
 import NProgress from 'nprogress';
 
-import mdxSerialize from 'next-mdx-remote/serialize';
 import { Hydrate } from '../mdx';
 
 import { ThemeStyles } from '../components/ThemeStyles';
@@ -24,6 +23,7 @@ import {
   routeChangeError,
   routeChangeStart,
 } from '../utils';
+import { mdxSerialize } from '../utils/mdx-serialize';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', routeChangeStart);
@@ -94,6 +94,8 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
   // Extract the slug properties from the request.
   const properties = new Properties(params.slug as string[]);
 
+  console.time('GitHub');
+
   // If the ref looks like a PR, update the details to point towards
   // the PR owner (which might be a different repo)
   if (properties.isPullRequest()) {
@@ -111,6 +113,10 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
 
   page = await getPageContent(properties);
 
+  console.timeEnd('GitHub');
+
+  console.time('MDX');
+
   if (!error) {
     if (!page) {
       console.error('Page not found');
@@ -118,42 +124,17 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
     } else if (page.frontmatter.redirect) {
       return redirect(page.frontmatter.redirect, properties);
     } else {
-      try {
-        source = await mdxSerialize(page.content, {
-          mdxOptions: {
-            rehypePlugins: [
-              // Convert `pre` blogs into prism formatting
-              require('../../rehype-prism'),
-              // Add an `id` to all heading tags
-              require('rehype-slug'),
-              // Create a table of contents above the page
-              page.frontmatter.tableOfContents
-                ? [
-                    require('@jsdevtools/rehype-toc'),
-                    {
-                      headings: headerDepthToHeaderList(page.config.headerDepth),
-                    },
-                  ]
-                : [],
-              // Make emojis accessible
-              require('rehype-accessible-emojis').rehypeAccessibleEmojis,
-            ],
-            remarkPlugins: [
-              // Sanitize any JSX nodes within MD
-              require('../../remark-sanitize-jsx'),
-              // Ensure any `img` tags are not wrapped in `p` tags
-              require('remark-unwrap-images'),
-              // Convert any admonition to HTML
-              require('remark-admonitions'),
-            ],
-          },
-        });
-      } catch (e) {
-        console.log(e);
+      const serialization = await mdxSerialize(page);
+
+      if (serialization.error) {
         error = RenderError.serverError(properties);
+      } else {
+        source = serialization.source;
       }
     }
   }
+
+  console.timeEnd('MDX');
 
   return {
     props: {
