@@ -1,9 +1,9 @@
 import React from 'react';
-import { ExternalLink, Link } from '../../components/Link';
+import { ExternalLink } from '../../components/Link';
 
 export function Footer() {
   return (
-    <footer className="flex font-mono text-white opacity-50 hover:opacity-100 transition-opacity text-sm mb-5 py-4">
+    <footer className="flex font-mono dark:text-white opacity-50 hover:opacity-100 transition-opacity text-sm mb-5 py-4">
       <div className="flex-1">
         <div>© {new Date().getFullYear()} Invertase | docs.page</div>
       </div>
