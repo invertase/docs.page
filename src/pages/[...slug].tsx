@@ -1,7 +1,7 @@
 import React from 'react';
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import NextHead from 'next/head';
-import NextRouter from 'next/router';
+import NextRouter, { useRouter } from 'next/router';
 import NProgress from 'nprogress';
 
 import { Hydrate } from '../mdx';
@@ -24,6 +24,7 @@ import {
   routeChangeStart,
 } from '../utils';
 import { mdxSerialize } from '../utils/mdx-serialize';
+import { Loading } from '../templates/Loading';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', routeChangeStart);
@@ -37,6 +38,12 @@ export default function Documentation({
   page,
   error,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
+  const { isFallback } = useRouter();
+
+  if (isFallback) {
+    return <Loading />;
+  }
+
   if (error) {
     return <Error {...error} />;
   }
@@ -67,7 +74,7 @@ export default function Documentation({
 export const getStaticPaths: GetStaticPaths = async () => {
   return {
     paths: [],
-    fallback: 'blocking',
+    fallback: true,
   };
 };
 

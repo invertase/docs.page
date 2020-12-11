@@ -1,5 +1,5 @@
 /**
- * Credit: https://heroicons.com 
+ * Credit: https://heroicons.com
  */
 
 import { CSSProperties } from 'react';
@@ -323,6 +323,28 @@ export function Close({ size, className, style }: IconProps) {
       stroke="currentColor"
     >
       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+    </svg>
+  );
+}
+
+export function LightningBolt({ size, className, style }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      className={className}
+      style={style}
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M13 10V3L4 14h7v7l9-11h-7z"
+      />
     </svg>
   );
 }
