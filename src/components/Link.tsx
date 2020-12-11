@@ -58,8 +58,6 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>) {
     href += `/${props.href}`;
   }
 
-  console.log(href)
-
   // if (isUsingCustomDomain) {
   //   href = `https://${customDomain}${href}`;
   // }
