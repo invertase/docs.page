@@ -12,7 +12,7 @@ export function Sidebar() {
   const config = useConfig();
 
   return (
-    <ul className="w-full p-4 dark:text-white mb-4">
+    <ul className="w-full p-4 dark:text-white mb-4 border-t dark:border-gray-800">
       {config.sidebar.map((item, index) => (
         <Iterator key={index} depth={1} item={item} />
       ))}
