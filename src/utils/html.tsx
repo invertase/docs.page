@@ -2,6 +2,7 @@ import { isProduction } from './index';
 import { PageContent } from './content';
 import { SlugProperties } from './properties';
 import googleAnalytics from '../scripts/google-analytics';
+import { getImageSrc } from '../components/Image';
 
 export function getHeadTags(properties: SlugProperties, page?: PageContent) {
   const { frontmatter, config } = page;
@@ -33,7 +34,14 @@ export function getHeadTags(properties: SlugProperties, page?: PageContent) {
   }
 
   if (config.logo) {
-    tags.push(<link key="favicon" rel="icon" type="image/png" href={config.logo} />);
+    tags.push(
+      <link
+        key="favicon"
+        rel="icon"
+        type="image/png"
+        href={getImageSrc(properties, config.logo)}
+      />,
+    );
   }
 
   if (frontmatter.description) {
