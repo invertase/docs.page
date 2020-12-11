@@ -32,7 +32,7 @@ export default function DebugPage() {
       <header className="bg-gray-800 dark:bg-gray-900">
         <div className="max-w-4xl mx-auto flex h-16 py-4">
           <div className="flex-1">
-            <img src="/docs-page-logo.png" alt="docs.page" className="max-h-full" />
+            <img src="/assets/docs-page-logo.png" alt="docs.page" className="max-h-full" />
           </div>
           <DarkModeToggle />
         </div>

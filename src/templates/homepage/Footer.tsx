@@ -9,7 +9,7 @@ export function Footer() {
       </div>
       <div className="flex items-center space-x-6">
         <ExternalLink href="https://docs.page" className="hover:underline">
-          <img src="/docs-page-logo.png" alt="docs.page" className="h-6" />
+          <img src="/assets/docs-page-logo.png" alt="docs.page" className="h-6" />
         </ExternalLink>
         <ExternalLink href="https://github.com/invertase/docs.page" className="hover:underline">
           GitHub

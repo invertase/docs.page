@@ -27,7 +27,7 @@ export default function IndexPage() {
           property="og:description"
           content="Instant Open Source docs with zero configuration."
         />
-        <meta property="og:image" content="http://docs.page/docs-page-social.png" />
+        <meta property="og:image" content="http://docs.page/assets/docs-page-social.png" />
         <meta property="og:url" content="http://docs.page" />
 
         <meta name="twitter:title" content="docs.page" />
@@ -35,7 +35,7 @@ export default function IndexPage() {
           name="twitter:description"
           content="Instant Open Source docs with zero configuration."
         />
-        <meta name="twitter:image" content="http://docs.page/docs-page-social.png" />
+        <meta name="twitter:image" content="http://docs.page/assets/docs-page-social.png" />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
       <style global jsx>{`
