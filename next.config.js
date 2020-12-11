@@ -2,8 +2,13 @@ module.exports = {
   async redirects() {
     return [
       {
+        source: '/robots.txt',
+        destination: '/res/robots.txt',
+        permanent: true,
+      },
+      {
         source: '/:slug',
-        destination: '/', // Matched parameters can be used in the destination
+        destination: '/',
         permanent: true,
       },
     ];

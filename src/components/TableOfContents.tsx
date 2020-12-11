@@ -12,7 +12,7 @@ function TableOfContents(props: React.HTMLProps<HTMLDivElement>) {
         <h3>Table of contents</h3>
         <Toggle label={<EyeOff size={14} />} onClick={() => toggle()} />
       </div>
-      <nav ref={ref} {...props} className="toc mb-12 text-sm" />
+      <nav ref={ref} {...props} className="toc mb-12 desktop:text-sm" />
     </section>
   );
 }

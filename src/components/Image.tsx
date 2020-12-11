@@ -14,7 +14,7 @@ export function Image(
     throw new Error('Image component must be a child of SlugPropertiesContext');
   }
 
-  return <img {...props} src={getImageSrc(properties, props.src)} alt={props.alt ?? ''} />;
+  return <img {...props} src={getImageSrc(properties, props.src)} alt={props.alt ?? ''} loading="lazy" />;
 }
 
 export function getImageSrc(properties: SlugProperties, src: string) {

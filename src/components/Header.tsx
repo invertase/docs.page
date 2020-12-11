@@ -120,6 +120,7 @@ function Utils() {
         <ExternalLink
           href={`https://twitter.com/${config.twitter}`}
           className="group flex items-center hover:underline"
+          aria-label="View Twitter Account"
         >
           <Twitter size={28} className="text-blue-500 dark:text-white hover:opacity-80" />
         </ExternalLink>
@@ -127,6 +128,7 @@ function Utils() {
       <ExternalLink
         href={`https://github.com/${repo}`}
         className="pl-6 group flex items-center hover:underline"
+        aria-label="View repository on GitHub"
       >
         <GitHub size={26} className="text-black dark:text-white hover:opacity-80" />
       </ExternalLink>
@@ -137,8 +139,8 @@ function Utils() {
             className={cx(
               'flex px-3 py-2 text-xs rounded-lg shadow text-white transition-colors whitespace-nowrap',
               {
-                'bg-green-500 hover:bg-green-400 ': properties.refType === 'branch',
-                'bg-blue-500 hover:bg-blue-400 ': properties.refType === 'pull-request',
+                'bg-green-600 hover:bg-green-500 ': properties.refType === 'branch',
+                'bg-blue-600 hover:bg-blue-500 ': properties.refType === 'pull-request',
               },
             )}
           >

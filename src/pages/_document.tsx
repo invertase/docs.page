@@ -6,7 +6,7 @@ import syncTabs from '../scripts/sync-tabs';
 export default class CustomDocument extends Document {
   render() {
     return (
-      <Html>
+      <Html lang="en">
         <Head />
         <body>
           <script dangerouslySetInnerHTML={{ __html: noflash }} />
