@@ -1,3 +1,4 @@
+import { leadingSlash } from './index';
 import { Properties, SlugProperties } from './properties';
 import { isExternalLink } from '../components/Link';
 
@@ -53,12 +54,7 @@ export function redirect(link: string, properties?: Properties) {
     // redirect with the exact link.
     destination = link;
   } else {
-    // Ensure internal link starts with a `/`
-    if (!link.startsWith('/')) {
-      link = `/${link}`;
-    }
-
-    destination = `${properties.base}${link}`;
+    destination = `${properties.base}${leadingSlash(link)}`;
   }
 
   return {

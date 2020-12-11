@@ -8,7 +8,7 @@ import { TableOfContents } from '../components/TableOfContents';
 import { Heading } from './Heading';
 import { Tabs, TabItem, TabsContext } from './Tabs';
 import { Pre, PreProps, withCodeBlockTitle } from './Code';
-import { Image } from './Image';
+import { Img } from './Img';
 import { YouTube } from './YouTube';
 
 const components = {
@@ -22,7 +22,7 @@ const components = {
   h6: (props: React.HTMLProps<HTMLHeadingElement>) => <Heading {...props} type="h6" />,
   img: (
     props: React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
-  ) => <Image {...props} />,
+  ) => <Img {...props} />,
   pre: (props: PreProps) => {
     const pre = (className?: string) => (
       <Pre {...props} className={cx(props.className, className)} copy={props.raw} />
@@ -46,7 +46,8 @@ const components = {
   Heading,
   Tabs,
   TabItem,
-  Image,
+  Image: Img,
+  Img,
   YouTube,
 };
 

@@ -1,8 +1,7 @@
 import React, { CSSProperties } from 'react';
-import validDataUrl from 'valid-data-url';
 import Zoom from 'react-medium-image-zoom';
 
-import { isExternalLink } from '../components/Link';
+import { Image } from '../components/Image';
 import { useConfig, useSlugProperties } from '../hooks';
 
 interface ImageProps
@@ -16,7 +15,7 @@ const style: CSSProperties = {
   maxHeight: 600,
 };
 
-export function Image({ zoom, caption, ...props }: ImageProps) {
+export function Img({ zoom, caption, ...props }: ImageProps) {
   const config = useConfig();
   const properties = useSlugProperties();
   const zoomEnabled = zoom ?? config.zoomImages;
@@ -30,14 +29,7 @@ export function Image({ zoom, caption, ...props }: ImageProps) {
   const wrapper = (child: React.ReactElement) =>
     withFigure(zoomEnabled ? withZoom(child) : child, caption);
 
-  if (isExternalLink(src) || validDataUrl(src)) {
-    return wrapper(
-      <img {...props} src={src} alt={props.alt ?? ''} className={className} style={style} />,
-    );
-  }
-
-  let url = `https://raw.githubusercontent.com/${properties.owner}/${properties.repository}/${properties.ref}/docs/${src}`;
-  return wrapper(<img {...props} src={url} alt={props.alt} className={className} style={style} />);
+  return wrapper(<Image {...props} />);
 }
 
 function withFigure(child: React.ReactElement, caption?: string) {

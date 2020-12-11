@@ -1,6 +1,8 @@
 import { graphql } from '@octokit/graphql';
 import get from 'lodash.get';
 import NProgress from 'nprogress';
+import { useSlugProperties } from '../hooks';
+import { SlugProperties } from './properties';
 
 declare global {
   interface Window {
@@ -88,6 +90,15 @@ export function getBoolean(json: any, key: string, defaultValue: boolean): boole
 
   if (typeof value !== 'boolean') {
     return defaultValue;
+  }
+
+  return value;
+}
+
+// Returns a string value ensuring it has a leading `/`
+export function leadingSlash(value: string): string {
+  if (!value.startsWith('/')) {
+    value = `/${value}`;
   }
 
   return value;

@@ -5,6 +5,7 @@ import useOnClickOutside from 'use-onclickoutside';
 import { ExternalLink, Link } from './Link';
 import { Branch, GitHub, Menu, MenuOpenRight, PullRequest, Twitter } from './Icons';
 import { DarkModeToggle } from './DarkModeToggle';
+import { Image } from './Image';
 import { Search } from './Search';
 import { useConfig, usePageContent, useSlugProperties } from '../hooks';
 
@@ -20,7 +21,7 @@ export function Header() {
           <div className="flex h-16 items-center py-4">
             {!!config.logo && (
               <>
-                <img
+                <Image
                   src={config.logo}
                   alt={repo}
                   className={cx('max-h-full', {
@@ -28,7 +29,7 @@ export function Header() {
                   })}
                 />
                 {!!config.logoDark && (
-                  <img src={config.logoDark} alt={repo} className="hidden dark:block max-h-full" />
+                  <Image src={config.logoDark} alt={repo} className="hidden dark:block max-h-full" />
                 )}
               </>
             )}
