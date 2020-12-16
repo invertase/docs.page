@@ -15,8 +15,8 @@ export type LayoutType = 'default' | 'wide' | 'full' | 'bare';
 export const DEFAULT_LAYOUT: LayoutType = 'default';
 
 const widthMap: { [key in LayoutType] } = {
-  default: 'max-w-2xl',
-  wide: 'max-w-6xl',
+  default: 'max-w-5xl',
+  wide: 'max-w-7xl',
   full: 'max-w-full',
   bare: '',
 };
@@ -42,7 +42,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <WithSidebar>
         <article
           className={cx(
-            'prose dark:prose-dark px-2 lg:px-0 py-6 desktop:py-20 mx-auto',
+            'prose dark:prose-dark px-6 py-6 desktop:py-20 mx-auto',
             widthMap[layout],
           )}
         >
