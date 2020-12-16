@@ -57,6 +57,11 @@ module.exports = {
               marginLeft: 'auto',
               marginRight: 'auto',
             },
+            'h1, h2': {
+              borderBottom: '1px solid',
+              paddingBottom: '1rem',
+              borderColor: theme('colors.gray.200'),
+            },
           },
         },
         dark: {
@@ -84,6 +89,9 @@ module.exports = {
             },
             'nav a': {
               color: 'white !important',
+            },
+            'h1, h2': {
+              borderColor: theme('colors.gray.700'),
             },
           },
         },
