@@ -10,8 +10,6 @@ import { Config, ConfigContext } from './utils/config';
 import { PageContent, PageContentContext } from './utils/content';
 import { CustomDomain, CustomDomainContext } from './utils/domain';
 import { SlugProperties, SlugPropertiesContext } from './utils/properties';
-import googleAnalytics from './scripts/google-analytics';
-import { isProduction } from './utils';
 
 export function useCustomDomain(): CustomDomain {
   return useContext(CustomDomainContext);
@@ -38,8 +36,14 @@ export function useNoSSR() {
 // Returns a GitHub URL to edit the current page
 export function useEditUrl(): string {
   const properties = useSlugProperties();
-  const fileType = usePageContent().type;
-  return `${properties.githubUrl}/edit/${properties.ref}/docs/${properties.path}.${fileType}`;
+  const { type, baseBranch } = usePageContent();
+  let ref = properties.ref;
+
+  if (properties.isBaseBranch) {
+    ref = baseBranch;
+  }
+
+  return `${properties.githubUrl}/edit/${ref}/docs/${properties.path}.${type}`;
 }
 
 export function useBodyScrollLock(lock: boolean): void {
@@ -66,4 +70,3 @@ export function useLocalStorageToggle(
 
   return [ref, onToggle, visible];
 }
-
