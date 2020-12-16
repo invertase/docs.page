@@ -166,7 +166,7 @@ export default function IndexPage() {
           <div className="lg:flex flex-wrap text-center pl-3">
             <div className="lg:px-12 lg:w-1/2 mb-20">
               <Feature
-                href="/"
+                href="/invertase/docs.page/configuration"
                 title={<span className="text-blue-500">Configure</span>}
                 text={
                   <span>
@@ -181,7 +181,7 @@ export default function IndexPage() {
             <div className="lg:px-12 lg:w-1/2 mb-20">
               <div className="lg:px-12 flex flex-col items-center justify-center">
                 <Feature
-                  href="/"
+                  href="/invertase/docs.page/previews"
                   title={<span className="text-pink-400">Previews</span>}
                   text={
                     <span>
@@ -196,7 +196,7 @@ export default function IndexPage() {
             <div className="lg:px-12 lg:w-1/2 mb-20">
               <div className="lg:px-12 flex flex-col items-center justify-center">
                 <Feature
-                  href="/"
+                  href="/invertase/docs.page/components"
                   title={<span className="text-yellow-400">Components</span>}
                   text={
                     <span>
