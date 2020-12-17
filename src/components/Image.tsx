@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import validDataUrl from 'valid-data-url';
 import { useSlugProperties } from '../hooks';
-import { leadingSlash } from '../utils';
 import { SlugProperties } from '../utils/properties';
 import { isExternalLink } from './Link';
 
@@ -14,7 +13,26 @@ export function Image(
     throw new Error('Image component must be a child of SlugPropertiesContext');
   }
 
-  return <img {...props} src={getImageSrc(properties, props.src)} alt={props.alt ?? ''} loading="lazy" />;
+  const style: CSSProperties = {
+    height: sizeToProperty(props.height),
+    width: sizeToProperty(props.width),
+  };
+
+  return (
+    <img
+      {...props}
+      style={style}
+      src={getImageSrc(properties, props.src)}
+      alt={props.alt ?? ''}
+      loading="lazy"
+    />
+  );
+}
+
+function sizeToProperty(size: string | number | undefined) {
+  if (!size) return 'inherit';
+  if (typeof size === 'number') return size;
+  return parseInt(size);
 }
 
 export function getImageSrc(properties: SlugProperties, src: string) {
