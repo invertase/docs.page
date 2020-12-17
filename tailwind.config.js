@@ -1,3 +1,10 @@
+const round = num =>
+  num
+    .toFixed(7)
+    .replace(/(\.[0-9]+?)0+$/, '$1')
+    .replace(/\.0$/, '');
+const rem = px => `${round(px / 16)}rem`;
+
 module.exports = {
   darkMode: 'class',
   purge: ['./src/**/*.tsx', './src/**/*.ts', '.src/**/*.css'],
@@ -8,10 +15,6 @@ module.exports = {
     extend: {
       fontFamily: {
         anton: ['Anton', 'sans-serif'],
-      },
-      fontSize: {
-        '7xl': '5rem',
-        '8xl': '5rem',
       },
       screens: {
         desktop: '940px',
@@ -51,16 +54,37 @@ module.exports = {
               margin: 0,
             },
             'nav.toc span[role="img"]': {
-              marginRight: '0.5rem',
+              marginRight: rem(0.5),
             },
             img: {
               marginLeft: 'auto',
               marginRight: 'auto',
             },
+            code: {
+              paddingLeft: rem(4),
+              paddingRight: rem(4),
+              paddingTop: rem(2),
+              paddingBottom: rem(2),
+              backgroundColor: theme('colors.gray.100'),
+              borderRadius: rem(4),
+              fontWeight: 400,
+            },
+            'blockquote p:first-of-type::before, blockquote p:last-of-type::after, code::before, code::after': {
+              display: 'none',
+            },
             'h1, h2': {
               borderBottom: '1px solid',
-              paddingBottom: '1rem',
+              paddingBottom: rem(1),
               borderColor: theme('colors.gray.200'),
+            },
+            'table thead th, table tbody td': {
+              padding: rem(1),
+            },
+            'a, a code': {
+              color: 'var(--theme-color)',
+              '&:hover': {
+                color: 'var(--theme-color-light)',
+              },
             },
           },
         },
@@ -78,20 +102,21 @@ module.exports = {
               borderColor: 'var(--theme-color)',
               color: theme('colors.gray.200'),
             },
-            a: {
-              color: 'var(--theme-color)',
-              '&:hover': {
-                color: 'var(--theme-color-light)',
-              },
-            },
-            'p code, li code, td code': {
-              color: 'var(--theme-color)',
-            },
             'nav a': {
               color: 'white !important',
             },
             'h1, h2': {
               borderColor: theme('colors.gray.700'),
+            },
+            code: {
+              backgroundColor: theme('colors.gray.700'),
+              color: theme('colors.gray.200'),
+            },
+            'a, a code': {
+              color: 'var(--theme-color)',
+              '&:hover': {
+                color: 'var(--theme-color-light)',
+              },
             },
           },
         },
