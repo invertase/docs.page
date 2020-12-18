@@ -45,7 +45,6 @@
     "prismjs": "^1.22.0",
     "react": "17.0.1",
     "react-copy-to-clipboard": "^5.0.2",
-    "react-dark-mode-toggle": "^0.0.10",
     "react-dom": "17.0.1",
     "react-medium-image-zoom": "^4.3.1",
     "react-test-renderer": "^17.0.1",
