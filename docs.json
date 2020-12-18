@@ -9,5 +9,14 @@
     ["Components", "/components"],
     ["Debugging", "/debugging"],
     ["Contributing", "/contributing"]
+  ],
+  "paths": [
+    "/",
+    "components",
+    "configuration",
+    "contributing",
+    "debugging",
+    "getting-started",
+    "previews"
   ]
 }
