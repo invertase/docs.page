@@ -30,15 +30,15 @@ declare global {
 export function Search({ apiKey, indexName }: SearchProps) {
   const [visible, setVisible] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (window.docsearch) {
-      window.docsearch({
-        inputSelector: '#docsearch',
-        indexName,
-        apiKey,
-      });
-    }
-  }, [apiKey, indexName]);
+  // useEffect(() => {
+  //   if (window.docsearch) {
+  //     window.docsearch({
+  //       inputSelector: '#docsearch',
+  //       indexName,
+  //       apiKey,
+  //     });
+  //   }
+  // }, [apiKey, indexName]);
 
   return (
     <>
@@ -65,7 +65,7 @@ export function Search({ apiKey, indexName }: SearchProps) {
           id="docsearch"
           type="text"
           placeholder="Search..."
-          className={cx('w-full appearance-none bg-gray-200 dark:bg-gray-900 px-3 py-2 rounded-lg')}
+          className={cx('w-full appearance-none  bg-gray-100 dark:bg-gray-900 border hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 focus:outline-none px-3 h-8 rounded')}
         />
         <div className="desktop:hidden pl-6" role="button" onClick={() => setVisible(false)}>
           <Close size={26} />
