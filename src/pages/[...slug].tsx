@@ -13,17 +13,11 @@ import { Error, ErrorBoundary } from '../templates/error';
 import { ConfigContext } from '../utils/config';
 import { IRenderError, redirect, RenderError } from '../utils/error';
 import { SlugProperties, SlugPropertiesContext, Properties } from '../utils/properties';
-import { PageContentContext, getPageContent, PageContent } from '../utils/content';
+import { PageContentContext, getPageContent, PageContent, HeadingNode } from '../utils/content';
 import { getPullRequestMetadata, getRepositoriesPaths, getRepositoryList } from '../utils/github';
 import { CustomDomain, CustomDomainContext } from '../utils/domain';
 import { getHeadTags } from '../utils/html';
-import {
-  headerDepthToHeaderList,
-  isProduction,
-  routeChangeComplete,
-  routeChangeError,
-  routeChangeStart,
-} from '../utils';
+import { isProduction, routeChangeComplete, routeChangeError, routeChangeStart } from '../utils';
 import { mdxSerialize } from '../utils/mdx-serialize';
 import { Loading } from '../templates/Loading';
 
@@ -92,22 +86,23 @@ export const getStaticPaths: GetStaticPaths = async () => {
 type StaticProps = {
   domain: CustomDomain;
   properties: SlugProperties;
+  headings: HeadingNode[];
   source?: string;
   page?: PageContent;
   error?: IRenderError;
 };
 
 export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) => {
-  const slug = params.slug as string[];
   let source = null;
+  let headings: HeadingNode[] = [];
   let error: RenderError = null;
   let page: PageContent;
-
-  // Extract the slug properties from the request.
+  // console.log('here');
+  // // Extract the slug properties from the request.
   const properties = new Properties(params.slug as string[]);
 
-  // If the ref looks like a PR, update the details to point towards
-  // the PR owner (which might be a different repo)
+  // // If the ref looks like a PR, update the details to point towards
+  // // the PR owner (which might be a different repo)
   if (properties.isPullRequest()) {
     const metadata = await getPullRequestMetadata(
       properties.owner,
@@ -123,20 +118,19 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
 
   page = await getPageContent(properties);
 
-  if (!error) {
-    if (!page) {
-      console.error('Page not found');
-      error = RenderError.pageNotFound(properties);
-    } else if (page.frontmatter.redirect) {
-      return redirect(page.frontmatter.redirect, properties);
-    } else {
-      const serialization = await mdxSerialize(page);
+  if (!page) {
+    console.error('Page not found');
+    error = RenderError.pageNotFound(properties);
+  } else if (page.frontmatter.redirect) {
+    return redirect(page.frontmatter.redirect, properties);
+  } else {
+    const serialization = await mdxSerialize(page);
 
-      if (serialization.error) {
-        error = RenderError.serverError(properties);
-      } else {
-        source = serialization.source;
-      }
+    if (serialization.error) {
+      error = RenderError.serverError(properties);
+    } else {
+      source = serialization.source;
+      page.headings = serialization.headings as HeadingNode[];
     }
   }
 
@@ -145,6 +139,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
       domain: null, // await getCustomDomain(properties),
       properties: properties.toObject(),
       source,
+      headings,
       page,
       error: error?.toObject() ?? null,
     },

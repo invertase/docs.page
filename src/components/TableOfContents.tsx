@@ -1,32 +1,38 @@
 import React from 'react';
-import cx from 'classnames';
-import { EyeOff } from './Icons';
-import { useLocalStorageToggle } from '../hooks';
+import { usePageContent } from '../hooks';
+import Scrollspy from 'react-scrollspy';
 
-function TableOfContents(props: React.HTMLProps<HTMLDivElement>) {
-  const [ref, toggle] = useLocalStorageToggle('table-of-contents');
-
+function TableOfContents() {
+  const { headings } = usePageContent();
+  
   return (
     <section>
-      <div className="flex items-end">
-        <h3>Table of contents</h3>
-        <Toggle label={<EyeOff size={14} />} onClick={() => toggle()} />
+      <div className="border-l dark:border-gray-700 pl-4 text-xs font-light">
+        <Scrollspy items={headings.map(node => node.id)} currentClassName="is-current">
+          <style jsx>{`
+            li.is-current a,
+            li a:hover {
+              color: var(--theme-color);
+            }
+          `}</style>
+          {headings.map(node => {
+            return (
+              <li
+                key={node.id}
+                className="py-1"
+                style={{
+                  paddingLeft: `${node.rank - 2}rem`,
+                }}
+              >
+                <a className="dark:text-gray-300 hover:text-theme-color" href={`#${node.id}`}>
+                  {node.title}
+                </a>
+              </li>
+            );
+          })}
+        </Scrollspy>
       </div>
-      <nav ref={ref} {...props} className="toc mb-12 desktop:text-sm" />
     </section>
-  );
-}
-
-function Toggle({ label, onClick }: { label: React.ReactElement; onClick: () => void }) {
-  return (
-    <div
-      role="button"
-      tabIndex={0}
-      onClick={() => onClick()}
-      className="mb-4 ml-4 text-xs px-2 py-1 rounded transition-colors bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700"
-    >
-      {label}
-    </div>
   );
 }
 

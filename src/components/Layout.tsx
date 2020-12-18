@@ -9,6 +9,7 @@ import { Divider } from './Divider';
 import { useBodyScrollLock, useConfig, usePageContent } from '../hooks';
 import { JumpToTop } from './JumpToTop';
 import { Menu, Close } from './Icons';
+import { TableOfContents } from './TableOfContents';
 
 export type LayoutType = 'default' | 'wide' | 'full' | 'bare';
 
@@ -40,20 +41,41 @@ export function Layout({ children }: { children: React.ReactNode }) {
     <>
       <Header />
       <WithSidebar>
-        <article
-          className={cx(
-            'prose dark:prose-dark px-6 py-6 desktop:py-20 mx-auto',
-            widthMap[layout],
-          )}
-        >
-          {children}
+        <WithTableOfContents layout={layout}>
+          <article className="prose dark:prose-dark max-w-full">
+            {children}
 
-          <Divider />
-          <Footer />
-        </article>
+            <Divider />
+            <Footer />
+          </article>
+        </WithTableOfContents>
+
         <JumpToTop />
       </WithSidebar>
     </>
+  );
+}
+
+function WithTableOfContents({
+  layout,
+  children,
+}: {
+  layout: LayoutType;
+  children: React.ReactNode;
+}) {
+  const { headings } = usePageContent();
+
+  return (
+    <section className={cx('flex px-6 py-6 desktop:py-20 mx-auto', widthMap[layout])}>
+      <div className="flex-1">{children}</div>
+      {headings.length > 0 && (
+        <div className="w-48 ml-4">
+          <div className="sticky top-20">
+            <TableOfContents />
+          </div>
+        </div>
+      )}
+    </section>
   );
 }
 

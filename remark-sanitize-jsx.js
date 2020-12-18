@@ -6,7 +6,7 @@ const isHtml = require('is-html');
 // be valid markup (e.g. closing tags) to be rendered as JSX.
 // Using the `sanitize-html` library, we can cleanup any jsx nodes
 // found during serialization.
-function closeTags() {
+function sanitizeJsx() {
   return tree => {
     visit(tree, 'jsx', visitor);
   };
@@ -28,4 +28,4 @@ function closeTags() {
   }
 }
 
-module.exports = closeTags;
+module.exports = sanitizeJsx;
