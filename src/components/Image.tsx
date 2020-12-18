@@ -1,6 +1,8 @@
 import React, { CSSProperties } from 'react';
 import validDataUrl from 'valid-data-url';
-import { useSlugProperties } from '../hooks';
+import { usePageContent, useSlugProperties } from '../hooks';
+import { leadingSlash } from '../utils';
+import { PageContent } from '../utils/content';
 import { SlugProperties } from '../utils/properties';
 import { isExternalLink } from './Link';
 
@@ -8,9 +10,12 @@ export function Image(
   props: React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
 ) {
   const properties = useSlugProperties();
+  const content = usePageContent();
 
-  if (!properties) {
-    throw new Error('Image component must be a child of SlugPropertiesContext');
+  if (!properties || !content) {
+    throw new Error(
+      'Image component must be a child of SlugPropertiesContext & PageContentContext',
+    );
   }
 
   const style: CSSProperties = {
@@ -22,7 +27,7 @@ export function Image(
     <img
       {...props}
       style={style}
-      src={getImageSrc(properties, props.src)}
+      src={getImageSrc(properties, content, props.src)}
       alt={props.alt ?? ''}
       loading="lazy"
     />
@@ -35,10 +40,17 @@ function sizeToProperty(size: string | number | undefined) {
   return parseInt(size);
 }
 
-export function getImageSrc(properties: SlugProperties, src: string) {
+export function getImageSrc(properties: SlugProperties, content: PageContent, src: string) {
   if (isExternalLink(src) || validDataUrl(src)) {
     return src;
   }
 
-  return `https://raw.githubusercontent.com/${properties.owner}/${properties.repository}/${properties.ref}/docs${src}`;
+  let ref = properties.ref;
+  if (properties.isBaseBranch) {
+    ref = content.baseBranch;
+  }
+
+  return `https://raw.githubusercontent.com/${properties.owner}/${
+    properties.repository
+  }/${ref}/docs${leadingSlash(src)}`;
 }
