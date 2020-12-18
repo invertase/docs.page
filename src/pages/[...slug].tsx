@@ -80,6 +80,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   if (isProduction()) {
     const repositories = await getRepositoryList();
     paths = await getRepositoriesPaths(repositories);
+    console.info(`- gathered ${paths.length} static pages.`);
   }
 
   return {
