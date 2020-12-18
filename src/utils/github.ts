@@ -1,6 +1,137 @@
 import A2A from 'a2a';
 import { Properties } from './properties';
-import { GithubGQLClient } from '.';
+import { GithubGQLClient, tryJsonParse, isString, leadingSlash } from './index';
+
+type RepositoryPathsQuery = {
+  config?: {
+    text: string;
+  };
+};
+
+type RepositoriesPathsQuery = { [key: string]: RepositoryPathsQuery | null };
+
+export async function getRepositoriesPaths(repositories: Array<string[]>): Promise<string[]> {
+  if (repositories.length === 0) {
+    return [];
+  }
+
+  let query = '';
+  for (let i = 0; i < repositories.length; i++) {
+    const [owner, name] = repositories[i];
+    query += `
+      ${repositories[i].join('_')}: repository(owner: "${owner}", name: "${name}") {
+        config: object(expression: "HEAD:docs.json") {
+          ... on Blob {
+            text
+          }
+        }
+      }
+    `;
+  }
+
+  const [error, response] = await A2A<RepositoriesPathsQuery>(
+    GithubGQLClient({
+      query: `
+          query RepositoriesPaths {
+            ${query}
+          }
+        `,
+    }),
+  );
+
+  if (error && !response && !error.data) {
+    console.error(error);
+    return [];
+  }
+
+  let paths = [];
+
+  // If an error occurred (e.g. repo not found), set the data to the error data
+  // if there is no response.
+  const data = response || error.data;
+  const keys = Object.keys(data);
+
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+    const repository = key.replace('_', '/');
+    const file = data[key]?.config.text;
+
+    // TODO(ehesp): If something fails, should we log this somewhere?
+    if (!file) {
+      continue;
+    }
+
+    const config = tryJsonParse(file);
+
+    if (!Array.isArray(config?.paths)) {
+      continue;
+    }
+
+    const repositoryPaths = [];
+    for (let j = 0; j < config.paths.length; j++) {
+      const path = config.paths[j];
+
+      if (!isString(path)) {
+        continue;
+      }
+
+      repositoryPaths.push(`/${repository}${leadingSlash(path)}`);
+    }
+
+    paths = [...paths, ...repositoryPaths];
+  }
+
+  return paths;
+}
+
+type RepositoryListQuery = {
+  repository: {
+    file?: {
+      text: string;
+    };
+  };
+};
+
+export type RepositoryListItem = [string, string];
+
+export async function getRepositoryList(): Promise<RepositoryListItem[]> {
+  let raw = '';
+
+  const [error, response] = await A2A<RepositoryListQuery>(
+    GithubGQLClient({
+      query: `
+          query RepositoriesList($owner: String!, $repository: String!, $file: String!) {
+            repository(owner: $owner, name: $repository) {
+              file: object(expression: $file) {
+                ... on Blob {
+                  text
+                }
+              }
+            }
+          }
+        `,
+      owner: 'invertase',
+      repository: 'docs.page',
+      file: 'master:repositories.txt',
+    }),
+  );
+
+  if (error) {
+    console.error('Unable to fetch repositories list', error);
+  }
+
+  if (error || !response.repository?.file?.text) {
+    raw = '';
+  } else {
+    raw = response.repository.file.text;
+  }
+
+  if (!raw) {
+    return [];
+  }
+
+  return raw.split('\n').map<RepositoryListItem>(str => str.split('/') as RepositoryListItem);
+}
 
 type DomainListQuery = {
   repository: {

@@ -14,11 +14,12 @@ import { ConfigContext } from '../utils/config';
 import { IRenderError, redirect, RenderError } from '../utils/error';
 import { SlugProperties, SlugPropertiesContext, Properties } from '../utils/properties';
 import { PageContentContext, getPageContent, PageContent } from '../utils/content';
-import { getPullRequestMetadata } from '../utils/github';
+import { getPullRequestMetadata, getRepositoriesPaths, getRepositoryList } from '../utils/github';
 import { CustomDomain, CustomDomainContext } from '../utils/domain';
 import { getHeadTags } from '../utils/html';
 import {
   headerDepthToHeaderList,
+  isProduction,
   routeChangeComplete,
   routeChangeError,
   routeChangeStart,
@@ -72,8 +73,17 @@ export default function Documentation({
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  let paths = [];
+
+  // Since this call can be fairly large, only run it on production
+  // and let the development pages fallback each time.
+  if (isProduction()) {
+    const repositories = await getRepositoryList();
+    paths = await getRepositoriesPaths(repositories);
+  }
+
   return {
-    paths: [],
+    paths,
     fallback: true,
   };
 };
@@ -95,8 +105,6 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
   // Extract the slug properties from the request.
   const properties = new Properties(params.slug as string[]);
 
-  console.time('GitHub');
-
   // If the ref looks like a PR, update the details to point towards
   // the PR owner (which might be a different repo)
   if (properties.isPullRequest()) {
@@ -114,10 +122,6 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
 
   page = await getPageContent(properties);
 
-  console.timeEnd('GitHub');
-
-  console.time('MDX');
-
   if (!error) {
     if (!page) {
       console.error('Page not found');
@@ -134,8 +138,6 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
       }
     }
   }
-
-  console.timeEnd('MDX');
 
   return {
     props: {
