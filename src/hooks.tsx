@@ -53,20 +53,3 @@ export function useBodyScrollLock(lock: boolean): void {
     if (!lock) el.style.overflowY = 'auto';
   }, [lock]);
 }
-
-export function useLocalStorageToggle(
-  key: string,
-): [MutableRefObject<HTMLDivElement>, () => void, boolean] {
-  const ref = useRef<HTMLDivElement>();
-  const [visible, setVisible] = useState<boolean>();
-
-  const onToggle = useCallback(() => {
-    const el = ref.current;
-    el.classList.toggle('hidden');
-    const isVisible = !el.classList.contains('hidden');
-    window.localStorage.setItem(`docs.page.${key}`, isVisible ? 'true' : 'false');
-    setVisible(isVisible);
-  }, [key]);
-
-  return [ref, onToggle, visible];
-}
