@@ -69,7 +69,7 @@ function WithTableOfContents({
     <section className={cx('flex px-6 py-6 desktop:py-20 mx-auto', widthMap[layout])}>
       <div className="flex-1">{children}</div>
       {headings.length > 0 && (
-        <div className="w-48 ml-4">
+        <div className="w-48 ml-4 hidden desktop:block">
           <div className="sticky top-20">
             <TableOfContents />
           </div>
