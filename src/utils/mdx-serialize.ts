@@ -7,7 +7,6 @@ import { headerDepthToHeaderList } from './index';
 const rehypePrism = require('../../rehype-prism');
 const rehypeHeadings = require('../../rehype-headings');
 const rehypeSlug = require('rehype-slug');
-const rehypeToc = require('@jsdevtools/rehype-toc');
 const rehypeAccessibleEmojis = require('rehype-accessible-emojis').rehypeAccessibleEmojis;
 
 const remarkSanitizeJsx = require('../../remark-sanitize-jsx');
