@@ -1,8 +1,6 @@
 import { graphql } from '@octokit/graphql';
 import get from 'lodash.get';
 import NProgress from 'nprogress';
-import { useSlugProperties } from '../hooks';
-import { SlugProperties } from './properties';
 
 declare global {
   interface Window {
@@ -10,6 +8,10 @@ declare global {
       syncTabs: () => void;
     };
   }
+}
+
+export function isString(value: any) {
+  return typeof value === 'string';
 }
 
 export const GithubGQLClient = graphql.defaults({
@@ -27,6 +29,14 @@ export function headerDepthToHeaderList(depth: number): string[] {
   }
 
   return list;
+}
+
+export function tryJsonParse(value: string) {
+  try {
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
 }
 
 export function routeChangeStart() {

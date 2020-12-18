@@ -42,6 +42,10 @@ export function getHeadTags(properties: SlugProperties, page?: PageContent) {
         href={getImageSrc(properties, config.logo)}
       />,
     );
+  } else {
+    tags.push(
+      <link key="favicon" rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />,
+    );
   }
 
   if (frontmatter.description) {

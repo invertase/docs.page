@@ -10,14 +10,8 @@ interface ImageProps
   zoom?: boolean;
 }
 
-const className: string = 'mx-auto';
-const style: CSSProperties = {
-  maxHeight: 600,
-};
-
 export function Img({ zoom, caption, ...props }: ImageProps) {
   const config = useConfig();
-  const properties = useSlugProperties();
   const zoomEnabled = zoom ?? config.zoomImages;
 
   let src = props.src ?? '';
