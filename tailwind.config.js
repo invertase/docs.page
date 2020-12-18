@@ -112,6 +112,9 @@ module.exports = {
               backgroundColor: theme('colors.gray.700'),
               color: theme('colors.gray.200'),
             },
+            'pre code': {
+              backgroundColor: 'inherit',
+            },
             'a, a code': {
               color: 'var(--theme-color)',
               '&:hover': {
