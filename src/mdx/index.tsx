@@ -34,13 +34,6 @@ const components = {
 
     return pre();
   },
-  nav: (props: React.HTMLProps<HTMLDivElement>) => {
-    if (props.className.includes('toc')) {
-      return <TableOfContents {...props} />;
-    }
-
-    return <nav {...props} />;
-  },
 
   // Custom MDX components
   Heading,
