@@ -1,15 +1,14 @@
 import serialize from 'next-mdx-remote/serialize';
-import { createContext } from 'react';
 import { PageContent } from './content';
 
 import { headerDepthToHeaderList } from './index';
 
-const rehypePrism = require('../../rehype-prism');
-const rehypeHeadings = require('../../rehype-headings');
+const rehypePrism = require('../../plugins/rehype-prism');
+const rehypeHeadings = require('../../plugins/rehype-headings');
 const rehypeSlug = require('rehype-slug');
 const rehypeAccessibleEmojis = require('rehype-accessible-emojis').rehypeAccessibleEmojis;
 
-const remarkSanitizeJsx = require('../../remark-sanitize-jsx');
+const remarkSanitizeJsx = require('../../plugins/remark-sanitize-jsx');
 const remarkUnwrapImages = require('remark-unwrap-images');
 const remarkAdmonitions = require('remark-admonitions');
 interface SerializationResponse {
