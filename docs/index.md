@@ -3,30 +3,37 @@ title: Overview
 description: Instant Open Source docs with zero configuration.
 ---
 
-> This documentation is currently work in progress.
-
 # docs.page
 
 docs.page is a free Open Source project, allowing you to create instant, fast, beautiful documentation with zero configuration.
 
-View the [Getting Started](/getting-started) documentation to learn more.
+Documentation is an important aspect for many projects, however creating a custom documentation website
+for each project is time consuming. Many common solutions to problems have to be duplicated, along with 
+dealing with overheads such as website maintenance & hosting.
+
+Solutions such as [Jekyll](https://jekyllrb.com/docs/github-pages/), [Docusaurus](https://docusaurus.io/),
+[docsify](https://docsify.js.org/#/) and many others are great projects, however still require custom setup for each project.
+
+This project delivers instant documentation websites with the content sourced directly from any public
+GitHub repository. Features include:
+
+- Branch & Pull Request previewing.
+- GitHub Pull Request bot for previewing automation.
+- Dark / Light mode theme support.
+- [MDX](https://github.com/mdx-js/mdx) components such as Tabs (useful for projects with multiple languages).
+- Server Side Rendered (SSR) pages (powered by [Next.js](https://nextjs.org/) & [Vervel](https://vercel.com)).
+- Support for search via [Docsearch](https://docsearch.algolia.com/).
+- Managing common project variables.
+- Many [configurable](https://docs.page/invertase/docs.page/configuration) options, such as sidebars, Google Analytics, theming and more.
 
 ## Repositories using docs.page
 
 - [invertase/docs.page](https://github.com/invertase/docs.page)
 - [invertase/melos](https://github.com/invertase/melos)
 
-## Why?
+## Should I use docs.page?
 
-At [Invertase](https://invertase.io) we're always building new Open Source products for the community.
-One of the most important yet undervalued aspects of a successful Open Source product is documentation.
-Using GitHub README files or Wiki's is a great place to start, however common issues quickly start to arise:
+docs.page is a simple way to generate a documentation website with zero effort. It generally works for documentation websites with a lot of Markdown based content. If you require features which are more specific to your own project a custom solution might work better.
 
-- Markdown only supports basic HTML.
-- Documentation isn't searchable.
-- Adding navigation is tricky, slow and repetitive.
 
-Existing solutions such as GitHub pages, or building a custom documentation website help solve these problems,
-however also come with additional overhead:
 
-- The websites need to be hosted somewhere.

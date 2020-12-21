@@ -11,7 +11,7 @@ import { JumpToTop } from './JumpToTop';
 import { Menu, Close } from './Icons';
 import { TableOfContents } from './TableOfContents';
 
-export type LayoutType = 'default' | 'wide' | 'full' | 'bare';
+export type LayoutType = 'default' | 'wide' | 'full';
 
 export const DEFAULT_LAYOUT: LayoutType = 'default';
 
@@ -19,7 +19,6 @@ const widthMap: { [key in LayoutType] } = {
   default: 'max-w-6xl',
   wide: 'max-w-7xl',
   full: 'max-w-full',
-  bare: '',
 };
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -32,10 +31,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
   // First check the frontmatter for a layout, then fallback to the config
   const layout = page.frontmatter.layout || config.defaultLayout;
-
-  if (layout === 'bare') {
-    return <div>{children}</div>;
-  }
 
   return (
     <>
