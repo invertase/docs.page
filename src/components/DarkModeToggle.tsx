@@ -1,7 +1,12 @@
 import useDarkMode from 'use-dark-mode';
 import { useNoSSR } from '../hooks';
 
-import { DARK_MODE_CLASS_NAME, LIGHT_MODE_CLASS_NAME, STORAGE_KEY } from '../scripts/noflash';
+import {
+  DARK_MODE_CLASS_NAME,
+  LIGHT_MODE_CLASS_NAME,
+  STORAGE_KEY,
+  HTML_DATA_ATTRIBUTE,
+} from '../scripts/dark-mode';
 import { Moon, Sun } from './Icons';
 
 /**
@@ -40,6 +45,8 @@ export function DarkModeToggle() {
               } else {
                 darkMode.disable();
               }
+
+              document.documentElement.dataset[HTML_DATA_ATTRIBUTE] = value;
             }}
           >
             <option value="dark">Dark</option>

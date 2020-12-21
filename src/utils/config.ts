@@ -29,6 +29,7 @@ export type Config = {
   theme: string;
   // Docsearch Application ID. If populated, a search box with autocomplete will be rendered.
   docsearch?: {
+    appId?: string;
     apiKey: string;
     indexName: string;
   };
@@ -76,6 +77,7 @@ export function mergeConfig(json: any): Config {
     theme: getString(json, 'theme', defaultConfig.theme),
     docsearch: get(json, 'docsearch')
       ? {
+          appId: getString(json, 'docsearch.appId', ''),
           apiKey: getString(json, 'docsearch.apiKey', ''),
           indexName: getString(json, 'docsearch.indexName', ''),
         }

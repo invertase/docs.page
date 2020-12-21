@@ -16,7 +16,7 @@ function Footer() {
             docs.page
           </ExternalLink>
         </div>
-        <div className="desktop:hidden mt-4">
+        <div className="mt-4">
           <DarkModeToggle />
         </div>
       </div>
