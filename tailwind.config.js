@@ -32,30 +32,6 @@ module.exports = {
       typography: theme => ({
         DEFAULT: {
           css: {
-            'nav.toc ol > li::before': {
-              content: '"#"',
-              color: 'var(--theme-color)',
-              fontWeight: 700,
-            },
-            'nav a': {
-              textDecoration: 'none',
-              color: 'black !important',
-              '&:hover': {
-                textDecoration: 'underline',
-              },
-            },
-            'nav.toc ol > li a': {
-              fontWeight: 700,
-            },
-            'nav.toc ol > li > ol > li a': {
-              fontWeight: 300,
-            },
-            'nav.toc h3': {
-              margin: 0,
-            },
-            'nav.toc span[role="img"]': {
-              marginRight: rem(0.5),
-            },
             img: {
               marginLeft: 'auto',
               marginRight: 'auto',
@@ -77,14 +53,32 @@ module.exports = {
               paddingBottom: rem(16),
               borderColor: theme('colors.gray.200'),
             },
-            'table thead th, table tbody td': {
-              padding: rem(1),
-            },
             'a, a code': {
               color: 'var(--theme-color)',
               '&:hover': {
                 color: 'var(--theme-color-light)',
               },
+            },
+            thead: {
+              borderWidth: '1px',
+            },
+            'thead th': {
+              padding: rem(8),
+              fontSize: rem(16),
+              textAlign: 'center',
+            },
+            'thead th:not(:last-child), tbody td:not(:last-child)': {
+              borderRightWidth: '1px',
+            },
+            'tbody tr, tbody tr:last-child': {
+              borderLeftWidth: '1px',
+              borderRightWidth: '1px',
+            },
+            'tbody tr:nth-child(2n)': {
+              backgroundColor: theme('colors.gray.100'),
+            },
+            'tbody td, tbody td:last-child, tbody td:first-child': {
+              padding: rem(8),
             },
           },
         },
@@ -120,6 +114,12 @@ module.exports = {
               '&:hover': {
                 color: 'var(--theme-color-light)',
               },
+            },
+            'thead, tbody tr, thead th:not(:last-child), tbody td:not(:last-child)': {
+              borderColor: theme('colors.gray.700'),
+            },
+            'tbody tr:nth-child(2n)': {
+              backgroundColor: theme('colors.gray.800'),
             },
           },
         },
