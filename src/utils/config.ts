@@ -25,6 +25,8 @@ export type Config = {
   socialPreview: string;
   // Twitter tag for use in the header.
   twitter: string;
+  // Whether the website should be indexable by search bots.
+  noindex: boolean;
   // A color theme used for this project. Defaults to "#00bcd4".
   theme: string;
   // Docsearch Application ID. If populated, a search box with autocomplete will be rendered.
@@ -55,6 +57,7 @@ export const defaultConfig: Config = {
   logoDark: '',
   socialPreview: '',
   twitter: '',
+  noindex: false,
   theme: '#00bcd4',
   docsearch: null,
   navigation: [],
@@ -74,6 +77,7 @@ export function mergeConfig(json: any): Config {
     logoDark: getString(json, 'logoDark', defaultConfig.logoDark),
     socialPreview: getString(json, 'socialPreview', defaultConfig.socialPreview),
     twitter: getString(json, 'twitter', defaultConfig.twitter),
+    noindex: getBoolean(json, 'noindex', defaultConfig.noindex),
     theme: getString(json, 'theme', defaultConfig.theme),
     docsearch: get(json, 'docsearch')
       ? {

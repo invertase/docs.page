@@ -1,0 +1,266 @@
+---
+title: Configuration
+description: Configure your documentation with a docs.json file.
+---
+
+# Configuration
+
+The default docs.page configuration is designed to display a minimal documentation website for your project.
+Adding a configuration file enables you to customize the look and feel, along with adding some additional
+functionality to improve the overall experience of browsing the documentation.
+
+You can configure your documentation by adding a `docs.json` file to the root of your repository.
+
+## Options
+
+Each option undergoes validation, and any invalid value passed will be removed.
+
+### name
+
+The name of the project. If provided, the name is displayed in a few places throughout the website such
+as the meta title and website header.
+
+|  Key   | Type     | Default |
+| :----: | -------- | ------- |
+| `name` | `string` |         |
+
+### logo
+
+The URL or local repository path to the project logo. If provided, will be used as the favicon and will be displayed in the header.
+
+|  Key   | Type     | Default |
+| :----: | -------- | ------- |
+| `logo` | `string` |         |
+
+### logoDark
+
+The URL or local repository path to the project logo. If provided, will be displayed in the header when
+Dark Mode is currently enabled.
+
+|    Key     | Type     | Default |
+| :--------: | -------- | ------- |
+| `logoDark` | `string` |         |
+
+### socialPreview
+
+The URL to the social preview image, used when a URL to the documentation is being shared on social media platforms or Open Graph. Images should be at least 640×320px (1280×640px for best display).
+
+|       Key       | Type     | Default |
+| :-------------: | -------- | ------- |
+| `socialPreview` | `string` |         |
+
+### twitter
+
+A Twitter username handle. If provided, a Twitter logo will be placed in the header of the website.
+
+|    Key    | Type     | Default |
+| :-------: | -------- | ------- |
+| `twitter` | `string` |         |
+
+### noindex
+
+Whether or not the website should be indexed. By default, documentation websites are not indexed if no
+`docs.page` is not found.
+
+|    Key    | Type      | Default |
+| :-------: | --------- | ------- |
+| `noindex` | `boolean` | false   |
+
+To learn more about indexing, view the [Advanced documentation](advanced).
+
+### theme
+
+A color used throughout the website on anchor tags, search and for general highlighting usage. It is
+recommended that the color is vibrant/light. The provided value must be parsable by the [`color`](https://www.npmjs.com/package/color) library.
+
+|    Key    | Type     | Default |
+| :-------: | -------- | ------- |
+| `twitter` | `string` | #00bcd4 |
+
+### docsearch
+
+If provided, the `docsearch` value should be an object containing your `apiKey` and `indexName` for your DocSearch instance. If the `appId` is provided, a pre-connection to the Algolia database instance will be established which should help speed up initial search times users with slow connections.
+
+To learn more, [join the DocSearch program](https://docsearch.algolia.com/).
+
+|     Key     | Type        | Default |
+| :---------: | ----------- | ------- |
+| `docsearch` | `DocSearch` |         |
+
+|  DocSearch  | Type     | Default |
+| :---------: | -------- | ------- |
+|   `appId`   | `string` |         |
+|  `apiKey`   | `string` |         |
+| `indexName` | `string` |         |
+
+For example:
+
+```json
+{
+  "docsearch": {
+    "appId": "...",
+    "apiKey": "...",
+    "indexName": "awesome-project"
+  }
+}
+```
+
+### navigation
+
+An array of navigation items. If provided, the links will be displayed in the website header.
+
+|     Key      | Type               | Default |
+| :----------: | ------------------ | ------- |
+| `navigation` | `NavigationItem[]` | []      |
+
+| NavigationItem | Type     | Default |
+| :------------: | -------- | ------- |
+|      [0]       | `string` |         |
+|      [1]       | `string` |         |
+
+The fist item of an item is the title, and the second item is a URL, for example:
+
+```json
+{
+  "navigation": [
+    ["Example", "/example"],
+    ["External", "https://google.com"]
+  ]
+}
+```
+
+### sidebar
+
+An array containing nested sidebar array items. If provided, will be rendered on every page down the left hand side.
+
+A sidebar item can contain an array with two string values, or an array where the first string value is a title and the second value is another nested array (which will be displayed as an expandable list).
+
+|    Key    | Type            | Default |
+| :-------: | --------------- | ------- |
+| `sidebar` | `SidebarItem[]` | []      |
+
+| SidebarItem (1) | Type     | Default |
+| :-------------: | -------- | ------- |
+|       [0]       | `string` |         |
+|       [1]       | `string` |         |
+
+| SidebarItem (2) | Type            | Default |
+| :-------------: | --------------- | ------- |
+|       [0]       | `string`        |         |
+|       [1]       | `SidebarItem[]` |         |
+
+For example, the following will create a sidebar with a single link and nested expandable sidebar:
+
+```json
+{
+  "navigation": [
+    ["Example", "/example"],
+    [
+      "Expandable",
+      [
+        ["Nested Example", "/example-nested"],
+        ["Nested Expandable", [["Nested x2 Example", "/example-nested-x2"]]]
+      ]
+    ]
+  ]
+}
+```
+
+### defaultLayout
+
+The default layout type all pages will be rendered with, can be one of `default`, `wide` or `full`.
+
+|       Key       | Type     | Default     |
+| :-------------: | -------- | ----------- |
+| `defaultLayout` | `Layout` | `'default'` |
+
+|  Layout   | Width   |
+| :-------: | ------- |
+| `default` | `72rem` |
+|  `wide`   | `80rem` |
+|  `full`   | `100%`  |
+
+### headerDepth
+
+A number representing how deep headers remain important. Headers within the depth will be shown on the table of contents and also linkable. All "h1" tags are ignored.
+
+For example, a depth of `4` will handle `h2`, `h3` & `h4` tags.
+
+|      Key      | Type     | Default |
+| :-----------: | -------- | ------- |
+| `headerDepth` | `number` | 3       |
+
+### variables
+
+A deeply nested object which contains values which can be injected on any documentation page. This is useful for projects which have repetitive common values (such a versions) which should be reflected consistently across all pages.
+
+The [`lodash.get`](https://lodash.com/docs/4.17.15#get) utility is used to extract in-page variables from the provided object.
+
+|     Key     | Type     | Default |
+| :---------: | -------- | ------- |
+| `variables` | `object` | {}      |
+
+Within your Markdown, provide the dot-notated path to the variable, for example:
+
+```json title=docs.json
+{
+  "variables": {
+    "versions": {
+      "alpha": "3.0.0-alpha.1",
+      "beta": "3.0.0-beta.1",
+      "current": "2.9.12"
+    }
+  }
+}
+```
+
+```md
+# Installation
+
+Alpha: `{{ versions.alpha }}`
+Beta: `{{ versions.beta }}`
+Current: `{{ versions.current }}`
+```
+
+### googleAnalytics
+
+If provided, the Google Analytics script will be added to all of your documentation pages. Tags should start with `G-`.
+
+|        Key        | Type     | Default |
+| :---------------: | -------- | ------- |
+| `googleAnalytics` | `string` |         |
+
+### zoomImages
+
+A boolean value representing whether images are zoomable by default.
+
+Note; If using the `<Image />` component, the `zoom` property provided will override this value.
+
+|     Key      | Type      | Default |
+| :----------: | --------- | ------- |
+| `zoomImages` | `boolean` | false   |
+
+### paths
+
+An array of paths which are used for repositories which have opted-in static page generation.
+
+|   Key   | Type       | Default |
+| :-----: | ---------- | ------- |
+| `paths` | `string[]` | []      |
+
+For example, to statically generate pages for the `docs.page` project:
+
+```json title=docs.json
+{
+  "paths": [
+    "/",
+    "components",
+    "configuration",
+    "contributing",
+    "debugging",
+    "getting-started",
+    "previews",
+    "advanced"
+  ]
+}
+```

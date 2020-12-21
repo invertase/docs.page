@@ -29,7 +29,7 @@ export function getHeadTags(properties: SlugProperties, page?: PageContent) {
     <meta key="twitter:card" name="twitter:card" content="summary_large_image" />,
   ];
 
-  if (page.flags.isFork || !properties.isBaseBranch || !page.flags.hasConfig) {
+  if (config.noindex || page.flags.isFork || !properties.isBaseBranch || !page.flags.hasConfig) {
     tags.push(<meta key="noindex" name="robots" content="noindex" />);
   }
 
