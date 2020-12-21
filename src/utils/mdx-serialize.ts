@@ -3,7 +3,7 @@ import { PageContent } from './content';
 
 import { headerDepthToHeaderList } from './index';
 
-const rehypePrism = require('../../plugins/rehype-prism');
+const rehypeCodeBlocks = require('../../plugins/rehype-code-blocks');
 const rehypeHeadings = require('../../plugins/rehype-headings');
 const rehypeSlug = require('rehype-slug');
 const rehypeAccessibleEmojis = require('rehype-accessible-emojis').rehypeAccessibleEmojis;
@@ -28,7 +28,7 @@ export async function mdxSerialize(page: PageContent): Promise<SerializationResp
       mdxOptions: {
         rehypePlugins: [
           // Convert `pre` blogs into prism formatting
-          rehypePrism,
+          rehypeCodeBlocks,
           // Add an `id` to all heading tags
           rehypeSlug,
           // If the table of contents is enabled for this page,
