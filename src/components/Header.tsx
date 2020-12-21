@@ -4,10 +4,9 @@ import useOnClickOutside from 'use-onclickoutside';
 
 import { ExternalLink, Link } from './Link';
 import { Branch, GitHub, Menu, MenuOpenRight, PullRequest, Twitter } from './Icons';
-import { DarkModeToggle } from './DarkModeToggle';
 import { Image } from './Image';
 import { Search } from './Search';
-import { useConfig, usePageContent, useSlugProperties } from '../hooks';
+import { useConfig, useSlugProperties } from '../hooks';
 
 export function Header() {
   const config = useConfig();
@@ -15,31 +14,37 @@ export function Header() {
   const repo = `${properties.owner}/${properties.repository}`;
 
   return (
-    <header className="px-4 sticky top-0 z-10 bg-white text-sm dark:bg-gray-800 text-gray-900 dark:text-white border-b dark:border-gray-800">
+    <header className="px-4 sticky top-0 z-10 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-b dark:border-gray-800">
       <div className="flex items-center h-16">
-        <Link href="/" className="flex-1 mr-1 font-mono hover:underline truncate">
+        <Link href="/" className="mr-12 truncate text-lg font-semibold">
           <div className="flex h-16 items-center py-4">
             {!!config.logo && (
               <>
                 <Image
                   src={config.logo}
                   alt={repo}
-                  className={cx('max-h-full', {
+                  className={cx('max-h-full pr-4', {
                     'dark:hidden': !!config.logoDark,
                   })}
                 />
                 {!!config.logoDark && (
-                  <Image src={config.logoDark} alt={repo} className="hidden dark:block max-h-full" />
+                  <Image
+                    src={config.logoDark}
+                    alt={repo}
+                    className="hidden dark:block max-h-full pr-4"
+                  />
                 )}
               </>
             )}
-            <span className="pl-4">{config.name || repo}</span>
+            <span>{config.name || repo}</span>
           </div>
         </Link>
-        <div className="hidden desktop:flex items-center justify-center space-x-6 font-mono overflow-auto">
+        <div className="hidden desktop:flex items-center justify-center space-x-6 overflow-auto">
           <Navigation />
         </div>
-        <Utils />
+        <div className="flex-1 flex justify-end">
+          <Utils />
+        </div>
         <MobileNavigation />
       </div>
     </header>
@@ -51,12 +56,12 @@ function Navigation() {
 
   return (
     config.navigation.length > 0 && (
-      <ul className="flex items-center justify-center desktop:justify-start overflow-x-auto h-12 desktop:h-16 desktop:mr-4">
+      <ul className="flex items-center justify-center desktop:justify-start font-semibold overflow-x-auto h-12 desktop:h-16 desktop:mr-4">
         {config.navigation.map(([title, url]) => (
           <li key={title + url}>
             <Link
               href={url}
-              className="transition-colors hover:bg-gray-200 dark:hover:bg-gray-900 whitespace-nowrap px-4 py-2 rounded desktop:ml-1"
+              className="transition-colors hover:text-theme-color whitespace-nowrap px-4 py-2 rounded desktop:ml-1"
             >
               {title}
             </Link>
@@ -156,9 +161,6 @@ function Utils() {
       {!!config.docsearch && (
         <Search apiKey={config.docsearch.apiKey} indexName={config.docsearch.indexName} />
       )}
-      <div className="hidden desktop:block pl-6">
-        <DarkModeToggle />
-      </div>
     </div>
   );
 }

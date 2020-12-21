@@ -3,11 +3,10 @@ import cx from 'classnames';
 import MdxRemote from 'next-mdx-remote/mdx-remote';
 
 import { Link } from '../components/Link';
-import { TableOfContents } from '../components/TableOfContents';
 
 import { Heading } from './Heading';
 import { Tabs, TabItem, TabsContext } from './Tabs';
-import { Pre, PreProps, withCodeBlockTitle } from './Code';
+import { Pre, PreProps } from './Pre';
 import { Img } from './Img';
 import { YouTube } from './YouTube';
 
@@ -23,24 +22,7 @@ const components = {
   img: (
     props: React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
   ) => <Img {...props} />,
-  pre: (props: PreProps) => {
-    const pre = (className?: string) => (
-      <Pre {...props} className={cx(props.className, className)} copy={props.raw} />
-    );
-
-    if (React.isValidElement(props.children) && props.children?.props?.title) {
-      return withCodeBlockTitle(props.children?.props?.title, pre('code-block-title'));
-    }
-
-    return pre();
-  },
-  nav: (props: React.HTMLProps<HTMLDivElement>) => {
-    if (props.className.includes('toc')) {
-      return <TableOfContents {...props} />;
-    }
-
-    return <nav {...props} />;
-  },
+  pre: (props: PreProps) => <Pre {...props} />,
 
   // Custom MDX components
   Heading,

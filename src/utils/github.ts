@@ -1,8 +1,14 @@
 import A2A from 'a2a';
+import camelCase from 'lodash.camelcase';
+
 import { Properties } from './properties';
 import { GithubGQLClient, tryJsonParse, isString, leadingSlash } from './index';
 
 type RepositoryPathsQuery = {
+  owner: {
+    login: string;
+  };
+  name: string;
   config?: {
     text: string;
   };
@@ -19,7 +25,11 @@ export async function getRepositoriesPaths(repositories: Array<string[]>): Promi
   for (let i = 0; i < repositories.length; i++) {
     const [owner, name] = repositories[i];
     query += `
-      ${repositories[i].join('_')}: repository(owner: "${owner}", name: "${name}") {
+      ${camelCase(owner + name)}: repository(owner: "${owner}", name: "${name}") {
+        owner {
+          login
+        }
+        name
         config: object(expression: "HEAD:docs.json") {
           ... on Blob {
             text
@@ -48,15 +58,14 @@ export async function getRepositoriesPaths(repositories: Array<string[]>): Promi
 
   // If an error occurred (e.g. repo not found), set the data to the error data
   // if there is no response.
-  const data = response || error.data;
+  const data = (response || error.data) as RepositoriesPathsQuery;
   const keys = Object.keys(data);
 
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
-    const repository = key.replace('_', '/');
-    const file = data[key]?.config.text;
+    const query = data[key];
+    const file = query?.config.text;
 
-    // TODO(ehesp): If something fails, should we log this somewhere?
     if (!file) {
       continue;
     }
@@ -68,6 +77,8 @@ export async function getRepositoriesPaths(repositories: Array<string[]>): Promi
     }
 
     const repositoryPaths = [];
+    const prePath = `${query.owner.login.toLowerCase()}/${query.name.toLowerCase()}`;
+
     for (let j = 0; j < config.paths.length; j++) {
       const path = config.paths[j];
 
@@ -75,7 +86,7 @@ export async function getRepositoriesPaths(repositories: Array<string[]>): Promi
         continue;
       }
 
-      repositoryPaths.push(`/${repository}${leadingSlash(path)}`);
+      repositoryPaths.push(`/${prePath}${leadingSlash(path.toLowerCase())}`);
     }
 
     paths = [...paths, ...repositoryPaths];

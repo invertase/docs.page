@@ -29,7 +29,7 @@ export function getHeadTags(properties: SlugProperties, page?: PageContent) {
     <meta key="twitter:card" name="twitter:card" content="summary_large_image" />,
   ];
 
-  if (!page.flags.isFork && properties.isBaseBranch && page.flags.hasConfig) {
+  if (page.flags.isFork || !properties.isBaseBranch || !page.flags.hasConfig) {
     tags.push(<meta key="noindex" name="robots" content="noindex" />);
   }
 
@@ -39,12 +39,18 @@ export function getHeadTags(properties: SlugProperties, page?: PageContent) {
         key="favicon"
         rel="icon"
         type="image/png"
-        href={getImageSrc(properties, config.logo)}
+        href={getImageSrc(properties, page, config.logo)}
       />,
     );
   } else {
     tags.push(
-      <link key="favicon" rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />,
+      <link
+        key="favicon"
+        rel="icon"
+        type="image/png"
+        sizes="32x32"
+        href="/favicons/favicon-32x32.png"
+      />,
     );
   }
 
@@ -84,19 +90,12 @@ export function getHeadTags(properties: SlugProperties, page?: PageContent) {
     );
   }
 
-  if (config.docsearch) {
+  if (config.docsearch?.appId) {
     tags.push(
       <link
-        key="config:docsearch:css"
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.css"
-      />,
-    );
-    tags.push(
-      <script
-        key="config:docsearch:js"
-        type="text/javascript"
-        src="https://cdn.jsdelivr.net/npm/docsearch.js@2/dist/cdn/docsearch.min.js"
+        key="docsearch"
+        rel="preconnect"
+        href={`https://${config.docsearch.appId}-dsn.algolia.net`}
       />,
     );
   }

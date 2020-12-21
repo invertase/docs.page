@@ -10,6 +10,12 @@ import { getGitHubContents } from './github';
 
 export type FileType = null | 'md' | 'mdx';
 
+export type HeadingNode = {
+  id: string;
+  title: string;
+  rank: number;
+}
+
 export type Frontmatter = {
   title: string;
   description: string;
@@ -27,6 +33,7 @@ export type PageContent = {
   frontmatter: Frontmatter;
   raw: string;
   content: string;
+  headings: HeadingNode[];
   flags: {
     hasConfig: boolean;
     hasFrontmatter: boolean;
@@ -94,6 +101,7 @@ export async function getPageContent(properties: Properties): Promise<PageConten
     config,
     type,
     frontmatter,
+    headings: [],
     raw,
     content,
     flags: {

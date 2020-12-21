@@ -23,15 +23,22 @@
   body.dark {
     @apply bg-gray-900;
   }
-
-  /* Removes any top margin from pre-tags if a title present */
-  pre.code-block-title {
-    margin-top: 0 !important;
-    border-top-left-radius: 0 !important;
-    border-top-right-radius: 0 !important;
-  }
 }
 
+/* DocSearch doesn't play nice with Normalize.css, so some custom style overrides are required */
+.DocSearch-Screen-Icon svg {
+  @apply mx-auto;
+}
+
+.dark .DocSearch-NoResults {
+  @apply text-white;
+}
+
+.DocSearch-NoResults-Prefill-List {
+  @apply mt-8 text-center;
+}
+
+/* Add some styles from any remark-admonitions HTML output */
 .admonition {
   @apply mb-4 p-6 text-gray-800 rounded-lg shadow;
 }

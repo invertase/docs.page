@@ -3,23 +3,24 @@ import { PageContent } from './content';
 
 import { headerDepthToHeaderList } from './index';
 
-const rehypePrism = require('../../rehype-prism');
+const rehypeCodeBlocks = require('../../plugins/rehype-code-blocks');
+const rehypeHeadings = require('../../plugins/rehype-headings');
 const rehypeSlug = require('rehype-slug');
-const rehypeToc = require('@jsdevtools/rehype-toc');
 const rehypeAccessibleEmojis = require('rehype-accessible-emojis').rehypeAccessibleEmojis;
 
-const remarkSanitizeJsx = require('../../remark-sanitize-jsx');
+const remarkSanitizeJsx = require('../../plugins/remark-sanitize-jsx');
 const remarkUnwrapImages = require('remark-unwrap-images');
 const remarkAdmonitions = require('remark-admonitions');
-
 interface SerializationResponse {
   source: any;
+  headings: object[];
   error?: Error;
 }
 
 export async function mdxSerialize(page: PageContent): Promise<SerializationResponse> {
   const response: SerializationResponse = {
     source: null,
+    headings: [],
   };
 
   try {
@@ -27,15 +28,17 @@ export async function mdxSerialize(page: PageContent): Promise<SerializationResp
       mdxOptions: {
         rehypePlugins: [
           // Convert `pre` blogs into prism formatting
-          rehypePrism,
+          rehypeCodeBlocks,
           // Add an `id` to all heading tags
           rehypeSlug,
-          // Create a table of contents above the page
+          // If the table of contents is enabled for this page,
+          // gather the headings for the current page
           page.frontmatter.tableOfContents
             ? [
-                rehypeToc,
+                rehypeHeadings,
                 {
                   headings: headerDepthToHeaderList(page.config.headerDepth),
+                  callback: (headings: object[]) => (response.headings = headings),
                 },
               ]
             : [],

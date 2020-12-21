@@ -74,7 +74,7 @@ module.exports = {
             },
             'h1, h2': {
               borderBottom: '1px solid',
-              paddingBottom: rem(1),
+              paddingBottom: rem(16),
               borderColor: theme('colors.gray.200'),
             },
             'table thead th, table tbody td': {

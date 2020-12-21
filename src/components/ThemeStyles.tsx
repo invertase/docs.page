@@ -3,6 +3,8 @@ import Color from 'color';
 import { defaultConfig } from '../utils/config';
 import { useConfig } from '../hooks';
 
+type Varient = 'base' | 'dark' | 'light';
+
 /**
  * Once the configuration options are fetched for the page,
  * this component injects a few CSS classes into the scope based
@@ -22,33 +24,40 @@ function ThemeStyles() {
     color = Color(defaultConfig.theme);
   }
 
+  const varients: { [key in Varient]: string } = {
+    base: color.hex().toString(),
+    dark: color.darken(0.2).hex().toString(),
+    light: color.lighten(0.2).hex().toString(),
+  };
+
+  const styles = [];
+
+  Object.keys(varients).forEach(key => {
+    const varient = key === 'base' ? '' : `-${key}`;
+
+    styles.push(`.text-theme-color${varient} {
+      color: var(--theme-color${varient});
+    }`);
+
+    styles.push(`.hover\\:text-theme-color${varient}:hover {
+      color: var(--theme-color${varient});
+    }`);
+
+    styles.push(`.bg-theme-color${varient} {
+      background-color: var(--theme-color${varient});
+    }`);
+  });
+
   return (
     <style global jsx>{`
       :root {
-        --theme-color: ${color.hex().toString()};
-        --theme-color-dark: ${color.darken(0.2).hex().toString()};
-        --theme-color-light: ${color.lighten(0.2).hex().toString()};
+        --theme-color: ${varients.base};
+        --theme-color-dark: ${varients.dark};
+        --theme-color-light: ${varients.light};
+        --docsearch-primary-color: var(--theme-color);
       }
 
-      .text-theme-color {
-        color: var(--theme-color);
-      }
-      .text-theme-color-dark {
-        color: var(--theme-color-dark);
-      }
-      .text-theme-color-light {
-        color: var(--theme-color-light);
-      }
-
-      .bg-theme-color {
-        background-color: var(--theme-color);
-      }
-      .bg-theme-color-dark {
-        background-color: var(--theme-color-dark);
-      }
-      .bg-theme-color-light {
-        background-color: var(--theme-color-light);
-      }
+      ${styles.join(`\n`)}
 
       #nprogress .bar {
         background: var(--theme-color) !important;
