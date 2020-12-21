@@ -16,7 +16,7 @@ export type LayoutType = 'default' | 'wide' | 'full' | 'bare';
 export const DEFAULT_LAYOUT: LayoutType = 'default';
 
 const widthMap: { [key in LayoutType] } = {
-  default: 'max-w-5xl',
+  default: 'max-w-6xl',
   wide: 'max-w-7xl',
   full: 'max-w-full',
   bare: '',
