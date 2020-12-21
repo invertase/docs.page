@@ -70,22 +70,15 @@ module.exports = {
             'thead th:not(:last-child), tbody td:not(:last-child)': {
               borderRightWidth: '1px',
             },
-            'tbody tr': {
+            'tbody tr, tbody tr:last-child': {
               borderLeftWidth: '1px',
               borderRightWidth: '1px',
-            },
-            'tbody tr:last-child': {
-              borderBottomWidth: '1px',
             },
             'tbody tr:nth-child(2n)': {
               backgroundColor: theme('colors.gray.100'),
             },
-            'tbody td': {
+            'tbody td, tbody td:last-child, tbody td:first-child': {
               padding: rem(8),
-            },
-            'tbody td:last-child, tbody td:first-child': {
-              paddingRight: rem(8),
-              paddingLeft: rem(8),
             },
           },
         },
