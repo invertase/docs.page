@@ -30,7 +30,7 @@ export default function Documentation({
   domain, // TODO custom domains
   source,
   properties,
-  page,
+  content,
   error,
 }: InferGetStaticPropsType<typeof getStaticProps>) {
   const { isFallback } = useRouter();
@@ -43,15 +43,15 @@ export default function Documentation({
     return <Error {...error} />;
   }
 
-  const tags = getHeadTags(properties, page);
+  const tags = getHeadTags(properties, content);
 
   return (
     <>
       <NextHead>{tags}</NextHead>
       <CustomDomainContext.Provider value={domain}>
-        <ConfigContext.Provider value={page.config}>
+        <ConfigContext.Provider value={content.config}>
           <SlugPropertiesContext.Provider value={properties}>
-            <PageContentContext.Provider value={page}>
+            <PageContentContext.Provider value={content}>
               <ThemeStyles />
               <Layout>
                 <ErrorBoundary>
@@ -88,7 +88,7 @@ type StaticProps = {
   properties: SlugProperties;
   headings: HeadingNode[];
   source?: string;
-  page?: PageContent;
+  content?: PageContent;
   error?: IRenderError;
 };
 
@@ -96,7 +96,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
   let source = null;
   let headings: HeadingNode[] = [];
   let error: RenderError = null;
-  let page: PageContent;
+  let content: PageContent;
 
   // // Extract the slug properties from the request.
   const properties = new Properties(params.slug as string[]);
@@ -116,25 +116,33 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
     }
   }
 
-  page = await getPageContent(properties);
-
-  if (!page) {
-    error = RenderError.pageNotFound(properties);
-  } else if (page.frontmatter.redirect) {
-    return redirect(page.frontmatter.redirect, properties);
+  content = await getPageContent(properties);
+  
+  if (!content) {
+    // If there is no content, the repository is not found
+    error = RenderError.repositoryNotFound(properties);
+  } else if (content.frontmatter.redirect) {
+    // Redirect the user to another page
+    return redirect(content.frontmatter.redirect, properties);
   } else {
+    // At this point there is a repository, however there still might not be a file for the path
+
     // If no property ref has been set, assign the base branch (usually main or master)
     if (!properties.ref) {
-      properties.setBaseRef(page.baseBranch);
+      properties.setBaseRef(content.baseBranch);
     }
-    
-    const serialization = await mdxSerialize(page);
 
-    if (serialization.error) {
-      error = RenderError.serverError(properties);
+    if (content.markdown) {
+      const serialization = await mdxSerialize(content);
+
+      if (serialization.error) {
+        error = RenderError.serverError(properties);
+      } else {
+        source = serialization.source;
+        content.headings = serialization.headings as HeadingNode[];
+      }
     } else {
-      source = serialization.source;
-      page.headings = serialization.headings as HeadingNode[];
+      error = RenderError.pageNotFound(properties);
     }
   }
 
@@ -144,7 +152,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
       properties: properties.toObject(),
       source,
       headings,
-      page,
+      content,
       error: error?.toObject() ?? null,
     },
     revalidate: 30,

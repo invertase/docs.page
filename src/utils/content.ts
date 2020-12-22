@@ -8,8 +8,6 @@ import { Properties } from './properties';
 import { getBoolean, getString } from '.';
 import { getGitHubContents } from './github';
 
-export type FileType = null | 'md';
-
 export type HeadingNode = {
   id: string;
   title: string;
@@ -29,10 +27,9 @@ export type Frontmatter = {
 export type PageContent = {
   baseBranch: string;
   config: Config;
-  type: FileType;
   frontmatter: Frontmatter;
   raw: string;
-  content: string;
+  markdown: string;
   headings: HeadingNode[];
   flags: {
     hasConfig: boolean;
@@ -46,14 +43,8 @@ export const PageContentContext = createContext<PageContent | null>(null);
 export async function getPageContent(properties: Properties): Promise<PageContent | null> {
   const contents = await getGitHubContents(properties);
 
+  // Repository not found
   if (!contents) {
-    return null;
-  }
-
-  const type = contents.md ? 'md' : null;
-
-  // If the file isn't found, return null.
-  if (type === null) {
     return null;
   }
 
@@ -68,6 +59,7 @@ export async function getPageContent(properties: Properties): Promise<PageConten
     }
   }
 
+  // Assign the default config if one doesn't already exist
   if (!config) {
     config = mergeConfig({});
   }
@@ -77,16 +69,15 @@ export async function getPageContent(properties: Properties): Promise<PageConten
 
   const parsed = matter(raw);
   const frontmatter = mergeFrontmatter(parsed.data);
-  const content = parsed.content;
+  const markdown = parsed.content;
 
   return {
     baseBranch: contents.baseBranch,
     config,
-    type,
     frontmatter,
     headings: [],
     raw,
-    content,
+    markdown,
     flags: {
       hasConfig: !!contents.config,
       hasFrontmatter: Object.keys(parsed.data).length > 0,

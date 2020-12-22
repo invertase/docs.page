@@ -73,6 +73,7 @@ export class Properties {
       githubUrl: `https://github.com/${this.owner}/${this.repository}`,
       debugUrl: `/_debug/${this.base}${this.path}`,
       editUrl: `https://github.com/${this.owner}/${this.repository}/edit/${this.ref}/docs/${this.path}.md`,
+      createUrl: `https://github.com/${this.owner}/${this.repository}/new/${this.ref}/docs/${this.path}`,
       ref: this.ref,
       refType: this.isPullRequest() ? 'pull-request' : 'branch',
       base: this.base,
@@ -95,6 +96,8 @@ export type SlugProperties = {
   debugUrl: string;
   // The URL to edit the current page on GitHub
   editUrl: string;
+  // The URL to create a new page on GitHub
+  createUrl: string;
   // The branch/PR the request is for
   ref: string;
   // The type of reference
@@ -114,6 +117,7 @@ export const SlugPropertiesContext = createContext<SlugProperties>({
   githubUrl: '',
   debugUrl: '',
   editUrl: '',
+  createUrl: '',
   ref: '',
   refType: null,
   path: '',

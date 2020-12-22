@@ -23,14 +23,14 @@ const widthMap: { [key in LayoutType] } = {
 
 export function Layout({ children }: { children: React.ReactNode }) {
   const config = useConfig();
-  const page = usePageContent();
+  const content = usePageContent();
 
-  if (!page || !config) {
-    throw new Error('Layout must be a child of: ConfigContext, ContentContext');
+  if (!content || !config) {
+    throw new Error('Layout must be a child of: ConfigContext, PageContentContext');
   }
 
   // First check the frontmatter for a layout, then fallback to the config
-  const layout = page.frontmatter.layout || config.defaultLayout;
+  const layout = content.frontmatter.layout || config.defaultLayout;
 
   return (
     <>

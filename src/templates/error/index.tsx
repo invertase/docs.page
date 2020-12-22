@@ -1,6 +1,5 @@
 import React from 'react';
 import NextHead from 'next/head';
-import Link from 'next/link';
 
 import { ErrorType, IRenderError } from '../../utils/error';
 import { Footer } from '../homepage/Footer';
@@ -8,7 +7,7 @@ import { Footer } from '../homepage/Footer';
 import { QuickLinks } from './QuickLinks';
 import { Title } from './Title';
 import { DarkModeToggle } from '../../components/DarkModeToggle';
-import { ExternalLink } from '../../components/Link';
+import { Link, ExternalLink } from '../../components/Link';
 
 export * from './ErrorBoundary';
 
@@ -21,7 +20,10 @@ export function Error(error: IRenderError) {
         <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet" />
       </NextHead>
       <div className="py-2 bg-gray-800">
-        <div className="max-w-4xl mx-auto flex justify-end px-2">
+        <div className="max-w-4xl mx-auto flex px-2">
+          <div className="flex-1">
+            <img src="/assets/docs-page-logo.png" alt="docs.page" className="h-7" />
+          </div>
           <DarkModeToggle />
         </div>
       </div>
@@ -94,12 +96,8 @@ export function NotFound({ properties, errorType }: IRenderError) {
         </p>
         <p>
           To get started, create a new <code>.md</code> file on{' '}
-          <ExternalLink
-            href={`https://github.com/${properties.owner}/${properties.repository}/blob/${properties.ref}/docs/${properties.path}.md`}
-          >
-            GitHub
-          </ExternalLink>
-          . If you were expecting a page to be here, you can{' '}
+          <ExternalLink href={properties.createUrl}>GitHub</ExternalLink>. If you were expecting a
+          page to be here, you can{' '}
           <Link href={properties.debugUrl}>
             <a>debug</a>
           </Link>{' '}

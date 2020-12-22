@@ -17,14 +17,14 @@ interface SerializationResponse {
   error?: Error;
 }
 
-export async function mdxSerialize(page: PageContent): Promise<SerializationResponse> {
+export async function mdxSerialize(content: PageContent): Promise<SerializationResponse> {
   const response: SerializationResponse = {
     source: null,
     headings: [],
   };
 
   try {
-    response.source = await serialize(page.content, {
+    response.source = await serialize(content.markdown, {
       mdxOptions: {
         rehypePlugins: [
           // Convert `pre` blogs into prism formatting
@@ -33,11 +33,11 @@ export async function mdxSerialize(page: PageContent): Promise<SerializationResp
           rehypeSlug,
           // If the table of contents is enabled for this page,
           // gather the headings for the current page
-          page.frontmatter.tableOfContents
+          content.frontmatter.tableOfContents
             ? [
                 rehypeHeadings,
                 {
-                  headings: headerDepthToHeaderList(page.config.headerDepth),
+                  headings: headerDepthToHeaderList(content.config.headerDepth),
                   callback: (headings: object[]) => (response.headings = headings),
                 },
               ]

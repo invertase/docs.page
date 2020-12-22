@@ -4,8 +4,8 @@ import { SlugProperties } from './properties';
 import googleAnalytics from '../scripts/google-analytics';
 import { getImageSrc } from '../components/Image';
 
-export function getHeadTags(properties: SlugProperties, page: PageContent) {
-  const { frontmatter, config } = page;
+export function getHeadTags(properties: SlugProperties, content: PageContent) {
+  const { frontmatter, config } = content;
 
   const title = (() => {
     if (!config.name && frontmatter.title) return frontmatter.title;
@@ -29,7 +29,12 @@ export function getHeadTags(properties: SlugProperties, page: PageContent) {
     <meta key="twitter:card" name="twitter:card" content="summary_large_image" />,
   ];
 
-  if (config.noindex || page.flags.isFork || !properties.isBaseBranch || !page.flags.hasConfig) {
+  if (
+    config.noindex ||
+    content.flags.isFork ||
+    !properties.isBaseBranch ||
+    !content.flags.hasConfig
+  ) {
     tags.push(<meta key="noindex" name="robots" content="noindex" />);
   }
 

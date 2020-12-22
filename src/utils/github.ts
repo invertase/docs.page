@@ -265,12 +265,6 @@ type PageContentsQuery = {
     md?: {
       text: string;
     };
-    mdx?: {
-      text: string;
-    };
-    html?: {
-      text: string;
-    };
   };
 };
 
@@ -311,6 +305,7 @@ export async function getGitHubContents(properties: Properties): Promise<Content
     }),
   );
 
+  // An error might be thrown if the repository is not found.
   if (error) {
     console.error(error);
     return null;
