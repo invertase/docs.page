@@ -62,7 +62,7 @@ module.exports = {
             thead: {
               borderWidth: '1px',
             },
-            'thead th': {
+            'thead th, thead th:last-child, thead th:first-child': {
               padding: rem(8),
               fontSize: rem(16),
             },

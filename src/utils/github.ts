@@ -306,8 +306,8 @@ export async function getGitHubContents(properties: Properties): Promise<Content
     `,
       owner: properties.owner,
       repository: properties.repository,
-      config: `${properties.ref}:docs.json`,
-      md: `${properties.ref}:docs/${properties.path}.md`,
+      config: `${properties.ref ?? 'HEAD'}:docs.json`,
+      md: `${properties.ref ?? 'HEAD'}:docs/${properties.path}.md`,
     }),
   );
 

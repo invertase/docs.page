@@ -1,11 +1,11 @@
 import React from 'react';
-import { useEditUrl } from '../hooks';
+import { useSlugProperties } from '../hooks';
 import { DarkModeToggle } from './DarkModeToggle';
 import { Pencil } from './Icons';
 import { ExternalLink } from './Link';
 
 function Footer() {
-  const edit = useEditUrl();
+  const editUrl = useSlugProperties().editUrl;
 
   return (
     <footer className="flex dark:text-white font-mono text-sm">
@@ -20,7 +20,7 @@ function Footer() {
           <DarkModeToggle />
         </div>
       </div>
-      <ExternalLink href={edit} className="flex hover:underline">
+      <ExternalLink href={editUrl} className="flex hover:underline">
         <Pencil size={16} />
         <span className="pl-2">Edit this page</span>
       </ExternalLink>

@@ -136,7 +136,7 @@ Markdown content to generate unmissable call-out boxes:
 
 ```
 :::note
-Content within an admonition can include <strong>HTML</strong> & **Markdown**.
+Content within an admonition can include **Markdown**.
 :::
 
 :::tip Optional Title
@@ -157,7 +157,7 @@ An danger admonition.
 ```
 
 :::note
-Content within an admonition can include <strong>HTML</strong> & **Markdown**.
+Content within an admonition can include **Markdown**.
 :::
 
 :::tip Optional Title

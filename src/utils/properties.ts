@@ -3,7 +3,6 @@ import { PullRequestMetadata } from './github';
 import { hash } from './index';
 
 export const DEFAULT_FILE = 'index';
-export const DEFAULT_BRANCH_REF = 'HEAD';
 export const SPLITTER = '~';
 
 type RefType = null | 'branch' | 'pull-request';
@@ -14,10 +13,11 @@ export class Properties {
   ref: string;
   path: string;
   base: string;
+  isBaseBranch: boolean;
 
   public constructor(params: string[]) {
     let [owner, repository, ...path] = params;
-    let ref = DEFAULT_BRANCH_REF;
+    let ref = null;
 
     // project paths containing a SPLITTER mean a specific branch has been requested
     const chunks = repository.split(SPLITTER);
@@ -46,6 +46,7 @@ export class Properties {
     this.ref = ref;
     this.path = path.length === 0 ? DEFAULT_FILE : path.join('/');
     this.base = base;
+    this.isBaseBranch = !ref;
   }
 
   public setPullRequestMetadata(metadata: PullRequestMetadata) {
@@ -54,17 +55,24 @@ export class Properties {
     this.ref = metadata.ref;
   }
 
+  public setBaseRef(baseRef: string) {
+    this.ref = baseRef;
+    this.base = `/${this.owner}/${this.repository}`;
+    this.isBaseBranch = true;
+  }
+
   public isPullRequest() {
     return /^[0-9]*$/.test(this.ref);
   }
 
   toObject(): SlugProperties {
     return {
-      isBaseBranch: this.ref === DEFAULT_BRANCH_REF,
+      isBaseBranch: this.isBaseBranch,
       owner: this.owner,
       repository: this.repository,
       githubUrl: `https://github.com/${this.owner}/${this.repository}`,
       debugUrl: `/_debug/${this.base}${this.path}`,
+      editUrl: `https://github.com/${this.owner}/${this.repository}/edit/${this.ref}/docs/${this.path}.md`,
       ref: this.ref,
       refType: this.isPullRequest() ? 'pull-request' : 'branch',
       base: this.base,
@@ -85,6 +93,8 @@ export type SlugProperties = {
   githubUrl: string;
   // The URL to debug the page
   debugUrl: string;
+  // The URL to edit the current page on GitHub
+  editUrl: string;
   // The branch/PR the request is for
   ref: string;
   // The type of reference
@@ -103,6 +113,7 @@ export const SlugPropertiesContext = createContext<SlugProperties>({
   repository: '',
   githubUrl: '',
   debugUrl: '',
+  editUrl: '',
   ref: '',
   refType: null,
   path: '',

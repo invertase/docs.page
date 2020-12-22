@@ -33,19 +33,6 @@ export function useNoSSR() {
   return ready;
 }
 
-// Returns a GitHub URL to edit the current page
-export function useEditUrl(): string {
-  const properties = useSlugProperties();
-  const { type, baseBranch } = usePageContent();
-  let ref = properties.ref;
-
-  if (properties.isBaseBranch) {
-    ref = baseBranch;
-  }
-
-  return `${properties.githubUrl}/edit/${ref}/docs/${properties.path}.${type}`;
-}
-
 export function useBodyScrollLock(lock: boolean): void {
   useEffect(() => {
     const el = window.document.body;

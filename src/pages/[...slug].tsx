@@ -97,7 +97,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
   let headings: HeadingNode[] = [];
   let error: RenderError = null;
   let page: PageContent;
-  // console.log('here');
+
   // // Extract the slug properties from the request.
   const properties = new Properties(params.slug as string[]);
 
@@ -119,11 +119,15 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
   page = await getPageContent(properties);
 
   if (!page) {
-    console.error('Page not found');
     error = RenderError.pageNotFound(properties);
   } else if (page.frontmatter.redirect) {
     return redirect(page.frontmatter.redirect, properties);
   } else {
+    // If no property ref has been set, assign the base branch (usually main or master)
+    if (!properties.ref) {
+      properties.setBaseRef(page.baseBranch);
+    }
+    
     const serialization = await mdxSerialize(page);
 
     if (serialization.error) {

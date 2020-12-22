@@ -93,10 +93,9 @@ export function NotFound({ properties, errorType }: IRenderError) {
           No valid file matching the path <code>/{properties.path}</code> could be found.
         </p>
         <p>
-          To get started, create a new <code>.md</code> or <code>.mdx</code> you can create a new
-          file on{' '}
+          To get started, create a new <code>.md</code> file on{' '}
           <ExternalLink
-            href={`https://github.com/${properties.owner}/${properties.repository}/new/${properties.ref}/docs/${properties.path}`}
+            href={`https://github.com/${properties.owner}/${properties.repository}/blob/${properties.ref}/docs/${properties.path}.md`}
           >
             GitHub
           </ExternalLink>

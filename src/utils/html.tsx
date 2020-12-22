@@ -4,7 +4,7 @@ import { SlugProperties } from './properties';
 import googleAnalytics from '../scripts/google-analytics';
 import { getImageSrc } from '../components/Image';
 
-export function getHeadTags(properties: SlugProperties, page?: PageContent) {
+export function getHeadTags(properties: SlugProperties, page: PageContent) {
   const { frontmatter, config } = page;
 
   const title = (() => {
@@ -39,7 +39,7 @@ export function getHeadTags(properties: SlugProperties, page?: PageContent) {
         key="favicon"
         rel="icon"
         type="image/png"
-        href={getImageSrc(properties, page, config.logo)}
+        href={getImageSrc(properties, config.logo)}
       />,
     );
   } else {
