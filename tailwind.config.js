@@ -65,7 +65,6 @@ module.exports = {
             'thead th': {
               padding: rem(8),
               fontSize: rem(16),
-              textAlign: 'center',
             },
             'thead th:not(:last-child), tbody td:not(:last-child)': {
               borderRightWidth: '1px',
@@ -73,9 +72,10 @@ module.exports = {
             'tbody tr, tbody tr:last-child': {
               borderLeftWidth: '1px',
               borderRightWidth: '1px',
+              borderBottomWidth: '1px',
             },
             'tbody tr:nth-child(2n)': {
-              backgroundColor: theme('colors.gray.100'),
+              backgroundColor: theme('colors.gray.50'),
             },
             'tbody td, tbody td:last-child, tbody td:first-child': {
               padding: rem(8),

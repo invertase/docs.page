@@ -20,16 +20,16 @@ Each option undergoes validation, and any invalid value passed will be removed.
 The name of the project. If provided, the name is displayed in a few places throughout the website such
 as the meta title and website header.
 
-|  Key   | Type     | Default |
-| :----: | -------- | ------- |
+| Key    | Type     | Default |
+| ------ | -------- | ------- |
 | `name` | `string` |         |
 
 ### logo
 
 The URL or local repository path to the project logo. If provided, will be used as the favicon and will be displayed in the header.
 
-|  Key   | Type     | Default |
-| :----: | -------- | ------- |
+| Key    | Type     | Default |
+| ------ | -------- | ------- |
 | `logo` | `string` |         |
 
 ### logoDark
@@ -37,24 +37,24 @@ The URL or local repository path to the project logo. If provided, will be used 
 The URL or local repository path to the project logo. If provided, will be displayed in the header when
 Dark Mode is currently enabled.
 
-|    Key     | Type     | Default |
-| :--------: | -------- | ------- |
+| Key        | Type     | Default |
+| ---------- | -------- | ------- |
 | `logoDark` | `string` |         |
 
 ### socialPreview
 
 The URL to the social preview image, used when a URL to the documentation is being shared on social media platforms or Open Graph. Images should be at least 640×320px (1280×640px for best display).
 
-|       Key       | Type     | Default |
-| :-------------: | -------- | ------- |
+| Key             | Type     | Default |
+| --------------- | -------- | ------- |
 | `socialPreview` | `string` |         |
 
 ### twitter
 
 A Twitter username handle. If provided, a Twitter logo will be placed in the header of the website.
 
-|    Key    | Type     | Default |
-| :-------: | -------- | ------- |
+| Key       | Type     | Default |
+| --------- | -------- | ------- |
 | `twitter` | `string` |         |
 
 ### noindex
@@ -62,9 +62,9 @@ A Twitter username handle. If provided, a Twitter logo will be placed in the hea
 Whether or not the website should be indexed. By default, documentation websites are not indexed if no
 `docs.page` is not found.
 
-|    Key    | Type      | Default |
-| :-------: | --------- | ------- |
-| `noindex` | `boolean` | false   |
+| Key       | Type      | Default |
+| --------- | --------- | ------- |
+| `noindex` | `boolean` | `false` |
 
 To learn more about indexing, view the [Advanced documentation](advanced).
 
@@ -73,9 +73,9 @@ To learn more about indexing, view the [Advanced documentation](advanced).
 A color used throughout the website on anchor tags, search and for general highlighting usage. It is
 recommended that the color is vibrant/light. The provided value must be parsable by the [`color`](https://www.npmjs.com/package/color) library.
 
-|    Key    | Type     | Default |
-| :-------: | -------- | ------- |
-| `twitter` | `string` | #00bcd4 |
+| Key       | Type     | Default     |
+| --------- | -------- | ----------- |
+| `twitter` | `string` | `'#00bcd4'` |
 
 ### docsearch
 
@@ -83,14 +83,14 @@ If provided, the `docsearch` value should be an object containing your `apiKey` 
 
 To learn more, [join the DocSearch program](https://docsearch.algolia.com/).
 
-|     Key     | Type        | Default |
-| :---------: | ----------- | ------- |
+| Key         | Type        | Default |
+| ----------- | ----------- | ------- |
 | `docsearch` | `DocSearch` |         |
 
-|  DocSearch  | Type     | Default |
-| :---------: | -------- | ------- |
-|   `appId`   | `string` |         |
-|  `apiKey`   | `string` |         |
+| DocSearch   | Type     | Default |
+| ----------- | -------- | ------- |
+| `appId`     | `string` |         |
+| `apiKey`    | `string` |         |
 | `indexName` | `string` |         |
 
 For example:
@@ -109,14 +109,14 @@ For example:
 
 An array of navigation items. If provided, the links will be displayed in the website header.
 
-|     Key      | Type               | Default |
-| :----------: | ------------------ | ------- |
-| `navigation` | `NavigationItem[]` | []      |
+| Key          | Type               | Default |
+| ------------ | ------------------ | ------- |
+| `navigation` | `NavigationItem[]` | `[]`    |
 
 | NavigationItem | Type     | Default |
-| :------------: | -------- | ------- |
-|      [0]       | `string` |         |
-|      [1]       | `string` |         |
+| -------------- | -------- | ------- |
+| [0]            | `string` |         |
+| [1]            | `string` |         |
 
 The fist item of an item is the title, and the second item is a URL, for example:
 
@@ -135,19 +135,19 @@ An array containing nested sidebar array items. If provided, will be rendered on
 
 A sidebar item can contain an array with two string values, or an array where the first string value is a title and the second value is another nested array (which will be displayed as an expandable list).
 
-|    Key    | Type            | Default |
-| :-------: | --------------- | ------- |
-| `sidebar` | `SidebarItem[]` | []      |
+| Key       | Type            | Default |
+| --------- | --------------- | ------- |
+| `sidebar` | `SidebarItem[]` | `[]`    |
 
 | SidebarItem (1) | Type     | Default |
-| :-------------: | -------- | ------- |
-|       [0]       | `string` |         |
-|       [1]       | `string` |         |
+| --------------- | -------- | ------- |
+| [0]             | `string` |         |
+| [1]             | `string` |         |
 
 | SidebarItem (2) | Type            | Default |
-| :-------------: | --------------- | ------- |
-|       [0]       | `string`        |         |
-|       [1]       | `SidebarItem[]` |         |
+| --------------- | --------------- | ------- |
+| [0]             | `string`        |         |
+| [1]             | `SidebarItem[]` |         |
 
 For example, the following will create a sidebar with a single link and nested expandable sidebar:
 
@@ -170,15 +170,15 @@ For example, the following will create a sidebar with a single link and nested e
 
 The default layout type all pages will be rendered with, can be one of `default`, `wide` or `full`.
 
-|       Key       | Type     | Default     |
-| :-------------: | -------- | ----------- |
+| Key             | Type     | Default     |
+| --------------- | -------- | ----------- |
 | `defaultLayout` | `Layout` | `'default'` |
 
-|  Layout   | Width   |
-| :-------: | ------- |
+| Layout    | Width   |
+| --------- | ------- |
 | `default` | `72rem` |
-|  `wide`   | `80rem` |
-|  `full`   | `100%`  |
+| `wide`    | `80rem` |
+| `full`    | `100%`  |
 
 ### headerDepth
 
@@ -186,9 +186,9 @@ A number representing how deep headers remain important. Headers within the dept
 
 For example, a depth of `4` will handle `h2`, `h3` & `h4` tags.
 
-|      Key      | Type     | Default |
-| :-----------: | -------- | ------- |
-| `headerDepth` | `number` | 3       |
+| Key           | Type     | Default |
+| ------------- | -------- | ------- |
+| `headerDepth` | `number` | `3`     |
 
 ### variables
 
@@ -196,9 +196,9 @@ A deeply nested object which contains values which can be injected on any docume
 
 The [`lodash.get`](https://lodash.com/docs/4.17.15#get) utility is used to extract in-page variables from the provided object.
 
-|     Key     | Type     | Default |
-| :---------: | -------- | ------- |
-| `variables` | `object` | {}      |
+| Key         | Type     | Default |
+| ----------- | -------- | ------- |
+| `variables` | `object` | `{}`    |
 
 Within your Markdown, provide the dot-notated path to the variable, for example:
 
@@ -226,8 +226,8 @@ Current: `{{ versions.current }}`
 
 If provided, the Google Analytics script will be added to all of your documentation pages. Tags should start with `G-`.
 
-|        Key        | Type     | Default |
-| :---------------: | -------- | ------- |
+| Key               | Type     | Default |
+| ----------------- | -------- | ------- |
 | `googleAnalytics` | `string` |         |
 
 ### zoomImages
@@ -236,17 +236,17 @@ A boolean value representing whether images are zoomable by default.
 
 Note; If using the `<Image />` component, the `zoom` property provided will override this value.
 
-|     Key      | Type      | Default |
-| :----------: | --------- | ------- |
-| `zoomImages` | `boolean` | false   |
+| Key          | Type      | Default |
+| ------------ | --------- | ------- |
+| `zoomImages` | `boolean` | `false` |
 
 ### paths
 
 An array of paths which are used for repositories which have opted-in static page generation.
 
-|   Key   | Type       | Default |
-| :-----: | ---------- | ------- |
-| `paths` | `string[]` | []      |
+| Key     | Type       | Default |
+| ------- | ---------- | ------- |
+| `paths` | `string[]` | `[]`    |
 
 For example, to statically generate pages for the `docs.page` project:
 

@@ -279,14 +279,13 @@ type Contents = {
   baseBranch: string;
   config?: string;
   md?: string;
-  mdx?: string;
 };
 
 export async function getGitHubContents(properties: Properties): Promise<Contents | null> {
   const [error, response] = await A2A<PageContentsQuery>(
     GithubGQLClient({
       query: `
-      query RepositoryConfig($owner: String!, $repository: String!, $config: String!, $md: String!, $mdx: String!) {
+      query RepositoryConfig($owner: String!, $repository: String!, $config: String!, $md: String!) {
         repository(owner: $owner, name: $repository) {
           baseBranch: defaultBranchRef {
             name
@@ -302,11 +301,6 @@ export async function getGitHubContents(properties: Properties): Promise<Content
               text
             }
           }
-          mdx: object(expression: $mdx) {
-            ... on Blob {
-              text
-            }
-          }
         }
       }
     `,
@@ -314,7 +308,6 @@ export async function getGitHubContents(properties: Properties): Promise<Content
       repository: properties.repository,
       config: `${properties.ref}:docs.json`,
       md: `${properties.ref}:docs/${properties.path}.md`,
-      mdx: `${properties.ref}:docs/${properties.path}.mdx`,
     }),
   );
 
@@ -328,6 +321,5 @@ export async function getGitHubContents(properties: Properties): Promise<Content
     baseBranch: response.repository.baseBranch.name,
     config: response.repository.config?.text,
     md: response.repository.md?.text,
-    mdx: response.repository.mdx?.text,
   };
 }

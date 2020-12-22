@@ -135,9 +135,8 @@ export default function IndexPage() {
           <div className="flex-1">
             <p className="text-lg font-thin px-3">
               Create an <code className="text-blue-500">{`index.md`}</code> file at the root of your{' '}
-              <code className="text-blue-500">docs</code> directory. docs.page also supports{' '}
-              <code className="text-blue-500">.mdx</code> and{' '}
-              <code className="text-blue-500">.html</code> file extensions too!
+              <code className="text-blue-500">/docs</code> directory. docs.page supports nested
+              pages based on your directory structure of the directory.
             </p>
             <p className="mt-4 text-lg font-thin px-3">
               Start by writing some <a href="https://www.markdownguide.org/">Markdown</a> content.

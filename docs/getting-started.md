@@ -23,7 +23,8 @@ https://docs.page/acme/awesome-project
 
 The project supports rendering all [GitHub-flavored Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
 
-Under the hood, [MDX](https://github.com/mdx-js/mdx) is enabled which allows the use of [Custom Components](/components).
+Under the hood, [MDX](https://github.com/mdx-js/mdx) is enabled which allows the use of [Custom Components](/components). Each Markdown
+page also supports [Frontmatter](/frontmatter), allowing you to customize the metadata of each specific page.
 
 ## Configuring your documentation
 

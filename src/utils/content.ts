@@ -8,13 +8,13 @@ import { Properties } from './properties';
 import { getBoolean, getString } from '.';
 import { getGitHubContents } from './github';
 
-export type FileType = null | 'md' | 'mdx';
+export type FileType = null | 'md';
 
 export type HeadingNode = {
   id: string;
   title: string;
   rank: number;
-}
+};
 
 export type Frontmatter = {
   title: string;
@@ -50,11 +50,7 @@ export async function getPageContent(properties: Properties): Promise<PageConten
     return null;
   }
 
-  const type = (() => {
-    if (contents.md) return 'md';
-    if (contents.mdx) return 'mdx';
-    return null;
-  })();
+  const type = contents.md ? 'md' : null;
 
   // If the file isn't found, return null.
   if (type === null) {
@@ -76,25 +72,12 @@ export async function getPageContent(properties: Properties): Promise<PageConten
     config = mergeConfig({});
   }
 
-  // Get the raw file contents
-  let raw = contents.md ?? contents.mdx ?? '';
-
-  // Only MD/MDX pages can have frontmatter
-  let hasFrontmatter = false;
-  let frontmatter: Frontmatter;
-  let content = '';
-  if (type === 'md' || type === 'mdx') {
-    const parsed = matter(raw);
-    hasFrontmatter = true;
-    frontmatter = mergeFrontmatter(parsed.data ?? {});
-    content = parsed.content;
-  } else {
-    frontmatter = mergeFrontmatter({});
-    content = raw;
-  }
-
   // Find & Replace any "{{ variable }}" values within the content
-  content = replaceVariables(config.variables, content);
+  const raw = replaceVariables(config.variables, contents.md ?? '');
+
+  const parsed = matter(raw);
+  const frontmatter = mergeFrontmatter(parsed.data);
+  const content = parsed.content;
 
   return {
     baseBranch: contents.baseBranch,
@@ -106,7 +89,7 @@ export async function getPageContent(properties: Properties): Promise<PageConten
     content,
     flags: {
       hasConfig: !!contents.config,
-      hasFrontmatter,
+      hasFrontmatter: Object.keys(parsed.data).length > 0,
       isFork: contents.isFork,
     },
   };

@@ -5,7 +5,7 @@ description: Using custom components with docs.page
 
 # Custom Components
 
-The docs.page project is built on-top of [MDX](https://github.com/mdx-js/mdx). MDX allows 
+The docs.page project is built on-top of [MDX](https://github.com/mdx-js/mdx). MDX allows
 custom React components to be written within the Markdown content and rendered.
 
 docs.page provides some useful components to help address common documentation trends.
@@ -31,15 +31,15 @@ The `Tabs` component allows you to specify content which can be rendered within 
 ```
 
 <Tabs
-  defaultValue="apple"
-  values={[
-    {label: 'Apple', value: 'apple'},
-    {label: 'Orange', value: 'orange'},
-    {label: 'Banana', value: 'banana'},
-  ]}>
-  <TabItem value="apple">This is an apple 🍎</TabItem>
-  <TabItem value="orange">This is an orange 🍊</TabItem>
-  <TabItem value="banana">This is a banana 🍌</TabItem>
+defaultValue="apple"
+values={[
+{label: 'Apple', value: 'apple'},
+{label: 'Orange', value: 'orange'},
+{label: 'Banana', value: 'banana'},
+]}>
+<TabItem value="apple">This is an apple 🍎</TabItem>
+<TabItem value="orange">This is an orange 🍊</TabItem>
+<TabItem value="banana">This is a banana 🍌</TabItem>
 </Tabs>
 
 ### Synchronization
@@ -47,29 +47,29 @@ The `Tabs` component allows you to specify content which can be rendered within 
 The component also allows you to synchronize selected tab choices by providing a `groupId` property:
 
 <Tabs
-  groupId="fruit"
-  defaultValue="apple"
-  values={[
-    {label: 'Apple', value: 'apple'},
-    {label: 'Orange', value: 'orange'},
-    {label: 'Banana', value: 'banana'},
-  ]}>
-  <TabItem value="apple">This is an apple 🍎</TabItem>
-  <TabItem value="orange">This is an orange 🍊</TabItem>
-  <TabItem value="banana">This is a banana 🍌</TabItem>
+groupId="fruit"
+defaultValue="apple"
+values={[
+{label: 'Apple', value: 'apple'},
+{label: 'Orange', value: 'orange'},
+{label: 'Banana', value: 'banana'},
+]}>
+<TabItem value="apple">This is an apple 🍎</TabItem>
+<TabItem value="orange">This is an orange 🍊</TabItem>
+<TabItem value="banana">This is a banana 🍌</TabItem>
 </Tabs>
 
 <Tabs
-  groupId="fruit"
-  defaultValue="apple"
-  values={[
-    {label: 'Apple', value: 'apple'},
-    {label: 'Orange', value: 'orange'},
-    {label: 'Banana', value: 'banana'},
-  ]}>
-  <TabItem value="apple">This is an apple 🍎</TabItem>
-  <TabItem value="orange">This is an orange 🍊</TabItem>
-  <TabItem value="banana">This is a banana 🍌</TabItem>
+groupId="fruit"
+defaultValue="apple"
+values={[
+{label: 'Apple', value: 'apple'},
+{label: 'Orange', value: 'orange'},
+{label: 'Banana', value: 'banana'},
+]}>
+<TabItem value="apple">This is an apple 🍎</TabItem>
+<TabItem value="orange">This is an orange 🍊</TabItem>
+<TabItem value="banana">This is a banana 🍌</TabItem>
 </Tabs>
 
 ## `<Image />`
@@ -128,3 +128,50 @@ The `YouTube` component renders an embedded YouTube video by proving a video id:
 ```
 
 <YouTube id="dQw4w9WgXcQ" />
+
+## Admonitions
+
+[Admonitions](https://github.com/elviswolcott/remark-admonitions) are supported out of the box. Simply add the following
+Markdown content to generate unmissable call-out boxes:
+
+```
+:::note
+Content within an admonition can include <strong>HTML</strong> & **Markdown**.
+:::
+
+:::tip Optional Title
+This useful tip admonition has an option title.
+:::
+
+:::info
+An information admonition.
+:::
+
+:::caution
+An caution admonition.
+:::
+
+:::danger
+An danger admonition.
+:::
+```
+
+:::note
+Content within an admonition can include <strong>HTML</strong> & **Markdown**.
+:::
+
+:::tip Optional Title
+This useful tip admonition has an option title.
+:::
+
+:::info
+An information admonition.
+:::
+
+:::caution
+An caution admonition.
+:::
+
+:::danger
+An danger admonition.
+:::
