@@ -249,7 +249,7 @@ export async function getPullRequestMetadata(
   return {
     owner: response.repository.pullRequest.owner.login,
     repository: response.repository.pullRequest.repository.name,
-    ref: response.repository.pullRequest.ref.name,
+    ref: response.repository.pullRequest.ref?.name,
   };
 }
 
