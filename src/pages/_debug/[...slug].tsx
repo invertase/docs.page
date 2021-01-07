@@ -1,10 +1,13 @@
 import React, { useCallback, useState } from 'react';
-import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
-import { Branch, GitHub, Menu, MenuOpenRight, PullRequest, Twitter } from '../../components/Icons';
+import { GetStaticPaths, GetStaticProps } from 'next';
+import { GitHub } from '../../components/Icons';
 import Link from 'next/link';
 import NextHead from 'next/head';
 import { useRouter } from 'next/router';
 import cx from 'classnames';
+
+import { Error, ErrorBoundary } from '../../templates/error';
+import { IRenderError, redirect, RenderError } from '../../utils/error';
 
 import { DarkModeToggle } from '../../components/DarkModeToggle';
 import { ExternalLink } from '../../components/Link';
@@ -32,8 +35,7 @@ const tabs: { [key in Tab]: string } = {
   frontmatter: 'Frontmatter',
 };
 
-export default function DebugPage({ properties, page, error, ...rest }) {
-  console.log('Props >>>>', properties, page, rest);
+export default function DebugPage({ properties, page, error }) {
   const [tab, setTab] = useState<Tab>('general');
 
   const onTabSwitch = useCallback((activeTab: Tab) => {
@@ -293,7 +295,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 
   return {
-    paths,
+    paths: paths.map($ => `/_debug${$}`),
     fallback: true,
   };
 };
