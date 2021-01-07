@@ -1,9 +1,26 @@
 import React, { useCallback, useState } from 'react';
+import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
+import { Branch, GitHub, Menu, MenuOpenRight, PullRequest, Twitter } from '../../components/Icons';
+import Link from 'next/link';
 import NextHead from 'next/head';
+import { useRouter } from 'next/router';
 import cx from 'classnames';
 
 import { DarkModeToggle } from '../../components/DarkModeToggle';
 import { ExternalLink } from '../../components/Link';
+import { CustomDomain, CustomDomainContext } from '../../utils/domain';
+import { SlugProperties, SlugPropertiesContext, Properties } from '../../utils/properties';
+import { mdxSerialize } from '../../utils/mdx-serialize';
+
+import { getPageContent, PageContent, HeadingNode } from '../../utils/content';
+import { isProduction } from '../../utils';
+import {
+  getPullRequestMetadata,
+  getRepositoriesPaths,
+  getRepositoryList,
+} from '../../utils/github';
+
+import { Loading } from '../../templates/Loading';
 
 type Tab = 'general' | 'properties' | 'content' | 'config' | 'frontmatter';
 
@@ -15,12 +32,23 @@ const tabs: { [key in Tab]: string } = {
   frontmatter: 'Frontmatter',
 };
 
-export default function DebugPage() {
+export default function DebugPage({ properties, page, error, ...rest }) {
+  console.log('Props >>>>', properties, page, rest);
   const [tab, setTab] = useState<Tab>('general');
 
   const onTabSwitch = useCallback((activeTab: Tab) => {
     setTab(activeTab);
   }, []);
+
+  const { isFallback } = useRouter();
+
+  if (isFallback) {
+    return <Loading />;
+  }
+
+  if (error) {
+    return <Error {...error} />;
+  }
 
   return (
     <>
@@ -30,7 +58,7 @@ export default function DebugPage() {
         <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />
       </NextHead>
       <header className="bg-gray-800 dark:bg-gray-900">
-        <div className="max-w-4xl mx-auto flex h-16 py-4">
+        <div className="flex h-16 max-w-4xl py-4 mx-auto">
           <div className="flex-1">
             <img src="/assets/docs-page-logo.png" alt="docs.page" className="max-h-full" />
           </div>
@@ -38,18 +66,18 @@ export default function DebugPage() {
         </div>
       </header>
       <section className="max-w-4xl mx-auto mt-24">
-        <h1 className="dark:text-white text-5xl font-extrabold">Debug Mode</h1>
+        <h1 className="text-5xl font-extrabold dark:text-white">Debug Mode</h1>
         <div className="my-6">
-          <button className="text-sm text-white bg-green-500 px-3 py-1 rounded-lg mr-2">
+          <button className="px-3 py-1 mr-2 text-sm text-white bg-green-500 rounded-lg">
             No Errors
           </button>
-          <button className="text-sm text-white bg-green-500 px-3 py-1 rounded-lg mr-2">
+          <button className="px-3 py-1 mr-2 text-sm text-white bg-green-500 rounded-lg">
             Valid Config
           </button>
-          <button className="text-sm text-white bg-green-500 px-3 py-1 rounded-lg mr-2">
+          <button className="px-3 py-1 mr-2 text-sm text-white bg-green-500 rounded-lg">
             Forked
           </button>
-          <button className="text-sm text-white bg-green-500 px-3 py-1 rounded-lg mr-2">
+          <button className="px-3 py-1 mr-2 text-sm text-white bg-green-500 rounded-lg">
             Indexed
           </button>
         </div>
@@ -61,7 +89,7 @@ export default function DebugPage() {
             <select
               id="selected-tab"
               name="selected-tab"
-              className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm rounded-md"
+              className="block w-full py-2 pl-3 pr-10 mt-1 text-base border-gray-300 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 sm:text-sm"
             >
               {Object.entries(tabs).map(([key, value]) => (
                 <option key={key}>{value}</option>
@@ -72,7 +100,7 @@ export default function DebugPage() {
         <div className="hidden desktop:block">
           <div className="mt-6">
             <div className="border-b border-gray-200">
-              <nav className="-mb-px flex dark:text-white space-x-8">
+              <nav className="flex -mb-px space-x-8 dark:text-white">
                 {Object.entries(tabs).map(([key, value]) => (
                   <div
                     key={key}
@@ -96,7 +124,13 @@ export default function DebugPage() {
             </div>
           </div>
         </div>
-        <div className="py-8 dark:text-white">{tab === 'general' && <General />}</div>
+        <div className="py-8 dark:text-white">
+          {tab === 'general' && <GeneralTab properties={properties} />}
+          {tab === 'properties' && <PropertiesTab properties={properties} />}
+          {tab === 'content' && <ContentTab properties={page.content} />}
+          {tab === 'config' && <ConfigTab properties={page.config} />}
+          {tab === 'frontmatter' && <FrontMatterTab properties={page.frontmatter} />}
+        </div>
       </section>
     </>
   );
@@ -112,7 +146,7 @@ function Row({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex py-4 px-4 border-b dark:border-gray-700">
+    <div className="flex px-4 py-4 border-b dark:border-gray-700">
       <div className="w-1/2 font-semibold">{title}</div>
       <div className="w-1/2">
         {!!href && <ExternalLink href={href}>{children}</ExternalLink>}
@@ -122,24 +156,211 @@ function Row({
   );
 }
 
-function General() {
+function ActiveButton({ value }: { value: string }) {
+  const activeStyle = value ? 'bg-green-500' : 'bg-red-500';
+  const title = value ? 'Active' : 'Inactive';
+  return (
+    <button className={`px-3 py-1 mr-2 text-sm text-white ${activeStyle} rounded-lg`}>
+      {title}
+    </button>
+  );
+}
+
+function GeneralTab({ properties }) {
   return (
     <div className="">
       <Row title="Owner">
-        <code>invertase</code>
+        <code>{properties.owner}</code>
       </Row>
       <Row title="Repository">
-        <code>melos</code>
-      </Row>
-      <Row title="Ref">
-        <code>docs-testing</code>
-      </Row>
-      <Row title="Ref Type">
-        <code>branch</code>
+        <code>{properties.repository}</code>
       </Row>
     </div>
   );
 }
+
+function PropertiesTab({ properties }) {
+  return (
+    <div className="">
+      <Row title="Ref">
+        <code>{properties.ref}</code>
+      </Row>
+      <Row title="Ref Type">
+        <code>{properties.refType}</code>
+      </Row>
+      <Row title="Hash">
+        <code>{properties?.hash}</code>
+      </Row>
+      <Row title="Github Url">
+        <Link href={properties?.githubUrl}>
+          <code className="flex space-x-4 cursor-pointer">
+            <GitHub size={26} className="text-black dark:text-white hover:opacity-80" />
+            <span>{properties?.githubUrl}</span>
+          </code>
+        </Link>
+      </Row>
+      <Row title="Base Branch">
+        <ActiveButton value={properties.isBaseBranch} />
+      </Row>
+    </div>
+  );
+}
+
+function ContentTab({ properties }) {
+  return <div className="">{properties}</div>;
+}
+
+function ConfigTab({ properties }) {
+  const mapItems = $ => {
+    if (!$.length) return 'n/a';
+
+    return $.map(([title]) => title).join(', ');
+  };
+
+  return (
+    <div className="">
+      <Row title="Logo">
+        <code>{properties.logo || 'n/a'}</code>
+      </Row>
+      <Row title="Name">
+        <code>{properties.name}</code>
+      </Row>
+      <Row title="Default Layout">
+        <code>{properties.defaultLayout}</code>
+      </Row>
+      <Row title="Header Depth">
+        <code>{properties.headerDepth}</code>
+      </Row>
+      <Row title="Theme">
+        <code className="flex space-x-4">
+          <span>{properties.theme}</span>
+          <button className="p-3" style={{ backgroundColor: properties.theme }}></button>
+        </code>
+      </Row>
+      <Row title="Navigation">{mapItems(properties.navigation)}</Row>
+      <Row title="Sidebar">{mapItems(properties.sidebar)}</Row>
+      <Row title="Google Analyrics">
+        <ActiveButton value={properties.googleAnalytics} />
+      </Row>
+      <Row title="Zoom Images">
+        <ActiveButton value={properties.zoomImages} />
+      </Row>
+      <Row title="No Index">
+        <ActiveButton value={properties.noindex} />
+      </Row>
+    </div>
+  );
+}
+
+function FrontMatterTab({ properties }) {
+  return (
+    <div className="">
+      <Row title="Title">
+        <code>{properties.title}</code>
+      </Row>
+      <Row title="Description">
+        <code>{properties.description}</code>
+      </Row>
+
+      <Row title="Redirect">
+        <code>{properties.redirect || 'n/a'}</code>
+      </Row>
+      <Row title="layout">
+        <code>{properties.layout || 'n/a'}</code>
+      </Row>
+      <Row title="Image">
+        <code>{properties.image || 'n/a'}</code>
+      </Row>
+      <Row title="Table of contents">
+        <ActiveButton value={properties.tableOfContents} />
+      </Row>
+      <Row title="Sidebar">
+        <ActiveButton value={properties.sidebar} />
+      </Row>
+    </div>
+  );
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  let paths = [];
+
+  // Since this call can be fairly large, only run it on production
+  // and let the development pages fallback each time.
+  if (isProduction()) {
+    const repositories = await getRepositoryList();
+    paths = await getRepositoriesPaths(repositories);
+    console.info(`- gathered ${paths.length} static pages.`);
+  }
+
+  return {
+    paths,
+    fallback: true,
+  };
+};
+
+type StaticProps = {
+  domain: CustomDomain;
+  properties: SlugProperties;
+  headings: HeadingNode[];
+  source?: string;
+  page?: PageContent;
+  error?: IRenderError;
+};
+
+export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) => {
+  let source = null;
+  let headings: HeadingNode[] = [];
+  let error: RenderError = null;
+  let page: PageContent;
+  // console.log('here');
+  // // Extract the slug properties from the request.
+  const properties = new Properties(params.slug as string[]);
+
+  // // If the ref looks like a PR, update the details to point towards
+  // // the PR owner (which might be a different repo)
+  if (properties.isPullRequest()) {
+    const metadata = await getPullRequestMetadata(
+      properties.owner,
+      properties.repository,
+      parseInt(properties.ref),
+    );
+
+    // If a PR was found, update the property metadata
+    if (metadata) {
+      properties.setPullRequestMetadata(metadata);
+    }
+  }
+
+  page = await getPageContent(properties);
+
+  if (!page) {
+    console.error('Page not found');
+    error = RenderError.pageNotFound(properties);
+  } else if (page.frontmatter.redirect) {
+    return redirect(page.frontmatter.redirect, properties);
+  } else {
+    const serialization = await mdxSerialize(page);
+
+    if (serialization.error) {
+      error = RenderError.serverError(properties);
+    } else {
+      source = serialization.source;
+      page.headings = serialization.headings as HeadingNode[];
+    }
+  }
+
+  return {
+    props: {
+      domain: null, // await getCustomDomain(properties),
+      properties: properties.toObject(),
+      source,
+      headings,
+      page,
+      error: error?.toObject() ?? null,
+    },
+    revalidate: 30,
+  };
+};
 
 // import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 // import { getPageContent, PageContent } from '../../utils/content';
