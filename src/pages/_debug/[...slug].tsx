@@ -6,7 +6,7 @@ import NextHead from 'next/head';
 import { useRouter } from 'next/router';
 import cx from 'classnames';
 
-import { Error, ErrorBoundary } from '../../templates/error';
+import { Error } from '../../templates/error';
 import { IRenderError, redirect, RenderError } from '../../utils/error';
 
 import { DarkModeToggle } from '../../components/DarkModeToggle';
@@ -70,18 +70,25 @@ export default function DebugPage({ properties, page, error }) {
       <section className="max-w-4xl mx-auto mt-24">
         <h1 className="text-5xl font-extrabold dark:text-white">Debug Mode</h1>
         <div className="my-6">
-          <button className="px-3 py-1 mr-2 text-sm text-white bg-green-500 rounded-lg">
-            No Errors
-          </button>
-          <button className="px-3 py-1 mr-2 text-sm text-white bg-green-500 rounded-lg">
-            Valid Config
-          </button>
-          <button className="px-3 py-1 mr-2 text-sm text-white bg-green-500 rounded-lg">
-            Forked
-          </button>
-          <button className="px-3 py-1 mr-2 text-sm text-white bg-green-500 rounded-lg">
-            Indexed
-          </button>
+          <StatusButton successText="No errors" failedText="Errors found" value={!error} />
+
+          <StatusButton
+            successText="Valid config"
+            failedText="Invalid config"
+            value={page.flags.hasConfig}
+          />
+
+          {page.flags.isFork && (
+            <button className="px-3 py-1 mr-2 text-sm text-white bg-green-500 rounded-lg">
+              Forked
+            </button>
+          )}
+
+          <StatusButton
+            successText="Indexed"
+            failedText="Not indexed"
+            value={!page.config.noIndex}
+          />
         </div>
         <div className="desktop:hidden">
           <div className="mt-6">
@@ -158,9 +165,17 @@ function Row({
   );
 }
 
-function ActiveButton({ value }: { value: string }) {
+function StatusButton({
+  value,
+  successText,
+  failedText,
+}: {
+  value: any;
+  successText: string;
+  failedText: string;
+}) {
   const activeStyle = value ? 'bg-green-500' : 'bg-red-500';
-  const title = value ? 'Active' : 'Inactive';
+  const title = value ? successText : failedText;
   return (
     <button className={`px-3 py-1 mr-2 text-sm text-white ${activeStyle} rounded-lg`}>
       {title}
@@ -202,7 +217,7 @@ function PropertiesTab({ properties }) {
         </Link>
       </Row>
       <Row title="Base Branch">
-        <ActiveButton value={properties.isBaseBranch} />
+        <StatusButton successText="Active" failedText="InActive" value={properties.isBaseBranch} />
       </Row>
     </div>
   );
@@ -242,13 +257,17 @@ function ConfigTab({ properties }) {
       <Row title="Navigation">{mapItems(properties.navigation)}</Row>
       <Row title="Sidebar">{mapItems(properties.sidebar)}</Row>
       <Row title="Google Analyrics">
-        <ActiveButton value={properties.googleAnalytics} />
+        <StatusButton
+          successText="Active"
+          failedText="InActive"
+          value={properties.googleAnalytics}
+        />
       </Row>
       <Row title="Zoom Images">
-        <ActiveButton value={properties.zoomImages} />
+        <StatusButton successText="Active" failedText="InActive" value={properties.zoomImages} />
       </Row>
       <Row title="No Index">
-        <ActiveButton value={properties.noindex} />
+        <StatusButton successText="Active" failedText="InActive" value={properties.noindex} />
       </Row>
     </div>
   );
@@ -274,10 +293,14 @@ function FrontMatterTab({ properties }) {
         <code>{properties.image || 'n/a'}</code>
       </Row>
       <Row title="Table of contents">
-        <ActiveButton value={properties.tableOfContents} />
+        <StatusButton
+          successText="Active"
+          failedText="InActive"
+          value={properties.tableOfContents}
+        />
       </Row>
       <Row title="Sidebar">
-        <ActiveButton value={properties.sidebar} />
+        <StatusButton successText="Active" failedText="InActive" value={properties.sidebar} />
       </Row>
     </div>
   );
