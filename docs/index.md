@@ -21,7 +21,7 @@ GitHub repository. Features include:
 - GitHub Pull Request bot for previewing automation.
 - Dark / Light mode theme support.
 - [MDX](https://github.com/mdx-js/mdx) components such as Tabs (useful for projects with multiple languages).
-- Server Side Rendered (SSR) pages (powered by [Next.js](https://nextjs.org/) & [Vervel](https://vercel.com)).
+- Server Side Rendered (SSR) pages (powered by [Next.js](https://nextjs.org/) & [Vercel](https://vercel.com)).
 - Support for search via [Docsearch](https://docsearch.algolia.com/).
 - Managing common project variables.
 - Many [configurable](https://docs.page/invertase/docs.page/configuration) options, such as sidebars, Google Analytics, theming and more.
