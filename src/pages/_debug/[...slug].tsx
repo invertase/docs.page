@@ -4,19 +4,31 @@ import cx from 'classnames';
 
 import { DarkModeToggle } from '../../components/DarkModeToggle';
 import { ExternalLink } from '../../components/Link';
+import { Properties, SlugProperties } from '../../utils/properties';
+import { IRenderError, RenderError } from '../../utils/error';
+import { Frontmatter, getPageContent, HeadingNode, PageContent } from '../../utils/content';
+import { Config } from '../../utils/config';
+import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
+import { getGitHubContents, getPullRequestMetadata } from '../../utils/github';
+import { mdxSerialize } from '../../utils/mdx-serialize';
+import { Pill } from '../../components/Pill';
+import { useRouter } from 'next/router';
 
-type Tab = 'general' | 'properties' | 'content' | 'config' | 'frontmatter';
+type Tab = 'overview' | 'content' | 'config' | 'frontmatter';
 
 const tabs: { [key in Tab]: string } = {
-  general: 'General',
-  properties: 'Properties',
+  overview: 'Overview',
   content: 'Content',
   config: 'Config',
   frontmatter: 'Frontmatter',
 };
 
-export default function DebugPage() {
-  const [tab, setTab] = useState<Tab>('general');
+export default function DebugPage({
+  error,
+  content,
+}: InferGetStaticPropsType<typeof getStaticProps>) {
+  const isFallback = useRouter().isFallback;
+  const [tab, setTab] = useState<Tab>('overview');
 
   const onTabSwitch = useCallback((activeTab: Tab) => {
     setTab(activeTab);
@@ -39,19 +51,21 @@ export default function DebugPage() {
       </header>
       <section className="max-w-4xl mx-auto mt-24">
         <h1 className="dark:text-white text-5xl font-extrabold">Debug Mode</h1>
-        <div className="my-6">
-          <button className="text-sm text-white bg-green-500 px-3 py-1 rounded-lg mr-2">
-            No Errors
-          </button>
-          <button className="text-sm text-white bg-green-500 px-3 py-1 rounded-lg mr-2">
-            Valid Config
-          </button>
-          <button className="text-sm text-white bg-green-500 px-3 py-1 rounded-lg mr-2">
-            Forked
-          </button>
-          <button className="text-sm text-white bg-green-500 px-3 py-1 rounded-lg mr-2">
-            Indexed
-          </button>
+        <div
+          className={cx('my-6 h-8 transition-opacity', {
+            'opacity-0': isFallback,
+            'opacity-100': !isFallback,
+          })}
+        >
+          {!isFallback && (
+            <>
+              <Pill type="error" disabled={!!error}>
+                Page has Errors
+              </Pill>
+              {content?.flags.isFork === true && <Pill type="warn">Page is a fork</Pill>}
+              <Pill type={content?.flags.isIndexable ? 'success' : 'warn'}>{content?.flags.isIndexable ? 'Indexable' : 'Not Indexable'}</Pill>
+            </>
+          )}
         </div>
         <div className="desktop:hidden">
           <div className="mt-6">
@@ -96,7 +110,7 @@ export default function DebugPage() {
             </div>
           </div>
         </div>
-        <div className="py-8 dark:text-white">{tab === 'general' && <General />}</div>
+        <div className="py-8 dark:text-white">{tab === 'overview' && <Overview />}</div>
       </section>
     </>
   );
@@ -122,7 +136,7 @@ function Row({
   );
 }
 
-function General() {
+function Overview() {
   return (
     <div className="">
       <Row title="Owner">
@@ -140,6 +154,70 @@ function General() {
     </div>
   );
 }
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: true,
+  };
+};
+
+type StaticProps = {
+  properties: SlugProperties;
+  error?: IRenderError;
+  content?: PageContent;
+};
+
+export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) => {
+  const properties = new Properties(params.slug as string[]);
+  let error: RenderError = null;
+  let content: PageContent = null;
+
+  const isPullRequest = properties.isPullRequest();
+
+  if (isPullRequest) {
+    const metadata = await getPullRequestMetadata(
+      properties.owner,
+      properties.repository,
+      parseInt(properties.ref),
+    );
+
+    // If a PR was found, update the property metadata
+    if (metadata) {
+      properties.setPullRequestMetadata(metadata);
+    }
+  }
+
+  content = await getPageContent(properties);
+
+  if (!content) {
+    error = RenderError.repositoryNotFound(properties);
+  } else {
+    if (!properties.ref) {
+      properties.setBaseRef(content.baseBranch);
+    }
+
+    if (!content.markdown) {
+      error = RenderError.pageNotFound(properties);
+    } else {
+      const serialization = await mdxSerialize(content);
+
+      if (serialization.error) {
+        error = RenderError.serverError(properties);
+      } else {
+        content.headings = serialization.headings as HeadingNode[];
+      }
+    }
+  }
+
+  return {
+    props: {
+      properties: properties.toObject(),
+      error: error?.toObject() ?? null,
+      content,
+    },
+  };
+};
 
 // import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 // import { getPageContent, PageContent } from '../../utils/content';

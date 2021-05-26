@@ -4,8 +4,16 @@ import Highlight, { Language, defaultProps } from 'prism-react-renderer';
 import CopyToClipboard from 'react-copy-to-clipboard';
 
 import dracula from 'prism-react-renderer/themes/palenight';
-// import Prism from 'prismjs';
-// import('prismjs/plugins/line-numbers/prism-line-numbers');
+
+import Prism from "prism-react-renderer/prism";
+
+// @ts-ignore
+(typeof global !== "undefined" ? global : window).Prism = Prism;
+
+require("prismjs/components/prism-java");
+require("prismjs/components/prism-swift");
+require("prismjs/components/prism-kotlin");
+require("prismjs/components/prism-dart");
 
 export interface PreProps extends React.HTMLProps<HTMLPreElement> {
   lang: Language;

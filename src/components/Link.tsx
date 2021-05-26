@@ -17,8 +17,8 @@ import { useRouter } from 'next/router';
  * prebuilt at build time.
  */
 export function Link(props: React.HTMLProps<HTMLAnchorElement>) {
-  const router = useRouter();
-  const customDomain = useCustomDomain();
+  // const router = useRouter();
+  // const customDomain = useCustomDomain();
   const properties = useSlugProperties();
 
   if (isHashLink(props.href)) {

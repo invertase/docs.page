@@ -7,7 +7,8 @@ const rem = px => `${round(px / 16)}rem`;
 
 module.exports = {
   darkMode: 'class',
-  purge: ['./src/**/*.tsx', './src/**/*.ts', '.src/**/*.css'],
+  mode: 'jit',
+  purge: ['./src/**/*.{tsx,ts,css}'],
   theme: {
     rotate: {
       270: '270deg',

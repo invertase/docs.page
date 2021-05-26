@@ -28,13 +28,13 @@ export type PageContent = {
   baseBranch: string;
   config: Config;
   frontmatter: Frontmatter;
-  raw: string;
   markdown: string;
   headings: HeadingNode[];
   flags: {
     hasConfig: boolean;
     hasFrontmatter: boolean;
     isFork: boolean;
+    isIndexable: boolean;
   };
 };
 
@@ -76,12 +76,17 @@ export async function getPageContent(properties: Properties): Promise<PageConten
     config,
     frontmatter,
     headings: [],
-    raw,
     markdown,
     flags: {
       hasConfig: !!contents.config,
       hasFrontmatter: Object.keys(parsed.data).length > 0,
       isFork: contents.isFork,
+      isIndexable:
+        !!contents.md &&
+        !config.noindex &&
+        !contents.isFork &&
+        properties.isBaseBranch &&
+        !!contents.config,
     },
   };
 }

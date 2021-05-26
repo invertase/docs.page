@@ -98,11 +98,11 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
   let error: RenderError = null;
   let content: PageContent;
 
-  // // Extract the slug properties from the request.
+  // Extract the slug properties from the request.
   const properties = new Properties(params.slug as string[]);
 
-  // // If the ref looks like a PR, update the details to point towards
-  // // the PR owner (which might be a different repo)
+  // If the ref looks like a PR, update the details to point towards
+  // the PR owner (which might be a different repo)
   if (properties.isPullRequest()) {
     const metadata = await getPullRequestMetadata(
       properties.owner,
@@ -117,7 +117,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
   }
 
   content = await getPageContent(properties);
-  
+
   if (!content) {
     // If there is no content, the repository is not found
     error = RenderError.repositoryNotFound(properties);

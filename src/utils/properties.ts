@@ -71,7 +71,7 @@ export class Properties {
       owner: this.owner,
       repository: this.repository,
       githubUrl: `https://github.com/${this.owner}/${this.repository}`,
-      debugUrl: `/_debug/${this.base}${this.path}`,
+      debugUrl: `/_debug${this.base}/${this.path}`,
       editUrl: `https://github.com/${this.owner}/${this.repository}/edit/${this.ref}/docs/${this.path}.md`,
       createUrl: `https://github.com/${this.owner}/${this.repository}/new/${this.ref}/docs/${this.path}`,
       ref: this.ref,
