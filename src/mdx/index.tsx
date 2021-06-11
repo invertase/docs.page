@@ -23,7 +23,7 @@ const components = {
   img: (
     props: React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
   ) => <Img {...props} />,
-  // pre: (props: PreProps) => <Pre {...props} />,
+  pre: (props: PreProps) => <Pre {...props} />,
   hr: Divider,
 
   // Custom MDX components

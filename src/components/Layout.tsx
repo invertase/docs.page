@@ -6,7 +6,6 @@ import { Sidebar } from './Sidebar';
 import { Footer } from './Footer';
 import { Divider } from './Divider';
 import { hasScrolled, useConfig, usePageContent } from '../hooks';
-import { JumpToTop } from './JumpToTop';
 import { TableOfContents } from './TableOfContents';
 
 export function Layout({ children }: { children: React.ReactNode }) {
@@ -23,7 +22,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <Header />
       <aside
         className={cx(
-          'hidden md:block fixed left-0 top-16 bottom-0 w-[260px] border-r p-4 transition-all',
+          'hidden md:block fixed left-0 top-16 bottom-0 w-[260px] border-r p-4 transition-all overflow-y-auto',
           {
             'border-gray-100 dark:border-gray-600': showBorder,
             'border-transparent': !showBorder,
@@ -46,7 +45,6 @@ export function Layout({ children }: { children: React.ReactNode }) {
           </aside>
         </div>
       </div>
-      <JumpToTop />
     </>
   );
 }

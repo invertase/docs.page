@@ -4,6 +4,7 @@ import { PageContent } from './content';
 import { headerDepthToHeaderList } from './index';
 
 const rehypeHighlight = require('rehype-highlight');
+const rehypeCodeBlocks = require('../../plugins/rehype-code-blocks');
 const rehypeHeadings = require('../../plugins/rehype-headings');
 const rehypeSlug = require('rehype-slug');
 const rehypeAccessibleEmojis = require('rehype-accessible-emojis').rehypeAccessibleEmojis;
@@ -28,6 +29,7 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
     response.source = await serialize(content.markdown, {
       mdxOptions: {
         rehypePlugins: [
+          rehypeCodeBlocks,
           // Convert `pre` blogs into prism formatting
           rehypeHighlight,
           // Add an `id` to all heading tags

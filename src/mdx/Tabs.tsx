@@ -138,7 +138,7 @@ export function Tabs({ groupId, defaultValue, values, children, className }: Tab
       data-sync-tabs-group={groupId || ''}
       data-sync-tabs-hash={hash}
       data-sync-tabs-default={defaultValue || ''}
-      className="border mb-4 dark:border-gray-800 rounded p-1"
+      className="border mb-4 dark:border-gray-700 rounded p-1"
     >
       <style jsx>{`
         div[role='tab'].active {
