@@ -2,7 +2,6 @@ import { createContext } from 'react';
 import matter from 'gray-matter';
 import get from 'lodash.get';
 
-import { LayoutType } from '../components/Layout';
 import { Config, mergeConfig } from './config';
 import { Properties } from './properties';
 import { getBoolean, getString } from '.';
@@ -19,7 +18,6 @@ export type Frontmatter = {
   description: string;
   image: string;
   tableOfContents: boolean;
-  layout: LayoutType;
   sidebar: boolean;
   redirect: string;
 };
@@ -97,7 +95,6 @@ function mergeFrontmatter(data: any): Frontmatter {
     description: getString(data, 'description', ''),
     image: getString(data, 'image', ''),
     tableOfContents: getBoolean(data, 'tableOfContents', true),
-    layout: getString<LayoutType>(data, 'layout', '' as LayoutType),
     sidebar: getBoolean(data, 'sidebar', true),
     redirect: getString(data, 'redirect', ''),
   };
