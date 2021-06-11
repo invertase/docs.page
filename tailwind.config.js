@@ -29,7 +29,7 @@ module.exports = {
         DEFAULT: {
           css: {
             'a:hover': {
-              opacity: '0.75'
+              opacity: '0.75',
             },
             img: {
               marginLeft: 'auto',
@@ -46,30 +46,6 @@ module.exports = {
             },
             'blockquote p:first-of-type::before, blockquote p:last-of-type::after, code::before, code::after': {
               display: 'none',
-            },
-            thead: {
-              borderWidth: '1px',
-            },
-            td: {
-              padding: rem(8),
-            },
-            'thead th, thead th:last-child, thead th:first-child': {
-              padding: rem(8),
-              fontSize: rem(16),
-            },
-            'thead th:not(:last-child), tbody td:not(:last-child)': {
-              borderRightWidth: '1px',
-            },
-            'tbody tr, tbody tr:last-child': {
-              borderLeftWidth: '1px',
-              borderRightWidth: '1px',
-              borderBottomWidth: '1px',
-            },
-            'tbody tr:nth-child(2n)': {
-              backgroundColor: theme('colors.gray.50'),
-            },
-            'tbody td, tbody td:last-child, tbody td:first-child': {
-              padding: rem(8),
             },
           },
         },
@@ -96,12 +72,6 @@ module.exports = {
             },
             'pre code': {
               backgroundColor: 'inherit',
-            },
-            'thead, tbody tr, thead th:not(:last-child), tbody td:not(:last-child)': {
-              borderColor: theme('colors.gray.700'),
-            },
-            'tbody tr:nth-child(2n)': {
-              backgroundColor: theme('colors.gray.800'),
             },
           },
         },
