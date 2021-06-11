@@ -25,7 +25,6 @@ function Configuration({ config }: { config: Config }) {
         </div>
       </Row>
       <Row title="Doc Search">{config.docsearch}</Row>
-      <Row title="Default Layout">{config.defaultLayout}</Row>
       <Row title="Header Depth">{config.headerDepth}</Row>
       <Row title="Sidebar" header />
       {config.sidebar.map((item: SidebarItem) => {
