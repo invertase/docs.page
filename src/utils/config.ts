@@ -1,7 +1,6 @@
 import { createContext } from 'react';
 import get from 'lodash.get';
-import { DEFAULT_LAYOUT, LayoutType } from '../components/Layout';
-import { getBoolean, getNumber, getString } from '.';
+import { getBoolean, getNumber, getString } from './index';
 
 export type NavigationItem = [string, string];
 
@@ -39,8 +38,6 @@ export type Config = {
   navigation: NavigationItem[];
   // Sidebar
   sidebar: SidebarItem[];
-  // The default layout type.
-  defaultLayout: LayoutType;
   // The depth to heading tags are linked. Set to 0 to remove any linking.
   headerDepth: number;
   // Variables which can be injected into the pages content.
@@ -62,7 +59,6 @@ export const defaultConfig: Config = {
   docsearch: null,
   navigation: [],
   sidebar: [],
-  defaultLayout: DEFAULT_LAYOUT,
   headerDepth: 3,
   variables: {},
   googleAnalytics: '',
@@ -88,7 +84,6 @@ export function mergeConfig(json: any): Config {
       : defaultConfig.docsearch,
     navigation: mergeNavigationConfig(json),
     sidebar: mergeSidebarConfig(json),
-    defaultLayout: getString<LayoutType>(json, 'defaultLayout', defaultConfig.defaultLayout),
     headerDepth: getNumber(json, 'headerDepth', defaultConfig.headerDepth),
     variables: get(json, 'variables', defaultConfig.variables),
     googleAnalytics: getString(json, 'googleAnalytics', defaultConfig.googleAnalytics),
