@@ -48,6 +48,7 @@
     "react-test-renderer": "^17.0.1",
     "refractor": "^3.2.0",
     "rehype-accessible-emojis": "^0.3.2",
+    "rehype-highlight": "^4.1.0",
     "rehype-slug": "^4.0.1",
     "remark-admonitions": "^1.2.1",
     "remark-unwrap-images": "^2.0.0",
