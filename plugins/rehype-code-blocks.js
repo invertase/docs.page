@@ -24,8 +24,8 @@ module.exports = options => {
     // Add the `lang` property onto the parent `pre`
     parent.properties.lang = lang;
 
-    // Attach the language className to the parent `pre`
-    parent.properties.className = (parent.properties.className || []).concat('language-' + lang);
+    // // Attach the language className to the parent `pre`
+    // parent.properties.className = (parent.properties.className || []).concat('language-' + lang);
 
     // Raw value of the `code` block - used for copy/paste
     parent.properties.raw = nodeToString(node);

@@ -15,13 +15,20 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --light-background: #ffffff;
+  --dark-background: #202528;
+}
+
 @layer base {
   body {
-    @apply bg-white;
+    --background: var(--light-background);
+    background-color: var(--light-background);
   }
 
   body.dark {
-    @apply bg-gray-900;
+    --background: var(--dark-background);
+    background-color: var(--dark-background);
   }
 }
 

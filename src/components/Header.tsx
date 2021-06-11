@@ -6,15 +6,22 @@ import { ExternalLink, Link } from './Link';
 import { Branch, GitHub, Menu, MenuOpenRight, PullRequest, Twitter } from './Icons';
 import { Image } from './Image';
 import { Search } from './Search';
-import { useConfig, useSlugProperties } from '../hooks';
+import { hasScrolled, useConfig, useSlugProperties } from '../hooks';
 
 export function Header() {
   const config = useConfig();
   const properties = useSlugProperties();
   const repo = `${properties.owner}/${properties.repository}`;
 
+  const showBorder = hasScrolled();
+
   return (
-    <header className="px-4 sticky top-0 z-10 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-b dark:border-gray-800">
+    <header
+      className={cx('px-4 sticky top-0 z-10 bg-docs-background text-gray-900 dark:text-white border-b transition-all', {
+        'border-gray-100 dark:border-gray-700': showBorder,
+        'border-transparent': !showBorder,
+      })}
+    >
       <div className="flex items-center h-16">
         <Link href="/" className="mr-12 truncate text-lg font-semibold">
           <div className="flex h-16 items-center py-4">

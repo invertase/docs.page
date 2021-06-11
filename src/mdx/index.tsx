@@ -1,6 +1,6 @@
 import React from 'react';
 import cx from 'classnames';
-import MdxRemote from 'next-mdx-remote/mdx-remote';
+import { MDXRemote } from 'next-mdx-remote';
 
 import { Link } from '../components/Link';
 
@@ -9,6 +9,7 @@ import { Tabs, TabItem, TabsContext } from './Tabs';
 import { Pre, PreProps } from './Pre';
 import { Img } from './Img';
 import { YouTube } from './YouTube';
+import { Divider } from '../components/Divider';
 
 const components = {
   // HTML element overrides
@@ -22,7 +23,8 @@ const components = {
   img: (
     props: React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
   ) => <Img {...props} />,
-  pre: (props: PreProps) => <Pre {...props} />,
+  // pre: (props: PreProps) => <Pre {...props} />,
+  hr: Divider,
 
   // Custom MDX components
   Heading,
@@ -36,7 +38,7 @@ const components = {
 export function Hydrate({ source }: { source: any }) {
   return (
     <TabsContext>
-      <MdxRemote source={source} components={components} />
+      <MDXRemote {...source} components={components} />
     </TabsContext>
   );
 }

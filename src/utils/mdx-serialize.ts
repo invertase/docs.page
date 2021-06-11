@@ -1,9 +1,9 @@
-import serialize from 'next-mdx-remote/serialize';
+import { serialize } from 'next-mdx-remote/serialize';
 import { PageContent } from './content';
 
 import { headerDepthToHeaderList } from './index';
 
-const rehypeCodeBlocks = require('../../plugins/rehype-code-blocks');
+const rehypeHighlight = require('rehype-highlight');
 const rehypeHeadings = require('../../plugins/rehype-headings');
 const rehypeSlug = require('rehype-slug');
 const rehypeAccessibleEmojis = require('rehype-accessible-emojis').rehypeAccessibleEmojis;
@@ -11,6 +11,7 @@ const rehypeAccessibleEmojis = require('rehype-accessible-emojis').rehypeAccessi
 const remarkSanitizeJsx = require('../../plugins/remark-sanitize-jsx');
 const remarkUnwrapImages = require('remark-unwrap-images');
 const remarkAdmonitions = require('remark-admonitions');
+
 interface SerializationResponse {
   source: any;
   headings: object[];
@@ -28,7 +29,7 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
       mdxOptions: {
         rehypePlugins: [
           // Convert `pre` blogs into prism formatting
-          rehypeCodeBlocks,
+          rehypeHighlight,
           // Add an `id` to all heading tags
           rehypeSlug,
           // If the table of contents is enabled for this page,

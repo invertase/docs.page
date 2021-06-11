@@ -40,3 +40,20 @@ export function useBodyScrollLock(lock: boolean): void {
     if (!lock) el.style.overflowY = 'auto';
   }, [lock]);
 }
+
+export function hasScrolled(y: number = 0) {
+  const [hasScrolled, setHasScrolled] = useState(false);
+
+  // Toggle a scroll event function
+  useEffect(() => {
+    function onScroll() {
+      setHasScrolled(window.scrollY > y);
+    }
+
+    window.addEventListener('scroll', onScroll);
+    onScroll(); // Trigger on mount
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [y]);
+
+  return hasScrolled;
+}

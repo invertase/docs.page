@@ -27,7 +27,7 @@ export function DarkModeToggle() {
   });
 
   return (
-    <div className="relative w-28 px-2 h-8 flex items-center dark:text-white bg-gray-100 dark:bg-gray-900 border hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 rounded focus:outline-none">
+    <div className="relative w-28 px-2 h-8 flex items-center dark:text-white bg-docs-background border hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 rounded focus:outline-none">
       {ready && (
         <>
           <div className="flex-1">
