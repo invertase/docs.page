@@ -33,7 +33,9 @@ export function getHeadTags(properties: SlugProperties, content: PageContent) {
     tags.push(<meta key="noindex" name="robots" content="noindex" />);
   }
 
-  if (config.logo) {
+  if (config.favicon) {
+    tags.push(<link key="favicon" rel="icon" type="image/png" href={config.favicon} />);
+  } else if (config.logo) {
     tags.push(
       <link
         key="favicon"

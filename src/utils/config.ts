@@ -20,6 +20,8 @@ export type Config = {
   logo: string;
   // URL to project logo for dark mode
   logoDark: string;
+  // URL to the favicon
+  favicon: string;
   // Image to display as the social preview on shared URLs
   socialPreview: string;
   // Twitter tag for use in the header.
@@ -52,6 +54,7 @@ export const defaultConfig: Config = {
   name: '',
   logo: '',
   logoDark: '',
+  favicon: '',
   socialPreview: '',
   twitter: '',
   noindex: false,
@@ -71,6 +74,7 @@ export function mergeConfig(json: any): Config {
     name: getString(json, 'name', defaultConfig.name),
     logo: getString(json, 'logo', defaultConfig.logo),
     logoDark: getString(json, 'logoDark', defaultConfig.logoDark),
+    favicon: getString(json, 'favicon', defaultConfig.favicon),
     socialPreview: getString(json, 'socialPreview', defaultConfig.socialPreview),
     twitter: getString(json, 'twitter', defaultConfig.twitter),
     noindex: getBoolean(json, 'noindex', defaultConfig.noindex),
