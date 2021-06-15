@@ -23,7 +23,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <Header />
       <div className="grid grid-cols-[240px,auto,minmax(0,96ch),auto]">
         <div className="hidden lg:block col-start-1 col-end-2">
-          <aside className="sticky top-20 px-4 overflow-y-auto">
+          <aside className="sticky top-20 px-4 h-[calc(100vh-4rem)] overflow-y-auto">
             <Sidebar />
           </aside>
         </div>
