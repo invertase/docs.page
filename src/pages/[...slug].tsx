@@ -10,7 +10,7 @@ import { ThemeStyles } from '../components/ThemeStyles';
 import { Layout } from '../components/Layout';
 import { Error, ErrorBoundary } from '../templates/error';
 
-import { ConfigContext } from '../utils/config';
+import { ConfigContext } from '../utils/projectConfig';
 import { IRenderError, redirect, RenderError } from '../utils/error';
 import { SlugProperties, SlugPropertiesContext, Properties } from '../utils/properties';
 import { PageContentContext, getPageContent, PageContent, HeadingNode } from '../utils/content';

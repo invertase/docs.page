@@ -18,7 +18,7 @@ export function Pre(props: PreProps) {
       }, 2000);
     }
   }, [copied]);
-
+  
   const title = props['data-title'];
   const raw = props['data-raw'];
 

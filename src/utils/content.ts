@@ -2,7 +2,7 @@ import { createContext } from 'react';
 import matter from 'gray-matter';
 import get from 'lodash.get';
 
-import { Config, mergeConfig } from './config';
+import { ProjectConfig, mergeConfig } from './projectConfig';
 import { Properties } from './properties';
 import { getBoolean, getString } from '.';
 import { getGitHubContents } from './github';
@@ -24,7 +24,7 @@ export type Frontmatter = {
 
 export type PageContent = {
   baseBranch: string;
-  config: Config;
+  config: ProjectConfig;
   frontmatter: Frontmatter;
   markdown: string;
   headings: HeadingNode[];
@@ -46,7 +46,7 @@ export async function getPageContent(properties: Properties): Promise<PageConten
     return null;
   }
 
-  let config: Config;
+  let config: ProjectConfig;
   if (contents.config) {
     try {
       const json = JSON.parse(contents.config);

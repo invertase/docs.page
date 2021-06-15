@@ -1,21 +1,19 @@
 import { serialize } from 'next-mdx-remote/serialize';
+import rehypeSlug from 'rehype-slug';
+import remarkUnwrapImages from 'remark-unwrap-images';
+import remarkAdmonitions from 'remark-admonitions';
+import rehypeHighlight from 'rehype-highlight';
+import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
+
 import { PageContent } from './content';
-
 import { headerDepthToHeaderList } from './index';
-
-const rehypeHighlight = require('rehype-highlight');
-const rehypeCodeBlocks = require('../../plugins/rehype-code-blocks');
-const rehypeHeadings = require('../../plugins/rehype-headings');
-const rehypeSlug = require('rehype-slug');
-const rehypeAccessibleEmojis = require('rehype-accessible-emojis').rehypeAccessibleEmojis;
-
-const remarkSanitizeJsx = require('../../plugins/remark-sanitize-jsx');
-const remarkUnwrapImages = require('remark-unwrap-images');
-const remarkAdmonitions = require('remark-admonitions');
+import rehypeCodeBlocks from '../../plugins/rehype-code-blocks';
+import rehypeHeadings from '../../plugins/rehype-headings';
+import remarkSanitizeJsx from '../../plugins/remark-sanitize-jsx';
 
 interface SerializationResponse {
   source: any;
-  headings: object[];
+  headings: Record<string, string>[];
   error?: Error;
 }
 
@@ -41,7 +39,7 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
                 rehypeHeadings,
                 {
                   headings: headerDepthToHeaderList(content.config.headerDepth),
-                  callback: (headings: object[]) => (response.headings = headings),
+                  callback: (headings: Record<string, string>[]) => (response.headings = headings),
                 },
               ]
             : [],

@@ -13,7 +13,7 @@ export type SidebarItem = [string, SidebarItem[]] | [string, string];
  * This can be provided by creating a `docs.json` file at the root of your
  * repository.
  */
-export type Config = {
+export interface ProjectConfig {
   // Project name.
   name: string;
   // URL to project logo.
@@ -43,14 +43,14 @@ export type Config = {
   // The depth to heading tags are linked. Set to 0 to remove any linking.
   headerDepth: number;
   // Variables which can be injected into the pages content.
-  variables: object;
+  variables: { [key: string]: unknown };
   // Adds Google Analytics tracking ID to the page
   googleAnalytics: string;
   // Whether zoomable images are enabled by default
   zoomImages: boolean;
-};
+}
 
-export const defaultConfig: Config = {
+export const defaultConfig: ProjectConfig = {
   name: '',
   logo: '',
   logoDark: '',
@@ -69,7 +69,7 @@ export const defaultConfig: Config = {
 };
 
 // Merges any user config with default values.
-export function mergeConfig(json: any): Config {
+export function mergeConfig(json: Partial<ProjectConfig> | null): ProjectConfig {
   return {
     name: getString(json, 'name', defaultConfig.name),
     logo: getString(json, 'logo', defaultConfig.logo),
@@ -96,7 +96,7 @@ export function mergeConfig(json: any): Config {
 }
 
 // Merges in a user sidebar config and ensures all items are valid.
-function mergeSidebarConfig(json: any): SidebarItem[] {
+function mergeSidebarConfig(json: Partial<ProjectConfig> | null): SidebarItem[] {
   const sidebar = get(json, 'sidebar', defaultConfig.sidebar);
 
   if (!Array.isArray(sidebar)) {
@@ -120,7 +120,7 @@ function mergeSidebarConfig(json: any): SidebarItem[] {
 }
 
 // Merges in a user navigation config and ensures all items are valid.
-function mergeNavigationConfig(json: any): NavigationItem[] {
+function mergeNavigationConfig(json: Partial<ProjectConfig> | null): NavigationItem[] {
   const navigation = get(json, 'navigation', defaultConfig.navigation);
 
   if (!Array.isArray(navigation)) {
@@ -138,4 +138,4 @@ function mergeNavigationConfig(json: any): NavigationItem[] {
     .filter(Boolean);
 }
 
-export const ConfigContext = createContext<Config>(defaultConfig);
+export const ConfigContext = createContext<ProjectConfig>(defaultConfig);

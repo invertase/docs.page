@@ -1,6 +1,6 @@
 import React from 'react';
 import Color from 'color';
-import { defaultConfig } from '../utils/config';
+import { defaultConfig } from '../utils/projectConfig';
 import { useConfig } from '../hooks';
 
 type Varient = 'base' | 'dark' | 'light';

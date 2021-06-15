@@ -7,7 +7,7 @@ import { ExternalLink } from '../../components/Link';
 import { Properties, SlugProperties } from '../../utils/properties';
 import { IRenderError, RenderError } from '../../utils/error';
 import { Frontmatter, getPageContent, HeadingNode, PageContent } from '../../utils/content';
-import { Config } from '../../utils/config';
+import { ProjectConfig } from '../../utils/projectConfig';
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import { getGitHubContents, getPullRequestMetadata } from '../../utils/github';
 import { mdxSerialize } from '../../utils/mdx-serialize';

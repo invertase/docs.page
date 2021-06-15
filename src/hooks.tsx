@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import { Config, ConfigContext } from './utils/config';
+import { ProjectConfig, ConfigContext } from './utils/projectConfig';
 import { PageContent, PageContentContext } from './utils/content';
 import { CustomDomain, CustomDomainContext } from './utils/domain';
 import { SlugProperties, SlugPropertiesContext } from './utils/properties';
@@ -23,7 +23,7 @@ export function usePageContent(): PageContent {
   return useContext(PageContentContext);
 }
 
-export function useConfig(): Config {
+export function useConfig(): ProjectConfig {
   return useContext(ConfigContext);
 }
 
