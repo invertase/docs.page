@@ -17,32 +17,29 @@ export function Layout({ children }: { children: React.ReactNode }) {
     throw new Error('Layout must be a child of: ConfigContext, PageContentContext');
   }
 
+  // TODO sidebar border & sticky
   return (
     <>
       <Header />
-      <aside
-        className={cx(
-          'hidden md:block fixed left-0 top-16 bottom-0 w-[260px] border-r p-4 transition-all overflow-y-auto',
-          {
-            'border-gray-100 dark:border-gray-600': showBorder,
-            'border-transparent': !showBorder,
-          },
-        )}
-      >
-        <Sidebar />
-      </aside>
-      <div className="grid grid-cols-[1fr,min(85ch,100%),1fr] px-2 my-16 ">
-        <div className="grid grid-cols-[1fr,180px] col-start-2 col-end-3">
-          <article className="col-start-1 col-end-3 lg:col-end-2 prose dark:prose-dark max-w-full">
-            {children}
-            <Divider />
-            <Footer />
-          </article>
-          <aside className="hidden lg:block col-start-2 col-end-3">
+      <div className="grid grid-cols-[240px,auto,minmax(0,96ch),auto]">
+        <div className="hidden lg:block col-start-1 col-end-2">
+          <aside className="sticky top-20 px-4 overflow-y-auto">
+            <Sidebar />
+          </aside>
+        </div>
+        <div className="col-start-1 lg:col-start-3 col-end-4 grid grid-cols-[1fr,180px] my-16">
+          <div className="col-start-1 col-end-3 md:col-end-2">
+            <article className="px-4 prose dark:prose-dark max-w-full">
+              {children}
+              <Divider />
+              <Footer />
+            </article>
+          </div>
+          <div className="hidden md:block col-start-2 col-end-3">
             <div className="sticky top-20 ml-6 p-3 border-l dark:border-gray-700">
               <TableOfContents />
             </div>
-          </aside>
+          </div>
         </div>
       </div>
     </>
