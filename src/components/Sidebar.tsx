@@ -120,7 +120,7 @@ function Title({
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
-          className={cx('text-gray-600 dark:text-gray-400 transition-opacity',{
+          className={cx('text-gray-600 dark:text-gray-400 transition-opacity', {
             'opacity-50': !active,
           })}
         >

@@ -17,10 +17,13 @@ export function Header() {
 
   return (
     <header
-      className={cx('px-4 sticky top-0 z-10 bg-docs-background text-gray-900 dark:text-white border-b transition-all', {
-        'border-gray-100 dark:border-gray-700': showBorder,
-        'border-transparent': !showBorder,
-      })}
+      className={cx(
+        'px-4 sticky top-0 z-10 bg-docs-background text-gray-900 dark:text-white border-b transition-all',
+        {
+          'border-gray-100 dark:border-gray-700': showBorder,
+          'border-transparent': !showBorder,
+        },
+      )}
     >
       <div className="flex items-center h-16">
         <Link href="/" className="mr-12 truncate text-lg font-semibold">

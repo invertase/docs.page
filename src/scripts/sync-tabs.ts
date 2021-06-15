@@ -1,17 +1,17 @@
-/** 
+/**
  * This file should be loaded in as a blocking script, after content has been rendered but before
  * the client finishes loading.
- *  
+ *
  * Since the server cannot access localStorage, without this there is a "flash" whereby the tabs show the
  * first element, then jump to anything loaded in via localStorage. This hacky script plucks out all
  * <Tabs /> elements on the page and applies any necessary CSS to the elements before being presented to the
  * user (client).
- * 
+ *
  * Once the client has loaded, any interaction with the tabs is then managed via state and updated context
  * (to allow <Tabs /> to listen to changes) and also updates local storage (incase of a reload).
- * 
+ *
  * Not sure if there's a better way to do this.
-*/
+ */
 
 export default `
 function syncTabs() {

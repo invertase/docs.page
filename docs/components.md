@@ -79,7 +79,7 @@ component directly allows for a bit more control on some of the properties.
 
 ### Zooming
 
-By default, images are not zoomable (unless overrided via [configuration](/configuration)). Pass the `zoom` property to the component to enable image zooming:
+By default, images are not zoomable (unless overridden via [configuration](/configuration)). Pass the `zoom` property to the component to enable image zooming:
 
 ```
 <Image src="https://via.placeholder.com/350x150" zoom />
@@ -89,7 +89,7 @@ By default, images are not zoomable (unless overrided via [configuration](/confi
 
 ### Captions
 
-To add a caption to images, provide the cap`tion property:
+To add a caption to images, provide the caption property:
 
 ```
 <Image src="https://via.placeholder.com/350x150" caption="A pretty caption!" />

@@ -1,7 +1,7 @@
-export const STORAGE_KEY = "oss-docs-dark-mode";
-export const DARK_MODE_CLASS_NAME = "dark";
-export const LIGHT_MODE_CLASS_NAME = "light";
-export const HTML_DATA_ATTRIBUTE = "theme";
+export const STORAGE_KEY = 'oss-docs-dark-mode';
+export const DARK_MODE_CLASS_NAME = 'dark';
+export const LIGHT_MODE_CLASS_NAME = 'light';
+export const HTML_DATA_ATTRIBUTE = 'theme';
 
 export default `
 (function() {

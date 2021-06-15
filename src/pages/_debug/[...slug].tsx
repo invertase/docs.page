@@ -63,7 +63,9 @@ export default function DebugPage({
                 Page has Errors
               </Pill>
               {content?.flags.isFork === true && <Pill type="warn">Page is a fork</Pill>}
-              <Pill type={content?.flags.isIndexable ? 'success' : 'warn'}>{content?.flags.isIndexable ? 'Indexable' : 'Not Indexable'}</Pill>
+              <Pill type={content?.flags.isIndexable ? 'success' : 'warn'}>
+                {content?.flags.isIndexable ? 'Indexable' : 'Not Indexable'}
+              </Pill>
             </>
           )}
         </div>

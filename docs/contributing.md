@@ -10,7 +10,7 @@ Learn how to run docs.page locally and help contribute to the project.
 ## Running locally
 
 Firstly, fork the [https://github.com/invertase/docs.page](https://github.com/invertase/docs.page) repository.
-Once forked, clone the repository locally: 
+Once forked, clone the repository locally:
 
 ```bash
 git clone git@github.com:invertase/docs.page.git

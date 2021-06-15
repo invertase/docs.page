@@ -9,7 +9,12 @@
     "start": "next start",
     "serve": "npm run build && npm run start",
     "clean": "rimraf .next",
-    "test": "jest"
+    "test": "jest",
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,mdx}\"",
+    "check:linting": "eslint . --max-warnings=0",
+    "check:formatting": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md,mdx}\"",
+    "check:typescript": "tsc",
+    "check:spelling": "spellchecker --quiet --files=\"docs/**/*.{md,mdx}\" --dictionaries=\"./dictionary.js\" --reports=\"spelling.json\" --plugins spell indefinite-article repeated-words syntax-mentions syntax-urls frontmatter"
   },
   "dependencies": {
     "@docsearch/react": "^3.0.0-alpha.32",
@@ -67,14 +72,21 @@
     "@types/lodash.get": "^4.4.6",
     "@types/node": "^14.14.7",
     "@types/nprogress": "^0.2.0",
-    "@types/react": "^16.9.56",
-    "@types/react-copy-to-clipboard": "^4.3.0",
+    "@types/react": "^17.0.11",
+    "@types/react-copy-to-clipboard": "^5.0.0",
     "@types/react-scrollspy": "^3.3.3",
     "@types/valid-data-url": "^2.0.0",
+    "@typescript-eslint/eslint-plugin": "^4.27.0",
+    "@typescript-eslint/parser": "^4.27.0",
     "cross-env": "^7.0.2",
-    "jest": "^26.6.3",
-    "prettier": "2.2.1",
-    "ts-jest": "^26.4.4",
-    "typescript": "^4.0.5"
+    "spellchecker-cli": "^4.4.0",
+    "jest": "^27.0.4",
+    "prettier": "2.3.1",
+    "ts-jest": "^27.0.3",
+    "typescript": "^4.3.2",
+    "eslint": "^7.28.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-react": "^7.24.0"
   }
 }
