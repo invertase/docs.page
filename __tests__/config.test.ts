@@ -1,6 +1,6 @@
-import { mergeConfig } from '../src/utils/config';
+import { mergeConfig, ProjectConfig } from '../src/utils/projectConfig';
 
-function isValidConfigTypes(config: any) {
+function isValidConfigTypes(config: ProjectConfig) {
   expect(typeof config.name).toBe('string');
   expect(typeof config.logo).toBe('string');
   expect(typeof config.theme).toBe('string');
@@ -12,9 +12,6 @@ function isValidConfigTypes(config: any) {
 describe('conifg', () => {
   it('should mergeConfig data with any invalid value', () => {
     isValidConfigTypes(mergeConfig(null));
-    isValidConfigTypes(mergeConfig(123));
-    isValidConfigTypes(mergeConfig('foo'));
-    isValidConfigTypes(mergeConfig({}));
   });
 
   it('should mergeConfig data with any valid value', () => {
@@ -26,7 +23,6 @@ describe('conifg', () => {
         apiKey: 'foo',
         indexName: 'bar',
       },
-      defaultLayout: 'foo',
       headerDepth: 1234,
     });
 
@@ -43,5 +39,3 @@ describe('conifg', () => {
   // TODO test merge navigation
   // TODO test merge sidebars
 });
-
-export default null;

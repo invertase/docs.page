@@ -2,7 +2,7 @@ import React, { useCallback, useState } from 'react';
 import cx from 'classnames';
 import { NextRouter, useRouter } from 'next/router';
 
-import { SidebarItem } from '../utils/config';
+import { SidebarItem } from '../utils/projectConfig';
 import { isExternalLink, Link } from './Link';
 import { SlugProperties } from '../utils/properties';
 import { useConfig, useSlugProperties } from '../hooks';

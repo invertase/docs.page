@@ -1,8 +1,8 @@
-import { Config, SidebarItem } from '../../utils/config';
+import { ProjectConfig, SidebarItem } from '../../utils/projectConfig';
 import React from 'react';
 import { Row } from './Row';
 
-function Configuration({ config }: { config: Config }) {
+function Configuration({ config }: { config: ProjectConfig }) {
   return (
     <section className="mx-auto max-w-5xl border rounded font-mono divide-y bg-white">
       <Row title="Configuration" header />

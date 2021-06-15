@@ -97,5 +97,3 @@ describe('utils', () => {
     });
   });
 });
-
-export default null;
