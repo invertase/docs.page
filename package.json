@@ -50,6 +50,7 @@
     "rehype-accessible-emojis": "^0.3.2",
     "rehype-highlight": "^4.1.0",
     "rehype-slug": "^4.0.1",
+    "remark-gfm": "^1.0.0",
     "remark-unwrap-images": "^2.1.0",
     "rimraf": "^3.0.2",
     "serialize-error": "^7.0.1",

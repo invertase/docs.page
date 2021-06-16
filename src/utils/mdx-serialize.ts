@@ -1,6 +1,7 @@
 import { serialize } from '@invertase/next-mdx-remote/serialize';
 import rehypeSlug from 'rehype-slug';
 import remarkUnwrapImages from 'remark-unwrap-images';
+import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
 
@@ -26,6 +27,8 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
     response.source = await serialize(content.markdown, {
       mdxOptions: {
         remarkPlugins: [
+          // Support GitHub flavoured markdown
+          remarkGfm,
           // Ensure any `img` tags are not wrapped in `p` tags
           remarkUnwrapImages,
           // Convert any admonition to HTML
