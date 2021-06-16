@@ -41,9 +41,13 @@ module.exports = {
               borderRadius: rem(4),
               fontWeight: 400,
             },
-            'blockquote p:first-of-type::before, blockquote p:last-of-type::after, code::before, code::after': {
-              display: 'none',
+            blockquote: {
+              borderColor: 'var(--theme-color)',
             },
+            'blockquote p:first-of-type::before, blockquote p:last-of-type::after, code::before, code::after':
+              {
+                display: 'none',
+              },
           },
         },
         dark: {
@@ -60,7 +64,6 @@ module.exports = {
               color: theme('colors.gray.300'),
             },
             blockquote: {
-              borderColor: 'var(--theme-color)',
               color: theme('colors.gray.200'),
             },
             code: {
