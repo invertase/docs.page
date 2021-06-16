@@ -89,7 +89,7 @@ export async function getPageContent(properties: Properties): Promise<PageConten
   };
 }
 
-function mergeFrontmatter(data: any): Frontmatter {
+function mergeFrontmatter(data: Record<string, string>): Frontmatter {
   return {
     title: getString(data, 'title', ''),
     description: getString(data, 'description', ''),
@@ -102,7 +102,7 @@ function mergeFrontmatter(data: any): Frontmatter {
 
 const VARIABLE_REGEX = /{{\s([a-zA-Z0-9_.]*)\s}}/gm;
 
-function replaceVariables(variables: object, value: string) {
+function replaceVariables(variables: Record<string, string>, value: string) {
   let output = value;
   let m: RegExpExecArray;
 

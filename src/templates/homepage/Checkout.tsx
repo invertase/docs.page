@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import cx from 'classnames';
 
-export function Checkout() {
+export function Checkout(): JSX.Element {
   const router = useRouter();
   const [repo, setRepo] = useState<string>('');
   const [valid, setValid] = useState<boolean | null>(null);

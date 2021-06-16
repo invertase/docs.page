@@ -11,7 +11,7 @@ export function Heading({
   title: React.ReactNode;
   from: string;
   to: string;
-}) {
+}): JSX.Element {
   return (
     <div className="flex items-center">
       <div

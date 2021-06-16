@@ -1,3 +1,5 @@
+// TODO remove eslint disable once file complete
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useCallback, useState } from 'react';
 import NextHead from 'next/head';
 import cx from 'classnames';
@@ -44,6 +46,7 @@ export default function DebugPage({
       <header className="bg-gray-800 dark:bg-gray-900">
         <div className="max-w-4xl mx-auto flex h-16 py-4">
           <div className="flex-1">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/assets/docs-page-logo.png" alt="docs.page" className="max-h-full" />
           </div>
           <DarkModeToggle />

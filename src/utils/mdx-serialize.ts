@@ -8,10 +8,11 @@ import { HeadingNode, PageContent } from './content';
 import { headerDepthToHeaderList } from './index';
 // import rehypeCodeBlocks from '../../plugins/rehype-code-blocks';
 import rehypeHeadings from '../mdx/plugins/rehype-headings';
+import { MDXRemoteSerializeResult } from '@invertase/next-mdx-remote/dist/types';
 // import remarkSanitizeJsx from '../../plugins/remark-sanitize-jsx';
 
 interface SerializationResponse {
-  source: any;
+  source: MDXRemoteSerializeResult;
   headings: HeadingNode[];
   error?: Error;
 }

@@ -8,7 +8,7 @@ import { DocsDirectory, IndexExample } from './Skeletons';
 import { Adjustments, PullRequest, GlobeAlt, Template } from '../../components/Icons';
 import { Footer } from './Footer';
 
-export default function IndexPage() {
+export default function IndexPage(): JSX.Element {
   return (
     <>
       <Head>
@@ -214,7 +214,7 @@ export default function IndexPage() {
                   text={
                     <span>
                       Using a custom domain name? Simply create a pull request & point your domain
-                      to our servers. We'll take care of the rest.
+                      to our servers. We&apos;ll take care of the rest.
                     </span>
                   }
                   icon={<GlobeAlt size={80} className="text-white" />}

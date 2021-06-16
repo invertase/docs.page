@@ -2,7 +2,7 @@ export interface YouTubeProps {
   id: string;
 }
 
-export function YouTube({ id }: YouTubeProps) {
+export function YouTube({ id }: YouTubeProps): JSX.Element {
   if (!id) {
     return null;
   }

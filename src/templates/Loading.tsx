@@ -1,10 +1,7 @@
-import { useRouter } from 'next/router';
 import React from 'react';
 import { Logo } from '../components/Logo';
 
-export function Loading() {
-  const { asPath } = useRouter();
-
+export function Loading(): JSX.Element {
   return (
     <>
       <style jsx>{`

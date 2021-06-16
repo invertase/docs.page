@@ -2,7 +2,7 @@ import { ProjectConfig, SidebarItem } from '../../utils/projectConfig';
 import React from 'react';
 import { Row } from './Row';
 
-function Configuration({ config }: { config: ProjectConfig }) {
+function Configuration({ config }: { config: ProjectConfig }): JSX.Element {
   return (
     <section className="mx-auto max-w-5xl border rounded font-mono divide-y bg-white">
       <Row title="Configuration" header />

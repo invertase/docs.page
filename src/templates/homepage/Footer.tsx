@@ -1,7 +1,7 @@
 import React from 'react';
 import { ExternalLink } from '../../components/Link';
 
-export function Footer() {
+export function Footer(): JSX.Element {
   return (
     <footer className="flex font-mono dark:text-white opacity-50 hover:opacity-100 transition-opacity text-sm mb-5 py-4">
       <div className="flex-1">

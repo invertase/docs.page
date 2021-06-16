@@ -6,7 +6,7 @@ type Props = {
   children: string;
 };
 
-export function Button({ href, children }: Props) {
+export function Button({ href, children }: Props): JSX.Element {
   return (
     <Link href={href}>
       <a className="px-6 py-2 border border-gray-600 hover:border-white no-underline rounded transition-all duration-100">

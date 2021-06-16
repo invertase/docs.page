@@ -34,6 +34,7 @@ const components = {
   YouTube,
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function Hydrate({ source }: { source: any }): JSX.Element {
   return (
     <TabsContext>

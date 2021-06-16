@@ -1,3 +1,5 @@
+// TODO remove eslint disable once file is complete
+/* eslint-disable */
 import React from 'react';
 import Convert from 'ansi-to-html';
 
@@ -11,16 +13,16 @@ const convert = new Convert({
   fg: '#000',
 });
 
-function RenderError({ error }: { error: any }) {
+function RenderError({ error }: { error: Error }): JSX.Element {
+  const message = String(error && error.message);
   const e = deserializeError(error);
   const stack = new StackTracey(e).withSources().clean();
-  const msg = String(error && error.message);
 
   return (
     <section className="mx-auto max-w-5xl border rounded font-mono divide-y">
       <Row title="Error Message" header />
       <div className="flex p-3 bg-white">
-        <RenderMessage message={msg} />
+        <RenderMessage message={message} />
       </div>
       {/*<Row title="Stack Trace" header />*/}
       {/*{stack.items.map((e, i) => {*/}

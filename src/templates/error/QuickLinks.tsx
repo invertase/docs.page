@@ -10,7 +10,7 @@ import {
   Issue,
 } from '../../components/Icons';
 
-export function QuickLinks() {
+export function QuickLinks(): JSX.Element {
   return (
     <div className="dark:text-white mb-12">
       <h2 className="text-xl font-semibold mb-4">Quick Links</h2>

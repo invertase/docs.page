@@ -10,7 +10,7 @@ declare global {
   }
 }
 
-export function isString(value: any) {
+export function isString(value: unknown): value is string {
   return typeof value === 'string';
 }
 
@@ -31,7 +31,7 @@ export function headerDepthToHeaderList(depth: number): string[] {
   return list;
 }
 
-export function tryJsonParse(value: string) {
+export function tryJsonParse(value: string): null | Record<string, unknown> {
   try {
     return JSON.parse(value);
   } catch {
@@ -39,11 +39,11 @@ export function tryJsonParse(value: string) {
   }
 }
 
-export function routeChangeStart() {
+export function routeChangeStart(): void {
   NProgress.start();
 }
 
-export function routeChangeComplete() {
+export function routeChangeComplete(): void {
   NProgress.done();
   // Trigger the sync-tabs script to run on client route changes
   if (window._docs_page.syncTabs) {
@@ -51,7 +51,7 @@ export function routeChangeComplete() {
   }
 }
 
-export function routeChangeError() {
+export function routeChangeError(): void {
   NProgress.done();
 }
 
@@ -64,8 +64,12 @@ export function isClient(): boolean {
 }
 
 // Returns a guaranteed string value from a config object
-export function getString<T = string>(json: any, key: string, defaultValue: T): T {
-  const value = get<T>(json, key, defaultValue);
+export function getString(
+  json: Record<string, unknown>,
+  key: string,
+  defaultValue: string,
+): string {
+  const value = get<Record<string, unknown>, string, string>(json, key, defaultValue);
 
   // If there is a custom value but it isn't a string, return the defaultValue instead.
   if (typeof value !== 'string') {
@@ -76,8 +80,12 @@ export function getString<T = string>(json: any, key: string, defaultValue: T): 
 }
 
 // Returns a guaranteed number value from a config object
-export function getNumber<T = number>(json: any, key: string, defaultValue: T): T {
-  const value = get<T>(json, key, defaultValue);
+export function getNumber(
+  json: Record<string, unknown>,
+  key: string,
+  defaultValue: number,
+): number {
+  const value = get<Record<string, unknown>, string, number>(json, key, defaultValue);
 
   // If there is a custom value but it isn't a string, return the defaultValue instead.
   if (typeof value !== 'number') {
@@ -88,8 +96,12 @@ export function getNumber<T = number>(json: any, key: string, defaultValue: T): 
 }
 
 // Returns a guaranteed boolean value from a config object
-export function getBoolean(json: any, key: string, defaultValue: boolean): boolean {
-  const value = get<boolean>(json, key, defaultValue);
+export function getBoolean(
+  json: Record<string, unknown>,
+  key: string,
+  defaultValue: boolean,
+): boolean {
+  const value = get<Record<string, unknown>, string, boolean>(json, key, defaultValue);
 
   // If there is a custom value but it isn't a string, return the defaultValue instead.
   if (typeof value === 'string') {
