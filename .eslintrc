@@ -24,6 +24,8 @@
   },
   "rules": {
     "react/display-name": 0,
+    // All images are from remote sources
+    "@next/next/no-img-element": 0,
     "@typescript-eslint/explicit-function-return-type": 0,
     "@typescript-eslint/camelcase": 0,
     "@typescript-eslint/ban-ts-comment": 0,

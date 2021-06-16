@@ -11,12 +11,14 @@ import { Link, ExternalLink } from '../../components/Link';
 
 export * from './ErrorBoundary';
 
-export function Error(error: IRenderError) {
+export function Error(error: IRenderError): JSX.Element {
   return (
     <>
       <NextHead>
         <meta key="noindex" name="robots" content="noindex" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
+        {/* TODO should this be changed? */
+        /* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet" />
       </NextHead>
       <div className="py-2 bg-gray-800">
@@ -40,7 +42,7 @@ export function Error(error: IRenderError) {
   );
 }
 
-export function ServerError({ properties }: IRenderError) {
+export function ServerError({ properties }: IRenderError): JSX.Element {
   return (
     <>
       <p>Something went wrong whilst building the page.</p>
@@ -60,7 +62,7 @@ export function ServerError({ properties }: IRenderError) {
   );
 }
 
-export function NotFound({ properties, errorType }: IRenderError) {
+export function NotFound({ properties, errorType }: IRenderError): JSX.Element {
   if (errorType === ErrorType.repositoryNotFound) {
     return (
       <>

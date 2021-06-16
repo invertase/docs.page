@@ -1,11 +1,10 @@
-import React, { useContext } from 'react';
+import { createElement, HTMLProps, ReactNode } from 'react';
 
-import { ConfigContext } from '../utils/projectConfig';
 import { useConfig } from '../hooks';
 
 type HeadingType = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 
-interface HeadingProps extends React.HTMLProps<HTMLHeadingElement> {
+interface HeadingProps extends HTMLProps<HTMLHeadingElement> {
   type: HeadingType;
 }
 
@@ -18,15 +17,15 @@ const depth: { [key in HeadingType]: number } = {
   h6: 6,
 };
 
-function Heading(props: HeadingProps) {
+function Heading(props: HeadingProps): JSX.Element {
   const config = useConfig();
   const type = props.type;
 
   if (!props.id || type === 'h1' || config.headerDepth === 0 || depth[type] > config.headerDepth) {
-    return React.createElement(type, props);
+    return createElement(type, props);
   }
 
-  const renderChildren = (children: React.ReactNode) => (
+  const renderChildren = (children: ReactNode) => (
     <span className="flex group">
       <span>{children}</span>
       <a
@@ -41,7 +40,7 @@ function Heading(props: HeadingProps) {
   return (
     <span className="relative">
       <a id={props.id} className="absolute -mt-16" />
-      {React.createElement(type, {
+      {createElement(type, {
         ...props,
         children: renderChildren(props.children),
       })}

@@ -2,13 +2,13 @@ import React, { ReactNode } from 'react';
 import cx from 'classnames';
 
 interface RowProps {
-  title: String;
+  title: string;
   children?: ReactNode;
   header?: boolean;
-  highlight?: any;
+  highlight?: string;
 }
 
-function Row({ title, children, header = false, highlight }: RowProps) {
+function Row({ title, children, header = false, highlight }: RowProps): JSX.Element {
   return (
     <div
       className={cx('flex items-center', {

@@ -23,6 +23,8 @@ export function Image(
   };
 
   return (
+    // Always remote images so we don't know sizes;
+    // eslint-disable-next-line @next/next/no-img-element
     <img
       {...props}
       style={style}

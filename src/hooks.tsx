@@ -1,11 +1,4 @@
-import React, {
-  MutableRefObject,
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ProjectConfig, ConfigContext } from './utils/projectConfig';
 import { PageContent, PageContentContext } from './utils/content';
 import { CustomDomain, CustomDomainContext } from './utils/domain';
@@ -46,7 +39,7 @@ export function useBodyScrollLock(lock: boolean): void {
   }, [lock]);
 }
 
-export function hasScrolled(y: number = 0) {
+export function hasScrolled(y = 0): boolean {
   const [hasScrolled, setHasScrolled] = useState(false);
 
   // Toggle a scroll event function

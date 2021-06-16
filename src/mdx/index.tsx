@@ -9,6 +9,7 @@ import { Pre, PreProps } from './Pre';
 import { Img } from './Img';
 import { YouTube } from './YouTube';
 import { Divider } from '../components/Divider';
+import { MDXRemoteSerializeResult } from '@invertase/next-mdx-remote/dist/types';
 
 const components = {
   // HTML element overrides
@@ -34,7 +35,7 @@ const components = {
   YouTube,
 };
 
-export function Hydrate({ source }: { source: any }): JSX.Element {
+export function Hydrate({ source }: { source: MDXRemoteSerializeResult }): JSX.Element {
   return (
     <TabsContext>
       <MDXRemote {...source} components={components} />

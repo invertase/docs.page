@@ -6,9 +6,7 @@ const visit = require('unist-util-visit');
 const nodeToString = require('hast-util-to-string');
 // const rangeParser = require('parse-numeric-range');
 
-module.exports = options => {
-  options = options || {};
-
+module.exports = () => {
   return tree => {
     visit(tree, 'element', visitor);
   };

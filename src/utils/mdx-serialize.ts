@@ -4,15 +4,16 @@ import remarkUnwrapImages from 'remark-unwrap-images';
 import rehypeHighlight from 'rehype-highlight';
 import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
 
-import { PageContent } from './content';
+import { HeadingNode, PageContent } from './content';
 import { headerDepthToHeaderList } from './index';
 // import rehypeCodeBlocks from '../../plugins/rehype-code-blocks';
 import rehypeHeadings from '../mdx/plugins/rehype-headings';
+import { MDXRemoteSerializeResult } from '@invertase/next-mdx-remote/dist/types';
 // import remarkSanitizeJsx from '../../plugins/remark-sanitize-jsx';
 
 interface SerializationResponse {
-  source: any;
-  headings: Record<string, string>[];
+  source: MDXRemoteSerializeResult;
+  headings: HeadingNode[];
   error?: Error;
 }
 
@@ -47,7 +48,7 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
                 rehypeHeadings,
                 {
                   headings: headerDepthToHeaderList(content.config.headerDepth),
-                  callback: (headings: Record<string, string>[]) => (response.headings = headings),
+                  callback: (headings: HeadingNode[]) => (response.headings = headings),
                 },
               ]
             : [],

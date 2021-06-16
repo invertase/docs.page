@@ -43,7 +43,7 @@ export interface ProjectConfig {
   // The depth to heading tags are linked. Set to 0 to remove any linking.
   headerDepth: number;
   // Variables which can be injected into the pages content.
-  variables: { [key: string]: unknown };
+  variables: Record<string, string>;
   // Adds Google Analytics tracking ID to the page
   googleAnalytics: string;
   // Whether zoomable images are enabled by default

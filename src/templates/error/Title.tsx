@@ -2,7 +2,7 @@ interface TitleProps {
   statusCode: number;
 }
 
-export function Title({ statusCode }: TitleProps) {
+export function Title({ statusCode }: TitleProps): JSX.Element {
   return (
     <div className="font-anton mb-4 text-center lg:text-left">
       <h1 className="text-6xl lg:text-9xl">

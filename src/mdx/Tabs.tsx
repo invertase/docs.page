@@ -1,13 +1,4 @@
-import React, {
-  useEffect,
-  useState,
-  createContext,
-  useContext,
-  useCallback,
-  createRef,
-  RefObject,
-} from 'react';
-import cx from 'classnames';
+import React, { useEffect, useState, createContext, useContext, useCallback } from 'react';
 import { SlugPropertiesContext } from '../utils/properties';
 
 // The prefix within local storage for all <Tabs /> components
@@ -21,12 +12,14 @@ type ContextProps = {
 // Context holding all local storage items for the PREFIX
 const Context = createContext<ContextProps>({
   tabs: {},
-  updateTab: () => {},
+  updateTab: () => {
+    return;
+  },
 });
 
 // Provides context to all <Tabs /> components to allow for listening to
 // changes on synchronized tabs.
-export function TabsContext({ children }: { children: React.ReactNode }) {
+export function TabsContext({ children }: { children: React.ReactNode }): JSX.Element {
   const [tabs, setTabs] = useState({});
 
   const updateTab = useCallback((key: string, value: string) => {
@@ -50,6 +43,9 @@ export function TabsContext({ children }: { children: React.ReactNode }) {
 
 // Hook which provides access to any current stored local storage key
 // for a provided groupId. Also accepts a local state dispatch and updates it.
+
+// Remove once component working again
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function useTabSynchronization(
   groupId: string,
   setState: React.Dispatch<React.SetStateAction<string>>,
@@ -90,9 +86,11 @@ type TabsProps = {
   className?: string;
 };
 
-export function Tabs(props: TabsProps) {
-  console.log(props);
-  const { groupId, defaultValue, values, children, className } = props;
+// Remove once component working again.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function Tabs(props: TabsProps): JSX.Element {
+  // console.log(props);
+  // const { groupId, defaultValue, values, children, className } = props;
   return null;
   // const { hash } = useContext(SlugPropertiesContext);
   // const [selected, setSelected] = useState<string>(() => {
@@ -211,9 +209,9 @@ export function Tabs(props: TabsProps) {
 
 type TabItemProps = {
   id: string;
-  children: React.ReactElement | React.ReactElement[];
+  children: JSX.Element | JSX.Element[];
 };
 
-export function TabItem(props: TabItemProps) {
+export function TabItem(props: TabItemProps): JSX.Element | JSX.Element[] {
   return props.children;
 }
