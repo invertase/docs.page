@@ -1,17 +1,18 @@
 import React from 'react';
-import cx from 'classnames';
 
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { Footer } from './Footer';
 import { Divider } from './Divider';
-import { hasScrolled, useConfig, usePageContent } from '../hooks';
+import { useConfig, usePageContent } from '../hooks';
 import { TableOfContents } from './TableOfContents';
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export function Layout({ children }: { children: React.ReactNode }): JSX.Element {
   const config = useConfig();
   const content = usePageContent();
-  const showBorder = hasScrolled();
+
+  // TODO(ehesp): apply border
+  // const showBorder = hasScrolled();
 
   if (!content || !config) {
     throw new Error('Layout must be a child of: ConfigContext, PageContentContext');

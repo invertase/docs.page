@@ -1,10 +1,11 @@
+import Script from 'next/script';
 import { isProduction } from './index';
 import { PageContent } from './content';
 import { SlugProperties } from './properties';
 import googleAnalytics from '../scripts/google-analytics';
 import { getImageSrc } from '../components/Image';
 
-export function getHeadTags(properties: SlugProperties, content: PageContent) {
+export function getHeadTags(properties: SlugProperties, content: PageContent): JSX.Element[] {
   const { frontmatter, config } = content;
 
   const title = (() => {
@@ -34,7 +35,14 @@ export function getHeadTags(properties: SlugProperties, content: PageContent) {
   }
 
   if (config.favicon) {
-    tags.push(<link key="favicon" rel="icon" type="image/png" href={config.favicon} />);
+    tags.push(
+      <link
+        key="favicon"
+        rel="icon"
+        type="image/png"
+        href={getImageSrc(properties, config.favicon)}
+      />,
+    );
   } else if (config.logo) {
     tags.push(
       <link
@@ -78,14 +86,13 @@ export function getHeadTags(properties: SlugProperties, content: PageContent) {
 
   if (isProduction() && config.googleAnalytics) {
     tags.push(
-      <script
+      <Script
         key="config:googleAnalytics"
-        async
         src={`https://www.googletagmanager.com/gtag/js?id=${config.googleAnalytics}`}
       />,
     );
     tags.push(
-      <script
+      <Script
         key="config:googleAnalytics:script"
         dangerouslySetInnerHTML={{ __html: googleAnalytics(config.googleAnalytics) }}
       />,

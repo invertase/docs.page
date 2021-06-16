@@ -8,7 +8,7 @@ import { SlugProperties } from '../utils/properties';
 import { useConfig, useSlugProperties } from '../hooks';
 
 // Sidebar wrapper - iterates the config and renders a sidebar.
-export function Sidebar() {
+export function Sidebar(): JSX.Element {
   const config = useConfig();
 
   return (

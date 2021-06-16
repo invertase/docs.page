@@ -18,7 +18,7 @@ import { Moon, Sun } from './Icons';
  * Since the user preference is only available on the client, an empty container
  * is rendered on the server.
  */
-export function DarkModeToggle() {
+export function DarkModeToggle(): JSX.Element {
   const ready = useNoSSR();
   const darkMode = useDarkMode(false, {
     storageKey: STORAGE_KEY,

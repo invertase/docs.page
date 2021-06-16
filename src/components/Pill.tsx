@@ -1,4 +1,4 @@
-import React, { ClassAttributes } from 'react';
+import React from 'react';
 import cx from 'classnames';
 
 export type PillType = 'success' | 'error' | 'warn' | 'info';
@@ -17,7 +17,7 @@ const classMap: { [key in PillType]: string } = {
   info: 'bg-gray-100 text-black',
 };
 
-export function Pill({ children, type, disabled, onClick }: PillProps) {
+export function Pill({ children, type, disabled, onClick }: PillProps): JSX.Element {
   const className = cx(
     'inline-block text-sm px-3 py-1 rounded-lg mr-2',
     {

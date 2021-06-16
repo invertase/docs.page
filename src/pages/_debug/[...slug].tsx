@@ -26,7 +26,7 @@ const tabs: { [key in Tab]: string } = {
 export default function DebugPage({
   error,
   content,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
+}: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element {
   const isFallback = useRouter().isFallback;
   const [tab, setTab] = useState<Tab>('overview');
 

@@ -10,7 +10,7 @@ type Varient = 'base' | 'dark' | 'light';
  * this component injects a few CSS classes into the scope based
  * on the provided theme.
  */
-function ThemeStyles() {
+function ThemeStyles(): JSX.Element {
   const config = useConfig();
 
   if (!config) {

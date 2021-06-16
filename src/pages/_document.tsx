@@ -4,7 +4,7 @@ import darkMode from '../scripts/dark-mode';
 import syncTabs from '../scripts/sync-tabs';
 
 export default class CustomDocument extends Document {
-  render() {
+  render(): JSX.Element {
     return (
       <Html lang="en">
         <Head />

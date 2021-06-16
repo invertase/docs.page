@@ -11,7 +11,7 @@ export interface SearchProps {
 /**
  * A wrapper around https://docsearch.algolia.com
  */
-export function Search({ apiKey, indexName }: SearchProps) {
+export function Search({ apiKey, indexName }: SearchProps): JSX.Element {
   return (
     <DocSearch
       apiKey={apiKey}

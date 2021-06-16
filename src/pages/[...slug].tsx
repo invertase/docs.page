@@ -32,7 +32,7 @@ export default function Documentation({
   properties,
   content,
   error,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
+}: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element {
   const { isFallback } = useRouter();
 
   if (isFallback) {
@@ -94,9 +94,8 @@ type StaticProps = {
 
 export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) => {
   let source = null;
-  let headings: HeadingNode[] = [];
+  const headings: HeadingNode[] = [];
   let error: RenderError = null;
-  let content: PageContent;
 
   // Extract the slug properties from the request.
   const properties = new Properties(params.slug as string[]);
@@ -116,7 +115,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
     }
   }
 
-  content = await getPageContent(properties);
+  const content = await getPageContent(properties);
 
   if (!content) {
     // If there is no content, the repository is not found
@@ -139,7 +138,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
         error = RenderError.serverError(properties);
       } else {
         source = serialization.source;
-        content.headings = serialization.headings as HeadingNode[];
+        content.headings = serialization.headings as unknown as HeadingNode[];
       }
     } else {
       error = RenderError.pageNotFound(properties);

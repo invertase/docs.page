@@ -6,7 +6,7 @@ export interface PreProps extends React.HTMLProps<HTMLPreElement> {
   'data-raw'?: string;
 }
 
-export function Pre(props: PreProps) {
+export function Pre(props: PreProps): JSX.Element {
   const [copied, setCopied] = useState<boolean>(false);
   let timeout: NodeJS.Timeout;
 
@@ -18,7 +18,8 @@ export function Pre(props: PreProps) {
       }, 2000);
     }
   }, [copied]);
-  
+
+  // Extract the data attributes from the component
   const title = props['data-title'];
   const raw = props['data-raw'];
 

@@ -1,6 +1,5 @@
 import React from 'react';
-import cx from 'classnames';
-import { MDXRemote } from 'next-mdx-remote';
+import { MDXRemote } from '@invertase/next-mdx-remote';
 
 import { Link } from '../components/Link';
 
@@ -35,7 +34,7 @@ const components = {
   YouTube,
 };
 
-export function Hydrate({ source }: { source: any }) {
+export function Hydrate({ source }: { source: any }): JSX.Element {
   return (
     <TabsContext>
       <MDXRemote {...source} components={components} />

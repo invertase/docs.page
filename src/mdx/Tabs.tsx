@@ -90,120 +90,123 @@ type TabsProps = {
   className?: string;
 };
 
-export function Tabs({ groupId, defaultValue, values, children, className }: TabsProps) {
-  const { hash } = useContext(SlugPropertiesContext);
-  const [selected, setSelected] = useState<string>(() => {
-    if (groupId) return null;
-    return defaultValue || values[0].value;
-  });
-  const synchronize = useTabSynchronization(groupId, setSelected);
-  const tabRefs: RefObject<HTMLDivElement>[] = [];
-  const paneRefs: RefObject<HTMLDivElement>[] = [];
+export function Tabs(props: TabsProps) {
+  console.log(props);
+  const { groupId, defaultValue, values, children, className } = props;
+  return null;
+  // const { hash } = useContext(SlugPropertiesContext);
+  // const [selected, setSelected] = useState<string>(() => {
+  //   if (groupId) return null;
+  //   return defaultValue || values[0].value;
+  // });
+  // const synchronize = useTabSynchronization(groupId, setSelected);
+  // const tabRefs: RefObject<HTMLDivElement>[] = [];
+  // const paneRefs: RefObject<HTMLDivElement>[] = [];
 
-  // Push references for each supplied "value"
-  values.forEach(() => {
-    tabRefs.push(createRef<HTMLDivElement>());
-    paneRefs.push(createRef<HTMLDivElement>());
-  });
+  // // Push references for each supplied "value"
+  // values.forEach(() => {
+  //   tabRefs.push(createRef<HTMLDivElement>());
+  //   paneRefs.push(createRef<HTMLDivElement>());
+  // });
 
-  function onChangeTab(tab: string) {
-    tabRefs.forEach(ref => {
-      if (ref.current.dataset.tabValue === tab) {
-        ref.current.classList.add('active');
-      } else {
-        ref.current.classList.remove('active');
-      }
-    });
+  // function onChangeTab(tab: string) {
+  //   tabRefs.forEach(ref => {
+  //     if (ref.current.dataset.tabValue === tab) {
+  //       ref.current.classList.add('active');
+  //     } else {
+  //       ref.current.classList.remove('active');
+  //     }
+  //   });
 
-    paneRefs.forEach((ref, ri) => {
-      if (ref.current.dataset.paneValue === tab) {
-        ref.current.classList.remove('hidden');
-      } else {
-        ref.current.classList.add('hidden');
-      }
-    });
-  }
+  //   paneRefs.forEach((ref, ri) => {
+  //     if (ref.current.dataset.paneValue === tab) {
+  //       ref.current.classList.remove('hidden');
+  //     } else {
+  //       ref.current.classList.add('hidden');
+  //     }
+  //   });
+  // }
 
-  // Whenever the selected tab changes, calculate the class of the
-  // ref elements.
-  useEffect(() => {
-    if (selected) {
-      onChangeTab(selected);
-    }
-  }, [selected]);
+  // // Whenever the selected tab changes, calculate the class of the
+  // // ref elements.
+  // useEffect(() => {
+  //   if (selected) {
+  //     onChangeTab(selected);
+  //   }
+  // }, [selected]);
 
-  return (
-    <div
-      data-sync-tabs={!!groupId}
-      data-sync-tabs-group={groupId || ''}
-      data-sync-tabs-hash={hash}
-      data-sync-tabs-default={defaultValue || ''}
-      className="border mb-4 dark:border-gray-700 rounded p-1"
-    >
-      <style jsx>{`
-        div[role='tab'].active {
-          border-bottom-width: 4px;
-          color: var(--theme-color);
-          border-color: var(--theme-color);
-        }
-      `}</style>
-      <div role="tablist" aria-orientation="horizontal" className={cx('flex', className)}>
-        {values.map(({ value, label }, index) => {
-          // const active = value === selected;
+  // return (
+  //   <div
+  //     data-sync-tabs={!!groupId}
+  //     data-sync-tabs-group={groupId || ''}
+  //     data-sync-tabs-hash={hash}
+  //     data-sync-tabs-default={defaultValue || ''}
+  //     className="border mb-4 dark:border-gray-700 rounded p-1"
+  //   >
+  //     <style jsx>{`
+  //       div[role='tab'].active {
+  //         border-bottom-width: 4px;
+  //         color: var(--theme-color);
+  //         border-color: var(--theme-color);
+  //       }
+  //     `}</style>
+  //     <div role="tablist" aria-orientation="horizontal" className={cx('flex', className)}>
+  //       {values.map(({ value, label }, index) => {
+  //         // const active = value === selected;
 
-          return (
-            <div
-              key={value}
-              ref={tabRefs[index]}
-              data-tab-value={value}
-              role="tab"
-              tabIndex={0}
-              onClick={() => {
-                if (groupId) synchronize(value);
-                else setSelected(value);
-              }}
-              className={
-                'cursor-pointer px-5 py-5 rounded font-bold dark:text-white hover:bg-gray-200 dark:hover:bg-gray-800'
-              }
-            >
-              {label}
-            </div>
-          );
-        })}
-      </div>
-      <div className="p-3">
-        {children.map(child => {
-          const value = child.props.value;
+  //         return (
+  //           <div
+  //             key={value}
+  //             ref={tabRefs[index]}
+  //             data-tab-value={value}
+  //             role="tab"
+  //             tabIndex={0}
+  //             onClick={() => {
+  //               if (groupId) synchronize(value);
+  //               else setSelected(value);
+  //             }}
+  //             className={
+  //               'cursor-pointer px-5 py-5 rounded font-bold dark:text-white hover:bg-gray-200 dark:hover:bg-gray-800'
+  //             }
+  //           >
+  //             {label}
+  //           </div>
+  //         );
+  //       })}
+  //     </div>
+  //     <div className="p-3">
+  //       {children.map(child => {
+  //         const value = child.props.value;
 
-          // It's not a <TabItem /> or the `value` prop is missing, so ignore.
-          if (!value) {
-            return null;
-          }
+  //         // It's not a <TabItem /> or the `value` prop is missing, so ignore.
+  //         if (!value) {
+  //           return null;
+  //         }
 
-          const refIndex = values.findIndex($ => $.value === value);
+  //         const refIndex = values.findIndex($ => $.value === value);
 
-          // It's a <TabItem /> with a `value` prop, but we cant match the value.
-          if (refIndex < 0) {
-            return null;
-          }
+  //         // It's a <TabItem /> with a `value` prop, but we cant match the value.
+  //         if (refIndex < 0) {
+  //           return null;
+  //         }
 
-          const indexValue = values[refIndex].value;
+  //         const indexValue = values[refIndex].value;
 
-          return (
-            <div
-              className="prose dark:prose-dark max-w-none"
-              key={indexValue}
-              ref={paneRefs[refIndex]}
-              role="tabpanel"
-              data-pane-value={indexValue}
-            >
-              {child}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
+  //         return (
+  //           <div
+  //             className="prose dark:prose-dark max-w-none"
+  //             key={indexValue}
+  //             ref={paneRefs[refIndex]}
+  //             role="tabpanel"
+  //             data-pane-value={indexValue}
+  //           >
+  //             {child}
+  //           </div>
+  //         );
+  //       })}
+  //     </div>
+  //   </div>
+  // );
 }
 
 type TabItemProps = {

@@ -8,6 +8,7 @@ const isHtml = require('is-html');
 // found during serialization.
 function sanitizeJsx() {
   return tree => {
+    console.log(tree);
     visit(tree, 'jsx', visitor);
   };
 

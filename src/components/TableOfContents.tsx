@@ -2,7 +2,7 @@ import React from 'react';
 import { usePageContent } from '../hooks';
 import Scrollspy from 'react-scrollspy';
 
-function TableOfContents() {
+function TableOfContents(): JSX.Element {
   const { headings } = usePageContent();
 
   return (

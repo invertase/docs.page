@@ -4,7 +4,7 @@ import { DarkModeToggle } from './DarkModeToggle';
 import { Pencil } from './Icons';
 import { ExternalLink } from './Link';
 
-function Footer() {
+function Footer(): JSX.Element {
   const editUrl = useSlugProperties().editUrl;
 
   return (

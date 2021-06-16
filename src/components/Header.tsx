@@ -8,7 +8,7 @@ import { Image } from './Image';
 import { Search } from './Search';
 import { hasScrolled, useConfig, useSlugProperties } from '../hooks';
 
-export function Header() {
+export function Header(): JSX.Element {
   const config = useConfig();
   const properties = useSlugProperties();
   const repo = `${properties.owner}/${properties.repository}`;
