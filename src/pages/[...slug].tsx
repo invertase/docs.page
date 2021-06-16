@@ -20,6 +20,7 @@ import { getHeadTags } from '../utils/html';
 import { isProduction, routeChangeComplete, routeChangeError, routeChangeStart } from '../utils';
 import { mdxSerialize } from '../utils/mdx-serialize';
 import { Loading } from '../templates/Loading';
+import { MDXRemoteSerializeResult } from '@invertase/next-mdx-remote/dist/types';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', routeChangeStart);
@@ -87,7 +88,7 @@ type StaticProps = {
   domain: CustomDomain;
   properties: SlugProperties;
   headings: HeadingNode[];
-  source?: string;
+  source?: MDXRemoteSerializeResult;
   content?: PageContent;
   error?: IRenderError;
 };
