@@ -11,7 +11,7 @@
     "clean": "rimraf .next",
     "test": "jest",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,mdx}\"",
-    "check:linting": "npx next lint",
+    "check:linting": "eslint . --max-warnings=0",
     "check:formatting": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md,mdx}\"",
     "check:typescript": "tsc",
     "check:spelling": "spellchecker --quiet --files=\"docs/**/*.{md,mdx}\" --dictionaries=\"./dictionary.js\" --reports=\"spelling.json\" --plugins spell indefinite-article repeated-words syntax-mentions syntax-urls frontmatter"
