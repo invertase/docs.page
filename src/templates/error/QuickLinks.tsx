@@ -14,7 +14,7 @@ export function QuickLinks() {
   return (
     <div className="dark:text-white mb-12">
       <h2 className="text-xl font-semibold mb-4">Quick Links</h2>
-      <div className="desktop:flex flex-wrap">
+      <div className="lg:flex flex-wrap">
         <Link href="https://github.com/invertase/docs.page" icon={<GitHub size={30} />}>
           Contribute
         </Link>
@@ -46,7 +46,7 @@ interface LinkProps {
 
 function Link({ href, icon, children }: LinkProps) {
   return (
-    <div className="mt-2 flex desktop:w-1/2 ">
+    <div className="mt-2 flex lg:w-1/2 ">
       <ExternalLink
         className="flex items-center space-x-4 w-full mx-2 p-4 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
         href={href}

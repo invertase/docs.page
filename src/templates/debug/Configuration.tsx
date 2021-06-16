@@ -8,7 +8,7 @@ function Configuration({ config }: { config: ProjectConfig }) {
       <Row title="Configuration" header />
       <Row title="Name">{config.name}</Row>
       <Row title="Logo">
-        <div className="flex flex-row items-center justify-end h-10 desktop:h-12">
+        <div className="flex flex-row items-center justify-end h-10 lg:h-12">
           <img src={config.logo} alt={config.name} style={{ maxHeight: '100%' }} />
         </div>
       </Row>

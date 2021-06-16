@@ -1,13 +1,15 @@
 import React from 'react';
+import cx from 'classnames';
 
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
 import { Footer } from './Footer';
 import { Divider } from './Divider';
-import { useConfig, usePageContent } from '../hooks';
+import { useConfig, usePageContent, useToggle } from '../hooks';
 import { TableOfContents } from './TableOfContents';
 
 export function Layout({ children }: { children: React.ReactNode }): JSX.Element {
+  const [open, toggleMenu] = useToggle();
   const config = useConfig();
   const content = usePageContent();
 
@@ -21,7 +23,7 @@ export function Layout({ children }: { children: React.ReactNode }): JSX.Element
   // TODO sidebar border & sticky
   return (
     <>
-      <Header />
+      <Header onSidebarToggle={toggleMenu} />
       <div className="grid grid-cols-[240px,auto,minmax(0,96ch),auto]">
         <div className="hidden lg:block col-start-1 col-end-2">
           <aside className="sticky top-20 px-4 h-[calc(100vh-4rem)] overflow-y-auto">
@@ -42,6 +44,23 @@ export function Layout({ children }: { children: React.ReactNode }): JSX.Element
             </div>
           </div>
         </div>
+      </div>
+      <div
+        onClick={toggleMenu}
+        className={cx('fixed lg:hidden inset-0 top-16 bg-black z-10 transition-all', {
+          'pointer-events-none bg-opacity-0': !open,
+          'bg-opacity-50': open,
+        })}
+      />
+      <div
+        className={cx(
+          'fixed lg:hidden inset-0 top-16 w-[75vw] shadow-2xl bg-docs-background p-4 z-10 transition-transform transform',
+          {
+            'translate-x-[-75vw]': !open,
+          },
+        )}
+      >
+        <Sidebar />
       </div>
     </>
   );

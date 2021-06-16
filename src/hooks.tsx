@@ -27,7 +27,12 @@ export function useConfig(): ProjectConfig {
   return useContext(ConfigContext);
 }
 
-export function useNoSSR() {
+export function useToggle(defaultValue?: boolean): [boolean, () => void] {
+  const [toggle, setToggle] = useState<boolean>(defaultValue);
+  return [toggle, () => setToggle($ => !$)];
+}
+
+export function useNoSSR(): boolean {
   const [ready, setReady] = useState<boolean>(false);
   useEffect(() => setReady(true), []);
   return ready;

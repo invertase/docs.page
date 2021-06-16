@@ -22,9 +22,6 @@ module.exports = {
       fontFamily: {
         anton: ['Anton', 'sans-serif'],
       },
-      screens: {
-        desktop: '940px',
-      },
       typography: theme => ({
         DEFAULT: {
           css: {
@@ -44,10 +41,9 @@ module.exports = {
               borderRadius: rem(4),
               fontWeight: 400,
             },
-            'blockquote p:first-of-type::before, blockquote p:last-of-type::after, code::before, code::after':
-              {
-                display: 'none',
-              },
+            'blockquote p:first-of-type::before, blockquote p:last-of-type::after, code::before, code::after': {
+              display: 'none',
+            },
           },
         },
         dark: {

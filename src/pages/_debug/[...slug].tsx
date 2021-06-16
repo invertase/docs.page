@@ -69,7 +69,7 @@ export default function DebugPage({
             </>
           )}
         </div>
-        <div className="desktop:hidden">
+        <div className="lg:hidden">
           <div className="mt-6">
             <label htmlFor="selected-tab" className="sr-only">
               Select a tab
@@ -85,7 +85,7 @@ export default function DebugPage({
             </select>
           </div>
         </div>
-        <div className="hidden desktop:block">
+        <div className="hidden lg:block">
           <div className="mt-6">
             <div className="border-b border-gray-200">
               <nav className="-mb-px flex dark:text-white space-x-8">
