@@ -16,6 +16,11 @@ const defaultOptions: RehypeHeadingsOptions = {
   },
 };
 
+/**
+ * Provides a list of heading elements in the AST.
+ * @param options
+ * @returns
+ */
 export default function rehypeHeadings(
   options: RehypeHeadingsOptions = defaultOptions,
 ): (ast: Node) => void {
@@ -38,26 +43,3 @@ export default function rehypeHeadings(
     options.callback(nodes);
   };
 }
-
-// const allowedHeadings = options.headings || ['h2', 'h3', 'h4', 'h5', 'h6'];
-// let nodes = [];
-
-// return tree => {
-//   visit(tree, 'element', visitor);
-
-//   if (options.callback) {
-//     options.callback(nodes);
-//   }
-// };
-
-// function visitor(node) {
-//   if (rank(node) && has(node, 'id')) {
-//     if (allowedHeadings.includes(node.tagName)) {
-//       nodes.push({
-//         id: node.properties.id,
-//         title: toString(node),
-//         rank: rank(node),
-//       });
-//     }
-//   }
-// }

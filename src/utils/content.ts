@@ -17,7 +17,6 @@ export type Frontmatter = {
   title: string;
   description: string;
   image: string;
-  tableOfContents: boolean;
   sidebar: boolean;
   redirect: string;
 };
@@ -94,7 +93,6 @@ function mergeFrontmatter(data: Record<string, string>): Frontmatter {
     title: getString(data, 'title', ''),
     description: getString(data, 'description', ''),
     image: getString(data, 'image', ''),
-    tableOfContents: getBoolean(data, 'tableOfContents', true),
     sidebar: getBoolean(data, 'sidebar', true),
     redirect: getString(data, 'redirect', ''),
   };

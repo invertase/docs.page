@@ -4,12 +4,11 @@ import remarkUnwrapImages from 'remark-unwrap-images';
 import rehypeHighlight from 'rehype-highlight';
 import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
 
+import { MDXRemoteSerializeResult } from '@invertase/next-mdx-remote/dist/types';
 import { HeadingNode, PageContent } from './content';
 import { headerDepthToHeaderList } from './index';
-// import rehypeCodeBlocks from '../../plugins/rehype-code-blocks';
+import rehypeCodeBlocks from '../mdx/plugins/rehype-code-blocks';
 import rehypeHeadings from '../mdx/plugins/rehype-headings';
-import { MDXRemoteSerializeResult } from '@invertase/next-mdx-remote/dist/types';
-// import remarkSanitizeJsx from '../../plugins/remark-sanitize-jsx';
 
 interface SerializationResponse {
   source: MDXRemoteSerializeResult;
@@ -27,8 +26,6 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
     response.source = await serialize(content.markdown, {
       mdxOptions: {
         remarkPlugins: [
-          // Sanitize any JSX nodes within MD
-          // remarkSanitizeJsx,
           // Ensure any `img` tags are not wrapped in `p` tags
           remarkUnwrapImages,
           // Convert any admonition to HTML
@@ -36,22 +33,18 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
           // remarkAdmonitions,
         ],
         rehypePlugins: [
-          // rehypeCodeBlocks,
+          rehypeCodeBlocks,
           // Convert `pre` blogs into prism formatting
           rehypeHighlight,
           // Add an `id` to all heading tags
           rehypeSlug,
-          // If the table of contents is enabled for this page,
-          // gather the headings for the current page
-          content.frontmatter.tableOfContents
-            ? [
-                rehypeHeadings,
-                {
-                  headings: headerDepthToHeaderList(content.config.headerDepth),
-                  callback: (headings: HeadingNode[]) => (response.headings = headings),
-                },
-              ]
-            : [],
+          [
+            rehypeHeadings,
+            {
+              headings: headerDepthToHeaderList(content.config.headerDepth),
+              callback: (headings: HeadingNode[]) => (response.headings = headings),
+            },
+          ],
           // Make emojis accessible
           rehypeAccessibleEmojis,
         ],
