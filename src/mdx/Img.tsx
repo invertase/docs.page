@@ -23,7 +23,7 @@ export function Img({ zoom, caption, ...props }: ImageProps): JSX.Element {
   const wrapper = (child: React.ReactElement) =>
     withFigure(zoomEnabled ? withZoom(child) : child, caption);
 
-  return wrapper(<Image {...props} />);
+  return wrapper(<Image {...props} className="mx-auto" />);
 }
 
 function withFigure(child: React.ReactElement, caption?: string) {

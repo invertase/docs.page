@@ -13,7 +13,9 @@ import { MDXRemoteSerializeResult } from '@invertase/next-mdx-remote/dist/types'
 
 const components = {
   // HTML element overrides
-  a: (props: React.HTMLProps<HTMLAnchorElement>) => <Link {...props} />,
+  a: (props: React.HTMLProps<HTMLAnchorElement>) => (
+    <Link {...props} className="hover:opacity-75" />
+  ),
   h1: (props: React.HTMLProps<HTMLHeadingElement>) => <Heading {...props} type="h1" />,
   h2: (props: React.HTMLProps<HTMLHeadingElement>) => <Heading {...props} type="h2" />,
   h3: (props: React.HTMLProps<HTMLHeadingElement>) => <Heading {...props} type="h3" />,

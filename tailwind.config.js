@@ -10,12 +10,10 @@ module.exports = {
   mode: 'jit',
   purge: ['./src/**/*.{tsx,ts,css}'],
   theme: {
-    rotate: {
-      270: '270deg',
-    },
     extend: {
       colors: {
         docs: {
+          theme: 'var(--theme-color)',
           background: 'var(--background)',
         },
       },
@@ -25,13 +23,6 @@ module.exports = {
       typography: theme => ({
         DEFAULT: {
           css: {
-            'a:hover': {
-              opacity: '0.75',
-            },
-            img: {
-              marginLeft: 'auto',
-              marginRight: 'auto',
-            },
             code: {
               paddingLeft: rem(4),
               paddingRight: rem(4),
