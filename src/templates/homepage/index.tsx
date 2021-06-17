@@ -96,10 +96,10 @@ export default function IndexPage() {
         />
         <div className="lg:ml-20 mt-16 lg:flex items-center">
           <div className="flex-1">
-            <p className="text-lg font-thin px-3">
+            <p className="text-lg px-3">
               docs.page sources content directly from any Open Source GitHub repository.
             </p>
-            <p className="mt-4 text-lg font-thin px-3">
+            <p className="mt-4 text-lg px-3">
               To get started, create an empty <code className="text-red-400">docs</code> directory
               at the root of your repository.
             </p>
@@ -133,12 +133,12 @@ export default function IndexPage() {
             </div>
           </div>
           <div className="flex-1">
-            <p className="text-lg font-thin px-3">
-              Create an <code className="text-blue-500">{`index.md`}</code> file at the root of your{' '}
+            <p className="text-lg px-3">
+              Create an <code className="text-blue-500">{`index.mdx`}</code> file at the root of your{' '}
               <code className="text-blue-500">/docs</code> directory. docs.page supports nested
               pages based on your directory structure of the directory.
             </p>
-            <p className="mt-4 text-lg font-thin px-3">
+            <p className="mt-4 text-lg px-3">
               Start by writing some <a href="https://www.markdownguide.org/">Markdown</a> content.
               Installation pages are always a great place to start!
             </p>

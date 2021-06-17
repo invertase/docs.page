@@ -15,11 +15,12 @@ import { IRenderError, redirect, RenderError } from '../utils/error';
 import { SlugProperties, SlugPropertiesContext, Properties } from '../utils/properties';
 import { PageContentContext, getPageContent, PageContent, HeadingNode } from '../utils/content';
 import { getPullRequestMetadata, getRepositoriesPaths, getRepositoryList } from '../utils/github';
-import { CustomDomain, CustomDomainContext } from '../utils/domain';
+import { CustomDomain, CustomDomainContext, getCustomDomain } from '../utils/domain';
 import { getHeadTags } from '../utils/html';
 import { isProduction, routeChangeComplete, routeChangeError, routeChangeStart } from '../utils';
 import { mdxSerialize } from '../utils/mdx-serialize';
 import { Loading } from '../templates/Loading';
+import { getDomainsList } from '../utils/file';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', routeChangeStart);
@@ -92,15 +93,22 @@ type StaticProps = {
   error?: IRenderError;
 };
 
-export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) => {
+export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
+  let slug = ctx.params.slug as string[];
   let source = null;
   let headings: HeadingNode[] = [];
   let error: RenderError = null;
   let content: PageContent;
 
-  // Extract the slug properties from the request.
-  const properties = new Properties(params.slug as string[]);
+  if (slug.length === 4) {
+    if (slug[0] === slug[2] && slug[1] === slug[3]) {
+      slug = [slug[0], slug[1]];
+    }
+  }
 
+  // Extract the slug properties from the request.
+  const properties = new Properties(slug);
+  
   // If the ref looks like a PR, update the details to point towards
   // the PR owner (which might be a different repo)
   if (properties.isPullRequest()) {
@@ -148,7 +156,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
 
   return {
     props: {
-      domain: null, // await getCustomDomain(properties),
+      domain: getCustomDomain(getDomainsList(), properties),
       properties: properties.toObject(),
       source,
       headings,

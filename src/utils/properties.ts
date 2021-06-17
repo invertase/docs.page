@@ -16,7 +16,7 @@ export class Properties {
   isBaseBranch: boolean;
 
   public constructor(params: string[]) {
-    let [owner, repository, ...path] = params;
+    let [owner, repository, maybeRef, ...path] = params;
     let ref = null;
 
     // project paths containing a SPLITTER mean a specific branch has been requested
@@ -29,10 +29,23 @@ export class Properties {
       );
     }
 
-    // if there is a branch or PR, assign it
+    /**
+     * When no domain is provided the "ref" is part of the repository, e.g.
+     * ['invertase', 'melos~ref', ...] - in this case we need to extract the ref from the repository.
+     */
     if (chunks.length === 2 && chunks[1]) {
       repository = chunks[0];
       ref = chunks[1];
+    }
+
+    /**
+     * In the case of pages with custom domains, the "ref" is a separated param, e.g.
+     * ['invertase', 'melos', '~ref', ...] - in this case we need to extract the ref from the chunk.
+     */
+    if (!ref && maybeRef?.startsWith(SPLITTER)) {
+      ref = maybeRef.substring(1);
+    } else if (maybeRef) {
+      path = [maybeRef, ...path];
     }
 
     let base = `/${owner}/${repository}`;
@@ -40,7 +53,7 @@ export class Properties {
     if (ref) {
       base += encodeURI(`${SPLITTER}${ref}`);
     }
-
+    
     this.owner = owner;
     this.repository = repository;
     this.ref = ref;

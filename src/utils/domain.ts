@@ -1,21 +1,22 @@
 import { createContext } from 'react';
-
-import { getDomainsList } from './github';
 import { Properties } from './properties';
 
 export type CustomDomain = string | null;
 
-export async function getCustomDomain(properties: Properties): Promise<CustomDomain> {
-  const domains = await getDomainsList();
-  const matcher = `${properties.owner}/${properties.repository}`;
+// NOTE: don't import the getter logic for importing the domains.txt file - the client 
+// imports this file so we don't have access to "fs"
+export function getCustomDomain(domains: [string,string][],properties: Properties): CustomDomain {
+  // Find the domain from the list
+  const match = domains.find(([, repo]) => {
+    return repo === `${properties.owner}/${properties.repository}`;
+  });
 
-  const match = domains.find(([, repository]) => repository === matcher);
-
-  if (match) {
-    return match[0] as CustomDomain;
+  if (!match) {
+    return null;
   }
 
-  return null;
+  // Return the custom domain
+  return match[0];
 }
 
 export const CustomDomainContext = createContext<CustomDomain>(null);

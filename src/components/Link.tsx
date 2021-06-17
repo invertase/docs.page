@@ -2,8 +2,6 @@ import React from 'react';
 import NextLink from 'next/link';
 import { SPLITTER } from '../utils/properties';
 import { useCustomDomain, useSlugProperties } from '../hooks';
-import { isProduction } from '../utils';
-import { useRouter } from 'next/router';
 
 /**
  * Custom Link component which builds upon top of the Next Link
@@ -18,7 +16,7 @@ import { useRouter } from 'next/router';
  */
 export function Link(props: React.HTMLProps<HTMLAnchorElement>) {
   // const router = useRouter();
-  // const customDomain = useCustomDomain();
+  const domain = useCustomDomain();
   const properties = useSlugProperties();
 
   if (isHashLink(props.href)) {
@@ -29,41 +27,26 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>) {
     return <ExternalLink {...props} />;
   }
 
-  // Custom domains are only used in production
-  // const isUsingCustomDomain: boolean = isProduction() && !!customDomain;
-
-  // Remove `href` from `props`
+  // Extract `href` from `props`
   let { href, ...anchorProps } = props;
 
-  // If no custom domain, set the repository path as the href
-  // if (!isUsingCustomDomain) {
-  //   href = `/${properties.owner}/${properties.repository}`;
+  // If there is no custom domain, attach the owner and repo
+  if (!domain) {
+    href = `/${properties.owner}/${properties.repository}`;
 
-  //   // Add a ref to the current href, if the branch is not default
-  //   if (!properties.isBaseBranch) {
-  //     href += `${SPLITTER}${properties.ref}`;
-  //   }
-
-  href = `/${properties.owner}/${properties.repository}`;
-
-  // Add a ref to the current href, if the branch is not default
-  if (!properties.isBaseBranch) {
-    href += `${SPLITTER}${properties.ref}`;
+    // Add a ref to the current href, if the branch is not the base branch
+    if (!properties.isBaseBranch) {
+      href += `${SPLITTER}${properties.ref}`;
+    }
   }
 
-  // Ensure href passed by user starts with a `/`
-  if (props.href.startsWith('/')) {
-    href += props.href;
-  } else {
-    href += `/${props.href}`;
+  // If there is a domain, and we're on a ref, prefix the URL instead
+  if (domain && !properties.isBaseBranch) {
+    href = `/${SPLITTER}${properties.ref}` + href;
   }
-
-  // if (isUsingCustomDomain) {
-  //   href = `https://${customDomain}${href}`;
-  // }
 
   return (
-    <NextLink href={href} prefetch={false}>
+    <NextLink href={href}>
       <a {...anchorProps}>{props.children}</a>
     </NextLink>
   );
