@@ -118,7 +118,7 @@ export default function IndexPage(): JSX.Element {
             <span>
               Create an{' '}
               <span className="bg-clip-text text-transparent bg-gradient-to-br from-green-400 to-blue-500">
-                index.md
+                index.mdx
               </span>{' '}
               file.
             </span>
