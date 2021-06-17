@@ -57,7 +57,7 @@ export function Header(props: HeaderProps): JSX.Element {
         <div className="hidden lg:flex items-center justify-center space-x-6 overflow-auto">
           <Navigation />
         </div>
-        <div className="flex-1 flex justify-end">
+        <div className="flex-grow flex justify-end">
           <Utils />
         </div>
         <MobileMenuIcon onToggle={props.onSidebarToggle} />
@@ -92,12 +92,6 @@ type MobileMenuIconProps = {
 };
 
 function MobileMenuIcon(props: MobileMenuIconProps) {
-  const config = useConfig();
-
-  if (config.navigation.length === 0) {
-    return null;
-  }
-
   return (
     <div className="flex lg:hidden ml-4">
       <div role="button" tabIndex={0} onClick={props.onToggle}>

@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import cx from 'classnames';
+import { useRouter } from 'next/router';
 
 import { Header } from './Header';
 import { Sidebar } from './Sidebar';
@@ -7,20 +8,30 @@ import { Footer } from './Footer';
 import { Divider } from './Divider';
 import { useConfig, usePageContent, useToggle } from '../hooks';
 import { TableOfContents } from './TableOfContents';
+import { MobileNav } from './MobileNav';
 
 export function Layout({ children }: { children: React.ReactNode }): JSX.Element {
   const [open, toggleMenu] = useToggle();
   const config = useConfig();
   const content = usePageContent();
+  const router = useRouter();
 
-  // TODO(ehesp): apply border
-  // const showBorder = hasScrolled();
+  // Toggle the menu when the user clicks a link
+  useEffect(() => {
+    const toggle = () => {
+      if (open) {
+        toggleMenu();
+      }
+    };
+
+    router.events.on('routeChangeStart', toggle);
+    return () => router.events.off('routeChangeStart', toggle);
+  }, [open]);
 
   if (!content || !config) {
     throw new Error('Layout must be a child of: ConfigContext, PageContentContext');
   }
 
-  // TODO sidebar border & sticky
   return (
     <>
       <Header onSidebarToggle={toggleMenu} />
@@ -52,16 +63,7 @@ export function Layout({ children }: { children: React.ReactNode }): JSX.Element
           'bg-opacity-50': open,
         })}
       />
-      <div
-        className={cx(
-          'fixed lg:hidden inset-0 top-16 w-[75vw] shadow-2xl bg-docs-background p-4 z-10 transition-transform transform',
-          {
-            'translate-x-[-75vw]': !open,
-          },
-        )}
-      >
-        <Sidebar />
-      </div>
+      <MobileNav visible={open} />
     </>
   );
 }
