@@ -35,18 +35,7 @@ module.exports = {
       }),
       afterFiles: domains.map(([domain, repository]) => {
         const [organization, repo] = repository.split('/');
-        console.log({
-          // Map all incoming requests
-          source: '/:path*',
-          // Only where the domain matches the one provided
-          has: [
-            {
-              type: 'host',
-              value: domain,
-            },
-          ],
-          destination: `/${organization}/${repo}/:path*`,
-        });
+
         return {
           // Map all incoming requests
           source: '/:path*',
