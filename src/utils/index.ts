@@ -2,14 +2,6 @@ import { graphql } from '@octokit/graphql';
 import get from 'lodash.get';
 import NProgress from 'nprogress';
 
-declare global {
-  interface Window {
-    _docs_page: {
-      syncTabs: () => void;
-    };
-  }
-}
-
 export function isString(value: unknown): value is string {
   return typeof value === 'string';
 }
@@ -45,10 +37,6 @@ export function routeChangeStart(): void {
 
 export function routeChangeComplete(): void {
   NProgress.done();
-  // Trigger the sync-tabs script to run on client route changes
-  if (window._docs_page.syncTabs) {
-    window._docs_page.syncTabs();
-  }
 }
 
 export function routeChangeError(): void {
