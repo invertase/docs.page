@@ -1,5 +1,4 @@
 import React from 'react';
-import cx from 'classnames';
 import NextLink from 'next/link';
 import { SPLITTER } from '../utils/properties';
 import { useSlugProperties } from '../hooks';
