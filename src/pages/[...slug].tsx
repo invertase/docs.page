@@ -28,7 +28,7 @@ NextRouter.events.on('routeChangeComplete', routeChangeComplete);
 NextRouter.events.on('routeChangeError', routeChangeError);
 
 export default function Documentation({
-  domain, // TODO custom domains
+  domain,
   source,
   properties,
   content,
@@ -100,6 +100,16 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
   let error: RenderError = null;
   let content: PageContent;
 
+  /**
+   * When a custom domain points to the root, the `beforeFiles` rewrite (next.config.js) is triggered:
+   *   -> destination: `/${organization}/${repo}`,
+   * This incoming request is also then picked up by the `afterFiles` rewrite, and appends the org & repo
+   * to the destination too:
+   *   -> destination: `/${organization}/${repo}/:path*`,
+   *
+   * In this scenario, the slug comes through as `[':org', ':repo', ':org', ':repo']`,  so we
+   * rewrite the slug if we think this scenario has happened.
+   */
   if (slug.length === 4) {
     if (slug[0] === slug[2] && slug[1] === slug[3]) {
       slug = [slug[0], slug[1]];
@@ -108,7 +118,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
 
   // Extract the slug properties from the request.
   const properties = new Properties(slug);
-  
+
   // If the ref looks like a PR, update the details to point towards
   // the PR owner (which might be a different repo)
   if (properties.isPullRequest()) {
