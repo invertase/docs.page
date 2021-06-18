@@ -18,6 +18,7 @@
 :root {
   --light-background: #ffffff;
   --dark-background: #202528;
+  --pre-background: #252525;
 }
 
 @layer base {
