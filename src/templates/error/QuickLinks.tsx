@@ -48,7 +48,7 @@ function Link({ href, icon, children }: LinkProps) {
   return (
     <div className="mt-2 flex lg:w-1/2 ">
       <ExternalLink
-        className="flex items-center space-x-4 w-full mx-2 p-4 rounded hover:bg-gray-100 dark:hover:bg-gray-800"
+        className="flex items-center space-x-4 w-full mx-2 p-4 rounded hover:bg-gray-400/10"
         href={href}
       >
         {icon}

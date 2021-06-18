@@ -6,8 +6,8 @@ import { Footer } from '../homepage/Footer';
 
 import { QuickLinks } from './QuickLinks';
 import { Title } from './Title';
-import { DarkModeToggle } from '../../components/DarkModeToggle';
 import { Link, ExternalLink } from '../../components/Link';
+import { DarkModeToggle } from '../../components/DarkModeToggle';
 
 export * from './ErrorBoundary';
 
@@ -17,25 +17,24 @@ export function Error(error: IRenderError): JSX.Element {
       <NextHead>
         <meta key="noindex" name="robots" content="noindex" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
-        {/* TODO should this be changed? */
-        /* eslint-disable-next-line @next/next/no-page-custom-font */}
+        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet" />
       </NextHead>
-      <div className="py-2 bg-gray-800">
-        <div className="max-w-4xl mx-auto flex px-2">
-          <div className="flex-1">
-            <img src="/assets/docs-page-logo.png" alt="docs.page" className="h-7" />
-          </div>
-          <DarkModeToggle />
-        </div>
-      </div>
       <section className="mt-20 max-w-4xl mx-auto px-2">
+        <div className="text-center lg:text-left font-mono dark:text-white mb-10">
+          <ExternalLink href="https://docs.page">
+            <span className="mr-1 text-xl">←</span>Go to docs.page
+          </ExternalLink>
+        </div>
         <Title statusCode={error.statusCode} />
         <div className="my-16 prose dark:prose-dark max-w-none">
           {error.statusCode === 500 && <ServerError {...error} />}
           {error.statusCode !== 500 && <NotFound {...error} />}
         </div>
         <QuickLinks />
+        <div className="mb-6">
+          <DarkModeToggle />
+        </div>
         <Footer />
       </section>
     </>

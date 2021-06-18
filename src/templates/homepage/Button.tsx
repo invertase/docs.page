@@ -9,7 +9,7 @@ type Props = {
 export function Button({ href, children }: Props): JSX.Element {
   return (
     <Link href={href}>
-      <a className="px-6 py-2 border border-gray-600 hover:border-white no-underline rounded transition-all duration-100">
+      <a className="px-6 py-2 border border-gray-600 hover:border-gray-300 dark:hover:border-white no-underline rounded transition-all duration-100">
         {children}
       </a>
     </Link>

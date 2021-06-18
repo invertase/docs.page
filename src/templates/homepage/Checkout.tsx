@@ -42,7 +42,7 @@ export function Checkout(): JSX.Element {
           onChange={e => setRepo(e.target.value)}
         />
       </div>
-      <p className="text-lg font-thin px-3">
+      <p className="text-lg px-3">
         Enter your GitHub repository URL above to view your new documentation!
       </p>
       <div className="px-3 mt-8">

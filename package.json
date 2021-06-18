@@ -55,7 +55,7 @@
     "rimraf": "^3.0.2",
     "serialize-error": "^7.0.1",
     "stacktracey": "^2.0.15",
-    "tailwindcss": "^2.1.4",
+    "tailwindcss": "^2.2.0",
     "unist-util-visit": "^2.0.3",
     "valid-data-url": "^3.0.1"
   },
