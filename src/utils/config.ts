@@ -112,6 +112,7 @@ function mergeSidebarConfig(json: any): SidebarItem[] {
         if (typeof first !== 'string') return null;
         if (typeof second === 'string') return [first, second];
         if (!Array.isArray(second)) return null;
+
         return [first, iterate(second)];
       })
       .filter(Boolean);

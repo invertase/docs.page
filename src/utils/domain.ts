@@ -7,6 +7,7 @@ export type CustomDomain = string | null;
 
 export async function getCustomDomain(properties: Properties): Promise<CustomDomain> {
   const domains = await getDomainsList();
+
   const matcher = `${properties.owner}/${properties.repository}`;
 
   const match = domains.find(([, repository]) => repository === matcher);

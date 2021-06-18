@@ -9,7 +9,8 @@
     "start": "next start",
     "serve": "npm run build && npm run start",
     "clean": "rimraf .next",
-    "test": "jest"
+    "test": "jest",
+    "coverage": "jest --coverage"
   },
   "dependencies": {
     "@docsearch/react": "^3.0.0-alpha.32",

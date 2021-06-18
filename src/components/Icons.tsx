@@ -2,7 +2,7 @@
  * Credit: https://heroicons.com
  */
 
-import { CSSProperties } from 'react';
+import React, { CSSProperties } from 'react';
 
 interface IconProps {
   size: number;
