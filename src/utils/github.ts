@@ -16,14 +16,15 @@ type RepositoryPathsQuery = {
 
 type RepositoriesPathsQuery = { [key: string]: RepositoryPathsQuery | null };
 
-export async function getRepositoriesPaths(repositories: Array<string[]>): Promise<string[]> {
+export async function getRepositoriesPaths(repositories: string[]): Promise<string[]> {
   if (repositories.length === 0) {
     return [];
   }
 
   let query = '';
   for (let i = 0; i < repositories.length; i++) {
-    const [owner, name] = repositories[i];
+    const [owner, name] = repositories[i].split('/');
+
     query += `
       ${camelCase(owner + name)}: repository(owner: "${owner}", name: "${name}") {
         owner {
@@ -93,101 +94,6 @@ export async function getRepositoriesPaths(repositories: Array<string[]>): Promi
   }
 
   return paths;
-}
-
-type RepositoryListQuery = {
-  repository: {
-    file?: {
-      text: string;
-    };
-  };
-};
-
-export type RepositoryListItem = [string, string];
-
-export async function getRepositoryList(): Promise<RepositoryListItem[]> {
-  let raw = '';
-
-  const [error, response] = await A2A<RepositoryListQuery>(
-    GithubGQLClient({
-      query: `
-          query RepositoriesList($owner: String!, $repository: String!, $file: String!) {
-            repository(owner: $owner, name: $repository) {
-              file: object(expression: $file) {
-                ... on Blob {
-                  text
-                }
-              }
-            }
-          }
-        `,
-      owner: 'invertase',
-      repository: 'docs.page',
-      file: 'master:repositories.txt',
-    }),
-  );
-
-  if (error) {
-    console.error('Unable to fetch repositories list', error);
-  }
-
-  if (error || !response.repository?.file?.text) {
-    raw = '';
-  } else {
-    raw = response.repository.file.text;
-  }
-
-  if (!raw) {
-    return [];
-  }
-
-  return raw.split('\n').map<RepositoryListItem>(str => str.split('/') as RepositoryListItem);
-}
-
-type DomainListQuery = {
-  repository: {
-    file?: {
-      text: string;
-    };
-  };
-};
-
-// [domain, repository]
-export type DomainListItem = [string, string];
-
-export async function getDomainsList(): Promise<DomainListItem[]> {
-  let raw = '';
-
-  const [error, response] = await A2A<DomainListQuery>(
-    GithubGQLClient({
-      query: `
-          query DomainsList($owner: String!, $repository: String!, $file: String!) {
-            repository(owner: $owner, name: $repository) {
-              file: object(expression: $file) {
-                ... on Blob {
-                  text
-                }
-              }
-            }
-          }
-        `,
-      owner: 'invertase',
-      repository: 'docs.page',
-      file: 'master:domains.txt',
-    }),
-  );
-
-  if (error) {
-    console.error('Unable to fetch domains list', error);
-  }
-
-  if (error || !response.repository?.file?.text) {
-    raw = '';
-  } else {
-    raw = response.repository.file.text;
-  }
-
-  return raw.split('\n').map<DomainListItem>(str => str.split(' ') as DomainListItem);
 }
 
 type PullRequestQuery = {

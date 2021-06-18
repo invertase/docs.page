@@ -14,13 +14,13 @@ import { ConfigContext } from '../utils/config';
 import { IRenderError, redirect, RenderError } from '../utils/error';
 import { SlugProperties, SlugPropertiesContext, Properties } from '../utils/properties';
 import { PageContentContext, getPageContent, PageContent, HeadingNode } from '../utils/content';
-import { getPullRequestMetadata, getRepositoriesPaths, getRepositoryList } from '../utils/github';
+import { getPullRequestMetadata, getRepositoriesPaths } from '../utils/github';
 import { CustomDomain, CustomDomainContext, getCustomDomain } from '../utils/domain';
 import { getHeadTags } from '../utils/html';
 import { isProduction, routeChangeComplete, routeChangeError, routeChangeStart } from '../utils';
 import { mdxSerialize } from '../utils/mdx-serialize';
 import { Loading } from '../templates/Loading';
-import { getDomainsList } from '../utils/file';
+import { getDomainsList, getRepositoriesList } from '../utils/file';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', routeChangeStart);
@@ -73,7 +73,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   // Since this call can be fairly large, only run it on production
   // and let the development pages fallback each time.
   if (isProduction()) {
-    const repositories = await getRepositoryList();
+    const repositories = getRepositoriesList();
     paths = await getRepositoriesPaths(repositories);
     console.info(`- gathered ${paths.length} static pages.`);
   }

@@ -10,21 +10,25 @@ const domains = fs
 
 module.exports = {
   async redirects() {
-    // TODO: Not sure if this will work - since the pages wont be rendered because of the rewrites?
-    // const redirects = domains.map(([domain, repository]) => {
-    //   const [organization, repo] = repository.split('/');
+    // TODO: handle refs
+    const redirects = domains.map(([domain, repository]) => {
+      const [organization, repo] = repository.split('/');
 
-    //   return {
-    //     source: `/${organization}/${repo}~ref/:path*`,
-    //     has: [
-    //       {
-    //         type: 'host',
-    //         value: 'docs.page',
-    //       },
-    //     ],
-    //     destination: `https://${domain}/~ref/:path*`,
-    //   };
-    // });
+      return {
+        source: `/${organization}/${repo}/:path*`,
+        has: [
+          {
+            type: 'host',
+            value: process.env.NODE_ENV === 'production' ? 'docs.page' : 'localhost',
+          },
+        ],
+        destination:
+          process.env.NODE_ENV === 'production'
+            ? `https://${domain}/:path*`
+            : `http://${domain}:${process.env.PORT}/:path*`,
+        permanent: true,
+      };
+    });
 
     return [
       {
@@ -32,7 +36,7 @@ module.exports = {
         destination: '/res/robots.txt',
         permanent: true,
       },
-      // ...redirects,
+      ...redirects,
     ];
   },
   async rewrites() {
