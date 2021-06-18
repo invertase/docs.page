@@ -211,6 +211,7 @@ export default function IndexPage() {
               <div className="lg:px-12 flex flex-col items-center justify-center">
                 <Feature
                   title={<span className="text-green-400">Domains</span>}
+                  href="/invertase/docs.page/custom-domains"
                   text={
                     <span>
                       Using a custom domain name? Simply create a pull request & point your domain
