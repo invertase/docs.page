@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const isProd = process.env.NODE_ENV === 'production';
+
 // Extract an array of domains and repositories
 const domains = fs
   .readFileSync(path.join(process.cwd(), 'domains.txt'), 'utf-8')
@@ -19,13 +21,12 @@ module.exports = {
         has: [
           {
             type: 'host',
-            value: process.env.NODE_ENV === 'production' ? 'docs.page' : 'localhost',
+            value: isProd ? 'docs.page' : 'localhost',
           },
         ],
-        destination:
-          process.env.NODE_ENV === 'production'
-            ? `https://${domain}/:path*`
-            : `http://${domain}:${process.env.PORT}/:path*`,
+        destination: isProd
+          ? `https://${domain}/:path*`
+          : `http://${domain}:${process.env.PORT}/:path*`,
         permanent: true,
       };
     });
