@@ -14,7 +14,7 @@ export default function rehypeCodeBlocks(): (ast: Node) => void {
     }
 
     // Raw value of the `code` block - used for copy/paste
-    parent.properties['data-raw'] = toText(node);
+    parent.properties['data-raw'] = encodeURIComponent(toText(node));
 
     const title = (node.properties as Record<string, string>)?.title;
 

@@ -21,7 +21,7 @@ export function Pre(props: PreProps): JSX.Element {
 
   // Extract the data attributes from the component
   const title = props['data-title'];
-  const raw = props['data-raw'];
+  const raw = decodeURIComponent(props['data-raw']);
 
   // Override the Tailwind styles if a title is found
   const preStyles: CSSProperties = {};
