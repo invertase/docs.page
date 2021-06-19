@@ -3,6 +3,13 @@ const path = require('path');
 
 const isProd = process.env.NODE_ENV === 'production';
 
+const withTM = require('next-transpile-modules')([
+  'hast-util-heading-rank',
+  'hast-util-has-property',
+  'hast-util-to-text',
+  'unist-util-find-after',
+]);
+
 // Extract an array of domains and repositories
 const domains = fs
   .readFileSync(path.join(process.cwd(), 'domains.txt'), 'utf-8')
@@ -10,7 +17,7 @@ const domains = fs
   .map(line => line.split(' '))
   .filter(line => line.length === 2);
 
-module.exports = {
+module.exports = withTM({
   async redirects() {
     // TODO: handle refs
     const redirects = domains.map(([domain, repository]) => {
@@ -74,4 +81,4 @@ module.exports = {
       }),
     };
   },
-};
+});
