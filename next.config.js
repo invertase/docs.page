@@ -59,7 +59,7 @@ module.exports = withTM({
 
         return {
           // Map all incoming requests (except for_next requests)
-          source: `/:path((?!_next)(?!${organization}\\/${repository}).*)`,
+          source: `/:path*`,
           // Only where the domain matches the one provided
           has: [
             {
