@@ -105,10 +105,14 @@ type StaticProps = {
 };
 
 export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
-  const slug = ctx.params.slug;
+  let slug = ctx.params.slug;
   let source = null;
   const headings: HeadingNode[] = [];
   let error: RenderError = null;
+
+  if (Array.isArray(slug) && slug[0] == ctx.params.owner && slug[1] == ctx.params.repository) {
+    slug = [];
+  }
 
   // /**
   //  * When a custom domain points to the root, the `beforeFiles` rewrite (next.config.js) is triggered:
