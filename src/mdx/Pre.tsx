@@ -1,4 +1,4 @@
-import React, { useState, useEffect, CSSProperties } from 'react';
+import React, { useState, useEffect } from 'react';
 import cx from 'classnames';
 import CopyToClipboard from 'react-copy-to-clipboard';
 export interface PreProps extends React.HTMLProps<HTMLPreElement> {
