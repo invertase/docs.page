@@ -53,6 +53,7 @@ module.exports = withTM({
             },
           ],
           destination: `/${organization}/${repo}`,
+          basePath: false,
         };
       }),
       afterFiles: domains.map(([domain, repository]) => {
@@ -69,6 +70,7 @@ module.exports = withTM({
             },
           ],
           destination: `/${organization}/${repo}/:path*`,
+          basePath: false,
         };
       }),
     };
