@@ -1,4 +1,3 @@
 [
-  ["melos.invertase.dev", "invertase/melos"],
-  ["test.docs.page.local", "invertase/docs.page"]
+  ["melos.invertase.dev", "invertase/melos"]
 ]
