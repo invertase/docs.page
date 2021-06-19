@@ -1,1 +1,1 @@
-melos.invertase.io invertase/melos
+melos.invertase.dev invertase/melos
