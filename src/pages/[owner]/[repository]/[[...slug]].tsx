@@ -114,6 +114,16 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
     slug = [];
   }
 
+  // TODO why does it sometimes come in as `[owner],[repository],actual-slug`
+  if (Array.isArray(slug) && slug.length > 2) {
+    if (slug[0] == '[owner]') {
+      slug.splice(0, 1);
+    }
+    if (slug[0] == '[repository]') {
+      slug.splice(0, 1);
+    }
+  }
+
   // /**
   //  * When a custom domain points to the root, the `beforeFiles` rewrite (next.config.js) is triggered:
   //  *   -> destination: `/${organization}/${repo}`,
