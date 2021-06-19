@@ -1,6 +1,6 @@
 ---
 title: Advanced
-description: Learn about the nitty gritty of how things are working
+description: Learn about the details of how things are working internally.
 ---
 
 # Advanced
@@ -21,12 +21,7 @@ To enable static page generation for your project, define the "paths" you wish t
 
 ```json title=docs.json
 {
-  "paths": [
-    "/",
-    "installation",
-    "installation/android",
-    "installation/ios",
-  ]
+  "paths": ["/", "installation", "installation/android", "installation/ios"]
 }
 ```
 
@@ -38,10 +33,9 @@ Whenever the project undergoes a new build, each repository within the `reposito
 
 By adding a `docs.json` file to your repository indexing will then be enabled. However indexing is disabled:
 
-- If the repository has no `docs.json` fille.
-- If the `noindex` config value within the `docs.json` file is set to `true`.
+- If the repository has no `docs.json` file.
+- If the `noindex` configuration value within the `docs.json` file is set to `true`.
 - If the repository is a fork.
 - If the current page is not from the repositories default branch.
 
 ## Forks / Branches / Pull Requests
-

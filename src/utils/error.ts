@@ -1,6 +1,7 @@
 import { leadingSlash } from './index';
 import { Properties, SlugProperties } from './properties';
 import { isExternalLink } from '../components/Link';
+import { GetServerSidePropsResult } from 'next';
 
 export enum ErrorType {
   repositoryNotFound,
@@ -15,15 +16,15 @@ export interface IRenderError {
 }
 
 export class RenderError {
-  public static repositoryNotFound(properties: Properties) {
+  public static repositoryNotFound(properties: Properties): RenderError {
     return new RenderError(404, ErrorType.repositoryNotFound, properties);
   }
 
-  public static pageNotFound(properties: Properties) {
+  public static pageNotFound(properties: Properties): RenderError {
     return new RenderError(404, ErrorType.pageNotFound, properties);
   }
 
-  public static serverError(properties: Properties) {
+  public static serverError(properties: Properties): RenderError {
     return new RenderError(500, ErrorType.serverError, properties);
   }
 
@@ -46,7 +47,7 @@ export class RenderError {
   }
 }
 
-export function redirect(link: string, properties?: Properties) {
+export function redirect(link: string, properties?: Properties): GetServerSidePropsResult<never> {
   let destination: string;
 
   if (!properties || isExternalLink(link)) {
@@ -62,7 +63,5 @@ export function redirect(link: string, properties?: Properties) {
       destination,
       permanent: true,
     },
-    // TODO: Is this used on redirect?
-    revalidate: 3600,
   };
 }

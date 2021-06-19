@@ -2,8 +2,7 @@ import { createContext } from 'react';
 import matter from 'gray-matter';
 import get from 'lodash.get';
 
-import { LayoutType } from '../components/Layout';
-import { Config, mergeConfig } from './config';
+import { ProjectConfig, mergeConfig } from './projectConfig';
 import { Properties } from './properties';
 import { getBoolean, getString } from '.';
 import { getGitHubContents } from './github';
@@ -18,15 +17,13 @@ export type Frontmatter = {
   title: string;
   description: string;
   image: string;
-  tableOfContents: boolean;
-  layout: LayoutType;
   sidebar: boolean;
   redirect: string;
 };
 
 export type PageContent = {
   baseBranch: string;
-  config: Config;
+  config: ProjectConfig;
   frontmatter: Frontmatter;
   markdown: string;
   headings: HeadingNode[];
@@ -48,7 +45,7 @@ export async function getPageContent(properties: Properties): Promise<PageConten
     return null;
   }
 
-  let config: Config;
+  let config: ProjectConfig;
   if (contents.config) {
     try {
       const json = JSON.parse(contents.config);
@@ -91,13 +88,11 @@ export async function getPageContent(properties: Properties): Promise<PageConten
   };
 }
 
-function mergeFrontmatter(data: any): Frontmatter {
+function mergeFrontmatter(data: Record<string, string>): Frontmatter {
   return {
     title: getString(data, 'title', ''),
     description: getString(data, 'description', ''),
     image: getString(data, 'image', ''),
-    tableOfContents: getBoolean(data, 'tableOfContents', true),
-    layout: getString<LayoutType>(data, 'layout', '' as LayoutType),
     sidebar: getBoolean(data, 'sidebar', true),
     redirect: getString(data, 'redirect', ''),
   };
@@ -105,7 +100,7 @@ function mergeFrontmatter(data: any): Frontmatter {
 
 const VARIABLE_REGEX = /{{\s([a-zA-Z0-9_.]*)\s}}/gm;
 
-function replaceVariables(variables: object, value: string) {
+function replaceVariables(variables: Record<string, string>, value: string) {
   let output = value;
   let m: RegExpExecArray;
 

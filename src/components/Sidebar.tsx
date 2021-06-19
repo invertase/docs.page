@@ -2,17 +2,17 @@ import React, { useCallback, useState } from 'react';
 import cx from 'classnames';
 import { NextRouter, useRouter } from 'next/router';
 
-import { SidebarItem } from '../utils/config';
+import { SidebarItem } from '../utils/projectConfig';
 import { isExternalLink, Link } from './Link';
 import { SlugProperties } from '../utils/properties';
 import { useConfig, useSlugProperties } from '../hooks';
 
 // Sidebar wrapper - iterates the config and renders a sidebar.
-export function Sidebar() {
+export function Sidebar(): JSX.Element {
   const config = useConfig();
 
   return (
-    <ul className="w-full p-4 dark:text-white mb-4 border-t dark:border-gray-800">
+    <ul className="w-full dark:text-white">
       {config.sidebar.map((item, index) => (
         <Iterator key={index} depth={1} item={item} />
       ))}
@@ -65,11 +65,12 @@ function NavigationList({
     <li className="mt-1">
       <Title title={title} active={isActive} onToggle={onToggle} />
       <ul
-        className={cx({
+        className={cx('relative', {
           'overflow-hidden h-0': !isActive,
         })}
-        style={{ marginLeft: `${depth / 2}rem` }}
+        style={{ marginLeft: `${depth * 10}px` }}
       >
+        <li className="absolute left-[-10px] top-[10px] inset-y-0 w-[1px] bg-gray-200 dark:bg-gray-700"></li>
         {items.map((subItem, index) => (
           <Iterator key={`${depth}-${index.toString()}`} depth={depth + 1} item={subItem} />
         ))}
@@ -92,33 +93,36 @@ function Title({
 }) {
   return (
     <div
-      className="-ml-2 px-2 flex items-center rounded group hover:bg-gray-200 dark:hover:bg-gray-900 py-2"
+      className="-ml-2 px-2 flex items-center rounded group py-1"
       role="button"
       tabIndex={0}
       onClick={() => onToggle()}
     >
       <span
-        className={cx('flex-1', {
-          'text-theme-color': active,
+        className={cx('flex-1 opacity-75 font-semibold hover:opacity-100', {
+          'opacity-100': active,
         })}
       >
         {title}
       </span>
       <span
         style={{
-          width: 20,
-          height: 20,
+          width: 16,
+          height: 16,
           transform: `rotate(${active ? '90deg' : '0deg'})`,
           transition: 'transform .1s ease-in-out',
         }}
       >
         <svg
-          width={20}
-          height={20}
+          width={16}
+          height={16}
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
           stroke="currentColor"
+          className={cx('text-gray-600 dark:text-gray-400 transition-opacity', {
+            'opacity-50': !active,
+          })}
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
         </svg>
@@ -135,9 +139,9 @@ function NavLink({ href, children, active }: { href: string; children: string; a
     <li className="-ml-2 mt-1">
       <Link
         href={href}
-        className={cx('flex px-2 py-2 rounded', {
-          'text-gray-900 dark:text-white bg-gray-200 dark:bg-gray-700': active,
-          'hover:bg-gray-200 dark:hover:bg-gray-700': !active,
+        className={cx('flex px-2 py-1 rounded font-semibold', {
+          'text-theme-color': active,
+          'opacity-75 hover:opacity-100': !active,
         })}
       >
         {children}

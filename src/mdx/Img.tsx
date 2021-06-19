@@ -1,8 +1,8 @@
-import React, { CSSProperties } from 'react';
+import React from 'react';
 import Zoom from 'react-medium-image-zoom';
 
 import { Image } from '../components/Image';
-import { useConfig, useSlugProperties } from '../hooks';
+import { useConfig } from '../hooks';
 
 interface ImageProps
   extends React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement> {
@@ -10,11 +10,11 @@ interface ImageProps
   zoom?: boolean;
 }
 
-export function Img({ zoom, caption, ...props }: ImageProps) {
+export function Img({ zoom, caption, ...props }: ImageProps): JSX.Element {
   const config = useConfig();
   const zoomEnabled = zoom ?? config.zoomImages;
 
-  let src = props.src ?? '';
+  const src = props.src ?? '';
 
   if (!src) {
     return null;
@@ -23,7 +23,7 @@ export function Img({ zoom, caption, ...props }: ImageProps) {
   const wrapper = (child: React.ReactElement) =>
     withFigure(zoomEnabled ? withZoom(child) : child, caption);
 
-  return wrapper(<Image {...props} />);
+  return wrapper(<Image {...props} className="mx-auto" />);
 }
 
 function withFigure(child: React.ReactElement, caption?: string) {

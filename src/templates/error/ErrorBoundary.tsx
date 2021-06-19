@@ -1,3 +1,5 @@
+// TODO remove eslint disable once file is complete
+/* eslint-disable */
 import React from 'react';
 
 interface IErrorBoundaryProps {

@@ -1,3 +1,5 @@
+// TODO remove eslint disable once file complete
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useCallback, useState } from 'react';
 import NextHead from 'next/head';
 import cx from 'classnames';
@@ -7,7 +9,7 @@ import { ExternalLink } from '../../components/Link';
 import { Properties, SlugProperties } from '../../utils/properties';
 import { IRenderError, RenderError } from '../../utils/error';
 import { Frontmatter, getPageContent, HeadingNode, PageContent } from '../../utils/content';
-import { Config } from '../../utils/config';
+import { ProjectConfig } from '../../utils/projectConfig';
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import { getGitHubContents, getPullRequestMetadata } from '../../utils/github';
 import { mdxSerialize } from '../../utils/mdx-serialize';
@@ -26,7 +28,7 @@ const tabs: { [key in Tab]: string } = {
 export default function DebugPage({
   error,
   content,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
+}: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element {
   const isFallback = useRouter().isFallback;
   const [tab, setTab] = useState<Tab>('overview');
 
@@ -44,6 +46,7 @@ export default function DebugPage({
       <header className="bg-gray-800 dark:bg-gray-900">
         <div className="max-w-4xl mx-auto flex h-16 py-4">
           <div className="flex-1">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/assets/docs-page-logo.png" alt="docs.page" className="max-h-full" />
           </div>
           <DarkModeToggle />
@@ -63,11 +66,13 @@ export default function DebugPage({
                 Page has Errors
               </Pill>
               {content?.flags.isFork === true && <Pill type="warn">Page is a fork</Pill>}
-              <Pill type={content?.flags.isIndexable ? 'success' : 'warn'}>{content?.flags.isIndexable ? 'Indexable' : 'Not Indexable'}</Pill>
+              <Pill type={content?.flags.isIndexable ? 'success' : 'warn'}>
+                {content?.flags.isIndexable ? 'Indexable' : 'Not Indexable'}
+              </Pill>
             </>
           )}
         </div>
-        <div className="desktop:hidden">
+        <div className="lg:hidden">
           <div className="mt-6">
             <label htmlFor="selected-tab" className="sr-only">
               Select a tab
@@ -83,7 +88,7 @@ export default function DebugPage({
             </select>
           </div>
         </div>
-        <div className="hidden desktop:block">
+        <div className="hidden lg:block">
           <div className="mt-6">
             <div className="border-b border-gray-200">
               <nav className="-mb-px flex dark:text-white space-x-8">

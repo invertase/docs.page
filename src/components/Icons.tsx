@@ -10,7 +10,7 @@ interface IconProps {
   style?: CSSProperties;
 }
 
-export function Adjustments({ size, className, style }: IconProps) {
+export function Adjustments({ size, className, style }: IconProps): JSX.Element {
   return (
     <svg
       width={size}
@@ -32,7 +32,7 @@ export function Adjustments({ size, className, style }: IconProps) {
   );
 }
 
-export function PullRequest({ size, className, style }: IconProps) {
+export function PullRequest({ size, className, style }: IconProps): JSX.Element {
   return (
     <svg width={size} height={size} className={className} style={style} viewBox="0 0 16 16">
       <path
@@ -44,7 +44,7 @@ export function PullRequest({ size, className, style }: IconProps) {
   );
 }
 
-export function Branch({ size, className, style }: IconProps) {
+export function Branch({ size, className, style }: IconProps): JSX.Element {
   return (
     <svg width={size} height={size} className={className} style={style} viewBox="0 0 16 16">
       <path
@@ -56,7 +56,7 @@ export function Branch({ size, className, style }: IconProps) {
   );
 }
 
-export function Template({ size, className, style }: IconProps) {
+export function Template({ size, className, style }: IconProps): JSX.Element {
   return (
     <svg
       width={size}
@@ -79,7 +79,7 @@ export function Template({ size, className, style }: IconProps) {
   );
 }
 
-export function GlobeAlt({ size, className, style }: IconProps) {
+export function GlobeAlt({ size, className, style }: IconProps): JSX.Element {
   return (
     <svg
       width={size}
@@ -101,7 +101,7 @@ export function GlobeAlt({ size, className, style }: IconProps) {
   );
 }
 
-export function GitHub({ size, className, style }: IconProps) {
+export function GitHub({ size, className, style }: IconProps): JSX.Element {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -119,7 +119,7 @@ export function GitHub({ size, className, style }: IconProps) {
   );
 }
 
-export function Twitter({ size, className, style }: IconProps) {
+export function Twitter({ size, className, style }: IconProps): JSX.Element {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -137,7 +137,7 @@ export function Twitter({ size, className, style }: IconProps) {
   );
 }
 
-export function Pencil({ size, className, style }: IconProps) {
+export function Pencil({ size, className, style }: IconProps): JSX.Element {
   return (
     <svg
       width={size}
@@ -159,7 +159,7 @@ export function Pencil({ size, className, style }: IconProps) {
   );
 }
 
-export function ChevronDoubleUp({ size, className, style }: IconProps) {
+export function ChevronDoubleUp({ size, className, style }: IconProps): JSX.Element {
   return (
     <svg
       width={size}
@@ -181,7 +181,7 @@ export function ChevronDoubleUp({ size, className, style }: IconProps) {
   );
 }
 
-export function Menu({ size, className, style }: IconProps) {
+export function Menu({ size, className, style }: IconProps): JSX.Element {
   return (
     <svg
       width={size}
@@ -203,7 +203,7 @@ export function Menu({ size, className, style }: IconProps) {
   );
 }
 
-export function MenuOpenRight({ size, className, style }: IconProps) {
+export function MenuOpenRight({ size, className, style }: IconProps): JSX.Element {
   return (
     <svg
       width={size}
@@ -225,7 +225,7 @@ export function MenuOpenRight({ size, className, style }: IconProps) {
   );
 }
 
-export function Eye({ size, className, style }: IconProps) {
+export function Eye({ size, className, style }: IconProps): JSX.Element {
   return (
     <svg
       width={size}
@@ -253,7 +253,7 @@ export function Eye({ size, className, style }: IconProps) {
   );
 }
 
-export function EyeOff({ size, className, style }: IconProps) {
+export function EyeOff({ size, className, style }: IconProps): JSX.Element {
   return (
     <svg
       width={size}
@@ -276,7 +276,7 @@ export function EyeOff({ size, className, style }: IconProps) {
   );
 }
 
-export function Issue({ size, className, style }: IconProps) {
+export function Issue({ size, className, style }: IconProps): JSX.Element {
   return (
     <svg width={size} height={size} className={className} style={style} viewBox="0 0 16 16">
       <path
@@ -288,7 +288,7 @@ export function Issue({ size, className, style }: IconProps) {
   );
 }
 
-export function SearchCircle({ size, className, style }: IconProps) {
+export function SearchCircle({ size, className, style }: IconProps): JSX.Element {
   return (
     <svg
       width={size}
@@ -310,7 +310,7 @@ export function SearchCircle({ size, className, style }: IconProps) {
   );
 }
 
-export function Close({ size, className, style }: IconProps) {
+export function Close({ size, className, style }: IconProps): JSX.Element {
   return (
     <svg
       width={size}
@@ -327,7 +327,7 @@ export function Close({ size, className, style }: IconProps) {
   );
 }
 
-export function LightningBolt({ size, className, style }: IconProps) {
+export function LightningBolt({ size, className, style }: IconProps): JSX.Element {
   return (
     <svg
       width={size}
@@ -349,7 +349,7 @@ export function LightningBolt({ size, className, style }: IconProps) {
   );
 }
 
-export function Moon({ size, className, style }: IconProps) {
+export function Moon({ size, className, style }: IconProps): JSX.Element {
   return (
     <svg
       width={size}
@@ -371,7 +371,7 @@ export function Moon({ size, className, style }: IconProps) {
   );
 }
 
-export function Sun({ size, className, style }: IconProps) {
+export function Sun({ size, className, style }: IconProps): JSX.Element {
   return (
     <svg
       width={size}
@@ -388,6 +388,27 @@ export function Sun({ size, className, style }: IconProps) {
         strokeLinejoin="round"
         strokeWidth={2}
         d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+      />
+    </svg>
+  );
+}
+
+export function Computer({ size, className, style }: IconProps): JSX.Element {
+  return (
+    <svg
+      width={size}
+      height={size}
+      className={className}
+      style={style}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
       />
     </svg>
   );

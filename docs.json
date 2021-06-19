@@ -9,6 +9,7 @@
     ["Components", "/components"],
     ["Frontmatter", "/frontmatter"],
     ["Debugging", "/debugging"],
+    ["Pre-rendering", "/pre-rendering"],
     ["Contributing", "/contributing"],
     ["Advanced", "/advanced"]
   ],
@@ -21,6 +22,7 @@
     "debugging",
     "getting-started",
     "previews",
-    "advanced"
+    "advanced",
+    "pre-rendering"
   ]
 }

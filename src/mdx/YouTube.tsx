@@ -2,7 +2,7 @@ export interface YouTubeProps {
   id: string;
 }
 
-export function YouTube({ id }: YouTubeProps) {
+export function YouTube({ id }: YouTubeProps): JSX.Element {
   if (!id) {
     return null;
   }
@@ -11,7 +11,7 @@ export function YouTube({ id }: YouTubeProps) {
     <div
       className="my-4 relative h-0 rounded overflow-hidden"
       style={{
-        paddingBottom: "56.25%",
+        paddingBottom: '56.25%',
         paddingTop: 12,
       }}
     >

@@ -2,13 +2,12 @@ import React, { CSSProperties } from 'react';
 import validDataUrl from 'valid-data-url';
 import { usePageContent, useSlugProperties } from '../hooks';
 import { leadingSlash } from '../utils';
-import { PageContent } from '../utils/content';
 import { SlugProperties } from '../utils/properties';
 import { isExternalLink } from './Link';
 
 export function Image(
   props: React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
-) {
+): JSX.Element {
   const properties = useSlugProperties();
   const content = usePageContent();
 
@@ -24,6 +23,8 @@ export function Image(
   };
 
   return (
+    // Always remote images so we don't know sizes;
+    // eslint-disable-next-line @next/next/no-img-element
     <img
       {...props}
       style={style}
@@ -40,7 +41,7 @@ function sizeToProperty(size: string | number | undefined) {
   return parseInt(size);
 }
 
-export function getImageSrc(properties: SlugProperties, src: string) {
+export function getImageSrc(properties: SlugProperties, src: string): string {
   if (isExternalLink(src) || validDataUrl(src)) {
     return src;
   }

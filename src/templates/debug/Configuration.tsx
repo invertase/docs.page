@@ -1,14 +1,14 @@
-import { Config, SidebarItem } from '../../utils/config';
+import { ProjectConfig, SidebarItem } from '../../utils/projectConfig';
 import React from 'react';
 import { Row } from './Row';
 
-function Configuration({ config }: { config: Config }) {
+function Configuration({ config }: { config: ProjectConfig }): JSX.Element {
   return (
     <section className="mx-auto max-w-5xl border rounded font-mono divide-y bg-white">
       <Row title="Configuration" header />
       <Row title="Name">{config.name}</Row>
       <Row title="Logo">
-        <div className="flex flex-row items-center justify-end h-10 desktop:h-12">
+        <div className="flex flex-row items-center justify-end h-10 lg:h-12">
           <img src={config.logo} alt={config.name} style={{ maxHeight: '100%' }} />
         </div>
       </Row>
@@ -25,7 +25,6 @@ function Configuration({ config }: { config: Config }) {
         </div>
       </Row>
       <Row title="Doc Search">{config.docsearch}</Row>
-      <Row title="Default Layout">{config.defaultLayout}</Row>
       <Row title="Header Depth">{config.headerDepth}</Row>
       <Row title="Sidebar" header />
       {config.sidebar.map((item: SidebarItem) => {

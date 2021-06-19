@@ -16,7 +16,8 @@ export class Properties {
   isBaseBranch: boolean;
 
   public constructor(params: string[]) {
-    let [owner, repository, ...path] = params;
+    let [, repository] = params;
+    const [owner, , ...path] = params;
     let ref = null;
 
     // project paths containing a SPLITTER mean a specific branch has been requested
@@ -49,19 +50,19 @@ export class Properties {
     this.isBaseBranch = !ref;
   }
 
-  public setPullRequestMetadata(metadata: PullRequestMetadata) {
+  public setPullRequestMetadata(metadata: PullRequestMetadata): void {
     this.owner = metadata.owner;
     this.repository = metadata.repository;
     this.ref = metadata.ref;
   }
 
-  public setBaseRef(baseRef: string) {
+  public setBaseRef(baseRef: string): void {
     this.ref = baseRef;
     this.base = `/${this.owner}/${this.repository}`;
     this.isBaseBranch = true;
   }
 
-  public isPullRequest() {
+  public isPullRequest(): boolean {
     return /^[0-9]*$/.test(this.ref);
   }
 
