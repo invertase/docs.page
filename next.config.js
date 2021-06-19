@@ -20,13 +20,12 @@ module.exports = withTM({
         has: [
           {
             type: 'host',
-            value: isProd ? 'docs.page' : 'localhost',
+            value: isProd ? 'docs-page-git-domains-invertase.vercel.app' : 'localhost',
           },
         ],
         destination: isProd
           ? `https://${domain}/:path*`
           : `http://${domain}:${process.env.PORT}/:path*`,
-        permanent: true,
       };
     });
 
