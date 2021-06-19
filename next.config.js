@@ -26,6 +26,7 @@ module.exports = withTM({
         destination: isProd
           ? `https://${domain}/:path*`
           : `http://${domain}:${process.env.PORT}/:path*`,
+        permanent: false,
       };
     });
 
