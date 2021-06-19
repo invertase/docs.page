@@ -37,13 +37,15 @@ proxy service to provide SSL for you.
 
 ## 2. Add domain
 
-Create a [Pull Request](https://github.com/invertase/docs.page/edit/master/domains.txt) to modify the [`domains.txt`](https://github.com/invertase/docs.page/blob/master/domains.txt)
-file at the root of the docs.page repository.
+Create a [Pull Request](https://github.com/invertase/docs.page/edit/master/domains.json) to modify the [`domains.json`](https://github.com/invertase/docs.page/blob/master/domains.json)
+file at the root of the `docs.page` repository.
 
-Create a new line, adding your domain followed by the GitHub organization and repository, for example:
+Create a new array entry, adding your domain followed by the GitHub organization and repository, for example:
 
-```txt
-melos.invertase.dev invertase/melos
+```json
+[
+  ["melos.invertase.dev", "invertase/melos"]
+]
 ```
 
 Once your Pull Request is approved and DNS has been propagated, you are ready to start using your custom domain.
