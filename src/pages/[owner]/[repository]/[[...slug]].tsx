@@ -105,7 +105,7 @@ type StaticProps = {
 };
 
 export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
-  const slug = ctx.params.slug as string[];
+  const slug = ctx.params.slug;
   let source = null;
   const headings: HeadingNode[] = [];
   let error: RenderError = null;
@@ -130,7 +130,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
   const properties = new Properties([
     ctx.params.owner as string,
     ctx.params.repository as string,
-    ...slug,
+    ...(Array.isArray(slug) ? slug : [slug || '']),
   ]);
 
   // If the ref looks like a PR, update the details to point towards

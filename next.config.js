@@ -41,38 +41,24 @@ module.exports = withTM({
   },
   async rewrites() {
     return {
-      beforeFiles: domains
-        .map(([domain, repository]) => {
+      beforeFiles: [].concat(
+        domains.map(([domain, repository]) => {
           const [organization, repo] = repository.split('/');
+
           return {
-            source: '/',
+            // Map all incoming requests (except for_next requests)
+            source: `/:path((?!_next)(?!${organization}\\/${repository}).*)`,
+            // Only where the domain matches the one provided
             has: [
               {
                 type: 'host',
                 value: domain,
               },
             ],
-            destination: `/${organization}/${repo}`,
+            destination: `/${organization}/${repo}/:path*`,
           };
-        })
-        .concat(
-          domains.map(([domain, repository]) => {
-            const [organization, repo] = repository.split('/');
-
-            return {
-              // Map all incoming requests (except for_next requests)
-              source: '/:path((?!_next).*)',
-              // Only where the domain matches the one provided
-              has: [
-                {
-                  type: 'host',
-                  value: domain,
-                },
-              ],
-              destination: `/${organization}/${repo}/:path*`,
-            };
-          }),
-        ),
+        }),
+      ),
     };
   },
 });
