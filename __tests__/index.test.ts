@@ -3,5 +3,3 @@ describe('Foo', () => {
     expect(true).toEqual(true);
   });
 });
-
-export default null;

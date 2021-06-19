@@ -110,7 +110,7 @@ sidebar: false
 
 A path which if set, will instantly redirect the user. If set, none of the other frontmatter or Markdown on the page will be shown/processed.
 
-Can be a internal path or external URL.
+Can be an internal path or external URL.
 
 | Key        | Type     | Default |
 | ---------- | -------- | ------- |

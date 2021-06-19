@@ -1,3 +1,6 @@
+// TODO remove eslint disable once file is complete
+/* eslint-disable */
+
 function RepoInfo({ properties }) {
   return (
     <section className="mx-auto max-w-3xl border rounded font-mono divide-y bg-white">

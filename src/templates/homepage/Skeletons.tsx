@@ -1,7 +1,7 @@
-export function DocsDirectory() {
+export function DocsDirectory(): JSX.Element {
   return (
-    <section className="">
-      <div className="mx-6 py-3 border-t border-l border-r rounded-tr rounded-tl border-gray-700"></div>
+    <section>
+      <div className="mx-6 py-3 border-t border-l border-r rounded-tr rounded-tl border-gray-700" />
       <div className="py-3 px-3 flex items-center border rounded border-gray-700 font-mono text-sm shadow-xl">
         <svg height="16" viewBox="0 0 16 16" version="1.1" width="16" className="text-white mr-3">
           <path
@@ -13,12 +13,12 @@ export function DocsDirectory() {
         <span className="flex-1">docs</span>
         <span className="text-gray-600">A few seconds ago</span>
       </div>
-      <div className="mx-6 py-3 border-b border-l border-r rounded-br rounded-bl border-gray-700"></div>
+      <div className="mx-6 py-3 border-b border-l border-r rounded-br rounded-bl border-gray-700" />
     </section>
   );
 }
 
-export function IndexExample() {
+export function IndexExample(): JSX.Element {
   return (
     <section>
       <div className="border rounded-tr rounded-tl border-gray-700 px-3 py-2">

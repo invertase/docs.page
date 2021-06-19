@@ -14,7 +14,7 @@ import { useCustomDomain, useSlugProperties } from '../hooks';
  * Prefetching is disabled by default on Links, since pages are not
  * prebuilt at build time.
  */
-export function Link(props: React.HTMLProps<HTMLAnchorElement>) {
+export function Link(props: React.HTMLProps<HTMLAnchorElement>): JSX.Element {
   // const router = useRouter();
   const domain = useCustomDomain();
   const properties = useSlugProperties();
@@ -55,7 +55,7 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>) {
 /**
  * Simple component which opens links in a new tab.
  */
-export function ExternalLink(props: React.HTMLProps<HTMLAnchorElement>) {
+export function ExternalLink(props: React.HTMLProps<HTMLAnchorElement>): JSX.Element {
   return <a {...props} target="_blank" rel="noopener" />;
 }
 

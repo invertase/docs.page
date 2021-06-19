@@ -1,6 +1,5 @@
 import React from 'react';
-import cx from 'classnames';
-import MdxRemote from 'next-mdx-remote/mdx-remote';
+import { MDXRemote } from '@invertase/next-mdx-remote';
 
 import { Link } from '../components/Link';
 
@@ -9,10 +8,14 @@ import { Tabs, TabItem, TabsContext } from './Tabs';
 import { Pre, PreProps } from './Pre';
 import { Img } from './Img';
 import { YouTube } from './YouTube';
+import { Divider } from '../components/Divider';
+import { MDXRemoteSerializeResult } from '@invertase/next-mdx-remote/dist/types';
 
 const components = {
   // HTML element overrides
-  a: (props: React.HTMLProps<HTMLAnchorElement>) => <Link {...props} />,
+  a: (props: React.HTMLProps<HTMLAnchorElement>) => (
+    <Link {...props} className="hover:opacity-75" />
+  ),
   h1: (props: React.HTMLProps<HTMLHeadingElement>) => <Heading {...props} type="h1" />,
   h2: (props: React.HTMLProps<HTMLHeadingElement>) => <Heading {...props} type="h2" />,
   h3: (props: React.HTMLProps<HTMLHeadingElement>) => <Heading {...props} type="h3" />,
@@ -23,6 +26,7 @@ const components = {
     props: React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
   ) => <Img {...props} />,
   pre: (props: PreProps) => <Pre {...props} />,
+  hr: Divider,
 
   // Custom MDX components
   Heading,
@@ -33,10 +37,10 @@ const components = {
   YouTube,
 };
 
-export function Hydrate({ source }: { source: any }) {
+export function Hydrate({ source }: { source: MDXRemoteSerializeResult }): JSX.Element {
   return (
     <TabsContext>
-      <MdxRemote source={source} components={components} />
+      <MDXRemote {...source} components={components} />
     </TabsContext>
   );
 }

@@ -19,12 +19,12 @@
 
 ---
 
-## About 
+## About
 
 docs.page is a free Open Source project, allowing you to create instant, fast, beautiful documentation with zero configuration.
 
 Documentation is an important aspect for many projects, however creating a custom documentation website
-for each project is time consuming. Many common solutions to problems have to be duplicated, along with 
+for each project is time consuming. Many common solutions to problems have to be duplicated, along with
 dealing with overheads such as website maintenance & hosting.
 
 Solutions such as [Jekyll](https://jekyllrb.com/docs/github-pages/), [Docusaurus](https://docusaurus.io/),

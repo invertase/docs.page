@@ -10,7 +10,7 @@ import { ThemeStyles } from '../components/ThemeStyles';
 import { Layout } from '../components/Layout';
 import { Error, ErrorBoundary } from '../templates/error';
 
-import { ConfigContext } from '../utils/config';
+import { ConfigContext } from '../utils/projectConfig';
 import { IRenderError, redirect, RenderError } from '../utils/error';
 import { SlugProperties, SlugPropertiesContext, Properties } from '../utils/properties';
 import { PageContentContext, getPageContent, PageContent, HeadingNode } from '../utils/content';
@@ -33,7 +33,7 @@ export default function Documentation({
   properties,
   content,
   error,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
+}: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element {
   const { isFallback } = useRouter();
 
   if (isFallback) {
@@ -88,7 +88,7 @@ type StaticProps = {
   domain: CustomDomain;
   properties: SlugProperties;
   headings: HeadingNode[];
-  source?: string;
+  source?: MDXRemoteSerializeResult;
   content?: PageContent;
   error?: IRenderError;
 };
@@ -96,9 +96,8 @@ type StaticProps = {
 export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
   let slug = ctx.params.slug as string[];
   let source = null;
-  let headings: HeadingNode[] = [];
+  const headings: HeadingNode[] = [];
   let error: RenderError = null;
-  let content: PageContent;
 
   /**
    * When a custom domain points to the root, the `beforeFiles` rewrite (next.config.js) is triggered:
@@ -134,7 +133,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
     }
   }
 
-  content = await getPageContent(properties);
+  const content = await getPageContent(properties);
 
   if (!content) {
     // If there is no content, the repository is not found
@@ -157,7 +156,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
         error = RenderError.serverError(properties);
       } else {
         source = serialization.source;
-        content.headings = serialization.headings as HeadingNode[];
+        content.headings = serialization.headings as unknown as HeadingNode[];
       }
     } else {
       error = RenderError.pageNotFound(properties);
