@@ -10,35 +10,35 @@ const withTM = require('next-transpile-modules')([
 const domains = require('./domains.json');
 
 module.exports = withTM({
-  async redirects() {
-    // TODO: handle refs
-    const redirects = domains.map(([domain, repository]) => {
-      const [organization, repo] = repository.split('/');
-
-      return {
-        source: `/${organization}/${repo}/:path*`,
-        has: [
-          {
-            type: 'host',
-            value: isProd ? 'docs-page-git-domains-invertase.vercel.app' : 'localhost',
-          },
-        ],
-        destination: isProd
-          ? `https://${domain}/:path*`
-          : `http://${domain}:${process.env.PORT}/:path*`,
-        permanent: false,
-      };
-    });
-
-    return [
-      {
-        source: '/robots.txt',
-        destination: '/res/robots.txt',
-        permanent: true,
-      },
-      ...redirects,
-    ];
-  },
+  // async redirects() {
+  //   // TODO: handle refs
+  //   const redirects = domains.map(([domain, repository]) => {
+  //     const [organization, repo] = repository.split('/');
+  //
+  //     return {
+  //       source: `/${organization}/${repo}/:path*`,
+  //       has: [
+  //         {
+  //           type: 'host',
+  //           value: isProd ? 'docs-page-git-domains-invertase.vercel.app' : 'localhost',
+  //         },
+  //       ],
+  //       destination: isProd
+  //         ? `https://${domain}/:path*`
+  //         : `http://${domain}:${process.env.PORT}/:path*`,
+  //       permanent: false,
+  //     };
+  //   });
+  //
+  //   return [
+  //     {
+  //       source: '/robots.txt',
+  //       destination: '/res/robots.txt',
+  //       permanent: true,
+  //     },
+  //     ...redirects,
+  //   ];
+  // },
   async rewrites() {
     return {
       beforeFiles: domains.map(([domain, repository]) => {
@@ -53,7 +53,6 @@ module.exports = withTM({
             },
           ],
           destination: `/${organization}/${repo}`,
-          basePath: false,
         };
       }),
       afterFiles: domains.map(([domain, repository]) => {
@@ -70,7 +69,6 @@ module.exports = withTM({
             },
           ],
           destination: `/${organization}/${repo}/:path*`,
-          basePath: false,
         };
       }),
     };

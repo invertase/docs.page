@@ -22,6 +22,10 @@ export class Properties {
     const [owner] = params;
     let ref = null;
 
+    if (!repository) {
+      throw new Error('properties -> ' + params.join(','));
+    }
+
     // project paths containing a SPLITTER mean a specific branch has been requested
     const chunks = repository.split(SPLITTER);
 
