@@ -3,6 +3,7 @@ import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import NextHead from 'next/head';
 import NextRouter, { useRouter } from 'next/router';
 import NProgress from 'nprogress';
+import { MDXRemoteSerializeResult } from '@invertase/next-mdx-remote/dist/types';
 
 import { Hydrate } from '../mdx';
 
@@ -12,8 +13,8 @@ import { Error, ErrorBoundary } from '../templates/error';
 
 import { ConfigContext } from '../utils/projectConfig';
 import { IRenderError, redirect, RenderError } from '../utils/error';
-import { SlugProperties, SlugPropertiesContext, Properties } from '../utils/properties';
-import { PageContentContext, getPageContent, PageContent, HeadingNode } from '../utils/content';
+import { Properties, SlugProperties, SlugPropertiesContext } from '../utils/properties';
+import { getPageContent, HeadingNode, PageContent, PageContentContext } from '../utils/content';
 import { getPullRequestMetadata, getRepositoriesPaths } from '../utils/github';
 import { CustomDomain, CustomDomainContext, getCustomDomain } from '../utils/domain';
 import { getHeadTags } from '../utils/html';

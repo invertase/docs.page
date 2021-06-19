@@ -140,8 +140,8 @@ export default function IndexPage(): JSX.Element {
           </div>
           <div className="flex-1">
             <p className="text-lg px-3">
-              Create an <code className="text-blue-500">{`index.mdx`}</code> file at the root of your{' '}
-              <code className="text-blue-500">/docs</code> directory. docs.page supports nested
+              Create an <code className="text-blue-500">{`index.mdx`}</code> file at the root of
+              your <code className="text-blue-500">/docs</code> directory. docs.page supports nested
               pages based on your directory structure of the directory.
             </p>
             <p className="mt-4 text-lg px-3">

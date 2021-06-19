@@ -17,7 +17,8 @@ export class Properties {
 
   public constructor(params: string[]) {
     let [, repository] = params;
-    const [owner, , maybeRef, ...path] = params;
+    const [owner, , maybeRef] = params;
+    let [, , , ...path] = params;
     let ref = null;
 
     // project paths containing a SPLITTER mean a specific branch has been requested
@@ -54,7 +55,7 @@ export class Properties {
     if (ref) {
       base += encodeURI(`${SPLITTER}${ref}`);
     }
-    
+
     this.owner = owner;
     this.repository = repository;
     this.ref = ref;

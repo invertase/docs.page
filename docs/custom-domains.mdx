@@ -1,16 +1,16 @@
 ---
 title: Custom Domains
-description: Learn how to setup a custom domain for your project.
+description: Learn how to set up a custom domain for your project.
 ---
 
 # Custom Domains
 
-Custom 3rd party domains can be used on docs.page, allowing you to remove the `https://docs.page/:org/:repo/:path*` URL
+Custom 3rd party domains can be used on `docs.page`, allowing you to remove the `https://docs.page/:org/:repo/:path*` URL
 from your documentation, and use a custom domain instead.
 
 You can see custom domains in action by viewing the [Melos repository documentation](https://melos.invertase.dev).
 
-When enabling a custom domain, requests to existing docs.page domain (e.g.`https://docs.page/:org/:repo/:path*`) will
+When enabling a custom domain, requests to existing `docs.page` domain (e.g.`https://docs.page/:org/:repo/:path*`) will
 be redirected to your custom domain.
 
 ## Setup
@@ -22,17 +22,17 @@ A couple of manual steps are required before you can serve docs via your custom 
 The first step is to point your domain at our proxy service. Using your domain provider, create a
 DNS record:
 
-| invertase.dev |  record type  |      value      |
-| :-----------: | :-----------: | :-------------: |
-|       @       |     CNAME     | proxy.docs.page |
+| invertase.dev | record type |      value      |
+| :-----------: | :---------: | :-------------: |
+|       @       |    CNAME    | proxy.docs.page |
 
 Subdomains are also supported:
 
-| invertase.dev |  record type  |      value      |
-| :-----------: | :-----------: | :-------------: |
-|     melos     |     CNAME     | proxy.docs.page |
+| invertase.dev | record type |      value      |
+| :-----------: | :---------: | :-------------: |
+|     melos     |    CNAME    | proxy.docs.page |
 
-If you are using a proxy service (e.g. Cloudflare), ensure you disable the proxy to allow the docs.page
+If you are using a proxy service (e.g., Cloudflare), ensure you disable the proxy to allow the `docs.page`
 proxy service to provide SSL.
 
 ## 2. Add domain
@@ -40,7 +40,7 @@ proxy service to provide SSL.
 Create a [Pull Request](https://github.com/invertase/docs.page/edit/master/domains.txt) to modify the [`domains.txt`](https://github.com/invertase/docs.page/blob/master/domains.txt)
 file at the root of the docs.page repository.
 
-Create a new line, adding your domain followed by the GitHub organisation and repository, for example:
+Create a new line, adding your domain followed by the GitHub organization and repository, for example:
 
 ```txt
 melos.invertase.dev invertase/melos
@@ -50,7 +50,7 @@ Once your Pull Request is approved and DNS has been propagated, you are ready to
 
 ## Local development
 
-If you are [contributing](/contributing) to the docs.page project whilst running a page with a custom domain, you'll
+If you are [contributing](/contributing) to the `docs.page` project whilst running a page with a custom domain, you'll
 need to modify your local hosts to locally map the domain:
 
 ```title="/etc/hosts"

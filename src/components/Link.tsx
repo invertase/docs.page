@@ -28,7 +28,8 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>): JSX.Element {
   }
 
   // Extract `href` from `props`
-  let { href, ...anchorProps } = props;
+  const { href: originalHref, ...anchorProps } = props;
+  let href = originalHref;
 
   // If there is no custom domain, attach the owner and repo
   if (!domain) {
