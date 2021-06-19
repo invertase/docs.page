@@ -10,67 +10,69 @@ const withTM = require('next-transpile-modules')([
 const domains = require('./domains.json');
 
 module.exports = withTM({
-  // async redirects() {
-  //   // TODO: handle refs
-  //   const redirects = domains.map(([domain, repository]) => {
-  //     const [organization, repo] = repository.split('/');
-  //
-  //     return {
-  //       source: `/${organization}/${repo}/:path*`,
-  //       has: [
-  //         {
-  //           type: 'host',
-  //           value: isProd ? 'docs-page-git-domains-invertase.vercel.app' : 'localhost',
-  //         },
-  //       ],
-  //       destination: isProd
-  //         ? `https://${domain}/:path*`
-  //         : `http://${domain}:${process.env.PORT}/:path*`,
-  //       permanent: false,
-  //     };
-  //   });
-  //
-  //   return [
-  //     {
-  //       source: '/robots.txt',
-  //       destination: '/res/robots.txt',
-  //       permanent: true,
-  //     },
-  //     ...redirects,
-  //   ];
-  // },
+  async redirects() {
+    // TODO: handle refs
+    const redirects = domains.map(([domain, repository]) => {
+      const [organization, repo] = repository.split('/');
+
+      return {
+        source: `/${organization}/${repo}/:path*`,
+        has: [
+          {
+            type: 'host',
+            value: isProd ? 'docs-page-git-domains-invertase.vercel.app' : 'localhost',
+          },
+        ],
+        destination: isProd
+          ? `https://${domain}/:path*`
+          : `http://${domain}:${process.env.PORT}/:path*`,
+        permanent: false,
+      };
+    });
+
+    return [
+      {
+        source: '/robots.txt',
+        destination: '/res/robots.txt',
+        permanent: true,
+      },
+      ...redirects,
+    ];
+  },
   async rewrites() {
     return {
-      beforeFiles: domains.map(([domain, repository]) => {
-        const [organization, repo] = repository.split('/');
+      beforeFiles: domains
+        .map(([domain, repository]) => {
+          const [organization, repo] = repository.split('/');
+          return {
+            source: '/',
+            has: [
+              {
+                type: 'host',
+                value: domain,
+              },
+            ],
+            destination: `/${organization}/${repo}`,
+          };
+        })
+        .concat(
+          domains.map(([domain, repository]) => {
+            const [organization, repo] = repository.split('/');
 
-        return {
-          source: '/',
-          has: [
-            {
-              type: 'host',
-              value: domain,
-            },
-          ],
-          destination: `/${organization}/${repo}`,
-        };
-      }),
-      afterFiles: domains.map(([domain, repository]) => {
-        const [organization, repo] = repository.split('/');
-
-        return {
-          // Map all incoming requests
-          source: '/:path*',
-          // Only where the domain matches the one provided
-          has: [
-            {
-              type: 'host',
-              value: domain,
-            },
-          ],
-          destination: `/${organization}/${repo}/:path*`,
-        };
-      }),
+            return {
+              // Map all incoming requests (except for_next requests)
+              source: '/:path((?!_next).*)',
+              // Only where the domain matches the one provided
+              has: [
+                {
+                  type: 'host',
+                  value: domain,
+                },
+              ],
+              destination: `/${organization}/${repo}/:path*`,
+            };
+          }),
+        ),
     };
   },
 });
