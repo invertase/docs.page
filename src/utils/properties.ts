@@ -16,6 +16,7 @@ export class Properties {
   isBaseBranch: boolean;
 
   public constructor(params: string[]) {
+    console.log('properties -> ' + params.join(','));
     let [, repository, , ...path] = params;
     const [, , maybeRef] = params;
     const [owner] = params;
