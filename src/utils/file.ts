@@ -1,7 +1,6 @@
-import { readFileSync } from 'fs';
-import { join } from 'path';
+import domains from '../../domains.json';
+import repositories from '../../repositories.json';
 
-// [domain, repository]
 export type DomainListItem = [string, string];
 
 /**
@@ -9,10 +8,7 @@ export type DomainListItem = [string, string];
  * @returns
  */
 export function getDomainsList(): DomainListItem[] {
-  return readFileSync(join(process.cwd(), 'domains.txt'), 'utf-8')
-    .split('\n')
-    .map<DomainListItem>(str => str.split(' ') as DomainListItem)
-    .filter(line => line.length === 2);
+  return domains as DomainListItem[];
 }
 
 /**
@@ -20,5 +16,5 @@ export function getDomainsList(): DomainListItem[] {
  * @returns
  */
 export function getRepositoriesList(): string[] {
-  return readFileSync(join(process.cwd(), 'repositories.txt'), 'utf-8').split('\n');
+  return repositories as string[];
 }

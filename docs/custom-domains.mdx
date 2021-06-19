@@ -19,21 +19,21 @@ A couple of manual steps are required before you can serve docs via your custom 
 
 ## 1. Domain DNS
 
-The first step is to point your domain at our proxy service. Using your domain provider, create a
+The first step is to point your domain at our domains service. Using your domain provider, create a
 DNS record:
 
-| invertase.dev | record type |      value      |
-| :-----------: | :---------: | :-------------: |
-|       @       |    CNAME    | proxy.docs.page |
+| invertase.dev | record type |       value       |
+| :-----------: | :---------: | :---------------: |
+|       @       |    CNAME    | domains.docs.page |
 
 Subdomains are also supported:
 
-| invertase.dev | record type |      value      |
-| :-----------: | :---------: | :-------------: |
-|     melos     |    CNAME    | proxy.docs.page |
+| invertase.dev | record type |       value       |
+| :-----------: | :---------: | :---------------: |
+|     melos     |    CNAME    | domains.docs.page |
 
 If you are using a proxy service (e.g., Cloudflare), ensure you disable the proxy to allow the `docs.page`
-proxy service to provide SSL.
+proxy service to provide SSL for you.
 
 ## 2. Add domain
 
