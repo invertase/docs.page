@@ -16,9 +16,9 @@ export class Properties {
   isBaseBranch: boolean;
 
   public constructor(params: string[]) {
-    let [, repository] = params;
-    const [owner, , maybeRef] = params;
-    let [, , , ...path] = params;
+    let [, repository, , ...path] = params;
+    const [, , maybeRef] = params;
+    const [owner] = params;
     let ref = null;
 
     // project paths containing a SPLITTER mean a specific branch has been requested
