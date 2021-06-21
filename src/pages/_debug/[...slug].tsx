@@ -1,29 +1,23 @@
+// TODO remove eslint disable once file complete
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useCallback, useState } from 'react';
-import { GetStaticPaths, GetStaticProps } from 'next';
-import { GitHub } from '../../components/Icons';
-import Link from 'next/link';
 import NextHead from 'next/head';
-import { useRouter } from 'next/router';
 import cx from 'classnames';
-
-import { Error } from '../../templates/error';
-import { IRenderError, redirect, RenderError } from '../../utils/error';
+import Link from 'next/link';
 
 import { DarkModeToggle } from '../../components/DarkModeToggle';
 import { ExternalLink } from '../../components/Link';
-import { CustomDomain, CustomDomainContext } from '../../utils/domain';
-import { SlugProperties, SlugPropertiesContext, Properties } from '../../utils/properties';
+import { Properties, SlugProperties } from '../../utils/properties';
+import { IRenderError, RenderError } from '../../utils/error';
+import { Frontmatter, getPageContent, HeadingNode, PageContent } from '../../utils/content';
+import { ProjectConfig } from '../../utils/projectConfig';
+import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
+import { getGitHubContents, getPullRequestMetadata } from '../../utils/github';
 import { mdxSerialize } from '../../utils/mdx-serialize';
+import { Pill } from '../../components/Pill';
+import { useRouter } from 'next/router';
 
-import { getPageContent, PageContent, HeadingNode } from '../../utils/content';
-import { isProduction } from '../../utils';
-import {
-  getPullRequestMetadata,
-  getRepositoriesPaths,
-  getRepositoryList,
-} from '../../utils/github';
-
-import { Loading } from '../../templates/Loading';
+import { GitHub } from '../../components/Icons';
 
 type Tab = 'general' | 'properties' | 'content' | 'config' | 'frontmatter';
 
@@ -35,22 +29,17 @@ const tabs: { [key in Tab]: string } = {
   frontmatter: 'Frontmatter',
 };
 
-export default function DebugPage({ properties, page, error }) {
+export default function DebugPage({
+  properties,
+  error,
+  content,
+}: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element {
+  const isFallback = useRouter().isFallback;
   const [tab, setTab] = useState<Tab>('general');
 
   const onTabSwitch = useCallback((activeTab: Tab) => {
     setTab(activeTab);
   }, []);
-
-  const { isFallback } = useRouter();
-
-  if (isFallback) {
-    return <Loading />;
-  }
-
-  if (error) {
-    return <Error {...error} />;
-  }
 
   return (
     <>
@@ -62,6 +51,7 @@ export default function DebugPage({ properties, page, error }) {
       <header className="bg-gray-800 dark:bg-gray-900">
         <div className="flex h-16 max-w-4xl py-4 mx-auto">
           <div className="flex-1">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/assets/docs-page-logo.png" alt="docs.page" className="max-h-full" />
           </div>
           <DarkModeToggle />
@@ -69,28 +59,37 @@ export default function DebugPage({ properties, page, error }) {
       </header>
       <section className="max-w-4xl mx-auto mt-24">
         <h1 className="text-5xl font-extrabold dark:text-white">Debug Mode</h1>
-        <div className="my-6">
-          <StatusButton successText="No errors" failedText="Errors found" value={!error} />
+        <div
+          className={cx('my-6 h-8 transition-opacity', {
+            'opacity-0': isFallback,
+            'opacity-100': !isFallback,
+          })}
+        >
+          {!isFallback && (
+            <>
+              <StatusButton successText="No errors" failedText="Errors found" value={!error} />
 
-          <StatusButton
-            successText="Valid config"
-            failedText="Invalid config"
-            value={page.flags.hasConfig}
-          />
+              <StatusButton
+                successText="Valid config"
+                failedText="Invalid config"
+                value={content?.flags.hasConfig}
+              />
 
-          {page.flags.isFork && (
-            <button className="px-3 py-1 mr-2 text-sm text-white bg-green-500 rounded-lg">
-              Forked
-            </button>
+              {!content.flags.isFork && (
+                <button className="px-3 py-1 mr-2 text-sm text-white bg-green-500 rounded-lg">
+                  Forked
+                </button>
+              )}
+
+              <StatusButton
+                successText="Indexed"
+                failedText="Not indexed"
+                value={!content?.config.noindex}
+              />
+            </>
           )}
-
-          <StatusButton
-            successText="Indexed"
-            failedText="Not indexed"
-            value={!page.config.noIndex}
-          />
         </div>
-        <div className="desktop:hidden">
+        <div className="lg:hidden">
           <div className="mt-6">
             <label htmlFor="selected-tab" className="sr-only">
               Select a tab
@@ -106,7 +105,7 @@ export default function DebugPage({ properties, page, error }) {
             </select>
           </div>
         </div>
-        <div className="hidden desktop:block">
+        <div className="hidden lg:block">
           <div className="mt-6">
             <div className="border-b border-gray-200">
               <nav className="flex -mb-px space-x-8 dark:text-white">
@@ -136,9 +135,9 @@ export default function DebugPage({ properties, page, error }) {
         <div className="py-8 dark:text-white">
           {tab === 'general' && <GeneralTab properties={properties} />}
           {tab === 'properties' && <PropertiesTab properties={properties} />}
-          {tab === 'content' && <ContentTab properties={page.content} />}
-          {tab === 'config' && <ConfigTab properties={page.config} />}
-          {tab === 'frontmatter' && <FrontMatterTab properties={page.frontmatter} />}
+          {tab === 'content' && <ContentTab properties={content.markdown} />}
+          {tab === 'config' && <ConfigTab properties={content.config} />}
+          {tab === 'frontmatter' && <FrontMatterTab properties={content.frontmatter} />}
         </div>
       </section>
     </>
@@ -187,9 +186,11 @@ function GeneralTab({ properties }) {
   return (
     <div className="">
       <Row title="Owner">
+        <code>invertase</code>
         <code>{properties.owner}</code>
       </Row>
       <Row title="Repository">
+        <code>melos</code>
         <code>{properties.repository}</code>
       </Row>
     </div>
@@ -200,9 +201,11 @@ function PropertiesTab({ properties }) {
   return (
     <div className="">
       <Row title="Ref">
+        <code>docs-testing</code>
         <code>{properties.ref}</code>
       </Row>
       <Row title="Ref Type">
+        <code>branch</code>
         <code>{properties.refType}</code>
       </Row>
       <Row title="Hash">
@@ -307,43 +310,26 @@ function FrontMatterTab({ properties }) {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  let paths = [];
-
-  // Since this call can be fairly large, only run it on production
-  // and let the development pages fallback each time.
-  if (isProduction()) {
-    const repositories = await getRepositoryList();
-    paths = await getRepositoriesPaths(repositories);
-    console.info(`- gathered ${paths.length} static pages.`);
-  }
-
   return {
-    paths: paths.map($ => `/_debug${$}`),
+    paths: [],
     fallback: true,
   };
 };
 
 type StaticProps = {
-  domain: CustomDomain;
   properties: SlugProperties;
-  headings: HeadingNode[];
-  source?: string;
-  page?: PageContent;
   error?: IRenderError;
+  content?: PageContent;
 };
 
 export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) => {
-  let source = null;
-  let headings: HeadingNode[] = [];
-  let error: RenderError = null;
-  let page: PageContent;
-  // console.log('here');
-  // // Extract the slug properties from the request.
   const properties = new Properties(params.slug as string[]);
+  let error: RenderError = null;
+  let content: PageContent = null;
 
-  // // If the ref looks like a PR, update the details to point towards
-  // // the PR owner (which might be a different repo)
-  if (properties.isPullRequest()) {
+  const isPullRequest = properties.isPullRequest();
+
+  if (isPullRequest) {
     const metadata = await getPullRequestMetadata(
       properties.owner,
       properties.repository,
@@ -356,34 +342,34 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
     }
   }
 
-  page = await getPageContent(properties);
+  content = await getPageContent(properties);
 
-  if (!page) {
-    console.error('Page not found');
-    error = RenderError.pageNotFound(properties);
-  } else if (page.frontmatter.redirect) {
-    return redirect(page.frontmatter.redirect, properties);
+  if (!content) {
+    error = RenderError.repositoryNotFound(properties);
   } else {
-    const serialization = await mdxSerialize(page);
+    if (!properties.ref) {
+      properties.setBaseRef(content.baseBranch);
+    }
 
-    if (serialization.error) {
-      error = RenderError.serverError(properties);
+    if (!content.markdown) {
+      error = RenderError.pageNotFound(properties);
     } else {
-      source = serialization.source;
-      page.headings = serialization.headings as HeadingNode[];
+      const serialization = await mdxSerialize(content);
+
+      if (serialization.error) {
+        error = RenderError.serverError(properties);
+      } else {
+        content.headings = serialization.headings as HeadingNode[];
+      }
     }
   }
 
   return {
     props: {
-      domain: null, // await getCustomDomain(properties),
       properties: properties.toObject(),
-      source,
-      headings,
-      page,
       error: error?.toObject() ?? null,
+      content,
     },
-    revalidate: 30,
   };
 };
 

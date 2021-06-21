@@ -1,20 +1,35 @@
-import React, { useState } from 'react';
+import React from 'react';
 import cx from 'classnames';
-import useOnClickOutside from 'use-onclickoutside';
 
 import { ExternalLink, Link } from './Link';
-import { Branch, GitHub, Menu, MenuOpenRight, PullRequest, Twitter } from './Icons';
+import { Branch, GitHub, Menu, PullRequest, Twitter } from './Icons';
 import { Image } from './Image';
 import { Search } from './Search';
-import { useConfig, useSlugProperties } from '../hooks';
+import { hasScrolled, useConfig, useSlugProperties } from '../hooks';
 
-export function Header() {
+export type OnSidebarToggle = () => void;
+
+export type HeaderProps = {
+  onSidebarToggle: OnSidebarToggle;
+};
+
+export function Header(props: HeaderProps): JSX.Element {
   const config = useConfig();
   const properties = useSlugProperties();
   const repo = `${properties.owner}/${properties.repository}`;
 
+  const showBorder = hasScrolled();
+
   return (
-    <header className="px-4 sticky top-0 z-10 bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-b dark:border-gray-800">
+    <header
+      className={cx(
+        'px-4 sticky top-0 z-10 bg-docs-background text-gray-900 dark:text-white border-b transition-all',
+        {
+          'border-gray-100 dark:border-gray-700': showBorder,
+          'border-transparent': !showBorder,
+        },
+      )}
+    >
       <div className="flex items-center h-16">
         <Link href="/" className="mr-12 truncate text-lg font-semibold">
           <div className="flex h-16 items-center py-4">
@@ -39,13 +54,13 @@ export function Header() {
             <span>{config.name || repo}</span>
           </div>
         </Link>
-        <div className="hidden desktop:flex items-center justify-center space-x-6 overflow-auto">
+        <div className="hidden lg:flex items-center justify-center space-x-6 overflow-auto">
           <Navigation />
         </div>
-        <div className="flex-1 flex justify-end">
+        <div className="flex-grow flex justify-end">
           <Utils />
         </div>
-        <MobileNavigation />
+        <MobileMenuIcon onToggle={props.onSidebarToggle} />
       </div>
     </header>
   );
@@ -56,12 +71,12 @@ function Navigation() {
 
   return (
     config.navigation.length > 0 && (
-      <ul className="flex items-center justify-center desktop:justify-start font-semibold overflow-x-auto h-12 desktop:h-16 desktop:mr-4">
+      <ul className="flex items-center justify-center lg:justify-start font-semibold overflow-x-auto h-12 lg:h-16 lg:mr-4">
         {config.navigation.map(([title, url]) => (
           <li key={title + url}>
             <Link
               href={url}
-              className="transition-colors hover:text-theme-color whitespace-nowrap px-4 py-2 rounded desktop:ml-1"
+              className="transition-colors hover:text-theme-color whitespace-nowrap px-4 py-2 rounded lg:ml-1"
             >
               {title}
             </Link>
@@ -72,43 +87,15 @@ function Navigation() {
   );
 }
 
-function MobileNavigation() {
-  const ref = React.useRef<HTMLDivElement>(null);
-  const [open, setOpen] = useState<boolean>(false);
-  const config = useConfig();
+type MobileMenuIconProps = {
+  onToggle: OnSidebarToggle;
+};
 
-  useOnClickOutside(ref, () => setOpen(false));
-
-  if (config.navigation.length === 0) {
-    return null;
-  }
-
+function MobileMenuIcon(props: MobileMenuIconProps) {
   return (
-    <div className="flex desktop:hidden ml-4">
-      <div role="button" tabIndex={0} onClick={() => setOpen($ => !$)}>
-        {open && <MenuOpenRight size={24} />}
-        {!open && <Menu size={24} />}
-      </div>
-      <div
-        ref={ref}
-        className={cx('absolute inset-x-0 bg-white dark:bg-gray-800 top-16 shadow-xl', {
-          hidden: !open,
-        })}
-      >
-        {config.navigation.length > 0 && (
-          <ul className="items-center justify-center overflow-x-auto">
-            {config.navigation.map(([title, url]) => (
-              <li key={url} className="border-t dark:border-gray-700">
-                <Link
-                  href={url}
-                  className="block text-center transition-colors hover:bg-gray-200 dark:hover:bg-gray-900 whitespace-nowrap p-4 w-full"
-                >
-                  {title}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
+    <div className="flex lg:hidden ml-4">
+      <div role="button" tabIndex={0} onClick={props.onToggle}>
+        <Menu size={24} />
       </div>
     </div>
   );

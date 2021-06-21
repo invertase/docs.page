@@ -1,7 +1,6 @@
 import { createContext } from 'react';
 import get from 'lodash.get';
-import { DEFAULT_LAYOUT, LayoutType } from '../components/Layout';
-import { getBoolean, getNumber, getString } from '.';
+import { getBoolean, getNumber, getString } from './index';
 
 export type NavigationItem = [string, string];
 
@@ -14,13 +13,15 @@ export type SidebarItem = [string, SidebarItem[]] | [string, string];
  * This can be provided by creating a `docs.json` file at the root of your
  * repository.
  */
-export type Config = {
+export interface ProjectConfig {
   // Project name.
   name: string;
   // URL to project logo.
   logo: string;
   // URL to project logo for dark mode
   logoDark: string;
+  // URL to the favicon
+  favicon: string;
   // Image to display as the social preview on shared URLs
   socialPreview: string;
   // Twitter tag for use in the header.
@@ -39,22 +40,21 @@ export type Config = {
   navigation: NavigationItem[];
   // Sidebar
   sidebar: SidebarItem[];
-  // The default layout type.
-  defaultLayout: LayoutType;
   // The depth to heading tags are linked. Set to 0 to remove any linking.
   headerDepth: number;
   // Variables which can be injected into the pages content.
-  variables: object;
+  variables: Record<string, string>;
   // Adds Google Analytics tracking ID to the page
   googleAnalytics: string;
   // Whether zoomable images are enabled by default
   zoomImages: boolean;
-};
+}
 
-export const defaultConfig: Config = {
+export const defaultConfig: ProjectConfig = {
   name: '',
   logo: '',
   logoDark: '',
+  favicon: '',
   socialPreview: '',
   twitter: '',
   noindex: false,
@@ -62,7 +62,6 @@ export const defaultConfig: Config = {
   docsearch: null,
   navigation: [],
   sidebar: [],
-  defaultLayout: DEFAULT_LAYOUT,
   headerDepth: 3,
   variables: {},
   googleAnalytics: '',
@@ -70,11 +69,12 @@ export const defaultConfig: Config = {
 };
 
 // Merges any user config with default values.
-export function mergeConfig(json: any): Config {
+export function mergeConfig(json: Partial<ProjectConfig> | null): ProjectConfig {
   return {
     name: getString(json, 'name', defaultConfig.name),
     logo: getString(json, 'logo', defaultConfig.logo),
     logoDark: getString(json, 'logoDark', defaultConfig.logoDark),
+    favicon: getString(json, 'favicon', defaultConfig.favicon),
     socialPreview: getString(json, 'socialPreview', defaultConfig.socialPreview),
     twitter: getString(json, 'twitter', defaultConfig.twitter),
     noindex: getBoolean(json, 'noindex', defaultConfig.noindex),
@@ -88,7 +88,6 @@ export function mergeConfig(json: any): Config {
       : defaultConfig.docsearch,
     navigation: mergeNavigationConfig(json),
     sidebar: mergeSidebarConfig(json),
-    defaultLayout: getString<LayoutType>(json, 'defaultLayout', defaultConfig.defaultLayout),
     headerDepth: getNumber(json, 'headerDepth', defaultConfig.headerDepth),
     variables: get(json, 'variables', defaultConfig.variables),
     googleAnalytics: getString(json, 'googleAnalytics', defaultConfig.googleAnalytics),
@@ -97,7 +96,7 @@ export function mergeConfig(json: any): Config {
 }
 
 // Merges in a user sidebar config and ensures all items are valid.
-function mergeSidebarConfig(json: any): SidebarItem[] {
+function mergeSidebarConfig(json: Partial<ProjectConfig> | null): SidebarItem[] {
   const sidebar = get(json, 'sidebar', defaultConfig.sidebar);
 
   if (!Array.isArray(sidebar)) {
@@ -121,7 +120,7 @@ function mergeSidebarConfig(json: any): SidebarItem[] {
 }
 
 // Merges in a user navigation config and ensures all items are valid.
-function mergeNavigationConfig(json: any): NavigationItem[] {
+function mergeNavigationConfig(json: Partial<ProjectConfig> | null): NavigationItem[] {
   const navigation = get(json, 'navigation', defaultConfig.navigation);
 
   if (!Array.isArray(navigation)) {
@@ -139,4 +138,4 @@ function mergeNavigationConfig(json: any): NavigationItem[] {
     .filter(Boolean);
 }
 
-export const ConfigContext = createContext<Config>(defaultConfig);
+export const ConfigContext = createContext<ProjectConfig>(defaultConfig);

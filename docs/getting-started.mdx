@@ -46,4 +46,3 @@ further enhance the functionality of the generated documentation by creating a `
 
 Once committed, docs.page will first read the configuration and update the website. To learn more about the
 available configuration options, view the [documentation](configuration).
-

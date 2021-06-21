@@ -10,7 +10,7 @@ import { ThemeStyles } from '../components/ThemeStyles';
 import { Layout } from '../components/Layout';
 import { Error, ErrorBoundary } from '../templates/error';
 
-import { ConfigContext } from '../utils/config';
+import { ConfigContext } from '../utils/projectConfig';
 import { IRenderError, redirect, RenderError } from '../utils/error';
 import { SlugProperties, SlugPropertiesContext, Properties } from '../utils/properties';
 import { PageContentContext, getPageContent, PageContent, HeadingNode } from '../utils/content';
@@ -20,6 +20,7 @@ import { getHeadTags } from '../utils/html';
 import { isProduction, routeChangeComplete, routeChangeError, routeChangeStart } from '../utils';
 import { mdxSerialize } from '../utils/mdx-serialize';
 import { Loading } from '../templates/Loading';
+import { MDXRemoteSerializeResult } from '@invertase/next-mdx-remote/dist/types';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', routeChangeStart);
@@ -30,9 +31,9 @@ export default function Documentation({
   domain, // TODO custom domains
   source,
   properties,
-  page,
+  content,
   error,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
+}: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element {
   const { isFallback } = useRouter();
 
   if (isFallback) {
@@ -43,15 +44,15 @@ export default function Documentation({
     return <Error {...error} />;
   }
 
-  const tags = getHeadTags(properties, page);
+  const tags = getHeadTags(properties, content);
 
   return (
     <>
       <NextHead>{tags}</NextHead>
       <CustomDomainContext.Provider value={domain}>
-        <ConfigContext.Provider value={page.config}>
+        <ConfigContext.Provider value={content.config}>
           <SlugPropertiesContext.Provider value={properties}>
-            <PageContentContext.Provider value={page}>
+            <PageContentContext.Provider value={content}>
               <ThemeStyles />
               <Layout>
                 <ErrorBoundary>
@@ -87,22 +88,21 @@ type StaticProps = {
   domain: CustomDomain;
   properties: SlugProperties;
   headings: HeadingNode[];
-  source?: string;
-  page?: PageContent;
+  source?: MDXRemoteSerializeResult;
+  content?: PageContent;
   error?: IRenderError;
 };
 
 export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) => {
   let source = null;
-  let headings: HeadingNode[] = [];
+  const headings: HeadingNode[] = [];
   let error: RenderError = null;
-  let page: PageContent;
-  // console.log('here');
-  // // Extract the slug properties from the request.
+
+  // Extract the slug properties from the request.
   const properties = new Properties(params.slug as string[]);
 
-  // // If the ref looks like a PR, update the details to point towards
-  // // the PR owner (which might be a different repo)
+  // If the ref looks like a PR, update the details to point towards
+  // the PR owner (which might be a different repo)
   if (properties.isPullRequest()) {
     const metadata = await getPullRequestMetadata(
       properties.owner,
@@ -116,21 +116,33 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
     }
   }
 
-  page = await getPageContent(properties);
+  const content = await getPageContent(properties);
 
-  if (!page) {
-    console.error('Page not found');
-    error = RenderError.pageNotFound(properties);
-  } else if (page.frontmatter.redirect) {
-    return redirect(page.frontmatter.redirect, properties);
+  if (!content) {
+    // If there is no content, the repository is not found
+    error = RenderError.repositoryNotFound(properties);
+  } else if (content.frontmatter.redirect) {
+    // Redirect the user to another page
+    return redirect(content.frontmatter.redirect, properties);
   } else {
-    const serialization = await mdxSerialize(page);
+    // At this point there is a repository, however there still might not be a file for the path
 
-    if (serialization.error) {
-      error = RenderError.serverError(properties);
+    // If no property ref has been set, assign the base branch (usually main or master)
+    if (!properties.ref) {
+      properties.setBaseRef(content.baseBranch);
+    }
+
+    if (content.markdown) {
+      const serialization = await mdxSerialize(content);
+
+      if (serialization.error) {
+        error = RenderError.serverError(properties);
+      } else {
+        source = serialization.source;
+        content.headings = serialization.headings as unknown as HeadingNode[];
+      }
     } else {
-      source = serialization.source;
-      page.headings = serialization.headings as HeadingNode[];
+      error = RenderError.pageNotFound(properties);
     }
   }
 
@@ -140,7 +152,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
       properties: properties.toObject(),
       source,
       headings,
-      page,
+      content,
       error: error?.toObject() ?? null,
     },
     revalidate: 30,

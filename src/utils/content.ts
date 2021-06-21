@@ -2,13 +2,10 @@ import { createContext } from 'react';
 import matter from 'gray-matter';
 import get from 'lodash.get';
 
-import { LayoutType } from '../components/Layout';
-import { Config, mergeConfig } from './config';
+import { ProjectConfig, mergeConfig } from './projectConfig';
 import { Properties } from './properties';
 import { getBoolean, getString } from '.';
 import { getGitHubContents } from './github';
-
-export type FileType = null | 'md';
 
 export type HeadingNode = {
   id: string;
@@ -20,24 +17,21 @@ export type Frontmatter = {
   title: string;
   description: string;
   image: string;
-  tableOfContents: boolean;
-  layout: LayoutType;
   sidebar: boolean;
   redirect: string;
 };
 
 export type PageContent = {
   baseBranch: string;
-  config: Config;
-  type: FileType;
+  config: ProjectConfig;
   frontmatter: Frontmatter;
-  raw: string;
-  content: string;
+  markdown: string;
   headings: HeadingNode[];
   flags: {
     hasConfig: boolean;
     hasFrontmatter: boolean;
     isFork: boolean;
+    isIndexable: boolean;
   };
 };
 
@@ -46,18 +40,12 @@ export const PageContentContext = createContext<PageContent | null>(null);
 export async function getPageContent(properties: Properties): Promise<PageContent | null> {
   const contents = await getGitHubContents(properties);
 
+  // Repository not found
   if (!contents) {
     return null;
   }
 
-  const type = contents.md ? 'md' : null;
-
-  // If the file isn't found, return null.
-  if (type === null) {
-    return null;
-  }
-
-  let config: Config;
+  let config: ProjectConfig;
   if (contents.config) {
     try {
       const json = JSON.parse(contents.config);
@@ -68,6 +56,7 @@ export async function getPageContent(properties: Properties): Promise<PageConten
     }
   }
 
+  // Assign the default config if one doesn't already exist
   if (!config) {
     config = mergeConfig({});
   }
@@ -77,31 +66,33 @@ export async function getPageContent(properties: Properties): Promise<PageConten
 
   const parsed = matter(raw);
   const frontmatter = mergeFrontmatter(parsed.data);
-  const content = parsed.content;
+  const markdown = parsed.content;
 
   return {
     baseBranch: contents.baseBranch,
     config,
-    type,
     frontmatter,
     headings: [],
-    raw,
-    content,
+    markdown,
     flags: {
       hasConfig: !!contents.config,
       hasFrontmatter: Object.keys(parsed.data).length > 0,
       isFork: contents.isFork,
+      isIndexable:
+        !!contents.md &&
+        !config.noindex &&
+        !contents.isFork &&
+        properties.isBaseBranch &&
+        !!contents.config,
     },
   };
 }
 
-function mergeFrontmatter(data: any): Frontmatter {
+function mergeFrontmatter(data: Record<string, string>): Frontmatter {
   return {
     title: getString(data, 'title', ''),
     description: getString(data, 'description', ''),
     image: getString(data, 'image', ''),
-    tableOfContents: getBoolean(data, 'tableOfContents', true),
-    layout: getString<LayoutType>(data, 'layout', '' as LayoutType),
     sidebar: getBoolean(data, 'sidebar', true),
     redirect: getString(data, 'redirect', ''),
   };
@@ -109,7 +100,7 @@ function mergeFrontmatter(data: any): Frontmatter {
 
 const VARIABLE_REGEX = /{{\s([a-zA-Z0-9_.]*)\s}}/gm;
 
-function replaceVariables(variables: object, value: string) {
+function replaceVariables(variables: Record<string, string>, value: string) {
   let output = value;
   let m: RegExpExecArray;
 

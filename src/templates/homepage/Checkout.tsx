@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import cx from 'classnames';
 
-export function Checkout() {
+export function Checkout(): JSX.Element {
   const router = useRouter();
   const [repo, setRepo] = useState<string>('');
   const [valid, setValid] = useState<boolean | null>(null);
@@ -42,7 +42,7 @@ export function Checkout() {
           onChange={e => setRepo(e.target.value)}
         />
       </div>
-      <p className="text-lg font-thin px-3">
+      <p className="text-lg px-3">
         Enter your GitHub repository URL above to view your new documentation!
       </p>
       <div className="px-3 mt-8">

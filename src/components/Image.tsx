@@ -2,13 +2,12 @@ import React, { CSSProperties } from 'react';
 import validDataUrl from 'valid-data-url';
 import { usePageContent, useSlugProperties } from '../hooks';
 import { leadingSlash } from '../utils';
-import { PageContent } from '../utils/content';
 import { SlugProperties } from '../utils/properties';
 import { isExternalLink } from './Link';
 
 export function Image(
   props: React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
-) {
+): JSX.Element {
   const properties = useSlugProperties();
   const content = usePageContent();
 
@@ -24,10 +23,12 @@ export function Image(
   };
 
   return (
+    // Always remote images so we don't know sizes;
+    // eslint-disable-next-line @next/next/no-img-element
     <img
       {...props}
       style={style}
-      src={getImageSrc(properties, content, props.src)}
+      src={getImageSrc(properties, props.src)}
       alt={props.alt ?? ''}
       loading="lazy"
     />
@@ -40,17 +41,12 @@ function sizeToProperty(size: string | number | undefined) {
   return parseInt(size);
 }
 
-export function getImageSrc(properties: SlugProperties, content: PageContent, src: string) {
+export function getImageSrc(properties: SlugProperties, src: string): string {
   if (isExternalLink(src) || validDataUrl(src)) {
     return src;
   }
 
-  let ref = properties.ref;
-  if (properties.isBaseBranch) {
-    ref = content.baseBranch;
-  }
-
-  return `https://raw.githubusercontent.com/${properties.owner}/${
-    properties.repository
-  }/${ref}/docs${leadingSlash(src)}`;
+  return `https://raw.githubusercontent.com/${properties.owner}/${properties.repository}/${
+    properties.ref
+  }/docs${leadingSlash(src)}`;
 }

@@ -1,11 +1,12 @@
+import Script from 'next/script';
 import { isProduction } from './index';
 import { PageContent } from './content';
 import { SlugProperties } from './properties';
 import googleAnalytics from '../scripts/google-analytics';
 import { getImageSrc } from '../components/Image';
 
-export function getHeadTags(properties: SlugProperties, page?: PageContent) {
-  const { frontmatter, config } = page;
+export function getHeadTags(properties: SlugProperties, content: PageContent): JSX.Element[] {
+  const { frontmatter, config } = content;
 
   const title = (() => {
     if (!config.name && frontmatter.title) return frontmatter.title;
@@ -29,17 +30,26 @@ export function getHeadTags(properties: SlugProperties, page?: PageContent) {
     <meta key="twitter:card" name="twitter:card" content="summary_large_image" />,
   ];
 
-  if (config.noindex || page.flags.isFork || !properties.isBaseBranch || !page.flags.hasConfig) {
+  if (!content.flags.isIndexable) {
     tags.push(<meta key="noindex" name="robots" content="noindex" />);
   }
 
-  if (config.logo) {
+  if (config.favicon) {
     tags.push(
       <link
         key="favicon"
         rel="icon"
         type="image/png"
-        href={getImageSrc(properties, page, config.logo)}
+        href={getImageSrc(properties, config.favicon)}
+      />,
+    );
+  } else if (config.logo) {
+    tags.push(
+      <link
+        key="favicon"
+        rel="icon"
+        type="image/png"
+        href={getImageSrc(properties, config.logo)}
       />,
     );
   } else {
@@ -76,14 +86,13 @@ export function getHeadTags(properties: SlugProperties, page?: PageContent) {
 
   if (isProduction() && config.googleAnalytics) {
     tags.push(
-      <script
+      <Script
         key="config:googleAnalytics"
-        async
         src={`https://www.googletagmanager.com/gtag/js?id=${config.googleAnalytics}`}
       />,
     );
     tags.push(
-      <script
+      <Script
         key="config:googleAnalytics:script"
         dangerouslySetInnerHTML={{ __html: googleAnalytics(config.googleAnalytics) }}
       />,

@@ -1,2 +1,2 @@
-import Homepage from "../templates/homepage";
+import Homepage from '../templates/homepage';
 export default Homepage;

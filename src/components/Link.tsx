@@ -1,9 +1,10 @@
 import React from 'react';
 import NextLink from 'next/link';
 import { SPLITTER } from '../utils/properties';
-import { useCustomDomain, useSlugProperties } from '../hooks';
-import { isProduction } from '../utils';
-import { useRouter } from 'next/router';
+import { useSlugProperties } from '../hooks';
+// import { useCustomDomain, useSlugProperties } from '../hooks';
+// import { isProduction } from '../utils';
+// import { useRouter } from 'next/router';
 
 /**
  * Custom Link component which builds upon top of the Next Link
@@ -16,9 +17,9 @@ import { useRouter } from 'next/router';
  * Prefetching is disabled by default on Links, since pages are not
  * prebuilt at build time.
  */
-export function Link(props: React.HTMLProps<HTMLAnchorElement>) {
-  const router = useRouter();
-  const customDomain = useCustomDomain();
+export function Link(props: React.HTMLProps<HTMLAnchorElement>): JSX.Element {
+  // const router = useRouter();
+  // const customDomain = useCustomDomain();
   const properties = useSlugProperties();
 
   if (isHashLink(props.href)) {
@@ -33,7 +34,8 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>) {
   // const isUsingCustomDomain: boolean = isProduction() && !!customDomain;
 
   // Remove `href` from `props`
-  let { href, ...anchorProps } = props;
+  const { ...anchorProps } = props;
+  let { href } = props;
 
   // If no custom domain, set the repository path as the href
   // if (!isUsingCustomDomain) {
@@ -72,7 +74,7 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>) {
 /**
  * Simple component which opens links in a new tab.
  */
-export function ExternalLink(props: React.HTMLProps<HTMLAnchorElement>) {
+export function ExternalLink(props: React.HTMLProps<HTMLAnchorElement>): JSX.Element {
   return <a {...props} target="_blank" rel="noopener" />;
 }
 

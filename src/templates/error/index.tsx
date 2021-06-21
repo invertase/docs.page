@@ -1,44 +1,47 @@
 import React from 'react';
 import NextHead from 'next/head';
-import Link from 'next/link';
 
 import { ErrorType, IRenderError } from '../../utils/error';
 import { Footer } from '../homepage/Footer';
 
 import { QuickLinks } from './QuickLinks';
 import { Title } from './Title';
+import { Link, ExternalLink } from '../../components/Link';
 import { DarkModeToggle } from '../../components/DarkModeToggle';
-import { ExternalLink } from '../../components/Link';
 
 export * from './ErrorBoundary';
 
-export function Error(error: IRenderError) {
+export function Error(error: IRenderError): JSX.Element {
   return (
     <>
       <NextHead>
         <meta key="noindex" name="robots" content="noindex" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
+        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet" />
       </NextHead>
-      <div className="py-2 bg-gray-800">
-        <div className="max-w-4xl mx-auto flex justify-end px-2">
-          <DarkModeToggle />
-        </div>
-      </div>
       <section className="mt-20 max-w-4xl mx-auto px-2">
+        <div className="text-center lg:text-left font-mono dark:text-white mb-10">
+          <ExternalLink href="https://docs.page">
+            <span className="mr-1 text-xl">←</span>Go to docs.page
+          </ExternalLink>
+        </div>
         <Title statusCode={error.statusCode} />
         <div className="my-16 prose dark:prose-dark max-w-none">
           {error.statusCode === 500 && <ServerError {...error} />}
           {error.statusCode !== 500 && <NotFound {...error} />}
         </div>
         <QuickLinks />
+        <div className="mb-6">
+          <DarkModeToggle />
+        </div>
         <Footer />
       </section>
     </>
   );
 }
 
-export function ServerError({ properties }: IRenderError) {
+export function ServerError({ properties }: IRenderError): JSX.Element {
   return (
     <>
       <p>Something went wrong whilst building the page.</p>
@@ -58,7 +61,7 @@ export function ServerError({ properties }: IRenderError) {
   );
 }
 
-export function NotFound({ properties, errorType }: IRenderError) {
+export function NotFound({ properties, errorType }: IRenderError): JSX.Element {
   if (errorType === ErrorType.repositoryNotFound) {
     return (
       <>
@@ -93,14 +96,9 @@ export function NotFound({ properties, errorType }: IRenderError) {
           No valid file matching the path <code>/{properties.path}</code> could be found.
         </p>
         <p>
-          To get started, create a new <code>.md</code> or <code>.mdx</code> you can create a new
-          file on{' '}
-          <ExternalLink
-            href={`https://github.com/${properties.owner}/${properties.repository}/new/${properties.ref}/docs/${properties.path}`}
-          >
-            GitHub
-          </ExternalLink>
-          . If you were expecting a page to be here, you can{' '}
+          To get started, create a new <code>.mdx</code> file on{' '}
+          <ExternalLink href={properties.createUrl}>GitHub</ExternalLink>. If you were expecting a
+          page to be here, you can{' '}
           <Link href={properties.debugUrl}>
             <a>debug</a>
           </Link>{' '}

@@ -1,6 +1,6 @@
 import React from 'react';
 import Color from 'color';
-import { defaultConfig } from '../utils/config';
+import { defaultConfig } from '../utils/projectConfig';
 import { useConfig } from '../hooks';
 
 type Varient = 'base' | 'dark' | 'light';
@@ -10,7 +10,7 @@ type Varient = 'base' | 'dark' | 'light';
  * this component injects a few CSS classes into the scope based
  * on the provided theme.
  */
-function ThemeStyles() {
+function ThemeStyles(): JSX.Element {
   const config = useConfig();
 
   if (!config) {
