@@ -10,14 +10,13 @@ import { ExternalLink } from '../../components/Link';
 import { Properties, SlugProperties } from '../../utils/properties';
 import { IRenderError, RenderError } from '../../utils/error';
 import { Frontmatter, getPageContent, HeadingNode, PageContent } from '../../utils/content';
-import { ProjectConfig } from '../../utils/projectConfig';
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
-import { getGitHubContents, getPullRequestMetadata } from '../../utils/github';
+import { getPullRequestMetadata } from '../../utils/github';
 import { mdxSerialize } from '../../utils/mdx-serialize';
-import { Pill } from '../../components/Pill';
 import { useRouter } from 'next/router';
 
 import { GitHub } from '../../components/Icons';
+import { ProjectConfig } from '../../utils/projectConfig';
 
 type Tab = 'general' | 'properties' | 'content' | 'config' | 'frontmatter';
 
@@ -182,22 +181,22 @@ function StatusButton({
   );
 }
 
-function GeneralTab({ properties }) {
+function GeneralTab({ properties }: { properties: SlugProperties }) {
   return (
     <div className="">
       <Row title="Owner">
         <code>invertase</code>
-        <code>{properties.owner}</code>
+        <code>{properties?.owner}</code>
       </Row>
       <Row title="Repository">
         <code>melos</code>
-        <code>{properties.repository}</code>
+        <code>{properties?.repository}</code>
       </Row>
     </div>
   );
 }
 
-function PropertiesTab({ properties }) {
+function PropertiesTab({ properties }: { properties: SlugProperties }) {
   return (
     <div className="">
       <Row title="Ref">
@@ -226,11 +225,11 @@ function PropertiesTab({ properties }) {
   );
 }
 
-function ContentTab({ properties }) {
+function ContentTab({ properties }: { properties: string }) {
   return <div className="">{properties}</div>;
 }
 
-function ConfigTab({ properties }) {
+function ConfigTab({ properties }: { properties: ProjectConfig }) {
   const mapItems = $ => {
     if (!$.length) return 'n/a';
 
@@ -245,21 +244,19 @@ function ConfigTab({ properties }) {
       <Row title="Name">
         <code>{properties.name}</code>
       </Row>
-      <Row title="Default Layout">
-        <code>{properties.defaultLayout}</code>
-      </Row>
+      <Row title="Default Layout">{/* <code>{properties.defaultLayout}</code> */}</Row>
       <Row title="Header Depth">
         <code>{properties.headerDepth}</code>
       </Row>
       <Row title="Theme">
         <code className="flex space-x-4">
-          <span>{properties.theme}</span>
+          {/* <span>{properties.theme}</span> */}
           <button className="p-3" style={{ backgroundColor: properties.theme }}></button>
         </code>
       </Row>
       <Row title="Navigation">{mapItems(properties.navigation)}</Row>
       <Row title="Sidebar">{mapItems(properties.sidebar)}</Row>
-      <Row title="Google Analyrics">
+      <Row title="Google Analytics">
         <StatusButton
           successText="Active"
           failedText="InActive"
@@ -276,34 +273,24 @@ function ConfigTab({ properties }) {
   );
 }
 
-function FrontMatterTab({ properties }) {
+function FrontMatterTab({ properties }: { properties: Frontmatter }) {
   return (
     <div className="">
-      <Row title="Title">
-        <code>{properties.title}</code>
-      </Row>
-      <Row title="Description">
-        <code>{properties.description}</code>
-      </Row>
+      <Row title="Title">{/* <code>{properties.title}</code> */}</Row>
+      <Row title="Description">{/* <code>{properties.description}</code> */}</Row>
 
-      <Row title="Redirect">
-        <code>{properties.redirect || 'n/a'}</code>
-      </Row>
-      <Row title="layout">
-        <code>{properties.layout || 'n/a'}</code>
-      </Row>
-      <Row title="Image">
-        <code>{properties.image || 'n/a'}</code>
-      </Row>
+      <Row title="Redirect">{/* <code>{properties.redirect || 'n/a'}</code> */}</Row>
+      <Row title="layout">{/* <code>{properties.layout || 'n/a'}</code> */}</Row>
+      <Row title="Image">{/* <code>{properties.image || 'n/a'}</code> */}</Row>
       <Row title="Table of contents">
-        <StatusButton
+        {/* <StatusButton
           successText="Active"
           failedText="InActive"
           value={properties.tableOfContents}
-        />
+        /> */}
       </Row>
       <Row title="Sidebar">
-        <StatusButton successText="Active" failedText="InActive" value={properties.sidebar} />
+        {/* <StatusButton successText="Active" failedText="InActive" value={properties.sidebar} /> */}
       </Row>
     </div>
   );
