@@ -168,7 +168,7 @@ function StatusButton({
   successText,
   failedText,
 }: {
-  value: string;
+  value: string | boolean;
   successText: string;
   failedText: string;
 }) {
