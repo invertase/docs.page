@@ -168,7 +168,7 @@ function StatusButton({
   successText,
   failedText,
 }: {
-  value: any;
+  value: string;
   successText: string;
   failedText: string;
 }) {
@@ -211,7 +211,7 @@ function PropertiesTab({ properties }: { properties: SlugProperties }) {
         <code>{properties?.hash}</code>
       </Row>
       <Row title="Github Url">
-        <Link href={properties?.githubUrl}>
+        <Link href={properties?.githubUrl} passHref>
           <code className="flex space-x-4 cursor-pointer">
             <GitHub size={26} className="text-black dark:text-white hover:opacity-80" />
             <span>{properties?.githubUrl}</span>
