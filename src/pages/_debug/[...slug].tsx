@@ -219,7 +219,7 @@ function PropertiesTab({ properties }: { properties: SlugProperties }) {
         </Link>
       </Row>
       <Row title="Base Branch">
-        <StatusButton successText="Active" failedText="InActive" value={properties.isBaseBranch} />
+        <StatusButton successText="true" failedText="false" value={properties.isBaseBranch} />
       </Row>
     </div>
   );
