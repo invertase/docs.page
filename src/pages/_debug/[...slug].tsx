@@ -244,7 +244,9 @@ function ConfigTab({ properties }: { properties: ProjectConfig }) {
       <Row title="Name">
         <code>{properties.name}</code>
       </Row>
-      <Row title="Default Layout">{/* <code>{properties.defaultLayout}</code> */}</Row>
+      <Row title="Default Layout">
+        <code>{properties.defaultLayout}</code>
+      </Row>
       <Row title="Header Depth">
         <code>{properties.headerDepth}</code>
       </Row>
