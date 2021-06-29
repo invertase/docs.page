@@ -103,11 +103,11 @@ type StaticProps = {
 };
 
 export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
-  const slug = ctx.params.slug || [];
+  let slug = ctx.params.slug || [];
   let source = null;
   const headings: HeadingNode[] = [];
   let error: RenderError = null;
-
+  console.log('SLUG', slug);
   if (slug.length < 2) {
     return {
       props: {
@@ -129,11 +129,11 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
    * In this scenario, the slug comes through as `[':org', ':repo', ':org', ':repo']`,  so we
    * rewrite the slug if we think this scenario has happened.
    */
-  // if (slug.length === 4) {
-  //   if (slug[0] === slug[2] && slug[1] === slug[3]) {
-  //     slug = [slug[0], slug[1]];
-  //   }
-  // }
+  if (slug.length === 4) {
+    if (slug[0] === slug[2] && slug[1] === slug[3]) {
+      slug = [slug[0], slug[1]];
+    }
+  }
 
   // Extract the slug properties from the request.
   const properties = new Properties(slug as string[]);
