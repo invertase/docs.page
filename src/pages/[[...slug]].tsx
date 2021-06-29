@@ -103,7 +103,7 @@ type StaticProps = {
 };
 
 export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
-  let slug = ctx.params.slug || [];
+  const slug = ctx.params.slug || [];
   let source = null;
   const headings: HeadingNode[] = [];
   let error: RenderError = null;
