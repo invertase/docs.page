@@ -1,4 +1,5 @@
 import React from 'react';
+import fs from 'fs';
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import NextHead from 'next/head';
 import NextRouter, { useRouter } from 'next/router';
@@ -23,6 +24,7 @@ import { isProduction, routeChangeComplete, routeChangeError, routeChangeStart }
 import { mdxSerialize } from '../utils/mdx-serialize';
 import { Loading } from '../templates/Loading';
 import { getDomainsList, getRepositoriesList } from '../utils/file';
+import path from 'path';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', routeChangeStart);
@@ -76,14 +78,14 @@ export default function Documentation({
 
 export const getStaticPaths: GetStaticPaths = async () => {
   // Always pre-render the homepage.
-  let paths = ['/'];
+  const paths = ['/docs.page'];
 
   // Since this call can be fairly large, only run it on production
   // and let the development pages fallback each time.
   if (isProduction()) {
-    const repositories = getRepositoriesList();
-    paths = [...paths, ...(await getRepositoriesPaths(repositories))];
-    console.info(`- gathered ${paths.length} static pages.`);
+    // const repositories = getRepositoriesList();
+    // paths = [...paths, ...(await getRepositoriesPaths(repositories))];
+    // console.info(`- gathered ${paths.length} static pages.`);
   }
 
   return {
@@ -102,13 +104,26 @@ type StaticProps = {
   error?: IRenderError;
 };
 
+const HOST = isProduction() ? 'docs.page' : 'localhost';
+
 export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
-  let slug = ctx.params.slug || [];
+  let slug = (ctx.params.slug || []) as string[];
   let source = null;
   const headings: HeadingNode[] = [];
   let error: RenderError = null;
-  console.log('SLUG', slug);
-  if (slug.length < 2) {
+  let properties: Properties;
+
+  const [host, ...params] = slug;
+
+  if (!host) {
+    throw 'No host!!!!';
+  }
+
+  if (slug.length === 2 && slug[1] === host) {
+    slug = [host];
+  }
+
+  if (host === HOST && slug.length === 1) {
     return {
       props: {
         domain: null,
@@ -120,6 +135,30 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
     };
   }
 
+  if (host !== HOST) {
+    const domains = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'domains.json'), 'utf-8'));
+
+    const match = domains.find(([domain]) => domain === host);
+    console.log('MATCH', match);
+    if (!match) {
+      throw '404 - invalid host...';
+    }
+    console.log('!!', slug);
+    const [, ...todo] = slug;
+    const [, repo] = match;
+    const [organization, repository] = repo.split('/');
+
+    properties = new Properties([organization, repository, ...todo]);
+  } else {
+    const [, organization, repository, ...path] = slug;
+
+    if (!organization || !repository) {
+      throw '404 - need org and repo';
+    }
+
+    properties = new Properties([organization, repository, ...path]);
+  }
+  console.log(properties);
   /**
    * When a custom domain points to the root, the `beforeFiles` rewrite (next.config.js) is triggered:
    *   -> destination: `/${organization}/${repo}`,
@@ -130,14 +169,14 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
    * In this scenario, the slug comes through as `[':org', ':repo', ':org', ':repo']`,  so we
    * rewrite the slug if we think this scenario has happened.
    */
-  if (slug.length === 4) {
-    if (slug[0] === slug[2] && slug[1] === slug[3]) {
-      slug = [slug[0], slug[1]];
-    }
-  }
+  // if (slug.length === 4) {
+  //   if (slug[0] === slug[2] && slug[1] === slug[3]) {
+  //     slug = [slug[0], slug[1]];
+  //   }
+  // }
 
   // Extract the slug properties from the request.
-  const properties = new Properties(slug as string[]);
+  // const properties = new Properties(slug as string[]);
 
   // If the ref looks like a PR, update the details to point towards
   // the PR owner (which might be a different repo)
