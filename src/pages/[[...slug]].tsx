@@ -4,34 +4,25 @@ import NextHead from 'next/head';
 import NextRouter, { useRouter } from 'next/router';
 import NProgress from 'nprogress';
 import { MDXRemoteSerializeResult } from '@invertase/next-mdx-remote/dist/types';
+import Homepage from '../templates/homepage';
 
-import { Hydrate } from '../../../mdx';
+import { Hydrate } from '../mdx';
 
-import { ThemeStyles } from '../../../components/ThemeStyles';
-import { Layout } from '../../../components/Layout';
-import { Error, ErrorBoundary } from '../../../templates/error';
+import { ThemeStyles } from '../components/ThemeStyles';
+import { Layout } from '../components/Layout';
+import { Error, ErrorBoundary } from '../templates/error';
 
-import { ConfigContext } from '../../../utils/projectConfig';
-import { IRenderError, redirect, RenderError } from '../../../utils/error';
-import { Properties, SlugProperties, SlugPropertiesContext } from '../../../utils/properties';
-import {
-  getPageContent,
-  HeadingNode,
-  PageContent,
-  PageContentContext,
-} from '../../../utils/content';
-import { getPullRequestMetadata, getRepositoriesPaths } from '../../../utils/github';
-import { CustomDomain, CustomDomainContext, getCustomDomain } from '../../../utils/domain';
-import { getHeadTags } from '../../../utils/html';
-import {
-  isProduction,
-  routeChangeComplete,
-  routeChangeError,
-  routeChangeStart,
-} from '../../../utils';
-import { mdxSerialize } from '../../../utils/mdx-serialize';
-import { Loading } from '../../../templates/Loading';
-import { getDomainsList, getRepositoriesList } from '../../../utils/file';
+import { ConfigContext } from '../utils/projectConfig';
+import { IRenderError, redirect, RenderError } from '../utils/error';
+import { Properties, SlugProperties, SlugPropertiesContext } from '../utils/properties';
+import { getPageContent, HeadingNode, PageContent, PageContentContext } from '../utils/content';
+import { getPullRequestMetadata, getRepositoriesPaths } from '../utils/github';
+import { CustomDomain, CustomDomainContext, getCustomDomain } from '../utils/domain';
+import { getHeadTags } from '../utils/html';
+import { isProduction, routeChangeComplete, routeChangeError, routeChangeStart } from '../utils';
+import { mdxSerialize } from '../utils/mdx-serialize';
+import { Loading } from '../templates/Loading';
+import { getDomainsList, getRepositoriesList } from '../utils/file';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', routeChangeStart);
@@ -39,12 +30,17 @@ NextRouter.events.on('routeChangeComplete', routeChangeComplete);
 NextRouter.events.on('routeChangeError', routeChangeError);
 
 export default function Documentation({
+  homepage,
   domain,
   source,
   properties,
   content,
   error,
 }: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element {
+  if (homepage) {
+    return <Homepage />;
+  }
+
   const { isFallback } = useRouter();
 
   if (isFallback) {
@@ -79,13 +75,14 @@ export default function Documentation({
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  let paths = [];
+  // Always pre-render the homepage.
+  let paths = ['/'];
 
   // Since this call can be fairly large, only run it on production
   // and let the development pages fallback each time.
   if (isProduction()) {
     const repositories = getRepositoriesList();
-    paths = await getRepositoriesPaths(repositories);
+    paths = [...paths, ...(await getRepositoriesPaths(repositories))];
     console.info(`- gathered ${paths.length} static pages.`);
   }
 
@@ -99,41 +96,39 @@ type StaticProps = {
   domain: CustomDomain;
   properties: SlugProperties;
   headings: HeadingNode[];
+  homepage?: boolean;
   source?: MDXRemoteSerializeResult;
   content?: PageContent;
   error?: IRenderError;
 };
 
 export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
-  let slug = ctx.params.slug;
+  let slug = ctx.params.slug || [];
   let source = null;
   const headings: HeadingNode[] = [];
   let error: RenderError = null;
 
-  if (Array.isArray(slug) && slug[0] == ctx.params.owner && slug[1] == ctx.params.repository) {
-    slug = [];
+  if (slug.length < 2) {
+    return {
+      props: {
+        domain: null,
+        properties: null,
+        headings: [],
+        homepage: true,
+      },
+    };
   }
 
-  // TODO why does it sometimes come in as `[owner],[repository],actual-slug`
-  if (Array.isArray(slug) && slug.length > 2) {
-    if (slug[0] == '[owner]') {
-      slug.splice(0, 1);
-    }
-    if (slug[0] == '[repository]') {
-      slug.splice(0, 1);
-    }
-  }
-
-  // /**
-  //  * When a custom domain points to the root, the `beforeFiles` rewrite (next.config.js) is triggered:
-  //  *   -> destination: `/${organization}/${repo}`,
-  //  * This incoming request is also then picked up by the `afterFiles` rewrite, and appends the org & repo
-  //  * to the destination too:
-  //  *   -> destination: `/${organization}/${repo}/:path*`,
-  //  *
-  //  * In this scenario, the slug comes through as `[':org', ':repo', ':org', ':repo']`,  so we
-  //  * rewrite the slug if we think this scenario has happened.
-  //  */
+  /**
+   * When a custom domain points to the root, the `beforeFiles` rewrite (next.config.js) is triggered:
+   *   -> destination: `/${organization}/${repo}`,
+   * This incoming request is also then picked up by the `afterFiles` rewrite, and appends the org & repo
+   * to the destination too:
+   *   -> destination: `/${organization}/${repo}/:path*`,
+   *
+   * In this scenario, the slug comes through as `[':org', ':repo', ':org', ':repo']`,  so we
+   * rewrite the slug if we think this scenario has happened.
+   */
   // if (slug.length === 4) {
   //   if (slug[0] === slug[2] && slug[1] === slug[3]) {
   //     slug = [slug[0], slug[1]];
@@ -141,11 +136,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
   // }
 
   // Extract the slug properties from the request.
-  const properties = new Properties([
-    ctx.params.owner as string,
-    ctx.params.repository as string,
-    ...(Array.isArray(slug) ? slug : [slug || '']),
-  ]);
+  const properties = new Properties(slug as string[]);
 
   // If the ref looks like a PR, update the details to point towards
   // the PR owner (which might be a different repo)

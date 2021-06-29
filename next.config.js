@@ -41,19 +41,19 @@ module.exports = withTM({
   },
   async rewrites() {
     return {
-      beforeFiles: domains.map(([domain, repository]) => {
-        const [organization, repo] = repository.split('/');
-        return {
-          source: '/',
-          has: [
-            {
-              type: 'host',
-              value: domain,
-            },
-          ],
-          destination: `/${organization}/${repo}`,
-        };
-      }),
+      // beforeFiles: domains.map(([domain, repository]) => {
+      //   const [organization, repo] = repository.split('/');
+      //   return {
+      //     source: '/',
+      //     has: [
+      //       {
+      //         type: 'host',
+      //         value: domain,
+      //       },
+      //     ],
+      //     destination: `/${organization}/${repo}`,
+      //   };
+      // }),
       afterFiles: domains.map(([domain, repository]) => {
         const [organization, repo] = repository.split('/');
 
