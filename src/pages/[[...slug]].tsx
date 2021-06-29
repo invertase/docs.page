@@ -116,6 +116,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
         headings: [],
         homepage: true,
       },
+      revalidate: 2,
     };
   }
 
@@ -192,6 +193,6 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
       content,
       error: error?.toObject() ?? null,
     },
-    revalidate: 30,
+    revalidate: 2,
   };
 };
