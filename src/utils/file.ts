@@ -1,14 +1,12 @@
-import domains from '../../domains.json';
-import repositories from '../../repositories.json';
-
-export type DomainListItem = [string, string];
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 /**
  * Returns an array of all domains & associated repositories
  * @returns
  */
-export function getDomainsList(): DomainListItem[] {
-  return domains as DomainListItem[];
+export function getDomainsList(): Array<[string, string]> {
+  return JSON.parse(readFileSync(join(process.cwd(), 'domains.json'), 'utf-8'));
 }
 
 /**
@@ -16,5 +14,5 @@ export function getDomainsList(): DomainListItem[] {
  * @returns
  */
 export function getRepositoriesList(): string[] {
-  return repositories as string[];
+  return JSON.parse(readFileSync(join(process.cwd(), 'repositories.json'), 'utf-8'));
 }

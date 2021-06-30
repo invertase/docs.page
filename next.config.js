@@ -1,4 +1,5 @@
 const isProd = process.env.NODE_ENV === 'production';
+const host = isProd ? 'docs.page' : 'localhost';
 
 const withTM = require('next-transpile-modules')([
   'hast-util-heading-rank',
@@ -7,41 +8,20 @@ const withTM = require('next-transpile-modules')([
   'unist-util-find-after',
 ]);
 
-const domains = require('./domains.json');
-
 module.exports = withTM({
   async redirects() {
-    // TODO: handle refs
-    const redirects = domains.map(([domain, repository]) => {
-      const [organization, repo] = repository.split('/');
-
-      return {
-        source: `/${organization}/${repo}/:path*`,
-        has: [
-          {
-            type: 'host',
-            value: isProd ? 'docs-page-git-domains-invertase.vercel.app' : 'localhost',
-          },
-        ],
-        destination: isProd
-          ? `https://${domain}/:path*`
-          : `http://${domain}:${process.env.PORT}/:path*`,
-        permanent: false,
-      };
-    });
-
     return [
       {
         source: '/robots.txt',
         destination: '/res/robots.txt',
         permanent: true,
       },
-      ...redirects,
     ];
   },
   async rewrites() {
     return {
       beforeFiles: [
+        // Catch any `https://docs.page` or `https://customdomain.com` requests are prepend the host
         {
           source: '/',
           has: [
@@ -54,17 +34,16 @@ module.exports = withTM({
         },
       ],
       afterFiles: [
+        // Catch all other requests and prepend the host
         {
-          // Map all incoming requests (except for_next requests)
           source: `/:path*`,
-          // Only where the domain matches the one provided
           has: [
             {
               type: 'host',
-              value: '(?<host>.*)',
+              value: '(?<domain>.*)',
             },
           ],
-          destination: `/:host/:path*`,
+          destination: `/:domain/:path*`,
         },
       ],
     };

@@ -1,56 +1,52 @@
 import React from 'react';
-import fs from 'fs';
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import NextHead from 'next/head';
 import NextRouter, { useRouter } from 'next/router';
 import NProgress from 'nprogress';
 import { MDXRemoteSerializeResult } from '@invertase/next-mdx-remote/dist/types';
-import Homepage from '../templates/homepage';
 
 import { Hydrate } from '../mdx';
 
 import { ThemeStyles } from '../components/ThemeStyles';
 import { Layout } from '../components/Layout';
+
+import Homepage from '../templates/homepage';
 import { Error, ErrorBoundary } from '../templates/error';
+import { Loading } from '../templates/Loading';
 
 import { ConfigContext } from '../utils/projectConfig';
-import { IRenderError, redirect, RenderError } from '../utils/error';
+import { IRenderError, redirect, renderError, RenderError } from '../utils/error';
 import { Properties, SlugProperties, SlugPropertiesContext } from '../utils/properties';
 import { getPageContent, HeadingNode, PageContent, PageContentContext } from '../utils/content';
-import { getPullRequestMetadata, getRepositoriesPaths } from '../utils/github';
-import { CustomDomain, CustomDomainContext, getCustomDomain } from '../utils/domain';
+import { getPullRequestMetadata } from '../utils/github';
+import { CustomDomain, CustomDomainContext } from '../utils/domain';
 import { getHeadTags } from '../utils/html';
-import { isProduction, routeChangeComplete, routeChangeError, routeChangeStart } from '../utils';
 import { mdxSerialize } from '../utils/mdx-serialize';
-import { Loading } from '../templates/Loading';
-import { getDomainsList, getRepositoriesList } from '../utils/file';
-import path from 'path';
+import { getDomainsList } from '../utils/file';
+import { getHost, isProduction } from '../utils';
 
 NProgress.configure({ showSpinner: false });
-NextRouter.events.on('routeChangeStart', routeChangeStart);
-NextRouter.events.on('routeChangeComplete', routeChangeComplete);
-NextRouter.events.on('routeChangeError', routeChangeError);
+NextRouter.events.on('routeChangeStart', NProgress.start);
+NextRouter.events.on('routeChangeComplete', NProgress.done);
+NextRouter.events.on('routeChangeError', NProgress.done);
 
-export default function Documentation({
-  homepage,
-  domain,
-  source,
-  properties,
-  content,
-  error,
-}: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element {
-  if (homepage) {
-    return <Homepage />;
-  }
-
+export default function Documentation(
+  props: InferGetStaticPropsType<typeof getStaticProps>,
+): JSX.Element {
   const { isFallback } = useRouter();
 
   if (isFallback) {
     return <Loading />;
   }
 
+  const { page, error, properties, content, domain, source } = props;
+
   if (error) {
     return <Error {...error} />;
+  }
+
+  if (page) {
+    return <Homepage />;
   }
 
   const tags = getHeadTags(properties, content);
@@ -78,7 +74,7 @@ export default function Documentation({
 
 export const getStaticPaths: GetStaticPaths = async () => {
   // Always pre-render the homepage.
-  const paths = ['/docs.page'];
+  const paths = [`/${getHost()}`];
 
   // Since this call can be fairly large, only run it on production
   // and let the development pages fallback each time.
@@ -95,88 +91,72 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 type StaticProps = {
-  domain: CustomDomain;
-  properties: SlugProperties;
-  headings: HeadingNode[];
-  homepage?: boolean;
+  page?: string;
+  domain?: CustomDomain;
+  properties?: SlugProperties;
+  headings?: HeadingNode[];
   source?: MDXRemoteSerializeResult;
   content?: PageContent;
   error?: IRenderError;
 };
 
-const HOST = isProduction() ? 'docs.page' : 'localhost';
-
 export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
-  let slug = (ctx.params.slug || []) as string[];
-  let source = null;
+  const host = getHost();
   const headings: HeadingNode[] = [];
-  let error: RenderError = null;
+  let source = null;
   let properties: Properties;
+  let customDomain: CustomDomain = null;
 
-  const [host, ...params] = slug;
+  const params = (ctx.params.slug || []) as string[];
+  const domain = params[0];
+  let [, ...slug] = params;
 
-  if (!host) {
-    throw 'No host!!!!';
+  // When a request is caught by the `beforeFiles` rewrite, the `afterFiles` rewrite
+  // also picks it up, so we need to manually override the slug.
+  if (slug.length === 1 && slug[0] === host) {
+    slug = [];
   }
 
-  if (slug.length === 2 && slug[1] === host) {
-    slug = [host];
-  }
-
-  if (host === HOST && slug.length === 1) {
+  // If the domain is the root host, show the homepage
+  if (domain === host && slug.length === 0) {
     return {
       props: {
-        domain: null,
-        properties: null,
-        headings: [],
-        homepage: true,
+        page: 'homepage',
       },
-      revalidate: 2,
+      revalidate: 30,
     };
   }
 
-  if (host !== HOST) {
-    const domains = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'domains.json'), 'utf-8'));
-
-    const match = domains.find(([domain]) => domain === host);
-    console.log('MATCH', match);
-    if (!match) {
-      throw '404 - invalid host...';
-    }
-    console.log('!!', slug);
-    const [, ...todo] = slug;
-    const [, repo] = match;
-    const [organization, repository] = repo.split('/');
-
-    properties = new Properties([organization, repository, ...todo]);
-  } else {
-    const [, organization, repository, ...path] = slug;
-
-    if (!organization || !repository) {
-      throw '404 - need org and repo';
-    }
-
-    properties = new Properties([organization, repository, ...path]);
-  }
-  console.log(properties);
-  /**
-   * When a custom domain points to the root, the `beforeFiles` rewrite (next.config.js) is triggered:
-   *   -> destination: `/${organization}/${repo}`,
-   * This incoming request is also then picked up by the `afterFiles` rewrite, and appends the org & repo
-   * to the destination too:
-   *   -> destination: `/${organization}/${repo}/:path*`,
-   *
-   * In this scenario, the slug comes through as `[':org', ':repo', ':org', ':repo']`,  so we
-   * rewrite the slug if we think this scenario has happened.
-   */
-  // if (slug.length === 4) {
-  //   if (slug[0] === slug[2] && slug[1] === slug[3]) {
-  //     slug = [slug[0], slug[1]];
-  //   }
+  // if (domain == host && slug.length === 1) {
+  // Handle custom paths (e.g. `https://docs.page/about`);
   // }
 
-  // Extract the slug properties from the request.
-  // const properties = new Properties(slug as string[]);
+  // If host is docs.page/localhost
+  if (domain === host) {
+    const [organization, repository] = slug;
+
+    // Ensure both a org and repo exists.
+    if (!organization || !repository) {
+      throw renderError(RenderError.invalidRequest());
+    }
+
+    properties = new Properties(slug);
+  } else {
+    // Request is from a custom domain
+    const domains = getDomainsList();
+
+    // Match the host with the domain
+    const match = domains.find(item => item[0] === domain);
+
+    // If no match, the domain is not enabled
+    if (!match) {
+      throw renderError(RenderError.invalidDomain());
+    }
+
+    customDomain = match[0];
+    const [organization, repository] = match[1].split('/');
+    properties = new Properties([organization, repository, ...slug]);
+  }
 
   // If the ref looks like a PR, update the details to point towards
   // the PR owner (which might be a different repo)
@@ -197,7 +177,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
 
   if (!content) {
     // If there is no content, the repository is not found
-    error = RenderError.repositoryNotFound(properties);
+    return renderError(RenderError.repositoryNotFound(properties));
   } else if (content.frontmatter.redirect) {
     // Redirect the user to another page
     return redirect(content.frontmatter.redirect, properties);
@@ -213,25 +193,24 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
       const serialization = await mdxSerialize(content);
 
       if (serialization.error) {
-        error = RenderError.serverError(properties);
+        return renderError(RenderError.serverError(properties));
       } else {
         source = serialization.source;
         content.headings = serialization.headings as unknown as HeadingNode[];
       }
     } else {
-      error = RenderError.pageNotFound(properties);
+      return renderError(RenderError.pageNotFound(properties));
     }
   }
 
   return {
     props: {
-      domain: getCustomDomain(getDomainsList(), properties),
+      domain: customDomain,
       properties: properties.toObject(),
       source,
       headings,
       content,
-      error: error?.toObject() ?? null,
     },
-    revalidate: 2,
+    revalidate: 30,
   };
 };

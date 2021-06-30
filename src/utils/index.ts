@@ -31,24 +31,16 @@ export function tryJsonParse(value: string): null | Record<string, unknown> {
   }
 }
 
-export function routeChangeStart(): void {
-  NProgress.start();
-}
-
-export function routeChangeComplete(): void {
-  NProgress.done();
-}
-
-export function routeChangeError(): void {
-  NProgress.done();
-}
-
 export function isProduction(): boolean {
   return process.env.NODE_ENV === 'production';
 }
 
 export function isClient(): boolean {
   return typeof window !== 'undefined';
+}
+
+export function getHost(): string {
+  return isProduction() ? 'docs.page' : 'localhost';
 }
 
 // Returns a guaranteed string value from a config object

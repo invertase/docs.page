@@ -1,18 +1,20 @@
 import { leadingSlash } from './index';
 import { Properties, SlugProperties } from './properties';
 import { isExternalLink } from '../components/Link';
-import { GetServerSidePropsResult } from 'next';
+import { GetStaticPropsResult } from 'next';
 
 export enum ErrorType {
   repositoryNotFound,
   pageNotFound,
   serverError,
+  invalidRequest,
+  invalidDomain,
 }
 
 export interface IRenderError {
   statusCode: number;
   errorType: ErrorType;
-  properties: SlugProperties;
+  properties?: SlugProperties;
 }
 
 export class RenderError {
@@ -28,11 +30,19 @@ export class RenderError {
     return new RenderError(500, ErrorType.serverError, properties);
   }
 
+  public static invalidRequest(): RenderError {
+    return new RenderError(404, ErrorType.invalidRequest);
+  }
+
+  public static invalidDomain(): RenderError {
+    return new RenderError(500, ErrorType.invalidDomain);
+  }
+
   public readonly statusCode: number;
   public readonly errorType: ErrorType;
   public readonly properties?: Properties;
 
-  private constructor(statusCode: number, errorType: ErrorType, properties: Properties) {
+  private constructor(statusCode: number, errorType: ErrorType, properties?: Properties) {
     this.statusCode = statusCode;
     this.errorType = errorType;
     this.properties = properties;
@@ -42,12 +52,12 @@ export class RenderError {
     return {
       statusCode: this.statusCode,
       errorType: this.errorType,
-      properties: this.properties.toObject(),
+      properties: this.properties?.toObject() ?? undefined,
     };
   }
 }
 
-export function redirect(link: string, properties?: Properties): GetServerSidePropsResult<never> {
+export function redirect(link: string, properties?: Properties): GetStaticPropsResult<never> {
   let destination: string;
 
   if (!properties || isExternalLink(link)) {
@@ -63,5 +73,14 @@ export function redirect(link: string, properties?: Properties): GetServerSidePr
       destination,
       permanent: true,
     },
+  };
+}
+
+export function renderError(error: RenderError): GetStaticPropsResult<{ error: IRenderError }> {
+  return {
+    props: {
+      error: error.toObject(),
+    },
+    revalidate: 30,
   };
 }
