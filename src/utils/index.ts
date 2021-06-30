@@ -1,6 +1,5 @@
 import { graphql } from '@octokit/graphql';
 import get from 'lodash.get';
-import NProgress from 'nprogress';
 
 export function isString(value: unknown): value is string {
   return typeof value === 'string';

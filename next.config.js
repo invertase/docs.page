@@ -1,6 +1,3 @@
-const isProd = process.env.NODE_ENV === 'production';
-const host = isProd ? 'docs.page' : 'localhost';
-
 const withTM = require('next-transpile-modules')([
   'hast-util-heading-rank',
   'hast-util-has-property',
