@@ -145,7 +145,8 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
     properties = new Properties(slug);
   } else {
     // Request is from a custom domain
-    const domains = JSON.parse(readFileSync(path.join(process.cwd(), 'domains.json'), 'utf-8'));
+    // const domains = JSON.parse(readFileSync(path.join(process.cwd(), 'domains.json'), 'utf-8'));
+    const domains = getDomainsList();
 
     // Match the host with the domain
     const match = domains.find(item => item[0] === domain);
