@@ -1,4 +1,3 @@
-import { readFileSync } from 'fs';
 import { join } from 'path';
 
 /**
@@ -6,7 +5,7 @@ import { join } from 'path';
  * @returns
  */
 export function getDomainsList(): Array<[string, string]> {
-  return JSON.parse(readFileSync(join(process.cwd(), 'domains.json'), 'utf-8'));
+  return require(join(process.cwd(), 'domains.json'));
 }
 
 /**
@@ -14,5 +13,5 @@ export function getDomainsList(): Array<[string, string]> {
  * @returns
  */
 export function getRepositoriesList(): string[] {
-  return JSON.parse(readFileSync(join(process.cwd(), 'repositories.json'), 'utf-8'));
+  return require(join(process.cwd(), 'repositories.json'));
 }
