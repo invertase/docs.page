@@ -24,6 +24,7 @@ import { getHeadTags } from '../utils/html';
 import { mdxSerialize } from '../utils/mdx-serialize';
 import { getDomainsList } from '../utils/file';
 import { getHost, isProduction } from '../utils';
+import { join } from 'path';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', NProgress.start);
@@ -143,7 +144,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
     properties = new Properties(slug);
   } else {
     // Request is from a custom domain
-    const domains = getDomainsList();
+    const domains = require(join(process.cwd(), 'domains.json')) as Array<[string, string]>;
 
     // Match the host with the domain
     const match = domains.find(item => item[0] === domain);
