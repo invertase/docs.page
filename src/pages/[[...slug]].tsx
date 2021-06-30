@@ -107,7 +107,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
   let source = null;
   let properties: Properties;
   let customDomain: CustomDomain = null;
-
+  console.log('params -> ', ctx.params.slug);
   const params = (ctx.params.slug || []) as string[];
   const domain = params[0];
   let [, ...slug] = params;
