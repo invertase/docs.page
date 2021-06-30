@@ -37,10 +37,10 @@ module.exports = withTM({
           has: [
             {
               type: 'host',
-              value: '(?<domain>.*)',
+              value: '(?<host>.*)',
             },
           ],
-          destination: `/:domain/:path*`,
+          destination: `/:host/:path*`,
         },
       ],
     };
