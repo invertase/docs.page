@@ -16,15 +16,10 @@ export class Properties {
   isBaseBranch: boolean;
 
   public constructor(params: string[]) {
-    console.log('properties -> ' + params.join(','));
     let [, repository, , ...path] = params;
-    const [, , maybeRef] = params;
     const [owner] = params;
+    const [, , maybeRef] = params;
     let ref = null;
-
-    if (!repository) {
-      throw new Error('properties -> ' + params.join(','));
-    }
 
     // project paths containing a SPLITTER mean a specific branch has been requested
     const chunks = repository.split(SPLITTER);
