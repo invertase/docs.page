@@ -24,8 +24,6 @@ import { getHeadTags } from '../utils/html';
 import { mdxSerialize } from '../utils/mdx-serialize';
 import { getDomainsList } from '../utils/file';
 import { getHost, isProduction } from '../utils';
-import path, { join } from 'path';
-import { readFileSync } from 'fs';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', NProgress.start);
