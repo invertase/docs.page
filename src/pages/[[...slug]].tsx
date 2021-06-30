@@ -137,7 +137,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
 
     // Ensure both a org and repo exists.
     if (!organization || !repository) {
-      throw renderError(RenderError.invalidRequest());
+      return renderError(RenderError.invalidRequest());
     }
 
     properties = new Properties(slug);
@@ -150,7 +150,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
 
     // If no match, the domain is not enabled
     if (!match) {
-      throw renderError(RenderError.invalidDomain());
+      return renderError(RenderError.invalidDomain(domain));
     }
 
     customDomain = match[0];

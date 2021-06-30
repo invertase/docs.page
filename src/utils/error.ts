@@ -15,6 +15,7 @@ export interface IRenderError {
   statusCode: number;
   errorType: ErrorType;
   properties?: SlugProperties;
+  domain?: string;
 }
 
 export class RenderError {
@@ -34,25 +35,33 @@ export class RenderError {
     return new RenderError(404, ErrorType.invalidRequest);
   }
 
-  public static invalidDomain(): RenderError {
-    return new RenderError(500, ErrorType.invalidDomain);
+  public static invalidDomain(domain: string): RenderError {
+    return new RenderError(404, ErrorType.invalidDomain, null, domain);
   }
 
   public readonly statusCode: number;
   public readonly errorType: ErrorType;
   public readonly properties?: Properties;
+  public readonly domain?: string;
 
-  private constructor(statusCode: number, errorType: ErrorType, properties?: Properties) {
+  private constructor(
+    statusCode: number,
+    errorType: ErrorType,
+    properties?: Properties,
+    domain?: string,
+  ) {
     this.statusCode = statusCode;
     this.errorType = errorType;
     this.properties = properties;
+    this.domain = domain;
   }
 
   public toObject(): IRenderError {
     return {
       statusCode: this.statusCode,
       errorType: this.errorType,
-      properties: this.properties?.toObject() ?? undefined,
+      properties: this.properties?.toObject() ?? null,
+      domain: this.domain || null,
     };
   }
 }

@@ -61,7 +61,7 @@ export function ServerError({ properties }: IRenderError): JSX.Element {
   );
 }
 
-export function NotFound({ properties, errorType }: IRenderError): JSX.Element {
+export function NotFound({ properties, errorType, domain }: IRenderError): JSX.Element {
   if (errorType === ErrorType.repositoryNotFound) {
     return (
       <>
@@ -103,6 +103,27 @@ export function NotFound({ properties, errorType }: IRenderError): JSX.Element {
             <a>debug</a>
           </Link>{' '}
           this page or{' '}
+          <ExternalLink href="https://github.com/invertase/docs.page/issues">
+            report an issue
+          </ExternalLink>
+          .
+        </p>
+      </>
+    );
+  }
+
+  if (errorType === ErrorType.invalidDomain) {
+    return (
+      <>
+        <p>
+          The incoming request is from an unrecognized domain (<code>{domain}</code>).
+        </p>
+        <p>
+          To learn about custom domains,{' '}
+          <ExternalLink href="https://docs.page/invertase/docs.page/custom-domains">
+            visit the documentation
+          </ExternalLink>{' '}
+          . If you have setup your domain correct, please{' '}
           <ExternalLink href="https://github.com/invertase/docs.page/issues">
             report an issue
           </ExternalLink>
