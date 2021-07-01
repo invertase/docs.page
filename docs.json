@@ -9,6 +9,8 @@
     ["Components", "/components"],
     ["Frontmatter", "/frontmatter"],
     ["Debugging", "/debugging"],
+    ["Search", "/search"],
+    ["GitHub Bot", "/github-bot"],
     ["Pre-rendering", "/pre-rendering"],
     ["Contributing", "/contributing"],
     ["Advanced", "/advanced"]

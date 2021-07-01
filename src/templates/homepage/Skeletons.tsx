@@ -22,7 +22,7 @@ export function IndexExample(): JSX.Element {
   return (
     <section>
       <div className="border rounded-tr rounded-tl border-gray-700 px-3 py-2">
-        <code className="text-sm">docs/index.md</code>
+        <code className="text-sm">docs/index.mdx</code>
       </div>
       <div className="flex">
         <div style={{ width: 1 }} className="bg-gradient-to-b from-gray-700 to-docs-background" />
