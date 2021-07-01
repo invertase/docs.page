@@ -61,7 +61,7 @@ export function ServerError({ properties }: IRenderError): JSX.Element {
   );
 }
 
-export function NotFound({ properties, errorType, domain }: IRenderError): JSX.Element {
+export function NotFound({ properties, errorType }: IRenderError): JSX.Element {
   if (errorType === ErrorType.repositoryNotFound) {
     return (
       <>

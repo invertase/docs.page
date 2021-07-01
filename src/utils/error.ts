@@ -13,7 +13,6 @@ export interface IRenderError {
   statusCode: number;
   errorType: ErrorType;
   properties?: SlugProperties;
-  domain?: string;
 }
 
 export class RenderError {
@@ -32,18 +31,11 @@ export class RenderError {
   public readonly statusCode: number;
   public readonly errorType: ErrorType;
   public readonly properties?: Properties;
-  public readonly domain?: string;
 
-  private constructor(
-    statusCode: number,
-    errorType: ErrorType,
-    properties?: Properties,
-    domain?: string,
-  ) {
+  private constructor(statusCode: number, errorType: ErrorType, properties?: Properties) {
     this.statusCode = statusCode;
     this.errorType = errorType;
     this.properties = properties;
-    this.domain = domain;
   }
 
   public toObject(): IRenderError {
@@ -51,7 +43,6 @@ export class RenderError {
       statusCode: this.statusCode,
       errorType: this.errorType,
       properties: this.properties?.toObject() ?? null,
-      domain: this.domain || null,
     };
   }
 }
