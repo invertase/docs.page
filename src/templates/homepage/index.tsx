@@ -5,7 +5,14 @@ import { Checkout } from './Checkout';
 import { Heading } from './Heading';
 import { Feature } from './Feature';
 import { DocsDirectory, IndexExample } from './Skeletons';
-import { Adjustments, PullRequest, GlobeAlt, Template } from '../../components/Icons';
+import {
+  Adjustments,
+  PullRequest,
+  GlobeAlt,
+  Template,
+  Annotation,
+  SearchCircle,
+} from '../../components/Icons';
 import { Footer } from './Footer';
 
 export default function IndexPage(): JSX.Element {
@@ -128,7 +135,7 @@ export default function IndexPage(): JSX.Element {
             </div>
             <div className="flex-1">
               <p className="text-lg px-3">
-                Create an <code className="text-blue-500">{`index.md`}</code> file at the root of
+                Create a <code className="text-blue-500">{`index.mdx`}</code> file at the root of
                 your <code className="text-blue-500">/docs</code> directory. docs.page supports
                 nested pages based on your directory structure of the directory.
               </p>
@@ -137,17 +144,6 @@ export default function IndexPage(): JSX.Element {
                 Installation pages are always a great place to start!
               </p>
             </div>
-          </div>
-          <div className="flex-1">
-            <p className="text-lg px-3">
-              Create an <code className="text-blue-500">{`index.mdx`}</code> file at the root of
-              your <code className="text-blue-500">/docs</code> directory. docs.page supports nested
-              pages based on your directory structure of the directory.
-            </p>
-            <p className="mt-4 text-lg px-3">
-              Start by writing some <a href="https://www.markdownguide.org/">Markdown</a> content.
-              Installation pages are always a great place to start!
-            </p>
           </div>
         </div>
         <div className="mt-32 max-w-5xl mx-auto px-4 lg:px-0">
@@ -166,68 +162,75 @@ export default function IndexPage(): JSX.Element {
         </div>
         <div className="mt-32 max-w-5xl mx-auto px-4 lg:px-0">
           <Heading step={4} title="Learn more..." from="from-green-400" to="to-green-500" />
-          <div className="lg:ml-20 mt-10">
-            <div className="lg:flex flex-wrap text-center pl-3">
-              <div className="lg:px-12 lg:w-1/2 mb-20">
-                <Feature
-                  href="/invertase/docs.page/configuration"
-                  title={<span className="text-blue-500">Configure</span>}
-                  text={
-                    <span>
-                      Add a <code className="text-blue-400">docs.json</code> file to the roof of the
-                      repository to configure your project by adding a theme, search, navigation,
-                      analytics and more.
-                    </span>
-                  }
-                  icon={<Adjustments size={80} className="text-white" />}
-                />
-              </div>
-              <div className="lg:px-12 lg:w-1/2 mb-20">
-                <div className="lg:px-12 flex flex-col items-center justify-center">
-                  <Feature
-                    href="/invertase/docs.page/previews"
-                    title={<span className="text-pink-400">Previews</span>}
-                    text={
-                      <span>
-                        Easily preview documentation changes to branches & pull requests. Use our
-                        GitHub bot for seamless integration.
-                      </span>
-                    }
-                    icon={<PullRequest size={80} className="text-white" />}
-                  />
-                </div>
-              </div>
-              <div className="lg:px-12 lg:w-1/2 mb-20">
-                <div className="lg:px-12 flex flex-col items-center justify-center">
-                  <Feature
-                    href="/invertase/docs.page/components"
-                    title={<span className="text-yellow-400">Components</span>}
-                    text={
-                      <span>
-                        Use our built in React components or create your own for fully customizable
-                        documentation pages.
-                      </span>
-                    }
-                    icon={<Template size={80} className="text-white" />}
-                  />
-                </div>
-              </div>
-              <div className="lg:px-12 lg:w-1/2 mb-20">
-                <div className="lg:px-12 flex flex-col items-center justify-center">
-                  <Feature
-                    title={<span className="text-green-400">Domains</span>}
-                    href="/invertase/docs.page/custom-domains"
-                    text={
-                      <span>
-                        Using a custom domain name? Simply create a pull request & point your domain
-                        to our servers. We&apos;ll take care of the rest.
-                      </span>
-                    }
-                    icon={<GlobeAlt size={80} className="text-white" />}
-                  />
-                </div>
-              </div>
-            </div>
+          <div className="lg:ml-20 mt-10 grid lg:grid-cols-2 gap-16 text-center">
+            <Feature
+              href="/invertase/docs.page/configuration"
+              title={<span className="text-blue-500">Configure</span>}
+              text={
+                <span>
+                  Add a <code className="text-blue-400">docs.json</code> file to the roof of the
+                  repository to configure your project by adding a theme, search, navigation,
+                  analytics and more.
+                </span>
+              }
+              icon={<Adjustments size={80} />}
+            />
+            <Feature
+              href="/invertase/docs.page/previews"
+              title={<span className="text-pink-400">Previews</span>}
+              text={
+                <span>
+                  Previewing changes on branches and pull requests works out of the box with zero
+                  configuration. Install our GitHub bot for preview assistance.
+                </span>
+              }
+              icon={<PullRequest size={80} />}
+            />
+            <Feature
+              href="/invertase/docs.page/components"
+              title={<span className="text-yellow-400">Components</span>}
+              text={
+                <span>
+                  By using MDX we provide custom React components to help you build better
+                  documentation.
+                </span>
+              }
+              icon={<Template size={80} />}
+            />
+            <Feature
+              href="/invertase/docs.page/custom-domains"
+              title={<span className="text-green-400">Domains</span>}
+              text={
+                <span>
+                  Using a custom domain name? Simply create a pull request & point your domain to
+                  our servers. We&apos;ll take care of the rest.
+                </span>
+              }
+              icon={<GlobeAlt size={80} />}
+            />
+            <Feature
+              href="/invertase/docs.page/github-bot"
+              title={<span className="text-purple-500">GitHub Bot</span>}
+              text={
+                <span>
+                  Install our GitHub bot on repositories using docs.page. Any new Pull Requests will
+                  automatically display a publicly available deployment preview URL for your
+                  documentation.
+                </span>
+              }
+              icon={<Annotation size={80} />}
+            />
+            <Feature
+              href="/invertase/docs.page/search"
+              title={<span className="text-red-500">Search</span>}
+              text={
+                <span>
+                  Add your DocSearch application ID to your configuration file and instantly get
+                  full blown documentation search for free, powered by Algolia.
+                </span>
+              }
+              icon={<SearchCircle size={80} />}
+            />
           </div>
         </div>
         <div className="mt-32 max-w-5xl mx-auto px-4 lg:px-0">
