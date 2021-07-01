@@ -112,26 +112,5 @@ export function NotFound({ properties, errorType, domain }: IRenderError): JSX.E
     );
   }
 
-  if (errorType === ErrorType.invalidDomain) {
-    return (
-      <>
-        <p>
-          The incoming request is from an unrecognized domain (<code>{domain}</code>).
-        </p>
-        <p>
-          To learn about custom domains,{' '}
-          <ExternalLink href="https://docs.page/invertase/docs.page/custom-domains">
-            visit the documentation
-          </ExternalLink>{' '}
-          . If you have setup your domain correct, please{' '}
-          <ExternalLink href="https://github.com/invertase/docs.page/issues">
-            report an issue
-          </ExternalLink>
-          .
-        </p>
-      </>
-    );
-  }
-
   return null;
 }

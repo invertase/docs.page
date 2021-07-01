@@ -7,8 +7,6 @@ export enum ErrorType {
   repositoryNotFound,
   pageNotFound,
   serverError,
-  invalidRequest,
-  invalidDomain,
 }
 
 export interface IRenderError {
@@ -29,14 +27,6 @@ export class RenderError {
 
   public static serverError(properties: Properties): RenderError {
     return new RenderError(500, ErrorType.serverError, properties);
-  }
-
-  public static invalidRequest(): RenderError {
-    return new RenderError(404, ErrorType.invalidRequest);
-  }
-
-  public static invalidDomain(domain: string): RenderError {
-    return new RenderError(404, ErrorType.invalidDomain, null, domain);
   }
 
   public readonly statusCode: number;
@@ -82,14 +72,5 @@ export function redirect(link: string, properties?: Properties): GetStaticPropsR
       destination,
       permanent: true,
     },
-  };
-}
-
-export function renderError(error: RenderError): GetStaticPropsResult<{ error: IRenderError }> {
-  return {
-    props: {
-      error: error.toObject(),
-    },
-    revalidate: 30,
   };
 }

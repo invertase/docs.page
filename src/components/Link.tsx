@@ -10,12 +10,8 @@ import { useCustomDomain, useSlugProperties } from '../hooks';
  * Links on pages needs to be relative to the repository rather than
  * the root, so several checks are in place to alter the provided
  * `href`.
- *
- * Prefetching is disabled by default on Links, since pages are not
- * prebuilt at build time.
  */
 export function Link(props: React.HTMLProps<HTMLAnchorElement>): JSX.Element {
-  // const router = useRouter();
   const domain = useCustomDomain();
   const properties = useSlugProperties();
 
@@ -39,6 +35,8 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>): JSX.Element {
     if (!properties.isBaseBranch) {
       href += `${SPLITTER}${properties.ref}`;
     }
+
+    href += originalHref;
   }
 
   // If there is a domain, and we're on a ref, prefix the URL instead
