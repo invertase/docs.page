@@ -101,9 +101,8 @@ type StaticProps = {
 };
 
 export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
-  console.log(ctx.params);
-  const owner = (ctx.params.owner as string).toLowerCase();
-  const name = (ctx.params.name as string).toLowerCase();
+  const owner = ctx.params.owner as string;
+  const name = ctx.params.name as string;
   const slug = (ctx.params.slug || []) as string[];
 
   let source = null;
