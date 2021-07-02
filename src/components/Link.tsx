@@ -29,19 +29,13 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>): JSX.Element {
 
   // If there is no custom domain, attach the owner and repo
   if (!domain) {
-    href = `/${properties.owner}/${properties.repository}`;
-
-    // Add a ref to the current href, if the branch is not the base branch
-    if (!properties.isBaseBranch) {
-      href += `${SPLITTER}${properties.ref}`;
-    }
-
-    href += originalHref;
+    href = properties.base + originalHref;
   }
 
+  // TODO could we set the `base` in properties?
   // If there is a domain, and we're on a ref, prefix the URL instead
-  if (domain && !properties.isBaseBranch) {
-    href = `/${SPLITTER}${properties.ref}` + href;
+  if (domain && properties.ref) {
+    href = `/${encodeURIComponent(`${SPLITTER}${properties}`)}`;
   }
 
   return (

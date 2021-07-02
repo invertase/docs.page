@@ -46,7 +46,7 @@ export function getImageSrc(properties: SlugProperties, src: string): string {
     return src;
   }
 
-  return `https://raw.githubusercontent.com/${properties.owner}/${properties.repository}/${
-    properties.ref.name
-  }/docs${leadingSlash(src)}`;
+  return `https://raw.githubusercontent.com/${properties.source.owner}/${
+    properties.source.repository
+  }/${properties.source.ref}/docs${leadingSlash(src)}`;
 }

@@ -22,7 +22,6 @@ import {
   PageContent,
   PageContentContext,
 } from '../../../utils/content';
-import { getPullRequestMetadata } from '../../../utils/github';
 import { CustomDomain, CustomDomainContext } from '../../../utils/domain';
 import { getHeadTags } from '../../../utils/html';
 import { mdxSerialize } from '../../../utils/mdx-serialize';
@@ -109,26 +108,10 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
   const headings: HeadingNode[] = [];
   let error: RenderError = null;
 
-  // Extract the slug properties from the request.
-  const properties = new Properties([owner, name, ...slug]);
+  // Build a request instance from the query
+  const properties = await Properties.build([owner, name, ...slug]);
 
-  // If the ref looks like a PR, update the details to point towards
-  // the PR owner (which might be a different repo)
-  if (properties.isPullRequest()) {
-    const number = properties.ref.name;
-    const metadata = await getPullRequestMetadata(properties.owner, properties.repository, number);
-
-    // If a PR was found, update the property metadata
-    if (metadata) {
-      properties.setPullRequestMetadata(metadata, number);
-    }
-  }
-
-  // If the ref looks like a commit hash, set the ref type
-  if (properties.isCommitHash()) {
-    properties.setCommitHash();
-  }
-
+  // Query GitHub for the content
   const content = await getPageContent(properties);
 
   if (!content) {
@@ -138,12 +121,8 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
     // Redirect the user to another page
     return redirect(content.frontmatter.redirect, properties);
   } else {
-    // At this point there is a repository, however there still might not be a file for the path
-
-    // If no property ref has been set, assign the base branch (usually main or master)
-    if (!properties.ref) {
-      properties.setBaseRef(content.baseBranch);
-    }
+    // Set the base branch
+    properties.baseBranch = content.baseBranch;
 
     if (content.markdown) {
       const serialization = await mdxSerialize(content);

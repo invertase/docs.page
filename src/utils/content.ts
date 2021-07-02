@@ -3,7 +3,7 @@ import matter from 'gray-matter';
 import get from 'lodash.get';
 
 import { ProjectConfig, mergeConfig } from './projectConfig';
-import { Properties, ReferenceType } from './properties';
+import { Properties, Pointer } from './properties';
 import { getBoolean, getString } from '.';
 import { getGitHubContents } from './github';
 
@@ -81,7 +81,7 @@ export async function getPageContent(properties: Properties): Promise<PageConten
         !!contents.md &&
         !config.noindex &&
         !contents.isFork &&
-        properties.ref.type === ReferenceType.base &&
+        properties.pointer === Pointer.base &&
         !!contents.config,
     },
   };

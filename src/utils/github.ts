@@ -204,16 +204,15 @@ export async function getGitHubContents(properties: Properties): Promise<Content
         }
       }
     `,
-      owner: properties.owner,
-      repository: properties.repository,
-      config: `${properties.ref.name}:docs.json`,
-      mdx: `${properties.ref.name}:docs/${properties.path}.mdx`,
+      owner: properties.source.owner,
+      repository: properties.source.repository,
+      config: `${properties.source.ref}:docs.json`,
+      mdx: `${properties.source.ref}:docs/${properties.path}.mdx`,
     }),
   );
 
-  // An error might be thrown if the repository is not found.
+  // An error is thrown if the repo is not found
   if (error) {
-    console.error(error);
     return null;
   }
 

@@ -1,17 +1,17 @@
 import { createContext } from 'react';
-import { PullRequestMetadata } from './github';
+import { getPullRequestMetadata, PullRequestMetadata } from './github';
 import { hash } from './index';
 
 export const DEFAULT_FILE = 'index';
 export const SPLITTER = '~';
 
-type Reference = {
-  name: string;
-  type: ReferenceType;
-  source?: string;
+type Source = {
+  owner: string;
+  repository: string;
+  ref: string;
 };
 
-export enum ReferenceType {
+export enum Pointer {
   base,
   branch,
   pullRequest,
@@ -20,100 +20,86 @@ export enum ReferenceType {
 export class Properties {
   owner: string;
   repository: string;
+  source: Source;
   path: string;
   base: string;
-  ref: Reference;
+  baseBranch?: string;
+  ref?: string;
+  pointer: Pointer;
 
-  public constructor(params: string[]) {
-    let [, repository, , ...path] = params;
-    const [owner] = params;
-    const [, , maybeRef] = params;
-    let ref: string = null;
+  private constructor(params: string[]) {
+    const [owner, repositoryWithRef, ...path] = params;
 
-    // project paths containing a SPLITTER mean a specific branch has been requested
-    const chunks = repository.split(SPLITTER);
-
-    // only projects with a single SPLITTER are allowed
-    if (chunks.length > 2) {
-      throw new Error(
-        `Invalid project path provided. The path contains more than one ${SPLITTER} which is not allowed.`,
-      );
-    }
-
-    /**
-     * When no domain is provided the "ref" is part of the repository, e.g.
-     * ['invertase', 'melos~ref', ...] - in this case we need to extract the ref from the repository.
-     */
-    if (chunks.length === 2 && chunks[1]) {
-      repository = chunks[0];
-      ref = chunks[1];
-    }
-
-    /**
-     * In the case of pages with custom domains, the "ref" is a separated param, e.g.
-     * ['invertase', 'melos', '~ref', ...] - in this case we need to extract the ref from the chunk.
-     */
-    if (!ref && maybeRef?.startsWith(SPLITTER)) {
-      ref = maybeRef.substring(1);
-    } else if (maybeRef) {
-      path = [maybeRef, ...path];
-    }
+    // project paths containing a SPLITTER mean a specific ref has been requested
+    const [repository, ref] = repositoryWithRef.split(SPLITTER);
 
     let base = `/${owner}/${repository}`;
 
     if (ref) {
-      base += encodeURI(`${SPLITTER}${ref}`);
+      base += encodeURIComponent(`${SPLITTER}${ref}`);
     }
 
     this.owner = owner;
     this.repository = repository;
+    this.ref = ref;
     this.path = path.length === 0 ? DEFAULT_FILE : path.join('/');
     this.base = base;
-    this.ref = {
-      name: ref ?? 'HEAD',
-      type: ref ? ReferenceType.branch : ReferenceType.base,
-    };
   }
 
-  public setPullRequestMetadata(metadata: PullRequestMetadata, source: string): void {
-    this.owner = metadata.owner;
-    this.repository = metadata.repository;
-    this.ref = {
-      name: metadata.ref,
-      type: ReferenceType.pullRequest,
-      source,
-    };
-  }
+  public static async build(params: string[]): Promise<Properties> {
+    const properties = new Properties(params);
 
-  public setBaseRef(baseRef: string): void {
-    this.base = `/${this.owner}/${this.repository}`;
-    this.ref = {
-      name: baseRef,
-      type: ReferenceType.base,
-    };
-  }
+    if (/^[0-9]*$/.test(properties.ref)) {
+      // Fetch the PR metadata
+      const metadata = await getPullRequestMetadata(
+        properties.owner,
+        properties.repository,
+        properties.ref,
+      );
 
-  public setCommitHash(): void {
-    this.ref.type = ReferenceType.commit;
-  }
+      // TODO what happens if no PR is found?
+      if (metadata) {
+        properties.pointer = Pointer.pullRequest;
+        properties.source = {
+          owner: metadata.owner,
+          repository: metadata.repository,
+          ref: metadata.ref,
+        };
+      }
+    } else {
+      if (/^[a-fA-F0-9]{40}$/.test(properties.ref)) {
+        properties.pointer = Pointer.commit;
+      } else if (properties.ref) {
+        properties.pointer = Pointer.branch;
+      } else {
+        properties.pointer = Pointer.base;
+      }
+      // The source is the current repository
+      properties.source = {
+        owner: properties.owner,
+        repository: properties.repository,
+        ref: properties.ref || 'HEAD',
+      };
+    }
 
-  public isPullRequest(): boolean {
-    return /^[0-9]*$/.test(this.ref.name);
-  }
-
-  public isCommitHash(): boolean {
-    return /^[a-fA-F0-9]{40}$/.test(this.ref.name);
+    return properties;
   }
 
   toObject(): SlugProperties {
     return {
       owner: this.owner,
       repository: this.repository,
+      source: this.source,
       githubUrl: `https://github.com/${this.owner}/${this.repository}`,
       debugUrl: `/_debug${this.base}/${this.path}`,
-      editUrl: `https://github.com/${this.owner}/${this.repository}/edit/${this.ref.name}/docs/${this.path}.mdx`,
-      createUrl: `https://github.com/${this.owner}/${this.repository}/new/${this.ref.name}/docs/${this.path}`,
-      ref: this.ref,
+      editUrl: `https://github.com/${this.owner}/${this.repository}/edit/${
+        this.ref || this.baseBranch
+      }/docs/${this.path}.mdx`,
+      createUrl: `https://github.com/${this.owner}/${this.repository}/new/${
+        this.ref || this.baseBranch
+      }/docs/${this.path}`,
+      ref: this.ref || null,
+      pointer: this.pointer,
       base: this.base,
       path: this.path,
       hash: hash(`${this.owner}/${this.repository}`),
@@ -127,7 +113,9 @@ export type SlugProperties = {
   owner: string;
   // The repository name, e.g. "melos"
   repository: string;
-  // The URL of the repository on GitHub
+  // The source of the contents.
+  source: Source;
+  // The URL to the GitHub repo
   githubUrl: string;
   // The URL to debug the page
   debugUrl: string;
@@ -136,7 +124,9 @@ export type SlugProperties = {
   // The URL to create a new page on GitHub
   createUrl: string;
   // The branch/PR the request is for
-  ref: Reference;
+  ref: string | null;
+  // The request pointer of the properties
+  pointer: Pointer;
   // The path of the content
   path: string;
   // Base path for this project
@@ -148,11 +138,13 @@ export type SlugProperties = {
 export const SlugPropertiesContext = createContext<SlugProperties>({
   owner: '',
   repository: '',
+  source: {} as Source,
   githubUrl: '',
   debugUrl: '',
   editUrl: '',
   createUrl: '',
-  ref: {} as Reference,
+  ref: '',
+  pointer: Pointer.base,
   path: '',
   base: '',
   hash: '',
