@@ -121,7 +121,7 @@ export type PullRequestMetadata = {
 export async function getPullRequestMetadata(
   owner: string,
   repository: string,
-  pullRequest: number,
+  pullRequest: string,
 ): Promise<PullRequestMetadata | null> {
   const [error, response] = await A2A<PullRequestQuery>(
     GithubGQLClient({
@@ -144,7 +144,7 @@ export async function getPullRequestMetadata(
       `,
       owner: owner,
       repository: repository,
-      pullRequest: pullRequest,
+      pullRequest: parseInt(pullRequest),
     }),
   );
 
@@ -206,8 +206,8 @@ export async function getGitHubContents(properties: Properties): Promise<Content
     `,
       owner: properties.owner,
       repository: properties.repository,
-      config: `${properties.ref ?? 'HEAD'}:docs.json`,
-      mdx: `${properties.ref ?? 'HEAD'}:docs/${properties.path}.mdx`,
+      config: `${properties.ref.name}:docs.json`,
+      mdx: `${properties.ref.name}:docs/${properties.path}.mdx`,
     }),
   );
 

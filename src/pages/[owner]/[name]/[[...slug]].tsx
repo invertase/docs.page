@@ -115,16 +115,18 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
   // If the ref looks like a PR, update the details to point towards
   // the PR owner (which might be a different repo)
   if (properties.isPullRequest()) {
-    const metadata = await getPullRequestMetadata(
-      properties.owner,
-      properties.repository,
-      parseInt(properties.ref),
-    );
+    const number = properties.ref.name;
+    const metadata = await getPullRequestMetadata(properties.owner, properties.repository, number);
 
     // If a PR was found, update the property metadata
     if (metadata) {
-      properties.setPullRequestMetadata(metadata);
+      properties.setPullRequestMetadata(metadata, number);
     }
+  }
+
+  // If the ref looks like a commit hash, set the ref type
+  if (properties.isCommitHash()) {
+    properties.setCommitHash();
   }
 
   const content = await getPageContent(properties);

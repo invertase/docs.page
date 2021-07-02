@@ -5,21 +5,30 @@ import { hash } from './index';
 export const DEFAULT_FILE = 'index';
 export const SPLITTER = '~';
 
-type RefType = null | 'branch' | 'pull-request';
+type Reference = {
+  name: string;
+  type: ReferenceType;
+  source?: string;
+};
 
+export enum ReferenceType {
+  base,
+  branch,
+  pullRequest,
+  commit,
+}
 export class Properties {
   owner: string;
   repository: string;
-  ref: string;
   path: string;
   base: string;
-  isBaseBranch: boolean;
+  ref: Reference;
 
   public constructor(params: string[]) {
     let [, repository, , ...path] = params;
     const [owner] = params;
     const [, , maybeRef] = params;
-    let ref = null;
+    let ref: string = null;
 
     // project paths containing a SPLITTER mean a specific branch has been requested
     const chunks = repository.split(SPLITTER);
@@ -58,39 +67,53 @@ export class Properties {
 
     this.owner = owner;
     this.repository = repository;
-    this.ref = ref;
     this.path = path.length === 0 ? DEFAULT_FILE : path.join('/');
     this.base = base;
-    this.isBaseBranch = !ref;
+    this.ref = {
+      name: ref ?? 'HEAD',
+      type: ref ? ReferenceType.branch : ReferenceType.base,
+    };
   }
 
-  public setPullRequestMetadata(metadata: PullRequestMetadata): void {
+  public setPullRequestMetadata(metadata: PullRequestMetadata, source: string): void {
     this.owner = metadata.owner;
     this.repository = metadata.repository;
-    this.ref = metadata.ref;
+    this.ref = {
+      name: metadata.ref,
+      type: ReferenceType.pullRequest,
+      source,
+    };
   }
 
   public setBaseRef(baseRef: string): void {
-    this.ref = baseRef;
     this.base = `/${this.owner}/${this.repository}`;
-    this.isBaseBranch = true;
+    this.ref = {
+      name: baseRef,
+      type: ReferenceType.base,
+    };
+  }
+
+  public setCommitHash(): void {
+    this.ref.type = ReferenceType.commit;
   }
 
   public isPullRequest(): boolean {
-    return /^[0-9]*$/.test(this.ref);
+    return /^[0-9]*$/.test(this.ref.name);
+  }
+
+  public isCommitHash(): boolean {
+    return /^[a-fA-F0-9]{40}$/.test(this.ref.name);
   }
 
   toObject(): SlugProperties {
     return {
-      isBaseBranch: this.isBaseBranch,
       owner: this.owner,
       repository: this.repository,
       githubUrl: `https://github.com/${this.owner}/${this.repository}`,
       debugUrl: `/_debug${this.base}/${this.path}`,
-      editUrl: `https://github.com/${this.owner}/${this.repository}/edit/${this.ref}/docs/${this.path}.mdx`,
-      createUrl: `https://github.com/${this.owner}/${this.repository}/new/${this.ref}/docs/${this.path}`,
+      editUrl: `https://github.com/${this.owner}/${this.repository}/edit/${this.ref.name}/docs/${this.path}.mdx`,
+      createUrl: `https://github.com/${this.owner}/${this.repository}/new/${this.ref.name}/docs/${this.path}`,
       ref: this.ref,
-      refType: this.isPullRequest() ? 'pull-request' : 'branch',
       base: this.base,
       path: this.path,
       hash: hash(`${this.owner}/${this.repository}`),
@@ -100,7 +123,6 @@ export class Properties {
 
 // Properties corresponding to an incoming slug.
 export type SlugProperties = {
-  isBaseBranch: boolean;
   // The project owner, e.g. "invertase"
   owner: string;
   // The repository name, e.g. "melos"
@@ -114,9 +136,7 @@ export type SlugProperties = {
   // The URL to create a new page on GitHub
   createUrl: string;
   // The branch/PR the request is for
-  ref: string;
-  // The type of reference
-  refType: RefType;
+  ref: Reference;
   // The path of the content
   path: string;
   // Base path for this project
@@ -126,15 +146,13 @@ export type SlugProperties = {
 };
 
 export const SlugPropertiesContext = createContext<SlugProperties>({
-  isBaseBranch: true,
   owner: '',
   repository: '',
   githubUrl: '',
   debugUrl: '',
   editUrl: '',
   createUrl: '',
-  ref: '',
-  refType: null,
+  ref: {} as Reference,
   path: '',
   base: '',
   hash: '',
