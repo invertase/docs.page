@@ -37,12 +37,14 @@ export class Properties {
     if (repositoryWithRef.includes(SPLITTER)) {
       [repository, ref] = repositoryWithRef.split(SPLITTER);
       finalPath = [maybeRef, ...path];
+    } else {
+      repository = repositoryWithRef;
     }
 
     // docs.page/invertase/melos/~docs-updates/foo
     if (maybeRef.startsWith(SPLITTER)) {
       repository = repositoryWithRef;
-      [, ref] = repositoryWithRef.split(SPLITTER);
+      [, ref] = maybeRef.split(SPLITTER);
     }
     // docs.page/invertase/melos/foo
     else {
