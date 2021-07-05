@@ -1,3 +1,6 @@
 .next
 node_modules
 build
+repositories.json
+domains.json
+spelling.json

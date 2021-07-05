@@ -1,7 +1,7 @@
 import { leadingSlash } from './index';
 import { Properties, SlugProperties } from './properties';
 import { isExternalLink } from '../components/Link';
-import { GetServerSidePropsResult } from 'next';
+import { GetStaticPropsResult } from 'next';
 
 export enum ErrorType {
   repositoryNotFound,
@@ -12,7 +12,7 @@ export enum ErrorType {
 export interface IRenderError {
   statusCode: number;
   errorType: ErrorType;
-  properties: SlugProperties;
+  properties?: SlugProperties;
 }
 
 export class RenderError {
@@ -32,7 +32,7 @@ export class RenderError {
   public readonly errorType: ErrorType;
   public readonly properties?: Properties;
 
-  private constructor(statusCode: number, errorType: ErrorType, properties: Properties) {
+  private constructor(statusCode: number, errorType: ErrorType, properties?: Properties) {
     this.statusCode = statusCode;
     this.errorType = errorType;
     this.properties = properties;
@@ -42,12 +42,12 @@ export class RenderError {
     return {
       statusCode: this.statusCode,
       errorType: this.errorType,
-      properties: this.properties.toObject(),
+      properties: this.properties?.toObject() ?? null,
     };
   }
 }
 
-export function redirect(link: string, properties?: Properties): GetServerSidePropsResult<never> {
+export function redirect(link: string, properties?: Properties): GetStaticPropsResult<never> {
   let destination: string;
 
   if (!properties || isExternalLink(link)) {

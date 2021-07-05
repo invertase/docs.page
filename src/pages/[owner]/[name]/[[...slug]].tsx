@@ -1,34 +1,39 @@
 import React from 'react';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import NextHead from 'next/head';
 import NextRouter, { useRouter } from 'next/router';
 import NProgress from 'nprogress';
-
-import { Hydrate } from '../mdx';
-
-import { ThemeStyles } from '../components/ThemeStyles';
-import { Layout } from '../components/Layout';
-import { Error, ErrorBoundary } from '../templates/error';
-
-import { ConfigContext } from '../utils/projectConfig';
-import { IRenderError, redirect, RenderError } from '../utils/error';
-import { SlugProperties, SlugPropertiesContext, Properties } from '../utils/properties';
-import { PageContentContext, getPageContent, PageContent, HeadingNode } from '../utils/content';
-import { getPullRequestMetadata, getRepositoriesPaths, getRepositoryList } from '../utils/github';
-import { CustomDomain, CustomDomainContext } from '../utils/domain';
-import { getHeadTags } from '../utils/html';
-import { isProduction, routeChangeComplete, routeChangeError, routeChangeStart } from '../utils';
-import { mdxSerialize } from '../utils/mdx-serialize';
-import { Loading } from '../templates/Loading';
 import { MDXRemoteSerializeResult } from '@invertase/next-mdx-remote/dist/types';
 
+import { Hydrate } from '../../../mdx';
+
+import { ThemeStyles } from '../../../components/ThemeStyles';
+import { Layout } from '../../../components/Layout';
+import { Error, ErrorBoundary } from '../../../templates/error';
+
+import { ConfigContext } from '../../../utils/projectConfig';
+import { IRenderError, redirect, RenderError } from '../../../utils/error';
+import { Properties, SlugProperties, SlugPropertiesContext } from '../../../utils/properties';
+import {
+  getPageContent,
+  HeadingNode,
+  PageContent,
+  PageContentContext,
+} from '../../../utils/content';
+import { CustomDomain, CustomDomainContext } from '../../../utils/domain';
+import { getHeadTags } from '../../../utils/html';
+import { mdxSerialize } from '../../../utils/mdx-serialize';
+import { Loading } from '../../../templates/Loading';
+
 NProgress.configure({ showSpinner: false });
-NextRouter.events.on('routeChangeStart', routeChangeStart);
-NextRouter.events.on('routeChangeComplete', routeChangeComplete);
-NextRouter.events.on('routeChangeError', routeChangeError);
+NextRouter.events.on('routeChangeStart', NProgress.start);
+NextRouter.events.on('routeChangeComplete', NProgress.done);
+NextRouter.events.on('routeChangeError', NProgress.done);
 
 export default function Documentation({
-  domain, // TODO custom domains
+  domain,
   source,
   properties,
   content,
@@ -68,15 +73,16 @@ export default function Documentation({
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
+  // eslint-disable-next-line prefer-const
   let paths = [];
 
   // Since this call can be fairly large, only run it on production
   // and let the development pages fallback each time.
-  if (isProduction()) {
-    const repositories = await getRepositoryList();
-    paths = await getRepositoriesPaths(repositories);
-    console.info(`- gathered ${paths.length} static pages.`);
-  }
+  // if (isProduction()) {
+  //   const repositories = getRepositoriesList();
+  //   paths = await getRepositoriesPaths(repositories);
+  //   console.info(`- gathered ${paths.length} static pages.`);
+  // }
 
   return {
     paths,
@@ -93,29 +99,19 @@ type StaticProps = {
   error?: IRenderError;
 };
 
-export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) => {
+export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
+  const owner = ctx.params.owner as string;
+  const name = ctx.params.name as string;
+  const slug = (ctx.params.slug || []) as string[];
+
   let source = null;
   const headings: HeadingNode[] = [];
   let error: RenderError = null;
 
-  // Extract the slug properties from the request.
-  const properties = new Properties(params.slug as string[]);
+  // Build a request instance from the query
+  const properties = await Properties.build([owner, name, ...slug]);
 
-  // If the ref looks like a PR, update the details to point towards
-  // the PR owner (which might be a different repo)
-  if (properties.isPullRequest()) {
-    const metadata = await getPullRequestMetadata(
-      properties.owner,
-      properties.repository,
-      parseInt(properties.ref),
-    );
-
-    // If a PR was found, update the property metadata
-    if (metadata) {
-      properties.setPullRequestMetadata(metadata);
-    }
-  }
-
+  // Query GitHub for the content
   const content = await getPageContent(properties);
 
   if (!content) {
@@ -125,12 +121,8 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
     // Redirect the user to another page
     return redirect(content.frontmatter.redirect, properties);
   } else {
-    // At this point there is a repository, however there still might not be a file for the path
-
-    // If no property ref has been set, assign the base branch (usually main or master)
-    if (!properties.ref) {
-      properties.setBaseRef(content.baseBranch);
-    }
+    // Set the base branch
+    properties.baseBranch = content.baseBranch;
 
     if (content.markdown) {
       const serialization = await mdxSerialize(content);
@@ -146,9 +138,17 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ({ params }) =>
     }
   }
 
+  // Get the array of domains from the local filesystem & match a potential domain
+  const domainsPath = join(process.cwd(), 'domains.json');
+  const domains = JSON.parse(readFileSync(domainsPath, 'utf-8')) as Array<[string, string]>;
+  const domain =
+    domains.find(
+      ([, repository]) => repository === `${properties.owner}/${properties.repository}`,
+    )?.[0] || null;
+
   return {
     props: {
-      domain: null, // await getCustomDomain(properties),
+      domain,
       properties: properties.toObject(),
       source,
       headings,
