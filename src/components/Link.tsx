@@ -39,7 +39,7 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>): JSX.Element {
   }
 
   return (
-    <NextLink href={href} as={`/${properties.owner}/${properties.repository}${href}`}>
+    <NextLink href={href}>
       <a {...anchorProps}>{props.children}</a>
     </NextLink>
   );
