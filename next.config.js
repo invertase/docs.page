@@ -5,7 +5,7 @@ const withTM = require('next-transpile-modules')([
   'unist-util-find-after',
 ]);
 
-// const domains = require('./domains.json');
+const domains = require('./domains.json');
 
 // https://vercel.com/docs/environment-variables#system-environment-variables
 // const env = process.env.VERCEL_ENV;
@@ -43,5 +43,38 @@ module.exports = withTM({
       },
       // ...redirects,
     ];
+  },
+  async rewrites() {
+    return {
+      beforeFiles: domains.map(([domain, repository]) => {
+        const [organization, repo] = repository.split('/');
+        return {
+          source: '/',
+          has: [
+            {
+              type: 'host',
+              value: domain,
+            },
+          ],
+          destination: `/${organization}/${repo}`,
+        };
+      }),
+      afterFiles: domains.map(([domain, repository]) => {
+        const [organization, repo] = repository.split('/');
+
+        return {
+          // Map all incoming requests (except for_next requests)
+          source: `/:path*`,
+          // Only where the domain matches the one provided
+          has: [
+            {
+              type: 'host',
+              value: domain,
+            },
+          ],
+          destination: `/${organization}/${repo}/:path*`,
+        };
+      }),
+    };
   },
 });
