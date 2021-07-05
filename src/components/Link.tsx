@@ -42,7 +42,7 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>): JSX.Element {
   }
 
   if (domain) {
-    as = `/${properties.base}${originalHref}`;
+    as = href;
   }
 
   return (
