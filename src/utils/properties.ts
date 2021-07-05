@@ -1,5 +1,5 @@
 import { createContext } from 'react';
-import { getPullRequestMetadata, PullRequestMetadata } from './github';
+import { getPullRequestMetadata } from './github';
 import { hash } from './index';
 
 export const DEFAULT_FILE = 'index';
