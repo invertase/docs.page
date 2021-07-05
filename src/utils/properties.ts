@@ -42,12 +42,12 @@ export class Properties {
     }
 
     // docs.page/invertase/melos/~docs-updates/foo
-    if (maybeRef.startsWith(SPLITTER)) {
+    if (maybeRef?.startsWith(SPLITTER)) {
       repository = repositoryWithRef;
       [, ref] = maybeRef.split(SPLITTER);
     }
     // docs.page/invertase/melos/foo
-    else {
+    else if (maybeRef) {
       finalPath = [maybeRef, ...path];
     }
 
