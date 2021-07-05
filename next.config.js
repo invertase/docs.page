@@ -65,7 +65,7 @@ module.exports = withTM({
       const [organization, repo] = repository.split('/');
 
       afterFiles.push({
-        source: `/${organization}/${repo}/${organization}/${repo}`,
+        source: `/${organization}/${repo}`,
         has: [
           {
             type: 'host',
