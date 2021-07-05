@@ -36,7 +36,10 @@ export class Properties {
     // docs.page/invertase/melos~docs-updates/foo
     if (repositoryWithRef.includes(SPLITTER)) {
       [repository, ref] = repositoryWithRef.split(SPLITTER);
-      finalPath = [maybeRef, ...path];
+
+      if (maybeRef) {
+        finalPath = [maybeRef, ...path];
+      }
     } else {
       repository = repositoryWithRef;
     }
