@@ -14,7 +14,7 @@ import { useCustomDomain, useSlugProperties } from '../hooks';
 export function Link(props: React.HTMLProps<HTMLAnchorElement>): JSX.Element {
   const domain = useCustomDomain();
   const properties = useSlugProperties();
-
+  console.log(domain);
   if (isHashLink(props.href)) {
     return <a {...props} />;
   }
@@ -39,7 +39,7 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>): JSX.Element {
   }
 
   return (
-    <NextLink href={href}>
+    <NextLink href={href} as={`/${properties.owner}/${properties.repository}${href}`}>
       <a {...anchorProps}>{props.children}</a>
     </NextLink>
   );
