@@ -28,10 +28,26 @@ export class Properties {
   pointer: Pointer;
 
   private constructor(params: string[]) {
-    const [owner, repositoryWithRef, ...path] = params;
+    const [owner, repositoryWithRef, maybeRef, ...path] = params;
+    let finalPath = path;
+    let repository: string;
+    let ref: string;
 
-    // project paths containing a SPLITTER mean a specific ref has been requested
-    const [repository, ref] = repositoryWithRef.split(SPLITTER);
+    // docs.page/invertase/melos~docs-updates/foo
+    if (repositoryWithRef.includes(SPLITTER)) {
+      [repository, ref] = repositoryWithRef.split(SPLITTER);
+      finalPath = [maybeRef, ...path];
+    }
+
+    // docs.page/invertase/melos/~docs-updates/foo
+    if (maybeRef.startsWith(SPLITTER)) {
+      repository = repositoryWithRef;
+      [, ref] = repositoryWithRef.split(SPLITTER);
+    }
+    // docs.page/invertase/melos/foo
+    else {
+      finalPath = [maybeRef, ...path];
+    }
 
     let base = `/${owner}/${repository}`;
 
@@ -42,7 +58,7 @@ export class Properties {
     this.owner = owner;
     this.repository = repository;
     this.ref = ref;
-    this.path = path.length === 0 ? DEFAULT_FILE : path.join('/');
+    this.path = finalPath.length === 0 ? DEFAULT_FILE : finalPath.join('/');
     this.base = base;
   }
 
