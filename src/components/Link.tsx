@@ -25,7 +25,8 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>): JSX.Element {
 
   // Extract `href` from `props`
   const { href: originalHref, ...anchorProps } = props;
-  let href = originalHref;
+  let href: string = originalHref;
+  let as: string;
 
   // If there is no custom domain, attach the owner and repo
   if (!domain) {
@@ -40,8 +41,12 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>): JSX.Element {
     href = `https://${domain}/${encodeURIComponent(`${SPLITTER}${properties.ref}`)}${originalHref}`;
   }
 
+  if (domain) {
+    as = `/${properties.base}${originalHref}`;
+  }
+
   return (
-    <NextLink href={href}>
+    <NextLink href={href} as={as}>
       <a {...anchorProps}>{props.children}</a>
     </NextLink>
   );
