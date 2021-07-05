@@ -45,36 +45,51 @@ module.exports = withTM({
     ];
   },
   async rewrites() {
-    return {
-      beforeFiles: domains.map(([domain, repository]) => {
-        const [organization, repo] = repository.split('/');
-        return {
-          source: '/',
-          has: [
-            {
-              type: 'host',
-              value: domain,
-            },
-          ],
-          destination: `/${organization}/${repo}`,
-        };
-      }),
-      afterFiles: domains.map(([domain, repository]) => {
-        const [organization, repo] = repository.split('/');
+    const beforeFiles = domains.map(([domain, repository]) => {
+      const [organization, repo] = repository.split('/');
+      return {
+        source: '/',
+        has: [
+          {
+            type: 'host',
+            value: domain,
+          },
+        ],
+        destination: `/${organization}/${repo}`,
+      };
+    });
 
-        return {
-          // Map all incoming requests (except for_next requests)
-          source: `/:path*`,
-          // Only where the domain matches the one provided
-          has: [
-            {
-              type: 'host',
-              value: domain,
-            },
-          ],
-          destination: `/${organization}/${repo}/:path*`,
-        };
-      }),
+    const afterFiles = [];
+
+    domains.forEach(([domain, repository]) => {
+      const [organization, repo] = repository.split('/');
+
+      afterFiles.push({
+        source: `/${organization}/${repo}/${organization}/${repo}`,
+        has: [
+          {
+            type: 'host',
+            value: domain,
+          },
+        ],
+        destination: `/${organization}/${repo}`,
+      });
+
+      afterFiles.push({
+        source: `/:path*`,
+        has: [
+          {
+            type: 'host',
+            value: domain,
+          },
+        ],
+        destination: `/${organization}/${repo}/:path*`,
+      });
+    });
+
+    return {
+      beforeFiles,
+      afterFiles,
     };
   },
 });
