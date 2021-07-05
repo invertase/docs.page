@@ -32,10 +32,14 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>): JSX.Element {
     href = properties.base + originalHref;
   }
 
+  if (domain) {
+    href = `https://${domain}${originalHref}`;
+  }
+
   // TODO could we set the `base` in properties?
   // If there is a domain, and we're on a ref, prefix the URL instead
   if (domain && properties.ref) {
-    href = `/${encodeURIComponent(`${SPLITTER}${properties}`)}`;
+    // href = `/${encodeURIComponent(`${SPLITTER}${properties}`)}`;
   }
 
   return (
