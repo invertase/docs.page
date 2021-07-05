@@ -14,7 +14,7 @@ import { useCustomDomain, useSlugProperties } from '../hooks';
 export function Link(props: React.HTMLProps<HTMLAnchorElement>): JSX.Element {
   const domain = useCustomDomain();
   const properties = useSlugProperties();
-  console.log(domain);
+
   if (isHashLink(props.href)) {
     return <a {...props} />;
   }
@@ -39,10 +39,6 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>): JSX.Element {
 
   if (domain && properties.ref) {
     href = `https://${domain}/${encodeURIComponent(`${SPLITTER}${properties.ref}`)}${originalHref}`;
-  }
-
-  if (domain) {
-    as = href;
   }
 
   return (
