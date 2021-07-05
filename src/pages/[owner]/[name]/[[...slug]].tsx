@@ -6,6 +6,7 @@ import NextHead from 'next/head';
 import NextRouter, { useRouter } from 'next/router';
 import NProgress from 'nprogress';
 import { MDXRemoteSerializeResult } from '@invertase/next-mdx-remote/dist/types';
+import domains from '../../../../domains.json';
 
 import { Hydrate } from '../../../mdx';
 
@@ -139,8 +140,8 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
   }
 
   // Get the array of domains from the local filesystem & match a potential domain
-  const domainsPath = join(process.cwd(), 'domains.json');
-  const domains = JSON.parse(readFileSync(domainsPath, 'utf-8')) as Array<[string, string]>;
+  // const domainsPath = join(process.cwd(), 'domains.json');
+  // const domains = JSON.parse(readFileSync(domainsPath, 'utf-8')) as Array<[string, string]>;
   const domain =
     domains.find(
       ([, repository]) => repository === `${properties.owner}/${properties.repository}`,
