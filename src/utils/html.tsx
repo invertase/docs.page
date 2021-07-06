@@ -50,7 +50,7 @@ export function getHeadTags(properties: SlugProperties, content: PageContent): J
         rel="icon"
         type="image/png"
         sizes="32x32"
-        href="/favicons/favicon-32x32.png"
+        href="https://docs.page/favicons/favicon-32x32.png"
       />,
     );
   }
