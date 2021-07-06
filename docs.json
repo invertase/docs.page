@@ -1,6 +1,7 @@
 {
   "name": "docs.page",
   "theme": "#36B9B9",
+  "twitter": "invertaseio",
   "sidebar": [
     ["Overview", "/"],
     ["Getting Started", "/getting-started"],
