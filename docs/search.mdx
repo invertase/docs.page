@@ -5,4 +5,28 @@ description: Add powerful documentation search using DocSearch
 
 # Search
 
-TODO
+docs.page uses [DocSearch](https://docsearch.algolia.com/) by Algolia to provide full, indepth rich search
+to your documentation for free.
+
+## Join the program
+
+To get started, [join the DocSearch](https://docsearch.algolia.com/apply/) program by providing the URL to your
+documentation and email address.
+
+## Configuration
+
+Once accepted, you will be provided with an API Key and Index Name used to connect to the DocSearch service.
+
+Within your projects `docs.json` configuration file, add these credentials to the `search` object:
+
+```json
+{
+  "apiKey": "...",
+  "indexName": "..."
+}
+```
+
+Once committed, a search bar will appear in the header of the documentation with the search connected.
+
+You can also optionally provide your Application ID via the `appId` property to enable preconnection to help speed up
+the initial search query for users with slower connections.

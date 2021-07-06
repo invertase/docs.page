@@ -1,0 +1,59 @@
+---
+title: Previews
+description: Learn how to preview your documentation.
+---
+
+# Previews
+
+docs.page allows you to preview any repository reference, such as a branch, pull request or specific commit.
+
+> Use the [GitHub bot](/github-bot) to automatically comment on pull requests with the preview URL!
+
+All preview URLs are not indexable by search engine bots.
+
+## Default domain
+
+When using the default `docs.page` domain, append the reference to the repository section of the URL using the `~` character,
+for example:
+
+```
+// Branch ("next")
+https://docs.page/invertase/melos~next
+
+// Pull Request (#48)
+https://docs.page/invertase/melos~48
+
+// Commit (SHA256)
+https://docs.page/invertase/melos~4114ba8fc3c0d7d88ff81ef24fb8c4b5a5c27874
+```
+
+## Custom Domain
+
+When using a custom domain (e.g. https://melos.invertase.dev), provide the reference
+as the first URL path prefixed with the `~` character, for example:
+
+```
+// Branch ("next")
+hhttps://melos.invertase.dev/~next
+
+// Pull Request (#48)
+https://melos.invertase.dev/~48
+
+// Commit (SHA256)
+https://melos.invertase.dev/~4114ba8fc3c0d7d88ff81ef24fb8c4b5a5c27874
+```
+
+## Encoding
+
+If a reference (such as a branch) contains a special character (such as a forward slash), the reference should be URL encoded
+to ensure the reference doesn't conflict with the URL. For example with a branch named "@team/next":
+
+```
+// Default domain
+https://docs.page/invertase/melos~%40team%2Fnext
+
+https://melos.invertase.dev/~%40team%2Fnext
+```
+
+
+

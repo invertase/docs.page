@@ -6,25 +6,14 @@
     ["Getting Started", "/getting-started"],
     ["Configuration", "/configuration"],
     ["Previews", "/previews"],
+    ["Custom Domains", "/custom-domains"],
     ["Components", "/components"],
     ["Frontmatter", "/frontmatter"],
-    ["Debugging", "/debugging"],
-    ["Search", "/search"],
     ["GitHub Bot", "/github-bot"],
+    ["Search", "/search"],
+    ["Debugging", "/debugging"],
     ["Pre-rendering", "/pre-rendering"],
-    ["Contributing", "/contributing"],
-    ["Advanced", "/advanced"]
-  ],
-  "paths": [
-    "/",
-    "components",
-    "frontmatter",
-    "configuration",
-    "contributing",
-    "debugging",
-    "getting-started",
-    "previews",
-    "advanced",
-    "pre-rendering"
+    ["Advanced", "/advanced"],
+    ["Contributing", "/contributing"]
   ]
 }

@@ -5,18 +5,4 @@ description: Pre-render your documentation pages to prevent an initial loading s
 
 # Pre-rendering
 
-By default pages are not pre-rendered, meaning in a couple of scenarios you may see a loading page or experience a slight delay
-whilst navigating to a page from within an existing page. These scenarios are:
-
-- The first time a page is requested
-- After a new deployment of docs.page (since pre-rendered pages are deleted)
-
-Once a page has been requested, any subsequent requests will serve a pre-rendered version of the page instantly. Pages are
-invalidated every 30 seconds, however users will still be served the invalidated pre-rendered page until the new version has
-been built.
-
-To learn more about this, visit the [Next.js documentation](https://nextjs.org/docs/basic-features/pages#pre-rendering).
-
-## Enabling pre-rendering
-
-TODO
+Pre-rendering is still a work in progress.

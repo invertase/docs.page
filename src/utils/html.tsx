@@ -43,15 +43,6 @@ export function getHeadTags(properties: SlugProperties, content: PageContent): J
         href={getImageSrc(properties, config.favicon)}
       />,
     );
-  } else if (config.logo) {
-    tags.push(
-      <link
-        key="favicon"
-        rel="icon"
-        type="image/png"
-        href={getImageSrc(properties, config.logo)}
-      />,
-    );
   } else {
     tags.push(
       <link

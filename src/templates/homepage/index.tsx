@@ -164,7 +164,7 @@ export default function IndexPage(): JSX.Element {
           <Heading step={4} title="Learn more..." from="from-green-400" to="to-green-500" />
           <div className="lg:ml-20 mt-10 grid lg:grid-cols-2 gap-16 text-center">
             <Feature
-              href="/invertase/docs.page/configuration"
+              href="https://use.docs.page/configuration"
               title={<span className="text-blue-500">Configure</span>}
               text={
                 <span>
@@ -176,7 +176,7 @@ export default function IndexPage(): JSX.Element {
               icon={<Adjustments size={80} />}
             />
             <Feature
-              href="/invertase/docs.page/previews"
+              href="https://use.docs.page/previews"
               title={<span className="text-pink-400">Previews</span>}
               text={
                 <span>
@@ -187,7 +187,7 @@ export default function IndexPage(): JSX.Element {
               icon={<PullRequest size={80} />}
             />
             <Feature
-              href="/invertase/docs.page/components"
+              href="https://use.docs.page/components"
               title={<span className="text-yellow-400">Components</span>}
               text={
                 <span>
@@ -198,7 +198,7 @@ export default function IndexPage(): JSX.Element {
               icon={<Template size={80} />}
             />
             <Feature
-              href="/invertase/docs.page/custom-domains"
+              href="https://use.docs.page/custom-domains"
               title={<span className="text-green-400">Domains</span>}
               text={
                 <span>
@@ -209,7 +209,7 @@ export default function IndexPage(): JSX.Element {
               icon={<GlobeAlt size={80} />}
             />
             <Feature
-              href="/invertase/docs.page/github-bot"
+              href="https://use.docs.page/github-bot"
               title={<span className="text-purple-500">GitHub Bot</span>}
               text={
                 <span>
@@ -221,7 +221,7 @@ export default function IndexPage(): JSX.Element {
               icon={<Annotation size={80} />}
             />
             <Feature
-              href="/invertase/docs.page/search"
+              href="https://use.docs.page/search"
               title={<span className="text-red-500">Search</span>}
               text={
                 <span>
