@@ -1,6 +1,5 @@
 import React from 'react';
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
-import NextHead from 'next/head';
 import NextRouter, { useRouter } from 'next/router';
 import union from 'lodash.union';
 import NProgress from 'nprogress';
@@ -11,6 +10,7 @@ import repositories from '../../../../repositories.json';
 
 import { Hydrate } from '../../../mdx';
 
+import { Head } from '../../../components/Head';
 import { ThemeStyles } from '../../../components/ThemeStyles';
 import { Layout } from '../../../components/Layout';
 import { Error, ErrorBoundary } from '../../../templates/error';
@@ -25,7 +25,6 @@ import {
   PageContentContext,
 } from '../../../utils/content';
 import { CustomDomain, CustomDomainContext } from '../../../utils/domain';
-import { getHeadTags } from '../../../utils/html';
 import { mdxSerialize } from '../../../utils/mdx-serialize';
 import { Loading } from '../../../templates/Loading';
 import { isProduction } from '../../../utils';
@@ -53,15 +52,13 @@ export default function Documentation({
     return <Error {...error} />;
   }
 
-  const tags = getHeadTags(properties, content);
-
   return (
     <>
-      <NextHead>{tags}</NextHead>
       <CustomDomainContext.Provider value={domain}>
         <ConfigContext.Provider value={content.config}>
           <SlugPropertiesContext.Provider value={properties}>
             <PageContentContext.Provider value={content}>
+              <Head />
               <ThemeStyles />
               <Layout>
                 <ErrorBoundary>
