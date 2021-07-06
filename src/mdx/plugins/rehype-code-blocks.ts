@@ -19,7 +19,7 @@ export default function rehypeCodeBlocks(): (ast: Node) => void {
     const title = (node.properties as Record<string, string>)?.title;
 
     if (title) {
-      parent.properties['title'] = title;
+      parent.properties['title'] = encodeURIComponent(title);
     }
   }
 
