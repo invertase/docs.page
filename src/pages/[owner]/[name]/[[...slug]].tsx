@@ -1,12 +1,13 @@
 import React from 'react';
-import { readFileSync } from 'fs';
-import { join } from 'path';
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import NextHead from 'next/head';
 import NextRouter, { useRouter } from 'next/router';
+import union from 'lodash.union';
 import NProgress from 'nprogress';
 import { MDXRemoteSerializeResult } from '@invertase/next-mdx-remote/dist/types';
+
 import domains from '../../../../domains.json';
+import repositories from '../../../../repositories.json';
 
 import { Hydrate } from '../../../mdx';
 
@@ -27,6 +28,8 @@ import { CustomDomain, CustomDomainContext } from '../../../utils/domain';
 import { getHeadTags } from '../../../utils/html';
 import { mdxSerialize } from '../../../utils/mdx-serialize';
 import { Loading } from '../../../templates/Loading';
+import { isProduction } from '../../../utils';
+import { getRepositoryPaths } from '../../../utils/github';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', NProgress.start);
@@ -74,16 +77,18 @@ export default function Documentation({
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  // eslint-disable-next-line prefer-const
   let paths = [];
 
   // Since this call can be fairly large, only run it on production
   // and let the development pages fallback each time.
-  // if (isProduction()) {
-  //   const repositories = getRepositoriesList();
-  //   paths = await getRepositoriesPaths(repositories);
-  //   console.info(`- gathered ${paths.length} static pages.`);
-  // }
+  if (isProduction()) {
+    console.info(` fetching paths for ${repositories.length} repositories.`);
+    console.time();
+    const promises = repositories.map(repository => getRepositoryPaths(repository));
+    const results = await Promise.all(promises);
+    paths = union(...results);
+    console.timeEnd();
+  }
 
   return {
     paths,
@@ -140,8 +145,6 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
   }
 
   // Get the array of domains from the local filesystem & match a potential domain
-  // const domainsPath = join(process.cwd(), 'domains.json');
-  // const domains = JSON.parse(readFileSync(domainsPath, 'utf-8')) as Array<[string, string]>;
   const domain =
     domains.find(
       ([, repository]) => repository === `${properties.owner}/${properties.repository}`,

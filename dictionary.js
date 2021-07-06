@@ -8,6 +8,7 @@ module.exports = [
   // e.g. package:melos or dark:bg-blue,
   /^[A-Za-z]+:.*/,
 
+  'config',
   'dev',
   'docsearch',
   'docsify',
@@ -17,6 +18,7 @@ module.exports = [
   'ios',
   'json',
   'linkable',
+  'indexable',
   'md',
   'melos',
   'noindex',
