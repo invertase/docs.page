@@ -29,7 +29,7 @@ export function QuickLinks(): JSX.Element {
         <Link href="https://use.docs.page/previews" icon={<PullRequest size={30} />}>
           Previews
         </Link>
-        <Link href="use.https://use.docs.page/components" icon={<Template size={30} />}>
+        <Link href="https://use.docs.page/components" icon={<Template size={30} />}>
           Components
         </Link>
         <Link href="https://use.docs.page/custom-domains" icon={<GlobeAlt size={30} />}>
