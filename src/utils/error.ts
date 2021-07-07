@@ -18,7 +18,7 @@ export interface IRenderError {
   statusCode: number;
   errorType: ErrorType;
   properties?: SlugProperties;
-  error?: Error;
+  error?: string;
 }
 
 export class RenderError {
@@ -60,7 +60,7 @@ export class RenderError {
       statusCode: this.statusCode,
       errorType: this.errorType,
       properties: this.properties?.toObject() ?? null,
-      error: this.error ?? null,
+      error: this.error?.message ?? null,
     };
   }
 }
