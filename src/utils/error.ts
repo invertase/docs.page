@@ -4,15 +4,21 @@ import { isExternalLink } from '../components/Link';
 import { GetStaticPropsResult } from 'next';
 
 export enum ErrorType {
+  // The given repository was not found.
   repositoryNotFound,
+  // An mdx file within the repository was not found.
   pageNotFound,
+  // A server error occurred (e.g. rendering error).
   serverError,
+  // Error was thrown from the error page override.
+  errorPage,
 }
 
 export interface IRenderError {
   statusCode: number;
   errorType: ErrorType;
   properties?: SlugProperties;
+  error?: Error;
 }
 
 export class RenderError {
@@ -28,14 +34,25 @@ export class RenderError {
     return new RenderError(500, ErrorType.serverError, properties);
   }
 
+  public static error(statusCode: number, errorType: ErrorType, error: Error): RenderError {
+    return new RenderError(statusCode, errorType, undefined, error);
+  }
+
   public readonly statusCode: number;
   public readonly errorType: ErrorType;
   public readonly properties?: Properties;
+  public readonly error?: Error;
 
-  private constructor(statusCode: number, errorType: ErrorType, properties?: Properties) {
+  private constructor(
+    statusCode: number,
+    errorType: ErrorType,
+    properties?: Properties,
+    error?: Error,
+  ) {
     this.statusCode = statusCode;
     this.errorType = errorType;
     this.properties = properties;
+    this.error = error;
   }
 
   public toObject(): IRenderError {
@@ -43,6 +60,7 @@ export class RenderError {
       statusCode: this.statusCode,
       errorType: this.errorType,
       properties: this.properties?.toObject() ?? null,
+      error: this.error ?? null,
     };
   }
 }
