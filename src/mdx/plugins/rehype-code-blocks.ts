@@ -14,13 +14,14 @@ export default function rehypeCodeBlocks(): (ast: Node) => void {
     }
 
     // Raw value of the `code` block - used for copy/paste
-    parent.properties['raw'] = encodeURIComponent(toText(node));
+    parent.properties['raw'] = toText(node);
 
-    const title = (node.properties as Record<string, string>)?.title;
+    // Get any metadata from the code block
+    const meta = (node.data?.meta as string) ?? '';
 
-    if (title) {
-      parent.properties['title'] = encodeURIComponent(title);
-    }
+    const title = /title="(.*?)"/g.exec(meta)?.[1];
+
+    if (title) parent.properties['title'] = title;
   }
 
   return (ast: Node): void => {

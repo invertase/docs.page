@@ -199,6 +199,6 @@ type TabItemProps = {
   children: JSX.Element | JSX.Element[];
 };
 
-export function TabItem(props: TabItemProps): JSX.Element | JSX.Element[] {
-  return props.children;
-}
+export const TabItem: React.FC<TabItemProps> = (props: TabItemProps) => {
+  return <>{props.children}</>;
+};

@@ -2,9 +2,9 @@ export interface YouTubeProps {
   id: string;
 }
 
-export function YouTube({ id }: YouTubeProps): JSX.Element {
+export const YouTube: React.FC<YouTubeProps> = ({ id }: YouTubeProps) => {
   if (!id) {
-    return null;
+    return <div />;
   }
 
   return (
@@ -24,4 +24,4 @@ export function YouTube({ id }: YouTubeProps): JSX.Element {
       />
     </div>
   );
-}
+};

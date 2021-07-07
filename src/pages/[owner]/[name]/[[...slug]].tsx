@@ -3,7 +3,6 @@ import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import NextRouter, { useRouter } from 'next/router';
 import union from 'lodash.union';
 import NProgress from 'nprogress';
-import { MDXRemoteSerializeResult } from '@invertase/next-mdx-remote/dist/types';
 
 import domains from '../../../../domains.json';
 import repositories from '../../../../repositories.json';
@@ -97,7 +96,7 @@ type StaticProps = {
   domain: CustomDomain;
   properties: SlugProperties;
   headings: HeadingNode[];
-  source?: MDXRemoteSerializeResult;
+  source?: string;
   content?: PageContent;
   error?: IRenderError;
 };

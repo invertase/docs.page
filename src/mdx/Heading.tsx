@@ -17,7 +17,7 @@ const depth: { [key in HeadingType]: number } = {
   h6: 6,
 };
 
-function Heading(props: HeadingProps): JSX.Element {
+export function Heading(props: HeadingProps): JSX.Element {
   const config = useConfig();
   const type = props.type;
 
@@ -47,5 +47,3 @@ function Heading(props: HeadingProps): JSX.Element {
     </span>
   );
 }
-
-export { Heading };
