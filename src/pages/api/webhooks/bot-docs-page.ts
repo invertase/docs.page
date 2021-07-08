@@ -47,7 +47,7 @@ const app = (app: Probot) => {
     const response = await context.octokit.graphql<GetFileResponse>(getFile, {
       owner: 'invertase',
       repo: 'docs.page',
-      file: 'domains:domains.json',
+      file: 'master:domains.json',
     });
 
     const file = response.repository.file?.text || '[]';
