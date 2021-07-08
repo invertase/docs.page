@@ -111,7 +111,10 @@ function extractTabItems(children: React.ReactNode): TabItemElement[] {
         items = [...items, ...extractTabItems(child.props.children)];
       }
 
-      if (child.type.toString().startsWith('function TabItem')) {
+      // @ts-ignore access private name which works on production
+      const name = child.type.name;
+
+      if (name === 'TabItem') {
         items = [...items, child];
       }
     }
