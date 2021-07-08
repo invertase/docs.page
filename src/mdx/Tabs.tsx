@@ -111,7 +111,7 @@ function extractTabItems(children: React.ReactNode): TabItemElement[] {
         items = [...items, ...extractTabItems(child.props.children)];
       }
 
-      if (child.props.mdxType === 'TabItem') {
+      if (child.type.toString().startsWith('function TabItem')) {
         items = [...items, child];
       }
     }

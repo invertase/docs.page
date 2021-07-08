@@ -37,9 +37,6 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
     remarkGfm,
     // Ensure any `img` tags are not wrapped in `p` tags
     remarkUnwrapImages,
-    // Convert any admonition to HTML
-    // TODO(ehesp): Not compatible with new MDX version: https://github.com/elviswolcott/remark-admonitions/issues/27
-    // remarkAdmonitions,
   ];
 
   const rehypePlugins = [
