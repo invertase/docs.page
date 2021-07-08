@@ -10,6 +10,7 @@
 <p align="center">
   <a href="https://docs.page">Homepage</a> &bull; <a href="https://use.docs.page">Documentation</a>
 </p>
+
 ## About
 
 docs.page is a free Open Source project, allowing you to create instant, fast, beautiful documentation with zero configuration.
