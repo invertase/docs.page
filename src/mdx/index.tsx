@@ -1,17 +1,16 @@
 import React from 'react';
-import { MDXRemote } from '@invertase/next-mdx-remote';
+import { getMDXComponent, ComponentMap } from 'mdx-bundler/client';
 
 import { Link } from '../components/Link';
+import { Divider } from '../components/Divider';
 
 import { Heading } from './Heading';
 import { Tabs, TabItem, TabsContext } from './Tabs';
 import { Pre, PreProps } from './Pre';
 import { Img } from './Img';
 import { YouTube } from './YouTube';
-import { Divider } from '../components/Divider';
-import { MDXRemoteSerializeResult } from '@invertase/next-mdx-remote/dist/types';
 
-const components = {
+const components: ComponentMap = {
   // HTML element overrides
   a: (props: React.HTMLProps<HTMLAnchorElement>) => (
     <Link {...props} className="hover:opacity-75" />
@@ -37,10 +36,12 @@ const components = {
   YouTube,
 };
 
-export function Hydrate({ source }: { source: MDXRemoteSerializeResult }): JSX.Element {
+export function Hydrate({ source }: { source: string }): JSX.Element {
+  const Component = React.useMemo(() => getMDXComponent(source), [source]);
+
   return (
     <TabsContext>
-      <MDXRemote {...source} components={components} />
+      <Component components={components} />
     </TabsContext>
   );
 }
