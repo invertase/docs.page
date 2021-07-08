@@ -16,5 +16,9 @@
     ["Pre-rendering", "/pre-rendering"],
     ["Advanced", "/advanced"],
     ["Contributing", "/contributing"]
-  ]
+  ],
+  "docsearch": {
+    "apiKey": "9b58d13ee3195094105d528fc6161a01",
+    "indexName": "use_docs_page"
+  }
 }

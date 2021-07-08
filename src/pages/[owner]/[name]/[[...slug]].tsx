@@ -28,6 +28,7 @@ import { mdxSerialize } from '../../../utils/mdx-serialize';
 import { Loading } from '../../../templates/Loading';
 import { isProduction } from '../../../utils';
 import { getRepositoryPaths } from '../../../utils/github';
+import { Environment, EnvironmentContext } from '../../../utils/env';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', NProgress.start);
@@ -35,6 +36,7 @@ NextRouter.events.on('routeChangeComplete', NProgress.done);
 NextRouter.events.on('routeChangeError', NProgress.done);
 
 export default function Documentation({
+  env,
   domain,
   source,
   properties,
@@ -53,21 +55,23 @@ export default function Documentation({
 
   return (
     <>
-      <CustomDomainContext.Provider value={domain}>
-        <ConfigContext.Provider value={content.config}>
-          <SlugPropertiesContext.Provider value={properties}>
-            <PageContentContext.Provider value={content}>
-              <Head />
-              <ThemeStyles />
-              <Layout>
-                <ErrorBoundary>
-                  <Hydrate source={source} />
-                </ErrorBoundary>
-              </Layout>
-            </PageContentContext.Provider>
-          </SlugPropertiesContext.Provider>
-        </ConfigContext.Provider>
-      </CustomDomainContext.Provider>
+      <EnvironmentContext.Provider value={env}>
+        <CustomDomainContext.Provider value={domain}>
+          <ConfigContext.Provider value={content.config}>
+            <SlugPropertiesContext.Provider value={properties}>
+              <PageContentContext.Provider value={content}>
+                <Head />
+                <ThemeStyles />
+                <Layout>
+                  <ErrorBoundary>
+                    <Hydrate source={source} />
+                  </ErrorBoundary>
+                </Layout>
+              </PageContentContext.Provider>
+            </SlugPropertiesContext.Provider>
+          </ConfigContext.Provider>
+        </CustomDomainContext.Provider>
+      </EnvironmentContext.Provider>
     </>
   );
 }
@@ -93,6 +97,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 type StaticProps = {
+  env: Environment;
   domain: CustomDomain;
   properties: SlugProperties;
   headings: HeadingNode[];
@@ -148,6 +153,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
 
   return {
     props: {
+      env: (process.env.VERCEL_ENV ?? 'development') as Environment,
       domain,
       properties: properties.toObject(),
       source,

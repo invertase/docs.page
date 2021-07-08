@@ -1,7 +1,7 @@
 import React from 'react';
 import NextLink from 'next/link';
 import { SPLITTER } from '../utils/properties';
-import { useCustomDomain, useSlugProperties } from '../hooks';
+import { useCustomDomain, useEnvironment, useSlugProperties } from '../hooks';
 
 /**
  * Custom Link component which builds upon top of the Next Link
@@ -14,6 +14,7 @@ import { useCustomDomain, useSlugProperties } from '../hooks';
 export function Link(props: React.HTMLProps<HTMLAnchorElement>): JSX.Element {
   const domain = useCustomDomain();
   const properties = useSlugProperties();
+  const env = useEnvironment();
 
   if (isHashLink(props.href)) {
     return <a {...props} />;
@@ -23,21 +24,23 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>): JSX.Element {
     return <ExternalLink {...props} />;
   }
 
+  const isProduction = env === 'production';
+
   // Extract `href` from `props`
   const { href: originalHref, ...anchorProps } = props;
   let href: string = originalHref;
   let as: string;
 
   // If there is no custom domain, attach the owner and repo
-  if (!domain) {
+  if (!isProduction || !domain) {
     href = properties.base + originalHref;
   }
 
-  if (domain && !properties.ref) {
+  if (isProduction && domain && !properties.ref) {
     href = `https://${domain}${originalHref}`;
   }
 
-  if (domain && properties.ref) {
+  if (isProduction && domain && properties.ref) {
     href = `https://${domain}/${encodeURIComponent(`${SPLITTER}${properties.ref}`)}${originalHref}`;
   }
 
