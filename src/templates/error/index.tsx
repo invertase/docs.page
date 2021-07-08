@@ -45,18 +45,20 @@ export function ServerError({ properties }: IRenderError): JSX.Element {
   return (
     <>
       <p>Something went wrong whilst building the page.</p>
-      <p>
-        The could have happened because of an issue with the remote Markdown content, or something
-        internal. To help fix this problem, you can{' '}
-        <Link href={properties.debugUrl}>
-          <a>debug</a>
-        </Link>{' '}
-        this page or{' '}
-        <ExternalLink href="https://github.com/invertase/docs.page/issues">
-          report an issue
-        </ExternalLink>
-        .
-      </p>
+      {!!properties && (
+        <p>
+          The could have happened because of an issue with the remote Markdown content, or something
+          internal. To help fix this problem, you can{' '}
+          <Link href={properties.debugUrl}>
+            <a>debug</a>
+          </Link>{' '}
+          this page or{' '}
+          <ExternalLink href="https://github.com/invertase/docs.page/issues">
+            report an issue
+          </ExternalLink>
+          .
+        </p>
+      )}
     </>
   );
 }

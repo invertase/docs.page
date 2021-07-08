@@ -1,11 +1,36 @@
-import Script from 'next/script';
-import { isProduction } from './index';
-import { PageContent } from './content';
-import { SlugProperties } from './properties';
+import React from 'react';
+import NextHead from 'next/head';
+import { useCustomDomain, usePageContent, useSlugProperties } from '../hooks';
+import { getImageSrc } from './Image';
+import { isProduction } from '../utils';
 import googleAnalytics from '../scripts/google-analytics';
-import { getImageSrc } from '../components/Image';
+import { SlugProperties } from '../utils/properties';
+import { PageContent } from '../utils/content';
+import { CustomDomain } from '../utils/domain';
 
-export function getHeadTags(properties: SlugProperties, content: PageContent): JSX.Element[] {
+export function Head(): JSX.Element {
+  const properties = useSlugProperties();
+  const content = usePageContent();
+  const domain = useCustomDomain();
+
+  return (
+    <NextHead>
+      {getHeadTags({
+        properties,
+        content,
+        domain,
+      })}
+    </NextHead>
+  );
+}
+
+type HeadContext = {
+  properties: SlugProperties;
+  content: PageContent;
+  domain: CustomDomain;
+};
+
+export function getHeadTags({ properties, content, domain }: HeadContext): JSX.Element[] {
   const { frontmatter, config } = content;
 
   const title = (() => {
@@ -30,6 +55,15 @@ export function getHeadTags(properties: SlugProperties, content: PageContent): J
     <meta key="twitter:card" name="twitter:card" content="summary_large_image" />,
   ];
 
+  // Add a canonical tag if a domain is enabled
+  if (domain) {
+    let canonical = `https://${domain}/`;
+    if (properties.ref) canonical += `~${encodeURIComponent(properties.ref)}/`;
+    canonical += properties.path;
+    if (canonical.endsWith('/index')) canonical = canonical.slice(0, -6);
+    tags.push(<link key="canonical" rel="canonical" href={canonical} />);
+  }
+
   if (!content.flags.isIndexable) {
     tags.push(<meta key="noindex" name="robots" content="noindex" />);
   }
@@ -43,15 +77,6 @@ export function getHeadTags(properties: SlugProperties, content: PageContent): J
         href={getImageSrc(properties, config.favicon)}
       />,
     );
-  } else if (config.logo) {
-    tags.push(
-      <link
-        key="favicon"
-        rel="icon"
-        type="image/png"
-        href={getImageSrc(properties, config.logo)}
-      />,
-    );
   } else {
     tags.push(
       <link
@@ -59,7 +84,7 @@ export function getHeadTags(properties: SlugProperties, content: PageContent): J
         rel="icon"
         type="image/png"
         sizes="32x32"
-        href="/favicons/favicon-32x32.png"
+        href="https://docs.page/favicons/favicon-32x32.png"
       />,
     );
   }
@@ -86,14 +111,16 @@ export function getHeadTags(properties: SlugProperties, content: PageContent): J
 
   if (isProduction() && config.googleAnalytics) {
     tags.push(
-      <Script
+      <script
+        async
         key="config:googleAnalytics"
         src={`https://www.googletagmanager.com/gtag/js?id=${config.googleAnalytics}`}
       />,
     );
     tags.push(
-      <Script
+      <script
         key="config:googleAnalytics:script"
+        async
         dangerouslySetInnerHTML={{ __html: googleAnalytics(config.googleAnalytics) }}
       />,
     );

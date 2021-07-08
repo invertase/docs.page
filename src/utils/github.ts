@@ -1,193 +1,85 @@
 import A2A from 'a2a';
-import camelCase from 'lodash.camelcase';
 
 import { Properties } from './properties';
-import { GithubGQLClient, tryJsonParse, isString, leadingSlash } from './index';
+import { GithubGQLClient } from './index';
 
 type RepositoryPathsQuery = {
-  owner: {
-    login: string;
-  };
-  name: string;
-  config?: {
-    text: string;
+  // Null if repo not found
+  repository?: {
+    // Null if path not found
+    object?: {
+      entries: {
+        name: string;
+        extension: string;
+        type: string;
+        path: string;
+      }[];
+    };
   };
 };
 
-type RepositoriesPathsQuery = { [key: string]: RepositoryPathsQuery | null };
+export async function getRepositoryPaths(repository: string, dir = 'docs'): Promise<string[]> {
+  const [owner, name] = repository.split('/');
+  let paths = [];
 
-export async function getRepositoriesPaths(repositories: Array<string[]>): Promise<string[]> {
-  if (repositories.length === 0) {
-    return [];
-  }
-
-  let query = '';
-  for (let i = 0; i < repositories.length; i++) {
-    const [owner, name] = repositories[i];
-    query += `
-      ${camelCase(owner + name)}: repository(owner: "${owner}", name: "${name}") {
-        owner {
-          login
-        }
-        name
-        config: object(expression: "HEAD:docs.json") {
-          ... on Blob {
-            text
-          }
-        }
-      }
-    `;
-  }
-
-  const [error, response] = await A2A<RepositoriesPathsQuery>(
+  const [error, response] = await A2A<RepositoryPathsQuery>(
     GithubGQLClient({
       query: `
-          query RepositoriesPaths {
-            ${query}
+        query RepositoryPaths($owner: String!, $repository: String!, $path: String!) {
+          repository(owner: $owner, name: $repository) {
+            object(expression: $path) {
+              ... on Tree {
+                entries {
+                  extension
+                  type
+                  path
+                }
+              }
+            }
           }
-        `,
+        }
+      `,
+      owner: owner,
+      repository: name,
+      path: `HEAD:${dir}`,
     }),
   );
 
-  if (error && !response && !error.data) {
+  if (error) {
     console.error(error);
-    return [];
+    return paths;
   }
 
-  let paths = [];
+  const entries = response.repository?.object?.entries ?? [];
 
-  // If an error occurred (e.g. repo not found), set the data to the error data
-  // if there is no response.
-  const data = (response || error.data) as RepositoriesPathsQuery;
-  const keys = Object.keys(data);
+  for (let i = 0; i < entries.length; i++) {
+    const { extension, type, path } = entries[i];
 
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i];
-    const query = data[key];
-    const file = query?.config.text;
+    // If there is an MDX file, add it to the list
+    if (type === 'blob' && extension === '.mdx') {
+      let slug = path
+        // Remove "docs/" from the path
+        .replace('docs/', '/')
+        // Remove .mdx extension
+        .slice(0, -4);
 
-    if (!file) {
-      continue;
-    }
-
-    const config = tryJsonParse(file);
-
-    if (!Array.isArray(config?.paths)) {
-      continue;
-    }
-
-    const repositoryPaths = [];
-    const prePath = `${query.owner.login.toLowerCase()}/${query.name.toLowerCase()}`;
-
-    for (let j = 0; j < config.paths.length; j++) {
-      const path = config.paths[j];
-
-      if (!isString(path)) {
-        continue;
+      // Remove any "index" page names
+      if (slug.endsWith('/index')) {
+        slug = slug.slice(0, -5);
       }
 
-      repositoryPaths.push(`/${prePath}${leadingSlash(path.toLowerCase())}`);
+      slug = `/${owner}/${name}${slug}`;
+
+      paths.push(slug);
     }
 
-    paths = [...paths, ...repositoryPaths];
+    // If there is a sub-directory fetch any paths for that.
+    if (type === 'tree') {
+      paths = [...paths, ...(await getRepositoryPaths(repository, path))];
+    }
   }
 
   return paths;
-}
-
-type RepositoryListQuery = {
-  repository: {
-    file?: {
-      text: string;
-    };
-  };
-};
-
-export type RepositoryListItem = [string, string];
-
-export async function getRepositoryList(): Promise<RepositoryListItem[]> {
-  let raw = '';
-
-  const [error, response] = await A2A<RepositoryListQuery>(
-    GithubGQLClient({
-      query: `
-          query RepositoriesList($owner: String!, $repository: String!, $file: String!) {
-            repository(owner: $owner, name: $repository) {
-              file: object(expression: $file) {
-                ... on Blob {
-                  text
-                }
-              }
-            }
-          }
-        `,
-      owner: 'invertase',
-      repository: 'docs.page',
-      file: 'master:repositories.txt',
-    }),
-  );
-
-  if (error) {
-    console.error('Unable to fetch repositories list', error);
-  }
-
-  if (error || !response.repository?.file?.text) {
-    raw = '';
-  } else {
-    raw = response.repository.file.text;
-  }
-
-  if (!raw) {
-    return [];
-  }
-
-  return raw.split('\n').map<RepositoryListItem>(str => str.split('/') as RepositoryListItem);
-}
-
-type DomainListQuery = {
-  repository: {
-    file?: {
-      text: string;
-    };
-  };
-};
-
-// [domain, repository]
-export type DomainListItem = [string, string];
-
-export async function getDomainsList(): Promise<DomainListItem[]> {
-  let raw = '';
-
-  const [error, response] = await A2A<DomainListQuery>(
-    GithubGQLClient({
-      query: `
-          query DomainsList($owner: String!, $repository: String!, $file: String!) {
-            repository(owner: $owner, name: $repository) {
-              file: object(expression: $file) {
-                ... on Blob {
-                  text
-                }
-              }
-            }
-          }
-        `,
-      owner: 'invertase',
-      repository: 'docs.page',
-      file: 'master:domains.txt',
-    }),
-  );
-
-  if (error) {
-    console.error('Unable to fetch domains list', error);
-  }
-
-  if (error || !response.repository?.file?.text) {
-    raw = '';
-  } else {
-    raw = response.repository.file.text;
-  }
-
-  return raw.split('\n').map<DomainListItem>(str => str.split(' ') as DomainListItem);
 }
 
 type PullRequestQuery = {
@@ -215,7 +107,7 @@ export type PullRequestMetadata = {
 export async function getPullRequestMetadata(
   owner: string,
   repository: string,
-  pullRequest: number,
+  pullRequest: string,
 ): Promise<PullRequestMetadata | null> {
   const [error, response] = await A2A<PullRequestQuery>(
     GithubGQLClient({
@@ -238,7 +130,7 @@ export async function getPullRequestMetadata(
       `,
       owner: owner,
       repository: repository,
-      pullRequest: pullRequest,
+      pullRequest: parseInt(pullRequest),
     }),
   );
 
@@ -298,16 +190,15 @@ export async function getGitHubContents(properties: Properties): Promise<Content
         }
       }
     `,
-      owner: properties.owner,
-      repository: properties.repository,
-      config: `${properties.ref ?? 'HEAD'}:docs.json`,
-      mdx: `${properties.ref ?? 'HEAD'}:docs/${properties.path}.mdx`,
+      owner: properties.source.owner,
+      repository: properties.source.repository,
+      config: `${properties.source.ref}:docs.json`,
+      mdx: `${properties.source.ref}:docs/${properties.path}.mdx`,
     }),
   );
 
-  // An error might be thrown if the repository is not found.
+  // An error is thrown if the repo is not found
   if (error) {
-    console.error(error);
     return null;
   }
 

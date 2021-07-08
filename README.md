@@ -7,17 +7,9 @@
   <a href="https://docs.page"><img src="https://img.shields.io/badge/powered%20by-docs.page-34C4AC.svg?style=flat-square" alt="docs.page" /></a>
 </p>
 
----
-
-- [Homepage](https://docs.page)
-- [Getting Started](https://docs.page/invertase/docs.page)
-- [Configuration](https://docs.page/invertase/docs.page/configuration)
-- [Custom Components](https://docs.page/invertase/docs.page/components)
-- [Previews](https://docs.page/invertase/docs.page/previews)
-- [Debugging](https://docs.page/invertase/docs.page/debugging)
-- Custom Domains (coming soon)
-
----
+<p align="center">
+  <a href="https://docs.page">Homepage</a> &bull; <a href="https://use.docs.page">Documentation</a>
+</p>
 
 ## About
 
@@ -30,17 +22,25 @@ dealing with overheads such as website maintenance & hosting.
 Solutions such as [Jekyll](https://jekyllrb.com/docs/github-pages/), [Docusaurus](https://docusaurus.io/),
 [docsify](https://docsify.js.org/#/) and many others are great projects, however still require custom setup for each project.
 
-This project delivers instant documentation websites with the content sourced directly from any public
+docs.page is designed to deliver instant documentation websites, with the content sourced directly from any public
 GitHub repository. Features include:
 
-- Branch & Pull Request previewing.
-- GitHub Pull Request bot for previewing automation.
-- Dark / Light mode support.
-- [MDX](https://github.com/mdx-js/mdx) components such as Tabs (useful for projects with multiple languages).
-- Server Side Rendered (SSR) pages (powered by [Next.js](https://nextjs.org/) & [Vervel](https://vercel.com)).
-- Support for adding search via [Docsearch](https://docsearch.algolia.com/).
-- Managing common project variables.
-- Many [configurable](https://docs.page/invertase/docs.page/configuration) options, such as sidebars, Google Analytics are more.
+- [Configurable](https://use.docs.page/configuration): Add your own logo, theme, analytics, navigation and more with a simple config file.
+- [Previewing](https://use.docs.page/previews): View the documentation of any branch, pull request or specific commit,.
+- [GitHub Bot](https://use.docs.page/github-bot): Install our [GitHub bot](https://github.com/apps/docs-page) to automatically get a URL to pull request documentation previews.
+- [Components](https://use.docs.page/components): Powered by [MDX](https://github.com/mdx-js/mdx), use React components such as Tabs (useful for projects with multiple languages) directly in your docs.
+- [Search](https://use.docs.page/search): Easily add full search support powered by [DocSearch](https://docsearch.algolia.com/).
+- [Custom Domains](https://use.docs.page/custom-domains): Serve your documentation using your own domain.
+
+Other useful features include:
+
+- Global variable injection (for managing common variables across the project).
+- Displaying assets using GitHub.
+- Dark/Light mode.
+- Responsive.
+- Code block highlighting and content copying.
+- Page redirects.
+- Per-page metadata support via Frontmatter.
 
 ## Should I use docs.page?
 

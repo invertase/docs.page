@@ -3,7 +3,7 @@ import matter from 'gray-matter';
 import get from 'lodash.get';
 
 import { ProjectConfig, mergeConfig } from './projectConfig';
-import { Properties } from './properties';
+import { Properties, Pointer } from './properties';
 import { getBoolean, getString } from '.';
 import { getGitHubContents } from './github';
 
@@ -50,8 +50,7 @@ export async function getPageContent(properties: Properties): Promise<PageConten
     try {
       const json = JSON.parse(contents.config);
       config = mergeConfig(json || {});
-    } catch (e) {
-      console.error(e);
+    } catch {
       // Ignore errors
     }
   }
@@ -82,7 +81,7 @@ export async function getPageContent(properties: Properties): Promise<PageConten
         !!contents.md &&
         !config.noindex &&
         !contents.isFork &&
-        properties.isBaseBranch &&
+        properties.pointer === Pointer.base &&
         !!contents.config,
     },
   };

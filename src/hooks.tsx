@@ -1,8 +1,13 @@
 import { useContext, useEffect, useState } from 'react';
+import { Environment, EnvironmentContext } from './utils/env';
 import { ProjectConfig, ConfigContext } from './utils/projectConfig';
 import { PageContent, PageContentContext } from './utils/content';
 import { CustomDomain, CustomDomainContext } from './utils/domain';
 import { SlugProperties, SlugPropertiesContext } from './utils/properties';
+
+export function useEnvironment(): Environment {
+  return useContext(EnvironmentContext);
+}
 
 export function useCustomDomain(): CustomDomain {
   return useContext(CustomDomainContext);

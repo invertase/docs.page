@@ -5,18 +5,22 @@ description: Pre-render your documentation pages to prevent an initial loading s
 
 # Pre-rendering
 
-By default pages are not pre-rendered, meaning in a couple of scenarios you may see a loading page or experience a slight delay
-whilst navigating to a page from within an existing page. These scenarios are:
+Each time a documentation page is accessed, docs.page will attempt to serve a static version of the page to improve
+performance. If the page has never been accessed before (or a new docs.page deployment has invalidated the cache),
+users will be shown an initial loading page whilst the content is fetched. Subsequent visits to the page will
+show the cached content.
 
-- The first time a page is requested
-- After a new deployment of docs.page (since pre-rendered pages are deleted)
+If the content is older than 30 seconds old, the page will be regenerated in the background and future requests will use
+the newly generated page.
 
-Once a page has been requested, any subsequent requests will serve a pre-rendered version of the page instantly. Pages are
-invalidated every 30 seconds, however users will still be served the invalidated pre-rendered page until the new version has
-been built.
+> Read more about this on the [Next.js documentation](https://nextjs.org/docs/basic-features/pages#static-generation-recommended).
 
-To learn more about this, visit the [Next.js documentation](https://nextjs.org/docs/basic-features/pages#pre-rendering).
+Since docs.page supports _any_ GitHub repository it is not possible to pre-render every documentation page at build time. Instead
+we ask that if you wish to enable pre-rendering for your repository you explicitly define the repository to enable pre-rendering.
 
 ## Enabling pre-rendering
 
-TODO
+Create a pull request to add your repository to the [`repositories.json`](https://github.com/invertase/docs.page/edit/master/repositories.json) file on the docs.page
+repository.
+
+Once merged, all `.mdx` files within the repositories `docs/` directory will be scanned and the page will be pre-rendered.

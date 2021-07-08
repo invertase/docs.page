@@ -111,7 +111,10 @@ function extractTabItems(children: React.ReactNode): TabItemElement[] {
         items = [...items, ...extractTabItems(child.props.children)];
       }
 
-      if (child.props.mdxType === 'TabItem') {
+      // @ts-ignore access private name which works on production
+      const name = child.type.name;
+
+      if (name === 'TabItem') {
         items = [...items, child];
       }
     }
@@ -199,6 +202,6 @@ type TabItemProps = {
   children: JSX.Element | JSX.Element[];
 };
 
-export function TabItem(props: TabItemProps): JSX.Element | JSX.Element[] {
-  return props.children;
-}
+export const TabItem: React.FC<TabItemProps> = (props: TabItemProps) => {
+  return <>{props.children}</>;
+};

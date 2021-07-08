@@ -56,6 +56,18 @@ export function Branch({ size, className, style }: IconProps): JSX.Element {
   );
 }
 
+export function Commit({ size, className, style }: IconProps): JSX.Element {
+  return (
+    <svg width={size} height={size} className={className} style={style} viewBox="0 0 16 16">
+      <path
+        fill="currentColor"
+        fillRule="evenodd"
+        d="M10.5 7.75a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zm1.43.75a4.002 4.002 0 01-7.86 0H.75a.75.75 0 110-1.5h3.32a4.001 4.001 0 017.86 0h3.32a.75.75 0 110 1.5h-3.32z"
+      />
+    </svg>
+  );
+}
+
 export function Template({ size, className, style }: IconProps): JSX.Element {
   return (
     <svg
@@ -96,6 +108,28 @@ export function GlobeAlt({ size, className, style }: IconProps): JSX.Element {
         strokeLinejoin="round"
         strokeWidth={2}
         d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"
+      />
+    </svg>
+  );
+}
+
+export function Annotation({ size, className, style }: IconProps): JSX.Element {
+  return (
+    <svg
+      width={size}
+      height={size}
+      className={className}
+      style={style}
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"
       />
     </svg>
   );

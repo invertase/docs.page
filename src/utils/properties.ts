@@ -1,82 +1,126 @@
 import { createContext } from 'react';
-import { PullRequestMetadata } from './github';
+import { getPullRequestMetadata } from './github';
 import { hash } from './index';
 
 export const DEFAULT_FILE = 'index';
 export const SPLITTER = '~';
 
-type RefType = null | 'branch' | 'pull-request';
-
-export class Properties {
+type Source = {
   owner: string;
   repository: string;
   ref: string;
+};
+
+export enum Pointer {
+  base,
+  branch,
+  pullRequest,
+  commit,
+}
+export class Properties {
+  owner: string;
+  repository: string;
+  source: Source;
   path: string;
   base: string;
-  isBaseBranch: boolean;
+  baseBranch?: string;
+  ref?: string;
+  pointer: Pointer;
 
-  public constructor(params: string[]) {
-    let [, repository] = params;
-    const [owner, , ...path] = params;
-    let ref = null;
+  private constructor(params: string[]) {
+    const [owner, repositoryWithRef, maybeRef, ...path] = params;
+    let finalPath = path;
+    let repository: string;
+    let ref: string;
 
-    // project paths containing a SPLITTER mean a specific branch has been requested
-    const chunks = repository.split(SPLITTER);
+    // docs.page/invertase/melos~docs-updates/foo
+    if (repositoryWithRef.includes(SPLITTER)) {
+      [repository, ref] = repositoryWithRef.split(SPLITTER);
 
-    // only projects with a single SPLITTER are allowed
-    if (chunks.length > 2) {
-      throw new Error(
-        `Invalid project path provided. The path contains more than one ${SPLITTER} which is not allowed.`,
-      );
+      if (maybeRef) {
+        finalPath = [maybeRef, ...path];
+      }
+    } else {
+      repository = repositoryWithRef;
     }
 
-    // if there is a branch or PR, assign it
-    if (chunks.length === 2 && chunks[1]) {
-      repository = chunks[0];
-      ref = chunks[1];
+    // docs.page/invertase/melos/~docs-updates/foo
+    if (maybeRef?.startsWith(SPLITTER)) {
+      repository = repositoryWithRef;
+      [, ref] = maybeRef.split(SPLITTER);
+    }
+    // docs.page/invertase/melos/foo
+    else if (maybeRef) {
+      finalPath = [maybeRef, ...path];
     }
 
     let base = `/${owner}/${repository}`;
 
     if (ref) {
-      base += encodeURI(`${SPLITTER}${ref}`);
+      base += encodeURIComponent(`${SPLITTER}${ref}`);
     }
 
     this.owner = owner;
     this.repository = repository;
     this.ref = ref;
-    this.path = path.length === 0 ? DEFAULT_FILE : path.join('/');
+    this.path = finalPath.length === 0 ? DEFAULT_FILE : finalPath.join('/');
     this.base = base;
-    this.isBaseBranch = !ref;
   }
 
-  public setPullRequestMetadata(metadata: PullRequestMetadata): void {
-    this.owner = metadata.owner;
-    this.repository = metadata.repository;
-    this.ref = metadata.ref;
-  }
+  public static async build(params: string[]): Promise<Properties> {
+    const properties = new Properties(params);
 
-  public setBaseRef(baseRef: string): void {
-    this.ref = baseRef;
-    this.base = `/${this.owner}/${this.repository}`;
-    this.isBaseBranch = true;
-  }
+    if (/^[0-9]*$/.test(properties.ref)) {
+      // Fetch the PR metadata
+      const metadata = await getPullRequestMetadata(
+        properties.owner,
+        properties.repository,
+        properties.ref,
+      );
 
-  public isPullRequest(): boolean {
-    return /^[0-9]*$/.test(this.ref);
+      // TODO what happens if no PR is found?
+      if (metadata) {
+        properties.pointer = Pointer.pullRequest;
+        properties.source = {
+          owner: metadata.owner,
+          repository: metadata.repository,
+          ref: metadata.ref,
+        };
+      }
+    } else {
+      if (/^[a-fA-F0-9]{40}$/.test(properties.ref)) {
+        properties.pointer = Pointer.commit;
+      } else if (properties.ref) {
+        properties.pointer = Pointer.branch;
+      } else {
+        properties.pointer = Pointer.base;
+      }
+      // The source is the current repository
+      properties.source = {
+        owner: properties.owner,
+        repository: properties.repository,
+        ref: properties.ref || 'HEAD',
+      };
+    }
+
+    return properties;
   }
 
   toObject(): SlugProperties {
     return {
-      isBaseBranch: this.isBaseBranch,
       owner: this.owner,
       repository: this.repository,
+      source: this.source,
       githubUrl: `https://github.com/${this.owner}/${this.repository}`,
       debugUrl: `/_debug${this.base}/${this.path}`,
-      editUrl: `https://github.com/${this.owner}/${this.repository}/edit/${this.ref}/docs/${this.path}.mdx`,
-      createUrl: `https://github.com/${this.owner}/${this.repository}/new/${this.ref}/docs/${this.path}`,
-      ref: this.ref,
-      refType: this.isPullRequest() ? 'pull-request' : 'branch',
+      editUrl: `https://github.com/${this.owner}/${this.repository}/edit/${
+        this.ref || this.baseBranch
+      }/docs/${this.path}.mdx`,
+      createUrl: `https://github.com/${this.owner}/${this.repository}/new/${
+        this.ref || this.baseBranch
+      }/docs/${this.path}`,
+      ref: this.ref || null,
+      pointer: this.pointer,
       base: this.base,
       path: this.path,
       hash: hash(`${this.owner}/${this.repository}`),
@@ -86,12 +130,13 @@ export class Properties {
 
 // Properties corresponding to an incoming slug.
 export type SlugProperties = {
-  isBaseBranch: boolean;
   // The project owner, e.g. "invertase"
   owner: string;
   // The repository name, e.g. "melos"
   repository: string;
-  // The URL of the repository on GitHub
+  // The source of the contents.
+  source: Source;
+  // The URL to the GitHub repo
   githubUrl: string;
   // The URL to debug the page
   debugUrl: string;
@@ -100,9 +145,9 @@ export type SlugProperties = {
   // The URL to create a new page on GitHub
   createUrl: string;
   // The branch/PR the request is for
-  ref: string;
-  // The type of reference
-  refType: RefType;
+  ref: string | null;
+  // The request pointer of the properties
+  pointer: Pointer;
   // The path of the content
   path: string;
   // Base path for this project
@@ -112,15 +157,15 @@ export type SlugProperties = {
 };
 
 export const SlugPropertiesContext = createContext<SlugProperties>({
-  isBaseBranch: true,
   owner: '',
   repository: '',
+  source: {} as Source,
   githubUrl: '',
   debugUrl: '',
   editUrl: '',
   createUrl: '',
   ref: '',
-  refType: null,
+  pointer: Pointer.base,
   path: '',
   base: '',
   hash: '',

@@ -1,10 +1,7 @@
 import React from 'react';
 import NextLink from 'next/link';
 import { SPLITTER } from '../utils/properties';
-import { useSlugProperties } from '../hooks';
-// import { useCustomDomain, useSlugProperties } from '../hooks';
-// import { isProduction } from '../utils';
-// import { useRouter } from 'next/router';
+import { useCustomDomain, useEnvironment, useSlugProperties } from '../hooks';
 
 /**
  * Custom Link component which builds upon top of the Next Link
@@ -13,14 +10,11 @@ import { useSlugProperties } from '../hooks';
  * Links on pages needs to be relative to the repository rather than
  * the root, so several checks are in place to alter the provided
  * `href`.
- *
- * Prefetching is disabled by default on Links, since pages are not
- * prebuilt at build time.
  */
 export function Link(props: React.HTMLProps<HTMLAnchorElement>): JSX.Element {
-  // const router = useRouter();
-  // const customDomain = useCustomDomain();
+  const domain = useCustomDomain();
   const properties = useSlugProperties();
+  const env = useEnvironment();
 
   if (isHashLink(props.href)) {
     return <a {...props} />;
@@ -30,42 +24,28 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>): JSX.Element {
     return <ExternalLink {...props} />;
   }
 
-  // Custom domains are only used in production
-  // const isUsingCustomDomain: boolean = isProduction() && !!customDomain;
+  const isProduction = env === 'production';
 
-  // Remove `href` from `props`
-  const { ...anchorProps } = props;
-  let { href } = props;
+  // Extract `href` from `props`
+  const { href: originalHref, ...anchorProps } = props;
+  let href: string = originalHref;
+  let as: string;
 
-  // If no custom domain, set the repository path as the href
-  // if (!isUsingCustomDomain) {
-  //   href = `/${properties.owner}/${properties.repository}`;
-
-  //   // Add a ref to the current href, if the branch is not default
-  //   if (!properties.isBaseBranch) {
-  //     href += `${SPLITTER}${properties.ref}`;
-  //   }
-
-  href = `/${properties.owner}/${properties.repository}`;
-
-  // Add a ref to the current href, if the branch is not default
-  if (!properties.isBaseBranch) {
-    href += `${SPLITTER}${properties.ref}`;
+  // If there is no custom domain, attach the owner and repo
+  if (!isProduction || !domain) {
+    href = properties.base + originalHref;
   }
 
-  // Ensure href passed by user starts with a `/`
-  if (props.href.startsWith('/')) {
-    href += props.href;
-  } else {
-    href += `/${props.href}`;
+  if (isProduction && domain && !properties.ref) {
+    href = `https://${domain}${originalHref}`;
   }
 
-  // if (isUsingCustomDomain) {
-  //   href = `https://${customDomain}${href}`;
-  // }
+  if (isProduction && domain && properties.ref) {
+    href = `https://${domain}/${encodeURIComponent(`${SPLITTER}${properties.ref}`)}${originalHref}`;
+  }
 
   return (
-    <NextLink href={href} prefetch={false}>
+    <NextLink href={href} as={as}>
       <a {...anchorProps}>{props.children}</a>
     </NextLink>
   );

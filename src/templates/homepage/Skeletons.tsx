@@ -22,10 +22,10 @@ export function IndexExample(): JSX.Element {
   return (
     <section>
       <div className="border rounded-tr rounded-tl border-gray-700 px-3 py-2">
-        <code className="text-sm">docs/index.md</code>
+        <code className="text-sm">docs/index.mdx</code>
       </div>
       <div className="flex">
-        <div style={{ width: 1 }} className="bg-gradient-to-b from-gray-700 to-docs-background" />
+        <div className="bg-gradient-to-b from-gray-700 to-gray-900 w-[1px]" />
         <div className="flex-1 p-3 font-mono">
           <div># Installation</div>
           <br />
@@ -33,7 +33,7 @@ export function IndexExample(): JSX.Element {
           <div>npm install myawesomelib</div>
           ```
         </div>
-        <div style={{ width: 1 }} className="bg-gradient-to-b from-gray-700 to-docs-background" />
+        <div className="bg-gradient-to-b from-gray-700 to-gray-900 w-[1px]" />
       </div>
     </section>
   );

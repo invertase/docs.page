@@ -3,12 +3,12 @@
   font-family: 'Anton';
   font-style: normal;
   font-weight: 400;
-  src: url('/fonts/anton/anton-v12-latin-regular.eot'); /* IE9 Compat Modes */
-  src: local(''), url('/fonts/anton/anton-v12-latin-regular.eot?#iefix') format('embedded-opentype'),
-    /* IE6-IE8 */ url('/fonts/anton/anton-v12-latin-regular.woff2') format('woff2'),
-    /* Super Modern Browsers */ url('/fonts/anton/anton-v12-latin-regular.woff') format('woff'),
-    /* Modern Browsers */ url('/fonts/anton/anton-v12-latin-regular.ttf') format('truetype'),
-    /* Safari, Android, iOS */ url('/fonts/anton/anton-v12-latin-regular.svg#Anton') format('svg'); /* Legacy iOS */
+  src: url('/_docs.page/fonts/anton/anton-v12-latin-regular.eot'); /* IE9 Compat Modes */
+  src: local(''), url('/_docs.page/fonts/anton/anton-v12-latin-regular.eot?#iefix') format('embedded-opentype'),
+    /* IE6-IE8 */ url('/_docs.page/fonts/anton/anton-v12-latin-regular.woff2') format('woff2'),
+    /* Super Modern Browsers */ url('/_docs.page/fonts/anton/anton-v12-latin-regular.woff') format('woff'),
+    /* Modern Browsers */ url('/_docs.page/fonts/anton/anton-v12-latin-regular.ttf') format('truetype'),
+    /* Safari, Android, iOS */ url('/_docs.page/fonts/anton/anton-v12-latin-regular.svg#Anton') format('svg'); /* Legacy iOS */
 }
 
 @tailwind base;
@@ -18,7 +18,7 @@
 :root {
   --light-background: #ffffff;
   --dark-background: #202528;
-  --pre-background: #252525;
+  --pre-background: #2c2e38;
 }
 
 @layer base {
@@ -44,42 +44,4 @@
 
 .DocSearch-NoResults-Prefill-List {
   @apply mt-8 text-center;
-}
-
-/* Add some styles from any remark-admonitions HTML output */
-.admonition {
-  @apply mb-4 p-6 text-gray-800 rounded-lg shadow;
-}
-
-.admonition h5 {
-  @apply flex items-center uppercase font-medium text-lg mb-4;
-  @apply text-gray-800 !important;
-}
-
-.admonition h5 svg {
-  @apply w-6 h-6;
-}
-
-.admonition p {
-  @apply m-0 !important;
-}
-
-.admonition h5 .admonition-icon {
-  @apply inline-block mr-2;
-}
-
-.admonition-note {
-  @apply bg-gray-100 dark:bg-white;
-}
-.admonition-tip {
-  @apply bg-blue-400;
-}
-.admonition-info {
-  @apply bg-green-500;
-}
-.admonition-caution {
-  @apply bg-yellow-400;
-}
-.admonition-danger {
-  @apply bg-red-400;
 }
