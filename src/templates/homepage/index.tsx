@@ -1,5 +1,6 @@
 import React from 'react';
 import Head from 'next/head';
+import Script from 'next/script';
 
 import { Checkout } from './Checkout';
 import { Heading } from './Heading';
@@ -44,6 +45,14 @@ export default function IndexPage(): JSX.Element {
         />
         <meta name="twitter:image" content="http://docs.page/assets/docs-page-social.png" />
         <meta name="twitter:card" content="summary_large_image" />
+
+        <Script>
+          {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','GTM-W89J6BX');`}
+        </Script>
       </Head>
       <style global jsx>{`
         p a {
