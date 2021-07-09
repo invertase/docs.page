@@ -44,8 +44,8 @@ export interface ProjectConfig {
   headerDepth: number;
   // Variables which can be injected into the pages content.
   variables: Record<string, string>;
-  // Adds Google Analytics tracking ID to the page
-  googleAnalytics: string;
+  // Adds Google Tag Manager to your documentation pages.
+  googleTagManager: string;
   // Whether zoomable images are enabled by default
   zoomImages: boolean;
 }
@@ -64,7 +64,7 @@ export const defaultConfig: ProjectConfig = {
   sidebar: [],
   headerDepth: 3,
   variables: {},
-  googleAnalytics: '',
+  googleTagManager: '',
   zoomImages: false,
 };
 
@@ -90,7 +90,7 @@ export function mergeConfig(json: Partial<ProjectConfig> | null): ProjectConfig 
     sidebar: mergeSidebarConfig(json),
     headerDepth: getNumber(json, 'headerDepth', defaultConfig.headerDepth),
     variables: get(json, 'variables', defaultConfig.variables),
-    googleAnalytics: getString(json, 'googleAnalytics', defaultConfig.googleAnalytics),
+    googleTagManager: getString(json, 'googleTagManager', defaultConfig.googleTagManager),
     zoomImages: getBoolean(json, 'zoomImages', defaultConfig.zoomImages),
   };
 }

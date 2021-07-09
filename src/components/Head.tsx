@@ -1,9 +1,9 @@
 import React from 'react';
 import NextHead from 'next/head';
+import Script from 'next/script';
 import { useCustomDomain, usePageContent, useSlugProperties } from '../hooks';
 import { getImageSrc } from './Image';
 import { isProduction } from '../utils';
-import googleAnalytics from '../scripts/google-analytics';
 import { SlugProperties } from '../utils/properties';
 import { PageContent } from '../utils/content';
 import { CustomDomain } from '../utils/domain';
@@ -109,20 +109,15 @@ export function getHeadTags({ properties, content, domain }: HeadContext): JSX.E
     tags.push(<meta key="og:image:config" property="og:image" content={config.socialPreview} />);
   }
 
-  if (isProduction() && config.googleAnalytics) {
+  if (isProduction() && config.googleTagManager) {
     tags.push(
-      <script
-        async
-        key="config:googleAnalytics"
-        src={`https://www.googletagmanager.com/gtag/js?id=${config.googleAnalytics}`}
-      />,
-    );
-    tags.push(
-      <script
-        key="config:googleAnalytics:script"
-        async
-        dangerouslySetInnerHTML={{ __html: googleAnalytics(config.googleAnalytics) }}
-      />,
+      <Script>
+        {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','${config.googleTagManager}');`}
+      </Script>,
     );
   }
 
