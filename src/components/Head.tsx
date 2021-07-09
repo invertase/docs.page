@@ -14,13 +14,24 @@ export function Head(): JSX.Element {
   const domain = useCustomDomain();
 
   return (
-    <NextHead>
-      {getHeadTags({
-        properties,
-        content,
-        domain,
-      })}
-    </NextHead>
+    <>
+      <NextHead>
+        {getHeadTags({
+          properties,
+          content,
+          domain,
+        })}
+      </NextHead>
+      {isProduction() && content.config.googleTagManager && (
+        <Script>
+          {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+            })(window,document,'script','dataLayer','${content.config.googleTagManager}');`}
+        </Script>
+      )}
+    </>
   );
 }
 
@@ -107,18 +118,6 @@ export function getHeadTags({ properties, content, domain }: HeadContext): JSX.E
     tags.push(<meta key="og:image:frontmatter" property="og:image" content={frontmatter.image} />);
   } else if (config.socialPreview) {
     tags.push(<meta key="og:image:config" property="og:image" content={config.socialPreview} />);
-  }
-
-  if (isProduction() && config.googleTagManager) {
-    tags.push(
-      <Script>
-        {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer','${config.googleTagManager}');`}
-      </Script>,
-    );
   }
 
   if (config.docsearch?.appId) {
