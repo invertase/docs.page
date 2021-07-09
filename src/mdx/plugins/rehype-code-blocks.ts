@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import visit from 'unist-util-visit';
-import { Node, Parent } from 'hast-util-heading-rank';
+import { Node } from 'hast-util-heading-rank';
 import { toText } from 'hast-util-to-text';
 
 /**
@@ -7,8 +8,7 @@ import { toText } from 'hast-util-to-text';
  * @returns
  */
 export default function rehypeCodeBlocks(): (ast: Node) => void {
-  function visitor(node: Node, _i: number, parent: Parent) {
-    // Only modify `pre code` tags, ignoring inline styles
+  function visitor(node: any, _i: number, parent: any) {
     if (!parent || parent.tagName !== 'pre' || node.tagName !== 'code') {
       return;
     }
