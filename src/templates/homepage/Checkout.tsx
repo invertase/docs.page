@@ -37,7 +37,7 @@ export function Checkout(): JSX.Element {
         <input
           type="text"
           placeholder="https://github.com/invertase/docs.page"
-          className="w-full px-3 py-3 appearance-none bg-transparent border rounded text-white placeholder-gray-500 focus:border-orange-400"
+          className="w-full px-3 py-3 appearance-none bg-transparent border rounded placeholder-gray-500 focus:border-orange-400"
           value={repo}
           onChange={e => setRepo(e.target.value)}
         />
