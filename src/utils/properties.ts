@@ -70,6 +70,9 @@ export class Properties {
   public static async build(params: string[]): Promise<Properties> {
     const properties = new Properties(params);
 
+    let source: Source;
+
+    // If the ref looks like a PR
     if (/^[0-9]*$/.test(properties.ref)) {
       // Fetch the PR metadata
       const metadata = await getPullRequestMetadata(
@@ -78,16 +81,20 @@ export class Properties {
         properties.ref,
       );
 
-      // TODO what happens if no PR is found?
+      // If the PR was found, update the pointer and source
       if (metadata) {
         properties.pointer = Pointer.pullRequest;
-        properties.source = {
+        source = {
           owner: metadata.owner,
           repository: metadata.repository,
           ref: metadata.ref,
         };
       }
-    } else {
+    }
+
+    // If no source was found (also if no matching PR was found)
+    if (!source) {
+      // Is the ref a commit sha?
       if (/^[a-fA-F0-9]{40}$/.test(properties.ref)) {
         properties.pointer = Pointer.commit;
       } else if (properties.ref) {
@@ -96,12 +103,14 @@ export class Properties {
         properties.pointer = Pointer.base;
       }
       // The source is the current repository
-      properties.source = {
+      source = {
         owner: properties.owner,
         repository: properties.repository,
         ref: properties.ref || 'HEAD',
       };
     }
+
+    properties.source = source;
 
     return properties;
   }
