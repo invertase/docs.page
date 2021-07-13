@@ -19,6 +19,9 @@ export function Error(error: IRenderError): JSX.Element {
         <link rel="preconnect" href="https://fonts.gstatic.com" />
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet" />
+
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png" />
       </NextHead>
       <section className="mt-20 max-w-4xl mx-auto px-2">
         <div className="text-center lg:text-left font-mono dark:text-white mb-10">
