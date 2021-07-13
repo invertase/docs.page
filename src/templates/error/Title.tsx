@@ -1,7 +1,7 @@
 import React from 'react';
 import Head from 'next/head';
 
-interface TitleProps {ß
+interface TitleProps {
   statusCode: number;
 }
 
