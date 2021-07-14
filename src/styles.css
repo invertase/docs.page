@@ -31,6 +31,17 @@
     --background: var(--dark-background);
     background-color: var(--dark-background);
   }
+
+  body.dark pre::-webkit-scrollbar {
+    width: 14px;
+  }
+
+  body.dark pre::-webkit-scrollbar-thumb {
+    border: 4px solid transparent;
+    background-clip: padding-box;
+    border-radius: 9999px;
+    background-color: #AAAAAA;
+  }
 }
 
 /* DocSearch doesn't play nice with Normalize.css, so some custom style overrides are required */
