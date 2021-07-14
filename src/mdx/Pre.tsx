@@ -3,7 +3,8 @@ import cx from 'classnames';
 import CopyToClipboard from 'react-copy-to-clipboard';
 export interface PreProps extends React.HTMLProps<HTMLPreElement> {
   title?: string;
-  raw?: string;
+  raw: string;
+  html: string;
 }
 
 export function Pre(props: PreProps): JSX.Element {
@@ -26,18 +27,17 @@ export function Pre(props: PreProps): JSX.Element {
   return (
     <>
       {!!title && (
-        <div className="rounded-tr rounded-tl font-mono font-bold text-gray-300 text-sm px-4 py-2 border-b border-gray-700 bg-[color:var(--pre-background)]">
+        <div className="rounded-tr rounded-tl font-mono font-bold text-gray-300 text-sm px-4 py-2 border-b border-gray-700 bg-[#24292e]">
           {title}
         </div>
       )}
       <div className="relative group">
-        <pre
-          className={cx('!bg-[color:var(--pre-background)]', {
-            '!mt-0 !rounded-tl-none !rounded-tr-none': !!title,
+        <div
+          className={cx('shiki-parent', {
+            'shiki-parent-title': !!title,
           })}
-        >
-          {props.children}
-        </pre>
+          dangerouslySetInnerHTML={{ __html: props.html }}
+        />
         <div
           className={cx(
             'opacity-0 group-hover:opacity-100 transition-opacity absolute top-0 right-0 mr-2 mt-2',
@@ -47,7 +47,7 @@ export function Pre(props: PreProps): JSX.Element {
           )}
         >
           <CopyToClipboard text={raw} onCopy={() => setCopied(true)}>
-            <button className="text-white text-xs font-mono bg-gray-700 hover:bg-gray-600 transition-colors px-3 py-2 rounded-lg">
+            <button className="text-white text-xs font-mono bg-black hover:bg-black/40 transition-colors px-3 py-2 rounded-lg">
               {copied ? 'Copied' : 'Copy'}
             </button>
           </CopyToClipboard>

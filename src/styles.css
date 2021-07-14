@@ -18,7 +18,6 @@
 :root {
   --light-background: #ffffff;
   --dark-background: #202528;
-  --pre-background: #2c2e38;
 }
 
 @layer base {
@@ -42,6 +41,14 @@
     border-radius: 9999px;
     background-color: #AAAAAA;
   }
+}
+
+pre.shiki {
+  @apply mt-0 !rounded;
+}
+
+.shiki-parent.shiki-parent-title pre {
+  @apply !rounded-tr-none !rounded-tl-none;
 }
 
 /* DocSearch doesn't play nice with Normalize.css, so some custom style overrides are required */

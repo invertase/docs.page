@@ -2,7 +2,6 @@ import path from 'path';
 import rehypeSlug from 'rehype-slug';
 import remarkUnwrapImages from 'remark-unwrap-images';
 import remarkGfm from 'remark-gfm';
-import rehypeHighlight from 'rehype-highlight';
 import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
 import { bundleMDX } from 'mdx-bundler';
 
@@ -41,8 +40,6 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
 
   const rehypePlugins = [
     rehypeCodeBlocks,
-    // Convert `pre` blogs into prism formatting
-    rehypeHighlight,
     // Add an `id` to all heading tags
     rehypeSlug,
     [
@@ -60,6 +57,7 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
     const result = await bundleMDX(content.markdown, {
       xdmOptions(options) {
         options.remarkPlugins = [...(options.remarkPlugins ?? []), ...remarkPlugins];
+        // @ts-ignore TOOD fix types
         options.rehypePlugins = [...(options.rehypePlugins ?? []), ...rehypePlugins];
 
         return options;
