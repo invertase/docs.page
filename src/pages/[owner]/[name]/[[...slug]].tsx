@@ -128,8 +128,10 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
     // Redirect the user to another page
     return redirect(content.frontmatter.redirect, properties);
   } else {
-    // Set the base branch
-    properties.baseBranch = content.baseBranch;
+    // If no ref was provided, set it to the base branch.
+    if (!properties.ref) {
+      properties.ref = content.baseBranch;
+    }
 
     if (content.markdown) {
       const serialization = await mdxSerialize(content);

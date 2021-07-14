@@ -23,7 +23,6 @@ export class Properties {
   source: Source;
   path: string;
   base: string;
-  baseBranch?: string;
   ref?: string;
   pointer: Pointer;
 
@@ -122,8 +121,8 @@ export class Properties {
       source: this.source,
       githubUrl: `https://github.com/${this.owner}/${this.repository}`,
       debugUrl: `/_debug${this.base}/${this.path}`,
-      editUrl: `https://github.com/${this.source.owner}/${this.source.repository}/edit/${this.source.ref}/docs/${this.path}.mdx`,
-      createUrl: `https://github.com/${this.source.owner}/${this.source.repository}/new/${this.source.ref}/docs/${this.path}`,
+      editUrl: `https://github.com/${this.source.owner}/${this.source.repository}/edit/${this.ref}/docs/${this.path}.mdx`,
+      createUrl: `https://github.com/${this.source.owner}/${this.source.repository}/new/${this.ref}/docs/${this.path}`,
       ref: this.ref || null,
       pointer: this.pointer,
       base: this.base,
