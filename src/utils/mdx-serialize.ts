@@ -57,7 +57,7 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
     const result = await bundleMDX(content.markdown, {
       xdmOptions(options) {
         options.remarkPlugins = [...(options.remarkPlugins ?? []), ...remarkPlugins];
-        // @ts-ignore TOOD fix types
+        // @ts-ignore TODO fix types
         options.rehypePlugins = [...(options.rehypePlugins ?? []), ...rehypePlugins];
 
         return options;

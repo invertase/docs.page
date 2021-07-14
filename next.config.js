@@ -1,7 +1,6 @@
 const withTM = require('next-transpile-modules')([
   'hast-util-heading-rank',
   'hast-util-has-property',
-  'unist-util-find-after',
   'mdast-util-to-string',
 ]);
 

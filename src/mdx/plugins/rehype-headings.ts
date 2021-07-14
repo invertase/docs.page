@@ -2,7 +2,7 @@
 import visit from 'unist-util-visit';
 import { hasProperty } from 'hast-util-has-property';
 import { headingRank, Node } from 'hast-util-heading-rank';
-import { toText } from 'hast-util-to-text';
+import { toString } from 'mdast-util-to-string';
 import { HeadingNode } from '../../utils/content';
 
 type RehypeHeadingsOptions = {
@@ -32,7 +32,7 @@ export default function rehypeHeadings(
       if (options.headings.includes(node.tagName as string)) {
         nodes.push({
           id: (node.properties as Record<string, string>).id,
-          title: toText(node),
+          title: toString(node),
           rank: headingRank(node),
         });
       }
