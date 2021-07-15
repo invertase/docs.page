@@ -122,23 +122,29 @@ export class Properties {
     return properties;
   }
 
-  toObject(content: PageContent): SlugProperties {
-    const branch = this.ref || content.baseBranch;
-
-    return {
+  toObject(content?: PageContent): SlugProperties {
+    const properties: SlugProperties = {
       owner: this.owner,
       repository: this.repository,
       source: this.source,
       githubUrl: `https://github.com/${this.owner}/${this.repository}`,
       debugUrl: `/_debug${this.base}/${this.path}`,
-      editUrl: `https://github.com/${this.source.owner}/${this.source.repository}/edit/${branch}/${content.path}.mdx`,
-      createUrl: `https://github.com/${this.source.owner}/${this.source.repository}/new/${branch}/${content.path}`,
+
       ref: this.ref || null,
       pointer: this.pointer,
       base: this.base,
       path: this.path,
       hash: hash(`${this.owner}/${this.repository}`),
     };
+
+    if (content) {
+      const branch = this.ref || content.baseBranch;
+
+      properties.editUrl = `https://github.com/${this.source.owner}/${this.source.repository}/edit/${branch}/${content.path}.mdx`;
+      properties.createUrl = `https://github.com/${this.source.owner}/${this.source.repository}/new/${branch}/${content.path}`;
+    }
+
+    return properties;
   }
 }
 
@@ -155,9 +161,9 @@ export type SlugProperties = {
   // The URL to debug the page
   debugUrl: string;
   // The URL to edit the current page on GitHub
-  editUrl: string;
+  editUrl?: string;
   // The URL to create a new page on GitHub
-  createUrl: string;
+  createUrl?: string;
   // The branch/PR the request is for
   ref: string | null;
   // The request pointer of the properties

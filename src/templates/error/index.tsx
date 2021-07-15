@@ -70,16 +70,7 @@ export function NotFound({ properties, errorType }: IRenderError): JSX.Element {
         </p>
         <p>
           To get started, create a new repository on{' '}
-          <ExternalLink href="https://github.com/new">GitHub</ExternalLink>. If you were expecting a
-          If you were expecting a page to be here, you can{' '}
-          <Link href={properties.debugUrl}>
-            <a>debug</a>
-          </Link>{' '}
-          this page or{' '}
-          <ExternalLink href="https://github.com/invertase/docs.page/issues">
-            report an issue
-          </ExternalLink>
-          .
+          <ExternalLink href="https://github.com/new">GitHub</ExternalLink>.
         </p>
       </>
     );
@@ -93,16 +84,7 @@ export function NotFound({ properties, errorType }: IRenderError): JSX.Element {
         </p>
         <p>
           To get started, create a new <code>.mdx</code> file on{' '}
-          <ExternalLink href={properties.createUrl}>GitHub</ExternalLink>. If you were expecting a
-          page to be here, you can{' '}
-          <Link href={properties.debugUrl}>
-            <a>debug</a>
-          </Link>{' '}
-          this page or{' '}
-          <ExternalLink href="https://github.com/invertase/docs.page/issues">
-            report an issue
-          </ExternalLink>
-          .
+          <ExternalLink href={properties.createUrl}>GitHub</ExternalLink>.
         </p>
       </>
     );
