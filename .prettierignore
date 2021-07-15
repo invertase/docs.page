@@ -4,3 +4,5 @@ build
 repositories.json
 domains.json
 spelling.json
+/public/_docs.page/shiki/themes/
+/public/_docs.page/shiki/languages/

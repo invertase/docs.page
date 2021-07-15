@@ -30,3 +30,6 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 spelling.json
+
+/public/_docs.page/shiki/themes/
+/public/_docs.page/shiki/languages/

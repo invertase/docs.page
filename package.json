@@ -15,7 +15,7 @@
     "check:formatting": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md,mdx}\"",
     "check:typescript": "tsc",
     "check:spelling": "spellchecker --quiet --files=\"docs/**/*.{md,mdx}\" --dictionaries=\"./dictionary.js\" --reports=\"spelling.json\" --plugins spell indefinite-article repeated-words syntax-mentions syntax-urls frontmatter",
-    "postinstall": "patch-package"
+    "postinstall": "patch-package && node scripts/copy-shiki-assets.js"
   },
   "dependencies": {
     "@docsearch/react": "^3.0.0-alpha.32",
@@ -78,6 +78,7 @@
     "@types/valid-data-url": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^4.27.0",
     "cross-env": "^7.0.2",
+    "fs-extra": "^10.0.0",
     "eslint": "^7.28.0",
     "eslint-config-next": "^11.0.0",
     "eslint-config-prettier": "^8.3.0",
