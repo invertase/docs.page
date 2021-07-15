@@ -4,9 +4,7 @@ import { Node } from 'hast-util-heading-rank';
 import { toString } from 'mdast-util-to-string';
 import * as shiki from 'shiki';
 
-// Manually import theme so it gets bundled with Vercel
-// https://githubmemory.com/repo/shikijs/shiki/issues/138
-import theme from 'shiki/themes/github-dark.json';
+shiki.setCDN('/_docs.page/shiki/');
 
 let highlighter: shiki.Highlighter;
 
@@ -36,8 +34,7 @@ export default function rehypeCodeBlocks(): (ast: Node) => void {
 
   return async (ast: Node): Promise<void> => {
     highlighter = await shiki.getHighlighter({
-      // @ts-ignore
-      theme,
+      theme: 'github-dark',
     });
 
     visit(ast, 'element', visitor);
