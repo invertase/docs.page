@@ -60,7 +60,7 @@ export class RenderError {
     return {
       statusCode: this.statusCode,
       errorType: this.errorType,
-      properties: this.properties?.toObject(content),
+      properties: this.properties?.toObject(content) ?? null,
       error: this.error?.message ?? null,
     };
   }
