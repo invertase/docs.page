@@ -7,7 +7,6 @@ import { Footer } from '../homepage/Footer';
 import { QuickLinks } from './QuickLinks';
 import { Title } from './Title';
 import { Link, ExternalLink } from '../../components/Link';
-import { DarkModeToggle } from '../../components/DarkModeToggle';
 
 export * from './ErrorBoundary';
 

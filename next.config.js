@@ -1,8 +1,7 @@
 const withTM = require('next-transpile-modules')([
   'hast-util-heading-rank',
   'hast-util-has-property',
-  'hast-util-to-text',
-  'unist-util-find-after',
+  'mdast-util-to-string',
 ]);
 
 const domains = require('./domains.json');
