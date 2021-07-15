@@ -3,8 +3,7 @@ import visit from 'unist-util-visit';
 import { Node } from 'hast-util-heading-rank';
 import { toString } from 'mdast-util-to-string';
 import * as shiki from 'shiki';
-
-shiki.setCDN('/_docs.page/shiki/');
+import path from 'path';
 
 let highlighter: shiki.Highlighter;
 
@@ -33,8 +32,18 @@ export default function rehypeCodeBlocks(): (ast: Node) => void {
   }
 
   return async (ast: Node): Promise<void> => {
+    let base = path.join(process.cwd(), 'public', '_docs.page', 'shiki');
+
+    if (process.env.VERCEL) {
+      base = path.join(process.cwd(), '_docs.page', 'shiki');
+    }
+
     highlighter = await shiki.getHighlighter({
       theme: 'github-dark',
+      paths: {
+        themes: path.resolve(base, 'themes') + '/',
+        languages: path.resolve(base, 'languages') + '/',
+      },
     });
 
     visit(ast, 'element', visitor);
