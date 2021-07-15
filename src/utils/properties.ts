@@ -1,4 +1,5 @@
 import { createContext } from 'react';
+import { PageContent } from './content';
 import { getPullRequestMetadata } from './github';
 import { hash } from './index';
 
@@ -18,12 +19,19 @@ export enum Pointer {
   commit,
 }
 export class Properties {
+  // The owner of the repository, e.g. 'invertase'
   owner: string;
+  // The repository name, e.g. 'melos'
   repository: string;
+  // The source data where the content is fetched from
   source: Source;
+  // The path to the file on the source repository
   path: string;
+  // The base URL of the repository on docs.page
   base: string;
+  // The ref of the incoming request
   ref?: string;
+  // The type of request for the current page, e.g. a branch, PR or commit
   pointer: Pointer;
 
   private constructor(params: string[]) {
@@ -114,15 +122,17 @@ export class Properties {
     return properties;
   }
 
-  toObject(): SlugProperties {
+  toObject(content: PageContent): SlugProperties {
+    const branch = this.ref || content.baseBranch;
+
     return {
       owner: this.owner,
       repository: this.repository,
       source: this.source,
       githubUrl: `https://github.com/${this.owner}/${this.repository}`,
       debugUrl: `/_debug${this.base}/${this.path}`,
-      editUrl: `https://github.com/${this.source.owner}/${this.source.repository}/edit/${this.ref}/docs/${this.path}.mdx`,
-      createUrl: `https://github.com/${this.source.owner}/${this.source.repository}/new/${this.ref}/docs/${this.path}`,
+      editUrl: `https://github.com/${this.source.owner}/${this.source.repository}/edit/${branch}/${content.path}.mdx`,
+      createUrl: `https://github.com/${this.source.owner}/${this.source.repository}/new/${branch}/${content.path}`,
       ref: this.ref || null,
       pointer: this.pointer,
       base: this.base,

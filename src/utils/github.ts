@@ -168,9 +168,13 @@ type Contents = {
   baseBranch: string;
   config?: string;
   md?: string;
+  path: string;
 };
 
 export async function getGitHubContents(properties: Properties): Promise<Contents | null> {
+  const absolutePath = `docs/${properties.path}`;
+  const indexPath = `docs/${properties.path}/index`;
+
   const [error, response] = await A2A<PageContentsQuery>(
     GithubGQLClient({
       query: `
@@ -201,8 +205,8 @@ export async function getGitHubContents(properties: Properties): Promise<Content
       owner: properties.source.owner,
       repository: properties.source.repository,
       config: `${properties.source.ref}:docs.json`,
-      mdx: `${properties.source.ref}:docs/${properties.path}.mdx`,
-      mdxIndex: `${properties.source.ref}:docs/${properties.path}/index.mdx`,
+      mdx: `${properties.source.ref}:${absolutePath}.mdx`,
+      mdxIndex: `${properties.source.ref}:${indexPath}.mdx`,
     }),
   );
 
@@ -216,5 +220,6 @@ export async function getGitHubContents(properties: Properties): Promise<Content
     baseBranch: response.repository.baseBranch.name,
     config: response.repository.config?.text,
     md: response.repository.mdxIndex?.text ?? response.repository.mdx?.text,
+    path: response.repository.mdxIndex?.text ? indexPath : absolutePath,
   };
 }

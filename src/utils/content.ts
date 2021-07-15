@@ -23,6 +23,7 @@ export type Frontmatter = {
 
 export type PageContent = {
   baseBranch: string;
+  path: string;
   config: ProjectConfig;
   frontmatter: Frontmatter;
   markdown: string;
@@ -69,6 +70,7 @@ export async function getPageContent(properties: Properties): Promise<PageConten
 
   return {
     baseBranch: contents.baseBranch,
+    path: contents.path,
     config,
     frontmatter,
     headings: [],

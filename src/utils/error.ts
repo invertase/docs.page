@@ -2,6 +2,7 @@ import { leadingSlash } from './index';
 import { Properties, SlugProperties } from './properties';
 import { isExternalLink } from '../components/Link';
 import { GetStaticPropsResult } from 'next';
+import { PageContent } from './content';
 
 export enum ErrorType {
   // The given repository was not found.
@@ -55,11 +56,11 @@ export class RenderError {
     this.error = error;
   }
 
-  public toObject(): IRenderError {
+  public toObject(content?: PageContent): IRenderError {
     return {
       statusCode: this.statusCode,
       errorType: this.errorType,
-      properties: this.properties?.toObject() ?? null,
+      properties: content ? this.properties?.toObject(content) ?? null : null,
       error: this.error?.message ?? null,
     };
   }

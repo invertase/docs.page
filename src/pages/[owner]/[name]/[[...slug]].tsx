@@ -128,11 +128,6 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
     // Redirect the user to another page
     return redirect(content.frontmatter.redirect, properties);
   } else {
-    // If no ref was provided, set it to the base branch.
-    if (!properties.ref) {
-      properties.ref = content.baseBranch;
-    }
-
     if (content.markdown) {
       const serialization = await mdxSerialize(content);
 
@@ -157,11 +152,11 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
     props: {
       env: (process.env.VERCEL_ENV ?? 'development') as Environment,
       domain,
-      properties: properties.toObject(),
+      properties: properties.toObject(content),
       source,
       headings,
       content,
-      error: error?.toObject() ?? null,
+      error: error?.toObject(content) ?? null,
     },
     revalidate: 30,
   };
