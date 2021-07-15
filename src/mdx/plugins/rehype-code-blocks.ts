@@ -32,11 +32,11 @@ export default function rehypeCodeBlocks(): (ast: Node) => void {
   }
 
   return async (ast: Node): Promise<void> => {
-    let base = path.join(process.cwd(), 'public', '_docs.page', 'shiki');
+    const base = path.join(process.cwd(), 'public', '_docs.page', 'shiki');
 
-    if (process.env.VERCEL) {
-      base = path.join(process.cwd(), '_docs.page', 'shiki');
-    }
+    // if (process.env.VERCEL) {
+    //   base = path.join(process.cwd(), '_docs.page', 'shiki');
+    // }
 
     highlighter = await shiki.getHighlighter({
       theme: 'github-dark',
