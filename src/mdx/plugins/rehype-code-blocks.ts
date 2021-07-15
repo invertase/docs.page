@@ -4,6 +4,10 @@ import { Node } from 'hast-util-heading-rank';
 import { toString } from 'mdast-util-to-string';
 import * as shiki from 'shiki';
 
+// Manually import theme so it gets bundled with Vercel
+// https://githubmemory.com/repo/shikijs/shiki/issues/138
+import 'shiki/themes/github-dark.json';
+
 let highlighter: shiki.Highlighter;
 
 /**
