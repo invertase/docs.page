@@ -2,9 +2,9 @@
 import visit from 'unist-util-visit';
 import { Node } from 'hast-util-heading-rank';
 import { toString } from 'mdast-util-to-string';
-import { getHighlighter, Highlighter } from 'shiki';
+import * as shiki from 'shiki';
 
-let highlighter: Highlighter;
+let highlighter: shiki.Highlighter;
 
 /**
  * Matches any `pre code` elements and extracts the raw code and titles from the code block and assigns to the parent.
@@ -31,7 +31,7 @@ export default function rehypeCodeBlocks(): (ast: Node) => void {
   }
 
   return async (ast: Node): Promise<void> => {
-    highlighter = await getHighlighter({
+    highlighter = await shiki.getHighlighter({
       theme: 'github-dark',
     });
 
