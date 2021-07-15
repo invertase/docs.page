@@ -14,7 +14,8 @@
     "check:linting": "eslint . --max-warnings=0",
     "check:formatting": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md,mdx}\"",
     "check:typescript": "tsc",
-    "check:spelling": "spellchecker --quiet --files=\"docs/**/*.{md,mdx}\" --dictionaries=\"./dictionary.js\" --reports=\"spelling.json\" --plugins spell indefinite-article repeated-words syntax-mentions syntax-urls frontmatter"
+    "check:spelling": "spellchecker --quiet --files=\"docs/**/*.{md,mdx}\" --dictionaries=\"./dictionary.js\" --reports=\"spelling.json\" --plugins spell indefinite-article repeated-words syntax-mentions syntax-urls frontmatter",
+    "postinstall": "patch-package"
   },
   "dependencies": {
     "@docsearch/react": "^3.0.0-alpha.32",
@@ -39,7 +40,9 @@
     "next-transpile-modules": "^8.0.0",
     "nprogress": "^0.2.0",
     "parse-numeric-range": "^1.2.0",
+    "patch-package": "^6.4.7",
     "postcss": "^8.1.7",
+    "postinstall-postinstall": "^2.1.0",
     "probot": "^12.0.0",
     "react": "17.0.1",
     "react-copy-to-clipboard": "^5.0.2",
