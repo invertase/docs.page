@@ -3,7 +3,7 @@ import Color from 'color';
 import { defaultConfig } from '../utils/projectConfig';
 import { useConfig } from '../hooks';
 
-type Varient = 'base' | 'dark' | 'light';
+type Variant = 'base' | 'dark' | 'light';
 
 /**
  * Once the configuration options are fetched for the page,
@@ -24,7 +24,7 @@ function ThemeStyles(): JSX.Element {
     color = Color(defaultConfig.theme);
   }
 
-  const varients: { [key in Varient]: string } = {
+  const variants: { [key in Variant]: string } = {
     base: color.hex().toString(),
     dark: color.darken(0.2).hex().toString(),
     light: color.lighten(0.2).hex().toString(),
@@ -32,28 +32,28 @@ function ThemeStyles(): JSX.Element {
 
   const styles = [];
 
-  Object.keys(varients).forEach(key => {
-    const varient = key === 'base' ? '' : `-${key}`;
+  Object.keys(variants).forEach(key => {
+    const variant = key === 'base' ? '' : `-${key}`;
 
-    styles.push(`.text-theme-color${varient} {
-      color: var(--theme-color${varient});
+    styles.push(`.text-theme-color${variant} {
+      color: var(--theme-color${variant});
     }`);
 
-    styles.push(`.hover\\:text-theme-color${varient}:hover {
-      color: var(--theme-color${varient});
+    styles.push(`.hover\\:text-theme-color${variant}:hover {
+      color: var(--theme-color${variant});
     }`);
 
-    styles.push(`.bg-theme-color${varient} {
-      background-color: var(--theme-color${varient});
+    styles.push(`.bg-theme-color${variant} {
+      background-color: var(--theme-color${variant});
     }`);
   });
 
   return (
     <style global jsx>{`
       :root {
-        --theme-color: ${varients.base};
-        --theme-color-dark: ${varients.dark};
-        --theme-color-light: ${varients.light};
+        --theme-color: ${variants.base};
+        --theme-color-dark: ${variants.dark};
+        --theme-color-light: ${variants.light};
         --docsearch-primary-color: var(--theme-color);
       }
 
