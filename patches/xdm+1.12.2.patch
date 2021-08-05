@@ -1,0 +1,12 @@
+diff --git a/node_modules/xdm/lib/integration/esbuild.js b/node_modules/xdm/lib/integration/esbuild.js
+index a1d90d4..077c50e 100644
+--- a/node_modules/xdm/lib/integration/esbuild.js
++++ b/node_modules/xdm/lib/integration/esbuild.js
+@@ -152,6 +152,7 @@ export function esbuild(options = {}) {
+         contents = file.contents
+         messages = file.messages
+       } catch (error) {
++        console.error(error)
+         error.fatal = true
+         messages.push(error)
+       }
