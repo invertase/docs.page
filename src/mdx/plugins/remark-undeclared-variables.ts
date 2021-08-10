@@ -1,14 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import visit from 'unist-util-visit';
 import { Node } from 'unist';
-const defaultOptions = {
-  callback: () => {
-    return;
-  },
-};
 
 /**
- * Provides a list of declared variables
+ * Converts undeclared variables into plain text nodes
  * @returns
  */
 
@@ -20,7 +15,7 @@ interface UnDeclaredNode extends Node {
   data: any;
 }
 
-export default function rehastUndeclaredVariables(options = defaultOptions): (ast: Node) => void {
+export default function rehastUndeclaredVariables(): (ast: Node) => void {
   const keywords = ['var', 'let', 'const', 'function'];
   const withExport = keywords.map(k => new RegExp(`(export)[ \t]+${k}[ \t]`));
 
@@ -54,6 +49,5 @@ export default function rehastUndeclaredVariables(options = defaultOptions): (as
   return async (ast: Node): Promise<void> => {
     visit(ast, 'mdxjsEsm', visitorForDeclared);
     visit(ast, 'mdxFlowExpression', visitorForUndeclared);
-    options.callback(undeclared);
   };
 }
