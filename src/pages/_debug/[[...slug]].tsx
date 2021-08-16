@@ -4,31 +4,22 @@ import NextRouter, { useRouter } from 'next/router';
 import union from 'lodash.union';
 import NProgress from 'nprogress';
 
-import domains from '../../../../domains.json';
-import repositories from '../../../../repositories.json';
+import domains from '../../../domains.json';
+import repositories from '../../../repositories.json';
 
-import { Hydrate } from '../../../mdx';
-
-import { Head } from '../../../components/Head';
-import { ThemeStyles } from '../../../components/ThemeStyles';
-import { Layout } from '../../../components/Layout';
-import { Error, ErrorBoundary } from '../../../templates/error';
-
-import { ConfigContext } from '../../../utils/projectConfig';
-import { IRenderError, redirect, RenderError } from '../../../utils/error';
-import { Properties, SlugProperties, SlugPropertiesContext } from '../../../utils/properties';
-import {
-  getPageContent,
-  HeadingNode,
-  PageContent,
-  PageContentContext,
-} from '../../../utils/content';
-import { CustomDomain, CustomDomainContext } from '../../../utils/domain';
-import { mdxSerialize } from '../../../utils/mdx-serialize';
-import { Loading } from '../../../templates/Loading';
-import { isProduction } from '../../../utils';
-import { getRepositoryPaths } from '../../../utils/github';
-import { Environment, EnvironmentContext } from '../../../utils/env';
+import { ConfigContext } from '../../utils/projectConfig';
+import { IRenderError, redirect, RenderError } from '../../utils/error';
+import { Properties, SlugProperties, SlugPropertiesContext } from '../../utils/properties';
+import { getPageContent, HeadingNode, PageContent, PageContentContext } from '../../utils/content';
+import { CustomDomain, CustomDomainContext } from '../../utils/domain';
+import { mdxSerialize } from '../../utils/mdx-serialize';
+import { Loading } from '../../templates/Loading';
+import { isProduction } from '../../utils';
+import { getRepositoryPaths } from '../../utils/github';
+import { Environment, EnvironmentContext } from '../../utils/env';
+import { Debug } from '../../templates/debug';
+import { ThemeStyles } from '../../components/ThemeStyles';
+import { Head } from '../../components/Head';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', NProgress.start);
@@ -38,21 +29,23 @@ NextRouter.events.on('routeChangeError', NProgress.done);
 export default function Documentation({
   env,
   domain,
-  source,
   properties,
   content,
-  error,
+  serializationErrors,
 }: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element {
   const { isFallback } = useRouter();
-
   if (isFallback) {
     return <Loading />;
   }
 
-  if (error) {
-    return <Error {...error} />;
+  if (!serializationErrors) {
+    return (
+      <>
+        <p>no syntax errors with your mdx, good job.</p>
+      </>
+    );
   }
-
+  console.log('client', content.config);
   return (
     <>
       <EnvironmentContext.Provider value={env}>
@@ -62,11 +55,12 @@ export default function Documentation({
               <PageContentContext.Provider value={content}>
                 <Head />
                 <ThemeStyles />
-                <Layout>
-                  <ErrorBoundary>
-                    <Hydrate source={source} />
-                  </ErrorBoundary>
-                </Layout>
+                <Debug
+                  blameUrl={properties.blameUrl}
+                  properties={properties}
+                  errors={serializationErrors}
+                  content={content}
+                ></Debug>
               </PageContentContext.Provider>
             </SlugPropertiesContext.Provider>
           </ConfigContext.Provider>
@@ -96,6 +90,15 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
+interface ISerializationProps {
+  line: string;
+  column: string;
+  src: string;
+  start: number;
+  end: number;
+  message: string;
+}
+
 type StaticProps = {
   env: Environment;
   domain: CustomDomain;
@@ -104,17 +107,18 @@ type StaticProps = {
   source?: string;
   content?: PageContent;
   error?: IRenderError;
+  serializationErrors?: ISerializationProps[];
 };
 
 export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
-  const owner = ctx.params.owner as string;
-  const name = ctx.params.name as string;
-  const slug = (ctx.params.slug || []) as string[];
-
+  const originalSlug = (ctx.params.slug || []) as string[];
+  const owner = originalSlug[0];
+  const name = originalSlug[1];
+  const slug = originalSlug.slice(2);
   let source = null;
   const headings: HeadingNode[] = [];
   let error: RenderError = null;
-
+  let serializationErrors = [];
   // Build a request instance from the query
   const properties = await Properties.build([owner, name, ...slug]);
 
@@ -130,8 +134,8 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
   } else {
     if (content.markdown) {
       const serialization = await mdxSerialize(content);
-
-      if (serialization.errors) {
+      if (!!serialization.errors) {
+        serializationErrors = serialization.errors;
         error = RenderError.serverError(properties);
       } else {
         source = serialization.source;
@@ -147,7 +151,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
     domains.find(
       ([, repository]) => repository === `${properties.owner}/${properties.repository}`,
     )?.[0] || null;
-
+  console.log(content);
   return {
     props: {
       env: (process.env.VERCEL_ENV ?? 'development') as Environment,
@@ -156,6 +160,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
       source,
       headings,
       content,
+      serializationErrors,
       error: error?.toObject(content) ?? null,
     },
     revalidate: 30,

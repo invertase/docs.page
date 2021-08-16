@@ -37,6 +37,9 @@ const components: ComponentMap = {
 };
 
 export function Hydrate({ source }: { source: string }): JSX.Element {
+  const x = new Function(source);
+  console.log(x);
+
   const Component = React.useMemo(() => getMDXComponent(source), [source]);
 
   return (
