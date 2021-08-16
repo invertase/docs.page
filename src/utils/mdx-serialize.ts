@@ -65,23 +65,37 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
 
         return options;
       },
+      esbuildOptions(options) {
+        return options;
+      }
     });
     response.source = result.code;
-  } catch ({ errors }) {
+  } catch (e) {
+    console.log('HERE:',e.errors)
+    const errors = e.errors
     const lines = content.markdown.split('\n');
 
     response.errors = await Promise.all(
-      errors.map(async ({ detail: { message, line, column } }) => {
-        const start = Math.max(line - 4, 0);
-        const end = Math.min(line + 3, lines.length);
-
-        const offendingCode = await createDebugBlock(lines, start, end);
+      errors.map(async (error) => {
+        const message = error?.detail?.reason || error?.text || "no message found";
+        const line = error.detail.line || error.location.line || 0;
+        console.log(line,'balblalafgasdf');
+        
+        const start = Math.max(line - 2, 0);
+        const end = Math.min(line + 2, lines.length);
+        console.log(start,end,'blabla')
+        let offendingCode = null;
+        try {          
+          offendingCode = await createDebugBlock(lines, start, end);
+        }
+        catch (e) {
+        }
 
         return {
           message,
           line,
-          column,
-          src: offendingCode,
+          column: error?.detail?.column || error.location.column || 0,
+          src: offendingCode || null,
           start,
           end,
         };
@@ -91,8 +105,13 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
   }
 
   async function createDebugBlock(lines, start, end) {
+
+    console.log(start,end)
+    const wrappedSrc = '```' + lines.slice(start, end).join(' \n') + '```'
+    console.log('wrapped',wrappedSrc);
+    
     return (
-      await bundleMDX('```' + lines.slice(start, end).join(' \n') + '```', {
+      await bundleMDX(wrappedSrc, {
         xdmOptions(options) {
           // @ts-ignore TODO fix types
           options.rehypePlugins = [...(options.rehypePlugins ?? []), ...rehypePlugins];
@@ -102,5 +121,6 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
       })
     ).code;
   }
+  console.log('we compiled:', response)
   return response;
 }

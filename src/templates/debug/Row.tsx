@@ -20,7 +20,7 @@ function Row({ title, children, header = false, highlight }: RowProps): JSX.Elem
       }}
     >
       <div className="flex-1 p-4">
-        <pre>{title}</pre>
+        {title}
       </div>
       {!header && (
         <div className="flex-1 p-4 text-right">

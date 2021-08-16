@@ -4,6 +4,11 @@ import { ProjectConfig, ConfigContext } from './utils/projectConfig';
 import { PageContent, PageContentContext } from './utils/content';
 import { CustomDomain, CustomDomainContext } from './utils/domain';
 import { SlugProperties, SlugPropertiesContext } from './utils/properties';
+import { DebugMode, DebugModeContext } from './utils/debug';
+
+export function useDebugMode(): DebugMode {
+  return useContext(DebugModeContext);
+}
 
 export function useEnvironment(): Environment {
   return useContext(EnvironmentContext);
