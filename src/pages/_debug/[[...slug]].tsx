@@ -20,6 +20,8 @@ import { Environment, EnvironmentContext } from '../../utils/env';
 import { Debug } from '../../templates/debug';
 import { ThemeStyles } from '../../components/ThemeStyles';
 import { Head } from '../../components/Head';
+import { DebugModeContext } from '../../utils/debug';
+import { Layout } from '../../components/Layout';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', NProgress.start);
@@ -32,20 +34,17 @@ export default function Documentation({
   properties,
   content,
   serializationErrors,
+  files
 }: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element {
   const { isFallback } = useRouter();
   if (isFallback) {
     return <Loading />;
   }
 
-  if (!serializationErrors) {
-    return (
-      <>
-        <p>no syntax errors with your mdx, good job.</p>
-      </>
-    );
-  }
-  console.log('client', content.config);
+  const warnings = [];
+
+  const sidebarData = files
+  content.config.sidebar = sidebarData
   return (
     <>
       <EnvironmentContext.Provider value={env}>
@@ -53,14 +52,20 @@ export default function Documentation({
           <ConfigContext.Provider value={content.config}>
             <SlugPropertiesContext.Provider value={properties}>
               <PageContentContext.Provider value={content}>
-                <Head />
-                <ThemeStyles />
-                <Debug
-                  blameUrl={properties.blameUrl}
-                  properties={properties}
-                  errors={serializationErrors}
-                  content={content}
-                ></Debug>
+                <DebugModeContext.Provider value={true}>
+                  <Head />
+                  <ThemeStyles />
+                  <Layout>
+                    <Debug
+                      warnings={warnings}
+                      blameUrl={properties.blameUrl}
+                      properties={properties}
+                      errors={serializationErrors}
+                      content={content}
+                      statusCode={serializationErrors?.length ? 500 : 200}
+                    ></Debug>
+                  </Layout>
+                </DebugModeContext.Provider>
               </PageContentContext.Provider>
             </SlugPropertiesContext.Provider>
           </ConfigContext.Provider>
@@ -108,17 +113,28 @@ type StaticProps = {
   content?: PageContent;
   error?: IRenderError;
   serializationErrors?: ISerializationProps[];
+  files: string[][];
 };
 
 export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
   const originalSlug = (ctx.params.slug || []) as string[];
   const owner = originalSlug[0];
   const name = originalSlug[1];
+  const base = owner + '/' + name;
+
+  const formatFileName = p => ['/docs' + p.slice(base.length + 1), p.slice(base.length + 1)]
+
+
+  const files = await getRepositoryPaths(base);
+
+  const uniqueFiles = Array.from(new Set(files.map(path => path.slice(path.length - 1) === '/' ? path : path + '/')))
+  const formattedFiles = uniqueFiles.map(formatFileName)
+
   const slug = originalSlug.slice(2);
   let source = null;
   const headings: HeadingNode[] = [];
   let error: RenderError = null;
-  let serializationErrors = [];
+  let serializationErrors = null;
   // Build a request instance from the query
   const properties = await Properties.build([owner, name, ...slug]);
 
@@ -133,7 +149,9 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
     return redirect(content.frontmatter.redirect, properties);
   } else {
     if (content.markdown) {
+      
       const serialization = await mdxSerialize(content);
+      console.log('NOW HERE',serialization.errors)
       if (!!serialization.errors) {
         serializationErrors = serialization.errors;
         error = RenderError.serverError(properties);
@@ -151,7 +169,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
     domains.find(
       ([, repository]) => repository === `${properties.owner}/${properties.repository}`,
     )?.[0] || null;
-  console.log(content);
+
   return {
     props: {
       env: (process.env.VERCEL_ENV ?? 'development') as Environment,
@@ -162,6 +180,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
       content,
       serializationErrors,
       error: error?.toObject(content) ?? null,
+      files: formattedFiles
     },
     revalidate: 30,
   };
