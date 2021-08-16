@@ -10,10 +10,11 @@ import { headerDepthToHeaderList } from './index';
 import rehypeCodeBlocks from '../mdx/plugins/rehype-code-blocks';
 import rehypeHeadings from '../mdx/plugins/rehype-headings';
 import rehastUndeclaredVariables from '../mdx/plugins/remark-undeclared-variables';
+import { ISerializationError } from './error';
 interface SerializationResponse {
   source: string;
   headings: HeadingNode[];
-  error?: Error;
+  errors?: ISerializationError[];
 }
 
 // https://github.com/kentcdodds/mdx-bundler#nextjs-esbuild-enoent
@@ -66,9 +67,40 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
       },
     });
     response.source = result.code;
-  } catch (e) {
-    response.error = e;
+  } catch ({ errors }) {
+    const lines = content.markdown.split('\n');
+
+    response.errors = await Promise.all(
+      errors.map(async ({ detail: { message, line, column } }) => {
+        const start = Math.max(line - 4, 0);
+        const end = Math.min(line + 3, lines.length);
+
+        const offendingCode = await createDebugBlock(lines, start, end);
+
+        return {
+          message,
+          line,
+          column,
+          src: offendingCode,
+          start,
+          end,
+        };
+      }),
+    );
+    return response;
   }
 
+  async function createDebugBlock(lines, start, end) {
+    return (
+      await bundleMDX('```' + lines.slice(start, end).join(' \n') + '```', {
+        xdmOptions(options) {
+          // @ts-ignore TODO fix types
+          options.rehypePlugins = [...(options.rehypePlugins ?? []), ...rehypePlugins];
+
+          return options;
+        },
+      })
+    ).code;
+  }
   return response;
 }
