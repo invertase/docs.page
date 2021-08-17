@@ -1,5 +1,5 @@
 import React from 'react';
-import { RemoteComponent } from '../components/RemoteComponent';
+import { RemoteComponent } from '../components/RemoteComponent.js';
 import { ComponentMap } from 'mdx-bundler/client';
 import { MDXRemote } from 'next-mdx-remote';
 
@@ -59,8 +59,6 @@ export function Hydrate({
   });
 
   const allComponents = components(remoteComponents);
-
-  console.log(allComponents, properties);
 
   return (
     <TabsContext>
