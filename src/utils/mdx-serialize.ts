@@ -4,17 +4,24 @@ import remarkUnwrapImages from 'remark-unwrap-images';
 import remarkGfm from 'remark-gfm';
 import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
 import { bundleMDX } from 'mdx-bundler';
-
 import { HeadingNode, PageContent } from './content';
 import { headerDepthToHeaderList } from './index';
 import rehypeCodeBlocks from '../mdx/plugins/rehype-code-blocks';
 import rehypeHeadings from '../mdx/plugins/rehype-headings';
-import rehastUndeclaredVariables from '../mdx/plugins/remark-undeclared-variables';
-import { ISerializationError } from './error';
+import remarkComponentCheck from '../mdx/plugins/remark-component-check';
+import remarkUndeclaredVariables from '../mdx/plugins/remark-undeclared-variables';
+import { IWarning } from './warning';
 interface SerializationResponse {
   source: string;
   headings: HeadingNode[];
-  errors?: ISerializationError[];
+  errors?: {
+    line?: number;
+    column?: number;
+    message?: string;
+    start?: number;
+    end?: number;
+  }[];
+  warnings?: IWarning[];
 }
 
 // https://github.com/kentcdodds/mdx-bundler#nextjs-esbuild-enoent
@@ -30,11 +37,28 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
   const response: SerializationResponse = {
     source: null,
     headings: [],
+    warnings: [],
   };
 
   const remarkPlugins = [
-    // Convert undeclared variables to strings
-    rehastUndeclaredVariables,
+    // Checks for undefined components, converts them to text:
+    [
+      remarkComponentCheck,
+      {
+        callback: warning => {
+          response.warnings.push(warning);
+        },
+      },
+    ],
+    // Checks for undeclared variables, converts them to text:
+    [
+      remarkUndeclaredVariables,
+      {
+        callback: warning => {
+          response.warnings.push(warning);
+        },
+      },
+    ],
     // Support GitHub flavoured markdown
     remarkGfm,
     // Ensure any `img` tags are not wrapped in `p` tags
@@ -56,39 +80,37 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
     rehypeAccessibleEmojis,
   ];
 
-  try {
-    const result = await bundleMDX(content.markdown, {
-      xdmOptions(options) {
-        options.remarkPlugins = [...(options.remarkPlugins ?? []), ...remarkPlugins];
-        // @ts-ignore TODO fix types
-        options.rehypePlugins = [...(options.rehypePlugins ?? []), ...rehypePlugins];
+  async function createDebugBlock(lines, start, end) {
+    const wrappedSrc = '``` \n ' + lines.slice(start, end).join(' \n') + '\n ```';
+    // const wrappedSrc = 'Hello world'
+    return (
+      await bundleMDX(wrappedSrc, {
+        xdmOptions(options) {
+          // @ts-ignore TODO fix types
+          options.rehypePlugins = [...(options.rehypePlugins ?? []), ...rehypePlugins];
 
-        return options;
-      },
-      esbuildOptions(options) {
-        return options;
-      }
-    });
-    response.source = result.code;
-  } catch (e) {
-    console.log('HERE:',e.errors)
-    const errors = e.errors
-    const lines = content.markdown.split('\n');
+          return options;
+        },
+      })
+    ).code;
+  }
 
-    response.errors = await Promise.all(
-      errors.map(async (error) => {
-        const message = error?.detail?.reason || error?.text || "no message found";
+  const createDebug = async (errors, markdown) => {
+    const lines = markdown.split('\n');
+
+    return await Promise.all(
+      errors.map(async error => {
+        const message = error?.text || error?.detail?.reason || 'no message found';
         const line = error.detail.line || error.location.line || 0;
-        console.log(line,'balblalafgasdf');
-        
         const start = Math.max(line - 2, 0);
         const end = Math.min(line + 2, lines.length);
-        console.log(start,end,'blabla')
         let offendingCode = null;
-        try {          
+        try {
           offendingCode = await createDebugBlock(lines, start, end);
-        }
-        catch (e) {
+        } catch (e) {
+          console.log('hello there', e);
+
+          offendingCode = null;
         }
 
         return {
@@ -101,26 +123,25 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
         };
       }),
     );
+  };
+
+  try {
+    const result = await bundleMDX(content.markdown, {
+      xdmOptions(options) {
+        // @ts-ignore TODO fix types
+        options.remarkPlugins = [...(options.remarkPlugins ?? []), ...remarkPlugins];
+        // @ts-ignore TODO fix types
+        options.rehypePlugins = [...(options.rehypePlugins ?? []), ...rehypePlugins];
+
+        return options;
+      },
+    });
+    response.source = result.code;
+  } catch (e) {
+    console.log('ERROR', e);
+    response.errors = await createDebug(e.errors, content.markdown);
     return response;
   }
-
-  async function createDebugBlock(lines, start, end) {
-
-    console.log(start,end)
-    const wrappedSrc = '```' + lines.slice(start, end).join(' \n') + '```'
-    console.log('wrapped',wrappedSrc);
-    
-    return (
-      await bundleMDX(wrappedSrc, {
-        xdmOptions(options) {
-          // @ts-ignore TODO fix types
-          options.rehypePlugins = [...(options.rehypePlugins ?? []), ...rehypePlugins];
-
-          return options;
-        },
-      })
-    ).code;
-  }
-  console.log('we compiled:', response)
+  console.log('RESPONSE', response);
   return response;
 }

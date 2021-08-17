@@ -2,9 +2,8 @@
 import visit from 'unist-util-visit';
 import { Node } from 'unist';
 import { IWarning } from '../../utils/warning';
-
 /**
- * Converts undeclared variables into plain text nodes
+ * Converts undefined react components into plain text nodes
  * @returns
  */
 
@@ -12,11 +11,12 @@ interface DeclaredNode extends Node {
   value: string;
 }
 interface UnDeclaredNode extends Node {
-  value: string;
+  name: string;
   data: any;
+  value: any;
 }
 
-export default function remarkUndeclaredVariables({
+export default function remarkComponentCheck({
   callback,
 }: {
   callback: (warning: IWarning) => void;
@@ -43,22 +43,31 @@ export default function remarkUndeclaredVariables({
   const undeclared = [];
 
   function visitorForUndeclared(node: UnDeclaredNode) {
-    if (!declared.includes(node.value)) {
-      undeclared.push(node.value);
+    if (!declared.includes(node.name)) {
+      undeclared.push(node.name);
       node.type = 'text';
       node.data = undefined;
+      node.value = `\{${node.name}\}`;
       callback({
-        warningType: 'undeclared variable',
-        line: node.position?.start.line,
-        column: node.position?.start.column,
-        name: node.value,
+        warningType: 'undefined component',
+        line: node.position?.start?.line,
+        column: node.position?.start?.column,
+        name: node.name,
       });
-      node.value = `\{${node.value}\}`;
     }
   }
 
   return async (ast: Node): Promise<void> => {
+    console.log(ast);
     visit(ast, 'mdxjsEsm', visitorForDeclared);
-    visit(ast, 'mdxFlowExpression', visitorForUndeclared);
+    visit(ast, 'mdxJsxFlowElement', visitorForUndeclared);
   };
+}
+
+export function hasArrowFunction(value: string): boolean {
+  const keywords = ['var', 'let', 'const'];
+  const withArrow = keywords.map(k => new RegExp(`(export)[ \t]+${k}[ \t]\(\)\=\>[ \t]`));
+  const arrowFunctionMatch = withArrow.filter(re => re.test(value))[0];
+
+  return !!arrowFunctionMatch;
 }

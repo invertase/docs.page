@@ -37,7 +37,7 @@ export function Link(props: React.HTMLProps<HTMLAnchorElement>): JSX.Element {
     href = properties.base + originalHref;
   }
   if (debugMode) {
-    href = '/_debug' + href
+    href = '/_debug' + href;
   }
 
   if (isProduction && domain && !properties.ref) {
