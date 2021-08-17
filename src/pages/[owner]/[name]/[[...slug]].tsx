@@ -64,7 +64,7 @@ export default function Documentation({
                 <ThemeStyles />
                 <Layout>
                   <ErrorBoundary>
-                    <Hydrate source={source} />
+                    <Hydrate source={source} config={content.config} properties={properties} />
                   </ErrorBoundary>
                 </Layout>
               </PageContentContext.Provider>

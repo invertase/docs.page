@@ -4,6 +4,8 @@ import remarkUnwrapImages from 'remark-unwrap-images';
 import remarkGfm from 'remark-gfm';
 import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
 import { bundleMDX } from 'mdx-bundler';
+import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote';
+import { serialize } from 'next-mdx-remote/serialize';
 
 import { HeadingNode, PageContent } from './content';
 import { headerDepthToHeaderList } from './index';
@@ -54,16 +56,13 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
   ];
 
   try {
-    const result = await bundleMDX(content.markdown, {
-      xdmOptions(options) {
-        options.remarkPlugins = [...(options.remarkPlugins ?? []), ...remarkPlugins];
-        // @ts-ignore TODO fix types
-        options.rehypePlugins = [...(options.rehypePlugins ?? []), ...rehypePlugins];
-
-        return options;
+    const result = await serialize(content.markdown, {
+      mdxOptions: {
+        remarkPlugins,
+        rehypePlugins,
       },
     });
-    response.source = result.code;
+    response.source = result.compiledSource;
   } catch (e) {
     response.error = e;
   }

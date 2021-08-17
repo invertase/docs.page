@@ -147,6 +147,9 @@ export async function getPullRequestMetadata(
 
 type PageContentsQuery = {
   repository: {
+    components: {
+      text: string;
+    };
     baseBranch: {
       name: string;
     };
@@ -178,13 +181,18 @@ export async function getGitHubContents(properties: Properties): Promise<Content
   const [error, response] = await A2A<PageContentsQuery>(
     GithubGQLClient({
       query: `
-      query RepositoryConfig($owner: String!, $repository: String!, $config: String!, $mdx: String!, $mdxIndex: String!) {
+      query RepositoryConfig($owner: String!, $repository: String!, $config: String!, $components: String!, $mdx: String!, $mdxIndex: String!) {
         repository(owner: $owner, name: $repository) {
           baseBranch: defaultBranchRef {
             name
           }
           isFork
           config: object(expression: $config) {
+            ... on Blob {
+              text
+            }
+          }
+          components: object(expression: $components) {
             ... on Blob {
               text
             }
@@ -205,6 +213,7 @@ export async function getGitHubContents(properties: Properties): Promise<Content
       owner: properties.source.owner,
       repository: properties.source.repository,
       config: `${properties.source.ref}:docs.json`,
+      components: `docs/components`,
       mdx: `${properties.source.ref}:${absolutePath}.mdx`,
       mdxIndex: `${properties.source.ref}:${indexPath}.mdx`,
     }),

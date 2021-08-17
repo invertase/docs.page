@@ -48,6 +48,8 @@ export interface ProjectConfig {
   googleTagManager: string;
   // Whether zoomable images are enabled by default
   zoomImages: boolean;
+  // User defined remote components
+  components: any[];
 }
 
 export const defaultConfig: ProjectConfig = {
@@ -66,6 +68,7 @@ export const defaultConfig: ProjectConfig = {
   variables: {},
   googleTagManager: '',
   zoomImages: false,
+  components: [],
 };
 
 // Merges any user config with default values.
@@ -92,6 +95,7 @@ export function mergeConfig(json: Partial<ProjectConfig> | null): ProjectConfig 
     variables: get(json, 'variables', defaultConfig.variables),
     googleTagManager: getString(json, 'googleTagManager', defaultConfig.googleTagManager),
     zoomImages: getBoolean(json, 'zoomImages', defaultConfig.zoomImages),
+    components: get(json, 'components', defaultConfig.components),
   };
 }
 
