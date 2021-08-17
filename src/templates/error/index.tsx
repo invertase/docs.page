@@ -22,9 +22,10 @@ export function Error(error: IRenderError): JSX.Element {
         <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png" />
       </NextHead>
-      <section className="mt-20 max-w-4xl mx-auto px-2">
+      <section className="max-w-4xl px-2 mx-auto mt-20">
         <Title statusCode={error.statusCode} />
         <div className="my-16 prose dark:prose-dark max-w-none">
+          <div>{error.error}</div>
           {error.statusCode === 500 && <ServerError {...error} />}
           {error.statusCode !== 500 && <NotFound {...error} />}
         </div>
