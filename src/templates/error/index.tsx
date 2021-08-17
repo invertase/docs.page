@@ -39,7 +39,7 @@ export function Error(error: IRenderError): JSX.Element {
 export function ServerError({ properties }: IRenderError): JSX.Element {
   return (
     <>
-      <p>Something went wrong whilst building the page. {JSON.stringify(properties)}</p>
+      <p>Something went wrong whilst building the page.</p>
       {!!properties && (
         <p>
           The could have happened because of an issue with the remote Markdown content, or something

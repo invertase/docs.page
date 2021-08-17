@@ -48,6 +48,8 @@ export function Hydrate({
   config: any;
   properties: any;
 }): JSX.Element {
+  console.log('checking config >>>>', config?.components);
+
   config?.components?.forEach(([name, path]) => {
     const url = `https://raw.githubusercontent.com/${properties.owner}/${properties.repository}/${properties.ref}${path}`;
 
