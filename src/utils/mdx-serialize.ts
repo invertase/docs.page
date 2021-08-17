@@ -61,6 +61,7 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
     const result = await serialize(content.markdown, {
       mdxOptions: {
         remarkPlugins,
+        //@ts-ignore //TODO: Issue with headings plugin on compilation
         rehypePlugins,
       },
     });
