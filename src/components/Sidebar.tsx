@@ -11,10 +11,10 @@ import { useConfig, useSlugProperties } from '../hooks';
 export function Sidebar(): JSX.Element {
   const config = useConfig();
 
-  return <AbstractSidebar data={config.sidebar}/>
+  return <AbstractSidebar data={config.sidebar} />;
 }
 
-export function AbstractSidebar({data}): JSX.Element {
+export function AbstractSidebar({ data }: { data: SidebarItem[] }): JSX.Element {
   return (
     <ul className="w-full dark:text-white">
       {data.map((item, index) => (

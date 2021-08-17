@@ -38,6 +38,7 @@
     "lodash.union": "^4.6.0",
     "mdast-util-to-string": "^3.1.0",
     "mdx-bundler": "^5.1.0",
+    "micromark-extension-mdx-jsx": "^1.0.0",
     "next": "^11.0.0",
     "next-transpile-modules": "^8.0.0",
     "nprogress": "^0.2.0",

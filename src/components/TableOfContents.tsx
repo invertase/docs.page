@@ -8,11 +8,11 @@ function TableOfContents(): JSX.Element {
   const debugMode = useDebugMode();
   if (debugMode) {
     headings = [
-      {id: "repoinfo", title: "Project Details", rank:1},
-      {id: "configuration", title: "Configuration", rank:1},
-      {id: "errors", title: "Errors", rank:1},
-      {id: "warnings", title: "Warnings", rank:1}
-    ]
+      { id: 'repoinfo', title: 'Project Details', rank: 1 },
+      { id: 'configuration', title: 'Configuration', rank: 1 },
+      { id: 'errors', title: 'Errors', rank: 1 },
+      { id: 'warnings', title: 'Warnings', rank: 1 },
+    ];
   }
 
   return (

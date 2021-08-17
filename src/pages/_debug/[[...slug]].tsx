@@ -7,8 +7,8 @@ import NProgress from 'nprogress';
 import domains from '../../../domains.json';
 import repositories from '../../../repositories.json';
 
-import { ConfigContext } from '../../utils/projectConfig';
-import { IRenderError, redirect, RenderError } from '../../utils/error';
+import { ConfigContext, SidebarItem } from '../../utils/projectConfig';
+import { IRenderError, redirect } from '../../utils/error';
 import { Properties, SlugProperties, SlugPropertiesContext } from '../../utils/properties';
 import { getPageContent, HeadingNode, PageContent, PageContentContext } from '../../utils/content';
 import { CustomDomain, CustomDomainContext } from '../../utils/domain';
@@ -22,6 +22,8 @@ import { ThemeStyles } from '../../components/ThemeStyles';
 import { Head } from '../../components/Head';
 import { DebugModeContext } from '../../utils/debug';
 import { Layout } from '../../components/Layout';
+import { IWarning } from '../../utils/warning';
+import { hasArrowFunction } from '../../mdx/plugins/remark-component-check';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', NProgress.start);
@@ -33,18 +35,19 @@ export default function Documentation({
   domain,
   properties,
   content,
-  serializationErrors,
-  files
+  errors,
+  files,
+  warnings,
+  statusCode,
 }: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element {
   const { isFallback } = useRouter();
   if (isFallback) {
     return <Loading />;
   }
 
-  const warnings = [];
+  const sidebarData = files;
+  content.config.sidebar = sidebarData;
 
-  const sidebarData = files
-  content.config.sidebar = sidebarData
   return (
     <>
       <EnvironmentContext.Provider value={env}>
@@ -60,9 +63,9 @@ export default function Documentation({
                       warnings={warnings}
                       blameUrl={properties.blameUrl}
                       properties={properties}
-                      errors={serializationErrors}
+                      errors={errors}
                       content={content}
-                      statusCode={serializationErrors?.length ? 500 : 200}
+                      statusCode={statusCode}
                     ></Debug>
                   </Layout>
                 </DebugModeContext.Provider>
@@ -112,8 +115,10 @@ type StaticProps = {
   source?: string;
   content?: PageContent;
   error?: IRenderError;
-  serializationErrors?: ISerializationProps[];
-  files: string[][];
+  errors?: ISerializationProps[];
+  files: SidebarItem[];
+  warnings: IWarning[];
+  statusCode: number;
 };
 
 export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
@@ -122,19 +127,23 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
   const name = originalSlug[1];
   const base = owner + '/' + name;
 
-  const formatFileName = p => ['/docs' + p.slice(base.length + 1), p.slice(base.length + 1)]
-
-
+  // get all files for sidebar
+  function formatFileName(p: string): SidebarItem {
+    return ['/docs' + p.slice(base.length + 1), p.slice(base.length + 1)];
+  }
   const files = await getRepositoryPaths(base);
-
-  const uniqueFiles = Array.from(new Set(files.map(path => path.slice(path.length - 1) === '/' ? path : path + '/')))
-  const formattedFiles = uniqueFiles.map(formatFileName)
+  const uniqueFiles = Array.from(
+    new Set(files.map(path => (path.slice(path.length - 1) === '/' ? path : path + '/'))),
+  );
+  const formattedFiles = uniqueFiles.map(formatFileName);
 
   const slug = originalSlug.slice(2);
-  let source = null;
+  let source,
+    errors,
+    warnings,
+    statusCode = null;
   const headings: HeadingNode[] = [];
-  let error: RenderError = null;
-  let serializationErrors = null;
+
   // Build a request instance from the query
   const properties = await Properties.build([owner, name, ...slug]);
 
@@ -143,24 +152,23 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
 
   if (!content) {
     // If there is no content, the repository is not found
-    error = RenderError.repositoryNotFound(properties);
+    statusCode = 404;
   } else if (content.frontmatter.redirect) {
     // Redirect the user to another page
     return redirect(content.frontmatter.redirect, properties);
   } else {
     if (content.markdown) {
-      
       const serialization = await mdxSerialize(content);
-      console.log('NOW HERE',serialization.errors)
+      warnings = serialization.warnings;
       if (!!serialization.errors) {
-        serializationErrors = serialization.errors;
-        error = RenderError.serverError(properties);
+        statusCode = 500;
+        errors = serialization.errors;
       } else {
         source = serialization.source;
         content.headings = serialization.headings as unknown as HeadingNode[];
       }
     } else {
-      error = RenderError.pageNotFound(properties);
+      statusCode = 404;
     }
   }
 
@@ -175,12 +183,13 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
       env: (process.env.VERCEL_ENV ?? 'development') as Environment,
       domain,
       properties: properties.toObject(content),
-      source,
+      source: source ?? null,
       headings,
       content,
-      serializationErrors,
-      error: error?.toObject(content) ?? null,
-      files: formattedFiles
+      errors: errors ?? [],
+      files: formattedFiles,
+      warnings: warnings,
+      statusCode,
     },
     revalidate: 30,
   };
