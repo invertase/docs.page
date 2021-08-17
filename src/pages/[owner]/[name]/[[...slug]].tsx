@@ -132,6 +132,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
       const serialization = await mdxSerialize(content);
 
       if (serialization.error) {
+        console.warn('Serialization error >>>>, serialization.error');
         error = RenderError.serverError(properties);
       } else {
         source = serialization.source;
@@ -147,6 +148,8 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
     domains.find(
       ([, repository]) => repository === `${properties.owner}/${properties.repository}`,
     )?.[0] || null;
+
+  console.log('here >>>', content.config);
 
   return {
     props: {
