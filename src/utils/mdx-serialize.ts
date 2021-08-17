@@ -11,7 +11,7 @@ import { HeadingNode, PageContent } from './content';
 import { headerDepthToHeaderList } from './index';
 import rehypeCodeBlocks from '../mdx/plugins/rehype-code-blocks';
 import rehypeHeadings from '../mdx/plugins/rehype-headings';
-
+import rehastUndeclaredVariables from '../mdx/plugins/remark-undeclared-variables';
 interface SerializationResponse {
   source: string;
   headings: HeadingNode[];
@@ -34,6 +34,8 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
   };
 
   const remarkPlugins = [
+    // Convert undeclared variables to strings
+    rehastUndeclaredVariables,
     // Support GitHub flavoured markdown
     remarkGfm,
     // Ensure any `img` tags are not wrapped in `p` tags
