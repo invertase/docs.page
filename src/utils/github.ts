@@ -101,8 +101,8 @@ export const getRepositoryPaths = async (
   repository: string,
   dir = 'docs',
 ): Promise<string[]> => {
+
   const [owner, name] = repository.split('/');
-  let paths = [];
 
   const sha = await getSha({ owner, name, dir });
 
@@ -118,11 +118,17 @@ export const getRepositoryPaths = async (
     console.error(error);
   }
 
-  paths = response.data.tree
-    .filter(p => p.path.slice(-4) === '.mdx')
-    .map(p => p.path.slice(0, -4))
-    .map(p=> `/${owner}/${name}/${p}`);
-    
+  const tree = response.data.tree;
+  const paths = [];
+  for (let i = 0; i < tree.length; i++) {
+    const treeElement = tree[i];
+    if (treeElement.path.slice(-4) !== '.mdx') {
+      continue;
+    }
+    const pathWithoutExtension = treeElement.path.slice(0, -4);
+    paths.push(`/${owner}/${name}/${pathWithoutExtension}`);
+  }
+
   return paths;
 };
 
