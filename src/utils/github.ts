@@ -1,5 +1,6 @@
 import A2A from 'a2a';
 import { graphql } from '@octokit/graphql';
+import { Octokit } from '@octokit/rest';
 
 import { Properties } from './properties';
 
@@ -41,10 +42,80 @@ function getGithubGQLClient(): typeof graphql {
   });
 }
 
-export async function getRepositoryPaths(repository: string, dir = 'docs'): Promise<string[]> {
+export const GithubRESTClient = new Octokit({
+  auth: `token ${getGitHubToken()}`,
+  baseUrl: 'https://api.github.com',
+});
+
+interface IGetShaParams {
+  owner: string;
+  name: string;
+  dir: string;
+}
+
+interface IShaResponse {
+  repository: {
+    sha: {
+      oid: string;
+    };
+  };
+}
+
+// first get the sha of the docs directory via gql:
+
+export const getSha = async ({ owner, name, dir }: IGetShaParams): Promise<string> => {
+  const query = `
+              query RepositoryDocsSHA($owner: String!, $name: String!, $expression : String!) {
+              repository(owner: $owner, name: $name) {
+                  sha: object(expression: $expression) {
+                  oid
+                  }
+                }
+              }
+          `;
+  const variables = { owner, name, expression: `HEAD:${dir}` };
+
+  const [error, response]: [Error, IShaResponse] = await A2A(
+    getGithubGQLClient()(query, variables),
+  );
+
+  if (!!error) {
+    console.error(error);
+  }
+
+  return response.repository.sha.oid;
+};
+
+// Then hit the recursive endpoint once:
+
+export const getRepositoryPathsViaRest = async (
+  repository: string,
+  dir = 'docs',
+): Promise<string[]> => {
   const [owner, name] = repository.split('/');
   let paths = [];
 
+  const sha = await getSha({ owner, name, dir });
+
+  if (!sha) {
+    return [];
+  }
+
+  const endpoint = `https://api.github.com/repos/${owner}/${name}/git/trees/${sha}?recursive=1`;
+
+  const [error, response] = await A2A(GithubRESTClient.request(endpoint));
+
+  if (!!error) {
+    console.error(error);
+  }
+
+  paths = response.data.tree.filter(p => p.path.slice(-4) === '.mdx').map(p => p.path.slice(0, -4));
+  return paths;
+};
+
+export async function getRepositoryPaths(repository: string, dir = 'docs'): Promise<string[]> {
+  const [owner, name] = repository.split('/');
+  let paths = [];
   const [error, response] = await A2A<RepositoryPathsQuery>(
     getGithubGQLClient()({
       query: `
