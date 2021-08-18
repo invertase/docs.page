@@ -97,7 +97,7 @@ export const getSha = async ({ owner, name, dir }: IGetShaParams): Promise<strin
 
 // Then hit the recursive endpoint once:
 
-export const getRepositoryPathsViaRest = async (
+export const getRepositoryPaths = async (
   repository: string,
   dir = 'docs',
 ): Promise<string[]> => {
@@ -122,68 +122,68 @@ export const getRepositoryPathsViaRest = async (
   return paths;
 };
 
-export async function getRepositoryPaths(repository: string, dir = 'docs'): Promise<string[]> {
-  const [owner, name] = repository.split('/');
-  let paths = [];
-  const [error, response] = await A2A<RepositoryPathsQuery>(
-    getGithubGQLClient()({
-      query: `
-        query RepositoryPaths($owner: String!, $repository: String!, $path: String!) {
-          repository(owner: $owner, name: $repository) {
-            object(expression: $path) {
-              ... on Tree {
-                entries {
-                  extension
-                  type
-                  path
-                }
-              }
-            }
-          }
-        }
-      `,
-      owner: owner,
-      repository: name,
-      path: `HEAD:${dir}`,
-    }),
-  );
+// export async function getRepositoryPaths(repository: string, dir = 'docs'): Promise<string[]> {
+//   const [owner, name] = repository.split('/');
+//   let paths = [];
+//   const [error, response] = await A2A<RepositoryPathsQuery>(
+//     getGithubGQLClient()({
+//       query: `
+//         query RepositoryPaths($owner: String!, $repository: String!, $path: String!) {
+//           repository(owner: $owner, name: $repository) {
+//             object(expression: $path) {
+//               ... on Tree {
+//                 entries {
+//                   extension
+//                   type
+//                   path
+//                 }
+//               }
+//             }
+//           }
+//         }
+//       `,
+//       owner: owner,
+//       repository: name,
+//       path: `HEAD:${dir}`,
+//     }),
+//   );
 
-  if (error) {
-    console.error(error);
-    return paths;
-  }
+//   if (error) {
+//     console.error(error);
+//     return paths;
+//   }
 
-  const entries = response.repository?.object?.entries ?? [];
+//   const entries = response.repository?.object?.entries ?? [];
 
-  for (let i = 0; i < entries.length; i++) {
-    const { extension, type, path } = entries[i];
+//   for (let i = 0; i < entries.length; i++) {
+//     const { extension, type, path } = entries[i];
 
-    // If there is an MDX file, add it to the list
-    if (type === 'blob' && extension === '.mdx') {
-      let slug = path
-        // Remove "docs/" from the path
-        .replace('docs/', '/')
-        // Remove .mdx extension
-        .slice(0, -4);
+//     // If there is an MDX file, add it to the list
+//     if (type === 'blob' && extension === '.mdx') {
+//       let slug = path
+//         // Remove "docs/" from the path
+//         .replace('docs/', '/')
+//         // Remove .mdx extension
+//         .slice(0, -4);
 
-      // Remove any "index" page names
-      if (slug.endsWith('/index')) {
-        slug = slug.slice(0, -5);
-      }
+//       // Remove any "index" page names
+//       if (slug.endsWith('/index')) {
+//         slug = slug.slice(0, -5);
+//       }
 
-      slug = `/${owner}/${name}${slug}`;
+//       slug = `/${owner}/${name}${slug}`;
 
-      paths.push(slug);
-    }
+//       paths.push(slug);
+//     }
 
-    // If there is a sub-directory fetch any paths for that.
-    if (type === 'tree') {
-      paths = [...paths, ...(await getRepositoryPaths(repository, path))];
-    }
-  }
+//     // If there is a sub-directory fetch any paths for that.
+//     if (type === 'tree') {
+//       paths = [...paths, ...(await getRepositoryPaths(repository, path))];
+//     }
+//   }
 
-  return paths;
-}
+//   return paths;
+// }
 
 type PullRequestQuery = {
   repository: {
