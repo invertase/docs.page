@@ -118,7 +118,11 @@ export const getRepositoryPaths = async (
     console.error(error);
   }
 
-  paths = response.data.tree.filter(p => p.path.slice(-4) === '.mdx').map(p => p.path.slice(0, -4));
+  paths = response.data.tree
+    .filter(p => p.path.slice(-4) === '.mdx')
+    .map(p => p.path.slice(0, -4))
+    .map(p=> `/${owner}/${name}/${p}`);
+    
   return paths;
 };
 
