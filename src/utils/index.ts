@@ -1,15 +1,8 @@
-import { graphql } from '@octokit/graphql';
 import get from 'lodash.get';
 
 export function isString(value: unknown): value is string {
   return typeof value === 'string';
 }
-
-export const GithubGQLClient = graphql.defaults({
-  headers: {
-    authorization: `token ${process.env.GITHUB_PAT}`,
-  },
-});
 
 export function headerDepthToHeaderList(depth: number): string[] {
   const list = [];

@@ -1,7 +1,7 @@
 import A2A from 'a2a';
+import { graphql } from '@octokit/graphql';
 
 import { Properties } from './properties';
-import { GithubGQLClient } from './index';
 
 type RepositoryPathsQuery = {
   // Null if repo not found
@@ -18,12 +18,35 @@ type RepositoryPathsQuery = {
   };
 };
 
+const getGitHubToken = (() => {
+  let index = 0;
+  const tokens = (process.env.GITHUB_PAT ?? '').split(',');
+  return function () {
+    if (index >= tokens.length) index = 0;
+    return tokens[index++];
+  };
+})();
+
+function getGithubGQLClient(): typeof graphql {
+  const token = getGitHubToken();
+  if (!token.length) {
+    throw new Error(
+      'Environment variable GITHUB_PAT is not defined or has no tokens or an invalid token.',
+    );
+  }
+  return graphql.defaults({
+    headers: {
+      authorization: `token ${getGitHubToken()}`,
+    },
+  });
+}
+
 export async function getRepositoryPaths(repository: string, dir = 'docs'): Promise<string[]> {
   const [owner, name] = repository.split('/');
   let paths = [];
 
   const [error, response] = await A2A<RepositoryPathsQuery>(
-    GithubGQLClient({
+    getGithubGQLClient()({
       query: `
         query RepositoryPaths($owner: String!, $repository: String!, $path: String!) {
           repository(owner: $owner, name: $repository) {
@@ -110,7 +133,7 @@ export async function getPullRequestMetadata(
   pullRequest: string,
 ): Promise<PullRequestMetadata | null> {
   const [error, response] = await A2A<PullRequestQuery>(
-    GithubGQLClient({
+    getGithubGQLClient()({
       query: `
         query RepositoryConfig($owner: String!, $repository: String!, $pullRequest: Int!) {
           repository(owner: $owner, name: $repository) {
@@ -176,7 +199,7 @@ export async function getGitHubContents(properties: Properties): Promise<Content
   const indexPath = `docs/${properties.path}/index`;
 
   const [error, response] = await A2A<PageContentsQuery>(
-    GithubGQLClient({
+    getGithubGQLClient()({
       query: `
       query RepositoryConfig($owner: String!, $repository: String!, $config: String!, $mdx: String!, $mdxIndex: String!) {
         repository(owner: $owner, name: $repository) {
