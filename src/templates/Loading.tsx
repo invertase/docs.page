@@ -14,7 +14,9 @@ export function Loading(): JSX.Element {
       <div className="text-white fixed inset-0 bg-gradient-to-br bg-docs-background">
         <section className="absolute flex flex-col items-center dark:text-white">
           <Logo size={100} />
-          <h2 className="mt-6 font-thin text-lg text-center">Fetching content, one moment...</h2>
+          <h2 className="mt-6 font-thin text-lg text-center text-gray-600 dark:text-gray-300">
+            Fetching content, one moment...
+          </h2>
         </section>
       </div>
     </>
