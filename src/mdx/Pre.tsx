@@ -22,7 +22,7 @@ export function Pre(props: PreProps): JSX.Element {
 
   // Extract the data attributes from the component
   const title = props.title;
-  const raw = decodeURIComponent(props.raw);
+  const raw = decodeURIComponent(encodeURIComponent(props.raw));
 
   return (
     <>
