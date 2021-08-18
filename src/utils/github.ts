@@ -42,10 +42,19 @@ function getGithubGQLClient(): typeof graphql {
   });
 }
 
-export const GithubRESTClient = new Octokit({
-  auth: `token ${getGitHubToken()}`,
-  baseUrl: 'https://api.github.com',
-});
+function getGithubRESTClient() {
+  const token = getGitHubToken();
+  if (!token.length) {
+    throw new Error(
+      'Environment variable GITHUB_PAT is not defined or has no tokens or an invalid token.',
+    );
+  }
+
+  return new Octokit({
+    auth: `token ${token}`,
+    baseUrl: 'https://api.github.com',
+  });
+}
 
 interface IGetShaParams {
   owner: string;
@@ -103,7 +112,7 @@ export const getRepositoryPathsViaRest = async (
 
   const endpoint = `https://api.github.com/repos/${owner}/${name}/git/trees/${sha}?recursive=1`;
 
-  const [error, response] = await A2A(GithubRESTClient.request(endpoint));
+  const [error, response] = await A2A(getGithubRESTClient().request(endpoint));
 
   if (!!error) {
     console.error(error);
