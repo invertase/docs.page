@@ -116,3 +116,22 @@ function replaceVariables(variables: Record<string, string>, value: string) {
 
   return output;
 }
+
+export function createDebugContent() {
+  const frontmatter = mergeFrontmatter({});
+  const config = mergeConfig({});
+  return {
+    baseBranch: null,
+    path: null,
+    config,
+    frontmatter,
+    headings: [],
+    markdown: null,
+    flags: {
+      hasConfig: false,
+      hasFrontmatter: false,
+      isFork: false,
+      isIndexable: false,
+    },
+  };
+}

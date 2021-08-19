@@ -10,7 +10,13 @@ import repositories from '../../../repositories.json';
 import { ConfigContext, SidebarItem } from '../../utils/projectConfig';
 import { IRenderError, redirect } from '../../utils/error';
 import { Properties, SlugProperties, SlugPropertiesContext } from '../../utils/properties';
-import { getPageContent, HeadingNode, PageContent, PageContentContext } from '../../utils/content';
+import {
+  createDebugContent,
+  getPageContent,
+  HeadingNode,
+  PageContent,
+  PageContentContext,
+} from '../../utils/content';
 import { CustomDomain, CustomDomainContext } from '../../utils/domain';
 import { mdxSerialize } from '../../utils/mdx-serialize';
 import { Loading } from '../../templates/Loading';
@@ -20,10 +26,9 @@ import { Environment, EnvironmentContext } from '../../utils/env';
 import { Debug } from '../../templates/debug';
 import { ThemeStyles } from '../../components/ThemeStyles';
 import { Head } from '../../components/Head';
-import { DebugModeContext } from '../../utils/debug';
+import { checkExistence, DebugModeContext } from '../../utils/debug';
 import { Layout } from '../../components/Layout';
 import { IWarning } from '../../utils/warning';
-import { hasArrowFunction } from '../../mdx/plugins/remark-component-check';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', NProgress.start);
@@ -39,14 +44,19 @@ export default function Documentation({
   files,
   warnings,
   statusCode,
+  existence,
+  filePath
 }: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element {
   const { isFallback } = useRouter();
   if (isFallback) {
     return <Loading />;
   }
 
-  const sidebarData = files;
-  content.config.sidebar = sidebarData;
+  if (statusCode !== 404) {
+    const sidebarData = files;
+    content.config.sidebar = sidebarData;
+  }
+  console.log(statusCode);
 
   return (
     <>
@@ -60,12 +70,14 @@ export default function Documentation({
                   <ThemeStyles />
                   <Layout>
                     <Debug
+                      existence={existence}
                       warnings={warnings}
                       blameUrl={properties.blameUrl}
                       properties={properties}
                       errors={errors}
                       content={content}
                       statusCode={statusCode}
+                      filePath={filePath}
                     ></Debug>
                   </Layout>
                 </DebugModeContext.Provider>
@@ -126,26 +138,56 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
   const owner = originalSlug[0];
   const name = originalSlug[1];
   const base = owner + '/' + name;
+  const slug = originalSlug.slice(2);
+  // Build a request instance from the query
+  const properties = await Properties.build([owner, name, ...slug]);
+  // Get the array of domains from the local filesystem & match a potential domain
+  const domain =
+    domains.find(
+      ([, repository]) => repository === `${properties.owner}/${properties.repository}`,
+    )?.[0] || null;
+  
+  const filePath = `${properties.source.ref}:docs/${properties.path}` + '.mdx'
+  
+  const existence = await checkExistence(
+    owner,
+    name,
+    filePath
+  );
 
-  // get all files for sidebar
+  // return early if can't find something
+  if (!existence.owner || !existence.name || !existence.path) {
+    const content = createDebugContent();
+
+    return {
+      props: {
+        env: (process.env.VERCEL_ENV ?? 'development') as Environment,
+        domain,
+        properties: properties.toObject(content),
+        source: null,
+        headings: [],
+        content,
+        errors: [],
+        files: [],
+        warnings: [],
+        statusCode: 404,
+        existence,
+        filePath
+      },
+      revalidate: 30,
+    };
+  }
+
   function formatFileName(p: string): SidebarItem {
     return ['/docs' + p.slice(base.length + 1), p.slice(base.length + 1)];
   }
-  const files = await getRepositoryPaths(base);
-  const uniqueFiles = Array.from(
-    new Set(files.map(path => (path.slice(path.length - 1) === '/' ? path : path + '/'))),
-  );
-  const formattedFiles = uniqueFiles.map(formatFileName);
 
-  const slug = originalSlug.slice(2);
   let source,
     errors,
     warnings,
-    statusCode = null;
+    statusCode,
+    formattedFiles = null;
   const headings: HeadingNode[] = [];
-
-  // Build a request instance from the query
-  const properties = await Properties.build([owner, name, ...slug]);
 
   // Query GitHub for the content
   const content = await getPageContent(properties);
@@ -158,6 +200,13 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
     return redirect(content.frontmatter.redirect, properties);
   } else {
     if (content.markdown) {
+      // get all files for sidebar
+      const files = await getRepositoryPaths(base);
+      const uniqueFiles = Array.from(
+        new Set(files.map(path => (path.slice(path.length - 1) === '/' ? path : path + '/'))),
+      );
+      formattedFiles = uniqueFiles.map(formatFileName);
+
       const serialization = await mdxSerialize(content);
       warnings = serialization.warnings;
       if (!!serialization.errors) {
@@ -171,13 +220,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
       statusCode = 404;
     }
   }
-
-  // Get the array of domains from the local filesystem & match a potential domain
-  const domain =
-    domains.find(
-      ([, repository]) => repository === `${properties.owner}/${properties.repository}`,
-    )?.[0] || null;
-
+  console.log(properties)
   return {
     props: {
       env: (process.env.VERCEL_ENV ?? 'development') as Environment,
@@ -189,7 +232,9 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
       errors: errors ?? [],
       files: formattedFiles,
       warnings: warnings,
-      statusCode,
+      statusCode: statusCode || 500,
+      existence,
+      filePath
     },
     revalidate: 30,
   };
