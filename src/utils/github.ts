@@ -27,7 +27,7 @@ const getGitHubToken = (() => {
   };
 })();
 
-function getGithubGQLClient(): typeof graphql {
+export function getGithubGQLClient(): typeof graphql {
   const token = getGitHubToken();
   if (!token.length) {
     throw new Error(

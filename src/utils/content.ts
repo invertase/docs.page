@@ -117,7 +117,7 @@ function replaceVariables(variables: Record<string, string>, value: string) {
   return output;
 }
 
-export function createDebugContent() {
+export function createDebugContent(): PageContent | null {
   const frontmatter = mergeFrontmatter({});
   const config = mergeConfig({});
   return {

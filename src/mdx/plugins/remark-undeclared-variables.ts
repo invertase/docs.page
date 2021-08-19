@@ -51,7 +51,7 @@ export default function remarkUndeclaredVariables({
         warningType: 'undeclared variable',
         line: node.position?.start.line,
         column: node.position?.start.column,
-        name: node.value,
+        detail: node.value,
       });
       node.value = `\{${node.value}\}`;
     }

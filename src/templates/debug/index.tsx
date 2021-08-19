@@ -3,8 +3,6 @@ import { Footer } from '../homepage/Footer';
 import { QuickLinks } from '../error/QuickLinks';
 import { Title } from './Title';
 import { Hydrate } from '../../mdx';
-import { PageContent } from '../../utils/content';
-import { SlugProperties } from '../../utils/properties';
 import Table from './Table';
 interface ISerializationErrorProps {
   blameUrl: string;
@@ -16,11 +14,10 @@ interface ISerializationErrorProps {
     end?: number;
     src?: string;
   }[];
-  properties: SlugProperties;
-  content: PageContent;
-  warnings: string[];
-  statusCode: number;
-  existence: any;
+  repoData;
+  configData;
+  warningData;
+  statusCode;
 }
 // details, config,errors,warnings
 export function Debug({
@@ -28,11 +25,10 @@ export function Debug({
   configData,
   errors,
   warningData,
-  statusCode = 500,
+  statusCode,
 }: ISerializationErrorProps): JSX.Element {
-
   const tablesData = [repoData, configData, warningData];
-  console.log(tablesData)
+  console.log(tablesData);
 
   return (
     <>
@@ -54,18 +50,23 @@ export function Debug({
           </article>
         ))}
         <article className="mt-6 border rounded p-1" id="errors">
-          <Table header="Errors" data={[]}/>
-          {errors.map((e) => 
-          <>
-            <div>
-              <span>Line {e.line}, column {e.column}: </span>
-            </div>
-            <div className="bg-red-600 rounded">
-              <span className="p-2 text-yellow-200"> {`\> `} {e.message}.</span>
-            </div>
-             <Hydrate source={e.src}/>
-          </>
-          )}
+          <Table header="Errors" data={[]} />
+          {errors.map(e => (
+            <>
+              <div>
+                <span>
+                  Line {e.line}, column {e.column}:{' '}
+                </span>
+              </div>
+              <div className="bg-red-600 rounded">
+                <span className="p-2 text-yellow-200">
+                  {' '}
+                  {`\> `} {e.message}.
+                </span>
+              </div>
+              <Hydrate source={e.src} />
+            </>
+          ))}
         </article>
         <section className="mt-20 max-w-4xl mx-auto px-2">
           <QuickLinks />
