@@ -19,6 +19,7 @@ interface ISerializationErrorProps {
   content: PageContent;
   warnings: string[];
   statusCode: number;
+  existence: any;
 }
 
 export function Debug({
@@ -28,45 +29,68 @@ export function Debug({
   properties,
   content,
   statusCode = 500,
+  existence,
+  filePath
 }: ISerializationErrorProps): JSX.Element {
-  const errorData = formatToTableData(
-    'Errors',
-    'errors',
-    ['Line', 'Column', 'Message'],
-    errors.map(({ line, column, message }) => ({ line, column, message })),
-    'no errors found',
-  );
-  const warningData = formatToTableData(
-    'Warnings',
-    'warnings',
-    ['Warning', 'Line', 'Column', 'Detail'],
-    warnings,
-    'no warnings found',
-  );
+  const errorData =
+    statusCode === 404 || !errors.length
+      ? {
+          header: 'Errors',
+          id: 'errors',
+          data: [['No serialization errors found.']],
+        }
+      : formatToTableData(
+          'Errors',
+          'errors',
+          ['Line', 'Column', 'Message'],
+          errors.map(({ line, column, message }) => ({ line, column, message })),
+          'no errors found',
+        );
+  const warningData =
+    statusCode === 404 || !warnings.length
+      ? {
+          header: 'Warnings',
+          id: 'warnings',
+          data: [['No Warnings found']],
+        }
+      : formatToTableData(
+          'Warnings',
+          'warnings',
+          ['Warning', 'Line', 'Column', 'Detail'],
+          warnings,
+          'no warnings found',
+        );
 
   const { name, logo, theme, docsearch, headerDepth } = content.config;
-  const configData = {
-    header: 'Configuration',
-    id: 'configuration',
-    data: [
-      ['Field:', 'Value:'],
-      ['Name', name],
-      ['Logo', logo],
-      ['Theme', theme],
-      ['DocSearch', docsearch],
-      ['headerDepth', headerDepth],
-    ],
-  };
+  const configData =
+    statusCode === 404 || !content.flags.hasConfig
+      ? {
+          header: 'Configuration',
+          id: 'configuration',
+          data: [['No configuration file found.']],
+        }
+      : {
+          header: 'Configuration',
+          id: 'configuration',
+          data: [
+            ['Field:', 'Value:'],
+            ['Name', name],
+            ['Logo', logo],
+            ['Theme', theme],
+            ['DocSearch', docsearch],
+            ['headerDepth', headerDepth],
+          ],
+        };
 
-  const { owner, repository, ref } = properties;
+  const { owner, repository } = properties;
   const repoData = {
     header: 'Project Details',
     id: 'repoinfo',
     data: [
-      ['Field:', 'Expected:', 'Actual:'],
-      ['Owner', owner, owner],
-      ['Repository', repository, repository],
-      ['Ref (branch)', ref, ref || 'not found'],
+      ['Field:', 'Looked for:', 'Found:'],
+      ['Owner', owner, existence.owner],
+      ['Repository', repository, existence.name],
+      ['Path', filePath, existence.path],
     ],
   };
 
