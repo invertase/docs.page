@@ -84,7 +84,7 @@ export default function IndexPage(): JSX.Element {
               <span className="bg-clip-text text-transparent bg-gradient-to-br from-green-400 to-blue-500">
                 Open Source
               </span>{' '}
-              docs pages <br /> with zero configuration.
+              docs <br /> with zero configuration.
             </h1>
           </div>
         </section>
