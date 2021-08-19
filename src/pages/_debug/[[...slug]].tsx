@@ -26,7 +26,7 @@ import { Environment, EnvironmentContext } from '../../utils/env';
 import { Debug } from '../../templates/debug';
 import { ThemeStyles } from '../../components/ThemeStyles';
 import { Head } from '../../components/Head';
-import { checkExistence, DebugModeContext } from '../../utils/debug';
+import { checkExistence, DebugModeContext, formatConfigData, formatErrorDebugData, formatRepoData, formatWarningDebugData } from '../../utils/debug';
 import { Layout } from '../../components/Layout';
 import { IWarning } from '../../utils/warning';
 
@@ -39,24 +39,19 @@ export default function Documentation({
   env,
   domain,
   properties,
+  source,
+  headings,
   content,
   errors,
-  files,
-  warnings,
-  statusCode,
-  existence,
-  filePath
+  repoData,
+  configData,
+  warningData,
+  statusCode
 }: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element {
   const { isFallback } = useRouter();
   if (isFallback) {
     return <Loading />;
   }
-
-  if (statusCode !== 404) {
-    const sidebarData = files;
-    content.config.sidebar = sidebarData;
-  }
-  console.log(statusCode);
 
   return (
     <>
@@ -70,14 +65,11 @@ export default function Documentation({
                   <ThemeStyles />
                   <Layout>
                     <Debug
-                      existence={existence}
-                      warnings={warnings}
-                      blameUrl={properties.blameUrl}
-                      properties={properties}
+                      repoData={repoData}
+                      configData={configData}
                       errors={errors}
-                      content={content}
+                      warningData={warningData}
                       statusCode={statusCode}
-                      filePath={filePath}
                     ></Debug>
                   </Layout>
                 </DebugModeContext.Provider>
@@ -146,9 +138,9 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
     domains.find(
       ([, repository]) => repository === `${properties.owner}/${properties.repository}`,
     )?.[0] || null;
-  
+
   const filePath = `${properties.source.ref}:docs/${properties.path}` + '.mdx'
-  
+
   const existence = await checkExistence(
     owner,
     name,
@@ -157,7 +149,14 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
 
   // return early if can't find something
   if (!existence.owner || !existence.name || !existence.path) {
+    const statusCode = 404
     const content = createDebugContent();
+
+
+
+    const repoData = formatRepoData(properties, filePath, existence)
+    const configData = formatConfigData(content, statusCode)
+    const warningData = formatWarningDebugData([], statusCode)
 
     return {
       props: {
@@ -168,11 +167,10 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
         headings: [],
         content,
         errors: [],
-        files: [],
-        warnings: [],
-        statusCode: 404,
-        existence,
-        filePath
+        repoData,
+        configData,
+        warningData,
+        statusCode
       },
       revalidate: 30,
     };
@@ -192,50 +190,52 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
   // Query GitHub for the content
   const content = await getPageContent(properties);
 
-  if (!content) {
-    // If there is no content, the repository is not found
-    statusCode = 404;
-  } else if (content.frontmatter.redirect) {
+  if (content.frontmatter.redirect) {
     // Redirect the user to another page
     return redirect(content.frontmatter.redirect, properties);
   } else {
-    if (content.markdown) {
-      // get all files for sidebar
-      const files = await getRepositoryPaths(base);
-      const uniqueFiles = Array.from(
-        new Set(files.map(path => (path.slice(path.length - 1) === '/' ? path : path + '/'))),
-      );
-      formattedFiles = uniqueFiles.map(formatFileName);
+    // get all files for sidebar:
+    const serialization = await mdxSerialize(content);
+    warnings = serialization.warnings;
 
-      const serialization = await mdxSerialize(content);
-      warnings = serialization.warnings;
-      if (!!serialization.errors) {
-        statusCode = 500;
-        errors = serialization.errors;
-      } else {
-        source = serialization.source;
-        content.headings = serialization.headings as unknown as HeadingNode[];
-      }
+    if (!!serialization.errors) {
+      statusCode = 500;
+      errors = serialization.errors;
     } else {
-      statusCode = 404;
+      statusCode = 200;
+      source = serialization.source;
+      content.headings = serialization.headings as unknown as HeadingNode[];
     }
   }
-  console.log(properties)
+
+  formattedFiles = await getUniquePaths(base)
+  content.config.sidebar = formattedFiles;
+
+  const repoData = formatRepoData(properties, filePath, existence)
+  const configData = formatConfigData(content, statusCode)
+  const warningData = formatWarningDebugData(warnings, statusCode)
+
   return {
     props: {
       env: (process.env.VERCEL_ENV ?? 'development') as Environment,
       domain,
       properties: properties.toObject(content),
-      source: source ?? null,
       headings,
       content,
-      errors: errors ?? [],
-      files: formattedFiles,
-      warnings: warnings,
-      statusCode: statusCode || 500,
-      existence,
-      filePath
+      errors,
+      repoData,
+      configData,
+      warningData,
     },
     revalidate: 30,
   };
 };
+
+const getUniquePaths = async (base) => {
+  const files = await getRepositoryPaths(base);
+  const uniqueFiles = Array.from(
+    new Set(files.map(path => (path.slice(path.length - 1) === '/' ? path : path + '/'))),
+  );
+  const formattedFiles = uniqueFiles.map(p => ['/docs' + p.slice(base.length + 1), p.slice(base.length + 1)]);
+  return formattedFiles
+}
