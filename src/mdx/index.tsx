@@ -10,7 +10,7 @@ import { Pre, PreProps } from './Pre';
 import { Img } from './Img';
 import { YouTube } from './YouTube';
 
-const components: ComponentMap = {
+export const components: ComponentMap = {
   // HTML element overrides
   a: (props: React.HTMLProps<HTMLAnchorElement>) => (
     <Link {...props} className="hover:opacity-75" />

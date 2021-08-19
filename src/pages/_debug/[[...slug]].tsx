@@ -7,8 +7,8 @@ import NProgress from 'nprogress';
 import domains from '../../../domains.json';
 import repositories from '../../../repositories.json';
 
-import { ConfigContext, SidebarItem } from '../../utils/projectConfig';
-import { IRenderError, redirect } from '../../utils/error';
+import { ConfigContext } from '../../utils/projectConfig';
+import { redirect } from '../../utils/error';
 import { Properties, SlugProperties, SlugPropertiesContext } from '../../utils/properties';
 import {
   createDebugContent,
@@ -26,9 +26,15 @@ import { Environment, EnvironmentContext } from '../../utils/env';
 import { Debug } from '../../templates/debug';
 import { ThemeStyles } from '../../components/ThemeStyles';
 import { Head } from '../../components/Head';
-import { checkExistence, DebugModeContext, formatConfigData, formatErrorDebugData, formatRepoData, formatWarningDebugData } from '../../utils/debug';
+import {
+  checkExistence,
+  DebugModeContext,
+  formatConfigData,
+  formatRepoData,
+  formatWarningDebugData,
+  ITableData,
+} from '../../utils/debug';
 import { Layout } from '../../components/Layout';
-import { IWarning } from '../../utils/warning';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', NProgress.start);
@@ -39,14 +45,12 @@ export default function Documentation({
   env,
   domain,
   properties,
-  source,
-  headings,
   content,
   errors,
   repoData,
   configData,
   warningData,
-  statusCode
+  statusCode,
 }: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element {
   const { isFallback } = useRouter();
   if (isFallback) {
@@ -65,6 +69,7 @@ export default function Documentation({
                   <ThemeStyles />
                   <Layout>
                     <Debug
+                      blameUrl={properties.blameUrl}
                       repoData={repoData}
                       configData={configData}
                       errors={errors}
@@ -102,15 +107,6 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-interface ISerializationProps {
-  line: string;
-  column: string;
-  src: string;
-  start: number;
-  end: number;
-  message: string;
-}
-
 type StaticProps = {
   env: Environment;
   domain: CustomDomain;
@@ -118,11 +114,17 @@ type StaticProps = {
   headings: HeadingNode[];
   source?: string;
   content?: PageContent;
-  error?: IRenderError;
-  errors?: ISerializationProps[];
-  files: SidebarItem[];
-  warnings: IWarning[];
+  repoData: ITableData;
+  configData: ITableData;
+  warningData: ITableData;
   statusCode: number;
+  errors?: {
+    line?: number;
+    column?: number;
+    message?: string;
+    start?: number;
+    end?: number;
+  }[];
 };
 
 export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
@@ -139,52 +141,43 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
       ([, repository]) => repository === `${properties.owner}/${properties.repository}`,
     )?.[0] || null;
 
-  const filePath = `${properties.source.ref}:docs/${properties.path}` + '.mdx'
+  const filePath = `${properties.source.ref}:docs/${properties.path}` + '.mdx';
 
-  const existence = await checkExistence(
-    owner,
-    name,
-    filePath
-  );
+  const existence = await checkExistence(owner, name, filePath);
 
   // return early if can't find something
   if (!existence.owner || !existence.name || !existence.path) {
-    const statusCode = 404
+    const statusCode = 404;
     const content = createDebugContent();
 
-
-
-    const repoData = formatRepoData(properties, filePath, existence)
-    const configData = formatConfigData(content, statusCode)
-    const warningData = formatWarningDebugData([], statusCode)
+    const repoData = formatRepoData(properties, filePath, existence);
+    const configData = formatConfigData(content, statusCode);
+    const warningData = formatWarningDebugData([], statusCode);
 
     return {
       props: {
         env: (process.env.VERCEL_ENV ?? 'development') as Environment,
         domain,
         properties: properties.toObject(content),
-        source: null,
         headings: [],
         content,
         errors: [],
         repoData,
         configData,
         warningData,
-        statusCode
+        statusCode,
       },
       revalidate: 30,
     };
   }
 
-  function formatFileName(p: string): SidebarItem {
-    return ['/docs' + p.slice(base.length + 1), p.slice(base.length + 1)];
-  }
-
-  let source,
-    errors,
+  let errors,
     warnings,
     statusCode,
     formattedFiles = null;
+
+  statusCode = 200;
+
   const headings: HeadingNode[] = [];
 
   // Query GitHub for the content
@@ -202,18 +195,16 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
       statusCode = 500;
       errors = serialization.errors;
     } else {
-      statusCode = 200;
-      source = serialization.source;
       content.headings = serialization.headings as unknown as HeadingNode[];
     }
   }
 
-  formattedFiles = await getUniquePaths(base)
+  formattedFiles = await getUniquePaths(base);
   content.config.sidebar = formattedFiles;
 
-  const repoData = formatRepoData(properties, filePath, existence)
-  const configData = formatConfigData(content, statusCode)
-  const warningData = formatWarningDebugData(warnings, statusCode)
+  const repoData = formatRepoData(properties, filePath, existence);
+  const configData = formatConfigData(content, statusCode);
+  const warningData = formatWarningDebugData(warnings, statusCode);
 
   return {
     props: {
@@ -222,20 +213,24 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
       properties: properties.toObject(content),
       headings,
       content,
-      errors,
+      errors: errors ?? [],
       repoData,
       configData,
       warningData,
+      statusCode,
     },
     revalidate: 30,
   };
 };
 
-const getUniquePaths = async (base) => {
+const getUniquePaths = async base => {
   const files = await getRepositoryPaths(base);
   const uniqueFiles = Array.from(
     new Set(files.map(path => (path.slice(path.length - 1) === '/' ? path : path + '/'))),
   );
-  const formattedFiles = uniqueFiles.map(p => ['/docs' + p.slice(base.length + 1), p.slice(base.length + 1)]);
-  return formattedFiles
-}
+  const formattedFiles = uniqueFiles.map(p => [
+    '/docs' + p.slice(base.length + 1),
+    p.slice(base.length + 1),
+  ]);
+  return formattedFiles;
+};

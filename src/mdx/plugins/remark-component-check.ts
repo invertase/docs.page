@@ -2,6 +2,9 @@
 import visit from 'unist-util-visit';
 import { Node } from 'unist';
 import { IWarning } from '../../utils/warning';
+
+const components = ['Heading', 'Youtube', 'Tabs', 'TabItem', 'Image', 'Img'];
+
 /**
  * Converts undefined react components into plain text nodes
  * @returns
@@ -43,7 +46,7 @@ export default function remarkComponentCheck({
   const undeclared = [];
 
   function visitorForUndeclared(node: UnDeclaredNode) {
-    if (!declared.includes(node.name)) {
+    if (!declared.includes(node.name) && !components.includes(node.name)) {
       undeclared.push(node.name);
       node.type = 'text';
       node.data = undefined;
@@ -52,7 +55,7 @@ export default function remarkComponentCheck({
         warningType: 'undefined component',
         line: node.position?.start?.line,
         column: node.position?.start?.column,
-        name: node.name,
+        detail: node.name,
       });
     }
   }
