@@ -108,8 +108,6 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
         try {
           offendingCode = await createDebugBlock(lines, start, end);
         } catch (e) {
-          console.log('hello there', e);
-
           offendingCode = null;
         }
 
@@ -138,10 +136,9 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
     });
     response.source = result.code;
   } catch (e) {
-    console.log('ERROR', e);
+    console.error(e);
     response.errors = await createDebug(e.errors, content.markdown);
     return response;
   }
-  console.log('RESPONSE', response);
   return response;
 }

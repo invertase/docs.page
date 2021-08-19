@@ -32,6 +32,7 @@ import {
   formatConfigData,
   formatRepoData,
   formatWarningDebugData,
+  getUniquePaths,
   ITableData,
 } from '../../utils/debug';
 import { Layout } from '../../components/Layout';
@@ -95,7 +96,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
   if (isProduction()) {
     console.info(` fetching paths for ${repositories.length} repositories.`);
     console.time();
-    const promises = repositories.map(repository => getRepositoryPaths(repository));
+    const promises = repositories.map(repository =>
+      getRepositoryPaths(repository).then(paths => paths.map(p => '/_debug' + p)),
+    );
     const results = await Promise.all(promises);
     paths = union(...results);
     console.timeEnd();
@@ -141,7 +144,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
       ([, repository]) => repository === `${properties.owner}/${properties.repository}`,
     )?.[0] || null;
 
-  const filePath = `${properties.source.ref}:docs/${properties.path}` + '.mdx';
+  const filePath = `${properties.source.ref}:docs/${properties.path}`;
 
   const existence = await checkExistence(owner, name, filePath);
 
@@ -185,7 +188,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
 
   if (content.frontmatter.redirect) {
     // Redirect the user to another page
-    return redirect(content.frontmatter.redirect, properties);
+    return redirect('_debug' + content.frontmatter.redirect, properties);
   } else {
     // get all files for sidebar:
     const serialization = await mdxSerialize(content);
@@ -198,10 +201,11 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
       content.headings = serialization.headings as unknown as HeadingNode[];
     }
   }
-
+  // make a sidebar to navigate between debug pages:
   formattedFiles = await getUniquePaths(base);
   content.config.sidebar = formattedFiles;
 
+  // format data
   const repoData = formatRepoData(properties, filePath, existence);
   const configData = formatConfigData(content, statusCode);
   const warningData = formatWarningDebugData(warnings, statusCode);
@@ -221,16 +225,4 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
     },
     revalidate: 30,
   };
-};
-
-const getUniquePaths = async base => {
-  const files = await getRepositoryPaths(base);
-  const uniqueFiles = Array.from(
-    new Set(files.map(path => (path.slice(path.length - 1) === '/' ? path : path + '/'))),
-  );
-  const formattedFiles = uniqueFiles.map(p => [
-    '/docs' + p.slice(base.length + 1),
-    p.slice(base.length + 1),
-  ]);
-  return formattedFiles;
 };

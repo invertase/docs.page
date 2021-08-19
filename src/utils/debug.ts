@@ -1,20 +1,21 @@
 import A2A from 'a2a';
 import { createContext } from 'react';
 import { PageContent } from './content';
-import { getGithubGQLClient } from './github';
+import { getGithubGQLClient, getRepositoryPaths } from './github';
 import { Properties } from './properties';
 import { IWarning } from './warning';
 export type DebugMode = boolean;
+
 export const DebugModeContext = createContext<DebugMode>(false);
 
 interface ExistenceResposne {
-  user: {
-    login?: string;
-  };
   repository: {
     name?: string;
-    object?: {
-      id?: string;
+    mdx?: {
+      oid?: string;
+    };
+    mdxIndex?: {
+      oid?: string;
     };
   };
 }
@@ -27,31 +28,33 @@ export async function checkExistence(
   const [error, response]: [Error, ExistenceResposne | null] = await A2A(
     getGithubGQLClient()({
       query: `
-         query RepositoryPaths($owner: String!, $name: String!, $path: String!) {
-                user(login: $owner) {
-                login
-                }
-                repository(owner: $owner, name: $name) {
+            query CheckExistence($owner: String!, $name: String!, $indexPath: String!, $path:String!) {
+              repository(owner: $owner, name: $name) {
                 name
-                object(expression: $path) {
-                    id
+                mdx:object(expression :$path) {
+                  oid
                 }
+                mdxIndex:object(expression :$indexPath) {
+                  oid
                 }
+              }
             }
         `,
       owner: owner,
       name: name.split('~')[0],
-      path: path,
+      path: path + '.mdx',
+      indexPath: path + '/index.mdx',
     }),
   );
 
   if (error) {
     console.error(error);
   }
+
   return {
-    owner: response?.user?.login || null,
+    owner: response?.repository?.name ? owner : null,
     name: response?.repository?.name || null,
-    path: response?.repository?.object?.id ? path : null,
+    path: response?.repository?.mdx?.oid || response?.repository?.mdxIndex?.oid ? path : null,
   };
 }
 
@@ -64,6 +67,8 @@ export interface ITableData {
   id: string;
   data: (string | number | boolean)[][];
 }
+
+// Just processing debug data to make it easy to put in tables. These can probably be refactored away if we decide on a different layout/format.
 
 export function formatRepoData(
   properties: Properties,
@@ -125,4 +130,16 @@ export function formatWarningDebugData(warnings: IWarning[], statusCode: number)
       ...warnings.map(w => [w.warningType, w.line, w.column, w.detail]),
     ],
   };
+}
+
+export async function getUniquePaths(base: string): Promise<string[][]> {
+  const files = await getRepositoryPaths(base);
+  const uniqueFiles = Array.from(
+    new Set(files.map(path => (path.slice(path.length - 1) === '/' ? path : path + '/'))),
+  );
+  const formattedFiles = uniqueFiles.map(p => [
+    '/docs' + p.slice(base.length + 1),
+    p.slice(base.length + 1),
+  ]);
+  return formattedFiles;
 }

@@ -10,7 +10,7 @@ import { Pre, PreProps } from './Pre';
 import { Img } from './Img';
 import { YouTube } from './YouTube';
 
-export const components: ComponentMap = {
+const components: ComponentMap = {
   // HTML element overrides
   a: (props: React.HTMLProps<HTMLAnchorElement>) => (
     <Link {...props} className="hover:opacity-75" />
@@ -37,9 +37,6 @@ export const components: ComponentMap = {
 };
 
 export function Hydrate({ source }: { source: string }): JSX.Element {
-  const x = new Function(source);
-  console.log(x);
-
   const Component = React.useMemo(() => getMDXComponent(source), [source]);
 
   return (

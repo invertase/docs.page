@@ -8,6 +8,8 @@ import { IWarning } from '../../utils/warning';
  * @returns
  */
 
+// TODO: typescript
+
 interface DeclaredNode extends Node {
   value: string;
 }
