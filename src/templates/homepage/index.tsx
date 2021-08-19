@@ -20,7 +20,7 @@ export default function IndexPage(): JSX.Element {
   return (
     <>
       <Head>
-        <title>docs.page | Instant Open Source docs with zero configuration.</title>
+        <title>docs.page | Create an instant Open Source docs page with zero configuration.</title>
 
         <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />
@@ -33,7 +33,7 @@ export default function IndexPage(): JSX.Element {
         <meta property="og:title" content="docs.page" />
         <meta
           property="og:description"
-          content="Instant Open Source docs with zero configuration."
+          content="Create an instant Open Source docs page with zero configuration."
         />
         <meta property="og:image" content="http://docs.page/assets/docs-page-social.png" />
         <meta property="og:url" content="http://docs.page" />
@@ -41,7 +41,7 @@ export default function IndexPage(): JSX.Element {
         <meta name="twitter:title" content="docs.page" />
         <meta
           name="twitter:description"
-          content="Instant Open Source docs with zero configuration."
+          content="Create an instant Open Source docs page with zero configuration."
         />
         <meta name="twitter:image" content="http://docs.page/assets/docs-page-social.png" />
         <meta name="twitter:card" content="summary_large_image" />
@@ -84,7 +84,7 @@ export default function IndexPage(): JSX.Element {
               <span className="bg-clip-text text-transparent bg-gradient-to-br from-green-400 to-blue-500">
                 Open Source
               </span>{' '}
-              docs <br /> with zero configuration.
+              docs pages <br /> with zero configuration.
             </h1>
           </div>
         </section>
