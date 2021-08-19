@@ -61,7 +61,6 @@ export default function remarkComponentCheck({
   }
 
   return async (ast: Node): Promise<void> => {
-    console.log(ast);
     visit(ast, 'mdxjsEsm', visitorForDeclared);
     visit(ast, 'mdxJsxFlowElement', visitorForUndeclared);
   };

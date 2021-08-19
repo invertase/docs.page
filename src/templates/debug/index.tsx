@@ -28,7 +28,6 @@ export function Debug({
   statusCode,
 }: ISerializationErrorProps): JSX.Element {
   const tablesData = [repoData, configData, warningData];
-  console.log(tablesData);
 
   return (
     <>
