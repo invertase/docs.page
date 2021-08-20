@@ -19,7 +19,7 @@ function Row({ title, children, header = false, highlight }: RowProps): JSX.Elem
         backgroundColor: highlight,
       }}
     >
-      <div className="flex-1 p-4">{title}</div>
+      <div className="flex-1 p-4 dark:bg-gray-600">{title}</div>
       {!header && (
         <div className="flex-1 p-4 text-right">
           <pre>{children}</pre>

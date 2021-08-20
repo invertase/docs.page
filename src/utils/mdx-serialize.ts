@@ -136,7 +136,6 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
     });
     response.source = result.code;
   } catch (e) {
-    console.error(e);
     response.errors = await createDebug(e.errors, content.markdown);
     return response;
   }
