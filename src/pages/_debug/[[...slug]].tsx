@@ -36,6 +36,7 @@ import {
   ITableData,
 } from '../../utils/debug';
 import { Layout } from '../../components/Layout';
+import { ErrorBoundary } from '../../templates/error';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', NProgress.start);
@@ -68,16 +69,18 @@ export default function Documentation({
                 <DebugModeContext.Provider value={true}>
                   <Head />
                   <ThemeStyles />
-                  <Layout>
-                    <Debug
-                      blameUrl={properties.blameUrl}
-                      repoData={repoData}
-                      configData={configData}
-                      errors={errors}
-                      warningData={warningData}
-                      statusCode={statusCode}
-                    ></Debug>
-                  </Layout>
+                  <ErrorBoundary>
+                    <Layout>
+                      <Debug
+                        blameUrl={properties.blameUrl}
+                        repoData={repoData}
+                        configData={configData}
+                        errors={errors}
+                        warningData={warningData}
+                        statusCode={statusCode}
+                      ></Debug>
+                    </Layout>
+                  </ErrorBoundary>
                 </DebugModeContext.Provider>
               </PageContentContext.Provider>
             </SlugPropertiesContext.Provider>

@@ -8,7 +8,7 @@ interface ITableProps {
 
 export default function Table({ header, data }: ITableProps): JSX.Element {
   return (
-    <section className="mx-auto max-w-4xl border rounded font-mono divide-y bg-white">
+    <section className="mx-auto max-w-4xl border rounded font-mono divide-y bg-white dark:bg-gray-700">
       {!!header && <Row header title={header}></Row>}
       {data.map((row, i) => (
         <div key={i} className="flex p-3 px-6">
