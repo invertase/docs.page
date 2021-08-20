@@ -155,7 +155,10 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
       ([, repository]) => repository === `${properties.owner}/${properties.repository}`,
     )?.[0] || null;
 
-  console.log('Debugging Step 4 >>>>>>>');
+  console.log('Debugging Step 4 content >>>>>>>', source);
+
+  console.log('Debugging Step 4 content >>>>>>>', content);
+  console.log('Debugging Step 4 content >>>>>>>', error);
 
   return {
     props: {
