@@ -136,8 +136,10 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
     });
     response.source = result.code;
   } catch (e) {
+    console.log('DEBUG: entering CATCH BLOCK')
     response.errors = await createDebug(e.errors, content.markdown);
     return response;
   }
+  console.log('DEBUG: MISSED CATCH BLOCK')
   return response;
 }
