@@ -83,6 +83,23 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
   async function createDebugBlock(lines, start, end) {
     const wrappedSrc = '``` \n ' + lines.slice(start, end).join(' \n') + '\n ```';
     // const wrappedSrc = 'Hello world'
+    try{
+
+    } catch (e) {
+      console.log('brilliant lol, debug it got to this bit...');
+      
+      const wrappedSrc = 'Hello world'
+      return (
+        await bundleMDX(wrappedSrc, {
+          xdmOptions(options) {
+            // @ts-ignore TODO fix types
+            options.rehypePlugins = [...(options.rehypePlugins ?? []), ...rehypePlugins];
+  
+            return options;
+          },
+        })
+      ).code;
+    }
     return (
       await bundleMDX(wrappedSrc, {
         xdmOptions(options) {
