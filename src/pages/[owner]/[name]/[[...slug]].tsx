@@ -111,12 +111,16 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
   const name = ctx.params.name as string;
   const slug = (ctx.params.slug || []) as string[];
 
+  console.log('Debugging Step 1 >>>>>>>');
+
   let source = null;
   const headings: HeadingNode[] = [];
   let error: RenderError = null;
 
   // Build a request instance from the query
   const properties = await Properties.build([owner, name, ...slug]);
+
+  console.log('Debugging Step 2 >>>>>>>');
 
   // Query GitHub for the content
   const content = await getPageContent(properties);
@@ -143,11 +147,15 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
     }
   }
 
+  console.log('Debugging Step 3 >>>>>>>');
+
   // Get the array of domains from the local filesystem & match a potential domain
   const domain =
     domains.find(
       ([, repository]) => repository === `${properties.owner}/${properties.repository}`,
     )?.[0] || null;
+
+  console.log('Debugging Step 4 >>>>>>>');
 
   return {
     props: {
