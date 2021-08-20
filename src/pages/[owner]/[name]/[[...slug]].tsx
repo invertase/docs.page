@@ -137,7 +137,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
 
       if (serialization.error) {
         console.warn('Serialization error >>>>', serialization.error);
-        error = RenderError.serverError(properties);
+        // error = RenderError.serverError(properties);
       } else {
         source = serialization.source;
         content.headings = serialization.headings as unknown as HeadingNode[];
