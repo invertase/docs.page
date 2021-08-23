@@ -81,20 +81,19 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
   ];
 
   async function createDebugBlock(lines, start, end) {
-    const wrappedSrc = '\`\`\` \n ' + lines.slice(start, end).join(' \n') + '\n \`\`\`';
+    const wrappedSrc = '``` \n ' + lines.slice(start, end).join(' \n') + '\n ```';
     // const wrappedSrc = 'Hello world'
-    try{
-
+    try {
     } catch (e) {
       console.log('brilliant lol, debug it got to this bit...');
-      
-      const wrappedSrc = 'Hello world'
+
+      const wrappedSrc = 'Hello world';
       return (
         await bundleMDX(wrappedSrc, {
           xdmOptions(options) {
             // @ts-ignore TODO fix types
             options.rehypePlugins = [...(options.rehypePlugins ?? []), ...rehypePlugins];
-  
+
             return options;
           },
         })
@@ -153,10 +152,10 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
     });
     response.source = result.code;
   } catch (e) {
-    console.log('DEBUG: entering CATCH BLOCK')
+    console.log('DEBUG: entering CATCH BLOCK');
     response.errors = await createDebug(e.errors, content.markdown);
     return response;
   }
-  console.log('DEBUG: MISSED CATCH BLOCK')
+  console.log('DEBUG: MISSED CATCH BLOCK');
   return response;
 }
