@@ -108,7 +108,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   }
 
   return {
-    paths,
+    paths: paths.concat(['/_debug/cabljac/test-docs']),
     fallback: true,
   };
 };
