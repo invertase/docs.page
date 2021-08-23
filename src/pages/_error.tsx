@@ -1,17 +1,12 @@
 import { NextPage } from 'next';
 import { ErrorType, IRenderError, RenderError } from '../utils/error';
 import { Error } from '../templates/error';
-import { useDebugMode } from '../hooks';
 
 interface ErrorProps {
   error: IRenderError;
 }
 
 const ErrorPage: NextPage<ErrorProps> = (props: ErrorProps) => {
-  const debugMode = useDebugMode();
-  if (debugMode) {
-    return <>DEBUG MODE</>;
-  }
   return <Error {...props.error} />;
 };
 
