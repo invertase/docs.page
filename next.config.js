@@ -56,7 +56,4 @@ module.exports = withTM({
       afterFiles,
     };
   },
-  typescript: {
-    ignoreBuildErrors: true,
-  }
 });
