@@ -43,7 +43,7 @@ NextRouter.events.on('routeChangeStart', NProgress.start);
 NextRouter.events.on('routeChangeComplete', NProgress.done);
 NextRouter.events.on('routeChangeError', NProgress.done);
 
-export default function Documentation({
+export default function Page({
   env,
   domain,
   properties,
@@ -53,7 +53,7 @@ export default function Documentation({
   configData,
   warningData,
   statusCode,
-}: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element {
+}: StaticProps): JSX.Element {
   const { isFallback } = useRouter();
   if (isFallback) {
     return <Loading />;
@@ -91,27 +91,27 @@ export default function Documentation({
   );
 }
 
-export const getStaticPaths: GetStaticPaths = async () => {
-  let paths = [];
+// export const getStaticPaths: GetStaticPaths = async () => {
+//   let paths = [];
 
-  // Since this call can be fairly large, only run it on production
-  // and let the development pages fallback each time.
-  if (isProduction()) {
-    console.info(` fetching paths for ${repositories.length} repositories.`);
-    console.time();
-    const promises = repositories.map(repository =>
-      getRepositoryPaths(repository).then(paths => paths.map(p => '/_debug' + p)),
-    );
-    const results = await Promise.all(promises);
-    paths = union(...results);
-    console.timeEnd();
-  }
+//   // Since this call can be fairly large, only run it on production
+//   // and let the development pages fallback each time.
+//   if (isProduction()) {
+//     console.info(` fetching paths for ${repositories.length} repositories.`);
+//     console.time();
+//     const promises = repositories.map(repository =>
+//       getRepositoryPaths(repository).then(paths => paths.map(p => '/_debug' + p)),
+//     );
+//     const results = await Promise.all(promises);
+//     paths = union(...results);
+//     console.timeEnd();
+//   }
 
-  return {
-    paths: paths.concat(['/_debug/cabljac/test-docs']),
-    fallback: true,
-  };
-};
+//   return {
+//     paths: paths,
+//     fallback: true,
+//   };
+// };
 
 type StaticProps = {
   env: Environment;
@@ -133,7 +133,7 @@ type StaticProps = {
   }[];
 };
 
-export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
+export const getServerSideProps: GetStaticProps<StaticProps> = async ctx => {
   const originalSlug = (ctx.params.slug || []) as string[];
   const owner = originalSlug[0];
   const name = originalSlug[1];
