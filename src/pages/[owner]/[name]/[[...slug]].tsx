@@ -110,13 +110,11 @@ type StaticProps = {
 };
 
 export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
-
-  
   const owner = ctx.params.owner as string;
   const name = ctx.params.name as string;
   const slug = (ctx.params.slug || []) as string[];
-  
-  console.log('INCORRECT ROUTING',owner,name);
+
+  console.log('INCORRECT ROUTING', owner, name);
   let source = null;
   const headings: HeadingNode[] = [];
   let error: RenderError = null;
