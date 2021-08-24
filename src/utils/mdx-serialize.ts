@@ -81,7 +81,9 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
   ];
 
   async function createDebugBlock(lines, start, end) {
-    const wrappedSrc = '``` \n ' + lines.slice(start, end).join(' \n') + '\n ```';
+    /* eslint-disable */
+    const wrappedSrc = '\`\`\` \n ' + lines.slice(start, end).join(' \n') + '\n \`\`\`';
+    /* eslint-enable */
     // const wrappedSrc = 'Hello world'
     try {
     } catch (e) {
