@@ -1,10 +1,14 @@
-import { GetStaticProps, InferGetStaticPropsType } from 'next';
+import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
+import { isProduction } from '../utils';
+import { getRepositoryPaths } from '../utils/github';
 // import { ErrorType, IRenderError, RenderError } from '../utils/error';
 // import { Error } from '../templates/error';
 
 // interface ErrorProps {
 //   error: IRenderError;
 // }
+
+import repositories from '../../repositories.json';
 
 export default function ErrorPage({
   owner,
@@ -14,6 +18,28 @@ export default function ErrorPage({
 
 type StaticProps = {
   owner: string;
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  let paths = [];
+
+  // Since this call can be fairly large, only run it on production
+  // and let the development pages fallback each time.
+  if (isProduction()) {
+    console.info(` fetching paths for ${repositories.length} repositories.`);
+    console.time();
+    const promises = repositories.map(repository =>
+      getRepositoryPaths(repository).then(paths => paths.map(p => '/_debug' + p)),
+    );
+    const results = await Promise.all(promises);
+    paths = union(...results);
+    console.timeEnd();
+  }
+
+  return {
+    paths: paths.concat(['/_debug/cabljac/test-docs']),
+    fallback: true,
+  };
 };
 
 export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
