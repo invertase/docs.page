@@ -7,7 +7,7 @@ interface ErrorProps {
 }
 
 const ErrorPage: NextPage<ErrorProps> = (props: ErrorProps) => {
-  return <Error {...props.error} />;
+  return <>Error test</>;
 };
 
 ErrorPage.getInitialProps = ctx => {
