@@ -17,8 +17,8 @@ type StaticProps = {
 };
 
 export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
-  const originalSlug = (ctx.params.slug || []) as string[];
-  const owner = originalSlug[0];
+  const originalSlug = (ctx?.params?.slug || []) as string[];
+  const owner = originalSlug[0] || '500';
   // const name = originalSlug[1];
   // const base = owner + '/' + name;
   // const slug = originalSlug.slice(2);
