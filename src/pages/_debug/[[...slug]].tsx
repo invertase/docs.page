@@ -226,6 +226,6 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
       warningData,
       statusCode,
     },
-    revalidate: 30,
+    revalidate: 5,
   };
 };
