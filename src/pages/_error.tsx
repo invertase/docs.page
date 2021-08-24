@@ -9,6 +9,7 @@ import { getRepositoryPaths } from '../utils/github';
 // }
 
 import repositories from '../../repositories.json';
+import union from 'lodash.union';
 
 export default function ErrorPage({
   owner,
