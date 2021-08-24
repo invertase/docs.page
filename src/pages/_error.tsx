@@ -1,22 +1,41 @@
-import { NextPage } from 'next';
-import { ErrorType, IRenderError, RenderError } from '../utils/error';
-import { Error } from '../templates/error';
+import { GetStaticProps, InferGetStaticPropsType } from 'next';
+// import { ErrorType, IRenderError, RenderError } from '../utils/error';
+// import { Error } from '../templates/error';
 
-interface ErrorProps {
-  error: IRenderError;
+// interface ErrorProps {
+//   error: IRenderError;
+// }
+
+export default function ErrorPage({
+  owner,
+}: InferGetStaticPropsType<typeof getStaticProps>): JSX.Element {
+  return <>{owner}</>;
 }
 
-const ErrorPage: NextPage<ErrorProps> = (props: ErrorProps) => {
-  return <>Error test</>;
+type StaticProps = {
+  owner: string;
 };
 
-ErrorPage.getInitialProps = ctx => {
-  const { res, err } = ctx;
-  const statusCode = res ? res.statusCode : err ? err.statusCode : 404;
-
+export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
+  const originalSlug = (ctx.params.slug || []) as string[];
+  const owner = originalSlug[0];
+  // const name = originalSlug[1];
+  // const base = owner + '/' + name;
+  // const slug = originalSlug.slice(2);
   return {
-    error: RenderError.error(statusCode || 500, ErrorType.errorPage, err).toObject(),
+    props: {
+      owner,
+    },
   };
 };
 
-export default ErrorPage;
+// ErrorPage.getInitialProps = ctx => {
+//   const { res, err } = ctx;
+//   const statusCode = res ? res.statusCode : err ? err.statusCode : 404;
+
+//   return {
+//     error: RenderError.error(statusCode || 500, ErrorType.errorPage, err).toObject(),
+//   };
+// };
+
+// export default ErrorPage;

@@ -32,7 +32,7 @@ if (process.platform === 'win32') {
     'node_modules',
     'esbuild',
     'esbuild.exe',
-  )
+  );
 } else {
   process.env.ESBUILD_BINARY_PATH = path.join(
     process.cwd(),
@@ -40,7 +40,7 @@ if (process.platform === 'win32') {
     'esbuild',
     'bin',
     'esbuild',
-  )
+  );
 }
 
 export async function mdxSerialize(content: PageContent): Promise<SerializationResponse> {
