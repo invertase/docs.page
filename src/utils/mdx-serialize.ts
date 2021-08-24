@@ -25,13 +25,23 @@ interface SerializationResponse {
 }
 
 // https://github.com/kentcdodds/mdx-bundler#nextjs-esbuild-enoent
-process.env.ESBUILD_BINARY_PATH = path.join(
-  process.cwd(),
-  'node_modules',
-  'esbuild',
-  'bin',
-  'esbuild',
-);
+
+if (process.platform === 'win32') {
+  process.env.ESBUILD_BINARY_PATH = path.join(
+    process.cwd(),
+    'node_modules',
+    'esbuild',
+    'esbuild.exe',
+  )
+} else {
+  process.env.ESBUILD_BINARY_PATH = path.join(
+    process.cwd(),
+    'node_modules',
+    'esbuild',
+    'bin',
+    'esbuild',
+  )
+}
 
 export async function mdxSerialize(content: PageContent): Promise<SerializationResponse> {
   const response: SerializationResponse = {
