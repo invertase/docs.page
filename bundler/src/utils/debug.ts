@@ -43,7 +43,7 @@ if (process.platform === 'win32') {
     );
   }
 
-export const _debug = async (mdx: string) => {
+export const _debug : (mdx: string) => Promise<{warnings: Warning[], errors: Error[], headings: Heading[], code: string }>= async (mdx: string) => {
 
     let response = {
         warnings: [],
@@ -101,6 +101,28 @@ export const _debug = async (mdx: string) => {
         response.code = bundled.code
     } catch (e) {
         response.errors = e.errors
+        const lines = mdx.split('\n');
+        console.log(lines);
+        console.log(e.errors[0].detail.line);
+        
+        
+        e.errors.forEach((error : any) => {if (error.detail.line) {lines.splice(error.detail?.line -1, 1)}});
+        const newMdx = lines.join(' \n');
+        try {
+            const bundled = await bundleMDX(newMdx, {
+                xdmOptions(options) {
+                    // @ts-ignore TODO fix types
+                    options.remarkPlugins = [...(options.remarkPlugins ?? []), ...remarkPlugins];
+                    // @ts-ignore TODO fix types
+                    options.rehypePlugins = [...(options.rehypePlugins ?? []), ...rehypePlugins];
+            
+                    return options;
+              },
+            });
+            response.code = bundled.code
+        } catch (e) {
+
+        }
     }
     return response;
 }
