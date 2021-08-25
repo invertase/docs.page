@@ -11,7 +11,6 @@
     "@types/node": "^16.7.1",
     "esbuild": "^0.12.22",
     "express": "^4.17.1",
-    "express-rate-limit": "^5.3.0",
     "hast-util-has-property": "^2.0.0",
     "hast-util-heading-rank": "^2.1.0",
     "mdx-bundler": "^6.0.1",
