@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // @ts-ignore
-import {visit} from 'unist-util-visit';
+import { visit } from 'unist-util-visit';
 import { hasProperty } from 'hast-util-has-property';
 import { headingRank, Node } from 'hast-util-heading-rank';
 import { toString } from 'mdast-util-to-string';
@@ -10,7 +10,6 @@ export type HeadingNode = {
   title: string;
   rank: number | null;
 };
-
 
 type RehypeHeadingsOptions = {
   headings: string[];

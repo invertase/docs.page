@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // @ts-ignore
-import {visit} from 'unist-util-visit';
+import { visit } from 'unist-util-visit';
 import { Node } from 'unist';
 import { Warning } from '../types';
 
@@ -25,7 +25,7 @@ export default function remarkUndeclaredVariables({
   const keywords = ['var', 'let', 'const', 'function'];
   const withExport = keywords.map(k => new RegExp(`(export)[ \t]+${k}[ \t]`));
 
-  const declared : string[] = [];
+  const declared: string[] = [];
 
   function visitorForDeclared(node: DeclaredNode) {
     // Get the kind of export. This is actually stored in the Node, but the following was quicker for typescript:
@@ -41,7 +41,7 @@ export default function remarkUndeclaredVariables({
     }
   }
 
-  const undeclared : string[] = [];
+  const undeclared: string[] = [];
 
   function visitorForUndeclared(node: UnDeclaredNode) {
     if (!declared.includes(node.value)) {

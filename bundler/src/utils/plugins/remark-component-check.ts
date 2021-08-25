@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // @ts-ignore
-import {visit} from 'unist-util-visit';
+import { visit } from 'unist-util-visit';
 import { Node } from 'unist';
 import { Warning } from '../types';
 
@@ -28,7 +28,7 @@ export default function remarkComponentCheck({
   const keywords = ['var', 'let', 'const', 'function'];
   const withExport = keywords.map(k => new RegExp(`(export)[ \t]+${k}[ \t]`));
 
-  const declared : string[] = [];
+  const declared: string[] = [];
 
   function visitorForDeclared(node: DeclaredNode) {
     // Get the kind of export. This is actually stored in the Node, but the following was quicker for typescript:
@@ -44,16 +44,15 @@ export default function remarkComponentCheck({
     }
   }
 
-  const undeclared : string[] = [];
+  const undeclared: string[] = [];
 
   function visitorForUndeclared(node: UnDeclaredNode) {
-    
     if (!declared.includes(node.name) && !components.includes(node.name)) {
       undeclared.push(node.name);
       node.type = 'text';
       node.data = undefined;
       node.value = `\{${node.name}\}`;
-      
+
       callback({
         warningType: 'undefined component',
         line: node.position?.start?.line,
@@ -65,7 +64,7 @@ export default function remarkComponentCheck({
 
   return async (ast: Node): Promise<void> => {
     visit(ast, 'mdxjsEsm', visitorForDeclared);
-    
+
     visit(ast, 'mdxJsxFlowElement', visitorForUndeclared);
   };
 }
