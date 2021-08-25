@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+// @ts-ignore
 import {visit} from 'unist-util-visit';
 import { Node } from 'unist';
 import { Warning } from '../types';
@@ -46,7 +47,6 @@ export default function remarkComponentCheck({
   const undeclared : string[] = [];
 
   function visitorForUndeclared(node: UnDeclaredNode) {
-    console.log('HERE');
     
     if (!declared.includes(node.name) && !components.includes(node.name)) {
       undeclared.push(node.name);

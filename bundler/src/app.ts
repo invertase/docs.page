@@ -6,10 +6,10 @@ const PORT = process.env.PORT || 8000;
 const app = express();
 app.use(text());
 
-app.get('/', (req, res) => res.send('Express + TypeScript Server With ESM'));
+app.get('/', (req, res) => res.send('mdx bundler express app.'));
 
 app.listen(PORT, () => {
-  console.log(`⚡️[server]: Server is totally running at http://localhost:${PORT}`);
+  console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
 });
 
 app.post('/bundle', async (req: Request, res: Response) => {
