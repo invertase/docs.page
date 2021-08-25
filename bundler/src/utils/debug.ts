@@ -26,6 +26,23 @@ interface Heading {
     rank: number
 }
 
+if (process.platform === 'win32') {
+    process.env.ESBUILD_BINARY_PATH = path.join(
+      process.cwd(),
+      'node_modules',
+      'esbuild',
+      'esbuild.exe',
+    );
+  } else {
+    process.env.ESBUILD_BINARY_PATH = path.join(
+      process.cwd(),
+      'node_modules',
+      'esbuild',
+      'bin',
+      'esbuild',
+    );
+  }
+
 export const _debug = async (mdx: string) => {
 
     let response = {
@@ -39,14 +56,16 @@ export const _debug = async (mdx: string) => {
         [
           remarkComponentCheck,
           {
-            callback: response.warnings.push
+            //  @ts-ignore
+            callback: (warning: Warning) => {response.warnings.push(warning)}
           },
         ],
         // Checks for undeclared variables, converts them to text:
         [
           remarkUndeclaredVariables,
           {
-            callback: response.warnings.push
+            //  @ts-ignore
+            callback: (warning: Warning) => {response.warnings.push(warning)}
           },
         ],
         // Support GitHub flavoured markdown
@@ -70,12 +89,6 @@ export const _debug = async (mdx: string) => {
         rehypeAccessibleEmojis,
       ];
     
-
-
-
-
-
-
     try {
         const bundled = await bundleMDX(mdx, {
             xdmOptions(options) {
@@ -89,7 +102,7 @@ export const _debug = async (mdx: string) => {
         });
         response.code = bundled.code
     } catch (e) {
-        response.errors = e
+        response.errors = e.errors
     }
     return response;
 }

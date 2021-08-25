@@ -11,11 +11,20 @@
     "@types/node": "^16.7.1",
     "esbuild": "^0.12.22",
     "express": "^4.17.1",
+    "hast-util-has-property": "^2.0.0",
+    "hast-util-heading-rank": "^2.1.0",
     "mdx-bundler": "^6.0.1",
-    "typescript": "^4.3.5"
+    "path": "^0.12.7",
+    "rehype-accessible-emojis": "^0.3.2",
+    "rehype-slug": "^5.0.0",
+    "remark-gfm": "^2.0.0",
+    "remark-unwrap-images": "^3.0.0",
+    "shiki": "^0.9.7",
+    "unist-util-visit": "^4.0.0",
+    "xdm": "^2.0.0"
   },
   "scripts": {
-    "dev": "nodemon"
+    "dev": "DEBUG=express:* nodemon"
   },
   "devDependencies": {
     "nodemon": "^2.0.12",

@@ -3,8 +3,10 @@ import {visit} from 'unist-util-visit';
 import { Node } from 'unist';
 import { Warning } from '../types';
 
+const components = ['Heading', 'Youtube', 'Tabs', 'TabItem', 'Image', 'Img'];
+
 /**
- * Converts undeclared variables into plain text nodes
+ * Converts undefined react components into plain text nodes
  * @returns
  */
 
@@ -12,11 +14,12 @@ interface DeclaredNode extends Node {
   value: string;
 }
 interface UnDeclaredNode extends Node {
-  value: string;
+  name: string;
   data: any;
+  value: any;
 }
 
-export default function remarkUndeclaredVariables({
+export default function remarkComponentCheck({
   callback,
 }: {
   callback: (warning: Warning) => void;
@@ -30,7 +33,7 @@ export default function remarkUndeclaredVariables({
     // Get the kind of export. This is actually stored in the Node, but the following was quicker for typescript:
     const exportKeyword = withExport.filter(re => re.test(node.value))[0];
 
-    if (exportKeyword) {
+    if (!!exportKeyword) {
       declared.push(
         node.value
           .replace(exportKeyword, '')
@@ -43,22 +46,30 @@ export default function remarkUndeclaredVariables({
   const undeclared : string[] = [];
 
   function visitorForUndeclared(node: UnDeclaredNode) {
-    if (!declared.includes(node.value)) {
-      undeclared.push(node.value);
+    console.log('HERE');
+    
+    if (!declared.includes(node.name) && !components.includes(node.name)) {
+      console.log(callback);
+      
+      undeclared.push(node.name);
       node.type = 'text';
       node.data = undefined;
-      node.value = `\{${node.value}\}`;
+      node.value = `\{${node.name}\}`;
+      
       callback({
         warningType: 'undefined component',
         line: node.position?.start?.line,
         column: node.position?.start?.column,
-        detail: node.value,
+        detail: node.name,
       });
     }
   }
 
   return async (ast: Node): Promise<void> => {
     visit(ast, 'mdxjsEsm', visitorForDeclared);
-    visit(ast, 'mdxFlowExpression', visitorForUndeclared);
+    console.log('HELLO');
+    console.log(ast);
+    
+    visit(ast, 'mdxJsxFlowElement', visitorForUndeclared);
   };
 }
