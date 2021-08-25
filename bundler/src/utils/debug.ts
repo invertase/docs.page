@@ -45,8 +45,10 @@ if (process.platform === 'win32') {
 
 export const _debug: (
   mdx: string,
+  headingDepth?: number
 ) => Promise<{ warnings: Warning[]; errors: Error[]; headings: Heading[]; code: string }> = async (
-  mdx: string,
+  mdx,
+  headingDepth
 ) => {
   const response = {
     warnings: [],
@@ -82,7 +84,7 @@ export const _debug: (
     [
       rehypeHeadings,
       {
-        headings: headerDepthToHeaderList(2),
+        headings: headerDepthToHeaderList(headingDepth || 2),
         callback: (headings: any) => {
           response.headings = headings;
         },

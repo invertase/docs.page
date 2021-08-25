@@ -1,3 +1,5 @@
+// types.ts
+import * as core from 'express-serve-static-core'
 export interface Warning {
   warningType?: 'undefined component' | 'undeclared variable';
   line?: number;
@@ -14,4 +16,8 @@ export interface Heading {
   id: string;
   title: string;
   rank: number;
+}
+
+export interface RequestQuery extends core.Query {
+  headerDepth: string
 }
