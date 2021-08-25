@@ -109,28 +109,24 @@ export const _debug: (
   } catch (e) {
     response.errors = e.errors;
     const lines = mdx.split('\n');
-    console.log(lines);
-    console.log(e.errors[0].detail.line);
-    // @ts-ignore
-    e.errors.forEach((error: any) => {
-      if (error.detail.line) {
-        lines.splice(error.detail?.line - 1, 1);
-      }
-    });
-    const newMdx = lines.join(' \n');
+    const length = lines.length;
+    const midpoint =Math.round(length/2);
+    const newLines = lines.slice(0,midpoint);
+    const newMdx = newLines.join('\n ');
     try {
-      const bundled = await bundleMDX(newMdx, {
-        xdmOptions(options) {
-          // @ts-ignore TODO fix types
-          options.remarkPlugins = [...(options.remarkPlugins ?? []), ...remarkPlugins];
-          // @ts-ignore TODO fix types
-          options.rehypePlugins = [...(options.rehypePlugins ?? []), ...rehypePlugins];
-
-          return options;
-        },
-      });
-      response.code = bundled.code;
-    } catch (e) {}
+        const bundled = await bundleMDX(newMdx, {
+            xdmOptions(options) {
+                // @ts-ignore TODO fix types
+                options.remarkPlugins = [...(options.remarkPlugins ?? []), ...remarkPlugins];
+                // @ts-ignore TODO fix types
+                options.rehypePlugins = [...(options.rehypePlugins ?? []), ...rehypePlugins];
+    
+                return options;
+            },
+            });
+            response.code = bundled.code;
+    }
+    catch (e) {}
   }
   return response;
 };
