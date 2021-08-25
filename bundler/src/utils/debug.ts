@@ -83,7 +83,7 @@ export const _debug: (
       rehypeHeadings,
       {
         headings: headerDepthToHeaderList(2),
-        callback: (headings: string[]) => {
+        callback: (headings: any) => {
           response.headings = headings;
         },
       },
