@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+// @ts-ignore
 import {visit} from 'unist-util-visit';
 import { hasProperty } from 'hast-util-has-property';
 import { headingRank, Node } from 'hast-util-heading-rank';
