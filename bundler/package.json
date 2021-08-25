@@ -9,12 +9,13 @@
   "dependencies": {
     "@types/express": "^4.17.13",
     "@types/node": "^16.7.1",
+    "esbuild": "^0.12.22",
     "express": "^4.17.1",
+    "mdx-bundler": "^6.0.1",
     "typescript": "^4.3.5"
   },
   "scripts": {
     "dev": "nodemon"
-
   },
   "devDependencies": {
     "nodemon": "^2.0.12",
