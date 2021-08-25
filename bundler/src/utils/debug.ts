@@ -56,16 +56,14 @@ export const _debug = async (mdx: string) => {
         [
           remarkComponentCheck,
           {
-            //  @ts-ignore
-            callback: (warning: Warning) => {response.warnings.push(warning)}
+            callback: response.warnings.push.bind(response.warnings)
           },
         ],
         // Checks for undeclared variables, converts them to text:
         [
           remarkUndeclaredVariables,
           {
-            //  @ts-ignore
-            callback: (warning: Warning) => {response.warnings.push(warning)}
+            callback: response.warnings.push.bind(response.warnings)
           },
         ],
         // Support GitHub flavoured markdown

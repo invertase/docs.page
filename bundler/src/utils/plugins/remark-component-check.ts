@@ -33,7 +33,7 @@ export default function remarkComponentCheck({
     // Get the kind of export. This is actually stored in the Node, but the following was quicker for typescript:
     const exportKeyword = withExport.filter(re => re.test(node.value))[0];
 
-    if (!!exportKeyword) {
+    if (exportKeyword) {
       declared.push(
         node.value
           .replace(exportKeyword, '')
@@ -49,8 +49,6 @@ export default function remarkComponentCheck({
     console.log('HERE');
     
     if (!declared.includes(node.name) && !components.includes(node.name)) {
-      console.log(callback);
-      
       undeclared.push(node.name);
       node.type = 'text';
       node.data = undefined;
@@ -67,8 +65,6 @@ export default function remarkComponentCheck({
 
   return async (ast: Node): Promise<void> => {
     visit(ast, 'mdxjsEsm', visitorForDeclared);
-    console.log('HELLO');
-    console.log(ast);
     
     visit(ast, 'mdxJsxFlowElement', visitorForUndeclared);
   };
