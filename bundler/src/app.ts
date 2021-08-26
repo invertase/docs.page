@@ -1,41 +1,54 @@
-import express, { Request, Response, text, json } from 'express';
+import express, { Response, text, json } from 'express';
 import { bundleWithOptions } from './utils/bundle.js';
 import { incrementalDebug } from './utils/debug.js';
 const PORT = process.env.PORT || 8000;
+import jwt from 'express-jwt';
+import jsonwebtoken from 'jsonwebtoken';
+import { BundleRequest, RecursiveDebugRequest } from './types.js';
 
 const app = express();
+
 app.use(text());
 app.use(json());
-
-app.get('/', (req, res) => res.send('mdx bundler express app.'));
+app.use(jwt({ secret: 'secret-for-bundler', algorithms: ['HS256'] }).unless({ path: ['/token'] }));
 
 app.listen(PORT, () => {
-  console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
+  console.log(`⚡️[server]: Bundler is running at http://localhost:${PORT}`);
 });
-interface BundleRequest extends Request {
-  body: string;
-  query: {
-    headingDepth: string;
-  };
-}
 
-interface RecursiveDebugRequest extends Request {
-  body: string;
-  query: {
-    line: string;
-  };
-}
+app.get('/', (req, res) => res.send('Welcome to the MDX bundler server.'));
 
+// authenticate
+app.post('/token', function (req, res) {
+  const { username, password } = req?.body;
+
+  console.log('user', username);
+  console.log('password', password);
+
+  if (username === process.env.USERNAME && password === process.env.PASSWORD) {
+    console.log('auth ok');
+
+    const token = jsonwebtoken.sign({ username: 'bundler' }, 'secret-for-bundler', {
+      expiresIn: 120,
+    });
+    res.send(token);
+  }
+  res.sendStatus(401);
+});
+
+// Endpoints
+
+// just bundles using mdx-bundler
 app.post('/bundle', async (req: BundleRequest, res: Response) => {
-  const {headingDepth} = req.query;
+  const { headingDepth } = req.query;
   console.log(req);
-  
-  const bundled = await bundleWithOptions(req?.body,parseInt(headingDepth));
+
+  const bundled = await bundleWithOptions(req?.body, parseInt(headingDepth));
   res.send(bundled);
 });
 
+// incrementally bundles a faulty mdx file, stops and returns partial bundle failing line
 app.post('/debug', async (req: RecursiveDebugRequest, res: Response) => {
-
   const bundled = await incrementalDebug(req?.body, parseInt(req.query.line));
 
   res.send(bundled);

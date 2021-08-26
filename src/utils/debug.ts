@@ -115,7 +115,7 @@ export function formatConfigData(content: PageContent, statusCode: number): ITab
 }
 
 export function formatWarningDebugData(warnings: IWarning[], statusCode: number): ITableData {
-  if (!warnings.length || statusCode === 404) {
+  if (!warnings?.length || statusCode === 404) {
     return {
       header: 'Warnings',
       id: 'warnings',

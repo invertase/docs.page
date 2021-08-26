@@ -10,10 +10,13 @@
     "@types/express": "^4.17.13",
     "@types/node": "^16.7.1",
     "a2a": "^0.2.0",
+    "dotenv": "^10.0.0",
     "esbuild": "^0.12.22",
     "express": "^4.17.1",
+    "express-jwt": "^6.1.0",
     "hast-util-has-property": "^2.0.0",
     "hast-util-heading-rank": "^2.1.0",
+    "jsonwebtoken": "^8.5.1",
     "mdx-bundler": "^6.0.1",
     "path": "^0.12.7",
     "rehype-accessible-emojis": "^0.3.2",
@@ -25,9 +28,11 @@
     "xdm": "^2.0.0"
   },
   "scripts": {
-    "dev": "DEBUG=express:* nodemon"
+    "dev": "nodemon",
+    "dev:debug": "DEBUG=express:* nodemon"
   },
   "devDependencies": {
+    "@types/express-jwt": "^6.0.2",
     "nodemon": "^2.0.12",
     "ts-node": "^10.2.1"
   }
