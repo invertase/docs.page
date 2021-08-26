@@ -249,6 +249,11 @@
   resolved "https://registry.yarnpkg.com/@types/unist/-/unist-2.0.6.tgz#250a7b16c3b91f672a24552ec64678eeb1d3a08d"
   integrity sha512-PBjIUxZHOuj0R15/xuwJYjFi+KZdNFrehocChv4g5hu6aFroHue8m0lBP0POdK2nKzbw0cgV1mws8+V/JAcEkQ==
 
+a2a@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/a2a/-/a2a-0.2.0.tgz#32bcbc13457636a9cd37f0c3674778120e3a847c"
+  integrity sha512-zacbQ73PcKwlC4dFqaD5GDvluv2I7owHYELi6PCDERcZVFm0LNuhWGm1CKwtxcxEF7SmQXVF342wBKO8xAayMg==
+
 abbrev@1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.1.1.tgz#f8f2c887ad10bf67f634f005b6987fed3179aac8"
