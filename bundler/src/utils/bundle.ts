@@ -14,14 +14,14 @@ export function headerDepthToHeaderList(depth: number): string[] {
   return list;
 }
 
-export async function bundle(mdx: string, xdmOptionsSetup: any) {
+export async function bundle(mdx: string, xdmOptionsSetup: any, headingDepth = 2) {
   const output = {
       warnings: [],
       headings: []
   }
 
   const [error, bundled] = await A2A(
-    bundleMDX(mdx, xdmOptionsSetup({ output, headingDepth: 2 })),
+    bundleMDX(mdx, xdmOptionsSetup({ output, headingDepth })),
   );
 
   return {
@@ -32,4 +32,4 @@ export async function bundle(mdx: string, xdmOptionsSetup: any) {
   };
 }
 
-export const bundleWithOptions = (mdx: string) => bundle(mdx, setupXdmOptions);
+export const bundleWithOptions = (mdx: string,headingDepth:number) => bundle(mdx, setupXdmOptions);
