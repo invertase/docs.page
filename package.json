@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "PORT=3000 next dev",
+    "express-bundler": "cd bundler && nodemon",
     "dev:prod": "cross-env NODE_ENV=production next dev",
     "build": "npm run clean && next build",
     "start": "next start",
