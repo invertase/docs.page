@@ -7,7 +7,7 @@ import { headerDepthToHeaderList } from './bundle.js';
 import rehypeHeadings from './plugins/rehype-headings.js';
 import remarkComponentCheck from './plugins/remark-component-check.js';
 import remarkUndeclaredVariables from './plugins/remark-undeclared-variables.js';
-
+import rehypeCodeBlocks from './plugins/rehype-code-blocks.js';
 export const setupXdmOptions = ({
   output,
   headingDepth,
@@ -37,7 +37,7 @@ export const setupXdmOptions = ({
   ];
 
   const rehypePlugins = [
-    // rehypeCodeBlocks,
+    rehypeCodeBlocks,
     // Add an `id` to all heading tags
     rehypeSlug,
     [
