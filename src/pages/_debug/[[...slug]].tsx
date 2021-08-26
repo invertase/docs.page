@@ -201,7 +201,6 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
       statusCode = 500;
       errors = serialization.errors;
       console.log(errors);
-      
     } else {
       content.headings = serialization.headings as unknown as HeadingNode[];
     }
@@ -226,7 +225,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
     warningData,
     statusCode,
   });
-  
+
   return {
     props: {
       env: (process.env.VERCEL_ENV ?? 'development') as Environment,

@@ -40,14 +40,14 @@ process.env.ESBUILD_BINARY_PATH = path.join(
 //     headings: [],
 //     warnings: [],
 //   };
-  
+
 //   const res = await axios({
 //     method: 'post',
 //     url: `http://localhost:8000/bundle?headerDepth=${content.config.headerDepth}`,
 //     data: {body: content.markdown}
 //   });
 //   console.log(res);
-  
+
 //   return response
 // }
 
@@ -159,15 +159,30 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
   //   return response;
   // }
 
-  const res = await axios.post(`http://localhost:8000/bundle?headerDepth=${content.config.headerDepth}`, content.markdown, { headers: { 'Content-Type': 'text/plain' } });
+  const res = await axios.post(
+    `http://localhost:8000/bundle?headerDepth=${content.config.headerDepth}`,
+    content.markdown,
+    { headers: { 'Content-Type': 'text/plain' } },
+  );
   response.source = res?.data?.bundled?.code;
   if (res?.data?.status === 500) {
     // response.errors = res?.data?.errors
-    const debug = await axios.post(`http://localhost:8000/debug`, content.markdown, { headers: { 'Content-Type': 'text/plain' } });
+    const debug = await axios.post(`http://localhost:8000/debug`, content.markdown, {
+      headers: { 'Content-Type': 'text/plain' },
+    });
     console.log(debug);
-    
+
     response.source = debug?.data?.bundled?.code;
-    response.errors = res?.data?.bundled?.errors || [{column: '??', message: "Undetermined Error. Check all JSX tags are closed", line: debug?.data?.line, start: debug?.data?.line, emd: debug?.data?.line}]
+    response.errors = res?.data?.bundled?.errors || [
+      {
+        column: '??',
+        message: 'Undetermined Error. Check all JSX tags are closed',
+        line: debug?.data?.line,
+        start: debug?.data?.line,
+        emd: debug?.data?.line,
+        leftOver: debug?.data.leftOver || null
+      },
+    ];
   }
 
   return response;

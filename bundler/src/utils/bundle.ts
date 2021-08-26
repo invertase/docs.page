@@ -16,13 +16,11 @@ export function headerDepthToHeaderList(depth: number): string[] {
 
 export async function bundle(mdx: string, xdmOptionsSetup: any, headingDepth = 2) {
   const output = {
-      warnings: [],
-      headings: []
-  }
+    warnings: [],
+    headings: [],
+  };
 
-  const [error, bundled] = await A2A(
-    bundleMDX(mdx, xdmOptionsSetup({ output, headingDepth })),
-  );
+  const [error, bundled] = await A2A(bundleMDX(mdx, xdmOptionsSetup({ output, headingDepth })));
 
   return {
     bundled,
@@ -32,4 +30,5 @@ export async function bundle(mdx: string, xdmOptionsSetup: any, headingDepth = 2
   };
 }
 
-export const bundleWithOptions = (mdx: string,headingDepth:number) => bundle(mdx, setupXdmOptions);
+export const bundleWithOptions = (mdx: string, headingDepth: number) =>
+  bundle(mdx, setupXdmOptions);
