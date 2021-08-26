@@ -1,5 +1,3 @@
-
-
 // The following should produce only warnings:
 
 export const undeclaredVariable = `
@@ -11,7 +9,6 @@ export const y = 4;
 
 {y}
 `;
-
 
 export const undefinedComponent = `
 # Hello World
