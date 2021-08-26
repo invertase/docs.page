@@ -41,10 +41,10 @@ export default function rehypeCodeBlocks(): (ast: Node) => void {
 
     highlighter = await shiki.getHighlighter({
       theme: 'github-dark',
-      paths: {
-        themes: path.resolve(base, 'themes') + '/',
-        languages: path.resolve(base, 'languages') + '/',
-      },
+      // paths: {
+      //   themes: path.resolve(base, 'themes') + '/',
+      //   languages: path.resolve(base, 'languages') + '/',
+      // },
     });
     // @ts-ignore
     visit(ast, 'element', visitor);

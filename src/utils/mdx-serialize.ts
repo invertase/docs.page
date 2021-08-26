@@ -69,6 +69,5 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
   } catch (e) {
     response.error = e;
   }
-
   return response;
 }

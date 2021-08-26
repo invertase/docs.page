@@ -10,18 +10,19 @@ export function insertCodeBlock(mdx: string, start: number, end: number) {
   return lines.join('\n');
 }
 
-export async function incrementalDebug(mdx: string, line: number) {
+export async function incrementalDebug(mdx: string, line?: number) {
 
   const xdmOptionsSetup = setupXdmOptions;
 
   const lines = mdx.split('\n');
+  
   let start = lines.length;
 
   while (start > 0) {
     const isolated = insertCodeBlock(mdx, start, lines.length);
     const attempt = await bundle(isolated, xdmOptionsSetup);
     if (attempt.status === 200) {
-      return { bundled: attempt, line: start - 1 };
+      return { ...attempt, line: start - 1 };
     }
     start = start - 1;
   }
