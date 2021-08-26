@@ -54,6 +54,7 @@ process.env.ESBUILD_BINARY_PATH = path.join(
 export async function mdxSerialize(content: PageContent): Promise<SerializationResponse> {
   const response: SerializationResponse = {
     source: null,
+    errors: null,
     headings: [],
     warnings: [],
   };
@@ -163,9 +164,10 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
   if (res?.data?.status === 500) {
     // response.errors = res?.data?.errors
     const debug = await axios.post(`http://localhost:8000/debug`, content.markdown, { headers: { 'Content-Type': 'text/plain' } });
-    console.log(debug?.data?.bundled?.code);
+    console.log(debug);
     
     response.source = debug?.data?.bundled?.code;
+    response.errors = res?.data?.bundled?.errors || [{column: '??', message: "Undetermined Error. Check all JSX tags are closed", line: debug?.data?.line, start: debug?.data?.line, emd: debug?.data?.line}]
   }
 
   return response;

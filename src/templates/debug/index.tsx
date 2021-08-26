@@ -63,7 +63,7 @@ export function Debug({
                   {`\> `} {e.message}.
                 </span>
               </div>
-              <Hydrate source={e.src} />
+              {e.src && <Hydrate source={e.src} />}
             </>
           ))}
         </article>
