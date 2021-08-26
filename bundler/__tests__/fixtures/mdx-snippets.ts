@@ -29,3 +29,9 @@ export const unclosedError1 = `
 
 <
 `;
+
+export const unclosedError2 = `
+# Hello World
+
+<NotClosed>
+`;
