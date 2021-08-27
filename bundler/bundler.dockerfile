@@ -28,5 +28,6 @@ RUN cd $__ROOT_DIR && yarn install --ignore-scripts
 COPY $__ROOT_DIR /opt/app/$__ROOT_DIR
 WORKDIR /opt/app/$__ROOT_DIR
 RUN yarn run postinstall
+RUN node node_modules/esbuild/install.js
 
 CMD ["pm2-runtime","dist/app.js"]
