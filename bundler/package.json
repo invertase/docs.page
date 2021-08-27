@@ -35,6 +35,7 @@
   "devDependencies": {
     "@types/express-jwt": "^6.0.2",
     "nodemon": "^2.0.12",
-    "ts-node": "^10.2.1"
+    "ts-node": "^10.2.1",
+    "typescript": "^4.4.2"
   }
 }
