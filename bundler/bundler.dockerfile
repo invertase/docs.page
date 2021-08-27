@@ -27,4 +27,4 @@ COPY $__ROOT_DIR/tsconfig.json /opt/app/$__ROOT_DIR/tsconfig.json
 RUN cd $__ROOT_DIR && yarn install --ignore-scripts
 
 WORKDIR /opt/app/$__ROOT_DIR
-CMD ["pm2-runtime","bundler/dist/app.js"]
+CMD ["pm2-runtime","dist/app.js"]
