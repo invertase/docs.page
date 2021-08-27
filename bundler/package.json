@@ -29,7 +29,8 @@
   },
   "scripts": {
     "dev": "nodemon",
-    "dev:debug": "DEBUG=express:* nodemon"
+    "dev:debug": "DEBUG=express:* nodemon",
+    "postinstall": "tsc"
   },
   "devDependencies": {
     "@types/express-jwt": "^6.0.2",
