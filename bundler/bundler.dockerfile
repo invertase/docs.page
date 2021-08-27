@@ -24,7 +24,7 @@ ENV __ROOT_DIR=$ROOT_DIR
 WORKDIR /opt/app
 COPY $__ROOT_DIR/package.json /opt/app/$__ROOT_DIR/package.json
 COPY $__ROOT_DIR/tsconfig.json /opt/app/$__ROOT_DIR/tsconfig.json
-RUN cd $__ROOT_DIR && yarn install --ignore-scripts
+RUN cd $__ROOT_DIR && yarn install
 
 WORKDIR /opt/app/$__ROOT_DIR
 CMD ["pm2-runtime","dist/app.js"]
