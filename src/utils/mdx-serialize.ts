@@ -42,7 +42,7 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
   };
 
   const res = await axios.post(
-    `http://localhost:8000/bundle?headerDepth=${content.config.headerDepth}`,
+    `${endpoint}/bundle?headerDepth=${content.config.headerDepth}`,
     content.markdown,
     { headers },
   );
@@ -51,8 +51,8 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
   response.warnings = res?.data?.warnings;
 
   if (res?.data?.status === 500) {
-    // response.errors = res?.data?.errors
-    const debug = await axios.post(`http://localhost:8000/debug`, content.markdown, {
+    
+    const debug = await axios.post(`${endpoint}/debug`, content.markdown, {
       headers,
     });
 
