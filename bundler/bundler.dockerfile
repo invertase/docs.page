@@ -26,8 +26,7 @@ COPY $__ROOT_DIR/package.json /opt/app/$__ROOT_DIR/package.json
 RUN cd $__ROOT_DIR && yarn install --ignore-scripts
 
 COPY $__ROOT_DIR /opt/app/$__ROOT_DIR
+WORKDIR /opt/app/$__ROOT_DIR
 RUN yarn run postinstall
 
-
-WORKDIR /opt/app/$__ROOT_DIR
 CMD ["pm2-runtime","dist/app.js"]
