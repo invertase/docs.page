@@ -2,7 +2,7 @@
 // @ts-ignore
 import { visit } from 'unist-util-visit';
 import { Node } from 'unist';
-import { Warning } from '../types';
+import { Warning } from '../../types';
 
 const components = ['Heading', 'Youtube', 'Tabs', 'TabItem', 'Image', 'Img'];
 

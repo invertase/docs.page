@@ -2,7 +2,7 @@
 import A2A from 'a2a';
 import { bundleMDX } from 'mdx-bundler';
 import { setupXdmOptions } from './xdm-options.js';
-
+import { BundleData } from '../types.js';
 export function headerDepthToHeaderList(depth: number): string[] {
   const list: string[] = [];
   if (depth === 0) return list;
@@ -14,7 +14,11 @@ export function headerDepthToHeaderList(depth: number): string[] {
   return list;
 }
 
-export async function bundle(mdx: string, xdmOptionsSetup: any, headingDepth = 2) {
+export async function bundle(
+  mdx: string,
+  xdmOptionsSetup: typeof setupXdmOptions,
+  headingDepth = 2,
+): Promise<BundleData> {
   const output = {
     warnings: [],
     headings: [],
@@ -30,5 +34,5 @@ export async function bundle(mdx: string, xdmOptionsSetup: any, headingDepth = 2
   };
 }
 
-export const bundleWithOptions = (mdx: string, headingDepth: number) =>
-  bundle(mdx, setupXdmOptions);
+export const bundleWithOptions = (mdx: string, headingDepth: number): Promise<BundleData> =>
+  bundle(mdx, setupXdmOptions, headingDepth);

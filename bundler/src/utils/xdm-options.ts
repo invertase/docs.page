@@ -1,4 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+// TODO type everything
 import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
@@ -8,6 +10,7 @@ import rehypeHeadings from './plugins/rehype-headings.js';
 import remarkComponentCheck from './plugins/remark-component-check.js';
 import remarkUndeclaredVariables from './plugins/remark-undeclared-variables.js';
 import rehypeCodeBlocks from './plugins/rehype-code-blocks.js';
+
 export const setupXdmOptions = ({
   output,
   headingDepth,

@@ -64,11 +64,14 @@ export function Debug({
                 </span>
               </div>
               {e.src && <Hydrate source={e.src} />}
-              {e.leftOver && 
+              {e.leftOver && (
                 <pre>
-                  {e.leftOver.split('\n').slice(0,10).map((l,i) => `${e.line + i+1} | ${l} \n`)}
+                  {e.leftOver
+                    .split('\n')
+                    .slice(0, 10)
+                    .map((l, i) => `${e.line + i + 1} | ${l} \n`)}
                 </pre>
-              }
+              )}
             </>
           ))}
         </article>

@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import { DebugData } from '../types.js';
 import { bundle } from './bundle.js';
 import { setupXdmOptions } from './xdm-options.js';
 
-export function insertCodeBlock(mdx: string, start: number, end: number) {
+export function insertCodeBlock(mdx: string, start: number, end: number): string {
   const lines: string[] = mdx.split('\n');
   lines.splice(Math.max(start - 1, 0), 0, '<error>"');
   lines.splice(Math.min(end + 1, lines.length), 0, '"</error>');
@@ -12,7 +13,11 @@ export function insertCodeBlock(mdx: string, start: number, end: number) {
   return lines.join('\n');
 }
 
-export async function incrementalDebug(mdx: string, line?: number, stepLength = 1) {
+export async function incrementalDebug(
+  mdx: string,
+  line?: number,
+  stepLength = 1,
+): Promise<DebugData> {
   const xdmOptionsSetup = setupXdmOptions;
 
   const lines = mdx.split('\n');
@@ -31,4 +36,5 @@ export async function incrementalDebug(mdx: string, line?: number, stepLength = 
     }
     start = start - stepLength;
   }
+  return { leftOver: mdx, line: 0 };
 }

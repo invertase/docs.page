@@ -195,12 +195,12 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
   } else {
     // get all files for sidebar:
     const serialization = await mdxSerialize(content);
+
     warnings = serialization.warnings;
 
     if (!!serialization.errors) {
       statusCode = 500;
       errors = serialization.errors;
-      console.log(errors);
     } else {
       content.headings = serialization.headings as unknown as HeadingNode[];
     }
@@ -213,18 +213,6 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
   const repoData = formatRepoData(properties, filePath, existence);
   const configData = formatConfigData(content, statusCode);
   const warningData = formatWarningDebugData(warnings, statusCode);
-  console.log({
-    env: (process.env.VERCEL_ENV ?? 'development') as Environment,
-    domain,
-    properties: properties.toObject(content),
-    headings,
-    content,
-    errors: errors ?? [],
-    repoData,
-    configData,
-    warningData,
-    statusCode,
-  });
 
   return {
     props: {
