@@ -15,7 +15,7 @@ interface SerializationResponse {
 }
 
 const endpoint =
-  process.env.NODE_ENV === 'production' ? 'production endpoint' : 'http://localhost:8000';
+  process.env.NODE_ENV === 'production' ? 'http://localhost:8000' : 'http://localhost:8000';
 
 const getToken = async () => {
   const response = await axios.post(`${endpoint}/token`, {

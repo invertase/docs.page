@@ -13,6 +13,7 @@ interface ISerializationErrorProps {
     start?: number;
     end?: number;
     src?: string;
+    leftOver?: string;
   }[];
   repoData;
   configData;
