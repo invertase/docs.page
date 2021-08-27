@@ -10,7 +10,7 @@ const app = express();
 
 app.use(text());
 app.use(json());
-app.use(jwt({ secret: 'secret-for-bundler', algorithms: ['HS256'] }).unless({ path: ['/token'] }));
+// app.use(jwt({ secret: 'secret-for-bundler', algorithms: ['HS256'] }).unless({ path: ['/token'] }));
 
 app.listen(PORT, () => {
   console.log(`⚡️[server]: Bundler is running at http://localhost:${PORT}`);
@@ -20,20 +20,21 @@ app.get('/', (req, res) => res.send('Welcome to the MDX bundler server.'));
 
 // authenticate
 app.post('/token', function (req, res) {
-  const { username, password } = req?.body;
+  res.send("foobar")
+  // const { username, password } = req?.body;
 
-  console.log('user', username);
-  console.log('password', password);
+  // console.log('user', username);
+  // console.log('password', password);
 
-  if (username === process.env.USERNAME && password === process.env.PASSWORD) {
-    console.log('auth ok');
+  // if (username === process.env.USERNAME && password === process.env.PASSWORD) {
+  //   console.log('auth ok');
 
-    const token = jsonwebtoken.sign({ username: 'bundler' }, 'secret-for-bundler', {
-      expiresIn: 120,
-    });
-    res.send(token);
-  }
-  res.sendStatus(401);
+  //   const token = jsonwebtoken.sign({ username: 'bundler' }, 'secret-for-bundler', {
+  //     expiresIn: 120,
+  //   });
+  //   res.send(token);
+  // }
+  // res.sendStatus(401);
 });
 
 // Endpoints
