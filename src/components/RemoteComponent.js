@@ -1,5 +1,5 @@
 import { createRemoteComponent, createRequires } from '@paciolan/remote-component';
-import { resolve } from '../../remote-component.config.js';
+import { resolve } from '../../remote-component.config';
 
 const requires = createRequires(resolve);
 
