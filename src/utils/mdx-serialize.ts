@@ -15,7 +15,7 @@ interface SerializationResponse {
 }
 
 const endpoint =
-  process.env.NODE_ENV === 'production' ? 'http://localhost:8000' : 'http://localhost:8000';
+  process.env.NODE_ENV === 'production' ? 'https://bundler.docs.page' : 'http://localhost:8000';
 
 const getToken = async () => {
   const response = await axios.post(`${endpoint}/token`, {
@@ -51,7 +51,7 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
   response.warnings = res?.data?.warnings;
 
   if (res?.data?.status === 500) {
-    
+
     const debug = await axios.post(`${endpoint}/debug`, content.markdown, {
       headers,
     });
