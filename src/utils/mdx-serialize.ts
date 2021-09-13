@@ -51,7 +51,6 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
   response.warnings = res?.data?.warnings;
 
   if (res?.data?.status === 500) {
-
     const debug = await axios.post(`${endpoint}/debug`, content.markdown, {
       headers,
     });

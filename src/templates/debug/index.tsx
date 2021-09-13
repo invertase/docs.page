@@ -2,8 +2,8 @@ import React from 'react';
 import { Footer } from '../homepage/Footer';
 import { QuickLinks } from '../error/QuickLinks';
 import { Title } from './Title';
-import { Hydrate } from '../../mdx';
 import Table from './Table';
+import { Error } from './Error';
 interface ISerializationErrorProps {
   blameUrl: string;
   errors: {
@@ -51,29 +51,8 @@ export function Debug({
         ))}
         <article className="mt-6 border rounded p-1" id="errors">
           <Table header="Errors" data={[]} />
-          {errors.map(e => (
-            <>
-              <div>
-                <span>
-                  Line {e.line}, column {e.column}:{' '}
-                </span>
-              </div>
-              <div className="bg-red-600 rounded">
-                <span className="p-2 text-yellow-200">
-                  {' '}
-                  {`\> `} {e.message}.
-                </span>
-              </div>
-              {e.src && <Hydrate source={e.src} />}
-              {e.leftOver && (
-                <pre>
-                  {e.leftOver
-                    .split('\n')
-                    .slice(0, 10)
-                    .map((l, i) => `${e.line + i + 1} | ${l} \n`)}
-                </pre>
-              )}
-            </>
+          {errors.map((e, i) => (
+            <Error {...e} key={i} />
           ))}
         </article>
         <section className="mt-20 max-w-4xl mx-auto px-2">

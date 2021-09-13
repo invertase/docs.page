@@ -20,7 +20,7 @@ app.get('/', (req, res) => res.send('Welcome to the MDX bundler server.'));
 
 // authenticate
 app.post('/token', function (req, res) {
-  res.send("foobar")
+  res.send('foobar');
   // const { username, password } = req?.body;
 
   // console.log('user', username);
