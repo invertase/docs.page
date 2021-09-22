@@ -34,7 +34,7 @@ app.post('/bundle', async (req: BundleRequest, res: Response) => {
 });
 
 app.post('/debug', async (req: RecursiveDebugRequest, res: Response) => {
-  const bundled = await incrementalDebug(req?.body?.trim(), parseInt(req.query.line));
+  const bundled = await incrementalDebug(req?.body?.trim());
   res.send(bundled);
 });
 

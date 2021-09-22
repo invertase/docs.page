@@ -24,7 +24,7 @@ export interface IBundledMdx {
     };
     errors: Message[];
     matter: GrayMatterFile<any>;
-  };
+  } | undefined;
   errors: any[];
   warnings: any[];
   status: number;
