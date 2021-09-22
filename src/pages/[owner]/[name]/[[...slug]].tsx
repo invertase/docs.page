@@ -29,7 +29,11 @@ import { Loading } from '../../../templates/Loading';
 import { isProduction } from '../../../utils';
 import { getRepositoryPaths } from '../../../utils/github';
 import { Environment, EnvironmentContext } from '../../../utils/env';
+<<<<<<< HEAD
 import { DebugModeContext } from '../../../utils/debug';
+=======
+import { checkExistence } from '../../../utils/debug';
+>>>>>>> 67b996f (fix: 404 on private repo, or otherwise not found)
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', NProgress.start);
@@ -121,8 +125,15 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
   // Build a request instance from the query
   const properties = await Properties.build([owner, name, ...slug]);
 
+<<<<<<< HEAD
   error = RenderError.repositoryNotFound(properties);
 
+=======
+  const existence = checkExistence(owner,name,properties.path);
+  if (Object.values(existence).some(x=>!x)) {
+    error = RenderError.pageNotFound(properties)
+  }
+>>>>>>> 67b996f (fix: 404 on private repo, or otherwise not found)
   // Query GitHub for the content
   const content = await getPageContent(properties);
 
