@@ -40,10 +40,7 @@ export function Heading(props: HeadingProps): JSX.Element {
   return (
     <span className="relative">
       <a id={props.id} className="absolute -mt-16" />
-      {createElement(type, {
-        ...props,
-        children: renderChildren(props.children),
-      })}
+      {createElement(type, props, renderChildren(props.children))}
     </span>
   );
 }
