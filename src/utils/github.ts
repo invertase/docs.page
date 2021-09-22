@@ -233,13 +233,18 @@ export async function getGitHubContents(properties: Properties): Promise<Content
     }),
   );
 
+<<<<<<< HEAD
   // An error is thrown if the repo is not found
   if (error || !response?.repository) {
+=======
+  // if an error is thrown then the repo is not found, if the repo is private then response = { repository: null }
+  if (error || response.repository === null) {
+>>>>>>> ee4ae81 (chore: formatting)
     return null;
   }
 
   return {
-    isFork: response.repository.isFork,
+    isFork: response.repository?.isFork,
     baseBranch: response.repository.baseBranch.name,
     config: response.repository.config?.text,
     md: response.repository.mdxIndex?.text ?? response.repository.mdx?.text,
