@@ -44,6 +44,7 @@ export interface BundleData {
   warnings: Warning[] | [];
   status: number;
   leftOver?: string;
+  headings: any[]
 }
 export interface DebugData extends Partial<BundleData> {
   leftOver?: string;
