@@ -202,7 +202,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
       statusCode = 500;
       errors = serialization.errors;
     } else {
-      content.headings = serialization.headings as unknown as HeadingNode[];
+      content.headings = [serialization.headings] as unknown as HeadingNode[];
     }
   }
   // make a sidebar to navigate between debug pages:
