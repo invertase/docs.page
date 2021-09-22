@@ -8,13 +8,10 @@ import rehypeHeadings from './plugins/rehype-headings.js';
 import remarkComponentCheck from './plugins/remark-component-check.js';
 import remarkUndeclaredVariables from './plugins/remark-undeclared-variables.js';
 import rehypeCodeBlocks from './plugins/rehype-code-blocks.js';
-export const setupXdmOptions = ({
-  output,
-  headingDepth,
-}: {
-  output: any;
-  headingDepth?: number;
-}) => {
+
+export function setupXdmOptions({ output, headingDepth }: { output: any; headingDepth?: number }): {
+  xdmOptions: (options: any) => any;
+} {
   const remarkPlugins = [
     // Checks for undefined components, converts them to text:
     [
@@ -62,4 +59,4 @@ export const setupXdmOptions = ({
       return options;
     },
   };
-};
+}

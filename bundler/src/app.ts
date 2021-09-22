@@ -27,15 +27,20 @@ interface RecursiveDebugRequest extends Request {
 }
 
 app.post('/bundle', async (req: BundleRequest, res: Response) => {
-  const {headingDepth} = req.query;
+  const { headingDepth } = req.query;
 
-  const bundled = await bundleWithOptions(req?.body.trim(),parseInt(headingDepth));
+  const bundled = await bundleWithOptions(req?.body.trim(), parseInt(headingDepth));
   res.send(bundled);
 });
 
 app.post('/debug', async (req: RecursiveDebugRequest, res: Response) => {
-
   const bundled = await incrementalDebug(req?.body?.trim(), parseInt(req.query.line));
+  res.send(bundled);
+});
 
+app.post('/typedoc', async (req: BundleRequest, res: Response) => {
+  const { headingDepth } = req.query;
+  const escapedMdx = req.body.replaceAll(/(?<!\\)</g, '\\<');
+  const bundled = await bundleWithOptions(escapedMdx, parseInt(headingDepth) ?? 2);
   res.send(bundled);
 });

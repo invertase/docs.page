@@ -4,7 +4,7 @@ import { visit } from 'unist-util-visit';
 import { Node } from 'hast-util-heading-rank';
 import { toString } from 'mdast-util-to-string';
 import * as shiki from 'shiki';
-import path from 'path';
+// import path from 'path';
 
 let highlighter: shiki.Highlighter;
 
@@ -33,11 +33,12 @@ export default function rehypeCodeBlocks(): (ast: Node) => void {
   }
 
   return async (ast: Node): Promise<void> => {
-    const base = path.join(process.cwd(), 'public', '_docs.page', 'shiki');
+    // this was needed when used in next, but not any more (i think)
+    // const base = path.join(process.cwd(), 'public', '_docs.page', 'shiki');
 
-    // if (process.env.VERCEL) {
-    //   base = path.join(process.cwd(), '_docs.page', 'shiki');
-    // }
+    // // if (process.env.VERCEL) {
+    // //   base = path.join(process.cwd(), '_docs.page', 'shiki');
+    // // }
 
     highlighter = await shiki.getHighlighter({
       theme: 'github-dark',

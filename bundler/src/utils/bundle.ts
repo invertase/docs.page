@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import A2A from 'a2a';
+import { Message } from 'esbuild';
+import { GrayMatterFile } from 'gray-matter';
 import { bundleMDX } from 'mdx-bundler';
 import { setupXdmOptions } from './xdm-options.js';
 
@@ -14,15 +16,32 @@ export function headerDepthToHeaderList(depth: number): string[] {
   return list;
 }
 
-export async function bundle(mdx: string, xdmOptionsSetup: any, headingDepth = 2) {
-  const output = {
-      warnings: [],
-      headings: []
-  }
+export interface IBundledMdx {
+  bundled: {
+    code: string;
+    frontmatter: {
+      [key: string]: any;
+    };
+    errors: Message[];
+    matter: GrayMatterFile<any>;
+  };
+  errors: any[];
+  warnings: any[];
+  status: number;
+  line?: number;
+}
 
-  const [error, bundled] = await A2A(
-    bundleMDX(mdx, xdmOptionsSetup({ output, headingDepth })),
-  );
+export async function bundle(
+  mdx: string,
+  xdmOptionsSetup: typeof setupXdmOptions,
+  headingDepth = 2,
+): Promise<IBundledMdx> {
+  const output = {
+    warnings: [],
+    headings: [],
+  };
+
+  const [error, bundled] = await A2A(bundleMDX(mdx, xdmOptionsSetup({ output, headingDepth })));
 
   return {
     bundled,
@@ -32,4 +51,5 @@ export async function bundle(mdx: string, xdmOptionsSetup: any, headingDepth = 2
   };
 }
 
-export const bundleWithOptions = (mdx: string,headingDepth:number) => bundle(mdx, setupXdmOptions);
+export const bundleWithOptions = (mdx: string, headingDepth: number): Promise<IBundledMdx> =>
+  bundle(mdx, setupXdmOptions, headingDepth);
