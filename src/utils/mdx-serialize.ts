@@ -42,7 +42,7 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
   };
 
   const res = await axios.post(
-    `${endpoint}/bundle?headerDepth=${content.config.headerDepth}`,
+    `${endpoint}/bundle?headerDepth=${content.config.headerDepth ?? 2}`,
     content.markdown,
     { headers },
   );

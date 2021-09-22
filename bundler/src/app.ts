@@ -2,7 +2,6 @@ import express, { Response, text, json } from 'express';
 import { bundleWithOptions } from './utils/bundle.js';
 import { incrementalDebug } from './utils/debug.js';
 const PORT = process.env.PORT || 8000;
-import jwt from 'express-jwt';
 import jsonwebtoken from 'jsonwebtoken';
 import { BundleRequest, RecursiveDebugRequest } from './types.js';
 
@@ -52,5 +51,12 @@ app.post('/bundle', async (req: BundleRequest, res: Response) => {
 app.post('/debug', async (req: RecursiveDebugRequest, res: Response) => {
   const bundled = await incrementalDebug(req?.body, parseInt(req.query.line));
 
+  res.send(bundled);
+});
+
+app.post('/typedoc', async (req: BundleRequest, res: Response) => {
+  const { headingDepth } = req.query;
+  const escapedMdx = req.body.replaceAll(/(?<!\\)</g, '\\<');
+  const bundled = await bundleWithOptions(escapedMdx, parseInt(headingDepth) ?? 2);
   res.send(bundled);
 });
