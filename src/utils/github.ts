@@ -27,7 +27,7 @@ const getGitHubToken = (() => {
   };
 })();
 
-function getGithubGQLClient(): typeof graphql {
+export function getGithubGQLClient(): typeof graphql {
   const token = getGitHubToken();
   if (!token.length) {
     throw new Error(
@@ -233,13 +233,13 @@ export async function getGitHubContents(properties: Properties): Promise<Content
     }),
   );
 
-  // An error is thrown if the repo is not found
-  if (error) {
+  // if an error is thrown then the repo is not found, if the repo is private then response = { repository: null }
+  if (error || response.repository === null) {
     return null;
   }
 
   return {
-    isFork: response.repository.isFork,
+    isFork: response.repository?.isFork,
     baseBranch: response.repository.baseBranch.name,
     config: response.repository.config?.text,
     md: response.repository.mdxIndex?.text ?? response.repository.mdx?.text,

@@ -29,6 +29,7 @@ import { Loading } from '../../../templates/Loading';
 import { isProduction } from '../../../utils';
 import { getRepositoryPaths } from '../../../utils/github';
 import { Environment, EnvironmentContext } from '../../../utils/env';
+import { checkExistence } from '../../../utils/debug';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', NProgress.start);
@@ -118,6 +119,10 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
   // Build a request instance from the query
   const properties = await Properties.build([owner, name, ...slug]);
 
+  const existence = checkExistence(owner, name, properties.path);
+  if (Object.values(existence).some(x => !x)) {
+    error = RenderError.pageNotFound(properties);
+  }
   // Query GitHub for the content
   const content = await getPageContent(properties);
 
