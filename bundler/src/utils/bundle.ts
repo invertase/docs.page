@@ -17,14 +17,16 @@ export function headerDepthToHeaderList(depth: number): string[] {
 }
 
 export interface IBundledMdx {
-  bundled: {
-    code: string;
-    frontmatter: {
-      [key: string]: any;
-    };
-    errors: Message[];
-    matter: GrayMatterFile<any>;
-  } | undefined;
+  bundled:
+    | {
+        code: string;
+        frontmatter: {
+          [key: string]: any;
+        };
+        errors: Message[];
+        matter: GrayMatterFile<any>;
+      }
+    | undefined;
   errors: any[];
   warnings: any[];
   status: number;

@@ -1,4 +1,4 @@
-// types.ts
+// here is where we will keep OUR types that in particular exist on responses.
 import * as core from 'express-serve-static-core';
 export interface Warning {
   warningType?: 'undefined component' | 'undeclared variable';
