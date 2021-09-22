@@ -19,20 +19,18 @@ interface BundleRequest extends Request {
   };
 }
 
-interface RecursiveDebugRequest extends Request {
-  body: string;
-  query: {
-    line: string;
-  };
-}
-
 app.post('/bundle', async (req: BundleRequest, res: Response) => {
   const { headingDepth } = req.query;
 
   const bundled = await bundleWithOptions(req?.body.trim(), parseInt(headingDepth));
   res.send(bundled);
 });
-
+interface RecursiveDebugRequest extends Request {
+  body: string;
+  query: {
+    line: string;
+  };
+}
 app.post('/debug', async (req: RecursiveDebugRequest, res: Response) => {
   const bundled = await incrementalDebug(req?.body?.trim());
   res.send(bundled);

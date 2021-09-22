@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import A2A from 'a2a';
-import { Message } from 'esbuild';
-import { GrayMatterFile } from 'gray-matter';
 import { bundleMDX } from 'mdx-bundler';
+import { IBundledMdx } from './types.js';
 import { setupXdmOptions } from './xdm-options.js';
 
 export function headerDepthToHeaderList(depth: number): string[] {
@@ -14,23 +12,6 @@ export function headerDepthToHeaderList(depth: number): string[] {
   }
 
   return list;
-}
-
-export interface IBundledMdx {
-  bundled:
-    | {
-        code: string;
-        frontmatter: {
-          [key: string]: any;
-        };
-        errors: Message[];
-        matter: GrayMatterFile<any>;
-      }
-    | undefined;
-  errors: any[];
-  warnings: any[];
-  status: number;
-  line?: number;
 }
 
 export async function bundle(

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { bundle, IBundledMdx } from './bundle.js';
+import { bundle } from './bundle.js';
+import { IDebugMdx } from './types.js';
 import { setupXdmOptions } from './xdm-options.js';
 
 export function insertCodeBlock(mdx: string, start: number, end: number): string {
@@ -10,7 +11,7 @@ export function insertCodeBlock(mdx: string, start: number, end: number): string
   return lines.join('\n');
 }
 
-export async function incrementalDebug(mdx: string): Promise<IBundledMdx | undefined> {
+export async function incrementalDebug(mdx: string): Promise<IDebugMdx | undefined> {
   const xdmOptionsSetup = setupXdmOptions;
 
   const lines = mdx.split('\n');
