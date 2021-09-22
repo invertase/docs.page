@@ -46,7 +46,7 @@ export const setupXdmOptions = ({
     [
       rehypeHeadings,
       {
-        headings: headerDepthToHeaderList(headingDepth || 2),
+        headings: headerDepthToHeaderList(headingDepth || 3),
         callback: (headings: any) => {
           output.headings = headings;
         },

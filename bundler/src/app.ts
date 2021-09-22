@@ -43,12 +43,14 @@ app.post('/bundle', async (req: BundleRequest, res: Response) => {
   const { headingDepth } = req.query;
   console.log(req);
 
-  const bundled = await bundleWithOptions(req?.body, parseInt(headingDepth));
+  const bundled = await bundleWithOptions(req?.body, parseInt(headingDepth) ?? 3);
   res.send(bundled);
 });
 
 // incrementally bundles a faulty mdx file, stops and returns partial bundle failing line
 app.post('/debug', async (req: RecursiveDebugRequest, res: Response) => {
+
+  
   const bundled = await incrementalDebug(req?.body, parseInt(req.query.line));
 
   res.send(bundled);
@@ -57,6 +59,6 @@ app.post('/debug', async (req: RecursiveDebugRequest, res: Response) => {
 app.post('/typedoc', async (req: BundleRequest, res: Response) => {
   const { headingDepth } = req.query;
   const escapedMdx = req.body.replaceAll(/(?<!\\)</g, '\\<');
-  const bundled = await bundleWithOptions(escapedMdx, parseInt(headingDepth) ?? 2);
+  const bundled = await bundleWithOptions(escapedMdx, parseInt(headingDepth) ?? 3);
   res.send(bundled);
 });
