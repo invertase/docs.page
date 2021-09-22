@@ -119,10 +119,6 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
   // Build a request instance from the query
   const properties = await Properties.build([owner, name, ...slug]);
 
-  const existence = checkExistence(owner, name, properties.path);
-  if (Object.values(existence).some(x => !x)) {
-    error = RenderError.pageNotFound(properties);
-  }
   // Query GitHub for the content
   const content = await getPageContent(properties);
 
