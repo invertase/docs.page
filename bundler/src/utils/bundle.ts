@@ -30,6 +30,7 @@ export async function bundle(
     bundled,
     errors: error ? error?.errors : [],
     warnings: output.warnings,
+    headings: output.headings,
     status: error ? 500 : 200,
   };
 }

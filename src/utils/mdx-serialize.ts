@@ -4,7 +4,7 @@ import axios from 'axios';
 interface SerializationResponse {
   source: string;
   headings: HeadingNode[];
-  errors?: {
+  error?: {
     line?: number;
     column?: number;
     message?: string;
@@ -17,38 +17,39 @@ interface SerializationResponse {
 const endpoint =
   process.env.NODE_ENV === 'production' ? 'https://bundler.docs.page' : 'http://localhost:8000';
 
-const getToken = async () => {
-  const response = await axios.post(`${endpoint}/token`, {
-    username: process.env.USERNAME,
-    password: process.env.PASSWORD,
-  });
-  return response.data;
-};
+// const getToken = async () => {
+//   const response = await axios.post(`${endpoint}/token`, {
+//     username: process.env.USERNAME,
+//     password: process.env.PASSWORD,
+//   });
+//   return response.data;
+// };
 
 export async function mdxSerialize(content: PageContent): Promise<SerializationResponse> {
   // authenticate with bundle service
-  const token = await getToken();
+  // const token = await getToken();
   //set headers
   const headers = {
     'Content-Type': 'text/plain',
-    Authorization: `Bearer ${token}`,
+    // Authorization: `Bearer ${token}`,
   };
 
   const response: SerializationResponse = {
     source: null,
-    errors: null,
+    error: null,
     headings: [],
     warnings: [],
   };
 
   const res = await axios.post(
-    `${endpoint}/bundle?headerDepth=${content.config.headerDepth}`,
+    `${endpoint}/bundle?headerDepth=${content.config.headerDepth ?? 2}`,
     content.markdown,
     { headers },
   );
 
   response.source = res?.data?.bundled?.code;
   response.warnings = res?.data?.warnings;
+  response.headings = res?.data?.headings;
 
   if (res?.data?.status === 500) {
     const debug = await axios.post(`${endpoint}/debug`, content.markdown, {
@@ -56,7 +57,7 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
     });
 
     response.source = debug?.data?.bundled?.code;
-    response.errors = res?.data?.bundled?.errors || [
+    response.error = res?.data?.bundled?.errors || [
       {
         column: '??',
         message: 'Undetermined Error. Check all JSX tags are closed',

@@ -40,6 +40,7 @@ export interface IBundledMdx {
     | undefined;
   errors: BundleError[];
   warnings: Warning[];
+  headings: any[];
   status: number;
 }
 
