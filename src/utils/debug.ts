@@ -19,7 +19,7 @@ interface ExistenceResposne {
     };
   };
 }
-
+// used in debug page (coming soon)
 export async function checkExistence(
   owner: string,
   name: string,
