@@ -29,7 +29,6 @@ import { Loading } from '../../../templates/Loading';
 import { isProduction } from '../../../utils';
 import { getRepositoryPaths } from '../../../utils/github';
 import { Environment, EnvironmentContext } from '../../../utils/env';
-import { checkExistence } from '../../../utils/debug';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', NProgress.start);
