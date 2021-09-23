@@ -2,7 +2,7 @@ import express, { Response, text, json } from 'express';
 import { bundleWithOptions } from './utils/bundle.js';
 import { incrementalDebug } from './utils/debug.js';
 const PORT = process.env.PORT || 8000;
-import jsonwebtoken from 'jsonwebtoken';
+// import jsonwebtoken from 'jsonwebtoken';
 import { BundleRequest, RecursiveDebugRequest } from './types.js';
 
 const app = express();
@@ -49,8 +49,6 @@ app.post('/bundle', async (req: BundleRequest, res: Response) => {
 
 // incrementally bundles a faulty mdx file, stops and returns partial bundle failing line
 app.post('/debug', async (req: RecursiveDebugRequest, res: Response) => {
-
-  
   const bundled = await incrementalDebug(req?.body, parseInt(req.query.line));
 
   res.send(bundled);

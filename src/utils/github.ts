@@ -234,7 +234,7 @@ export async function getGitHubContents(properties: Properties): Promise<Content
   );
 
   // An error is thrown if the repo is not found
-  if (error) {
+  if (error || !response?.repository) {
     return null;
   }
 
