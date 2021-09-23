@@ -20,6 +20,7 @@ interface ExistenceResposne {
   };
 }
 
+// used in debug page (coming soon)
 export async function checkExistence(
   owner: string,
   name: string,
@@ -115,7 +116,7 @@ export function formatConfigData(content: PageContent, statusCode: number): ITab
 }
 
 export function formatWarningDebugData(warnings: IWarning[], statusCode: number): ITableData {
-  if (!warnings?.length || statusCode === 404) {
+  if (!warnings.length || statusCode === 404) {
     return {
       header: 'Warnings',
       id: 'warnings',
