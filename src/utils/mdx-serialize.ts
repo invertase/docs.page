@@ -1,6 +1,7 @@
 import { HeadingNode, PageContent } from './content';
 import { IWarning } from './warning';
 import axios from 'axios';
+import a2a from 'a2a';
 interface SerializationResponse {
   source: string;
   headings: HeadingNode[];
@@ -41,11 +42,11 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
     warnings: [],
   };
 
-  const res = await axios.post(
+  const [error,res] = await a2a(axios.post(
     `${endpoint}/bundle?headerDepth=${content.config.headerDepth ?? 3}`,
     content.markdown,
     { headers },
-  );
+  ));
 
   response.source = res?.data?.bundled?.code;
   response.warnings = res?.data?.warnings;
