@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import visit from 'unist-util-visit';
+import {visit} from 'unist-util-visit';
 import { Node } from 'unist';
 import { IWarning } from '../../utils/warning';
 
