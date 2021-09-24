@@ -97,7 +97,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   // Since this call can be fairly large, only run it on production
   // and let the development pages fallback each time.
   if (isProduction()) {
-    console.info(` fetching paths for ${repositories.length} repositories.`);
+    console.info(` fetching paths for ${repositories?.length} repositories.`);
     console.time();
     const promises = repositories.map(repository =>
       getRepositoryPaths(repository).then(paths => paths.map(p => '/_debug' + p)),
