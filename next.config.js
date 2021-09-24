@@ -6,7 +6,8 @@ const withTM = require('next-transpile-modules')([
 
 const domains = require('./domains.json');
 
-module.exports = withTM({
+module.exports ={
+  experimental: { esmExternals: true },
   async rewrites() {
     const beforeFiles = domains.map(([domain, repository]) => {
       const [organization, repo] = repository.split('/');
@@ -56,4 +57,4 @@ module.exports = withTM({
       afterFiles,
     };
   },
-});
+};
