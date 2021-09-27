@@ -42,11 +42,13 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
     warnings: [],
   };
 
-  const [error,res] = await a2a(axios.post(
-    `${endpoint}/bundle?headerDepth=${content.config.headerDepth ?? 3}`,
-    content.markdown,
-    { headers },
-  ));
+  const [, res] = await a2a(
+    axios.post(
+      `${endpoint}/bundle?headerDepth=${content.config.headerDepth ?? 3}`,
+      content.markdown,
+      { headers },
+    ),
+  );
 
   response.source = res?.data?.bundled?.code;
   response.warnings = res?.data?.warnings;

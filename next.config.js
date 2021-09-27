@@ -1,12 +1,6 @@
-const withTM = require('next-transpile-modules')([
-  'hast-util-heading-rank',
-  'hast-util-has-property',
-  'mdast-util-to-string',
-]);
-
 const domains = require('./domains.json');
 
-module.exports ={
+module.exports = {
   experimental: { esmExternals: true },
   async rewrites() {
     const beforeFiles = domains.map(([domain, repository]) => {

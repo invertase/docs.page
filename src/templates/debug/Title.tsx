@@ -6,7 +6,7 @@ interface TitleProps {
 }
 
 export function Title({ statusCode }: TitleProps): JSX.Element {
-  const title = statusCode === 500 ? 'Something went wrong' : 'Page not found';
+  const title = 'docs.page: Debug';
 
   return (
     <>
