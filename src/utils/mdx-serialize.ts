@@ -55,9 +55,23 @@ export async function mdxSerialize(content: PageContent): Promise<SerializationR
   response.headings = res?.data?.headings;
 
   if (res?.data?.status !== 200) {
-    const debug = await axios.post(`${endpoint}/debug`, content.markdown, {
-      headers,
-    });
+    let debug;
+    try {
+      debug = await axios.post(`${endpoint}/debug`, content.markdown, {
+        headers,
+      });
+    } catch (e) {
+      response.errors = res?.data?.bundled?.errors || [
+        {
+          column: '??',
+          message: 'Undetermined Error. Check all JSX tags are closed',
+          line: debug?.data?.line,
+          start: debug?.data?.line,
+          emd: debug?.data?.line,
+          leftOver: debug?.data.leftOver || null,
+        },
+      ];
+    }
 
     response.source = debug?.data?.bundled?.code;
     response.errors = res?.data?.bundled?.errors || [
