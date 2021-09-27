@@ -6,7 +6,7 @@ interface TitleProps {
 }
 
 export function Title({ statusCode }: TitleProps): JSX.Element {
-  const title = "docs.page: Debug";
+  const title = 'docs.page: Debug';
 
   return (
     <>
