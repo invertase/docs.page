@@ -17,24 +17,24 @@ app.listen(PORT, () => {
 
 app.get('/', (req, res) => res.send('Welcome to the MDX bundler server.'));
 
-// authenticate
-app.post('/token', function (req, res) {
-  res.send('foobar');
-  // const { username, password } = req?.body;
+// // authenticate
+// app.post('/token', function (req, res) {
+//   res.send('foobar');
+//   // const { username, password } = req?.body;
 
-  // console.log('user', username);
-  // console.log('password', password);
+//   // console.log('user', username);
+//   // console.log('password', password);
 
-  // if (username === process.env.USERNAME && password === process.env.PASSWORD) {
-  //   console.log('auth ok');
+//   // if (username === process.env.USERNAME && password === process.env.PASSWORD) {
+//   //   console.log('auth ok');
 
-  //   const token = jsonwebtoken.sign({ username: 'bundler' }, 'secret-for-bundler', {
-  //     expiresIn: 120,
-  //   });
-  //   res.send(token);
-  // }
-  // res.sendStatus(401);
-});
+//   //   const token = jsonwebtoken.sign({ username: 'bundler' }, 'secret-for-bundler', {
+//   //     expiresIn: 120,
+//   //   });
+//   //   res.send(token);
+//   // }
+//   // res.sendStatus(401);
+// });
 
 // Endpoints
 
