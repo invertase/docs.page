@@ -1,73 +1,89 @@
-import path from 'path';
-import rehypeSlug from 'rehype-slug';
-import remarkUnwrapImages from 'remark-unwrap-images';
-import remarkGfm from 'remark-gfm';
-import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
-import { bundleMDX } from 'mdx-bundler';
-
 import { HeadingNode, PageContent } from './content';
-import { headerDepthToHeaderList } from './index';
-import rehypeCodeBlocks from '../mdx/plugins/rehype-code-blocks';
-import rehypeHeadings from '../mdx/plugins/rehype-headings';
-import rehastUndeclaredVariables from '../mdx/plugins/remark-undeclared-variables';
+import { IWarning } from './warning';
+import axios from 'axios';
+import a2a from 'a2a';
 interface SerializationResponse {
   source: string;
   headings: HeadingNode[];
-  error?: Error;
+  errors?: {
+    line?: number;
+    column?: number;
+    message?: string;
+    start?: number;
+    end?: number;
+  }[];
+  warnings?: IWarning[];
 }
 
-// https://github.com/kentcdodds/mdx-bundler#nextjs-esbuild-enoent
-process.env.ESBUILD_BINARY_PATH = path.join(
-  process.cwd(),
-  'node_modules',
-  'esbuild',
-  'bin',
-  'esbuild',
-);
+const endpoint =
+  process.env.NODE_ENV === 'production' ? 'https://bundler.docs.page' : 'http://localhost:8000';
+
+// const getToken = async () => {
+//   const response = await axios.post(`${endpoint}/token`, {
+//     username: process.env.USERNAME,
+//     password: process.env.PASSWORD,
+//   });
+//   return response.data;
+// };
 
 export async function mdxSerialize(content: PageContent): Promise<SerializationResponse> {
-  const response: SerializationResponse = {
-    source: null,
-    headings: [],
+  // authenticate with bundle service
+  // const token = await getToken();
+  //set headers
+  const headers = {
+    'Content-Type': 'text/plain',
+    // Authorization: `Bearer ${token}`,
   };
 
-  const remarkPlugins = [
-    // Convert undeclared variables to strings
-    rehastUndeclaredVariables,
-    // Support GitHub flavoured markdown
-    remarkGfm,
-    // Ensure any `img` tags are not wrapped in `p` tags
-    remarkUnwrapImages,
-  ];
+  const response: SerializationResponse = {
+    source: null,
+    errors: null,
+    headings: [],
+    warnings: [],
+  };
 
-  const rehypePlugins = [
-    rehypeCodeBlocks,
-    // Add an `id` to all heading tags
-    rehypeSlug,
-    [
-      rehypeHeadings,
+  const [, res] = await a2a(
+    axios.post(
+      `${endpoint}/bundle?headerDepth=${content.config.headerDepth ?? 3}`,
+      content.markdown,
+      { headers },
+    ),
+  );
+
+  response.source = res?.data?.bundled?.code;
+  response.warnings = res?.data?.warnings;
+  response.headings = res?.data?.headings;
+
+  if (res?.data?.status !== 200) {
+    let debug;
+    try {
+      debug = await axios.post(`${endpoint}/debug`, content.markdown, {
+        headers,
+      });
+    } catch (e) {
+      response.errors = res?.data?.bundled?.errors || [
+        {
+          column: '??',
+          message: 'Undetermined Error. Check all JSX tags are closed',
+          line: debug?.data?.line,
+          start: debug?.data?.line,
+          emd: debug?.data?.line,
+          leftOver: debug?.data.leftOver || null,
+        },
+      ];
+    }
+
+    response.source = debug?.data?.bundled?.code;
+    response.errors = res?.data?.bundled?.errors || [
       {
-        headings: headerDepthToHeaderList(content.config.headerDepth),
-        callback: (headings: HeadingNode[]) => (response.headings = headings),
+        column: '??',
+        message: 'Undetermined Error. Check all JSX tags are closed',
+        line: debug?.data?.line,
+        start: debug?.data?.line,
+        emd: debug?.data?.line,
+        leftOver: debug?.data.leftOver || null,
       },
-    ],
-    // Make emojis accessible
-    rehypeAccessibleEmojis,
-  ];
-
-  try {
-    const result = await bundleMDX(content.markdown, {
-      xdmOptions(options) {
-        options.remarkPlugins = [...(options.remarkPlugins ?? []), ...remarkPlugins];
-        // @ts-ignore TODO fix types
-        options.rehypePlugins = [...(options.rehypePlugins ?? []), ...rehypePlugins];
-
-        return options;
-      },
-    });
-    response.source = result.code;
-  } catch (e) {
-    response.error = e;
+    ];
   }
 
   return response;

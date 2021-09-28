@@ -1,10 +1,42 @@
 import React from 'react';
+import { Hydrate } from '../../mdx';
 
-function Error({ children }: { children: string }): JSX.Element {
+function Error({
+  line,
+  column,
+  message,
+  src,
+  leftOver,
+}: {
+  line?: number;
+  column?: number;
+  message?: string;
+  src?: string;
+  leftOver?: string;
+}): JSX.Element {
   return (
-    <section className="mx-auto mt-10 max-w-3xl rounded font-mono divide-y bg-red-300">
-      <div className="flex p-3 text-red-800 font-bold uppercase">{children}</div>
-    </section>
+    <>
+      <div>
+        <span>
+          Line {line}, column {column}:{' '}
+        </span>
+      </div>
+      <div className="bg-red-600 rounded">
+        <span className="p-2 text-yellow-200">
+          {' '}
+          {`\> `} {message}.
+        </span>
+      </div>
+      {src && <Hydrate source={src} />}
+      {leftOver && (
+        <pre>
+          {leftOver
+            .split('\n')
+            .slice(0, 10)
+            .map((l, i) => `${line + i + 1} | ${l} \n`)}
+        </pre>
+      )}
+    </>
   );
 }
 

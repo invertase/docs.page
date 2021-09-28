@@ -142,6 +142,10 @@ export class Properties {
 
       properties.editUrl = `https://github.com/${this.source.owner}/${this.source.repository}/edit/${branch}/${content.path}.mdx`;
       properties.createUrl = `https://github.com/${this.source.owner}/${this.source.repository}/new/${branch}/${content.path}`;
+      properties.blameUrl =
+        properties.pointer === Pointer.pullRequest
+          ? `https://github.com/${this.source.owner}/${this.source.repository}/blame/${this.source.ref}/${content.path}.mdx`
+          : `https://github.com/${this.source.owner}/${this.source.repository}/blame/${branch}/${content.path}.mdx`;
     }
 
     return properties;
@@ -162,6 +166,8 @@ export type SlugProperties = {
   debugUrl: string;
   // The URL to edit the current page on GitHub
   editUrl?: string;
+  // The Url to the blame page for a file/PR
+  blameUrl?: string;
   // The URL to create a new page on GitHub
   createUrl?: string;
   // The branch/PR the request is for

@@ -29,6 +29,7 @@ import { Loading } from '../../../templates/Loading';
 import { isProduction } from '../../../utils';
 import { getRepositoryPaths } from '../../../utils/github';
 import { Environment, EnvironmentContext } from '../../../utils/env';
+import { DebugModeContext } from '../../../utils/debug';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', NProgress.start);
@@ -60,13 +61,15 @@ export default function Documentation({
           <ConfigContext.Provider value={content.config}>
             <SlugPropertiesContext.Provider value={properties}>
               <PageContentContext.Provider value={content}>
-                <Head />
-                <ThemeStyles />
-                <Layout>
-                  <ErrorBoundary>
-                    <Hydrate source={source} />
-                  </ErrorBoundary>
-                </Layout>
+                <DebugModeContext.Provider value={false}>
+                  <Head />
+                  <ThemeStyles />
+                  <Layout>
+                    <ErrorBoundary>
+                      <Hydrate source={source} />
+                    </ErrorBoundary>
+                  </Layout>
+                </DebugModeContext.Provider>
               </PageContentContext.Provider>
             </SlugPropertiesContext.Provider>
           </ConfigContext.Provider>
@@ -131,7 +134,7 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
     if (content.markdown) {
       const serialization = await mdxSerialize(content);
 
-      if (serialization.error) {
+      if (serialization.errors) {
         error = RenderError.serverError(properties);
       } else {
         source = serialization.source;
