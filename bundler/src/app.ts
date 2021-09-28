@@ -3,6 +3,7 @@ import { bundleWithOptions } from './utils/bundle.js';
 import { incrementalDebug } from './utils/debug.js';
 const PORT = process.env.PORT || 8000;
 import jsonwebtoken from 'jsonwebtoken';
+import jwt from 'express-jwt';
 import { BundleRequest, RecursiveDebugRequest } from './types.js';
 
 const app = express();
