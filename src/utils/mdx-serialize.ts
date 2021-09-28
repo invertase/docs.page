@@ -18,21 +18,21 @@ interface SerializationResponse {
 const endpoint =
   process.env.NODE_ENV === 'production' ? 'https://bundler.docs.page' : 'http://localhost:8000';
 
-const getToken = async () => {
-  const response = await axios.post(`${endpoint}/token`, {
-    username: process.env.USERNAME,
-    password: process.env.PASSWORD,
-  });
-  return response.data;
-};
+// const getToken = async () => {
+//   const response = await axios.post(`${endpoint}/token`, {
+//     username: process.env.USERNAME,
+//     password: process.env.PASSWORD,
+//   });
+//   return response.data;
+// };
 
 export async function mdxSerialize(content: PageContent): Promise<SerializationResponse> {
   // authenticate with bundle service
-  const token = await getToken();
+  // const token = await getToken();
   //set headers
   const headers = {
     'Content-Type': 'text/plain',
-    Authorization: `Bearer ${token}`,
+    // Authorization: `Bearer ${token}`,
   };
 
   const response: SerializationResponse = {
