@@ -190,6 +190,7 @@ function isRouteMatch(router: NextRouter, properties: SlugProperties, link: stri
     path = `${path}${link}`;
   }
 
-  const currentPath = `/${((router.query.slug as string[]) || []).join('/')}`;
-  return currentPath === path;
+  let currentPath = `/${((router.query.slug as string[]) || []).join('/')}`;
+
+  return currentPath === '/' + path.split('/').slice(-1)[0];
 }
