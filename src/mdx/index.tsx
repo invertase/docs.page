@@ -21,9 +21,6 @@ const components: ComponentMap = {
   h4: (props: React.HTMLProps<HTMLHeadingElement>) => <Heading {...props} type="h4" />,
   h5: (props: React.HTMLProps<HTMLHeadingElement>) => <Heading {...props} type="h5" />,
   h6: (props: React.HTMLProps<HTMLHeadingElement>) => <Heading {...props} type="h6" />,
-  img: (
-    props: React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
-  ) => <Img {...props} />,
   pre: (props: PreProps) => <Pre {...props} />,
   hr: Divider,
 
