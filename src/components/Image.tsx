@@ -7,10 +7,10 @@ import { isExternalLink } from './Link';
 
 interface ImageProps
   extends React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement> {
-  height?: number;
-  width?: number;
+  height?: string | number;
+  width?: string | number;
   alt?: string;
-  src: string;
+  src?: string;
 }
 
 export function Image(props: ImageProps): JSX.Element {
