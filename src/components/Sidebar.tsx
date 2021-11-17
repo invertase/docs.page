@@ -194,8 +194,5 @@ function isRouteMatch(router: NextRouter, properties: SlugProperties, link: stri
 
   path = `${path}${link}`;
 
-  console.log(currentPath);
-  console.log('/' + path.split('/').slice(-1)[0]);
-  
   return currentPath === '/' + path.split('/').slice(-1)[0];
 }
