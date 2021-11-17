@@ -5,9 +5,15 @@ import { leadingSlash } from '../utils';
 import { SlugProperties } from '../utils/properties';
 import { isExternalLink } from './Link';
 
-export function Image(
-  props: React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement>,
-): JSX.Element {
+interface ImageProps
+  extends React.DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement> {
+  height?: string | number;
+  width?: string | number;
+  alt?: string;
+  src?: string;
+}
+
+export function Image(props: ImageProps): JSX.Element {
   const properties = useSlugProperties();
   const content = usePageContent();
 
