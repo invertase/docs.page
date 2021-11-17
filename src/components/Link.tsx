@@ -11,7 +11,12 @@ import { useCustomDomain, useDebugMode, useEnvironment, useSlugProperties } from
  * the root, so several checks are in place to alter the provided
  * `href`.
  */
-export function Link(props: React.HTMLProps<HTMLAnchorElement>): JSX.Element {
+
+interface LinkProps extends React.HTMLProps<HTMLAnchorElement> {
+  href: string;
+}
+
+export function Link(props: LinkProps): JSX.Element {
   const domain = useCustomDomain();
   const properties = useSlugProperties();
   const env = useEnvironment();
