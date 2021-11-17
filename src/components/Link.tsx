@@ -13,7 +13,7 @@ import { useCustomDomain, useDebugMode, useEnvironment, useSlugProperties } from
  */
 
 interface LinkProps extends React.HTMLProps<HTMLAnchorElement> {
-  href: string;
+  href?: string;
 }
 
 export function Link(props: LinkProps): JSX.Element {
