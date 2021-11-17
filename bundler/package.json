@@ -23,6 +23,7 @@
     "rehype-accessible-emojis": "^0.3.2",
     "rehype-slug": "^5.0.0",
     "remark-gfm": "^2.0.0",
+    "remark-strip-badges": "^6.0.1",
     "remark-unwrap-images": "^3.0.0",
     "shiki": "^0.9.11",
     "unist-util-visit": "^4.1.0",

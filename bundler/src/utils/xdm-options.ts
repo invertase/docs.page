@@ -5,11 +5,13 @@ import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 import remarkUnwrapImages from 'remark-unwrap-images';
+import remarkStyleBadges from './plugins/remark-style-badges.js';
 import { headerDepthToHeaderList } from './bundle.js';
 import rehypeHeadings from './plugins/rehype-headings.js';
 import remarkComponentCheck from './plugins/remark-component-check.js';
 import remarkUndeclaredVariables from './plugins/remark-undeclared-variables.js';
 import rehypeCodeBlocks from './plugins/rehype-code-blocks.js';
+import rehypePluginMy from './plugins/remark-style-badges.js';
 
 export const setupXdmOptions = ({
   output,
@@ -36,13 +38,13 @@ export const setupXdmOptions = ({
     // Support GitHub flavoured markdown
     remarkGfm,
     // Ensure any `img` tags are not wrapped in `p` tags
-    remarkUnwrapImages,
   ];
 
   const rehypePlugins = [
     rehypeCodeBlocks,
     // Add an `id` to all heading tags
     rehypeSlug,
+    rehypePluginMy,
     [
       rehypeHeadings,
       {

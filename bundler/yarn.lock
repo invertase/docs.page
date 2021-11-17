@@ -1307,6 +1307,11 @@ is-alphanumerical@^2.0.0:
     is-alphabetical "^2.0.0"
     is-decimal "^2.0.0"
 
+is-badge@^2.0.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/is-badge/-/is-badge-2.1.0.tgz#c587c0a9b2c16dc07761994580c86d17c1ad068a"
+  integrity sha512-xxrflJCQISyWNAEFlZeoeRNsjAD+93TdXiQly5h4smoZ1X9+4dHbIGwhfnpz8Tg1gXgWZtO/R1yDE8/V/XMdzg==
+
 is-binary-path@~2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/is-binary-path/-/is-binary-path-2.1.0.tgz#ea1f7f3b80f064236e83470f86c09c254fb45b09"
@@ -2529,6 +2534,17 @@ remark-rehype@^9.0.0:
     "@types/mdast" "^3.0.0"
     mdast-util-to-hast "^11.0.0"
     unified "^10.0.0"
+
+remark-strip-badges@^6.0.1:
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/remark-strip-badges/-/remark-strip-badges-6.0.1.tgz#f5742fd0ad61c2b3880aadd82367f0487306b100"
+  integrity sha512-53jUQDtMa0Vfn+FfAFuqFnymTMrvCmBxy9cTSwlalfgRna+fn3lRy4TO4XHc0iX4ZfcrTMkXOLb7MdHdsWS/Gw==
+  dependencies:
+    "@types/mdast" "^3.0.0"
+    is-badge "^2.0.0"
+    mdast-util-definitions "^5.0.0"
+    unified "^10.0.0"
+    unist-util-visit "^4.0.0"
 
 remark-unwrap-images@^3.0.0:
   version "3.0.0"
