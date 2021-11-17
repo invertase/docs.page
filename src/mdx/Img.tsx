@@ -1,6 +1,5 @@
-import React from 'react';
-import Zoom from 'react-medium-image-zoom';
-
+import React, { useCallback, useState } from 'react';
+import { Controlled as ControlledZoom } from 'react-medium-image-zoom';
 import { Image } from '../components/Image';
 import { useConfig } from '../hooks';
 
@@ -40,5 +39,26 @@ function withFigure(child: React.ReactElement, caption?: string) {
 }
 
 function withZoom(child: React.ReactElement) {
-  return <Zoom wrapStyle={{ width: '100%' }}>{child}</Zoom>;
+  const [isZoomed, setIsZoomed] = useState(false);
+
+  const handleImgLoad = useCallback(() => {
+    setIsZoomed(true);
+  }, []);
+
+  const handleZoomChange = useCallback(shouldZoom => {
+    setIsZoomed(shouldZoom);
+  }, []);
+  return (
+    <ControlledZoom
+      wrapStyle={
+        isZoomed
+          ? { width: '100%', height: 'auto', transition: 'height ease-out  0.5s' }
+          : { transition: 'height ease-out  0.5s' }
+      }
+      isZoomed={isZoomed}
+      onZoomChange={handleZoomChange}
+    >
+      {child}
+    </ControlledZoom>
+  );
 }
