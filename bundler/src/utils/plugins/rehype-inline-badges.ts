@@ -13,7 +13,7 @@ import { Node } from 'hast-util-heading-rank';
  * @param options
  * @returns
  */
-export default function rehypePluginMy(): (ast: Node) => void {
+export default function rehypeInlineBadges(): (ast: Node) => void {
   //@ts-ignore
   function visitor(node: any, index) {
     node.visited === 'true';
