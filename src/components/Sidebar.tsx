@@ -186,10 +186,13 @@ function isRouteMatch(router: NextRouter, properties: SlugProperties, link: stri
 
   let path = properties.base;
 
-  if (link !== '/') {
-    path = `${path}${link}`;
+  const currentPath = `/${((router.query.slug as string[]) || []).join('/')}`;
+
+  if (link === '/') {
+    return currentPath === '/';
   }
 
-  const currentPath = `/${((router.query.slug as string[]) || []).join('/')}`;
-  return currentPath === path;
+  path = `${path}${link}`;
+
+  return currentPath === '/' + path.split('/').slice(-1)[0];
 }
