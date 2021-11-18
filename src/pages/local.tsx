@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import NextRouter, { useRouter } from 'next/router';
 import NProgress from 'nprogress';
@@ -14,30 +14,123 @@ NextRouter.events.on('routeChangeError', NProgress.done);
 
 const config = mergeConfig({});
 
-export default function Documentation(): JSX.Element {
-  const isAvailable = useRef<any>(false);
-  let [clicked, setClicked] = useState(false);
-  let [directory, setDirectory] = useState([]);
+type Paths = { [path: string]: File };
+
+async function iterateDirectory(
+  directory: FileSystemDirectoryHandle,
+  relativePath?: string,
+  other?: Paths,
+): Promise<Paths> {
+  let paths: Paths = {
+    ...other,
+  };
+
+  for await (const entry of directory.values()) {
+    if (entry.kind === 'file' && entry.name.endsWith('.mdx')) {
+      paths[`${relativePath ?? ''}/${entry.name.replace('.mdx', '')}`] = await entry.getFile();
+    }
+
+    if (entry.kind === 'directory') {
+      paths = {
+        ...paths,
+        ...(await iterateDirectory(entry, `${relativePath ?? ''}/${entry.name}`, paths)),
+      };
+    }
+  }
+
+  return paths;
+}
+
+function useHashChange(): string {
+  const [hash, setHash] = useState('');
+
+  function onHashChange() {
+    return setHash(window.location.hash.replace('#', ''));
+  }
 
   useEffect(() => {
-    if (clicked) {
-      isAvailable.current =
-        typeof window !== 'undefined' &&
-        window
-          .showDirectoryPicker()
-          .then(async x => {
-            const files = [];
-            for await (let [name, handle] of x) {
-              console.log(name);
-              files.push(name);
-            }
-            setDirectory(files);
-            return x;
-          })
-          .catch(console.error);
-      setClicked(false);
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
+  }, []);
+
+  return hash;
+}
+
+function useDirectorySelector() {
+  const [error, setError] = useState<Error | null>(null);
+  const [pending, setPending] = useState(false);
+  const [paths, setPaths] = useState<Paths | null>();
+
+  const select = useCallback(async () => {
+    setPending(true);
+    try {
+      const handle = await window.showDirectoryPicker();
+      let config: File;
+      let docs: FileSystemDirectoryHandle;
+      for await (const entry of handle.values()) {
+        if (entry.kind === 'file' && entry.name === 'docs.json') {
+          config = await entry.getFile();
+        }
+        if (entry.kind === 'directory' && entry.name === 'docs') {
+          docs = entry;
+        }
+      }
+
+      if (!config) {
+        throw new Error('No docs.json found');
+      }
+
+      if (!docs) {
+        throw new Error('No docs directory found');
+      }
+
+      // TODO set config
+      setPaths(await iterateDirectory(docs));
+    } catch (e) {
+      setError(e);
+    } finally {
+      setPending(false);
     }
-  }, [clicked]);
+  }, []);
+
+  return { select, paths, error, pending };
+}
+
+export default function Documentation(): JSX.Element {
+  const { select, paths, error, pending } = useDirectorySelector();
+  const hash = useHashChange();
+
+  useEffect(() => {
+    if (!paths) {
+      return;
+    }
+
+    const file = paths[hash];
+
+    // TODO handle no file (404)
+    if (!file) {
+      console.log('file not found, 404');
+      return;
+    }
+
+    // TODO update state and show page
+    file.text().then(text => {
+      console.log(text);
+    });
+  }, [paths, hash]);
+
+  if (pending) {
+    return <div>Waiting for user...</div>;
+  }
+
+  if (error) {
+    console.error(error);
+    return <div>Something went wrong!</div>;
+  }
+
+  if (paths == null) {
+    return <button onClick={select}>Select Directory!</button>;
+  }
 
   return (
     <EnvironmentContext.Provider value={'preview'}>
@@ -60,10 +153,9 @@ export default function Documentation(): JSX.Element {
           }}
         >
           <Layout>
-            <button className="border-solid" onClick={() => setClicked(true)}>
+            <button className="border-solid" onClick={select}>
               click to pick directory
             </button>
-            <div>{JSON.stringify(directory)}</div>
           </Layout>
         </PageContentContext.Provider>
       </ConfigContext.Provider>
