@@ -117,8 +117,8 @@ export default function Documentation(): JSX.Element {
       return;
     }
 
-    const file = paths[hash];
-
+    const file = hash !== '' ? paths[hash] : paths['/index'];
+    
     // TODO handle no file (404)
     if (!file) {
       console.log('file not found, 404');
