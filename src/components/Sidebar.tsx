@@ -139,10 +139,11 @@ function Title({
  * A single navigation URL in the sidebar.
  */
 function NavLink({ href, children, active }: { href: string; children: string; active: boolean }) {
+  // const isPreviewMode = usePreviewMode()
   return (
     <li className="-ml-2 mt-1">
       <Link
-        href={href}
+        href={true ? `#${href}` : href}
         className={cx('flex px-2 py-1 rounded font-semibold', {
           'text-theme-color': active,
           'opacity-75 hover:opacity-100': !active,

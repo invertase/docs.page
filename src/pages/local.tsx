@@ -58,7 +58,6 @@ function useHashChange(): string {
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
-  console.log(hash);
 
   return hash;
 }
@@ -104,7 +103,6 @@ function useDirectorySelector() {
       setPending(false);
     }
   }, []);
-  console.log(paths);
 
   return { select, paths, error, pending, config };
 }
@@ -192,11 +190,10 @@ async function buildPreviewProps({
   config: string;
   text: string;
 }): Promise<PageProps> {
-  console.log(hash);
   const params = hash.split('/');
 
   const owner = 'preview';
-  const name = params[1];
+  const name = 'mode';
   const slug = params.slice(1);
 
   let source = null;
