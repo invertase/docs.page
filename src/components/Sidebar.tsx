@@ -140,6 +140,8 @@ function Title({
  */
 function NavLink({ href, children, active }: { href: string; children: string; active: boolean }) {
   // const isPreviewMode = usePreviewMode()
+
+  // TODO: replace 'true' below with isPreviewMode
   return (
     <li className="-ml-2 mt-1">
       <Link
@@ -185,7 +187,7 @@ function isRouteMatch(router: NextRouter, properties: SlugProperties, link: stri
     return false;
   }
 
-  let path = properties.base;
+  let path = '/' + properties.path;
 
   const currentPath = `/${((router.query.slug as string[]) || []).join('/')}`;
 
@@ -193,7 +195,15 @@ function isRouteMatch(router: NextRouter, properties: SlugProperties, link: stri
     return currentPath === '/';
   }
 
-  path = `${path}${link}`;
+  // path = `${path}${link}`;
+  console.log('link:', link);
 
+  console.log('path:', path);
+  console.log('currentPath:', currentPath);
+
+  // TODO: replace this with isPreviewMode:
+  if (true) {
+    return path === link;
+  }
   return currentPath === '/' + path.split('/').slice(-1)[0];
 }
