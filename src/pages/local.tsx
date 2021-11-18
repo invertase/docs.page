@@ -3,7 +3,7 @@ import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
 import NextRouter, { useRouter } from 'next/router';
 import NProgress from 'nprogress';
 import { Layout } from '../components/Layout';
-import { ConfigContext, mergeConfig } from '../utils/projectConfig';
+import { ConfigContext, mergeConfig, ProjectConfig } from '../utils/projectConfig';
 import { getPageContent, HeadingNode, PageContent, PageContentContext } from '../utils/content';
 import { Environment, EnvironmentContext } from '../utils/env';
 import { IRenderError, redirect, RenderError } from '../utils/error';
@@ -19,8 +19,6 @@ NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', NProgress.start);
 NextRouter.events.on('routeChangeComplete', NProgress.done);
 NextRouter.events.on('routeChangeError', NProgress.done);
-
-const config = mergeConfig({});
 
 type Paths = { [path: string]: File };
 
@@ -69,23 +67,28 @@ function useDirectorySelector() {
   const [error, setError] = useState<Error | null>(null);
   const [pending, setPending] = useState(false);
   const [paths, setPaths] = useState<Paths | null>();
+  const [config, setConfig] = useState<ProjectConfig | null>();
 
   const select = useCallback(async () => {
     setPending(true);
     try {
       const handle = await window.showDirectoryPicker();
-      let config: File;
       let docs: FileSystemDirectoryHandle;
+      let foundDocsJson = false;
       for await (const entry of handle.values()) {
         if (entry.kind === 'file' && entry.name === 'docs.json') {
-          config = await entry.getFile();
+          const configFile = await entry.getFile();
+          const configText = JSON.parse(await configFile.text());
+
+          setConfig(mergeConfig(configText));
+          foundDocsJson = true;
         }
         if (entry.kind === 'directory' && entry.name === 'docs') {
           docs = entry;
         }
       }
 
-      if (!config) {
+      if (!foundDocsJson) {
         throw new Error('No docs.json found');
       }
 
@@ -115,8 +118,6 @@ export default function Documentation(): JSX.Element {
     if (!paths) {
       return;
     }
-    console.log(paths);
-    console.log(hash);
 
     const file = paths[hash];
 
@@ -129,7 +130,6 @@ export default function Documentation(): JSX.Element {
     // TODO update state and show page
     file.text().then(async text => {
       setPageProps(await buildPreviewProps({ hash, config: JSON.stringify(config), text }));
-      console.log(text);
     });
   }, [paths, hash]);
 
@@ -147,58 +147,30 @@ export default function Documentation(): JSX.Element {
   }
 
   if (!pageProps) {
-    return <>not loaded</>
+    return <>not loaded</>;
   }
   const { env, source, content, properties } = pageProps;
+
   return (
     <>
       <EnvironmentContext.Provider value={env}>
-          <ConfigContext.Provider value={content.config}>
-            <SlugPropertiesContext.Provider value={properties}>
-              <PageContentContext.Provider value={content}>
-                <DebugModeContext.Provider value={false}>
-                  <Head />
-                  <ThemeStyles />
-                  <Layout>
-                    <ErrorBoundary>
-                      <Hydrate source={source} />
-                    </ErrorBoundary>
-                  </Layout>
-                </DebugModeContext.Provider>
-              </PageContentContext.Provider>
-            </SlugPropertiesContext.Provider>
-          </ConfigContext.Provider>
+        <ConfigContext.Provider value={config}>
+          <SlugPropertiesContext.Provider value={properties}>
+            <PageContentContext.Provider value={content}>
+              <DebugModeContext.Provider value={false}>
+                <Head />
+                <ThemeStyles />
+                <Layout>
+                  <ErrorBoundary>
+                    <Hydrate source={source} />
+                  </ErrorBoundary>
+                </Layout>
+              </DebugModeContext.Provider>
+            </PageContentContext.Provider>
+          </SlugPropertiesContext.Provider>
+        </ConfigContext.Provider>
       </EnvironmentContext.Provider>
     </>
-  );
-  return (
-    <EnvironmentContext.Provider value={'preview'}>
-      <ConfigContext.Provider value={config}>
-        <PageContentContext.Provider
-          value={{
-            flags: { hasConfig: false, hasFrontmatter: true, isFork: false, isIndexable: false },
-            frontmatter: {
-              title: 'test',
-              description: 'test',
-              sidebar: false,
-              redirect: 'test',
-              image: '',
-            },
-            markdown: '',
-            path: '',
-            baseBranch: 'main',
-            config,
-            headings: [],
-          }}
-        >
-          <Layout>
-            <button className="border-solid" onClick={select}>
-              click to change directory
-            </button>
-          </Layout>
-        </PageContentContext.Provider>
-      </ConfigContext.Provider>
-    </EnvironmentContext.Provider>
   );
 }
 
@@ -219,11 +191,11 @@ async function buildPreviewProps({
   hash: string;
   config: string;
   text: string;
-}) : Promise<PageProps> {
+}): Promise<PageProps> {
   console.log(hash);
   const params = hash.split('/');
 
-  const owner = params[0];
+  const owner = 'preview';
   const name = params[1];
   const slug = params.slice(1);
 
@@ -265,11 +237,11 @@ async function buildPreviewProps({
   }
 
   return {
-      env: (process.env.VERCEL_ENV ?? 'development') as Environment,
-      properties: properties.toObject(content),
-      source,
-      headings,
-      content,
-      error: null,
+    env: (process.env.VERCEL_ENV ?? 'development') as Environment,
+    properties: properties.toObject(content),
+    source,
+    headings,
+    content,
+    error: null,
   };
 };
