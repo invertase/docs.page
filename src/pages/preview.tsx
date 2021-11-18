@@ -192,8 +192,8 @@ async function buildPreviewProps({
 }): Promise<PageProps> {
   const params = hash.split('/');
 
-  const owner = 'preview';
-  const name = 'mode';
+  const owner = 'preview#';
+  const name = 'index';
   const slug = params.slice(1);
 
   let source = null;
