@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
+// import { useCallback, useState } from 'react';
 import cx from 'classnames';
 import { NextRouter, useRouter } from 'next/router';
 
@@ -42,37 +43,42 @@ function Iterator({ item, depth }: { item: SidebarItem; depth: number }) {
   }
 
   // Otherwise, it's a nested element
-  const links = getChildrenLinks(item[1]);
+  // const links = getChildrenLinks(item[1]);
 
-  const isActive = !!links.find(link =>
-    isRouteMatch(router, properties, link, previewMode.enabled),
-  );
+  // const isActive = !!links.find(link => isRouteMatch(router, properties, link));
 
   return (
-    <NavigationList isInitiallyActive={isActive} title={item[0]} depth={depth} items={item[1]} />
+    // <NavigationList isInitiallyActive={isActive} title={item[0]} depth={depth} items={item[1]} />
+    <NavigationList title={item[0]} depth={depth} items={item[1]} />
   );
 }
 
 function NavigationList({
   title,
-  isInitiallyActive,
+  // isInitiallyActive,
   depth,
   items,
 }: {
   title: string;
-  isInitiallyActive: boolean;
+  // isInitiallyActive: boolean;
   depth: number;
   items: SidebarItem[];
 }) {
-  const [isActive, setIsActive] = useState<boolean>(isInitiallyActive);
-
-  const onToggle = useCallback(() => {
-    setIsActive($ => !$);
-  }, [isInitiallyActive]);
+  // const [isActive, setIsActive] = useState<boolean>(isInitiallyActive);
+  const isActive = true;
+  // const onToggle = useCallback(() => {
+  //   setIsActive($ => !$);
+  // }, [isInitiallyActive]);
 
   return (
     <li className="mt-1">
-      <Title title={title} active={isActive} onToggle={onToggle} />
+      <Title
+        title={title}
+        active={isActive}
+        onToggle={() => {
+          return null;
+        }}
+      />
       <ul
         className={cx('relative', {
           'overflow-hidden h-0': !isActive,
@@ -122,7 +128,7 @@ function Title({
           transition: 'transform .1s ease-in-out',
         }}
       >
-        <svg
+        {/* <svg
           width={16}
           height={16}
           xmlns="http://www.w3.org/2000/svg"
@@ -134,7 +140,7 @@ function Title({
           })}
         >
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
+        </svg> */}
       </span>
     </div>
   );
@@ -163,22 +169,22 @@ function NavLink({ href, children, active }: { href: string; children: string; a
   );
 }
 
-/**
- * Extracts all child links from a [SidebarItem] list.
- *
- * @param items
- * @param initialLinks
- */
-function getChildrenLinks(items: SidebarItem[], initialLinks: string[] = []): string[] {
-  let links: string[] = [...initialLinks];
+// /**
+//  * Extracts all child links from a [SidebarItem] list.
+//  *
+//  * @param items
+//  * @param initialLinks
+//  */
+// function getChildrenLinks(items: SidebarItem[], initialLinks: string[] = []): string[] {
+//   let links: string[] = [...initialLinks];
 
-  items.forEach((item: SidebarItem) => {
-    if (typeof item[1] === 'string') links.push(item[1]);
-    else links = [...links, ...getChildrenLinks(item[1], links)];
-  });
+//   items.forEach((item: SidebarItem) => {
+//     if (typeof item[1] === 'string') links.push(item[1]);
+//     else links = [...links, ...getChildrenLinks(item[1], links)];
+//   });
 
-  return links;
-}
+//   return links;
+// }
 
 /**
  * Returns whether a given link matches the current route.
