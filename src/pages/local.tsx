@@ -17,7 +17,7 @@ const config = mergeConfig({});
 export default function Documentation(): JSX.Element {
   const isAvailable = useRef<any>(false);
   let [clicked, setClicked] = useState(false);
-  let [directory, setDirectory] = useState({});
+  let [directory, setDirectory] = useState([]);
 
   useEffect(() => {
     if (clicked) {
@@ -26,11 +26,12 @@ export default function Documentation(): JSX.Element {
         window
           .showDirectoryPicker()
           .then(async x => {
+            const files = [];
             for await (let [name, handle] of x) {
               console.log(name);
+              files.push(name);
             }
-            console.info(x.getFile());
-            setDirectory(x);
+            setDirectory(files);
             return x;
           })
           .catch(console.error);
@@ -59,10 +60,10 @@ export default function Documentation(): JSX.Element {
           }}
         >
           <Layout>
-            <div></div>
             <button className="border-solid" onClick={() => setClicked(true)}>
               click to pick directory
             </button>
+            <div>{JSON.stringify(directory)}</div>
           </Layout>
         </PageContentContext.Provider>
       </ConfigContext.Provider>
