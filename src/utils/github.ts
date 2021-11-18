@@ -186,7 +186,7 @@ type PageContentsQuery = {
   };
 };
 
-type Contents = {
+export type Contents = {
   isFork: boolean;
   baseBranch: string;
   config?: string;

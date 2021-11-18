@@ -1,11 +1,11 @@
 import express, { Response, text, json } from 'express';
+import cors from 'cors';
 import { bundleWithOptions } from './utils/bundle.js';
 import { incrementalDebug } from './utils/debug.js';
 import { BundleRequest, RecursiveDebugRequest } from './types.js';
-
 const app = express();
 const PORT = process.env.PORT || 8000;
-
+app.use(cors());
 app.use(text());
 app.use(json());
 app.listen(PORT, () => {

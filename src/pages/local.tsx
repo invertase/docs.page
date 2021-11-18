@@ -4,8 +4,16 @@ import NextRouter, { useRouter } from 'next/router';
 import NProgress from 'nprogress';
 import { Layout } from '../components/Layout';
 import { ConfigContext, mergeConfig } from '../utils/projectConfig';
-import { PageContentContext } from '../utils/content';
-import { EnvironmentContext } from '../utils/env';
+import { getPageContent, HeadingNode, PageContent, PageContentContext } from '../utils/content';
+import { Environment, EnvironmentContext } from '../utils/env';
+import { IRenderError, redirect, RenderError } from '../utils/error';
+import { Properties, SlugProperties, SlugPropertiesContext } from '../utils/properties';
+import { mdxSerialize } from '../utils/mdx-serialize';
+import { ErrorBoundary } from '../templates/error';
+import { DebugModeContext } from '../utils/debug';
+import { Head } from '../components/Head';
+import { ThemeStyles } from '../components/ThemeStyles';
+import { Hydrate } from '../mdx';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', NProgress.start);
@@ -52,6 +60,7 @@ function useHashChange(): string {
     window.addEventListener('hashchange', onHashChange);
     return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
+  console.log(hash);
 
   return hash;
 }
@@ -92,18 +101,22 @@ function useDirectorySelector() {
       setPending(false);
     }
   }, []);
+  console.log(paths);
 
-  return { select, paths, error, pending };
+  return { select, paths, error, pending, config };
 }
 
 export default function Documentation(): JSX.Element {
-  const { select, paths, error, pending } = useDirectorySelector();
-  const hash = useHashChange();
+  const { select, paths, error, pending, config } = useDirectorySelector();
 
+  const hash = useHashChange();
+  const [pageProps, setPageProps] = useState<PageProps | null>(null);
   useEffect(() => {
     if (!paths) {
       return;
     }
+    console.log(paths);
+    console.log(hash);
 
     const file = paths[hash];
 
@@ -114,7 +127,8 @@ export default function Documentation(): JSX.Element {
     }
 
     // TODO update state and show page
-    file.text().then(text => {
+    file.text().then(async text => {
+      setPageProps(await buildPreviewProps({ hash, config: JSON.stringify(config), text }));
       console.log(text);
     });
   }, [paths, hash]);
@@ -132,6 +146,31 @@ export default function Documentation(): JSX.Element {
     return <button onClick={select}>Select Directory!</button>;
   }
 
+  if (!pageProps) {
+    return <>not loaded</>
+  }
+  const { env, source, content, properties } = pageProps;
+  return (
+    <>
+      <EnvironmentContext.Provider value={env}>
+          <ConfigContext.Provider value={content.config}>
+            <SlugPropertiesContext.Provider value={properties}>
+              <PageContentContext.Provider value={content}>
+                <DebugModeContext.Provider value={false}>
+                  <Head />
+                  <ThemeStyles />
+                  <Layout>
+                    <ErrorBoundary>
+                      <Hydrate source={source} />
+                    </ErrorBoundary>
+                  </Layout>
+                </DebugModeContext.Provider>
+              </PageContentContext.Provider>
+            </SlugPropertiesContext.Provider>
+          </ConfigContext.Provider>
+      </EnvironmentContext.Provider>
+    </>
+  );
   return (
     <EnvironmentContext.Provider value={'preview'}>
       <ConfigContext.Provider value={config}>
@@ -154,34 +193,83 @@ export default function Documentation(): JSX.Element {
         >
           <Layout>
             <button className="border-solid" onClick={select}>
-              click to pick directory
+              click to change directory
             </button>
           </Layout>
         </PageContentContext.Provider>
       </ConfigContext.Provider>
     </EnvironmentContext.Provider>
   );
-  //   return (
-  //     <>
-  //       <EnvironmentContext.Provider value={env}>
-  //         <CustomDomainContext.Provider value={domain}>
-  //           <ConfigContext.Provider value={content.config}>
-  //             <SlugPropertiesContext.Provider value={properties}>
-  //               <PageContentContext.Provider value={content}>
-  //                 <DebugModeContext.Provider value={false}>
-  //                   <Head />
-  //                   <ThemeStyles />
-  //                   <Layout>
-  //                     <ErrorBoundary>
-  //                       <Hydrate source={source} />
-  //                     </ErrorBoundary>
-  //                   </Layout>
-  //                 </DebugModeContext.Provider>
-  //               </PageContentContext.Provider>
-  //             </SlugPropertiesContext.Provider>
-  //           </ConfigContext.Provider>
-  //         </CustomDomainContext.Provider>
-  //       </EnvironmentContext.Provider>
-  //     </>
-  //   );
 }
+
+type PageProps = {
+  env: Environment;
+  properties: SlugProperties;
+  headings: HeadingNode[];
+  source?: string;
+  content?: PageContent;
+  error?: Error;
+};
+
+async function buildPreviewProps({
+  hash,
+  config,
+  text,
+}: {
+  hash: string;
+  config: string;
+  text: string;
+}) : Promise<PageProps> {
+  console.log(hash);
+  const params = hash.split('/');
+
+  const owner = params[0];
+  const name = params[1];
+  const slug = params.slice(1);
+
+  let source = null;
+  const headings: HeadingNode[] = [];
+  let error: RenderError = null;
+
+  // Build a request instance from the query
+  const properties = await Properties.build([owner, name, ...slug]);
+
+  const localContent = {
+    isFork: false,
+    baseBranch: 'main',
+    config,
+    md: text,
+    path: hash,
+  };
+
+  const content = await getPageContent(properties, localContent);
+
+  if (!content) {
+    // If there is no content, the repository is not found
+    error = RenderError.repositoryNotFound(properties);
+  } else if (content.frontmatter.redirect) {
+    // TODO: Redirect the user to another page
+  } else {
+    if (content.markdown) {
+      const serialization = await mdxSerialize(content);
+
+      if (serialization.errors) {
+        error = RenderError.serverError(properties);
+      } else {
+        source = serialization.source;
+        content.headings = serialization.headings as unknown as HeadingNode[];
+      }
+    } else {
+      error = RenderError.pageNotFound(properties);
+    }
+  }
+
+  return {
+      env: (process.env.VERCEL_ENV ?? 'development') as Environment,
+      properties: properties.toObject(content),
+      source,
+      headings,
+      content,
+      error: null,
+  };
+};
