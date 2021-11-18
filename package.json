@@ -80,6 +80,7 @@
     "@types/react-scrollspy": "^3.3.3",
     "@types/sanitize-html": "^2.3.1",
     "@types/valid-data-url": "^2.0.0",
+    "@types/wicg-file-system-access": "^2020.9.4",
     "@typescript-eslint/eslint-plugin": "^4.27.0",
     "cross-env": "^7.0.2",
     "eslint": "^7.28.0",

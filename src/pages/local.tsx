@@ -24,7 +24,6 @@ export default function Documentation(): JSX.Element {
       isAvailable.current =
         typeof window !== 'undefined' &&
         window
-          //@ts-ignore
           .showDirectoryPicker()
           .then(async x => {
             for await (let [name, handle] of x) {
