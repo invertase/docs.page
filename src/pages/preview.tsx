@@ -52,7 +52,12 @@ function useHashChange(): string {
   const [hash, setHash] = useState('');
 
   function onHashChange() {
-    return setHash(window.location.hash.replace('#', ''));
+    // TODO: probably have to handle deeper index files, and redirects somewhere
+    const newHash =
+      window.location.hash.replace('#', '') === '/'
+        ? '/index'
+        : window.location.hash.replace('#', '');
+    return setHash(newHash);
   }
 
   useEffect(() => {
@@ -113,6 +118,7 @@ export default function Documentation(): JSX.Element {
 
   const hash = useHashChange();
   const [pageProps, setPageProps] = useState<PageProps | null>(null);
+
   useEffect(() => {
     if (!handles) {
       return;
@@ -127,18 +133,14 @@ export default function Documentation(): JSX.Element {
     }
 
     // TODO update state and show page
-    //@ts-ignore
     const interval = setInterval(
       () =>
         handle
           .getFile()
-          .then(file => file.text())
-          .then(text => buildPreviewProps({ hash, config: JSON.stringify(config), text }))
-          .then(setPageProps)
-          .then(() => {
-            console.log('polled');
-          }),
-      1000,
+          .then(file => file && file.text())
+          .then(text => text && buildPreviewProps({ hash, config: JSON.stringify(config), text }))
+          .then(props => props && setPageProps(props)),
+      500,
     );
 
     return () => clearInterval(interval);
