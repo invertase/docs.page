@@ -147,14 +147,9 @@ export default function Documentation(): JSX.Element {
     return () => clearInterval(interval);
   }, [handles, hash]);
 
-  if (pending) {
-    return <div>Waiting for user...</div>;
-  }
-
-  if (error) {
-    console.error(error);
-    return <div>Something went wrong!</div>;
-  }
+  // if (pending) {
+  //   return <div>Waiting for user...</div>;
+  // }
 
   if (handles == null) {
     return (
@@ -165,11 +160,18 @@ export default function Documentation(): JSX.Element {
       </>
     );
   }
-
   if (!pageProps) {
-    return <>not loaded</>;
+    NProgress.start();
+    return (
+      <>
+        <Preview>
+          <button onClick={select}>Select Directory!</button>
+        </Preview>
+      </>
+    );
   }
   const { env, source, content, properties } = pageProps;
+  NProgress.done();
 
   return (
     <>
