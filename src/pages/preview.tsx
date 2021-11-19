@@ -20,31 +20,31 @@ NextRouter.events.on('routeChangeStart', NProgress.start);
 NextRouter.events.on('routeChangeComplete', NProgress.done);
 NextRouter.events.on('routeChangeError', NProgress.done);
 
-type Paths = { [path: string]: File };
+type FileSystemFileHandles = { [path: string]: FileSystemFileHandle };
 
 async function iterateDirectory(
   directory: FileSystemDirectoryHandle,
   relativePath?: string,
-  other?: Paths,
-): Promise<Paths> {
-  let paths: Paths = {
+  other?: FileSystemFileHandles,
+): Promise<FileSystemFileHandles> {
+  let handles: FileSystemFileHandles = {
     ...other,
   };
 
   for await (const entry of directory.values()) {
     if (entry.kind === 'file' && entry.name.endsWith('.mdx')) {
-      paths[`${relativePath ?? ''}/${entry.name.replace('.mdx', '')}`] = await entry.getFile();
+      handles[`${relativePath ?? ''}/${entry.name.replace('.mdx', '')}`] = entry;
     }
 
     if (entry.kind === 'directory') {
-      paths = {
-        ...paths,
-        ...(await iterateDirectory(entry, `${relativePath ?? ''}/${entry.name}`, paths)),
+      handles = {
+        ...handles,
+        ...(await iterateDirectory(entry, `${relativePath ?? ''}/${entry.name}`, handles)),
       };
     }
   }
 
-  return paths;
+  return handles;
 }
 
 function useHashChange(): string {
@@ -65,7 +65,7 @@ function useHashChange(): string {
 function useDirectorySelector() {
   const [error, setError] = useState<Error | null>(null);
   const [pending, setPending] = useState(false);
-  const [paths, setPaths] = useState<Paths | null>();
+  const [handles, setHandles] = useState<FileSystemFileHandles | null>();
   const [config, setConfig] = useState<ProjectConfig | null>();
 
   const select = useCallback(async () => {
@@ -96,7 +96,7 @@ function useDirectorySelector() {
       }
 
       // TODO set config
-      setPaths(await iterateDirectory(docs));
+      setHandles(await iterateDirectory(docs));
     } catch (e) {
       setError(e);
     } finally {
@@ -104,32 +104,44 @@ function useDirectorySelector() {
     }
   }, []);
 
-  return { select, paths, error, pending, config };
+  return { select, handles, error, pending, config };
 }
 
 export default function Documentation(): JSX.Element {
-  const { select, paths, error, pending, config } = useDirectorySelector();
+  const { select, handles, error, pending, config } = useDirectorySelector();
 
   const hash = useHashChange();
   const [pageProps, setPageProps] = useState<PageProps | null>(null);
   useEffect(() => {
-    if (!paths) {
+    if (!handles) {
       return;
     }
 
-    const file = hash !== '' ? paths[hash] : paths['/index'];
-    
+    const handle = hash !== '' ? handles[hash] : handles['/index'];
+
     // TODO handle no file (404)
-    if (!file) {
+    if (!handle) {
       console.log('file not found, 404');
       return;
     }
 
     // TODO update state and show page
-    file.text().then(async text => {
-      setPageProps(await buildPreviewProps({ hash, config: JSON.stringify(config), text }));
-    });
-  }, [paths, hash]);
+    //@ts-ignore
+    const interval = setInterval(
+      () =>
+        handle
+          .getFile()
+          .then(file => file.text())
+          .then(text => buildPreviewProps({ hash, config: JSON.stringify(config), text }))
+          .then(setPageProps)
+          .then(() => {
+            console.log('polled');
+          }),
+      1000,
+    );
+
+    return () => clearInterval(interval);
+  }, [handles, hash]);
 
   if (pending) {
     return <div>Waiting for user...</div>;
@@ -140,7 +152,7 @@ export default function Documentation(): JSX.Element {
     return <div>Something went wrong!</div>;
   }
 
-  if (paths == null) {
+  if (handles == null) {
     return <button onClick={select}>Select Directory!</button>;
   }
 
