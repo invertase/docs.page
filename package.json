@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "PORT=3000 next dev",
-    "express-bundler": "cd bundler && nodemon",
+    "dev": "concurrently \"PORT=3000 next dev\" \"yarn express-bundler\"",
+    "express-bundler": "cd bundler && yarn dev",
     "dev:prod": "cross-env NODE_ENV=production next dev",
     "build": "npm run clean && next build",
     "start": "next start",
@@ -29,6 +29,7 @@
     "axios": "^0.21.4",
     "classnames": "^2.2.6",
     "color": "^4.0.1",
+    "concurrently": "^6.4.0",
     "esbuild": "^0.13.2",
     "gray-matter": "^4.0.2",
     "hast-util-has-property": "^2.0.0",
