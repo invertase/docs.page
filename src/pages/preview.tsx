@@ -15,6 +15,7 @@ import { Head } from '../components/Head';
 import { ThemeStyles } from '../components/ThemeStyles';
 import { Hydrate } from '../mdx';
 import { PreviewModeContext } from '../utils/preview';
+import { Preview } from '../templates/preview';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', NProgress.start);
@@ -156,7 +157,13 @@ export default function Documentation(): JSX.Element {
   }
 
   if (handles == null) {
-    return <button onClick={select}>Select Directory!</button>;
+    return (
+      <>
+        <Preview>
+          <button onClick={select}>Select Directory!</button>
+        </Preview>
+      </>
+    );
   }
 
   if (!pageProps) {
