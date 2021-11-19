@@ -31,9 +31,7 @@ export default function Documentation(): JSX.Element {
   if (handles == null) {
     return (
       <>
-        <Preview>
-          <button onClick={select}>Select Directory!</button>
-        </Preview>
+        <Preview onSelect={select} />
       </>
     );
   }
@@ -41,9 +39,9 @@ export default function Documentation(): JSX.Element {
     NProgress.start();
     return (
       <>
-        <Preview>
-          <button onClick={select}>Select Directory!</button>
-        </Preview>
+        <>
+          <Preview onSelect={select} />
+        </>
       </>
     );
   }

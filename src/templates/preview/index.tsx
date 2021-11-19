@@ -1,6 +1,6 @@
 import { Footer } from '../homepage/Footer';
 
-export function Preview({ children }: { children: React.ReactNode }): JSX.Element {
+export function Preview({ onSelect }: { onSelect: () => void }): JSX.Element {
   return (
     <div className="dark:text-white">
       <section className="py-16 lg:py-32 items-center text-center px-4 lg:text-left">
@@ -40,9 +40,12 @@ export function Preview({ children }: { children: React.ReactNode }): JSX.Elemen
             docs.page:
           </p>
           <div className="w-100% pt-8 text-center items-center justify-center content-center">
-            <span className="cursor-pointer bg-green-600 hover:bg-green-500 px-3 py-2 text-s rounded-lg shadow text-white transition-colors whitespace-nowrap">
-              {children}
-            </span>
+            <button
+              className="cursor-pointer bg-green-600 hover:bg-green-500 px-3 py-2 text-s rounded-lg shadow text-white transition-colors whitespace-nowrap"
+              onClick={onSelect}
+            >
+              Select Directory!
+            </button>
           </div>
         </div>
         <div className="mt-32 max-w-5xl mx-auto px-4 lg:px-0">
