@@ -14,6 +14,7 @@ import { DebugModeContext } from '../utils/debug';
 import { Head } from '../components/Head';
 import { ThemeStyles } from '../components/ThemeStyles';
 import { Hydrate } from '../mdx';
+import { PreviewModeContext } from '../utils/preview';
 
 NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', NProgress.start);
@@ -167,15 +168,17 @@ export default function Documentation(): JSX.Element {
         <ConfigContext.Provider value={config}>
           <SlugPropertiesContext.Provider value={properties}>
             <PageContentContext.Provider value={content}>
-              <DebugModeContext.Provider value={false}>
-                <Head />
-                <ThemeStyles />
-                <Layout>
-                  <ErrorBoundary>
-                    <Hydrate source={source} />
-                  </ErrorBoundary>
-                </Layout>
-              </DebugModeContext.Provider>
+              <PreviewModeContext.Provider value={true}>
+                <DebugModeContext.Provider value={false}>
+                  <Head />
+                  <ThemeStyles />
+                  <Layout>
+                    <ErrorBoundary>
+                      <Hydrate source={source} />
+                    </ErrorBoundary>
+                  </Layout>
+                </DebugModeContext.Provider>
+              </PreviewModeContext.Provider>
             </PageContentContext.Provider>
           </SlugPropertiesContext.Provider>
         </ConfigContext.Provider>
