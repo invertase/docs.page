@@ -5,7 +5,7 @@ import { ErrorType, IRenderError } from '../../utils/error';
 import { Footer } from '../homepage/Footer';
 
 import { Title } from './Title';
-import { Link, ExternalLink } from '../../components/Link';
+import { ExternalLink } from '../../components/Link';
 import { QuickLinks } from '../error/QuickLinks';
 
 export * from '../error/ErrorBoundary';
