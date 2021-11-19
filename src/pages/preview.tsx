@@ -21,7 +21,7 @@ NextRouter.events.on('routeChangeComplete', NProgress.done);
 NextRouter.events.on('routeChangeError', NProgress.done);
 
 export default function Documentation(): JSX.Element {
-  const { select, handles, error, pending, config } = useDirectorySelector();
+  const { select, handles, config } = useDirectorySelector();
 
   const [pageProps, setPageProps] = useState<PreviewPageProps | null>(null);
 

@@ -15,7 +15,7 @@ export type PreviewPageProps = {
   headings: HeadingNode[];
   source?: string;
   content?: PageContent;
-  error?: Error;
+  error?: RenderError;
 };
 
 export async function buildPreviewProps({
@@ -76,6 +76,6 @@ export async function buildPreviewProps({
     source,
     headings,
     content,
-    error: null,
+    error: error,
   };
-};
+}

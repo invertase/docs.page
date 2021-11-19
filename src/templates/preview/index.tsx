@@ -1,7 +1,6 @@
 import { Footer } from '../homepage/Footer';
-import { Header } from '../../components/Header';
 
-export const Preview = ({ children }) => {
+export function Preview({ children }: { children: React.ReactNode }): JSX.Element {
   return (
     <div className="dark:text-white">
       <section className="py-16 lg:py-32 items-center text-center px-4 lg:text-left">
@@ -52,4 +51,4 @@ export const Preview = ({ children }) => {
       </section>
     </div>
   );
-};
+}

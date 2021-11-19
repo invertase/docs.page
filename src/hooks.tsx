@@ -5,7 +5,12 @@ import { PageContent, PageContentContext } from './utils/content';
 import { CustomDomain, CustomDomainContext } from './utils/domain';
 import { SlugProperties, SlugPropertiesContext } from './utils/properties';
 import { DebugMode, DebugModeContext } from './utils/debug';
-import { PreviewModeContext, PreviewMode, buildPreviewProps } from './utils/preview';
+import {
+  PreviewModeContext,
+  PreviewMode,
+  buildPreviewProps,
+  PreviewPageProps,
+} from './utils/preview';
 
 export function usePreviewMode(): PreviewMode {
   return useContext(PreviewModeContext);
@@ -118,7 +123,13 @@ export function useHashChange(): string {
   return hash;
 }
 
-export function useDirectorySelector() {
+export function useDirectorySelector(): {
+  select: () => void;
+  handles: FileSystemFileHandles;
+  error: Error;
+  pending: boolean;
+  config: ProjectConfig;
+} {
   const [error, setError] = useState<Error | null>(null);
   const [pending, setPending] = useState(false);
   const [handles, setHandles] = useState<FileSystemFileHandles | null>();
@@ -163,7 +174,12 @@ export function useDirectorySelector() {
   return { select, handles, error, pending, config };
 }
 
-export const usePollLocalDocs = (handles, config, ms, setPageProps) => {
+export function usePollLocalDocs(
+  handles: FileSystemFileHandles,
+  config: ProjectConfig,
+  ms = 500,
+  setPageProps: React.Dispatch<React.SetStateAction<PreviewPageProps>>,
+): void {
   const hash = useHashChange();
   useEffect(() => {
     if (!handles) {
@@ -185,9 +201,9 @@ export const usePollLocalDocs = (handles, config, ms, setPageProps) => {
           .then(file => file && file.text())
           .then(text => text && buildPreviewProps({ hash, config: JSON.stringify(config), text }))
           .then(props => props && setPageProps(props)),
-      500,
+      ms,
     );
 
     return () => clearInterval(interval);
   }, [handles, hash]);
-};
+}
