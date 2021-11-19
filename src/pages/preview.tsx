@@ -7,6 +7,7 @@ import { PageContentContext } from '../utils/content';
 import { EnvironmentContext } from '../utils/env';
 import { SlugPropertiesContext } from '../utils/properties';
 import { ErrorBoundary } from '../templates/error';
+import { Error } from '../templates/preview/Error';
 import { DebugModeContext } from '../utils/debug';
 import { Head } from '../components/Head';
 import { ThemeStyles } from '../components/ThemeStyles';
@@ -46,7 +47,11 @@ export default function Documentation(): JSX.Element {
       </>
     );
   }
-  const { env, source, content, properties } = pageProps;
+  const { env, source, content, properties, error } = pageProps;
+  if (error) {
+    return <Error {...error} />;
+  }
+
   NProgress.done();
 
   return (

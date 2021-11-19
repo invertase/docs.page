@@ -30,7 +30,7 @@ export function Preview({ children }: { children: React.ReactNode }): JSX.Elemen
           </div>
           <h1 className=" text-center font-anton mt-40 mb-4 text-2xl lg:text-5xl bg-clip-text text-transparent bg-gradient-to-br from-gray-900 dark:from-gray-100 via-gray-700 dark:via-gray-300 to-gray-900 dark:to-gray-200">
             Preview from your machine, with{' '}
-            <span className="bg-clip-text text-transparent bg-gradient-to-br from-red-800 to-black">
+            <span className="bg-clip-text text-transparent bg-gradient-to-br from-red-600 to-black dark:from-yellow-200 dark:to-red-400">
               hot reload.
             </span>{' '}
             <span className="bg-clip-text text-transparent bg-gradient-to-br from-red-800 to-violet-500"></span>

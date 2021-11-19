@@ -181,6 +181,7 @@ export function usePollLocalDocs(
   setPageProps: React.Dispatch<React.SetStateAction<PreviewPageProps>>,
 ): void {
   const hash = useHashChange();
+
   useEffect(() => {
     if (!handles) {
       return;

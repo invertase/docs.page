@@ -1,7 +1,7 @@
 import { createContext } from 'react';
 import { getPageContent, HeadingNode, PageContent } from './content';
 import { Environment } from './env';
-import { RenderError } from './error';
+import { IRenderError, RenderError } from './error';
 import { mdxSerialize } from './mdx-serialize';
 import { Properties, SlugProperties } from './properties';
 
@@ -15,7 +15,7 @@ export type PreviewPageProps = {
   headings: HeadingNode[];
   source?: string;
   content?: PageContent;
-  error?: RenderError;
+  error?: IRenderError;
 };
 
 export async function buildPreviewProps({
@@ -35,7 +35,7 @@ export async function buildPreviewProps({
 
   let source = null;
   const headings: HeadingNode[] = [];
-  let error: RenderError = null;
+  let error: IRenderError = null;
 
   // Build a request instance from the query
   const properties = await Properties.build([owner, name, ...slug]);
@@ -52,7 +52,7 @@ export async function buildPreviewProps({
 
   if (!content) {
     // If there is no content, the repository is not found
-    error = RenderError.repositoryNotFound(properties);
+    error = RenderError.repositoryNotFound(properties).toObject();
   } else if (content.frontmatter.redirect) {
     // TODO: Redirect the user to another page
   } else {
@@ -60,13 +60,13 @@ export async function buildPreviewProps({
       const serialization = await mdxSerialize(content);
 
       if (serialization.errors) {
-        error = RenderError.serverError(properties);
+        error = RenderError.serverError(properties).toObject();
       } else {
         source = serialization.source;
         content.headings = serialization.headings as unknown as HeadingNode[];
       }
     } else {
-      error = RenderError.pageNotFound(properties);
+      error = RenderError.pageNotFound(properties).toObject();
     }
   }
 
