@@ -25,8 +25,8 @@ export async function bundle(
   };
 
   const [error, bundled] = await A2A(bundleMDX(mdx, xdmOptionsSetup({ output, headingDepth })));
-  console.log('DEBUG ERROR:', error);
-  console.log('DEBUG BUNDLED:', bundled);
+  // console.log('DEBUG ERROR:', error);
+  // console.log('DEBUG BUNDLED:', bundled);
 
   return {
     bundled,
