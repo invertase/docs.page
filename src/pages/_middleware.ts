@@ -1,28 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import domains from '../../domains.json';
 
-const domainsObject = domains.map(([domain, path]) => ({
-  domain,
-  organization: path.split('/')[0],
+const domainsObjects = domains.map(([hostname, path]) => ({
+  hostname,
+  owner: path.split('/')[0],
   repo: path.split('/')[1],
 }));
 
-const domainStrings = domains.map(d => d[0]);
+const hostnames = domains.map(d => d[0]);
 
 export default function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
-  // Get hostname (e.g. vercel.com, test.vercel.app, etc.)
-  const hostname = req.headers.get('host');
-
-  console.log(domainStrings.includes(hostname));
-
+  const { pathname, hostname } = req.nextUrl;
   if (
-    req.nextUrl.host === '' &&
+    hostnames.includes(hostname) &&
     !pathname.includes('.') && // exclude all files in the public folder
-    pathname.endsWith('/api') // exclude all API routes
+    !pathname.endsWith('/api') // exclude all API routes
   ) {
-    // rewrite to the current hostname under the pages/sites folder
-    // the main logic component will happen in pages/sites/[site]/index.tsx
-    return NextResponse.rewrite(`/${owner}/${repository}/:path*`);
+    const { owner, repo } = domainsObjects.find(d => d.hostname === hostname);
+
+    return NextResponse.rewrite(`/${owner}/${repo}`);
   }
 }
