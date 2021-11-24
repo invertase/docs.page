@@ -4,11 +4,15 @@
   font-style: normal;
   font-weight: 400;
   src: url('/_docs.page/fonts/anton/anton-v12-latin-regular.eot'); /* IE9 Compat Modes */
-  src: local(''), url('/_docs.page/fonts/anton/anton-v12-latin-regular.eot?#iefix') format('embedded-opentype'),
+  src: local(''),
+    url('/_docs.page/fonts/anton/anton-v12-latin-regular.eot?#iefix') format('embedded-opentype'),
     /* IE6-IE8 */ url('/_docs.page/fonts/anton/anton-v12-latin-regular.woff2') format('woff2'),
-    /* Super Modern Browsers */ url('/_docs.page/fonts/anton/anton-v12-latin-regular.woff') format('woff'),
-    /* Modern Browsers */ url('/_docs.page/fonts/anton/anton-v12-latin-regular.ttf') format('truetype'),
-    /* Safari, Android, iOS */ url('/_docs.page/fonts/anton/anton-v12-latin-regular.svg#Anton') format('svg'); /* Legacy iOS */
+    /* Super Modern Browsers */ url('/_docs.page/fonts/anton/anton-v12-latin-regular.woff')
+      format('woff'),
+    /* Modern Browsers */ url('/_docs.page/fonts/anton/anton-v12-latin-regular.ttf')
+      format('truetype'),
+    /* Safari, Android, iOS */ url('/_docs.page/fonts/anton/anton-v12-latin-regular.svg#Anton')
+      format('svg'); /* Legacy iOS */
 }
 
 @tailwind base;
@@ -39,7 +43,7 @@
     border: 4px solid transparent;
     background-clip: padding-box;
     border-radius: 9999px;
-    background-color: #AAAAAA;
+    background-color: #aaaaaa;
   }
 }
 
