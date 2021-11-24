@@ -9,13 +9,16 @@ const domainsObjects = domains.map(([hostname, path]) => ({
 
 const hostnames = domains.map(d => d[0]);
 
-export default function middleware(req: NextRequest): NextResponse {
+export default function middleware(req: NextRequest): NextResponse | void {
   const hostname = req.headers.get('host');
 
   const currentHost = process.env.NODE_ENV == 'production' ? hostname.replace(`vercel.sh`, '') : '';
 
   const { pathname } = req.nextUrl;
+  console.log(req.nextUrl);
+
   if (
+    false &&
     hostnames.includes(hostname) &&
     !pathname.includes('.') && // exclude all files in the public folder
     !pathname.endsWith('/api') // exclude all API routes
