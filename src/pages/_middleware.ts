@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import domains from '../../domains.json';
+import domains from '../../newDomains.json';
 
 const domainsObjects = domains.map(([hostname, path]) => ({
   hostname,
