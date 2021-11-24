@@ -16,7 +16,6 @@ export default function middleware(req: NextRequest): NextResponse | void {
     !pathname.includes('.') && // exclude all files in the public folder
     !pathname.endsWith('/api') // exclude all API routes
   ) {
-    // console.log(domainsObjects);
     const { hostname } = domainsObjects.find(d => d.pathname === pathname);
     const href =
       process.env.NODE_ENV === 'production'
