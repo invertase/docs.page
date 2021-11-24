@@ -12,11 +12,11 @@ export default function middleware(req: NextRequest): NextResponse | void {
   const { pathname } = req.nextUrl;
 
   if (
-    pathnames.includes(req.nextUrl.pathname)
-    // !pathname.includes('.') && // exclude all files in the public folder
-    // !pathname.endsWith('/api') // exclude all API routes
+    pathnames.includes(req.nextUrl.pathname) &&
+    !pathname.includes('.') && // exclude all files in the public folder
+    !pathname.endsWith('/api') // exclude all API routes
   ) {
-    console.log(domainsObjects);
+    // console.log(domainsObjects);
     const href =
       process.env.NODE_ENV === 'production'
         ? `/${domainsObjects.find(d => d.pathname === pathname)}${pathname}`
