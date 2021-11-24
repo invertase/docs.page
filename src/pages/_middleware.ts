@@ -10,13 +10,17 @@ const domainsObjects = domains.map(([hostname, path]) => ({
 const hostnames = domains.map(d => d[0]);
 
 export default function middleware(req: NextRequest): NextResponse {
-  const { pathname, hostname } = req.nextUrl;
+  const hostname = req.headers.get('host');
+
+  const currentHost = process.env.NODE_ENV == 'production' ? hostname.replace(`vercel.sh`, '') : '';
+
+  const { pathname } = req.nextUrl;
   if (
     hostnames.includes(hostname) &&
     !pathname.includes('.') && // exclude all files in the public folder
     !pathname.endsWith('/api') // exclude all API routes
   ) {
-    const { owner, repo } = domainsObjects.find(d => d.hostname === hostname);
+    const { owner, repo } = domainsObjects.find(d => d.hostname === currentHost);
 
     return NextResponse.rewrite(`/${owner}/${repo}`);
   }
