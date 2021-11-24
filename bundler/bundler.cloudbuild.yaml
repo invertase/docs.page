@@ -30,18 +30,24 @@ steps:
         gcloud debug source gen-repo-info-file || exit 0
   - name: 'gcr.io/cloud-builders/docker'
     dir: .
-    args: [
+    args:
+      [
         'build',
-        '-f', 'bundler/bundler.dockerfile',
-        '--build-arg', 'ROOT_DIR=${_ROOT_DIR}',
-        '--cache-from', 'gcr.io/$PROJECT_ID/${_DEPLOYMENT_NAME}:latest',
-        '-t', 'gcr.io/$PROJECT_ID/${_DEPLOYMENT_NAME}:$COMMIT_SHA',
-        '-t', 'gcr.io/$PROJECT_ID/${_DEPLOYMENT_NAME}:latest',
-        '.'
-    ]
+        '-f',
+        'bundler/bundler.dockerfile',
+        '--build-arg',
+        'ROOT_DIR=${_ROOT_DIR}',
+        '--cache-from',
+        'gcr.io/$PROJECT_ID/${_DEPLOYMENT_NAME}:latest',
+        '-t',
+        'gcr.io/$PROJECT_ID/${_DEPLOYMENT_NAME}:$COMMIT_SHA',
+        '-t',
+        'gcr.io/$PROJECT_ID/${_DEPLOYMENT_NAME}:latest',
+        '.',
+      ]
 
   - name: 'gcr.io/cloud-builders/docker'
-    args: [ 'push', 'gcr.io/$PROJECT_ID/${_DEPLOYMENT_NAME}:$COMMIT_SHA' ]
+    args: ['push', 'gcr.io/$PROJECT_ID/${_DEPLOYMENT_NAME}:$COMMIT_SHA']
 
   - name: 'gcr.io/cloud-builders/kubectl'
     entrypoint: 'bash'

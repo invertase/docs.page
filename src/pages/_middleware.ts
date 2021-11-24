@@ -9,7 +9,7 @@ const domainsObjects = domains.map(([hostname, path]) => ({
 
 const hostnames = domains.map(d => d[0]);
 
-export default function middleware(req: NextRequest) {
+export default function middleware(req: NextRequest): NextResponse {
   const { pathname, hostname } = req.nextUrl;
   if (
     hostnames.includes(hostname) &&
