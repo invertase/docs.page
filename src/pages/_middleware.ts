@@ -1,30 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 import domains from '../../newDomains.json';
 
-const domainsObjects = domains.map(([hostname, path]) => ({
+const domainsObjects = domains.map(([hostname, pathname]) => ({
   hostname,
-  owner: path.split('/')[0],
-  repo: path.split('/')[1],
+  pathname: `/${pathname}`,
 }));
 
-const hostnames = domains.map(d => d[0]);
+const pathnames = domains.map(d => `/${d[1]}`);
 
 export default function middleware(req: NextRequest): NextResponse | void {
-  const hostname = req.headers.get('host');
-
-  const currentHost = process.env.NODE_ENV == 'production' ? hostname.replace(`vercel.sh`, '') : '';
-
   const { pathname } = req.nextUrl;
-  console.log(req.nextUrl);
 
   if (
-    false &&
-    hostnames.includes(hostname) &&
-    !pathname.includes('.') && // exclude all files in the public folder
-    !pathname.endsWith('/api') // exclude all API routes
+    pathnames.includes(req.nextUrl.pathname)
+    // !pathname.includes('.') && // exclude all files in the public folder
+    // !pathname.endsWith('/api') // exclude all API routes
   ) {
-    const { owner, repo } = domainsObjects.find(d => d.hostname === currentHost);
+    console.log(domainsObjects);
+    const href =
+      process.env.NODE_ENV === 'production'
+        ? `/${domainsObjects.find(d => d.pathname === pathname)}${pathname}`
+        : `http://localhost:3000${pathname}`;
 
-    return NextResponse.rewrite(`/${owner}/${repo}`);
+    return NextResponse.rewrite(href);
   }
 }
