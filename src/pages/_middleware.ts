@@ -12,7 +12,7 @@ export default function middleware(req: NextRequest): NextResponse | void {
   const { pathname } = req.nextUrl;
 
   if (
-    pathnames.includes(req.nextUrl.pathname) &&
+    pathnames.includes(pathname) &&
     !pathname.includes('.') && // exclude all files in the public folder
     !pathname.endsWith('/api') // exclude all API routes
   ) {
