@@ -1,4 +1,5 @@
 [
+	["use.docs.page", "invertase/docs.page"],
 	["melos.invertase.dev", "invertase/melos"],
 	["extensions.invertase.dev", "invertase/firebase-extensions"],
 	["react-query-firebase.invertase.dev", "invertase/react-query-firebase"],
