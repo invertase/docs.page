@@ -3,7 +3,7 @@ import domains from '../../newDomains.json';
 const paths = domains.map(d => d[1]);
 export default function middleware(req: NextRequest): NextResponse | void {
   const { pathname } = req.nextUrl;
-  console.log(req);
+  console.log(req.nextUrl);
 
   if (
     pathname &&
