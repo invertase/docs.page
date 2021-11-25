@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import domains from '../../newDomains.json';
 
-const paths = domains.map(d => d[1]);
-
 export default function middleware(req: NextRequest): NextResponse | void {
   const { pathname } = req.nextUrl;
-  const path = pathname.slice(1); // remove '/' at start
-  const [matchedDomain, matchedPath] = domains.find(([domain, path]) => `/${path}` === pathname);
+
+  const [matchedDomain, matchedPath] = domains.find(([, path]) => `/${path}` === pathname);
 
   if (
     matchedDomain &&
