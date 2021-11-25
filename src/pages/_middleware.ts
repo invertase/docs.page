@@ -3,6 +3,7 @@ import domains from '../../newDomains.json';
 const paths = domains.map(d => d[1]);
 export default function middleware(req: NextRequest): NextResponse | void {
   const { pathname } = req.nextUrl;
+  console.log(req);
 
   if (
     pathname &&
@@ -16,6 +17,7 @@ export default function middleware(req: NextRequest): NextResponse | void {
         process.env.NODE_ENV === 'production'
           ? `/${matchedPath}`
           : `http://localhost:3000${matchedPath}`;
+      console.log(href);
 
       return NextResponse.rewrite(href);
     }
