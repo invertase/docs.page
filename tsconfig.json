@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
@@ -25,9 +21,5 @@
     "**/*.tsx",
     "node_modules/@types/wicg-file-system-access"
   ],
-  "exclude": [
-    "node_modules",
-    "__tests__",
-    "bundler"
-  ]
+  "exclude": ["node_modules", "__tests__", "bundler"]
 }

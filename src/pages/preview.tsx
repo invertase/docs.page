@@ -46,11 +46,11 @@ export default function Documentation(): JSX.Element {
     );
   }
   const { env, source, content, properties, error, config } = pageProps;
+
+  NProgress.done();
   if (error) {
     return <Error {...error} />;
   }
-
-  NProgress.done();
 
   return (
     <>

@@ -1,10 +1,9 @@
-import nProgress from 'nprogress';
 import { createContext } from 'react';
 import { getPageContent, HeadingNode, PageContent } from './content';
 import { Environment } from './env';
 import { IRenderError, RenderError } from './error';
 import { mdxSerialize } from './mdx-serialize';
-import { ProjectConfig } from './projectConfig';
+import { mergeConfig, ProjectConfig } from './projectConfig';
 import { Properties, SlugProperties } from './properties';
 
 export type PreviewMode = { enabled: boolean; onSelect: () => void };
@@ -30,24 +29,28 @@ export async function buildPreviewProps({
   hash,
   config,
   text,
+  errorCode,
 }: {
   hash: string;
   config: string;
   text: string;
+  errorCode?: number;
 }): Promise<PreviewPageProps> {
   const params = hash.split('/');
 
   const owner = 'preview#';
   const name = 'index';
   const slug = params.slice(1);
-
+  let error: IRenderError;
   let source = null;
   const headings: HeadingNode[] = [];
-  let error: IRenderError = null;
 
   // Build a request instance from the query
   const properties = await Properties.build([owner, name, ...slug]);
 
+  if (errorCode === 404) {
+    error = RenderError.pageNotFound(properties).toObject();
+  }
   const localContent = {
     isFork: false,
     baseBranch: 'main',
@@ -87,4 +90,68 @@ export async function buildPreviewProps({
     error: error,
     config: JSON.parse(config),
   };
+}
+
+export async function extractContents(
+  handle: FileSystemFileHandle,
+  configHandle: FileSystemFileHandle,
+): Promise<[string, string]> {
+  let config = mergeConfig({});
+  let text: string;
+  const errors: Error[] = [];
+  try {
+    // get docs.json from config handle
+    const configFile = await configHandle.getFile();
+    try {
+      // build config from the file contents
+      config = await mergeConfig(JSON.parse(await configFile.text()));
+    } catch (e) {
+      console.error('Problem with config format');
+      // errors.push(e);
+    }
+  } catch (e) {
+    console.error('Unable to getFile config');
+    // errors.push(e);
+  }
+  try {
+    const file = await handle.getFile();
+    try {
+      text = await file.text();
+    } catch (e) {
+      console.error('unable to extract text from file.');
+      errors.push(e);
+    }
+  } catch (e) {
+    console.error('unable to getFile the page');
+    errors.push(e);
+    throw new Error('unable to getFile the page');
+  }
+  return [text, JSON.stringify(config)];
+}
+
+export type FileSystemFileHandles = { [path: string]: FileSystemFileHandle };
+
+export async function iterateDirectory(
+  directory: FileSystemDirectoryHandle,
+  relativePath?: string,
+  other?: FileSystemFileHandles,
+): Promise<FileSystemFileHandles> {
+  let handles: FileSystemFileHandles = {
+    ...other,
+  };
+
+  for await (const entry of directory.values()) {
+    if (entry.kind === 'file' && entry.name.endsWith('.mdx')) {
+      handles[`${relativePath ?? ''}/${entry.name.replace('.mdx', '')}`] = entry;
+    }
+
+    if (entry.kind === 'directory') {
+      handles = {
+        ...handles,
+        ...(await iterateDirectory(entry, `${relativePath ?? ''}/${entry.name}`, handles)),
+      };
+    }
+  }
+
+  return handles;
 }

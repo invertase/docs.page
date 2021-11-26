@@ -10,6 +10,9 @@ import {
   PreviewMode,
   buildPreviewProps,
   PreviewPageProps,
+  extractContents,
+  FileSystemFileHandles,
+  iterateDirectory,
 } from './utils/preview';
 import nProgress from 'nprogress';
 
@@ -75,33 +78,6 @@ export function hasScrolled(y = 0): boolean {
   }, [y]);
 
   return hasScrolled;
-}
-
-export type FileSystemFileHandles = { [path: string]: FileSystemFileHandle };
-
-async function iterateDirectory(
-  directory: FileSystemDirectoryHandle,
-  relativePath?: string,
-  other?: FileSystemFileHandles,
-): Promise<FileSystemFileHandles> {
-  let handles: FileSystemFileHandles = {
-    ...other,
-  };
-
-  for await (const entry of directory.values()) {
-    if (entry.kind === 'file' && entry.name.endsWith('.mdx')) {
-      handles[`${relativePath ?? ''}/${entry.name.replace('.mdx', '')}`] = entry;
-    }
-
-    if (entry.kind === 'directory') {
-      handles = {
-        ...handles,
-        ...(await iterateDirectory(entry, `${relativePath ?? ''}/${entry.name}`, handles)),
-      };
-    }
-  }
-
-  return handles;
 }
 
 export function useHashChange(): string {
@@ -181,9 +157,11 @@ export function usePollLocalDocs(
   setPageProps: React.Dispatch<React.SetStateAction<PreviewPageProps>>,
 ): void {
   const hash = useHashChange();
+
   useEffect(() => {
     nProgress.start();
   }, [hash]);
+
   useEffect(() => {
     if (!handles) {
       return;
@@ -197,21 +175,28 @@ export function usePollLocalDocs(
       return;
     }
 
-    // TODO update state and show page
     const interval = setInterval(
       () =>
-        Promise.all([handle.getFile(), configHandle.getFile()])
-          .then(([file, config]) => Promise.all([file.text(), config.text()]))
+        extractContents(handle, configHandle)
           .then(
             ([text, config]) =>
               text &&
               buildPreviewProps({
                 hash,
-                config: JSON.stringify(mergeConfig(JSON.parse(config))),
+                config,
                 text,
               }),
           )
-          .then(props => props && setPageProps(props)),
+          .then(props => props && setPageProps(props))
+          .catch(async () => {
+            const props = await buildPreviewProps({
+              hash,
+              config: JSON.stringify(mergeConfig({})),
+              text: '',
+              errorCode: 404,
+            });
+            setPageProps(props);
+          }),
       ms,
     );
 
