@@ -35,6 +35,8 @@ export default function Documentation(): JSX.Element {
       </>
     );
   }
+  console.log(!!pageProps);
+
   if (!pageProps) {
     NProgress.start();
     return (
@@ -51,7 +53,6 @@ export default function Documentation(): JSX.Element {
   if (error) {
     return <Error {...error} />;
   }
-
   return (
     <>
       <EnvironmentContext.Provider value={env}>

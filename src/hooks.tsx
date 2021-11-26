@@ -178,17 +178,17 @@ export function usePollLocalDocs(
     const interval = setInterval(
       () =>
         extractContents(handle, configHandle)
-          .then(
-            ([text, config]) =>
-              text &&
-              buildPreviewProps({
-                hash,
-                config,
-                text,
-              }),
-          )
+          .then(([text, config]) => {
+            const props = buildPreviewProps({
+              hash,
+              config,
+              text,
+            });
+            return props;
+          })
           .then(props => props && setPageProps(props))
           .catch(async () => {
+            console.log('error in extract');
             const props = await buildPreviewProps({
               hash,
               config: JSON.stringify(mergeConfig({})),
