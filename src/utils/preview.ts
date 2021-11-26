@@ -10,7 +10,9 @@ export type PreviewMode = { enabled: boolean; onSelect: () => void };
 
 export const PreviewModeContext = createContext<PreviewMode>({
   enabled: false,
-  onSelect: () => {},
+  onSelect: () => {
+    return;
+  },
 });
 
 export type PreviewPageProps = {

@@ -40,7 +40,7 @@
     "mdast-util-to-string": "^3.1.0",
     "mdx-bundler": "^6.0.1",
     "micromark-extension-mdx-jsx": "^1.0.0",
-    "next": "^11.0.0",
+    "next": "^12.0.4",
     "next-transpile-modules": "^8.0.0",
     "nprogress": "^0.2.0",
     "parse-numeric-range": "^1.2.0",
@@ -67,7 +67,6 @@
     "valid-data-url": "^4.0.0"
   },
   "devDependencies": {
-    "concurrently": "^6.4.0",
     "@types/classnames": "^2.2.11",
     "@types/color": "^3.0.1",
     "@types/jest": "^27.0.2",
@@ -83,6 +82,7 @@
     "@types/valid-data-url": "^2.0.0",
     "@types/wicg-file-system-access": "^2020.9.4",
     "@typescript-eslint/eslint-plugin": "^4.27.0",
+    "concurrently": "^6.4.0",
     "cross-env": "^7.0.2",
     "eslint": "^7.28.0",
     "eslint-config-next": "^11.0.0",

@@ -140,11 +140,11 @@ export function useDirectorySelector(): {
     try {
       const handle = await window.showDirectoryPicker();
       let docs: FileSystemDirectoryHandle;
-      let foundDocsJson = false;
+      // let foundDocsJson = false;
       for await (const entry of handle.values()) {
         if (entry.kind === 'file' && entry.name === 'docs.json') {
           setConfigHandle(entry);
-          foundDocsJson = true;
+          // foundDocsJson = true;
         }
         if (entry.kind === 'directory' && entry.name === 'docs') {
           docs = entry;
@@ -185,7 +185,8 @@ export function usePollLocalDocs(
     if (!handles) {
       return;
     }
-    const handle = hash !== '' ? handles[hash] : handles['/index'];
+    console.log(handles);
+    const handle = handles[hash] || handles[`${hash}/index`];
 
     // TODO handle no file (404)
     if (!handle) {

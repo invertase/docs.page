@@ -32,7 +32,10 @@ function Iterator({ item, depth }: { item: SidebarItem; depth: number }) {
   // If [string, string] render as a Link
   if (typeof item[1] === 'string') {
     return (
-      <NavLink href={item[1]} active={isRouteMatch(router, properties, item[1], previewMode)}>
+      <NavLink
+        href={item[1]}
+        active={isRouteMatch(router, properties, item[1], previewMode.enabled)}
+      >
         {item[0]}
       </NavLink>
     );
@@ -41,7 +44,9 @@ function Iterator({ item, depth }: { item: SidebarItem; depth: number }) {
   // Otherwise, it's a nested element
   const links = getChildrenLinks(item[1]);
 
-  const isActive = !!links.find(link => isRouteMatch(router, properties, link, previewMode));
+  const isActive = !!links.find(link =>
+    isRouteMatch(router, properties, link, previewMode.enabled),
+  );
 
   return (
     <NavigationList isInitiallyActive={isActive} title={item[0]} depth={depth} items={item[1]} />
