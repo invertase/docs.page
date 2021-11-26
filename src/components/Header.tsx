@@ -20,7 +20,7 @@ export function Header(props: HeaderProps): JSX.Element {
   const repo = `${properties.owner}/${properties.repository}`;
 
   const showBorder = hasScrolled();
-
+  const previewMode = usePreviewMode();
   return (
     <header
       className={cx(
@@ -53,6 +53,11 @@ export function Header(props: HeaderProps): JSX.Element {
               </>
             )}
             <span>{config.name || repo}</span>
+            {previewMode.enabled && (
+              <span className="ml-4 px-4 py-2 dark:text-black text-white italic text-xs rounded-lg bg-gradient-to-br from-red-600 to-black dark:from-yellow-200 dark:to-red-400">
+                preview mode
+              </span>
+            )}
           </div>
         </Link>
         <div className="hidden lg:flex items-center justify-center space-x-6 overflow-auto">
@@ -114,7 +119,7 @@ function Utils() {
           onClick={previewMode.onSelect}
           className="mr-4 flex px-3 py-2 text-xs rounded-lg shadow text-white transition-colors whitespace-nowrap bg-green-600 hover:bg-green-500"
         >
-          <span className="text-white">LPM: Change directory</span>
+          <span className="text-white">Change directory</span>
         </button>
       )}
       {!!config.twitter && (

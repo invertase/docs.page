@@ -1,3 +1,4 @@
+import nProgress from 'nprogress';
 import { createContext } from 'react';
 import { getPageContent, HeadingNode, PageContent } from './content';
 import { Environment } from './env';

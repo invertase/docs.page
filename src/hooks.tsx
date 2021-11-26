@@ -11,6 +11,7 @@ import {
   buildPreviewProps,
   PreviewPageProps,
 } from './utils/preview';
+import nProgress from 'nprogress';
 
 export function usePreviewMode(): PreviewMode {
   return useContext(PreviewModeContext);
@@ -180,12 +181,14 @@ export function usePollLocalDocs(
   setPageProps: React.Dispatch<React.SetStateAction<PreviewPageProps>>,
 ): void {
   const hash = useHashChange();
-
+  useEffect(() => {
+    nProgress.start();
+  }, [hash]);
   useEffect(() => {
     if (!handles) {
       return;
     }
-    console.log(handles);
+
     const handle = handles[hash] || handles[`${hash}/index`];
 
     // TODO handle no file (404)
