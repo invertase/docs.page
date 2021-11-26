@@ -58,7 +58,14 @@ export default function Documentation(): JSX.Element {
         <ConfigContext.Provider value={config}>
           <SlugPropertiesContext.Provider value={properties}>
             <PageContentContext.Provider value={content}>
-              <PreviewModeContext.Provider value={true}>
+              <PreviewModeContext.Provider
+                value={{
+                  enabled: true,
+                  onSelect: async () => {
+                    select();
+                  },
+                }}
+              >
                 <DebugModeContext.Provider value={false}>
                   <Head />
                   <ThemeStyles />

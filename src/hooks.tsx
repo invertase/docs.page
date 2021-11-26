@@ -161,6 +161,7 @@ export function useDirectorySelector(): {
 
       // TODO set config
       const docsHandles = await iterateDirectory(docs);
+
       setHandles(docsHandles);
     } catch (e) {
       setError(e);

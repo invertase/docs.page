@@ -6,9 +6,12 @@ import { mdxSerialize } from './mdx-serialize';
 import { ProjectConfig } from './projectConfig';
 import { Properties, SlugProperties } from './properties';
 
-export type PreviewMode = boolean;
+export type PreviewMode = { enabled: boolean; onSelect: () => void };
 
-export const PreviewModeContext = createContext<PreviewMode>(false);
+export const PreviewModeContext = createContext<PreviewMode>({
+  enabled: false,
+  onSelect: () => {},
+});
 
 export type PreviewPageProps = {
   env: Environment;

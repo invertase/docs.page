@@ -5,7 +5,7 @@ import { ExternalLink, Link } from './Link';
 import { Branch, Commit, GitHub, Menu, PullRequest, Twitter } from './Icons';
 import { Image } from './Image';
 import { Search } from './Search';
-import { hasScrolled, useConfig, useSlugProperties } from '../hooks';
+import { hasScrolled, useConfig, usePreviewMode, useSlugProperties } from '../hooks';
 import { Pointer } from '../utils/properties';
 
 export type OnSidebarToggle = () => void;
@@ -106,9 +106,17 @@ function Utils() {
   const config = useConfig();
   const properties = useSlugProperties();
   const repo = `${properties.owner}/${properties.repository}`;
-
+  const previewMode = usePreviewMode();
   return (
     <div className="flex items-center">
+      {previewMode.enabled && (
+        <button
+          onClick={previewMode.onSelect}
+          className="mr-4 flex px-3 py-2 text-xs rounded-lg shadow text-white transition-colors whitespace-nowrap bg-green-600 hover:bg-green-500"
+        >
+          <span className="text-white">LPM: Change directory</span>
+        </button>
+      )}
       {!!config.twitter && (
         <ExternalLink
           href={`https://twitter.com/${config.twitter}`}
