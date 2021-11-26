@@ -37,7 +37,6 @@ export async function buildPreviewProps({
   errorCode?: number;
 }): Promise<PreviewPageProps> {
   const params = hash.split('/');
-  console.log('build prev');
 
   const owner = 'preview#';
   const name = 'index';

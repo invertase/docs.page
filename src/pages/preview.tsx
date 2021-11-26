@@ -35,7 +35,6 @@ export default function Documentation(): JSX.Element {
       </>
     );
   }
-  console.log(!!pageProps);
 
   if (!pageProps) {
     NProgress.start();
