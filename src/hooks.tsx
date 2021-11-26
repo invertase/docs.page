@@ -128,12 +128,12 @@ export function useDirectorySelector(): {
   handles: FileSystemFileHandles;
   error: Error;
   pending: boolean;
-  config: ProjectConfig;
+  configHandle: FileSystemFileHandle;
 } {
   const [error, setError] = useState<Error | null>(null);
   const [pending, setPending] = useState(false);
   const [handles, setHandles] = useState<FileSystemFileHandles | null>();
-  const [config, setConfig] = useState<ProjectConfig | null>();
+  const [configHandle, setConfigHandle] = useState<FileSystemFileHandle | null>();
 
   const select = useCallback(async () => {
     setPending(true);
@@ -143,10 +143,7 @@ export function useDirectorySelector(): {
       let foundDocsJson = false;
       for await (const entry of handle.values()) {
         if (entry.kind === 'file' && entry.name === 'docs.json') {
-          const configFile = await entry.getFile();
-          const configText = JSON.parse(await configFile.text());
-
-          setConfig(mergeConfig(configText));
+          setConfigHandle(entry);
           foundDocsJson = true;
         }
         if (entry.kind === 'directory' && entry.name === 'docs') {
@@ -154,16 +151,17 @@ export function useDirectorySelector(): {
         }
       }
 
-      if (!foundDocsJson) {
-        throw new Error('No docs.json found');
-      }
+      // if (!foundDocsJson) {
+      //   throw new Error('No docs.json found');
+      // }
 
       if (!docs) {
         throw new Error('No docs directory found');
       }
 
       // TODO set config
-      setHandles(await iterateDirectory(docs));
+      const docsHandles = await iterateDirectory(docs);
+      setHandles(docsHandles);
     } catch (e) {
       setError(e);
     } finally {
@@ -171,12 +169,12 @@ export function useDirectorySelector(): {
     }
   }, []);
 
-  return { select, handles, error, pending, config };
+  return { select, handles, error, pending, configHandle };
 }
 
 export function usePollLocalDocs(
   handles: FileSystemFileHandles,
-  config: ProjectConfig,
+  configHandle: FileSystemFileHandle,
   ms = 500,
   setPageProps: React.Dispatch<React.SetStateAction<PreviewPageProps>>,
 ): void {
@@ -197,10 +195,17 @@ export function usePollLocalDocs(
     // TODO update state and show page
     const interval = setInterval(
       () =>
-        handle
-          .getFile()
-          .then(file => file && file.text())
-          .then(text => text && buildPreviewProps({ hash, config: JSON.stringify(config), text }))
+        Promise.all([handle.getFile(), configHandle.getFile()])
+          .then(([file, config]) => Promise.all([file.text(), config.text()]))
+          .then(
+            ([text, config]) =>
+              text &&
+              buildPreviewProps({
+                hash,
+                config: JSON.stringify(mergeConfig(JSON.parse(config))),
+                text,
+              }),
+          )
           .then(props => props && setPageProps(props)),
       ms,
     );

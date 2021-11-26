@@ -3,6 +3,7 @@ import { getPageContent, HeadingNode, PageContent } from './content';
 import { Environment } from './env';
 import { IRenderError, RenderError } from './error';
 import { mdxSerialize } from './mdx-serialize';
+import { ProjectConfig } from './projectConfig';
 import { Properties, SlugProperties } from './properties';
 
 export type PreviewMode = boolean;
@@ -15,6 +16,7 @@ export type PreviewPageProps = {
   headings: HeadingNode[];
   source?: string;
   content?: PageContent;
+  config: ProjectConfig;
   error?: IRenderError;
 };
 
@@ -77,5 +79,6 @@ export async function buildPreviewProps({
     headings,
     content,
     error: error,
+    config: JSON.parse(config),
   };
 }

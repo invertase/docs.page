@@ -22,11 +22,11 @@ NextRouter.events.on('routeChangeComplete', NProgress.done);
 NextRouter.events.on('routeChangeError', NProgress.done);
 
 export default function Documentation(): JSX.Element {
-  const { select, handles, config } = useDirectorySelector();
+  const { select, handles, configHandle } = useDirectorySelector();
 
   const [pageProps, setPageProps] = useState<PreviewPageProps | null>(null);
 
-  usePollLocalDocs(handles, config, 500, setPageProps);
+  usePollLocalDocs(handles, configHandle, 500, setPageProps);
 
   if (handles == null) {
     return (
@@ -45,7 +45,7 @@ export default function Documentation(): JSX.Element {
       </>
     );
   }
-  const { env, source, content, properties, error } = pageProps;
+  const { env, source, content, properties, error, config } = pageProps;
   if (error) {
     return <Error {...error} />;
   }
