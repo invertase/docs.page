@@ -5,7 +5,7 @@ import get from 'lodash.get';
 import { ProjectConfig, mergeConfig } from './projectConfig';
 import { Properties, Pointer } from './properties';
 import { getBoolean, getString } from '.';
-import { getGitHubContents } from './github';
+import { Contents, getGitHubContents } from './github';
 
 export type HeadingNode = {
   id: string;
@@ -38,8 +38,11 @@ export type PageContent = {
 
 export const PageContentContext = createContext<PageContent | null>(null);
 
-export async function getPageContent(properties: Properties): Promise<PageContent | null> {
-  const contents = await getGitHubContents(properties);
+export async function getPageContent(
+  properties: Properties,
+  localContents?: Contents,
+): Promise<PageContent | null> {
+  const contents = localContents ?? (await getGitHubContents(properties));
 
   // Repository not found
   if (!contents) {
