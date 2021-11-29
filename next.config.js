@@ -1,5 +1,5 @@
-const domains = require('./domains.json');
-
+const domainList = require('./domains.json');
+const domains = domainList.filter(([domain,repository]) => domain !== 'melos.invertase.dev')
 module.exports = {
   experimental: { esmExternals: true },
   async rewrites() {
