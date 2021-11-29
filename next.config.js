@@ -2,6 +2,15 @@ const domains = require('./domains.json');
 // const domains = domainList.filter(([domain,repository]) => domain !== 'melos.invertase.dev')
 module.exports = {
   experimental: { esmExternals: true },
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/homepage',
+        permanent: true,
+      },
+    ]
+  },
   async rewrites() {
     const beforeFiles = domains.map(([domain, repository]) => {
       const [organization, repo] = repository.split('/');
