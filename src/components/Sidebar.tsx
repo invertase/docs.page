@@ -151,7 +151,7 @@ function NavLink({ href, children, active }: { href: string; children: string; a
   return (
     <li className="-ml-2 mt-1">
       <Link
-        href={previewMode ? `#${href}` : href}
+        href={previewMode.enabled ? `#${href}` : href}
         className={cx('flex px-2 py-1 rounded font-semibold', {
           'text-theme-color': active,
           'opacity-75 hover:opacity-100': !active,
