@@ -1,10 +1,13 @@
 import React from 'react';
-import { useDebugMode, usePageContent } from '../hooks';
+import { useDebugMode, usePageContent, usePreviewMode } from '../hooks';
 import Scrollspy from 'react-scrollspy';
 
 function TableOfContents(): JSX.Element {
   let { headings } = usePageContent();
-
+  const previewMode = usePreviewMode();
+  const onPreviewModeClick = id => {
+    document.getElementById(id).scrollIntoView();
+  };
   const debugMode = useDebugMode();
   if (debugMode) {
     headings = [
@@ -33,9 +36,18 @@ function TableOfContents(): JSX.Element {
                 paddingLeft: `${node.rank - 2}rem`,
               }}
             >
-              <a className="dark:text-gray-300 hover:text-theme-color" href={`#${node.id}`}>
-                {node.title}
-              </a>
+              {previewMode ? (
+                <a
+                  className="cursor-pointer dark:text-gray-300 hover:text-theme-color"
+                  onClick={() => onPreviewModeClick(node.id)}
+                >
+                  {node.title}
+                </a>
+              ) : (
+                <a className="dark:text-gray-300 hover:text-theme-color" href={`#${node.id}`}>
+                  {node.title}
+                </a>
+              )}
             </li>
           );
         })}
