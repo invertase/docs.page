@@ -150,8 +150,11 @@ export function usePollLocalDocs(
   configHandle: FileSystemFileHandle,
   ms = 500,
 ): PreviewPageProps | null {
+
   const hash = useHashChange();
+
   const [pageProps, setPageProps] = useState<PreviewPageProps | null>(null);
+  
   useEffect(() => {
     nProgress.start();
   }, [hash]);
