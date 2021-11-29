@@ -78,10 +78,6 @@ export function NotFound({ properties, errorType }: IRenderError): JSX.Element {
         <p>
           No valid file matching the path <code>/{properties.path}</code> could be found.
         </p>
-        <p>
-          To get started, create a new <code>.mdx</code> file on{' '}
-          <ExternalLink href={properties.createUrl}>GitHub</ExternalLink>.
-        </p>
       </>
     );
   }
