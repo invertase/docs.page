@@ -128,15 +128,10 @@ export function useDirectorySelector(): {
         }
       }
 
-      // if (!foundDocsJson) {
-      //   throw new Error('No docs.json found');
-      // }
-
       if (!docs) {
         throw new Error('No docs directory found');
       }
 
-      // TODO set config
       const docsHandles = await iterateDirectory(docs);
 
       setHandles(docsHandles);
@@ -207,7 +202,6 @@ export function usePollLocalDocs(
 
       return () => clearInterval(interval);
     }
-
   }, [handles, hash]);
   return pageProps;
 }
