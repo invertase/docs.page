@@ -5,7 +5,7 @@ import { ExternalLink, Link } from './Link';
 import { Branch, Commit, GitHub, Menu, PullRequest, Twitter } from './Icons';
 import { Image } from './Image';
 import { Search } from './Search';
-import { hasScrolled, useConfig, useSlugProperties } from '../hooks';
+import { hasScrolled, useConfig, usePreviewMode, useSlugProperties } from '../hooks';
 import { Pointer } from '../utils/properties';
 
 export type OnSidebarToggle = () => void;
@@ -20,7 +20,7 @@ export function Header(props: HeaderProps): JSX.Element {
   const repo = `${properties.owner}/${properties.repository}`;
 
   const showBorder = hasScrolled();
-
+  const previewMode = usePreviewMode();
   return (
     <header
       className={cx(
@@ -53,6 +53,11 @@ export function Header(props: HeaderProps): JSX.Element {
               </>
             )}
             <span>{config.name || repo}</span>
+            {previewMode.enabled && (
+              <span className="ml-4 px-4 py-2 dark:text-black text-white italic text-xs rounded-lg bg-gradient-to-br from-red-600 to-black dark:from-yellow-200 dark:to-red-400">
+                preview mode
+              </span>
+            )}
           </div>
         </Link>
         <div className="hidden lg:flex items-center justify-center space-x-6 overflow-auto">
@@ -106,9 +111,17 @@ function Utils() {
   const config = useConfig();
   const properties = useSlugProperties();
   const repo = `${properties.owner}/${properties.repository}`;
-
+  const previewMode = usePreviewMode();
   return (
     <div className="flex items-center">
+      {previewMode.enabled && (
+        <button
+          onClick={previewMode.onSelect}
+          className="mr-4 flex px-3 py-2 text-xs rounded-lg shadow text-white transition-colors whitespace-nowrap bg-green-600 hover:bg-green-500"
+        >
+          <span className="text-white">Change directory</span>
+        </button>
+      )}
       {!!config.twitter && (
         <ExternalLink
           href={`https://twitter.com/${config.twitter}`}

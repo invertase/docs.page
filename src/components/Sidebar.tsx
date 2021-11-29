@@ -5,7 +5,7 @@ import { NextRouter, useRouter } from 'next/router';
 import { SidebarItem } from '../utils/projectConfig';
 import { isExternalLink, Link } from './Link';
 import { SlugProperties } from '../utils/properties';
-import { useConfig, useSlugProperties } from '../hooks';
+import { useConfig, usePreviewMode, useSlugProperties } from '../hooks';
 
 // Sidebar wrapper - iterates the config and renders a sidebar.
 export function Sidebar(): JSX.Element {
@@ -28,11 +28,14 @@ export function AbstractSidebar({ data }: { data: SidebarItem[] }): JSX.Element 
 function Iterator({ item, depth }: { item: SidebarItem; depth: number }) {
   const router = useRouter();
   const properties = useSlugProperties();
-
+  const previewMode = usePreviewMode();
   // If [string, string] render as a Link
   if (typeof item[1] === 'string') {
     return (
-      <NavLink href={item[1]} active={isRouteMatch(router, properties, item[1])}>
+      <NavLink
+        href={item[1]}
+        active={isRouteMatch(router, properties, item[1], previewMode.enabled)}
+      >
         {item[0]}
       </NavLink>
     );
@@ -41,7 +44,9 @@ function Iterator({ item, depth }: { item: SidebarItem; depth: number }) {
   // Otherwise, it's a nested element
   const links = getChildrenLinks(item[1]);
 
-  const isActive = !!links.find(link => isRouteMatch(router, properties, link));
+  const isActive = !!links.find(link =>
+    isRouteMatch(router, properties, link, previewMode.enabled),
+  );
 
   return (
     <NavigationList isInitiallyActive={isActive} title={item[0]} depth={depth} items={item[1]} />
@@ -139,10 +144,14 @@ function Title({
  * A single navigation URL in the sidebar.
  */
 function NavLink({ href, children, active }: { href: string; children: string; active: boolean }) {
+  // const isPreviewMode = usePreviewMode()
+
+  const previewMode = usePreviewMode();
+
   return (
     <li className="-ml-2 mt-1">
       <Link
-        href={href}
+        href={previewMode ? `#${href}` : href}
         className={cx('flex px-2 py-1 rounded font-semibold', {
           'text-theme-color': active,
           'opacity-75 hover:opacity-100': !active,
@@ -178,19 +187,27 @@ function getChildrenLinks(items: SidebarItem[], initialLinks: string[] = []): st
  * @param properties
  * @param link
  */
-function isRouteMatch(router: NextRouter, properties: SlugProperties, link: string) {
+function isRouteMatch(
+  router: NextRouter,
+  properties: SlugProperties,
+  link: string,
+  previewMode = false,
+) {
   // External links can never be active
   if (isExternalLink(link)) {
     return false;
   }
-
+  // TODO: isPreviewMode
+  if (previewMode) {
+    return window.location.hash.split('#')[1] === link;
+  }
   let path = properties.base;
 
   const currentPath = `/${((router.query.slug as string[]) || []).join('/')}`;
 
-  if (link === '/') {
-    return currentPath === '/';
-  }
+  // if (link === '/') {
+  //   return currentPath === '/';
+  // }
 
   path = `${path}${link}`;
 
