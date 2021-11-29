@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import NextRouter from 'next/router';
 import NProgress from 'nprogress';
 import { Layout } from '../components/Layout';
@@ -25,7 +25,7 @@ export default function Documentation(): JSX.Element {
   const { select, handles, configHandle } = useDirectorySelector();
   const pageProps = usePollLocalDocs(handles, configHandle, 500);
 
-  if (handles == null) {
+  if (handles == null || !pageProps) {
     return (
       <>
         <Preview onSelect={select} />
@@ -33,18 +33,8 @@ export default function Documentation(): JSX.Element {
     );
   }
 
-  if (!pageProps) {
-    NProgress.start();
-    return (
-      <>
-        <>
-          <Preview onSelect={select} />
-        </>
-      </>
-    );
-  }
   const { env, source, content, properties, error, config } = pageProps;
-  
+
   NProgress.done();
   if (error) {
     return <Error {...error} />;
