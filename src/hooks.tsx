@@ -154,10 +154,9 @@ export function usePollLocalDocs(
   handles: FileSystemFileHandles,
   configHandle: FileSystemFileHandle,
   ms = 500,
-  setPageProps: React.Dispatch<React.SetStateAction<PreviewPageProps>>,
-): void {
+): PreviewPageProps | null {
   const hash = useHashChange();
-
+  const [pageProps, setPageProps] = useState<PreviewPageProps | null>(null);
   useEffect(() => {
     nProgress.start();
   }, [hash]);
@@ -189,6 +188,7 @@ export function usePollLocalDocs(
           .then(props => props && setPageProps(props))
           .catch(async () => {
             console.log('error in extract');
+            s;
             const props = await buildPreviewProps({
               hash,
               config: JSON.stringify(mergeConfig({})),
@@ -202,4 +202,5 @@ export function usePollLocalDocs(
 
     return () => clearInterval(interval);
   }, [handles, hash]);
+  return pageProps;
 }

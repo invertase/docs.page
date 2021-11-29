@@ -106,7 +106,7 @@ export async function extractContents(
       // build config from the file contents
       config = await mergeConfig(JSON.parse(await configFile.text()));
     } catch (e) {
-      console.error('Problem with config format');
+      console.error('Problems with docs.json format');
       // errors.push(e);
     }
   } catch (e) {
@@ -122,9 +122,9 @@ export async function extractContents(
       errors.push(e);
     }
   } catch (e) {
-    console.error('unable to getFile the page');
+    console.error('unable to getFile page');
     errors.push(e);
-    throw new Error('unable to getFile the page');
+    throw new Error('unable to getFile page');
   }
   return [text, JSON.stringify(config)];
 }
