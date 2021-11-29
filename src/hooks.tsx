@@ -168,39 +168,46 @@ export function usePollLocalDocs(
 
     const handle = handles[hash] || handles[`${hash}/index`];
 
-    // TODO handle no file (404)
     if (!handle) {
-      console.log('file not found, 404');
+      console.log('handle not found, 404');
+      buildPreviewProps({
+        hash,
+        config: JSON.stringify(mergeConfig({})),
+        text: '',
+        errorCode: 404,
+      }).then(props => {
+        setPageProps(props);
+      });
       return;
+    } else {
+      const interval = setInterval(
+        () =>
+          extractContents(handle, configHandle)
+            .then(([text, config]) => {
+              const props = buildPreviewProps({
+                hash,
+                config,
+                text,
+              });
+              return props;
+            })
+            .then(props => props && setPageProps(props))
+            .catch(async () => {
+              console.log('error in extract');
+              const props = await buildPreviewProps({
+                hash,
+                config: JSON.stringify(mergeConfig({})),
+                text: '',
+                errorCode: 404,
+              });
+              setPageProps(props);
+            }),
+        ms,
+      );
+
+      return () => clearInterval(interval);
     }
 
-    const interval = setInterval(
-      () =>
-        extractContents(handle, configHandle)
-          .then(([text, config]) => {
-            const props = buildPreviewProps({
-              hash,
-              config,
-              text,
-            });
-            return props;
-          })
-          .then(props => props && setPageProps(props))
-          .catch(async () => {
-            console.log('error in extract');
-            s;
-            const props = await buildPreviewProps({
-              hash,
-              config: JSON.stringify(mergeConfig({})),
-              text: '',
-              errorCode: 404,
-            });
-            setPageProps(props);
-          }),
-      ms,
-    );
-
-    return () => clearInterval(interval);
   }, [handles, hash]);
   return pageProps;
 }

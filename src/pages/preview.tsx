@@ -12,7 +12,7 @@ import { DebugModeContext } from '../utils/debug';
 import { Head } from '../components/Head';
 import { ThemeStyles } from '../components/ThemeStyles';
 import { Hydrate } from '../mdx';
-import { PreviewPageProps, PreviewModeContext } from '../utils/preview';
+import { PreviewModeContext } from '../utils/preview';
 import { Preview } from '../templates/preview';
 import { useDirectorySelector, usePollLocalDocs } from '../hooks';
 
