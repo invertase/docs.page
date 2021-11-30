@@ -29,6 +29,7 @@
     "axios": "^0.21.4",
     "classnames": "^2.2.6",
     "color": "^4.0.1",
+    "detect-browser": "^5.2.1",
     "esbuild": "^0.13.2",
     "gray-matter": "^4.0.2",
     "hast-util-has-property": "^2.0.0",
