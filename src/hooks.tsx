@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { Environment, EnvironmentContext } from './utils/env';
 import { ProjectConfig, ConfigContext, mergeConfig } from './utils/projectConfig';
 import { PageContent, PageContentContext } from './utils/content';
@@ -145,13 +145,18 @@ export function useDirectorySelector(): {
   return { select, handles, error, pending, configHandle };
 }
 
+export const cache = {
+  text: '',
+  config: '',
+  props: null,
+};
+
 export function usePollLocalDocs(
   handles: FileSystemFileHandles,
   configHandle: FileSystemFileHandle,
   ms = 500,
 ): PreviewPageProps | null {
   const hash = useHashChange();
-
   const [pageProps, setPageProps] = useState<PreviewPageProps | null>(null);
 
   useEffect(() => {
@@ -181,14 +186,19 @@ export function usePollLocalDocs(
         () =>
           extractContents(handle, configHandle)
             .then(([text, config]) => {
-              const props = buildPreviewProps({
-                hash,
-                config,
-                text,
-              });
-              return props;
+              if (text === cache.text || config === cache.config) {
+                return cache.props;
+              }
+              cache.text = text;
+              cache.config = config;
+              console.log('Updating!');
+              return buildPreviewProps({ hash, config, text });
             })
-            .then(props => props && setPageProps(props))
+            .then(props => {
+              cache.props = props;
+
+              return props && setPageProps(props);
+            })
             .catch(async () => {
               console.log('error in extract');
               const props = await buildPreviewProps({
