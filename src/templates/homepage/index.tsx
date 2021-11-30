@@ -188,8 +188,9 @@ export default function IndexPage(): JSX.Element {
               title={<span className="text-pink-400">Previews</span>}
               text={
                 <span>
-                  Previewing changes on branches and pull requests works out of the box with zero
-                  configuration. Install our GitHub bot for preview assistance.
+                  Previewing docs locally with our new Local Preview Mode. Previewing changes on
+                  branches and pull requests works out of the box with zero configuration. Install
+                  our GitHub bot for preview assistance.
                 </span>
               }
               icon={<PullRequest size={80} />}
