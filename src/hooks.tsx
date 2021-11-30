@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Environment, EnvironmentContext } from './utils/env';
-import { ProjectConfig, ConfigContext, mergeConfig } from './utils/projectConfig';
-import { HeadingNode, PageContent, PageContentContext } from './utils/content';
+import { ProjectConfig, ConfigContext } from './utils/projectConfig';
+import { PageContent, PageContentContext } from './utils/content';
 import { CustomDomain, CustomDomainContext } from './utils/domain';
 import { SlugProperties, SlugPropertiesContext } from './utils/properties';
 import { DebugMode, DebugModeContext } from './utils/debug';
@@ -14,9 +14,6 @@ import {
   FileSystemFileHandles,
   iterateDirectory,
 } from './utils/preview';
-import nProgress from 'nprogress';
-import { config } from 'process';
-import { IRenderError, RenderError } from './utils/error';
 
 export function usePreviewMode(): PreviewMode {
   return useContext(PreviewModeContext);
