@@ -15,7 +15,7 @@ import { Node } from 'hast-util-heading-rank';
  */
 export default function rehypeInlineBadges(): (ast: Node) => void {
   //@ts-ignore
-  function visitor(node: any, index) {
+  function visitor(node: NodeWithChildren) {
     node.visited === 'true';
     node.children[0].properties.style = 'display: inline;';
   }
