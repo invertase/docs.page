@@ -165,9 +165,9 @@ export function usePollLocalDocs(
     const interval = setInterval(
       () =>
         extractContents(handle, configHandle).then(([text, config]) => {
-          console.log('extracting file');
+          // console.log('extracting file');
           if (text !== cache.text || config !== cache.config) {
-            console.log('detected change');
+            // console.log('detected change');
 
             cache.text = text;
             cache.config = config;
