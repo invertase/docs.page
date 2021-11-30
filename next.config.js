@@ -9,7 +9,7 @@ module.exports = {
         destination: '/homepage',
         permanent: true,
       },
-    ]
+    ];
   },
   async rewrites() {
     const beforeFiles = domains.map(([domain, repository]) => {
