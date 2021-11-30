@@ -161,22 +161,26 @@ export function usePollLocalDocs(
   const [updating, setUpdating] = useState(0);
   const [pageProps, setPageProps] = useState(null);
   const hash = useHashChange();
-  console.log('debug');
 
   useEffect(() => {
     if (!handles) return;
     const handle = hash ? handles[hash] : handles[`${hash}/index`];
-    const interval = setInterval(() =>
-      extractContents(handle, configHandle).then(([text, config]) => {
-        if (text !== cache.text || config !== cache.config) {
-          cache.text = text;
-          cache.config = config;
-          setUpdating(updating + 1);
-        }
-      }),
+    const interval = setInterval(
+      () =>
+        extractContents(handle, configHandle).then(([text, config]) => {
+          console.log('extracting file');
+          if (text !== cache.text || config !== cache.config) {
+            console.log('detected change');
+
+            cache.text = text;
+            cache.config = config;
+            setUpdating(updating + 1);
+          }
+        }),
+      ms,
     );
     return () => clearInterval(interval);
-  }, [hash, handles]);
+  }, [hash, handles, updating]);
 
   useEffect(() => {
     buildPreviewProps({ hash, config: cache.config, text: cache.text }).then(previewProps => {
@@ -184,76 +188,5 @@ export function usePollLocalDocs(
     });
   }, [cache.text, cache.config, updating]);
 
-  return pageProps;
-}
-
-export function asdasd(
-  handles: FileSystemFileHandles,
-  configHandle: FileSystemFileHandle,
-  ms = 500,
-): PreviewPageProps | null {
-  const hash = useHashChange();
-  const [pageProps, setPageProps] = useState<PreviewPageProps | null>(null);
-
-  useEffect(() => {
-    nProgress.start();
-  }, [hash]);
-
-  useEffect(() => {
-    if (!handles) {
-      return;
-    }
-
-    const handle = handles[hash] || handles[`${hash}/index`];
-
-    if (!handle) {
-      console.log('handle not found, 404');
-      buildPreviewProps({
-        hash,
-        config: JSON.stringify(mergeConfig({})),
-        text: '',
-        errorCode: 404,
-      }).then(props => {
-        setPageProps(props);
-      });
-      return;
-    } else {
-      const interval = setInterval(
-        () =>
-          extractContents(handle, configHandle)
-            .then(([text, config]) => {
-              if (text === cache.text || config === cache.config) {
-                return cache.props;
-              }
-              cache.text = text;
-              cache.config = config;
-              const flame = String.fromCodePoint(0x1f525);
-              console.log(
-                `%c docs.page - detected file change, hot reload! ${flame} `,
-                'background: #222; color: orange',
-              );
-              return buildPreviewProps({ hash, config, text });
-            })
-            .then(props => {
-              cache.props = props;
-
-              return props && setPageProps(props);
-            })
-            .catch(async () => {
-              console.log('error in extract');
-              const props = await buildPreviewProps({
-                hash,
-                config: JSON.stringify(mergeConfig({})),
-                text: '',
-                errorCode: 404,
-              });
-              setPageProps(props);
-            }),
-        ms,
-      );
-
-      return () => clearInterval(interval);
-    }
-  }, [handles, hash]);
   return pageProps;
 }

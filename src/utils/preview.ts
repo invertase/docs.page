@@ -68,6 +68,11 @@ export async function buildPreviewProps({
     // TODO: Redirect the user to another page
   } else {
     if (content.markdown) {
+      const flame = String.fromCodePoint(0x1f525);
+      console.log(
+        `%c docs.page - detected file change, hot reload! ${flame} `,
+        'background: #222; color: orange',
+      );
       const serialization = await mdxSerialize(content);
 
       if (serialization.errors) {

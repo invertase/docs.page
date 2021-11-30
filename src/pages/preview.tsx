@@ -24,7 +24,6 @@ NextRouter.events.on('routeChangeError', NProgress.done);
 export default function Documentation(): JSX.Element {
   const { select, handles, configHandle } = useDirectorySelector();
   const pageProps = usePollLocalDocs(handles, configHandle, 500);
-  console.log('boop', pageProps);
 
   if (handles == null || !pageProps) {
     return (
