@@ -40,7 +40,7 @@ export function Preview({ onSelect }: { onSelect: () => void }): JSX.Element {
           </h1>
           {browser.name === 'chrome' ? (
             <>
-              <p className="text-center pt-20">
+              <p suppressHydrationWarning className="text-center pt-20">
                 To get started, simply select the local directory of your project configured with
                 docs.page:
               </p>
@@ -54,7 +54,7 @@ export function Preview({ onSelect }: { onSelect: () => void }): JSX.Element {
               </div>
             </>
           ) : (
-            <p className="text-center pt-20">
+            <p suppressHydrationWarning className="text-center pt-20">
               Local Preview Mode is only available on Chrome at the moment, sorry :(
             </p>
           )}
