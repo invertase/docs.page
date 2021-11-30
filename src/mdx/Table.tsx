@@ -4,7 +4,9 @@ type TableProps = React.DetailedHTMLProps<
 >;
 
 export function Table({ ...props }: TableProps): JSX.Element {
-  const wrapper = (child: React.ReactElement) => <div className="overflow-scroll">{child}</div>;
+  const wrapper = (child: React.ReactElement) => (
+    <div className="overflow-scroll sm:overflow-visible">{child}</div>
+  );
 
   return wrapper(<table {...props} />);
 }
