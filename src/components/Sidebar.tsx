@@ -207,7 +207,6 @@ function isRouteMatch(
   if (previewMode) {
     return window.location.hash.split('#')[1] === link;
   }
-  let path = properties.path;
 
   const currentPath = `/${((router.query.slug as string[]) || []).join('/')}`;
 
