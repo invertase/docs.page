@@ -1,7 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Environment, EnvironmentContext } from './utils/env';
 import { ProjectConfig, ConfigContext, mergeConfig } from './utils/projectConfig';
-import { PageContent, PageContentContext } from './utils/content';
+import { HeadingNode, PageContent, PageContentContext } from './utils/content';
 import { CustomDomain, CustomDomainContext } from './utils/domain';
 import { SlugProperties, SlugPropertiesContext } from './utils/properties';
 import { DebugMode, DebugModeContext } from './utils/debug';
@@ -15,6 +15,8 @@ import {
   iterateDirectory,
 } from './utils/preview';
 import nProgress from 'nprogress';
+import { config } from 'process';
+import { IRenderError, RenderError } from './utils/error';
 
 export function usePreviewMode(): PreviewMode {
   return useContext(PreviewModeContext);
@@ -152,6 +154,40 @@ export const cache = {
 };
 
 export function usePollLocalDocs(
+  handles: FileSystemFileHandles,
+  configHandle: FileSystemFileHandle,
+  ms = 500,
+): PreviewPageProps | null {
+  const [updating, setUpdating] = useState(0);
+  const [pageProps, setPageProps] = useState(null);
+  const hash = useHashChange();
+  console.log('debug');
+
+  useEffect(() => {
+    if (!handles) return;
+    const handle = hash ? handles[hash] : handles[`${hash}/index`];
+    const interval = setInterval(() =>
+      extractContents(handle, configHandle).then(([text, config]) => {
+        if (text !== cache.text || config !== cache.config) {
+          cache.text = text;
+          cache.config = config;
+          setUpdating(updating + 1);
+        }
+      }),
+    );
+    return () => clearInterval(interval);
+  }, [hash, handles]);
+
+  useEffect(() => {
+    buildPreviewProps({ hash, config: cache.config, text: cache.text }).then(previewProps => {
+      setPageProps(previewProps);
+    });
+  }, [cache.text, cache.config, updating]);
+
+  return pageProps;
+}
+
+export function asdasd(
   handles: FileSystemFileHandles,
   configHandle: FileSystemFileHandle,
   ms = 500,
