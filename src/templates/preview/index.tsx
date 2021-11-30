@@ -1,6 +1,9 @@
 import { Footer } from '../homepage/Footer';
+import { detect } from 'detect-browser';
 
 export function Preview({ onSelect }: { onSelect: () => void }): JSX.Element {
+  const browser = detect();
+
   return (
     <div className="dark:text-white">
       <section className="py-16 lg:py-32 items-center text-center px-4 lg:text-left">
@@ -35,18 +38,26 @@ export function Preview({ onSelect }: { onSelect: () => void }): JSX.Element {
             </span>{' '}
             <span className="bg-clip-text text-transparent bg-gradient-to-br from-red-800 to-violet-500"></span>
           </h1>
-          <p className="text-center pt-20">
-            To get started, simply select the local directory of your project configured with
-            docs.page:
-          </p>
-          <div className="w-100% pt-8 text-center items-center justify-center content-center">
-            <button
-              className="cursor-pointer bg-green-600 hover:bg-green-500 px-3 py-2 text-s rounded-lg shadow text-white transition-colors whitespace-nowrap"
-              onClick={onSelect}
-            >
-              Select Directory!
-            </button>
-          </div>
+          {browser.name === 'chrome' ? (
+            <>
+              <p suppressHydrationWarning className="text-center pt-20">
+                To get started, simply select the local directory of your project configured with
+                docs.page:
+              </p>
+              <div className="w-100% pt-8 text-center items-center justify-center content-center">
+                <button
+                  className="cursor-pointer bg-green-600 hover:bg-green-500 px-3 py-2 text-s rounded-lg shadow text-white transition-colors whitespace-nowrap"
+                  onClick={onSelect}
+                >
+                  Select Directory!
+                </button>
+              </div>
+            </>
+          ) : (
+            <p suppressHydrationWarning className="text-center pt-20">
+              Local Preview Mode is only available on Chrome at the moment, sorry :(
+            </p>
+          )}
         </div>
         <div className="mt-32 max-w-5xl mx-auto px-4 lg:px-0">
           <Footer />
