@@ -207,15 +207,9 @@ function isRouteMatch(
   if (previewMode) {
     return window.location.hash.split('#')[1] === link;
   }
-  let path = properties.base;
+  let path = properties.path;
 
   const currentPath = `/${((router.query.slug as string[]) || []).join('/')}`;
 
-  // if (link === '/') {
-  //   return currentPath === '/';
-  // }
-
-  path = `${path}${link}`;
-
-  return currentPath === '/' + path.split('/').slice(-1)[0];
+  return currentPath === link;
 }
