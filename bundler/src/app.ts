@@ -23,6 +23,8 @@ app.get('/', (req, res) => res.send('Welcome to the docs.page MDX bundler servic
 
 app.post('/bundle', async (req: BundleRequest, res: Response) => {
   const { headingDepth } = req.query;
+  // console.log(req);
+
   const bundled = await bundleWithOptions(req?.body, parseInt(headingDepth) ?? 3);
   res.send(bundled);
 });

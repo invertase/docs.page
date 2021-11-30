@@ -29,4 +29,5 @@ module.exports = [
   'theming',
   'txt',
   'zoomable',
+  'subdirectory',
 ];
