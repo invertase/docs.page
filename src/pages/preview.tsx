@@ -20,8 +20,6 @@ NProgress.configure({ showSpinner: false });
 NextRouter.events.on('routeChangeStart', NProgress.start);
 NextRouter.events.on('routeChangeComplete', NProgress.done);
 NextRouter.events.on('routeChangeError', NProgress.done);
-import { cache } from '../hooks';
-
 
 export default function Documentation(): JSX.Element {
   const { select, handles, configHandle } = useDirectorySelector();

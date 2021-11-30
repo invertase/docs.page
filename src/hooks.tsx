@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { Environment, EnvironmentContext } from './utils/env';
 import { ProjectConfig, ConfigContext, mergeConfig } from './utils/projectConfig';
 import { PageContent, PageContentContext } from './utils/content';
@@ -191,7 +191,11 @@ export function usePollLocalDocs(
               }
               cache.text = text;
               cache.config = config;
-              console.log('Updating!');
+              const flame = String.fromCodePoint(0x1f525);
+              console.log(
+                `%c docs.page - detected file change, hot reload! ${flame} `,
+                'background: #222; color: orange',
+              );
               return buildPreviewProps({ hash, config, text });
             })
             .then(props => {
