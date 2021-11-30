@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { Environment, EnvironmentContext } from './utils/env';
-import { ProjectConfig, ConfigContext, mergeConfig } from './utils/projectConfig';
+import { ProjectConfig, ConfigContext } from './utils/projectConfig';
 import { PageContent, PageContentContext } from './utils/content';
 import { CustomDomain, CustomDomainContext } from './utils/domain';
 import { SlugProperties, SlugPropertiesContext } from './utils/properties';
@@ -14,7 +14,6 @@ import {
   FileSystemFileHandles,
   iterateDirectory,
 } from './utils/preview';
-import nProgress from 'nprogress';
 
 export function usePreviewMode(): PreviewMode {
   return useContext(PreviewModeContext);
@@ -145,65 +144,46 @@ export function useDirectorySelector(): {
   return { select, handles, error, pending, configHandle };
 }
 
+export const cache = {
+  text: '',
+  config: '',
+  props: null,
+};
+
 export function usePollLocalDocs(
   handles: FileSystemFileHandles,
   configHandle: FileSystemFileHandle,
   ms = 500,
 ): PreviewPageProps | null {
+  const [updating, setUpdating] = useState(0);
+  const [pageProps, setPageProps] = useState(null);
   const hash = useHashChange();
 
-  const [pageProps, setPageProps] = useState<PreviewPageProps | null>(null);
+  useEffect(() => {
+    if (!handles) return;
+    const handle = hash ? handles[hash] : handles[`${hash}/index`];
+    const interval = setInterval(
+      () =>
+        extractContents(handle, configHandle).then(([text, config]) => {
+          console.log('extracting file');
+          if (text !== cache.text || config !== cache.config) {
+            console.log('detected change');
+
+            cache.text = text;
+            cache.config = config;
+            setUpdating(updating + 1);
+          }
+        }),
+      ms,
+    );
+    return () => clearInterval(interval);
+  }, [hash, handles, updating]);
 
   useEffect(() => {
-    nProgress.start();
-  }, [hash]);
+    buildPreviewProps({ hash, config: cache.config, text: cache.text }).then(previewProps => {
+      setPageProps(previewProps);
+    });
+  }, [cache.text, cache.config, updating]);
 
-  useEffect(() => {
-    if (!handles) {
-      return;
-    }
-
-    const handle = handles[hash] || handles[`${hash}/index`];
-
-    if (!handle) {
-      console.log('handle not found, 404');
-      buildPreviewProps({
-        hash,
-        config: JSON.stringify(mergeConfig({})),
-        text: '',
-        errorCode: 404,
-      }).then(props => {
-        setPageProps(props);
-      });
-      return;
-    } else {
-      const interval = setInterval(
-        () =>
-          extractContents(handle, configHandle)
-            .then(([text, config]) => {
-              const props = buildPreviewProps({
-                hash,
-                config,
-                text,
-              });
-              return props;
-            })
-            .then(props => props && setPageProps(props))
-            .catch(async () => {
-              console.log('error in extract');
-              const props = await buildPreviewProps({
-                hash,
-                config: JSON.stringify(mergeConfig({})),
-                text: '',
-                errorCode: 404,
-              });
-              setPageProps(props);
-            }),
-        ms,
-      );
-
-      return () => clearInterval(interval);
-    }
-  }, [handles, hash]);
   return pageProps;
 }
