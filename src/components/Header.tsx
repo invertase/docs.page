@@ -180,7 +180,7 @@ function Utils() {
           </ExternalLink>
         </div>
       )}
-      {!!config.docsearch && previewMode.enabled && (
+      {!!config.docsearch && !previewMode.enabled && (
         <Search apiKey={config.docsearch.apiKey} indexName={config.docsearch.indexName} />
       )}
     </div>
