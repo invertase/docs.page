@@ -49,16 +49,16 @@ function sizeToProperty(size: string | number | undefined) {
   if (typeof size === 'number') return size;
   return parseInt(size);
 }
-
+//@ts-ignore
 export function getImageSrc(
   properties: SlugProperties,
   src: string,
-  previewMode: PreviewMode,
+  previewMode?: PreviewMode,
 ): string {
   if (isExternalLink(src) || validDataUrl(src)) {
     return src;
   }
-  if (previewMode.enabled) {
+  if (previewMode && previewMode.enabled) {
     return previewMode.imageUrls[src] || '';
   }
 

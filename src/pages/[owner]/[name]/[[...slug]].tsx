@@ -120,7 +120,6 @@ export const getStaticProps: GetStaticProps<StaticProps> = async ctx => {
 
   // Build a request instance from the query
   const properties = await Properties.build([owner, name, ...slug]);
-  console.log(properties);
 
   // Query GitHub for the content
   const content = await getPageContent(properties);
