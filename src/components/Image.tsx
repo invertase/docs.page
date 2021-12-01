@@ -1,7 +1,8 @@
 import React, { CSSProperties } from 'react';
 import validDataUrl from 'valid-data-url';
-import { usePageContent, useSlugProperties } from '../hooks';
+import { usePageContent, usePreviewMode, useSlugProperties } from '../hooks';
 import { leadingSlash } from '../utils';
+import { PreviewMode } from '../utils/preview';
 import { SlugProperties } from '../utils/properties';
 import { isExternalLink } from './Link';
 
@@ -23,6 +24,8 @@ export function Image(props: ImageProps): JSX.Element {
     );
   }
 
+  const previewMode = usePreviewMode();
+
   const style: CSSProperties = {
     height: sizeToProperty(props.height),
     width: sizeToProperty(props.width),
@@ -34,7 +37,7 @@ export function Image(props: ImageProps): JSX.Element {
     <img
       {...props}
       style={style}
-      src={getImageSrc(properties, props.src)}
+      src={getImageSrc(properties, props.src, previewMode)}
       alt={props.alt ?? ''}
       loading="lazy"
     />
@@ -47,9 +50,16 @@ function sizeToProperty(size: string | number | undefined) {
   return parseInt(size);
 }
 
-export function getImageSrc(properties: SlugProperties, src: string): string {
+export function getImageSrc(
+  properties: SlugProperties,
+  src: string,
+  previewMode: PreviewMode,
+): string {
   if (isExternalLink(src) || validDataUrl(src)) {
     return src;
+  }
+  if (previewMode.enabled) {
+    return previewMode.imageUrls[src] || '';
   }
 
   return `https://raw.githubusercontent.com/${properties.source.owner}/${

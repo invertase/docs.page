@@ -24,6 +24,7 @@ const components: ComponentMap = {
   h6: (props: React.HTMLProps<HTMLHeadingElement>) => <Heading {...props} type="h6" />,
   pre: (props: PreProps) => <Pre {...props} />,
   hr: Divider,
+  img: Img,
   table: Table,
   // Custom MDX components
   Heading,
