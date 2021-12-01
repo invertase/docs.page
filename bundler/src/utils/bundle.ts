@@ -23,7 +23,6 @@ export async function bundle(
     warnings: [],
     headings: [],
   };
-  console.log(mdx);
 
   const [error, bundled] = await A2A(bundleMDX(mdx, xdmOptionsSetup({ output, headingDepth })));
   // console.log('DEBUG ERROR:', error);
