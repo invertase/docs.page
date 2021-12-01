@@ -176,7 +176,7 @@ export default function IndexPage(): JSX.Element {
               title={<span className="text-blue-500">Configure</span>}
               text={
                 <span>
-                  Add a <code className="text-blue-400">docs.json</code> file to the roof of the
+                  Add a <code className="text-blue-400">docs.json</code> file to the root of the
                   repository to configure your project by adding a theme, search, navigation,
                   analytics and more.
                 </span>
