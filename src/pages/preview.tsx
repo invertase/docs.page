@@ -33,7 +33,7 @@ export default function Documentation(): JSX.Element {
     );
   }
 
-  const { env, source, content, properties, error, config } = pageProps;
+  const { env, source, content, properties, error, config, urls } = pageProps;
 
   NProgress.done();
   if (error) {
@@ -51,6 +51,7 @@ export default function Documentation(): JSX.Element {
                   onSelect: async () => {
                     select();
                   },
+                  imageUrls: urls,
                 }}
               >
                 <DebugModeContext.Provider value={false}>

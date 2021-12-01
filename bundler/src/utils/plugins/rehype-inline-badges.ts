@@ -21,8 +21,6 @@ export default function rehypeInlineBadges(): (ast: Node) => void {
   }
   return (ast: Node): void => {
     //@ts-ignore
-    console.log(ast);
-    //@ts-ignore
     visit(ast, containsBadge, visitor);
   };
 }

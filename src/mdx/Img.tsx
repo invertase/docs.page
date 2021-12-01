@@ -10,10 +10,10 @@ interface ImageProps
 }
 
 export function Img({ zoom, caption, ...props }: ImageProps): JSX.Element {
+  const src = props.src ?? '';
+
   const config = useConfig();
   const zoomEnabled = zoom ?? config.zoomImages;
-
-  const src = props.src ?? '';
 
   if (!src) {
     return null;

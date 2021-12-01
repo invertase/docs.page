@@ -6,13 +6,18 @@ import { mdxSerialize } from './mdx-serialize';
 import { mergeConfig, ProjectConfig } from './projectConfig';
 import { Properties, SlugProperties } from './properties';
 
-export type PreviewMode = { enabled: boolean; onSelect: () => void };
+export type PreviewMode = {
+  enabled: boolean;
+  onSelect: () => void;
+  imageUrls: Record<string, string> | null;
+};
 
 export const PreviewModeContext = createContext<PreviewMode>({
   enabled: false,
   onSelect: () => {
     return;
   },
+  imageUrls: null,
 });
 
 export type PreviewPageProps = {
@@ -23,17 +28,20 @@ export type PreviewPageProps = {
   content?: PageContent;
   config: ProjectConfig;
   error?: IRenderError;
+  urls?: Record<string, string>;
 };
 
 export async function buildPreviewProps({
   hash,
   config,
   text,
+  urls,
   errorCode,
 }: {
   hash: string;
   config: string;
   text: string;
+  urls: Record<string, string>;
   errorCode?: number;
 }): Promise<PreviewPageProps> {
   const params = hash.split('/');
@@ -94,15 +102,19 @@ export async function buildPreviewProps({
     content,
     error: error,
     config: JSON.parse(config),
+    urls,
   };
 }
 
 export async function extractContents(
   handle: FileSystemFileHandle,
   configHandle: FileSystemFileHandle,
-): Promise<[string, string]> {
+  imageHandles: FileSystemFileHandles,
+): Promise<[string, string, Record<string, string>]> {
   let config = mergeConfig({});
   let text: string;
+  let imageUrls;
+
   const errors: Error[] = [];
   try {
     // get docs.json from config handle
@@ -131,7 +143,18 @@ export async function extractContents(
     errors.push(e);
     throw new Error('unable to getFile page');
   }
-  return [text, JSON.stringify(config)];
+  try {
+    imageUrls = Object.fromEntries(
+      await Promise.all(
+        Object.entries(imageHandles).map(async ([key, handle]) => {
+          const url = URL.createObjectURL(await handle.getFile());
+          return [key, url];
+        }),
+      ),
+    );
+  } catch (_) {}
+
+  return [text, JSON.stringify(config), imageUrls];
 }
 
 export type FileSystemFileHandles = { [path: string]: FileSystemFileHandle };
@@ -146,8 +169,13 @@ export async function iterateDirectory(
   };
 
   for await (const entry of directory.values()) {
-    if (entry.kind === 'file' && entry.name.endsWith('.mdx')) {
-      handles[`${relativePath ?? ''}/${entry.name.replace('.mdx', '')}`] = entry;
+    if (entry.kind === 'file') {
+      if (entry.name.endsWith('.mdx')) {
+        handles[`${relativePath ?? ''}/${entry.name.replace('.mdx', '')}`] = entry;
+      }
+      if (['.png', '.gif', '.jpeg', '.jpg'].filter(ext => entry.name.endsWith(ext))) {
+        handles[`${relativePath ?? ''}/${entry.name}`] = entry;
+      }
     }
 
     if (entry.kind === 'directory') {

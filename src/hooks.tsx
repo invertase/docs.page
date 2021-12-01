@@ -148,6 +148,7 @@ export const cache = {
   text: '',
   config: '',
   props: null,
+  urls: null,
 };
 
 export function usePollLocalDocs(
@@ -161,14 +162,20 @@ export function usePollLocalDocs(
 
   useEffect(() => {
     if (!handles) return;
+    const imageHandles = Object.keys(handles)
+      .filter(key => ['.png', '.jpg', '.gif', '.jpeg'].some(ext => key.endsWith(ext)))
+      .reduce((obj, key) => {
+        obj[key] = handles[key];
+        return obj;
+      }, {});
     const handle = hash ? handles[hash] : handles[`${hash}/index`];
     const interval = setInterval(
       () =>
-        extractContents(handle, configHandle).then(([text, config]) => {
+        extractContents(handle, configHandle, imageHandles).then(([text, config, urls]) => {
           // console.log('extracting file');
-          if (text !== cache.text || config !== cache.config) {
+          if (text !== cache.text || config !== cache.config || urls !== cache.urls) {
             // console.log('detected change');
-
+            cache.urls = urls;
             cache.text = text;
             cache.config = config;
             setUpdating(updating + 1);
@@ -180,10 +187,12 @@ export function usePollLocalDocs(
   }, [hash, handles, updating]);
 
   useEffect(() => {
-    buildPreviewProps({ hash, config: cache.config, text: cache.text }).then(previewProps => {
-      setPageProps(previewProps);
-    });
-  }, [cache.text, cache.config, updating]);
+    buildPreviewProps({ hash, config: cache.config, text: cache.text, urls: cache.urls }).then(
+      previewProps => {
+        setPageProps(previewProps);
+      },
+    );
+  }, [cache.text, cache.config]);
 
   return pageProps;
 }
