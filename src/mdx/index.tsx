@@ -10,7 +10,6 @@ import { Pre, PreProps } from './Pre';
 import { Img } from './Img';
 import { YouTube } from './YouTube';
 import { Table } from './Table';
-import { usePreviewMode } from '../hooks';
 
 const components: ComponentMap = {
   // HTML element overrides

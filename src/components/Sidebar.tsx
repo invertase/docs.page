@@ -150,10 +150,6 @@ function Title({
  * A single navigation URL in the sidebar.
  */
 function NavLink({ href, children, active }: { href: string; children: string; active: boolean }) {
-  // const isPreviewMode = usePreviewMode()
-
-  const previewMode = usePreviewMode();
-
   return (
     <li className="-ml-2 mt-1">
       <Link
