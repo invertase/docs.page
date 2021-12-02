@@ -13,9 +13,9 @@ import { Table } from './Table';
 
 const components: ComponentMap = {
   // HTML element overrides
-  a: (props: React.HTMLProps<HTMLAnchorElement>) => (
-    <Link {...props} className="hover:opacity-75" />
-  ),
+  a: (props: React.HTMLProps<HTMLAnchorElement>) => {
+    return <Link {...props} className="hover:opacity-75" />;
+  },
   h1: (props: React.HTMLProps<HTMLHeadingElement>) => <Heading {...props} type="h1" />,
   h2: (props: React.HTMLProps<HTMLHeadingElement>) => <Heading {...props} type="h2" />,
   h3: (props: React.HTMLProps<HTMLHeadingElement>) => <Heading {...props} type="h3" />,

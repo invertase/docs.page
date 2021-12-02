@@ -1,7 +1,13 @@
 import React from 'react';
 import NextLink from 'next/link';
 import { SPLITTER } from '../utils/properties';
-import { useCustomDomain, useDebugMode, useEnvironment, useSlugProperties } from '../hooks';
+import {
+  useCustomDomain,
+  useDebugMode,
+  useEnvironment,
+  usePreviewMode,
+  useSlugProperties,
+} from '../hooks';
 
 /**
  * Custom Link component which builds upon top of the Next Link
@@ -21,21 +27,24 @@ export function Link(props: LinkProps): JSX.Element {
   const properties = useSlugProperties();
   const env = useEnvironment();
   const debugMode = useDebugMode();
-
   if (isHashLink(props.href)) {
     return <a {...props} />;
   }
-
   if (isExternalLink(props.href)) {
     return <ExternalLink {...props} />;
   }
-
-  const isProduction = env === 'production';
-
   // Extract `href` from `props`
   const { href: originalHref, ...anchorProps } = props;
   let href: string = originalHref;
   let as: string;
+
+  const previewMode = usePreviewMode();
+  if (previewMode.enabled) {
+    href = `/preview#${href}`;
+    return <a {...props} href={href} />;
+  }
+
+  const isProduction = env === 'production';
 
   // If there is no custom domain, attach the owner and repo
   if (!isProduction || !domain) {
