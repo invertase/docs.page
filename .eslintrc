@@ -23,6 +23,7 @@
     "node": true
   },
   "rules": {
+    "react/no-unescaped-entities": 0,
     "react/display-name": 0,
     // All images are from remote sources
     "@next/next/no-img-element": 0,

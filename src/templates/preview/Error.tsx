@@ -1,7 +1,7 @@
+// esling-disable react/no-unescaped-entities
 import React from 'react';
 import NextHead from 'next/head';
 
-import { ErrorType, IRenderError } from '../../utils/error';
 import { Footer } from '../homepage/Footer';
 
 import { Title } from './Title';
@@ -10,7 +10,13 @@ import { QuickLinks } from '../error/QuickLinks';
 
 export * from '../error/ErrorBoundary';
 
-export function Error(error: IRenderError): JSX.Element {
+export function Error({
+  statusCode,
+  foundDocs,
+}: {
+  statusCode: number;
+  foundDocs?: boolean;
+}): JSX.Element {
   return (
     <>
       <NextHead>
@@ -23,10 +29,10 @@ export function Error(error: IRenderError): JSX.Element {
         <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png" />
       </NextHead>
       <section className="mt-20 max-w-4xl mx-auto px-2">
-        <Title statusCode={error.statusCode} />
+        <Title statusCode={statusCode} />
         <div className="my-16 prose dark:prose-dark max-w-none">
-          {error.statusCode === 500 && <ServerError {...error} />}
-          {error.statusCode !== 500 && <NotFound {...error} />}
+          {statusCode === 500 && <ServerError />}
+          {statusCode !== 500 && foundDocs ? <NotFound /> : <PageMissing />}
         </div>
         <QuickLinks />
         <Footer />
@@ -35,52 +41,55 @@ export function Error(error: IRenderError): JSX.Element {
   );
 }
 
-export function ServerError({ properties }: IRenderError): JSX.Element {
+export function ServerError(): JSX.Element {
   return (
     <>
       <p>Something went wrong whilst building your preview.</p>
-      {!!properties && (
-        <p>
-          The could have happened because of an issue with your local Markdown content, or something
-          internal. If you think that it is not a problem with your markdown, feel free to{' '}
-          <ExternalLink href="https://github.com/invertase/docs.page/issues">
-            report an issue
-          </ExternalLink>
-          .
-        </p>
-      )}
+      <p>
+        This could have happened because of an issue with your local Markdown content, or something
+        {/* eslint-disable-next-line react/no-unescaped-entities */}
+        internal. If you think that it is not a problem with your markdown, feel free to{' '}
+        <ExternalLink href="https://github.com/invertase/docs.page/issues">
+          report an issue
+        </ExternalLink>
+        .
+      </p>
     </>
   );
 }
 
-export function NotFound({ properties, errorType }: IRenderError): JSX.Element {
-  if (errorType === ErrorType.repositoryNotFound) {
-    return (
-      <>
-        <p>
-          The GitHub repository{' '}
-          <ExternalLink href={properties.githubUrl}>
-            {properties.owner}/{properties.repository}
-          </ExternalLink>{' '}
-          was not found.
-        </p>
-        <p>
-          To get started, create a new repository on{' '}
-          <ExternalLink href="https://github.com/new">GitHub</ExternalLink>.
-        </p>
-      </>
-    );
-  }
+export function PageMissing(): JSX.Element {
+  return (
+    <>
+      <p>
+        We found your <code>/docs</code> subdirectory, but not this specific route in your docs.
+      </p>
+      <p>
+        If this error persists or you don't think this is the problem, feel free to{' '}
+        <ExternalLink href="https://github.com/invertase/docs.page/issues">
+          report an issue
+        </ExternalLink>
+        .
+      </p>
+    </>
+  );
+}
 
-  if (errorType === ErrorType.pageNotFound) {
-    return (
-      <>
-        <p>
-          No valid file matching the path <code>/{properties.path}</code> could be found.
-        </p>
-      </>
-    );
-  }
-
-  return null;
+export function NotFound(): JSX.Element {
+  return (
+    <>
+      <p>
+        This could be because we couldn't find the <code>/docs</code> subdirectory, or{' '}
+        <code>/docs/index.mdx</code> file in the directory you selected. Please check you're
+        selecting the root of your project and not the <code>/docs</code> directory itself.
+      </p>
+      <p>
+        If this error persists or you don't think this is the problem, feel free to{' '}
+        <ExternalLink href="https://github.com/invertase/docs.page/issues">
+          report an issue
+        </ExternalLink>
+        .
+      </p>
+    </>
+  );
 }
