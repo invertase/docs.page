@@ -110,7 +110,7 @@ export async function extractContents(
   handle: FileSystemFileHandle,
   configHandle: FileSystemFileHandle,
   imageHandles: FileSystemFileHandles,
-): Promise<[string, string, Record<string, string>]> {
+): Promise<[string, string, Record<string, string>, Error[]]> {
   let config = mergeConfig({});
   let text: string;
   let imageUrls;
@@ -141,7 +141,6 @@ export async function extractContents(
   } catch (e) {
     console.error('unable to getFile page');
     errors.push(e);
-    throw new Error('unable to getFile page');
   }
   try {
     imageUrls = Object.fromEntries(
@@ -154,7 +153,7 @@ export async function extractContents(
     );
   } catch (_) {}
 
-  return [text, JSON.stringify(config), imageUrls];
+  return [text, JSON.stringify(config), imageUrls, errors];
 }
 
 export type FileSystemFileHandles = { [path: string]: FileSystemFileHandle };

@@ -155,11 +155,11 @@ export function usePollLocalDocs(
   handles: FileSystemFileHandles,
   configHandle: FileSystemFileHandle,
   ms = 500,
-): PreviewPageProps | null {
+): [PreviewPageProps | null, number | null] {
   const [updating, setUpdating] = useState(0);
   const [pageProps, setPageProps] = useState(null);
   const hash = useHashChange();
-
+  const [errorCode, setErrorCode] = useState<number | null>(null);
   useEffect(() => {
     if (!handles) return;
     const imageHandles = Object.keys(handles)
@@ -171,16 +171,20 @@ export function usePollLocalDocs(
     const handle = hash ? handles[hash] : handles[`${hash}/index`];
     const interval = setInterval(
       () =>
-        extractContents(handle, configHandle, imageHandles).then(([text, config, urls]) => {
-          // console.log('extracting file');
-          if (text !== cache.text || config !== cache.config || urls !== cache.urls) {
-            // console.log('detected change');
-            cache.urls = urls;
-            cache.text = text;
-            cache.config = config;
-            setUpdating(updating + 1);
-          }
-        }),
+        extractContents(handle, configHandle, imageHandles)
+          .then(([text, config, urls]) => {
+            // console.log('extracting file');
+            if (text !== cache.text || config !== cache.config || urls !== cache.urls) {
+              // console.log('detected change');
+              cache.urls = urls;
+              cache.text = text;
+              cache.config = config;
+              setUpdating(updating + 1);
+            }
+          })
+          .catch(e => {
+            setErrorCode(404);
+          }),
       ms,
     );
     return () => clearInterval(interval);
@@ -194,5 +198,5 @@ export function usePollLocalDocs(
     );
   }, [cache.text, cache.config]);
 
-  return pageProps;
+  return [pageProps, errorCode];
 }

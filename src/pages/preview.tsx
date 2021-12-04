@@ -22,8 +22,12 @@ NextRouter.events.on('routeChangeComplete', NProgress.done);
 NextRouter.events.on('routeChangeError', NProgress.done);
 
 export default function Documentation(): JSX.Element {
-  const { select, handles, configHandle } = useDirectorySelector();
-  const pageProps = usePollLocalDocs(handles, configHandle, 500);
+  const { select, handles, configHandle, error: directoryError } = useDirectorySelector();
+  const [pageProps, pollErrorCode] = usePollLocalDocs(handles, configHandle, 500);
+
+  if (directoryError || pollErrorCode) {
+    return <Error statusCode={pollErrorCode} />;
+  }
 
   if (handles == null || !pageProps) {
     return (
@@ -32,7 +36,6 @@ export default function Documentation(): JSX.Element {
       </>
     );
   }
-
   const { env, source, content, properties, error, config, urls } = pageProps;
 
   NProgress.done();
