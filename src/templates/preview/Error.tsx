@@ -1,10 +1,11 @@
+// esling-disable react/no-unescaped-entities
 import React from 'react';
 import NextHead from 'next/head';
 
 import { Footer } from '../homepage/Footer';
 
 import { Title } from './Title';
-import { ExternalLink, Link } from '../../components/Link';
+import { ExternalLink } from '../../components/Link';
 import { QuickLinks } from '../error/QuickLinks';
 
 export * from '../error/ErrorBoundary';
@@ -46,6 +47,7 @@ export function ServerError(): JSX.Element {
       <p>Something went wrong whilst building your preview.</p>
       <p>
         This could have happened because of an issue with your local Markdown content, or something
+        {/* eslint-disable-next-line react/no-unescaped-entities */}
         internal. If you think that it is not a problem with your markdown, feel free to{' '}
         <ExternalLink href="https://github.com/invertase/docs.page/issues">
           report an issue

@@ -182,7 +182,7 @@ export function usePollLocalDocs(
               setUpdating(updating + 1);
             }
           })
-          .catch(e => {
+          .catch(() => {
             setErrorCode(404);
           }),
       ms,
