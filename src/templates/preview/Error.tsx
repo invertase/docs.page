@@ -1,16 +1,21 @@
 import React from 'react';
 import NextHead from 'next/head';
 
-import { ErrorType, IRenderError } from '../../utils/error';
 import { Footer } from '../homepage/Footer';
 
 import { Title } from './Title';
-import { ExternalLink } from '../../components/Link';
+import { ExternalLink, Link } from '../../components/Link';
 import { QuickLinks } from '../error/QuickLinks';
 
 export * from '../error/ErrorBoundary';
 
-export function Error({ statusCode }: { statusCode: number }): JSX.Element {
+export function Error({
+  statusCode,
+  foundDocs,
+}: {
+  statusCode: number;
+  foundDocs?: boolean;
+}): JSX.Element {
   return (
     <>
       <NextHead>
@@ -26,7 +31,7 @@ export function Error({ statusCode }: { statusCode: number }): JSX.Element {
         <Title statusCode={statusCode} />
         <div className="my-16 prose dark:prose-dark max-w-none">
           {statusCode === 500 && <ServerError />}
-          {statusCode !== 500 && <NotFound />}
+          {statusCode !== 500 && foundDocs ? <NotFound /> : <PageMissing />}
         </div>
         <QuickLinks />
         <Footer />
@@ -42,6 +47,23 @@ export function ServerError(): JSX.Element {
       <p>
         This could have happened because of an issue with your local Markdown content, or something
         internal. If you think that it is not a problem with your markdown, feel free to{' '}
+        <ExternalLink href="https://github.com/invertase/docs.page/issues">
+          report an issue
+        </ExternalLink>
+        .
+      </p>
+    </>
+  );
+}
+
+export function PageMissing(): JSX.Element {
+  return (
+    <>
+      <p>
+        We found your <code>/docs</code> subdirectory, but not this specific route in your docs.
+      </p>
+      <p>
+        If this error persists or you don't think this is the problem, feel free to{' '}
         <ExternalLink href="https://github.com/invertase/docs.page/issues">
           report an issue
         </ExternalLink>
