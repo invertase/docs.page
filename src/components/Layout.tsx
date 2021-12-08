@@ -41,7 +41,7 @@ export function Layout({ children }: { children: React.ReactNode }): JSX.Element
             <Sidebar />
           </aside>
         </div>
-        <div className="col-start-1 lg:col-start-3 col-end-4 grid grid-cols-[1fr,180px] my-16">
+        <div className="col-start-1 lg:col-start-3 col-end-4 grid grid-cols-[1fr,180px] mt-4 mb-16">
           <div className="col-start-1 col-end-3 md:col-end-2 min-w-0">
             <article className="px-4 prose dark:prose-dark max-w-none">
               {children}

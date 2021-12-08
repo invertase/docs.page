@@ -12,13 +12,9 @@ import { useConfig, usePreviewMode, useSlugProperties } from '../hooks';
 export function Sidebar(): JSX.Element {
   const config = useConfig();
 
-  return <AbstractSidebar data={config.sidebar} />;
-}
-
-export function AbstractSidebar({ data }: { data: SidebarItem[] }): JSX.Element {
   return (
-    <ul className="w-full dark:text-white">
-      {data.map((item, index) => (
+    <ul className="w-full dark:text-white text-sm">
+      {config.sidebar.map((item, index) => (
         <Iterator key={index} depth={1} item={item} />
       ))}
     </ul>
@@ -42,50 +38,22 @@ function Iterator({ item, depth }: { item: SidebarItem; depth: number }) {
     );
   }
 
-  // Otherwise, it's a nested element
-  // const links = getChildrenLinks(item[1]);
-
-  // const isActive = !!links.find(link => isRouteMatch(router, properties, link));
-
-  return (
-    // <NavigationList isInitiallyActive={isActive} title={item[0]} depth={depth} items={item[1]} />
-    <NavigationList title={item[0]} depth={depth} items={item[1]} />
-  );
+  return <NavigationList title={item[0]} depth={depth} items={item[1]} />;
 }
 
 function NavigationList({
   title,
-  // isInitiallyActive,
   depth,
   items,
 }: {
   title: string;
-  // isInitiallyActive: boolean;
   depth: number;
   items: SidebarItem[];
 }) {
-  // const [isActive, setIsActive] = useState<boolean>(isInitiallyActive);
-  const isActive = true;
-  // const onToggle = useCallback(() => {
-  //   setIsActive($ => !$);
-  // }, [isInitiallyActive]);
-
   return (
     <li className="mt-1">
-      <Title
-        title={title}
-        active={isActive}
-        onToggle={() => {
-          return null;
-        }}
-      />
-      <ul
-        className={cx('relative', {
-          'overflow-hidden h-0': !isActive,
-        })}
-        style={{ marginLeft: `${depth * 10}px` }}
-      >
-        <li className="absolute left-[-10px] top-[10px] inset-y-0 w-[1px] bg-gray-200 dark:bg-gray-700"></li>
+      <Title title={title} />
+      <ul className="relative" style={{ marginLeft: `${depth * 10}px` }}>
         {items.map((subItem, index) => (
           <Iterator key={`${depth}-${index.toString()}`} depth={depth + 1} item={subItem} />
         ))}
@@ -97,51 +65,10 @@ function NavigationList({
 /**
  * Toggable title in the sidebar
  */
-function Title({
-  title,
-  active,
-  onToggle,
-}: {
-  title: string;
-  active: boolean;
-  onToggle: () => void;
-}) {
+function Title({ title }: { title: string }) {
   return (
-    <div
-      className="-ml-2 px-2 flex items-center rounded group py-1"
-      role="button"
-      tabIndex={0}
-      onClick={() => onToggle()}
-    >
-      <span
-        className={cx('flex-1 opacity-75 font-semibold hover:opacity-100', {
-          'opacity-100': active,
-        })}
-      >
-        {title}
-      </span>
-      <span
-        style={{
-          width: 16,
-          height: 16,
-          transform: `rotate(${active ? '90deg' : '0deg'})`,
-          transition: 'transform .1s ease-in-out',
-        }}
-      >
-        {/* <svg
-          width={16}
-          height={16}
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          className={cx('text-gray-600 dark:text-gray-400 transition-opacity', {
-            'opacity-50': !active,
-          })}
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg> */}
-      </span>
+    <div className="-ml-2 px-2 flex items-center rounded group py-1">
+      <span className="flex-1 font-semibold">{title}</span>
     </div>
   );
 }
@@ -154,8 +81,8 @@ function NavLink({ href, children, active }: { href: string; children: string; a
     <li className="-ml-2 mt-1">
       <Link
         href={href}
-        className={cx('flex px-2 py-1 rounded font-semibold', {
-          'text-theme-color': active,
+        className={cx('flex px-2 py-1 rounded', {
+          'text-theme-color font-semibold': active,
           'opacity-75 hover:opacity-100': !active,
         })}
       >
@@ -164,23 +91,6 @@ function NavLink({ href, children, active }: { href: string; children: string; a
     </li>
   );
 }
-
-// /**
-//  * Extracts all child links from a [SidebarItem] list.
-//  *
-//  * @param items
-//  * @param initialLinks
-//  */
-// function getChildrenLinks(items: SidebarItem[], initialLinks: string[] = []): string[] {
-//   let links: string[] = [...initialLinks];
-
-//   items.forEach((item: SidebarItem) => {
-//     if (typeof item[1] === 'string') links.push(item[1]);
-//     else links = [...links, ...getChildrenLinks(item[1], links)];
-//   });
-
-//   return links;
-// }
 
 /**
  * Returns whether a given link matches the current route.
@@ -191,7 +101,7 @@ function NavLink({ href, children, active }: { href: string; children: string; a
  */
 function isRouteMatch(
   router: NextRouter,
-  properties: SlugProperties,
+  _properties: SlugProperties,
   link: string,
   previewMode = false,
 ) {
@@ -199,7 +109,6 @@ function isRouteMatch(
   if (isExternalLink(link)) {
     return false;
   }
-  // TODO: isPreviewMode
   if (previewMode) {
     return window.location.hash.split('#')[1] === link;
   }
