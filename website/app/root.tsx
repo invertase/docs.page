@@ -8,6 +8,7 @@ export let links: LinksFunction = () => {
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
     { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous' },
     { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Anton&display=block' },
+    { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=block' },
     { rel: 'stylesheet', href: tailwind },
   ];
 };
@@ -70,7 +71,7 @@ function Document({ children, title }: { children: React.ReactNode; title?: stri
         <Meta />
         <Links />
       </head>
-      <body className="dark:bg-[#202528]">
+      <body className="font-inter dark:bg-[#202528]">
         {children}
         <ScrollRestoration />
         <Scripts />
