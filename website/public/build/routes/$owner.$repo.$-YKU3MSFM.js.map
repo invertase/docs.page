@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["browser-route-module:/Users/elliothesp/Documents/Code/oss-docs/website/app/routes/$owner.$repo.$.tsx?browser", "../../../app/routes/$owner.$repo.$.tsx"],
+  "sourcesContent": ["export { meta } from \"/Users/elliothesp/Documents/Code/oss-docs/website/app/routes/$owner.$repo.$.tsx\";", "\n\nexport let meta: MetaFunction = () => {\n  // TODO add: https://github.com/invertase/docs.page/blob/02e73978d9b2c62e7fee0e171eda33ad3c128306/src/templates/homepage/index.tsx#L23\n  return {\n    'theme-color': '#ffffff',\n    title: 'docs.page | Create an instant Open Source docs page with zero configuration.',\n    description: 'Create an instant Open Source docs page with zero configuration.',\n    'og:title': 'docs.page',\n    'og:description': 'Create an instant Open Source docs page with zero configuration.',\n    'og:image': 'http://docs.page/assets/docs-page-social.png',\n    'og:url': 'http://docs.page',\n    'twitter:title': 'docs.page',\n    'twitter:description': 'Create an instant Open Source docs page with zero configuration.',\n    'twitter:image': 'http://docs.page/assets/docs-page-social.png',\n    'twitter:card': 'summary_large_image',\n  };\n};"],
+  "mappings": ";;;;;AAAA;;;ACAA;AAEO,IAAI,OAAqB,MAAM;AAEpC,SAAO;AAAA,IACL,eAAe;AAAA,IACf,OAAO;AAAA,IACP,aAAa;AAAA,IACb,YAAY;AAAA,IACZ,kBAAkB;AAAA,IAClB,YAAY;AAAA,IACZ,UAAU;AAAA,IACV,iBAAiB;AAAA,IACjB,uBAAuB;AAAA,IACvB,iBAAiB;AAAA,IACjB,gBAAgB;AAAA;AAAA;",
+  "names": []
+}

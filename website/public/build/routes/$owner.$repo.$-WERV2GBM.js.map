@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["browser-route-module:/Users/elliothesp/Documents/Code/oss-docs/website/app/routes/$owner.$repo.$.tsx?browser", "../../../app/routes/$owner.$repo.$.tsx"],
+  "sourcesContent": ["export { default, meta } from \"/Users/elliothesp/Documents/Code/oss-docs/website/app/routes/$owner.$repo.$.tsx\";", "import { LoaderFunction, MetaFunction } from \"remix\";\nimport { json } from \"stream/consumers\";\n\nexport const loader: LoaderFunction = async ({ params }) => {\n  const owner = params.owner!;\n  const repo = params.repo!;\n  const path = params['*']!;\n\n  return json({});\n};\n\nexport const meta: MetaFunction = () => {\n  return {\n    title: 'docs.page | Create an instant Open Source docs page with zero configuration.',\n    description: 'Create an instant Open Source docs page with zero configuration.',\n  };\n};\n\nexport default function Page() {\n  return (\n    <div>TODO</div>\n  )\n}"],
+  "mappings": ";;;;;;AAAA;;;ACAA;AACA;AAUO,IAAM,OAAqB,MAAM;AACtC,SAAO;AAAA,IACL,OAAO;AAAA,IACP,aAAa;AAAA;AAAA;AAIF,gBAAgB;AAC7B,SACE,oCAAC,OAAD,MAAK;AAAA;",
+  "names": []
+}

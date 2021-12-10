@@ -1,0 +1,34 @@
+{
+  "private": true,
+  "version": "0.0.0",
+  "name": "docs.page",
+  "scripts": {
+    "build": "npm run build:css && remix build",
+    "build:css": "tailwindcss -o ./app/tailwind.css",
+    "dev": "PORT=3001 concurrently \"npm run dev:css\" \"remix dev\"",
+    "dev:css": "tailwindcss -o ./app/tailwind.css --watch",
+    "postinstall": "remix setup node"
+  },
+  "dependencies": {
+    "@heroicons/react": "^1.0.5",
+    "@remix-run/react": "^1.0.6",
+    "@remix-run/serve": "^1.0.6",
+    "@remix-run/vercel": "^1.0.6",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "remix": "^1.0.6"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "^1.0.6",
+    "@types/react": "^17.0.24",
+    "@types/react-dom": "^17.0.9",
+    "classnames": "^2.3.1",
+    "concurrently": "^6.4.0",
+    "tailwindcss": "^3.0.0",
+    "typescript": "^4.1.2"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "sideEffects": false
+}

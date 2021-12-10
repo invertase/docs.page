@@ -33,3 +33,11 @@ spelling.json
 
 /public/_docs.page/shiki/themes/
 /public/_docs.page/shiki/languages/
+
+
+# Remix
+.cache
+.vercel
+.output
+public/build
+api/build

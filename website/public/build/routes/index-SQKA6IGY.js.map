@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["browser-route-module:/Users/elliothesp/Documents/Code/oss-docs/website/app/routes/index.tsx?browser", "../../../app/routes/index.tsx"],
+  "sourcesContent": ["export { default, meta } from \"/Users/elliothesp/Documents/Code/oss-docs/website/app/routes/index.tsx\";", "import type { MetaFunction, LoaderFunction } from 'remix';\nimport { useLoaderData, json, Link } from 'remix';\n\nexport let loader: LoaderFunction = () => {\n  return json({});\n};\n\nexport let meta: MetaFunction = () => {\n  return {\n    title: 'docs.page | Create an instant Open Source docs page with zero configuration.',\n    description: 'Welcome to remix!',\n  };\n};\n\nexport default function Index() {\n  return <div>Hello!</div>;\n}\n"],
+  "mappings": ";;;;;;AAAA;;;ACAA;AAOO,IAAI,OAAqB,MAAM;AACpC,SAAO;AAAA,IACL,OAAO;AAAA,IACP,aAAa;AAAA;AAAA;AAIF,iBAAiB;AAC9B,SAAO,oCAAC,OAAD,MAAK;AAAA;",
+  "names": []
+}
