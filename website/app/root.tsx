@@ -75,7 +75,7 @@ function Document({ children, title }: { children: React.ReactNode; title?: stri
         <Meta />
         <Links />
       </head>
-      <body className="font-inter dark:bg-[#202528] dark:text-white">
+      <body className="font-inter dark:bg-zinc-900 dark:text-white">
         <script
           dangerouslySetInnerHTML={{
             __html: `

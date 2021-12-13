@@ -1010,6 +1010,10 @@ Ensure the default browser behavior of the `hidden` attribute.
   aspect-ratio: 16 / 9;
 }
 
+.h-6 {
+  height: 1.5rem;
+}
+
 .h-8 {
   height: 2rem;
 }
@@ -1024,14 +1028,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .h-16 {
   height: 4rem;
-}
-
-.h-5 {
-  height: 1.25rem;
-}
-
-.h-6 {
-  height: 1.5rem;
 }
 
 .min-h-\[90px\] {
@@ -1066,16 +1062,16 @@ Ensure the default browser behavior of the `hidden` attribute.
   max-width: 90rem;
 }
 
+.max-w-none {
+  max-width: none;
+}
+
 .max-w-6xl {
   max-width: 72rem;
 }
 
 .max-w-5xl {
   max-width: 64rem;
-}
-
-.max-w-none {
-  max-width: none;
 }
 
 .flex-1 {
@@ -1245,11 +1241,6 @@ Ensure the default browser behavior of the `hidden` attribute.
 .bg-gray-50 {
   --tw-bg-opacity: 1;
   background-color: rgb(249 250 251 / var(--tw-bg-opacity));
-}
-
-.bg-blue-500 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(59 130 246 / var(--tw-bg-opacity));
 }
 
 .bg-gradient-to-br {
@@ -1622,9 +1613,9 @@ Ensure the default browser behavior of the `hidden` attribute.
   border-color: rgb(55 65 81 / var(--tw-border-opacity));
 }
 
-.dark .dark\:bg-\[\#202528\] {
+.dark .dark\:bg-neutral-800 {
   --tw-bg-opacity: 1;
-  background-color: rgb(32 37 40 / var(--tw-bg-opacity));
+  background-color: rgb(38 38 38 / var(--tw-bg-opacity));
 }
 
 .dark .dark\:bg-transparent {
@@ -1633,6 +1624,29 @@ Ensure the default browser behavior of the `hidden` attribute.
 
 .dark .dark\:bg-\[\#202528\]\/60 {
   background-color: rgb(32 37 40 / 0.6);
+}
+
+.dark .dark\:bg-neutral-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(23 23 23 / var(--tw-bg-opacity));
+}
+
+.dark .dark\:bg-stone-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(28 25 23 / var(--tw-bg-opacity));
+}
+
+.dark .dark\:bg-zinc-900 {
+  --tw-bg-opacity: 1;
+  background-color: rgb(24 24 27 / var(--tw-bg-opacity));
+}
+
+.dark .dark\:bg-zinc-800\/60 {
+  background-color: rgb(39 39 42 / 0.6);
+}
+
+.dark .dark\:bg-zinc-900\/60 {
+  background-color: rgb(24 24 27 / 0.6);
 }
 
 .dark .dark\:from-gray-100 {
