@@ -4,21 +4,9 @@ import { LoaderFunction, MetaFunction, json, useLoaderData } from 'remix';
 import { Footer } from '~/components/Footer';
 import { Header } from '~/components/Header';
 import { Theme } from '~/components/Theme';
+import documentationLoader from '../loaders/documentation.server';
 
-export const loader: LoaderFunction = async ({ params }) => {
-  const owner = params.owner!;
-  const repo = params.repo!;
-  const path = params['*']!;
-  let data;
-  try {
-    data = await fetchBundle({ owner, repository: repo, path });
-  } catch (error) {
-    //@ts-ignore
-    return error.response.data;
-  }
-
-  return data;
-};
+export const loader = documentationLoader;
 
 export const meta: MetaFunction = () => ({
   title: '',
