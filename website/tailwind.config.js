@@ -4,6 +4,9 @@ module.exports = {
   darkMode: 'class', // or 'media' or 'class'
   theme: {
     extend: {
+      maxWidth: {
+        '8xl': '90rem',
+      },
       fontFamily: {
         anton: ['Anton', 'sans-serif'],
         inter: ['Inter', 'sans-serif'],
@@ -17,5 +20,5 @@ module.exports = {
     },
   },
   variants: {},
-  plugins: [],
+  plugins: [require('@tailwindcss/typography')],
 };

@@ -1,14 +1,18 @@
 import { Link, Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useCatch } from 'remix';
 import type { LinksFunction } from 'remix';
 
-import tailwind from './tailwind.css';
+import tailwind from './styles/tailwind.css';
+import { STORAGE_KEY } from './components/DarkModeToggle';
 
 export let links: LinksFunction = () => {
   return [
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
     { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous' },
     { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Anton&display=block' },
-    { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=block' },
+    {
+      rel: 'stylesheet',
+      href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=block',
+    },
     { rel: 'stylesheet', href: tailwind },
   ];
 };
@@ -71,7 +75,18 @@ function Document({ children, title }: { children: React.ReactNode; title?: stri
         <Meta />
         <Links />
       </head>
-      <body className="font-inter dark:bg-[#202528]">
+      <body className="font-inter dark:bg-zinc-900 dark:text-white">
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if (localStorage["${STORAGE_KEY}"] === 'dark' || (!("${STORAGE_KEY}" in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark')
+              } else {
+                document.documentElement.classList.remove('dark')
+              }
+            `,
+          }}
+        />
         {children}
         <ScrollRestoration />
         <Scripts />
