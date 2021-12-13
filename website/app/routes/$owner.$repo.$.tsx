@@ -1,6 +1,5 @@
-import { fetchBundle } from '@docs.page/server';
 import { useHydratedMdx } from '@docs.page/client';
-import { LoaderFunction, MetaFunction, json, useLoaderData } from 'remix';
+import { MetaFunction, useLoaderData, LinksFunction } from 'remix';
 import { Footer } from '~/components/Footer';
 import { Header } from '~/components/Header';
 import { YouTube } from '~/components/mdx';
@@ -13,7 +12,7 @@ export const loader = documentationLoader;
 export let links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/@docsearch/css@alpha' },
-    { rel: 'stylesheet', href: docsearch },
+    // { rel: 'stylesheet', href: docsearch },
   ];
 };
 
