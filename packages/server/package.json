@@ -1,5 +1,5 @@
 {
-  "name": "@docs-page-bundler/server",
+  "name": "@docs.page/server",
   "type": "module",
   "version": "1.0.0",
   "main": "build/index.js",

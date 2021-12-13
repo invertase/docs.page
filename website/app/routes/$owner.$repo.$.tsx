@@ -1,4 +1,5 @@
-import axios from 'axios';
+import { fetchBundle } from '@docs.page/server';
+import { useHydratedMdx } from '@docs.page/client';
 import { LoaderFunction, MetaFunction, json, useLoaderData } from 'remix';
 import { Footer } from '~/components/Footer';
 import { Header } from '~/components/Header';
@@ -8,17 +9,15 @@ export const loader: LoaderFunction = async ({ params }) => {
   const owner = params.owner!;
   const repo = params.repo!;
   const path = params['*']!;
-  let res;
+  let data;
   try {
-    res = await axios.post(
-      `http://localhost:8000/github?owner=${owner}&repository=${repo}${path ? `path=${path}` : ''}`,
-    );
+    data = await fetchBundle({ owner, repository: repo, path });
   } catch (error) {
     //@ts-ignore
     return error.response.data;
   }
 
-  return res.data;
+  return data;
 };
 
 export const meta: MetaFunction = () => ({
@@ -28,7 +27,7 @@ export const meta: MetaFunction = () => ({
 
 export default function Page() {
   const data = useLoaderData();
-  console.log(data);
+  const Component = useHydratedMdx(data.bundled);
 
   return (
     <>
