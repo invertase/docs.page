@@ -1,5 +1,5 @@
 import { useHydratedMdx } from '@docs.page/client';
-import { MetaFunction, useLoaderData, LinksFunction } from 'remix';
+import { MetaFunction, useLoaderData, LinksFunction, useCatch } from 'remix';
 import cx from 'classnames';
 
 import { Banner } from '~/components/Banner';
@@ -11,7 +11,7 @@ import { Theme } from '~/components/Theme';
 import { DocumentationProvider } from '~/context';
 
 import components from '~/components/mdx';
-import { docsLoader, DocumentationLoader } from '../loaders/documentation.server';
+import { docsLoader, DocumentationLoader, ThrownBundleError } from '../loaders/documentation.server';
 import docsearch from '../styles/docsearch.css';
 
 export const loader = docsLoader;
@@ -23,11 +23,19 @@ export let links: LinksFunction = () => {
   ];
 };
 
-export const meta: MetaFunction = ({ data }: { data: DocumentationLoader }) => ({
-  title: data.bundle.frontmatter.title || 'docs.page',
-  description:
-    data.bundle.frontmatter.description || 'Instant Open Source docs with zero configuration',
-});
+export const meta: MetaFunction = ({ data }: { data?: DocumentationLoader }) => {
+  if (!data)
+    return {
+      title: '',
+      description: '',
+    };
+
+  return {
+    title: data.bundle.frontmatter.title || 'docs.page',
+    description:
+      data.bundle.frontmatter.description || 'Instant Open Source docs with zero configuration',
+  };
+};
 
 export default function Page() {
   const data = useLoaderData<DocumentationLoader>();
@@ -71,4 +79,30 @@ export default function Page() {
       </div>
     </DocumentationProvider>
   );
+}
+
+// TODO handle me
+export function CatchBoundary() {
+  const e = useCatch<ThrownBundleError>();
+
+  let title;
+  if (e.status === 404) {
+    title = 'Page not found';
+  } else if (e.status === 500) {
+    title = 'Internal server error';
+  } else if (e.status === 400) {
+    title = 'Bad request';
+  } else {
+    title = 'Something went wrong.';
+  }
+
+  return (
+    <div>
+      <h2>{title}</h2>
+    </div>
+  );
+}
+
+export function ErrorBoundary() {
+  return <div>Error</div>;
 }

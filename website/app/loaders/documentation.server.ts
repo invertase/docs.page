@@ -1,14 +1,24 @@
 import { BundleSuccess, fetchBundle, BundleResponseData, BundleError } from '@docs.page/server';
-import { json, LoaderFunction } from 'remix';
+import { json, LoaderFunction, ThrownResponse } from 'remix';
 
+// A thrown error from the loader containing the bundle error.
+export type ThrownBundleError = ThrownResponse<number, BundleError>;
+
+// Response from the loader containing the bundle data.
 export type DocumentationLoader = {
+  // The bundle data.
   bundle: BundleSuccess;
+  // The owner of the request, e.g. `invertase`
   owner: string;
+  // The repository of the request e.g. `react-native-firebase`
   repo: string;
+  // The path of the request, e.g. `/getting-started`
   path: string;
+  // An optional ref (e.g. PR, branch, tag).
   ref?: string;
 };
 
+// Utility to guard against a bundler error.
 export function isBundleError(bundle: any): bundle is BundleError {
   return bundle.errors.length > 0;
 }
@@ -30,23 +40,21 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
     bundle = await fetchBundle({ owner, repository: repo, path, ref });
   } catch (error) {
     console.log(error);
-    throw new Response('Something went wrong', {
-      status: 500,
-    });
+    throw json(
+      {
+        message: 'Something went wrong!',
+        errors: [],
+      },
+      500,
+    );
   }
 
   if (isBundleError(bundle)) {
-    console.log(bundle);
-    // TODO send errors somehow
-    throw new Response('Bad request', {
-      status: 400,
-    });
+    throw json(bundle, 400);
   }
 
   // if (!bundle.config) {
-  //   throw new Response('Repository not found', {
-  //     status: 404,
-  //   });
+   // throw json(bundle, 404);
   // }
 
   return json({
