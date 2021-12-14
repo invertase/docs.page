@@ -1,12 +1,13 @@
 {
   "name": "@docs.page/client",
   "version": "1.0.0",
-  "main": "dist/bundle.es.js",
   "license": "MIT",
-  "module": "dist/bundle.cjs.js",
+  "main": "dist/bundle.cjs.js",
+  "module": "dist/bundle.ems.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "rimraf dist && rollup -c"
+    "build": "rimraf dist && rollup -c",
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "mdx-bundler": "^8.0.0",

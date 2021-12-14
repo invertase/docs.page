@@ -1,17 +1,17 @@
 {
   "name": "@docs.page/server",
-  "type": "module",
   "version": "1.0.0",
   "main": "build/index.js",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
     "start": "node ./build/index.js",
-    "dev": "ts-node src/index.ts"
+    "dev": "ts-node src/index.ts",
+    "postinstall": "npm run build"
   },
   "dependencies": {
     "dotenv": "^10.0.0",
-    "node-fetch": "^3.1.0"
+    "node-fetch": "2"
   },
   "devDependencies": {
     "esbuild": "^0.14.3"

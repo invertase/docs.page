@@ -9,6 +9,7 @@ const loader: LoaderFunction = async ({ params }) => {
   try {
     data = await fetchBundle({ owner, repository: repo, path });
   } catch (error) {
+    console.log(error);
     //@ts-ignore
     return error.response.data;
   }

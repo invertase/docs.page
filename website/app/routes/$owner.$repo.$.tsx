@@ -1,5 +1,6 @@
 import { useHydratedMdx } from '@docs.page/client';
 import { MetaFunction, useLoaderData, LinksFunction } from 'remix';
+import { Banner } from '~/components/Banner';
 import { Footer } from '~/components/Footer';
 import { Header } from '~/components/Header';
 import { YouTube } from '~/components/mdx';
@@ -28,7 +29,6 @@ export default function Page() {
   return (
     <>
       <Theme />
-      <Banner />
       <Header />
       <div className="max-w-8xl mx-auto">
         <div className="fixed inset-0 py-10 px-8 overflow-x-auto top-14 left-[max(0px,calc(50%-45rem))] w-64">
@@ -37,8 +37,7 @@ export default function Page() {
         <div className="pt-10 pl-72">
           <div className="mr-52 pr-16">
             <main>
-              Content Here
-              <div>{JSON.stringify(data.bundle)}</div>
+              <Component />
             </main>
             <Footer />
           </div>
