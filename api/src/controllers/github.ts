@@ -68,7 +68,10 @@ export const bundleGitHub = async (
       }
     }
   }
-  return res.status(200).send({
+
+  const statusCode = code !== null ? 200 : 404;
+
+  return res.status(statusCode).send({
     code,
     frontmatter,
     headings,
