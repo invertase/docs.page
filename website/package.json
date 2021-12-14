@@ -18,7 +18,9 @@
     "color": "^4.1.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "remix": "^1.0.6"
+    "remix": "^1.0.6",
+    "@docs.page/client": "^1.0.0",
+    "@docs.page/server": "^1.0.0"
   },
   "devDependencies": {
     "@remix-run/dev": "^1.0.6",

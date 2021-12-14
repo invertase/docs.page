@@ -1,0 +1,22 @@
+{
+  "name": "@docs.page/client",
+  "version": "1.0.0",
+  "main": "dist/bundle.es.js",
+  "license": "MIT",
+  "module": "dist/bundle.cjs.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rimraf dist && rollup -c"
+  },
+  "dependencies": {
+    "mdx-bundler": "^8.0.0",
+    "react": "^17.0.2"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.37",
+    "deepmerge": "^4.2.2",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.61.1",
+    "rollup-plugin-typescript2": "^0.31.1"
+  }
+}

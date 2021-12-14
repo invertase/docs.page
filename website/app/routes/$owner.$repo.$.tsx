@@ -1,25 +1,18 @@
-import { LoaderFunction, MetaFunction, json, useLoaderData, LinksFunction } from 'remix';
-import { Banner } from '~/components/Banner';
+import { useHydratedMdx } from '@docs.page/client';
+import { MetaFunction, useLoaderData, LinksFunction } from 'remix';
 import { Footer } from '~/components/Footer';
 import { Header } from '~/components/Header';
 import { YouTube } from '~/components/mdx';
 import { Sidebar } from '~/components/Sidebar';
 import { Theme } from '~/components/Theme';
+import documentationLoader from '../loaders/documentation.server';
 
-import docsearch from '../styles/docsearch.css';
-
-export const loader: LoaderFunction = async ({ params }) => {
-  const owner = params.owner!;
-  const repo = params.repo!;
-  const path = params['*']!;
-
-  return json({});
-};
+export const loader = documentationLoader;
 
 export let links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/@docsearch/css@alpha' },
-    { rel: 'stylesheet', href: docsearch },
+    // { rel: 'stylesheet', href: docsearch },
   ];
 };
 
@@ -30,6 +23,7 @@ export const meta: MetaFunction = () => ({
 
 export default function Page() {
   const data = useLoaderData();
+  const Component = useHydratedMdx({ code: data.bundle });
 
   return (
     <>
@@ -42,9 +36,9 @@ export default function Page() {
         </div>
         <div className="pt-10 pl-72">
           <div className="mr-52 pr-16">
-            <main className="prose max-w-none">
-              <h1>Welcome!</h1>
-              <p>Welcome to foo bar baz</p>
+            <main>
+              Content Here
+              <div>{JSON.stringify(data.bundle)}</div>
             </main>
             <Footer />
           </div>
