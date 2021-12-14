@@ -6,14 +6,16 @@ import { Header } from '~/components/Header';
 import { YouTube } from '~/components/mdx';
 import { Sidebar } from '~/components/Sidebar';
 import { Theme } from '~/components/Theme';
+
 import documentationLoader from '../loaders/documentation.server';
+import docsearch from '../styles/docsearch.css';
 
 export const loader = documentationLoader;
 
 export let links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/@docsearch/css@alpha' },
-    // { rel: 'stylesheet', href: docsearch },
+    { rel: 'stylesheet', href: docsearch },
   ];
 };
 

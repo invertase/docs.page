@@ -1,5 +1,13 @@
 import { fetchBundle } from '@docs.page/server';
+import { BundleResponseData } from '@docs.page/server';
 import { LoaderFunction } from 'remix';
+
+export type DocumentationLoader = {
+  bundle: BundleResponseData;
+  owner: string;
+  repo: string;
+  path: string;
+};
 
 const loader: LoaderFunction = async ({ params }) => {
   const owner = params.owner!;
