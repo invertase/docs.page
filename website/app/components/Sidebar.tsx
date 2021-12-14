@@ -1,5 +1,5 @@
-import { Link, NavLink } from 'react-router-dom';
 import cx from 'classnames';
+import { DocsLink } from './DocsLink';
 
 const sidebar = [
   [
@@ -48,9 +48,9 @@ export function Sidebar() {
           if (typeof urlOrChildren === 'string') {
             return (
               <li key={urlOrChildren}>
-                <NavLink
+                <DocsLink
                   end={urlOrChildren === '/'}
-                  to={removeTrailingSlash(`/ehesp/testing${urlOrChildren}`)}
+                  to={urlOrChildren}
                   className={({ isActive }) =>
                     cx('block my-2', {
                       'hover:text-gray-800 dark:hover:text-gray-100': !isActive,
@@ -59,29 +59,32 @@ export function Sidebar() {
                   }
                 >
                   {title}
-                </NavLink>
+                </DocsLink>
               </li>
             );
           }
 
           return (
             <li className="mt-4 first:mt-0 mb-4">
-              <h5 className="text-gray-900 dark:text-gray-200 font-semibold tracking-wide pb-3">{title}</h5>
+              <h5 className="text-gray-900 dark:text-gray-200 font-semibold tracking-wide pb-3">
+                {title}
+              </h5>
               <ul className="border-l border-gray-100 dark:border-gray-700 space-y-2">
                 {urlOrChildren.map(([title, url]) => (
                   <li key={url}>
-                    <NavLink
+                    <DocsLink
                       end={url === '/'}
-                      to={removeTrailingSlash(`/ehesp/testing${url}`)}
+                      to={url}
                       className={({ isActive }) =>
                         cx('pl-4 -ml-px border-l border-transparent', {
-                          'hover:border-gray-400 hover:text-gray-800 dark:hover:text-gray-100': !isActive,
+                          'hover:border-gray-400 hover:text-gray-800 dark:hover:text-gray-100':
+                            !isActive,
                           'text-docs-theme font-medium !border-docs-theme': isActive,
                         })
                       }
                     >
                       {title}
-                    </NavLink>
+                    </DocsLink>
                   </li>
                 ))}
               </ul>
