@@ -1,5 +1,7 @@
 import { useHydratedMdx } from '@docs.page/client';
 import { MetaFunction, useLoaderData, LinksFunction } from 'remix';
+import cx from 'classnames';
+
 import { Banner } from '~/components/Banner';
 import { Footer } from '~/components/Footer';
 import { Header } from '~/components/Header';
@@ -7,10 +9,10 @@ import { YouTube } from '~/components/mdx';
 import { Sidebar } from '~/components/Sidebar';
 import { Theme } from '~/components/Theme';
 
-import documentationLoader from '../loaders/documentation.server';
+import { docsLoader, DocumentationLoader } from '../loaders/documentation.server';
 import docsearch from '../styles/docsearch.css';
 
-export const loader = documentationLoader;
+export const loader = docsLoader;
 
 export let links: LinksFunction = () => {
   return [
@@ -19,14 +21,15 @@ export let links: LinksFunction = () => {
   ];
 };
 
-export const meta: MetaFunction = () => ({
-  title: '',
-  description: '',
+export const meta: MetaFunction = ({ data }: { data: DocumentationLoader }) => ({
+  title: data.bundle.frontmatter.title || 'docs.page',
+  description:
+    data.bundle.frontmatter.description || 'Instant Open Source docs with zero configuration',
 });
 
 export default function Page() {
-  const data = useLoaderData();
-  const Component = useHydratedMdx({ code: data.bundle });
+  const { bundle } = useLoaderData<DocumentationLoader>();
+  const Component = useHydratedMdx({ code: bundle.bundle });
 
   return (
     <>
@@ -43,12 +46,21 @@ export default function Page() {
             </main>
             <Footer />
           </div>
-          <aside className="pt-10 px-8 fixed top-14 bottom-0 w-52 overflow-y-auto right-[max(0px,calc(50%-45rem))]">
-            <ul className="text-sm space-y-4">
-              <li className="font-semibold">Syntax Support</li>
-              <li>JetBrains IDEs</li>
-            </ul>
-          </aside>
+          {bundle.headings.length > 0 && (
+            <aside className="pt-10 px-8 fixed top-14 bottom-0 w-52 overflow-y-auto right-[max(0px,calc(50%-45rem))]">
+              <ul className="text-sm space-y-4">
+                {bundle.headings.map(heading => (
+                  <li
+                    className={cx({
+                      'font-semibold': false,
+                    })}
+                  >
+                    <a href={`#${heading.id}`}>{heading.title}</a>
+                  </li>
+                ))}
+              </ul>
+            </aside>
+          )}
         </div>
       </div>
     </>

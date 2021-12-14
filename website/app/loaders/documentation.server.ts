@@ -1,28 +1,51 @@
-import { fetchBundle } from '@docs.page/server';
-import { BundleResponseData } from '@docs.page/server';
-import { LoaderFunction } from 'remix';
+import { BundleSuccess, fetchBundle, BundleResponseData, BundleError } from '@docs.page/server';
+import { json, LoaderFunction } from 'remix';
 
 export type DocumentationLoader = {
-  bundle: BundleResponseData;
+  bundle: BundleSuccess;
   owner: string;
   repo: string;
   path: string;
 };
 
-const loader: LoaderFunction = async ({ params }) => {
+export function isBundleError(bundle: any): bundle is BundleError {
+  return bundle.errors.length > 0;
+}
+
+export const docsLoader: LoaderFunction = async ({ params }) => {
   const owner = params.owner!;
   const repo = params.repo!;
   const path = params['*']!;
-  let data;
+
+  let bundle: BundleResponseData;
+
   try {
-    data = await fetchBundle({ owner, repository: repo, path });
+    bundle = await fetchBundle({ owner, repository: repo, path });
   } catch (error) {
     console.log(error);
-    //@ts-ignore
-    return error.response.data;
+    throw new Response('Something went wrong', {
+      status: 500,
+    });
   }
 
-  return data;
-};
+  if (isBundleError(bundle)) {
+    console.log(bundle)
+    // TODO send errors somehow
+    throw new Response('Bad request', {
+      status: 400,
+    });
+  }
 
-export default loader;
+  // if (!bundle.config) {
+  //   throw new Response('Repository not found', {
+  //     status: 404,
+  //   });
+  // }
+
+  return json({
+    bundle,
+    owner,
+    repo,
+    path,
+  });
+};
