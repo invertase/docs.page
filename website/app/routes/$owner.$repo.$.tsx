@@ -23,7 +23,7 @@ export const meta: MetaFunction = () => ({
 
 export default function Page() {
   const data = useLoaderData();
-  const Component = useHydratedMdx(data.bundled);
+  const Component = useHydratedMdx({ code: data.bundle });
 
   return (
     <>
