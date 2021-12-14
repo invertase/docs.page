@@ -7,7 +7,7 @@ export type BundleError = {
 };
 
 export type BundleSuccess = {
-  bundle: string;
+  code: string;
   frontmatter: {
     [key: string]: any;
   };
@@ -15,4 +15,13 @@ export type BundleSuccess = {
   headings: HeadingNode[];
 };
 
-export type BundleResponseData = BundleError | BundleSuccess;
+export type BundleResponseData = {
+  code: string | null;
+  config: {
+    [key: string]: any;
+  } | null;
+  frontmatter: {
+    [key: string]: any;
+  };
+  headings: HeadingNode[] | null;
+};
