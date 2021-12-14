@@ -6,6 +6,7 @@ export type DocumentationLoader = {
   owner: string;
   repo: string;
   path: string;
+  ref?: string;
 };
 
 export function isBundleError(bundle: any): bundle is BundleError {
@@ -14,13 +15,19 @@ export function isBundleError(bundle: any): bundle is BundleError {
 
 export const docsLoader: LoaderFunction = async ({ params }) => {
   const owner = params.owner!;
-  const repo = params.repo!;
+  let repo = params.repo!;
   const path = params['*']!;
+  let ref: string | undefined;
+
+  // Check if the repo includes a ref
+  if (repo.includes('~')) {
+    [repo, ref] = repo.split('~');
+  }
 
   let bundle: BundleResponseData;
 
   try {
-    bundle = await fetchBundle({ owner, repository: repo, path });
+    bundle = await fetchBundle({ owner, repository: repo, path, ref });
   } catch (error) {
     console.log(error);
     throw new Response('Something went wrong', {
@@ -29,7 +36,7 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
   }
 
   if (isBundleError(bundle)) {
-    console.log(bundle)
+    console.log(bundle);
     // TODO send errors somehow
     throw new Response('Bad request', {
       status: 400,

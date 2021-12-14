@@ -8,7 +8,9 @@ import { Header } from '~/components/Header';
 import { YouTube } from '~/components/mdx';
 import { Sidebar } from '~/components/Sidebar';
 import { Theme } from '~/components/Theme';
+import { DocumentationProvider } from '~/context';
 
+import components from '~/components/mdx';
 import { docsLoader, DocumentationLoader } from '../loaders/documentation.server';
 import docsearch from '../styles/docsearch.css';
 
@@ -28,11 +30,11 @@ export const meta: MetaFunction = ({ data }: { data: DocumentationLoader }) => (
 });
 
 export default function Page() {
-  const { bundle } = useLoaderData<DocumentationLoader>();
-  const Component = useHydratedMdx({ code: bundle.bundle });
+  const data = useLoaderData<DocumentationLoader>();
+  const Component = useHydratedMdx({ code: data.bundle.bundle });
 
   return (
-    <>
+    <DocumentationProvider data={data}>
       <Theme />
       <Header />
       <div className="max-w-8xl mx-auto">
@@ -40,13 +42,17 @@ export default function Page() {
           <Sidebar />
         </div>
         <div className="pt-10 pl-72">
-          <div className="mr-52 pr-16">
-            <main>
-              <Component />
+          <div
+            className={cx({
+              'mr-52 pr-16': true,
+            })}
+          >
+            <main className="prose max-w-none">
+              <Component components={components} />
             </main>
             <Footer />
           </div>
-          {bundle.headings.length > 0 && (
+          {/* {bundle.headings.length > 0 && (
             <aside className="pt-10 px-8 fixed top-14 bottom-0 w-52 overflow-y-auto right-[max(0px,calc(50%-45rem))]">
               <ul className="text-sm space-y-4">
                 {bundle.headings.map(heading => (
@@ -60,9 +66,9 @@ export default function Page() {
                 ))}
               </ul>
             </aside>
-          )}
+          )} */}
         </div>
       </div>
-    </>
+    </DocumentationProvider>
   );
 }
