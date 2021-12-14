@@ -6,7 +6,7 @@ import rehypeHeadings from './plugins/rehype-headings.js';
 import rehypeInlineBadges from './plugins/rehype-inline-badges.js';
 import remarkComponentCheck from './plugins/remark-component-check.js';
 import remarkUndeclaredVariables from './plugins/remark-undeclared-variables.js';
-import { BundleResponseData } from '../types.js';
+import { BundleResponseData, BundleSuccess } from '../types.js';
 
 export function headerDepthToHeaderList(depth: number): string[] {
   const list: string[] = [];
@@ -26,9 +26,9 @@ export async function bundle(
     rehypePlugins: [],
     headerDepth: 3,
   },
-): Promise<BundleResponseData> {
+): Promise<BundleSuccess> {
   const output = {
-    warnings: [],
+    // warnings: [],
     headings: [],
   };
   const defaultRemarkPlugins = [
@@ -36,14 +36,15 @@ export async function bundle(
     [
       remarkComponentCheck,
       {
-        callback: output.warnings.push.bind(output.warnings),
+        callback: () => {},
       },
     ],
     // // Checks for undeclared variables, converts them to text:
     [
       remarkUndeclaredVariables,
       {
-        callback: output.warnings.push.bind(output.warnings),
+        callback: () => {},
+        // callback: output.warnings.push.bind(output.warnings),
       },
     ],
     // Support GitHub flavoured markdown
@@ -86,7 +87,7 @@ export async function bundle(
     },
   });
   return {
-    bundle: code,
+    code,
     frontmatter,
     errors,
     headings: output.headings,
