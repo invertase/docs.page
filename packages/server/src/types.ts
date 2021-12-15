@@ -1,4 +1,4 @@
-import { Message } from "esbuild";
+import { Message } from 'esbuild';
 
 export type FetchBundleInput = {
   owner: string;
@@ -17,15 +17,15 @@ export type BundleError = {
   errors: Message[];
 };
 
-export type BundleResponseData =
-  | {
-      code: string | null;
-      config: {
-        [key: string]: any;
-      } | null;
-      frontmatter: {
-        [key: string]: any;
-      };
-      headings: HeadingNode[] | null;
-    }
-  | BundleError;
+export type BundleSuccess = {
+  code: string | null;
+  config: {
+    [key: string]: any;
+  } | null;
+  frontmatter: {
+    [key: string]: any;
+  };
+  headings: HeadingNode[] | null;
+};
+
+export type BundleResponseData = BundleSuccess | BundleError;

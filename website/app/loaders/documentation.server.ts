@@ -2,7 +2,7 @@ import { BundleSuccess, fetchBundle, BundleResponseData, BundleError } from '@do
 import { json, LoaderFunction, ThrownResponse } from 'remix';
 
 // A thrown error from the loader containing the bundle error.
-export type ThrownBundleError = ThrownResponse<number, BundleError>;
+export type ThrownBundleError = ThrownResponse<number, BundleError | null>;
 
 // Response from the loader containing the bundle data.
 export type DocumentationLoader = {
@@ -20,9 +20,7 @@ export type DocumentationLoader = {
 
 // Utility to guard against a bundler error.
 export function isBundleError(bundle: any): bundle is BundleError {
-  console.log('errors', bundle.errors);
-  
-  return bundle.errors.length > 0;
+  return bundle.errors !== undefined;
 }
 
 export const docsLoader: LoaderFunction = async ({ params }) => {
@@ -40,25 +38,17 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
 
   try {
     bundle = await fetchBundle({ owner, repository: repo, path, ref });
-    console.log(bundle);
   } catch (error) {
-    console.log(error);
-    throw json(
-      {
-        message: 'Something went wrong!',
-        errors: [],
-      },
-      500,
-    );
+    throw json(null, 500);
   }
 
-  // if (isBundleError(bundle)) {
-  //   throw json(bundle, 400);
-  // }
-  
-  // if (!bundle.config) {
-  // throw json(bundle, 404);
-  // }
+  if (isBundleError(bundle)) {
+    throw json(bundle, 400);
+  }
+
+  if (bundle.config === null || bundle.code === null) {
+    throw json(null, 404);
+  }
 
   return json({
     bundle,
@@ -66,4 +56,4 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
     repo,
     path,
   });
-};;
+};
