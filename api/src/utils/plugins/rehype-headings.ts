@@ -47,6 +47,7 @@ export default function rehypeHeadings(
 
   return (ast: Node): void => {
     visit(ast, 'element', visitor);
+
     options.callback(nodes);
   };
 }
