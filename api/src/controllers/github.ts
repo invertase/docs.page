@@ -39,7 +39,7 @@ export const bundleGitHub = async (
     const {
       md: markdown,
       config: sourceConfig,
-      baseBranch,
+      baseBranch: sourceBaseBranch,
     } = await getGitHubContents({
       owner,
       repository,
@@ -54,7 +54,9 @@ export const bundleGitHub = async (
         config = null;
       }
     }
-
+    if (sourceBaseBranch) {
+      baseBranch = sourceBaseBranch;
+    }
     if (markdown) {
       try {
         const bundleResult = await bundle(markdown, {
