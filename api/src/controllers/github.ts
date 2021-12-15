@@ -3,7 +3,7 @@ import { bundle } from '../utils/bundler.js';
 import { Request, Response } from 'express';
 import { getPlugins } from '../utils/pluginMap.js';
 import { getGitHubContents } from '../utils/github.js';
-import { BundleError, BundleResponseData, BundleSuccess } from '../types.js';
+import { BundleError, BundleResponseData } from '../types.js';
 import { HeadingNode } from '../utils/plugins/rehype-headings.js';
 import { Message } from 'esbuild';
 /**
@@ -15,7 +15,7 @@ import { Message } from 'esbuild';
 export const bundleGitHub = async (
   req: Request,
   res: Response,
-): Promise<Response<BundleResponseData | { errors: Message[] }>> => {
+): Promise<Response<BundleResponseData | BundleError>> => {
   // parse query params:
   const owner = (req?.query?.owner as string) || null;
   const repository = (req?.query?.repository as string) || null;
