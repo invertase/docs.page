@@ -1,4 +1,14 @@
-import { Link, Links, LiveReload, Meta, Outlet, Scripts, ScrollRestoration, useCatch } from 'remix';
+import {
+  Link,
+  Links,
+  LiveReload,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  useCatch,
+  useLoaderData,
+} from 'remix';
 import type { LinksFunction } from 'remix';
 
 import tailwind from './styles/tailwind.css';
@@ -17,9 +27,23 @@ export let links: LinksFunction = () => {
   ];
 };
 
+export function loader() {
+  return {
+    ENV: {
+      MSW_ENABLED: process.env.MSW_ENABLED,
+    },
+  };
+}
+
 export default function App() {
+  const data = useLoaderData();
   return (
     <Document>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `window.ENV = ${JSON.stringify(data.ENV)}`,
+        }}
+      />
       <Outlet />
     </Document>
   );

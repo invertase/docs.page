@@ -14,17 +14,18 @@ type HeadingNode = {
 };
 
 export type BundleError = {
-  message: string;
   errors: Message[];
 };
 
-export type BundleSuccess = {
-  bundle: string;
-  frontmatter: {
-    [key: string]: any;
-  };
-  errors: Message[];
-  headings: HeadingNode[];
-};
-
-export type BundleResponseData = BundleError | BundleSuccess;
+export type BundleResponseData =
+  | {
+      code: string | null;
+      config: {
+        [key: string]: any;
+      } | null;
+      frontmatter: {
+        [key: string]: any;
+      };
+      headings: HeadingNode[] | null;
+    }
+  | BundleError;

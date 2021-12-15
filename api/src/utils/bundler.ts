@@ -2,11 +2,20 @@ import { bundleMDX } from 'mdx-bundler';
 import rehypeSlug from 'rehype-slug';
 import remarkGfm from 'remark-gfm';
 import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
-import rehypeHeadings from './plugins/rehype-headings.js';
+import rehypeHeadings, { HeadingNode } from './plugins/rehype-headings.js';
 import rehypeInlineBadges from './plugins/rehype-inline-badges.js';
 import remarkComponentCheck from './plugins/remark-component-check.js';
 import remarkUndeclaredVariables from './plugins/remark-undeclared-variables.js';
-import { BundleResponseData, BundleSuccess } from '../types.js';
+import { Message } from 'esbuild';
+
+type MdxBundlerResponse = {
+  code: string;
+  frontmatter: {
+    [key: string]: any;
+  };
+  errors: Message[];
+  headings: HeadingNode[];
+};
 
 export function headerDepthToHeaderList(depth: number): string[] {
   const list: string[] = [];
@@ -26,7 +35,7 @@ export async function bundle(
     rehypePlugins: [],
     headerDepth: 3,
   },
-): Promise<BundleSuccess> {
+): Promise<MdxBundlerResponse> {
   const output = {
     // warnings: [],
     headings: [],

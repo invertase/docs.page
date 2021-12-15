@@ -20,6 +20,8 @@ export type DocumentationLoader = {
 
 // Utility to guard against a bundler error.
 export function isBundleError(bundle: any): bundle is BundleError {
+  console.log('errors', bundle.errors);
+  
   return bundle.errors.length > 0;
 }
 
@@ -38,6 +40,7 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
 
   try {
     bundle = await fetchBundle({ owner, repository: repo, path, ref });
+    console.log(bundle);
   } catch (error) {
     console.log(error);
     throw json(
@@ -49,12 +52,12 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
     );
   }
 
-  if (isBundleError(bundle)) {
-    throw json(bundle, 400);
-  }
-
+  // if (isBundleError(bundle)) {
+  //   throw json(bundle, 400);
+  // }
+  
   // if (!bundle.config) {
-   // throw json(bundle, 404);
+  // throw json(bundle, 404);
   // }
 
   return json({
@@ -63,4 +66,4 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
     repo,
     path,
   });
-};
+};;
