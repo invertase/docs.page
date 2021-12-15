@@ -8,7 +8,7 @@ import remarkComponentCheck from './plugins/remark-component-check.js';
 import remarkUndeclaredVariables from './plugins/remark-undeclared-variables.js';
 import { Message } from 'esbuild';
 
-type BundleSuccess = {
+type MdxBundlerResponse = {
   code: string;
   frontmatter: {
     [key: string]: any;
@@ -35,7 +35,7 @@ export async function bundle(
     rehypePlugins: [],
     headerDepth: 3,
   },
-): Promise<BundleSuccess> {
+): Promise<MdxBundlerResponse> {
   const output = {
     // warnings: [],
     headings: [],
