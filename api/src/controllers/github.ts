@@ -33,10 +33,14 @@ export const bundleGitHub = async (
     [key: string]: any;
   } | null = null;
   let headings: HeadingNode[] | null = [];
-
+  let baseBranch: string | null = null;
   if (owner && repository && ref && path) {
     // fetch from github:
-    const { md: markdown, config: sourceConfig } = await getGitHubContents({
+    const {
+      md: markdown,
+      config: sourceConfig,
+      baseBranch: sourceBaseBranch,
+    } = await getGitHubContents({
       owner,
       repository,
       ref: ref || 'HEAD',
@@ -50,7 +54,9 @@ export const bundleGitHub = async (
         config = null;
       }
     }
-
+    if (sourceBaseBranch) {
+      baseBranch = sourceBaseBranch;
+    }
     if (markdown) {
       try {
         const bundleResult = await bundle(markdown, {
@@ -72,10 +78,13 @@ export const bundleGitHub = async (
   const statusCode = code !== null ? 200 : 404;
   console.log(headings);
   
+
   return res.status(statusCode).send({
     code,
     frontmatter,
     headings,
     config,
+    baseBranch,
+    path,
   });
 };

@@ -26,6 +26,8 @@ export type BundleSuccess = {
     [key: string]: any;
   };
   headings: HeadingNode[] | null;
+  baseBranch: string | null;
+  path: string | null;
 };
 
 export type BundleResponseData = BundleSuccess | BundleError;
