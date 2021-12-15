@@ -69,7 +69,7 @@ export async function bundle(
     [
       rehypeHeadings,
       {
-        headings: headerDepthToHeaderList(bundleOptions.headingDepth),
+        headings: headerDepthToHeaderList(bundleOptions.headerDepth),
         callback: (headings: any) => {
           output.headings = headings;
         },
@@ -78,23 +78,32 @@ export async function bundle(
     // Make emojis accessible
     rehypeAccessibleEmojis,
   ];
+
+  console.log('plugins', bundleOptions.rehypePlugins.length);
+
   const { code, frontmatter, errors } = await bundleMDX({
     source: rawText,
     xdmOptions(options: any) {
       // @ts-ignore TODO fix types
       options.remarkPlugins = [
         ...(options.remarkPlugins ?? []),
-        ...(bundleOptions.remarkPlugins || defaultRemarkPlugins),
+        ...(bundleOptions.remarkPlugins.length > 0
+          ? bundleOptions.remarkPlugins
+          : defaultRemarkPlugins),
       ];
       // @ts-ignore TODO fix types
       options.rehypePlugins = [
         ...(options.rehypePlugins ?? []),
-        ...(bundleOptions.rehypePlugins || defaultRehypePlugins),
+        ...(bundleOptions.rehypePlugins.length > 0
+          ? bundleOptions.rehypePlugins
+          : defaultRehypePlugins),
       ];
 
       return options;
     },
   });
+  console.log('headings::', output.headings);
+
   return {
     code,
     frontmatter,
