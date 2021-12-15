@@ -30,3 +30,4 @@ spelling.json
 .output
 website/api/build
 website/public/build
+website/tests/screenshots/*
