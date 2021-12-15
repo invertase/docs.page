@@ -39,7 +39,7 @@ export const meta: MetaFunction = ({ data }: { data?: DocumentationLoader }) => 
 
 export default function Page() {
   const data = useLoaderData<DocumentationLoader>();
-  const Component = useHydratedMdx({ code: data.bundle.bundle });
+  const Component = useHydratedMdx({ code: data.bundle.code });
 
   return (
     <DocumentationProvider data={data}>
