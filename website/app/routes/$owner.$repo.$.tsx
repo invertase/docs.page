@@ -31,9 +31,9 @@ export const meta: MetaFunction = ({ data }: { data?: DocumentationLoader }) => 
     };
 
   return {
-    title: data.bundle.frontmatter.title || 'docs.page',
+    title: data?.bundle?.frontmatter?.title || 'docs.page',
     description:
-      data.bundle.frontmatter.description || 'Instant Open Source docs with zero configuration',
+      data?.bundle?.frontmatter?.description || 'Instant Open Source docs with zero configuration',
   };
 };
 
