@@ -2,10 +2,8 @@ import { useHydratedMdx } from '@docs.page/client';
 import { MetaFunction, useLoaderData, LinksFunction, useCatch } from 'remix';
 import cx from 'classnames';
 
-import { Banner } from '~/components/Banner';
 import { Footer } from '~/components/Footer';
 import { Header } from '~/components/Header';
-import { YouTube } from '~/components/mdx';
 import { Sidebar } from '~/components/Sidebar';
 import { Theme } from '~/components/Theme';
 import { DocumentationProvider } from '~/context';
@@ -31,16 +29,16 @@ export const meta: MetaFunction = ({ data }: { data?: DocumentationLoader }) => 
     };
 
   return {
-    title: data.bundle.frontmatter.title || 'docs.page',
+    title: data.frontmatter.title || 'docs.page',
     description:
-      data.bundle.frontmatter.description || 'Instant Open Source docs with zero configuration',
+      data.frontmatter.description || 'Instant Open Source docs with zero configuration',
   };
 };
 
 export default function Page() {
   const data = useLoaderData<DocumentationLoader>();
-  const Component = useHydratedMdx({ code: data.bundle.code });
-
+  const Component = useHydratedMdx({ code: data.code });
+  
   return (
     <DocumentationProvider data={data}>
       <Theme />
@@ -60,10 +58,10 @@ export default function Page() {
             </main>
             <Footer />
           </div>
-          {/* {bundle.headings.length > 0 && (
+          {!!data.headings && (
             <aside className="pt-10 px-8 fixed top-14 bottom-0 w-52 overflow-y-auto right-[max(0px,calc(50%-45rem))]">
               <ul className="text-sm space-y-4">
-                {bundle.headings.map(heading => (
+                {data.headings.map(heading => (
                   <li
                     className={cx({
                       'font-semibold': false,
@@ -74,7 +72,7 @@ export default function Page() {
                 ))}
               </ul>
             </aside>
-          )} */}
+          )}
         </div>
       </div>
     </DocumentationProvider>

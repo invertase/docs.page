@@ -1,3 +1,5 @@
+import { getBoolean, getNumber, getString, getValue } from "./get";
+
 /**
  * Project config.
  *
@@ -59,29 +61,30 @@ export const defaultConfig: ProjectConfig = {
 };
 
 // Merges any user config with default values.
-// export function mergeConfig(json: Partial<ProjectConfig> | null): ProjectConfig {
-//   return {
-//     name: getString(json, 'name', defaultConfig.name),
-//     logo: getString(json, 'logo', defaultConfig.logo),
-//     logoDark: getString(json, 'logoDark', defaultConfig.logoDark),
-//     favicon: getString(json, 'favicon', defaultConfig.favicon),
-//     socialPreview: getString(json, 'socialPreview', defaultConfig.socialPreview),
-//     twitter: getString(json, 'twitter', defaultConfig.twitter),
-//     noindex: getBoolean(json, 'noindex', defaultConfig.noindex),
-//     theme: getString(json, 'theme', defaultConfig.theme),
-//     docsearch: get(json, 'docsearch')
-//       ? {
-//           appId: getString(json, 'docsearch.appId', ''),
-//           apiKey: getString(json, 'docsearch.apiKey', ''),
-//           indexName: getString(json, 'docsearch.indexName', ''),
-//         }
-//       : defaultConfig.docsearch,
-//     navigation: mergeNavigationConfig(json),
-//     sidebar: mergeSidebarConfig(json),
-//     headerDepth: getNumber(json, 'headerDepth', defaultConfig.headerDepth),
-//     variables: get(json, 'variables', defaultConfig.variables),
-//     googleTagManager: getString(json, 'googleTagManager', defaultConfig.googleTagManager),
-//     zoomImages: getBoolean(json, 'zoomImages', defaultConfig.zoomImages),
-//   };
-// }
+export function mergeConfig(json: Record<string, unknown>): ProjectConfig {
+  return {
+    name: getString(json, 'name', defaultConfig.name),
+    logo: getString(json, 'logo', defaultConfig.logo),
+    logoDark: getString(json, 'logoDark', defaultConfig.logoDark),
+    favicon: getString(json, 'favicon', defaultConfig.favicon),
+    socialPreview: getString(json, 'socialPreview', defaultConfig.socialPreview),
+    twitter: getString(json, 'twitter', defaultConfig.twitter),
+    noindex: getBoolean(json, 'noindex', defaultConfig.noindex),
+    theme: getString(json, 'theme', defaultConfig.theme),
+    docsearch: getValue(json, 'docsearch')
+      ? {
+          appId: getString(json, 'docsearch.appId', ''),
+          apiKey: getString(json, 'docsearch.apiKey', ''),
+          indexName: getString(json, 'docsearch.indexName', ''),
+        }
+      : defaultConfig.docsearch,
+    // navigation: mergeNavigationConfig(json),
+    // sidebar: mergeSidebarConfig(json),
+    headerDepth: getNumber(json, 'headerDepth', defaultConfig.headerDepth),
+    // variables: getValue(json, 'variables', defaultConfig.variables),
+    variables: {},
+    googleTagManager: getString(json, 'googleTagManager', defaultConfig.googleTagManager),
+    zoomImages: getBoolean(json, 'zoomImages', defaultConfig.zoomImages),
+  };
+}
 
