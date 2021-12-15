@@ -19,11 +19,11 @@ export const bundleGitHub = async (
   const repository = (req?.query?.repository as string) || null;
   const ref = (req?.query.ref as string) || 'HEAD';
   const path = (req?.query.path as string) || 'index';
-  const headerDepth = req?.query?.headerDepth ? parseInt(req?.query?.headerDepth as string) : null;
+  const headerDepth = req?.query?.headerDepth ? parseInt(req?.query?.headerDepth as string) : 3;
 
   // get plugins for mdx-bundler:
-  const remarkPlugins = getPlugins(['remark-parse', 'remark-gfm']);
-  const rehypePlugins = getPlugins(['rehype-slug']);
+  const remarkPlugins = getPlugins([]);
+  const rehypePlugins = getPlugins([]);
 
   let code: string | null = null;
   let frontmatter: {
@@ -60,6 +60,8 @@ export const bundleGitHub = async (
         });
         code = bundleResult.code;
         frontmatter = bundleResult.frontmatter;
+        console.log('debug');
+
         headings = bundleResult.headings.length > 0 ? bundleResult.headings : null;
       } catch (e) {
         return res.status(400).send(e);
@@ -68,7 +70,8 @@ export const bundleGitHub = async (
   }
 
   const statusCode = code !== null ? 200 : 404;
-
+  console.log(headings);
+  
   return res.status(statusCode).send({
     code,
     frontmatter,
