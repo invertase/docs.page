@@ -1,4 +1,5 @@
 import { hydrate } from "react-dom";
 import { RemixBrowser } from "remix";
-if (process.env.MSW_ENABLED === '1') { require('../tests/mocks') };
+//@ts-ignore
+if (window.ENV.MSW_ENABLED === '1') { require('../tests/mocks') };
 hydrate(<RemixBrowser />, document);
