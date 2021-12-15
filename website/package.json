@@ -7,22 +7,25 @@
     "build:css": "tailwindcss -o ./app/styles/tailwind.css",
     "dev": "PORT=3001 concurrently \"npm run dev:css\" \"remix dev\"",
     "dev:css": "tailwindcss -o ./app/styles/tailwind.css --watch",
-    "postinstall": "remix setup node"
+    "postinstall": "remix setup node",
+    "test": "playwright test --headed"
   },
   "dependencies": {
+    "@docs.page/client": "^1.0.0",
+    "@docs.page/server": "^1.0.0",
     "@docsearch/react": "^3.0.0-alpha.42",
     "@heroicons/react": "^1.0.5",
+    "@playwright/test": "^1.17.1",
     "@remix-run/react": "^1.0.6",
     "@remix-run/serve": "^1.0.6",
     "@remix-run/vercel": "^1.0.6",
     "color": "^4.1.0",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "remix": "^1.0.6",
-    "@docs.page/client": "^1.0.0",
-    "@docs.page/server": "^1.0.0"
+    "remix": "^1.0.6"
   },
   "devDependencies": {
+    "@playwright/test": "^1.17.1",
     "@remix-run/dev": "^1.0.6",
     "@tailwindcss/typography": "^0.5.0-alpha.3",
     "@types/color": "^3.0.2",
@@ -30,6 +33,7 @@
     "@types/react-dom": "^17.0.9",
     "classnames": "^2.3.1",
     "concurrently": "^6.4.0",
+    "msw": "^0.36.3",
     "tailwindcss": "^3.0.0",
     "typescript": "^4.1.2"
   },

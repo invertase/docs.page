@@ -38,6 +38,8 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
 
   try {
     bundle = await fetchBundle({ owner, repository: repo, path, ref });
+    console.log(bundle);
+    
   } catch (error) {
     console.log(error);
     throw json(
