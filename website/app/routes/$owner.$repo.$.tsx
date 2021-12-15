@@ -6,10 +6,14 @@ import { Footer } from '~/components/Footer';
 import { Header } from '~/components/Header';
 import { Sidebar } from '~/components/Sidebar';
 import { Theme } from '~/components/Theme';
+import components from '~/components/mdx';
 import { DocumentationProvider } from '~/context';
 
-import components from '~/components/mdx';
-import { docsLoader, DocumentationLoader, ThrownBundleError } from '../loaders/documentation.server';
+import {
+  docsLoader,
+  DocumentationLoader,
+  ThrownBundleError,
+} from '../loaders/documentation.server';
 import docsearch from '../styles/docsearch.css';
 
 export const loader = docsLoader;
@@ -21,24 +25,25 @@ export let links: LinksFunction = () => {
   ];
 };
 
-export const meta: MetaFunction = ({ data }: { data?: DocumentationLoader }) => {
-  if (!data)
+export const meta: MetaFunction = (props: { data?: DocumentationLoader }) => {
+  // https://github.com/remix-run/remix/issues/1054
+  if (!props.data) {
     return {
       title: '',
       description: '',
     };
+  }
 
   return {
-    title: data.frontmatter.title || 'docs.page',
-    description:
-      data.frontmatter.description || 'Instant Open Source docs with zero configuration',
+    title: props.data.frontmatter?.title ?? '',
+    description: props.data.frontmatter?.description ?? '',
   };
 };
 
 export default function Page() {
   const data = useLoaderData<DocumentationLoader>();
-  const Component = useHydratedMdx({ code: data.code });
-  
+  const MDX = useHydratedMdx({ code: data.code });
+
   return (
     <DocumentationProvider data={data}>
       <Theme />
@@ -54,13 +59,13 @@ export default function Page() {
             })}
           >
             <main className="prose max-w-none">
-              <Component components={components} />
+              <MDX components={components} />
             </main>
             <Footer />
           </div>
           {!!data.headings && (
             <aside className="pt-10 px-8 fixed top-14 bottom-0 w-52 overflow-y-auto right-[max(0px,calc(50%-45rem))]">
-              <ul className="text-sm space-y-4">
+              <ul className="text-sm space-y-2">
                 {data.headings.map(heading => (
                   <li
                     className={cx({
@@ -83,7 +88,7 @@ export default function Page() {
 export function CatchBoundary() {
   const e = useCatch<ThrownBundleError>();
 
-  let title;
+  let title = '';
   if (e.status === 404) {
     title = 'Page not found';
   } else if (e.status === 500) {

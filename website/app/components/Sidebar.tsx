@@ -36,10 +36,6 @@ const sidebar = [
   ],
 ];
 
-function removeTrailingSlash(path: string) {
-  return path.replace(/\/$/, '');
-}
-
 export function Sidebar() {
   return (
     <nav>

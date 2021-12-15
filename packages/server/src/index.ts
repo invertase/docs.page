@@ -1,18 +1,27 @@
 import { config } from 'dotenv';
-config();
 import fetch from 'node-fetch';
 import { BundleResponseData, FetchBundleInput } from './types';
-const base = process.env.BUNDLER_URL;
-const getEndpoint = (base: string, { owner, repository, ref, path }: FetchBundleInput) =>
-  `${base}/bundle?owner=${owner}&repository=${repository}${path ? `&path=${path}` : ''}${
-    ref ? `&ref=${ref}` : ''
-  }`;
+
+config();
+
+// The base URL for the bundler.
+const BUNDLER_URL = process.env.BUNDLER_URL;
+
+function getEndpoint(base: string, { owner, repository, ref, path }: FetchBundleInput): string {
+  let endpoint = `${base}/bundle?`;
+
+  const query = [];
+  query.push(`owner=${owner}`);
+  query.push(`repository=${repository}`);
+  if (path) query.push(`path=${path}`);
+  if (ref) query.push(`ref=${ref}`);
+
+  return endpoint + query.join('&');
+}
 
 export async function fetchBundle(params: FetchBundleInput): Promise<BundleResponseData> {
-  const endpoint = getEndpoint(base || `https://api.docs.page`, params);
-  //@ts-ignore
+  const endpoint = getEndpoint(BUNDLER_URL || `https://api.docs.page`, params);
   const data = await fetch(endpoint, { method: 'POST' }).then(r => r.json());
-
   return data as unknown as BundleResponseData;
 }
 

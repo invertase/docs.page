@@ -1,17 +1,18 @@
 import Color from 'color';
+import { useDocumentationContext } from '~/context';
+import { defaultConfig } from '~/utils/config';
 
 type Variant = 'base' | 'dark' | 'light';
 
 // TODO pass config
 export function Theme() {
-  const theme = '#cf0202';
+  const theme = useDocumentationContext().config.theme;
 
   let color: Color;
   try {
     color = Color(theme);
   } catch {
-    // todo default theme
-    color = Color(theme);
+    color = Color(defaultConfig.theme);
   }
 
   const variants: { [key in Variant]: string } = {

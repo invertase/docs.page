@@ -81,8 +81,7 @@ export function mergeConfig(json: Record<string, unknown>): ProjectConfig {
     // navigation: mergeNavigationConfig(json),
     // sidebar: mergeSidebarConfig(json),
     headerDepth: getNumber(json, 'headerDepth', defaultConfig.headerDepth),
-    // variables: getValue(json, 'variables', defaultConfig.variables),
-    variables: {},
+    variables: getValue(json, 'variables', defaultConfig.variables) as Record<string, string>,
     googleTagManager: getString(json, 'googleTagManager', defaultConfig.googleTagManager),
     zoomImages: getBoolean(json, 'zoomImages', defaultConfig.zoomImages),
   };

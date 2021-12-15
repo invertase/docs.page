@@ -1,5 +1,6 @@
 import { BundleSuccess, fetchBundle, BundleResponseData, BundleError } from '@docs.page/server';
 import { json, redirect, LoaderFunction, ThrownResponse } from 'remix';
+import { replaceVariables } from '~/utils';
 import { mergeConfig, ProjectConfig } from '~/utils/config';
 
 // A thrown error from the loader containing the bundle error.
@@ -13,8 +14,10 @@ export type DocumentationLoader = {
   repo: string;
   // The path of the request, e.g. `/getting-started`
   path: string;
-  // An optional ref (e.g. PR, branch, tag).
+  // An optional ref (e.g. PR, branch, tag) provided to the URL.
   ref?: string;
+  // The source of the content (e.g. main, master, PR, ref)
+  source: string;
   // The bundle data.
   code: string;
   // Page heading nodes.
@@ -57,7 +60,7 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
 
   // No bundled code or config should 404
   if (bundle.config === null || bundle.code === null) {
-    throw json(null, 404);
+    throw json({}, 404);
   }
 
   // Apply a redirect if provided in the frontmatter
@@ -65,12 +68,16 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
     return redirect(bundle.frontmatter.redirect);
   }
 
+  const config = mergeConfig(bundle.config);
+  const code = replaceVariables(config.variables, bundle.code);
+
   const response: DocumentationLoader = {
     owner,
     repo,
     path,
     ref,
-    code: bundle.code,
+    source: 'main',
+    code,
     headings: bundle.headings,
     config: mergeConfig(bundle.config),
     frontmatter: bundle.frontmatter,

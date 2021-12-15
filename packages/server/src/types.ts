@@ -1,4 +1,4 @@
-import { Message } from 'esbuild';
+import type { Message } from 'esbuild';
 
 export type FetchBundleInput = {
   owner: string;
