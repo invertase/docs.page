@@ -1,5 +1,5 @@
 import { test } from '@playwright/test';
-import { assertExists } from './helpers';
+import { assertExists } from '../helpers';
 
 test('Homepage  should load', async ({ page }) => {
   await page.goto('http://localhost:3001');
