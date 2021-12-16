@@ -10,7 +10,7 @@ interface ImageProps
   zoom?: boolean;
 }
 
-export function Img({ zoom, caption, ...props }: ImageProps): JSX.Element {
+export function Img({ zoom, caption, ...props }: ImageProps & { href?: string }): JSX.Element {
   const src = props.src ?? '';
 
   const config = useConfig();
@@ -21,10 +21,8 @@ export function Img({ zoom, caption, ...props }: ImageProps): JSX.Element {
   }
 
   const wrapper = (child: React.ReactElement) =>
-    //@ts-ignore
     props.href
-      ? //@ts-ignore
-        withHref(withFigure(zoomEnabled ? withZoom(child) : child, caption), props.href)
+      ? withHref(withFigure(zoomEnabled ? withZoom(child) : child, caption), props.href)
       : withFigure(zoomEnabled ? withZoom(child) : child, caption);
 
   return wrapper(<Image {...props} className="mx-auto" />);
