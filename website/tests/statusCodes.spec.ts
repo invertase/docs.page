@@ -1,8 +1,5 @@
-import { test, expect, Page } from '@playwright/test';
-
-async function assertExists(page: Page, selector: string) {
-  await page.waitForSelector(selector, { timeout: 10000 });
-}
+import { test, Page } from '@playwright/test';
+import { assertExists } from './helpers';
 
 test('500', async ({ page }) => {
   await page.goto('http://localhost:3001/_test/500');
