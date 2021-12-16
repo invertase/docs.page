@@ -1,6 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Controlled as ControlledZoom } from 'react-medium-image-zoom';
 import { Image } from '../components/Image';
+import { Link } from '../components/Link';
 import { useConfig } from '../hooks';
 
 interface ImageProps
@@ -9,7 +10,7 @@ interface ImageProps
   zoom?: boolean;
 }
 
-export function Img({ zoom, caption, ...props }: ImageProps): JSX.Element {
+export function Img({ zoom, caption, ...props }: ImageProps & { href?: string }): JSX.Element {
   const src = props.src ?? '';
 
   const config = useConfig();
@@ -20,9 +21,15 @@ export function Img({ zoom, caption, ...props }: ImageProps): JSX.Element {
   }
 
   const wrapper = (child: React.ReactElement) =>
-    withFigure(zoomEnabled ? withZoom(child) : child, caption);
+    props.href
+      ? withHref(withFigure(zoomEnabled ? withZoom(child) : child, caption), props.href)
+      : withFigure(zoomEnabled ? withZoom(child) : child, caption);
 
   return wrapper(<Image {...props} className="mx-auto" />);
+}
+
+function withHref(child: React.ReactElement, href) {
+  return <Link href={href}>{child}</Link>;
 }
 
 function withFigure(child: React.ReactElement, caption?: string) {
