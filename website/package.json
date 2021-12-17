@@ -9,7 +9,8 @@
     "dev:css": "tailwindcss -o ./app/styles/tailwind.css --watch",
     "dev:msw": "MSW_ENABLED=1 yarn dev",
     "postinstall": "remix setup node",
-    "test": "yarn rimraf tests/screenshots/* && MSW_ENABLED=1 playwright test --headed"
+    "test": "yarn rimraf tests/screenshots/* && MSW_ENABLED=1 playwright test",
+    "test:headed": "yarn rimraf tests/screenshots/* && MSW_ENABLED=1 playwright test --headed"
   },
   "dependencies": {
     "@docs.page/client": "^1.0.0",

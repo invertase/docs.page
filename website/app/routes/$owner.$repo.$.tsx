@@ -50,7 +50,7 @@ export default function Page() {
     <DocumentationProvider data={data}>
       <Theme />
       <Header />
-      <div className="max-w-8xl mx-auto">
+      <div data-test-id={'documentation-provider'} className="max-w-8xl mx-auto">
         <div className="fixed inset-0 py-10 px-8 overflow-x-auto top-14 left-[max(0px,calc(50%-45rem))] w-64">
           <Sidebar sidebar={data.config.sidebar} />
         </div>
