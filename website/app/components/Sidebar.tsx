@@ -40,7 +40,7 @@ export function Sidebar() {
                       end={url === '/'}
                       to={url}
                       className={({ isActive }) =>
-                        cx('pl-4 -ml-px border-l border-transparent', {
+                        cx('block pl-4 -ml-px border-l border-transparent', {
                           'hover:border-gray-400 hover:text-gray-800 dark:hover:text-gray-100':
                             !isActive,
                           'text-docs-theme font-medium !border-docs-theme': isActive,

@@ -1,6 +1,7 @@
 import { getBoolean, getNumber, getString, getValue } from './get';
 import get from 'lodash.get';
 
+// Represents how the sidebar should look in the config file.
 export type SidebarItem = [string, Array<[string, string]>] | [string, string];
 
 // Merges in a user sidebar config and ensures all items are valid.
