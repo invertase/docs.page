@@ -1,5 +1,6 @@
 import { CSSProperties, DetailedHTMLProps } from 'react';
 import { useImagePath } from '~/context';
+import { DocsLink } from './DocsLink';
 
 export type YouTubeProps = {
   id: string;
@@ -49,9 +50,37 @@ function Table(
   );
 }
 
+function Pre(props: DetailedHTMLProps<React.HTMLAttributes<HTMLPreElement>, HTMLPreElement>) {
+  return (
+    <div className="no-prose">
+      <pre {...props} />
+    </div>
+  );
+}
+
+function Code(props: DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>) {
+  return <code className="font-fira font-medium" {...props} />;
+}
+
+function Anchor(
+  props: DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>,
+) {
+  return (
+    <DocsLink
+      to={props.href || ''}
+      className="no-underline border-b border-docs-theme hover:border-b-2"
+    >
+      {props.children}
+    </DocsLink>
+  );
+}
+
 export default {
   img: Image,
   table: Table,
+  pre: Pre,
+  code: Code,
+  a: Anchor,
   YouTube,
   Image,
 };

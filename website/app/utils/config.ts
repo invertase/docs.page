@@ -1,6 +1,7 @@
-import { getBoolean, getNumber, getString, getValue } from "./get";
+import { getBoolean, getNumber, getString, getValue } from './get';
 import get from 'lodash.get';
-export type SidebarItem = [string, SidebarItem[]] | [string, string];
+
+export type SidebarItem = [string, Array<[string, string]>] | [string, string];
 
 // Merges in a user sidebar config and ensures all items are valid.
 function mergeSidebarConfig(json: Partial<ProjectConfig> | null): SidebarItem[] {
@@ -10,17 +11,40 @@ function mergeSidebarConfig(json: Partial<ProjectConfig> | null): SidebarItem[] 
     return defaultConfig.sidebar;
   }
 
-  function iterate(items: SidebarItem[]): any {
-    return items
-      .map<SidebarItem | null>((item: SidebarItem) => {
-        if (!Array.isArray(item)) return null;
-        const [first, second] = item;
-        if (typeof first !== 'string') return null;
-        if (typeof second === 'string') return [first, second];
-        if (!Array.isArray(second)) return null;
-        return [first, iterate(second)];
-      })
-      .filter(Boolean);
+  function iterate(sidebar: SidebarItem[]): SidebarItem[] {
+    return (
+      sidebar
+        .map((item: SidebarItem) => {
+          // Each item should be an array.
+          if (!Array.isArray(item)) return null;
+
+          // Get the label and url/children
+          const [label, urlOrChildren] = item;
+
+          // The label should be a string.
+          if (typeof label !== 'string') return null;
+
+          // If the second item is a string, it's a url.
+          if (typeof urlOrChildren === 'string') return [label, urlOrChildren];
+
+          // Therefore, the second item must be an array.
+          if (!Array.isArray(urlOrChildren)) return null;
+
+          // Iterate the children and do some validation.
+          const children = urlOrChildren
+            .map(([nestedLabel, nestedUrl]) => {
+              // Only allow single depth - each item must be a string.
+              if (typeof nestedLabel !== 'string' || typeof nestedUrl !== 'string') return null;
+
+              return [nestedLabel, nestedUrl];
+            })
+            .filter(Boolean);
+
+          return [label, children];
+        })
+        // Filter out any nulls.
+        .filter(Boolean) as SidebarItem[]
+    );
   }
 
   return iterate(sidebar);
@@ -112,4 +136,3 @@ export function mergeConfig(json: Record<string, unknown>): ProjectConfig {
     zoomImages: getBoolean(json, 'zoomImages', defaultConfig.zoomImages),
   };
 }
-

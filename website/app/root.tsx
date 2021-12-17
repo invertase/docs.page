@@ -21,6 +21,10 @@ export let links: LinksFunction = () => {
     { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Anton&display=block' },
     {
       rel: 'stylesheet',
+      href: 'https://fonts.googleapis.com/css2?family=Fira+Code:wght@500&display=block',
+    },
+    {
+      rel: 'stylesheet',
       href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=block',
     },
     { rel: 'stylesheet', href: tailwind },

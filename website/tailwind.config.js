@@ -10,6 +10,7 @@ module.exports = {
       fontFamily: {
         anton: ['Anton', 'sans-serif'],
         inter: ['Inter', 'sans-serif'],
+        fira: ['Fira Code', 'monospace'],
       },
       colors: {
         docs: {
