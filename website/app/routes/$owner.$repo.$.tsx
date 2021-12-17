@@ -58,7 +58,7 @@ export default function Page() {
               'mr-52 pr-16': true,
             })}
           >
-            <main className="prose max-w-none">
+            <main className="prose dark:prose-invert max-w-none">
               <MDX components={components} />
             </main>
             <Footer />
