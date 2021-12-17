@@ -102,8 +102,8 @@ export function CatchBoundary() {
   }
 
   return (
-    <div>
-      <h2>{title}</h2>
+    <div data-testid={'error-container'}>
+      <h2 data-testid={'error-title'}>{title}</h2>
     </div>
   );
 }
