@@ -15,6 +15,7 @@ import {
   ThrownBundleError,
 } from '../loaders/documentation.server';
 import docsearch from '../styles/docsearch.css';
+import { ScrollSpy } from '~/components/ScrollSpy';
 
 export const loader = docsLoader;
 
@@ -66,17 +67,7 @@ export default function Page() {
           </div>
           {!!data.headings && (
             <aside className="pt-10 px-8 fixed top-14 bottom-0 w-52 overflow-y-auto right-[max(0px,calc(50%-45rem))]">
-              <ul className="text-sm space-y-2">
-                {data.headings.map(heading => (
-                  <li
-                    className={cx({
-                      'font-semibold': false,
-                    })}
-                  >
-                    <a href={`#${heading.id}`}>{heading.title}</a>
-                  </li>
-                ))}
-              </ul>
+              <ScrollSpy />
             </aside>
           )}
         </div>
