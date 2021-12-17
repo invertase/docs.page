@@ -1,4 +1,30 @@
 import { getBoolean, getNumber, getString, getValue } from "./get";
+import get from 'lodash.get';
+export type SidebarItem = [string, SidebarItem[]] | [string, string];
+
+// Merges in a user sidebar config and ensures all items are valid.
+function mergeSidebarConfig(json: Partial<ProjectConfig> | null): SidebarItem[] {
+  const sidebar = get(json, 'sidebar', defaultConfig.sidebar);
+
+  if (!Array.isArray(sidebar)) {
+    return defaultConfig.sidebar;
+  }
+
+  function iterate(items: SidebarItem[]): any {
+    return items
+      .map<SidebarItem | null>((item: SidebarItem) => {
+        if (!Array.isArray(item)) return null;
+        const [first, second] = item;
+        if (typeof first !== 'string') return null;
+        if (typeof second === 'string') return [first, second];
+        if (!Array.isArray(second)) return null;
+        return [first, iterate(second)];
+      })
+      .filter(Boolean);
+  }
+
+  return iterate(sidebar);
+}
 
 /**
  * Project config.
@@ -6,7 +32,7 @@ import { getBoolean, getNumber, getString, getValue } from "./get";
  * This can be provided by creating a `docs.json` file at the root of your
  * repository.
  */
- export interface ProjectConfig {
+export interface ProjectConfig {
   // Project name.
   name: string;
   // URL to project logo.
@@ -32,7 +58,7 @@ import { getBoolean, getNumber, getString, getValue } from "./get";
   // Header navigation
   // navigation: NavigationItem[];
   // Sidebar
-  // sidebar: SidebarItem[];
+  sidebar: SidebarItem[];
   // The depth to heading tags are linked. Set to 0 to remove any linking.
   headerDepth: number;
   // Variables which can be injected into the pages content.
@@ -53,7 +79,7 @@ export const defaultConfig: ProjectConfig = {
   noindex: false,
   theme: '#00bcd4',
   // navigation: [],
-  // sidebar: [],
+  sidebar: [],
   headerDepth: 3,
   variables: {},
   googleTagManager: '',
@@ -79,7 +105,7 @@ export function mergeConfig(json: Record<string, unknown>): ProjectConfig {
         }
       : defaultConfig.docsearch,
     // navigation: mergeNavigationConfig(json),
-    // sidebar: mergeSidebarConfig(json),
+    sidebar: mergeSidebarConfig(json),
     headerDepth: getNumber(json, 'headerDepth', defaultConfig.headerDepth),
     variables: getValue(json, 'variables', defaultConfig.variables) as Record<string, string>,
     googleTagManager: getString(json, 'googleTagManager', defaultConfig.googleTagManager),

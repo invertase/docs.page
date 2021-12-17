@@ -2,6 +2,7 @@
   "private": true,
   "workspaces": [
     "website",
-    "packages/*"
+    "packages/*",
+    "api"
   ]
 }

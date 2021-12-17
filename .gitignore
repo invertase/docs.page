@@ -31,4 +31,8 @@ spelling.json
 website/api/build
 website/public/build
 
+# Tailwind file generated
 tailwind.css
+
+# Tests
+website/tests/screenshots/*

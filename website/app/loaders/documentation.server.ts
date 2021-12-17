@@ -67,7 +67,8 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
   if (bundle.frontmatter.redirect) {
     return redirect(bundle.frontmatter.redirect);
   }
-
+  console.log(bundle.config);
+  
   const config = mergeConfig(bundle.config);
   const code = replaceVariables(config.variables, bundle.code);
 

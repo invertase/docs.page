@@ -49,6 +49,8 @@ export const bundleGitHub = async (
     // check config
     if (sourceConfig) {
       try {
+        // console.log(sourceConfig);
+
         config = JSON.parse(sourceConfig);
       } catch (e) {
         config = null;
@@ -76,7 +78,7 @@ export const bundleGitHub = async (
   }
 
   const statusCode = code !== null ? 200 : 404;
-  console.log(headings);
+  console.log(config);
   
 
   return res.status(statusCode).send({

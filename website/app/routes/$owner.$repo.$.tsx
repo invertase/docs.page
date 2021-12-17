@@ -8,7 +8,7 @@ import { Sidebar } from '~/components/Sidebar';
 import { Theme } from '~/components/Theme';
 import components from '~/components/mdx';
 import { DocumentationProvider } from '~/context';
-
+import codeHikeStyles from '@code-hike/mdx/dist/index.css';
 import {
   docsLoader,
   DocumentationLoader,
@@ -22,6 +22,7 @@ export let links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/@docsearch/css@alpha' },
     { rel: 'stylesheet', href: docsearch },
+    { rel: 'stylesheet', href: codeHikeStyles },
   ];
 };
 
@@ -43,14 +44,15 @@ export const meta: MetaFunction = (props: { data?: DocumentationLoader }) => {
 export default function Page() {
   const data = useLoaderData<DocumentationLoader>();
   const MDX = useHydratedMdx({ code: data.code });
+  // console.log(data.config);
 
   return (
     <DocumentationProvider data={data}>
       <Theme />
       <Header />
-      <div className="max-w-8xl mx-auto">
+      <div data-test-id={'documentation-provider'} className="max-w-8xl mx-auto">
         <div className="fixed inset-0 py-10 px-8 overflow-x-auto top-14 left-[max(0px,calc(50%-45rem))] w-64">
-          <Sidebar />
+          <Sidebar sidebar={data.config.sidebar} />
         </div>
         <div className="pt-10 pl-72">
           <div
