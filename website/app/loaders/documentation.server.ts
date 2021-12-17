@@ -45,7 +45,7 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
   }
 
   let bundle: BundleResponseData;
-
+  
   try {
     bundle = await fetchBundle({ owner, repository: repo, path, ref });
   } catch (error) {
@@ -62,13 +62,13 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
   if (bundle.config === null || bundle.code === null) {
     throw json({}, 404);
   }
+  console.log('debug', bundle);
 
   // Apply a redirect if provided in the frontmatter
   if (bundle.frontmatter.redirect) {
     return redirect(bundle.frontmatter.redirect);
   }
-  console.log(bundle.config);
-  
+
   const config = mergeConfig(bundle.config);
   const code = replaceVariables(config.variables, bundle.code);
 
