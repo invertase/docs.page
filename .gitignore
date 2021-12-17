@@ -33,6 +33,7 @@ website/public/build
 
 # Tailwind file generated
 tailwind.css
+tailwind.css*
 
 # Tests
 website/tests/screenshots/*
