@@ -30,3 +30,5 @@ spelling.json
 .output
 website/api/build
 website/public/build
+
+tailwind.css
