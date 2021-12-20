@@ -3,8 +3,15 @@ import { json, redirect, LoaderFunction, ThrownResponse } from 'remix';
 import { replaceVariables } from '~/utils';
 import { mergeConfig, ProjectConfig } from '~/utils/config';
 
+export type ThrownError = ThrownBundleError | ThrownNotFoundError;
+
 // A thrown error from the loader containing the bundle error.
 export type ThrownBundleError = ThrownResponse<number, BundleError | null>;
+
+export type ThrownNotFoundError = ThrownResponse<
+  number,
+  Pick<DocumentationLoader, 'owner' | 'repo' | 'path'>
+>;
 
 // Response from the loader containing the bundle data.
 export type DocumentationLoader = {
@@ -45,7 +52,7 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
   }
 
   let bundle: BundleResponseData;
-  
+
   try {
     bundle = await fetchBundle({ owner, repository: repo, path, ref });
   } catch (error) {
@@ -60,9 +67,15 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
 
   // No bundled code or config should 404
   if (bundle.config === null || bundle.code === null) {
-    throw json({}, 404);
+    throw json<ThrownNotFoundError['data']>(
+      {
+        owner,
+        repo,
+        path,
+      },
+      404,
+    );
   }
-  console.log('debug', bundle);
 
   // Apply a redirect if provided in the frontmatter
   if (bundle.frontmatter.redirect) {
@@ -72,7 +85,7 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
   const config = mergeConfig(bundle.config);
   const code = replaceVariables(config.variables, bundle.code);
 
-  const response: DocumentationLoader = {
+  return json<DocumentationLoader>({
     owner,
     repo,
     path,
@@ -82,7 +95,5 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
     headings: bundle.headings,
     config: mergeConfig(bundle.config),
     frontmatter: bundle.frontmatter,
-  };
-
-  return json(response);
+  });
 };

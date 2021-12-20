@@ -13,9 +13,12 @@ import {
   docsLoader,
   DocumentationLoader,
   ThrownBundleError,
+  ThrownError,
+  ThrownNotFoundError,
 } from '../loaders/documentation.server';
 import docsearch from '../styles/docsearch.css';
 import { ScrollSpy } from '~/components/ScrollSpy';
+import { BadRequest, NotFound, ServerError } from '~/components/Errors';
 
 export const loader = docsLoader;
 
@@ -60,9 +63,11 @@ export default function Page() {
               'mr-52 pr-16': true,
             })}
           >
-            <main className="prose dark:prose-invert max-w-none
+            <main
+              className="prose dark:prose-invert max-w-none
               prose-code:font-fira prose-code:font-medium
-            ">
+            "
+            >
               <MDX components={components} />
             </main>
             <Footer />
@@ -80,26 +85,22 @@ export default function Page() {
 
 // TODO handle me
 export function CatchBoundary() {
-  const e = useCatch<ThrownBundleError>();
+  const e = useCatch<ThrownError>();
+  let child: JSX.Element;
 
-  let title = '';
   if (e.status === 404) {
-    title = 'Page not found';
+    child = <NotFound error={e as ThrownNotFoundError} />;
   } else if (e.status === 500) {
-    title = 'Internal server error';
+    child = <ServerError title="Internal server error" />;
   } else if (e.status === 400) {
-    title = 'Bad request';
+    child = <BadRequest error={e as ThrownBundleError} />;
   } else {
-    title = 'Something went wrong.';
+    child = <ServerError title="Something went wrong" />;
   }
 
-  return (
-    <div data-testid={'error-container'}>
-      <h2 data-testid={'error-title'}>{title}</h2>
-    </div>
-  );
+  return <div data-testid={'error-container'}>{child!}</div>;
 }
 
 export function ErrorBoundary() {
-  return <div>Error</div>;
+  return <ServerError title="An uncaught error was thrown" />
 }
