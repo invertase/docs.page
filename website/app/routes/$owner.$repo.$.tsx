@@ -60,7 +60,9 @@ export default function Page() {
               'mr-52 pr-16': true,
             })}
           >
-            <main className="prose dark:prose-invert max-w-none">
+            <main className="prose dark:prose-invert max-w-none
+              prose-code:font-fira prose-code:font-medium
+            ">
               <MDX components={components} />
             </main>
             <Footer />

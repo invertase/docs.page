@@ -60,10 +60,6 @@ function Pre(props: DetailedHTMLProps<React.HTMLAttributes<HTMLPreElement>, HTML
   );
 }
 
-function Code(props: DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement>) {
-  return <code className="font-fira font-medium" {...props} />;
-}
-
 function Anchor(
   props: DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>,
 ) {
@@ -99,9 +95,8 @@ function Heading({ type, id, children, ...props }: HeadingProps) {
           <a
             href={`#${id}`}
             className="before:content-['#'] before:absolute before:-left-6 before:text-docs-theme no-underline"
-          >
-            {children}
-          </a>
+          />
+          <span>{children}</span>
         </>
       ),
   });
@@ -111,7 +106,6 @@ export default {
   img: Image,
   table: Table,
   pre: Pre,
-  code: Code,
   a: Anchor,
   h1: (props: HTMLHeadingProps) => <Heading {...props} type="h1" />,
   h2: (props: HTMLHeadingProps) => <Heading {...props} type="h2" />,
