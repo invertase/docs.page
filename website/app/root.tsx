@@ -108,9 +108,11 @@ function Document({ children, title }: { children: React.ReactNode; title?: stri
           dangerouslySetInnerHTML={{
             __html: `
               if (localStorage["${STORAGE_KEY}"] === 'dark' || (!("${STORAGE_KEY}" in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark')
+                document.documentElement.classList.add('dark');
+                document.documentElement.style.setProperty('color-scheme', 'dark');
               } else {
-                document.documentElement.classList.remove('dark')
+                document.documentElement.classList.remove('dark');
+                document.documentElement.style.setProperty('color-scheme', 'light');
               }
             `,
           }}

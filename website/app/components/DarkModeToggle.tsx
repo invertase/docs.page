@@ -12,17 +12,21 @@ function useDarkMode() {
     enable() {
       localStorage.setItem(STORAGE_KEY, 'dark');
       document.documentElement.classList.add('dark');
+      document.documentElement.style.setProperty('color-scheme', 'dark');
     },
     disable() {
       localStorage.setItem(STORAGE_KEY, 'light');
       document.documentElement.classList.remove('dark');
+      document.documentElement.style.setProperty('color-scheme', 'light');
     },
     auto() {
       localStorage.removeItem(STORAGE_KEY);
       if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
         document.documentElement.classList.add('dark');
+        document.documentElement.style.setProperty('color-scheme', 'dark');
       } else {
         document.documentElement.classList.remove('dark');
+        document.documentElement.style.setProperty('color-scheme', 'light');
       }
     },
   };
