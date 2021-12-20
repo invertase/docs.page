@@ -25,12 +25,12 @@
     "lodash.get": "^4.4.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "remix": "^1.0.6",
+    "remix": "^1.1.1",
     "rimraf": "^3.0.2"
   },
   "devDependencies": {
     "@playwright/test": "^1.17.1",
-    "@remix-run/dev": "^1.0.6",
+    "@remix-run/dev": "^1.1.1",
     "@tailwindcss/typography": "^0.5.0-alpha.3",
     "@types/color": "^3.0.2",
     "@types/lodash.get": "^4.4.6",
