@@ -29,7 +29,7 @@ export function Sidebar() {
           }
 
           return (
-            <li className="mt-4 first:mt-0 mb-4">
+            <li key={title} className="mt-4 first:mt-0 mb-4">
               <h5 className="text-gray-900 dark:text-gray-200 font-semibold tracking-wide pb-3">
                 {title}
               </h5>
