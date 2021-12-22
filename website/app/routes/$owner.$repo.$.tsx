@@ -47,7 +47,8 @@ export const meta: MetaFunction = (props: { data?: DocumentationLoader }) => {
 
 export default function Page() {
   const data = useLoaderData<DocumentationLoader>();
-  const MDX = useHydratedMdx({ code: data.code });
+  const MDX = useHydratedMdx({ code: data.code});
+  console.log(data.code);
 
   return (
     <DocumentationProvider data={data}>
@@ -102,5 +103,6 @@ export function CatchBoundary() {
 }
 
 export function ErrorBoundary() {
+  
   return <ServerError title="An uncaught error was thrown" />
 }

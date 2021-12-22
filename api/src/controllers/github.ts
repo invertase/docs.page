@@ -87,10 +87,8 @@ export const bundleGitHub = async (
           headerDepth,
         });
         code = bundleResult.code;
-        console.log(code);
         
         frontmatter = bundleResult.frontmatter;
-        console.log('debug');
 
         headings = bundleResult.headings.length > 0 ? bundleResult.headings : null;
       } catch (e) {
@@ -100,8 +98,6 @@ export const bundleGitHub = async (
   }
 
   const statusCode = code !== null ? 200 : 404;
-  console.log(config);
-  
 
   return res.status(statusCode).send({
     code,

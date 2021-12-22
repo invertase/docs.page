@@ -52,7 +52,7 @@ export default function rehypeHeadings(
       
       const id = part.filter(child => headingTest(child))[0]?.properties?.id || null
       return wrapSection(part,id); }
-    ).filter(section => section.properties.id)
+    )
 
     node.children = newChildren;
   }

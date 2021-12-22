@@ -45,26 +45,26 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
   let repo = params.repo!;
   const path = params['*']!;
   let ref: string | undefined;
-
+  
   // Check if the repo includes a ref
   if (repo.includes('~')) {
     [repo, ref] = repo.split('~');
   }
-
+  
   let bundle: BundleResponseData;
-
+  
   try {
     bundle = await fetchBundle({ owner, repository: repo, path, ref });
   } catch (error) {
     // If the bundler failed (e.g. API down), throw a server error
     throw json(null, 500);
   }
-
+  
   // If the bundler errors, return the error as a bad request.
   if (isBundleError(bundle)) {
     throw json(bundle, 400);
   }
-
+  
   // No bundled code or config should 404
   if (bundle.config === null || bundle.code === null) {
     throw json<ThrownNotFoundError['data']>(
@@ -74,17 +74,19 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
         path,
       },
       404,
-    );
-  }
-
-  // Apply a redirect if provided in the frontmatter
-  if (bundle.frontmatter.redirect) {
-    return redirect(bundle.frontmatter.redirect);
-  }
-
-  const config = mergeConfig(bundle.config);
-  const code = replaceVariables(config.variables, bundle.code);
-
+      );
+    }
+    
+    // Apply a redirect if provided in the frontmatter
+    if (bundle.frontmatter.redirect) {
+      return redirect(bundle.frontmatter.redirect);
+    }
+    
+    const config = mergeConfig(bundle.config);
+    
+    const code = replaceVariables(config.variables, bundle.code);
+    
+    
   return json<DocumentationLoader>({
     owner,
     repo,

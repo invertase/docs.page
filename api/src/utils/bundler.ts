@@ -565,8 +565,6 @@ export async function bundle(
       return options;
     },
   });
-  console.log('headings::', output.headings);
-
   return {
     code,
     frontmatter,

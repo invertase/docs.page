@@ -5,6 +5,12 @@ interface UseHydratedProps {
   code: string;
 }
 
+function getMDXComp(code : string): FunctionComponent<MDXContentProps>   {
+  console.log('MDX COMPONENT:',getMDXComponent(code));
+  
+  return getMDXComponent(code)
+}
+
 export function useHydratedMdx({ code }: UseHydratedProps): FunctionComponent<MDXContentProps> {
-  return useMemo<FunctionComponent<MDXContentProps>>(() => getMDXComponent(code), [code]);
+  return useMemo<FunctionComponent<MDXContentProps>>(() => getMDXComp(code), [code]);
 }
