@@ -49,7 +49,6 @@ export default function rehypeHeadings(
   function newVisitor(node : any, index: number | null, parent: any) {
 
     const newChildren = partition(node.children,headingTest).map(part => {
-      console.log('part', index, part.length);
       
       const id = part.filter(child => headingTest(child))[0]?.properties?.id || null
       return wrapSection(part,id); }
@@ -77,7 +76,6 @@ const headingTest : (node: any) => boolean =  node => !!headingRank(node) && has
 // partition an array based on a test function, e.g [a,b,b,b,a,b,b,a,b] should become [[a,b,b,b],[a,b,b],[a,b]]
 function partition<T>(array : T[], test : (input : T) => boolean) : T[][] {
   return array.reduce<T[][]>((prev, current) => {
-    console.log("prev", prev, "current", current);
     if (prev.length === 0) {
       return [[current]];
     }
