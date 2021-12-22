@@ -20,6 +20,7 @@
     "dotenv": "^10.0.0",
     "esbuild": "^0.14.2",
     "express": "^4.17.1",
+    "hast-util-parse-selector": "^3.1.0",
     "http-status": "^1.5.0",
     "is-badge": "^2.1.0",
     "lodash.get": "^4.4.2",
@@ -30,7 +31,8 @@
     "remark-gfm": "^3.0.1",
     "remark-parse": "^10.0.1",
     "tiny-invariant": "^1.2.0",
-    "typescript": "^4.3.5"
+    "typescript": "4.4.4",
+    "unist-util-visit": "^4.1.0"
   },
   "scripts": {
     "dev": "nodemon"

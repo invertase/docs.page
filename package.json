@@ -4,5 +4,8 @@
     "website",
     "packages/*",
     "api"
-  ]
+  ],
+  "dependencies": {
+    "typescript": "4.4.4"
+  }
 }

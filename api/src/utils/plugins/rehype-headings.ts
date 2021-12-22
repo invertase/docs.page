@@ -4,6 +4,7 @@ import { visit } from 'unist-util-visit';
 import { hasProperty } from 'hast-util-has-property';
 import { headingRank, Node } from 'hast-util-heading-rank';
 import { toString } from 'mdast-util-to-string';
+import { parseSelector } from 'hast-util-parse-selector';
 
 export type HeadingNode = {
   id: string;
@@ -33,11 +34,16 @@ export default function rehypeHeadings(
 ): (ast: Node) => void {
   const nodes: HeadingNode[] = [];
 
-  function visitor(node: any): void {
+  function visitor(node: any, index: number | null, parent: any): void {
     if (headingRank(node) && hasProperty(node, 'id')) {
       if (options.headings.includes(node.tagName as string)) {
+        const id = (node.properties as Record<string, string>).id
+        const wrap = parseSelector(`section#${id}`)
+        wrap.children = [node];
+        //@ts-ignore
+        parent.children[index] = wrap;
         nodes.push({
-          id: (node.properties as Record<string, string>).id,
+          id,
           title: toString(node),
           rank: headingRank(node),
         });
