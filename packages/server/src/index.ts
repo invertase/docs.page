@@ -21,7 +21,7 @@ function getEndpoint(base: string, { owner, repository, ref, path }: FetchBundle
 
 export async function fetchBundle(params: FetchBundleInput): Promise<BundleResponseData> {
   const endpoint = getEndpoint(BUNDLER_URL || `https://api.docs.page`, params);
-  const data = await fetch(endpoint, { method: 'POST' }).then(r => {
+  const data = await fetch(endpoint).then(r => {
     if (r.status !== 500) {
       return r.json();
     } else throw new Error();

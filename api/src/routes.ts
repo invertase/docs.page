@@ -6,7 +6,7 @@ const router = Router();
 
 router.get('/status');
 
-router.post('/bundle', githubController.bundleGitHub);
+router.get('/bundle', githubController.bundleGitHub);
 // router.post('/raw', rawController.bundleRaw);
 
 export default router;
