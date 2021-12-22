@@ -1,9 +1,16 @@
 import { Request, Response } from 'express';
 import { BundleResponseData } from '@docs.page/server';
 import { bundle } from '../utils/bundler.js';
-import { getPlugins } from '../utils/pluginMap.js';
 import { getGitHubContents } from '../utils/github.js';
 import { HeadingNode } from '../utils/plugins/rehype-headings.js';
+import { theme } from '../utils/plugins/codeHikeTheme.js'
+import { remarkCodeHike } from '@code-hike/mdx';
+import remarkGfm from 'remark-gfm';
+import rehypeCodeBlocks from '../utils/plugins/rehype-code-blocks.js';
+import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
+import rehypeInlineBadges from '../utils/plugins/rehype-inline-badges.js';
+import rehypeSlug from 'rehype-slug';
+
 /**
  * Gets the API information.
  *
@@ -21,9 +28,6 @@ export const bundleGitHub = async (
   const path = (req?.query.path as string) || 'index';
   const headerDepth = req?.query?.headerDepth ? parseInt(req?.query?.headerDepth as string) : 3;
 
-  // get plugins for mdx-bundler:
-  const remarkPlugins = getPlugins([]);
-  const rehypePlugins = getPlugins([]);
 
   let code: string | null = null;
   let frontmatter: {
@@ -50,7 +54,6 @@ export const bundleGitHub = async (
     if (sourceConfig) {
       try {
         // console.log(sourceConfig);
-
         config = JSON.parse(sourceConfig);
       } catch (e) {
         config = null;
@@ -61,6 +64,22 @@ export const bundleGitHub = async (
     }
     if (markdown) {
       try {
+        const remarkPlugins = config?.experimentalCodeHike ? [
+          remarkGfm,
+          [remarkCodeHike, theme]
+        ] : [remarkGfm];
+
+        const rehypePlugins = config?.experimentalCodeHike ? [
+          rehypeSlug,
+          rehypeInlineBadges,
+          rehypeAccessibleEmojis,
+        ] : [
+          rehypeCodeBlocks,
+          rehypeSlug,
+          rehypeInlineBadges,
+          rehypeAccessibleEmojis,
+        ]
+
         const bundleResult = await bundle(markdown, {
           remarkPlugins,
           rehypePlugins,
