@@ -10,7 +10,8 @@ import rehypeCodeBlocks from '../utils/plugins/rehype-code-blocks.js';
 import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
 import rehypeInlineBadges from '../utils/plugins/rehype-inline-badges.js';
 import rehypeSlug from 'rehype-slug';
-
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 /**
  * Gets the API information.
  *
@@ -67,7 +68,7 @@ export const bundleGitHub = async (
       try {
         const remarkPlugins = config?.experimentalCodeHike ? [
           remarkGfm,
-          [remarkCodeHike, {theme}]
+          [remarkCodeHike, {theme}],
         ] : [remarkGfm];
 
         const rehypePlugins = config?.experimentalCodeHike ? [
@@ -80,6 +81,11 @@ export const bundleGitHub = async (
           rehypeInlineBadges,
           rehypeAccessibleEmojis,
         ]
+
+        if (config?.experimentalMath) {
+          remarkPlugins.push(remarkMath);
+          rehypePlugins.push(rehypeKatex);
+        }
 
         const bundleResult = await bundle(markdown, {
           remarkPlugins,
