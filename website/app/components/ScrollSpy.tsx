@@ -43,7 +43,7 @@ export function ScrollSpy() {
 
   function onClick(id : string) {
     const el = document.getElementById(id)
-    el?.scrollIntoView({behavior: "smooth", block: 'center'})
+    el?.scrollIntoView({behavior: "smooth", block: 'end'})
   }
 
   return (
