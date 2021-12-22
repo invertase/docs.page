@@ -37,13 +37,8 @@ export default function rehypeHeadings(
   function visitor(node: any, index: number | null, parent: any): void {
     if (headingRank(node) && hasProperty(node, 'id')) {
       if (options.headings.includes(node.tagName as string)) {
-        const id = (node.properties as Record<string, string>).id
-        const wrap = parseSelector(`section#${id}`)
-        wrap.children = [node];
-        //@ts-ignore
-        parent.children[index] = wrap;
         nodes.push({
-          id,
+          id : (node?.properties as Record<string, string>).id,
           title: toString(node),
           rank: headingRank(node),
         });
@@ -51,9 +46,45 @@ export default function rehypeHeadings(
     }
   }
 
-  return (ast: Node): void => {
-    visit(ast, 'element', visitor);
+  function newVisitor(node : any, index: number | null, parent: any) {
 
+    const newChildren = partition(node.children,headingTest).map(part => {
+      console.log('part', index, part.length);
+      
+      const id = part.filter(child => headingTest(child))[0]?.properties?.id || null
+      return wrapSection(part,id); }
+    ).filter(section => section.properties.id)
+
+    node.children = newChildren;
+  }
+
+  return (ast: Node): void => {
+    // console.log(ast)
+    visit(ast, 'element', visitor);
+    // console.log(ast)
+    visit(ast,'root',newVisitor)
     options.callback(nodes);
   };
+}
+
+const wrapSection : (children: any[],id: string) => any = (children,id) => { 
+  const wrap = parseSelector(`section${id ? `#${id}` : ''}`);
+  wrap.children = children;
+  return wrap;
+}
+const headingTest : (node: any) => boolean =  node => !!headingRank(node) && hasProperty(node,'id')
+
+// partition an array based on a test function, e.g [a,b,b,b,a,b,b,a,b] should become [[a,b,b,b],[a,b,b],[a,b]]
+function partition<T>(array : T[], test : (input : T) => boolean) : T[][] {
+  return array.reduce<T[][]>((prev, current) => {
+    console.log("prev", prev, "current", current);
+    if (prev.length === 0) {
+      return [[current]];
+    }
+    if (test(current)) {
+      return [...prev, [current]];
+    }
+
+    return [...prev.slice(0, -1), [...prev[prev.length - 1], current]];
+  }, []);
 }
