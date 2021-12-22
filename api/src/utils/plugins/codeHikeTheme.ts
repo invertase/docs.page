@@ -1,4 +1,3 @@
-import { remarkCodeHike } from '@code-hike/mdx';
 export const theme = {
   type: 'dark',
   colors: {

@@ -63,10 +63,11 @@ export const bundleGitHub = async (
       baseBranch = sourceBaseBranch;
     }
     if (markdown) {
+      
       try {
         const remarkPlugins = config?.experimentalCodeHike ? [
           remarkGfm,
-          [remarkCodeHike, theme]
+          [remarkCodeHike, {theme}]
         ] : [remarkGfm];
 
         const rehypePlugins = config?.experimentalCodeHike ? [
@@ -86,6 +87,8 @@ export const bundleGitHub = async (
           headerDepth,
         });
         code = bundleResult.code;
+        console.log(code);
+        
         frontmatter = bundleResult.frontmatter;
         console.log('debug');
 

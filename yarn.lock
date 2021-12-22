@@ -572,7 +572,7 @@
     "@code-hike/utils" "0.3.0-next.15"
     shiki "^0.9.14"
 
-"@code-hike/mdx@^0.3.0-next.14":
+"@code-hike/mdx@^0.3.0-next.15":
   version "0.3.0-next.15"
   resolved "https://registry.yarnpkg.com/@code-hike/mdx/-/mdx-0.3.0-next.15.tgz#9d4229a62c7237fa3d6600a506d898e7ceb212b9"
   integrity sha512-9qG/YdQFvwRyavjaUg4MWVPMfAoB636M46nRaYEEnuttKgZQO23KcbhgLWEKO3kKeqsgja7DJhKwdp82++IfBA==
