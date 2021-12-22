@@ -14,7 +14,7 @@ export function ScrollSpy() {
     // TODO improve once wrapped heading sections are applied
     const observer = new IntersectionObserver((entries) => {
       for (let entry of entries) {
-        console.log(entry.intersectionRatio)
+        // console.log(entry.intersectionRatio)
         if (entry.isIntersecting) {
           const id = entry.target.getAttribute('id');
           setActive(id!);
@@ -22,6 +22,7 @@ export function ScrollSpy() {
         }
       }
     }, {
+      rootMargin: '-100px 0px 0px 0px',
       threshold: 0.5,
     });
 
@@ -40,6 +41,11 @@ export function ScrollSpy() {
     return <ul />
   }
 
+  function onClick(id : string) {
+    const el = document.getElementById(id)
+    el?.scrollIntoView({behavior: "smooth", block: 'center'})
+  }
+
   return (
     <ul className="text-sm space-y-2">
       {headings.map(heading => (
@@ -49,7 +55,7 @@ export function ScrollSpy() {
             'text-docs-theme': active === heading.id,
           })}
         >
-          <a href={`#${heading.id}`}>{heading.title}</a>
+          <a className="cursor-pointer" onClick={() => onClick(heading.id)} >{heading.title}</a>
         </li>
       ))}
     </ul>
