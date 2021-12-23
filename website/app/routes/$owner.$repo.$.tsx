@@ -27,6 +27,7 @@ export let links: LinksFunction = () => {
     { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/@docsearch/css@alpha' },
     { rel: 'stylesheet', href: docsearch },
     { rel: 'stylesheet', href: codeHikeStyles },
+    {rel:"stylesheet", href:"https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css"}
   ];
 };
 
