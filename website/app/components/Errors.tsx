@@ -6,12 +6,12 @@ import { QuickLinks } from './Quicklinks';
 export function NotFound({ error }: { error: ThrownNotFoundError }) {
   return (
     <div className="mt-20 max-w-lg mx-auto">
-      <Title statusCode={error.status} title="This page could not be found"/>
+      <Title statusCode={error.status} title="This page could not be found" />
       <div className="mt-10 flex-col">
-      <div>{true ? 'The GitHub repository X could not be found.' : "We could not find the file Y"}</div>
-      <div>{true ? 'To get started, create a new repository on Github (add link)' : "Check the file exists in your repository here (add link)"}</div>
+        <div>{true ? 'The GitHub repository X could not be found.' : "We could not find the file Y"}</div>
+        <div>{true ? 'To get started, create a new repository on Github (add link)' : "Check the file exists in your repository here (add link)"}</div>
       </div>
-      <QuickLinks/>
+      <QuickLinks />
     </div>
   );
 }
@@ -19,7 +19,11 @@ export function NotFound({ error }: { error: ThrownNotFoundError }) {
 export function BadRequest({ error }: { error: ThrownBundleError }) {
   return (
     <div className="mt-20 max-w-lg mx-auto">
-      <Title statusCode={error.status} title="This page could not be generated"/>
+      <Title statusCode={error.status} title="This page could not be generated" />
+      <div className="mt-10 flex-col">
+        <div>{'This may be due to an error in your mdx syntax.'}</div>
+      </div>
+      <QuickLinks />
     </div>
   );
 }
@@ -27,7 +31,11 @@ export function BadRequest({ error }: { error: ThrownBundleError }) {
 export function ServerError({ title }: { title: string }) {
   return (
     <div className="mt-20 max-w-lg mx-auto">
-      <Title statusCode={500} title={title}/>
+      <Title statusCode={500} title={title} />
+      <div className="mt-10 flex-col">
+        <div>{'Something went wrong. Try again later or report an issue with us using the link below.'}</div>
+      </div>
+      <QuickLinks />
     </div>
   );
 }

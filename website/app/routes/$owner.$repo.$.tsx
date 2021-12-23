@@ -19,6 +19,7 @@ import {
 import docsearch from '../styles/docsearch.css';
 import { ScrollSpy } from '~/components/ScrollSpy';
 import { BadRequest, NotFound, ServerError } from '~/components/Errors';
+import Documentation from '~/components/Documentation';
 
 export const loader = docsLoader;
 
@@ -47,41 +48,7 @@ export const meta: MetaFunction = (props: { data?: DocumentationLoader }) => {
 
 export default function Page() {
   const data = useLoaderData<DocumentationLoader>();
-  const MDX = useHydratedMdx({ code: data.code});
-  console.log(data.code);
-
-  return (
-    <DocumentationProvider data={data}>
-      <Theme />
-      <Header />
-      <div data-test-id={'documentation-provider'} className="max-w-8xl mx-auto">
-        <div className="fixed inset-0 py-10 px-8 overflow-x-auto top-14 left-[max(0px,calc(50%-45rem))] w-64">
-          <Sidebar />
-        </div>
-        <div className="pt-10 pl-72">
-          <div
-            className={cx({
-              'mr-52 pr-16': true,
-            })}
-          >
-            <main
-              className="prose dark:prose-invert max-w-none
-              prose-code:font-fira prose-code:font-medium
-            "
-            >
-              <MDX components={components} />
-            </main>
-            <Footer />
-          </div>
-          {!!data.headings && (
-            <aside className="pt-10 px-8 fixed top-14 bottom-0 w-52 overflow-y-auto right-[max(0px,calc(50%-45rem))]">
-              <ScrollSpy />
-            </aside>
-          )}
-        </div>
-      </div>
-    </DocumentationProvider>
-  );
+  return <Documentation data={data} />
 }
 
 // TODO handle me
@@ -99,10 +66,10 @@ export function CatchBoundary() {
     child = <ServerError title="Something went wrong" />;
   }
 
-  return <div data-testid={'error-container'}>{child!}</div>;
+  return <div data-testid={'error-container'}>{child!}<Footer /></div>;
 }
 
 export function ErrorBoundary() {
-  
+
   return <ServerError title="An uncaught error was thrown" />
 }

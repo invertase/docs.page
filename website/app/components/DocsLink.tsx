@@ -1,8 +1,11 @@
 import { NavLink, NavLinkProps } from 'react-router-dom';
 import { useDocumentationContext } from '~/context';
+import { usePreviewMode } from '~/utils/local-preview-mode';
 
 export function DocsLink({ ...props }: NavLinkProps) {
   const { owner, repo, ref } = useDocumentationContext();
+  const previewMode = usePreviewMode()
+
 
   if (typeof props.to === 'string' && isExternalLink(props.to)) {
     return (
@@ -23,8 +26,21 @@ export function DocsLink({ ...props }: NavLinkProps) {
 
   let to = `/${owner}/${repo}`;
 
-  if (ref) {
+
+  if (ref && ref !== 'HEAD') {
     to += `~${ref}`;
+  }
+
+  if (previewMode.enabled) {
+    return (
+      <a
+        className={
+          typeof props.className === 'function'
+            ? props.className({ isActive: false })
+            : props.className
+        }
+        href={`#${props.to}`}>{props.children}
+      </a>)
   }
 
   return <NavLink {...props} to={removeTrailingSlash(`${to}${props.to}`)} />;
@@ -36,4 +52,8 @@ function removeTrailingSlash(path: string) {
 
 function isExternalLink(to: string) {
   return to.startsWith('http');
+}
+
+export function isHashLink(link: string): boolean {
+  return link.startsWith('#');
 }
