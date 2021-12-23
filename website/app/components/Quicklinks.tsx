@@ -12,6 +12,7 @@ import {
 } from './Icons';
 
 const defaultIconSize = 30
+const documentationLocation = "https://use.docs.page/search";
 
 const linkData : LinkProps[] = [
     {
@@ -20,37 +21,37 @@ const linkData : LinkProps[] = [
         icon: <GitHub size={defaultIconSize}/>
     },
     {
-        href: "https://github.com/invertase/docs.page",
+        href: "https://github.com/invertase/docs.page/issues",
         children: "Report an issue",
         icon: <Issue size={defaultIconSize}/>
     },
     {
-        href: "https://github.com/invertase/docs.page",
+        href: `${documentationLocation}/configuration`,
         children: "Configuration",
         icon: <Adjustments size={defaultIconSize}/>
     },
     {
-        href: "https://github.com/invertase/docs.page",
+        href: `${documentationLocation}/previews`,
         children: "Previews",
         icon: <PullRequest size={defaultIconSize}/>
     },
     {
-        href: "https://github.com/invertase/docs.page",
+        href: `${documentationLocation}/components`,
         children: "Components",
         icon: <Template size={defaultIconSize}/>
     },
     {
-        href: "https://github.com/invertase/docs.page",
+        href: `${documentationLocation}/custom-domains`,
         children: "Custom Domains",
         icon: <GlobeAlt size={defaultIconSize}/>
     },
     {
-        href: "https://github.com/invertase/docs.page",
+        href: `${documentationLocation}/github-bot`,
         children: "GitHub Bot",
         icon: <Annotation size={defaultIconSize}/>
     },
     {
-        href: "https://github.com/invertase/docs.page",
+        href: `${documentationLocation}/search`,
         children: "Search",
         icon: <SearchCircle size={defaultIconSize}/>
     },
