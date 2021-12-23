@@ -1,4 +1,5 @@
 import { createContext, useCallback, useEffect, useState } from 'react';
+import { DocumentationLoader } from '~/loaders/documentation.server';
 import { mergeConfig } from './config';
 export type PreviewMode = {
     enabled: boolean;
@@ -169,9 +170,72 @@ const cache = {
     text: '',
     config: '',
     props: null,
-    urls: null,
+    urls: {},
 };
 
-function useLocalDocs() {
-    return {};
+export function usePollLocalDocs(
+    handles: FileSystemFileHandles,
+    configHandle: FileSystemFileHandle,
+    ms = 500,
+): [DocumentationLoader | null, number | null] {
+    const [updating, setUpdating] = useState(0);
+    const [pageProps, setPageProps] = useState<DocumentationLoader | null>(null);
+    const hash = useHashChange();
+    const [errorCode, setErrorCode] = useState<number | null>(null);
+
+    useEffect(() => {
+        if (!handles) return;
+        // TODO: image handles once we've sorted out Link and Image Links etc
+        // const imageHandles = Object.keys(handles)
+        //     .filter(key => ['.png', '.jpg', '.gif', '.jpeg'].some(ext => key.endsWith(ext)))
+        //     .reduce((obj, key) => {
+        //         obj[key] = handles[key];
+        //         return obj;
+        //     }, {});
+
+        const handle = hash ? handles[hash] : handles[`${hash}/index`];
+        const interval = setInterval(
+            () =>
+                extractContents(handle, configHandle, {})
+                    .then(([text, config, urls]) => {
+                        // console.log('extracting file');
+                        if (text !== cache.text || config !== cache.config || urls !== cache.urls) {
+                            // console.log('detected change');
+                            cache.urls = urls;
+                            cache.text = text;
+                            cache.config = config;
+                            setUpdating(updating + 1);
+                        }
+                    })
+                    .catch(() => {
+                        setErrorCode(404);
+                    }),
+            ms,
+        );
+        return () => clearInterval(interval);
+    }, [hash, handles, updating]);
+
+    useEffect(() => {
+        buildPreviewProps({ hash, config: cache.config, text: cache.text, urls: cache.urls }).then(
+            previewProps => {
+                setPageProps(previewProps);
+            },
+        );
+    }, [cache.text, cache.config]);
+
+    return [pageProps, errorCode];
+}
+
+const buildPreviewProps = async (params: any): Promise<DocumentationLoader> => {
+    return {
+        owner: 'owner',
+        repo: 'repo',
+        path: 'path',
+        ref: 'HEAD',
+        source: '',
+        code: '',
+        headings: [],
+        config: mergeConfig(params.config),
+        frontmatter: {},
+    }
 }
