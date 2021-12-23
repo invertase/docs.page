@@ -10,8 +10,8 @@ import rehypeCodeBlocks from '../utils/plugins/rehype-code-blocks.js';
 import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
 import rehypeInlineBadges from '../utils/plugins/rehype-inline-badges.js';
 import rehypeSlug from 'rehype-slug';
-import remarkMath from 'remark-math';
-import rehypeKatex from 'rehype-katex';
+// import remarkMath from 'remark-math';
+// import rehypeKatex from 'rehype-katex';
 /**
  * Gets the API information.
  *
@@ -64,11 +64,11 @@ export const bundleGitHub = async (
       baseBranch = sourceBaseBranch;
     }
     if (markdown) {
-      
+
       try {
         const remarkPlugins = config?.experimentalCodeHike ? [
           remarkGfm,
-          [remarkCodeHike, {theme}],
+          [remarkCodeHike, { theme }],
         ] : [remarkGfm];
 
         const rehypePlugins = config?.experimentalCodeHike ? [
@@ -94,7 +94,7 @@ export const bundleGitHub = async (
           headerDepth,
         });
         code = bundleResult.code;
-        
+
         frontmatter = bundleResult.frontmatter;
 
         headings = bundleResult.headings.length > 0 ? bundleResult.headings : null;
