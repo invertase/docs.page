@@ -26,7 +26,9 @@ import { BadRequest, NotFound, ServerError } from '~/components/Errors';
 
 
 export default function Documentation({ data }: { data: DocumentationLoader }) {
+
     const MDX = useHydratedMdx({ code: data.code });
+
     return (
         <DocumentationProvider data={data}>
             <Theme />

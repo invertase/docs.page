@@ -45,12 +45,9 @@ export default function LocalPreview() {
 
     const [data, pollErrorCode] = usePollLocalDocs(handles, configHandle, 500);
 
-    if (handles === null || !data) {
+    if (!handles || !data || !data.code) {
         return <LandingPage onSelect={select} />
     }
-    console.log(data);
-
-
 
     return <Documentation data={data} />
 }

@@ -22,20 +22,21 @@ export function usePreviewMode(): PreviewMode {
 
 export async function extractContents(
     handle: FileSystemFileHandle,
-    configHandle: FileSystemFileHandle,
+    configHandle: FileSystemFileHandle | null,
     imageHandles: FileSystemFileHandles,
 ): Promise<[string, string, Record<string, string>, Error[]]> {
     let config = mergeConfig({});
     let text: string = ''
     let imageUrls;
 
+
     const errors: Error[] = [];
     try {
         // get docs.json from config handle
-        const configFile = await configHandle.getFile();
+        const configFile = await configHandle!.getFile();
         try {
             // build config from the file contents
-            config = await mergeConfig(JSON.parse(await configFile.text()));
+            config = await mergeConfig(JSON.parse(await configFile!.text()));
         } catch (e) {
             console.error('Problems with docs.json format');
             // errors.push(e);
@@ -45,8 +46,10 @@ export async function extractContents(
         // errors.push(e);
     }
     try {
+
         const file = await handle.getFile();
         try {
+
             text = await file.text();
         } catch (e) {
             console.error('unable to extract text from file.');
@@ -189,7 +192,13 @@ export function usePollLocalDocs(
     const [errorCode, setErrorCode] = useState<number | null>(null);
 
     useEffect(() => {
-        if (!handles) return;
+
+        if (!handles) {
+
+            return
+        };
+
+
         // TODO: image handles once we've sorted out Link and Image Links etc
         // const imageHandles = Object.keys(handles)
         //     .filter(key => ['.png', '.jpg', '.gif', '.jpeg'].some(ext => key.endsWith(ext)))
@@ -198,14 +207,13 @@ export function usePollLocalDocs(
         //         return obj;
         //     }, {});
 
-        const handle = hash ? handles[hash] : handles[`${hash}/index`];
+        const handle = hash ? handles[hash] : handles[`/index.mdx`];
+
         const interval = setInterval(
             () =>
                 extractContents(handle, configHandle, {})
                     .then(([text, config, urls]) => {
-                        // console.log('extracting file');
                         if (text !== cache.text || config !== cache.config || urls !== cache.urls) {
-                            // console.log('detected change');
                             cache.urls = urls;
                             cache.text = text;
                             cache.config = config;
@@ -235,9 +243,9 @@ const rawEndpoint = `http://localhost:8000/raw`
 
 const buildPreviewProps = async (params: any): Promise<DocumentationLoader> => {
 
-    const owner = 'csells';
-    const repository = 'go_router'
-    const path = params.hash;
+    const owner = 'owner';
+    const repository = 'repo'
+    const path = 'index';
     const config = params.config;
     const md = params.text;
 
@@ -247,13 +255,13 @@ const buildPreviewProps = async (params: any): Promise<DocumentationLoader> => {
         baseBranch: 'main'
     }
 
+
     const bundle = await fetch(`${rawEndpoint}`, {
         method: 'POST', headers: {
             'content-type': 'application/json'
         }, body: JSON.stringify(body)
     }).then(r => r.json())
 
-    console.log(bundle);
     const { code, frontmatter, headings } = bundle;
 
 
