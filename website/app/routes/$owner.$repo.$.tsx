@@ -99,7 +99,7 @@ export function CatchBoundary() {
     child = <ServerError title="Something went wrong" />;
   }
 
-  return <div data-testid={'error-container'}>{child!}</div>;
+  return <div data-testid={'error-container'}>{child!}<Footer/></div>;
 }
 
 export function ErrorBoundary() {
