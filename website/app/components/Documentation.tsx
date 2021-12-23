@@ -1,6 +1,5 @@
 
 import { useHydratedMdx } from '@docs.page/client';
-import { MetaFunction, useLoaderData, LinksFunction, useCatch } from 'remix';
 import cx from 'classnames';
 
 import { Footer } from '~/components/Footer';
@@ -9,23 +8,17 @@ import { Sidebar } from '~/components/Sidebar';
 import { Theme } from '~/components/Theme';
 import components from '~/components/mdx';
 import { DocumentationProvider } from '~/context';
-import codeHikeStyles from '@code-hike/mdx/dist/index.css';
 import {
-    docsLoader,
     DocumentationLoader,
-    ThrownBundleError,
-    ThrownError,
-    ThrownNotFoundError,
 } from '../loaders/documentation.server';
-import docsearch from '../styles/docsearch.css';
 import { ScrollSpy } from '~/components/ScrollSpy';
-import { BadRequest, NotFound, ServerError } from '~/components/Errors';
 
 
 
 
 
 export default function Documentation({ data }: { data: DocumentationLoader }) {
+    console.log(data.config);
 
     const MDX = useHydratedMdx({ code: data.code });
 

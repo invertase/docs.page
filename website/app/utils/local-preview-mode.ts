@@ -1,3 +1,4 @@
+import { BundleSuccess } from '@docs.page/server';
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { DocumentationLoader } from '~/loaders/documentation.server';
 import { mergeConfig } from './config';
@@ -176,7 +177,7 @@ export function useDirectorySelector(): {
 
 const cache = {
     text: '',
-    config: '',
+    config: {},
     props: null,
     urls: {},
 };
@@ -208,6 +209,7 @@ export function usePollLocalDocs(
         //     }, {});
 
         const handle = hash ? handles[hash] : handles[`/index.mdx`];
+        console.log('configHandle', configHandle);
 
         const interval = setInterval(
             () =>
@@ -235,6 +237,7 @@ export function usePollLocalDocs(
             },
         );
     }, [cache.text, cache.config]);
+    console.log('pageProps', pageProps);
 
     return [pageProps, errorCode];
 }
@@ -247,22 +250,34 @@ const buildPreviewProps = async (params: any): Promise<DocumentationLoader> => {
     const repository = 'repo'
     const path = 'index';
     const config = params.config;
+    console.log('vv', config);
+
     const md = params.text;
 
+    let code: string | null = null;
+    let frontmatter: BundleSuccess['frontmatter'] | null = null;
+    let headings: BundleSuccess['headings'] | null = null
     const body = {
         md,
         config,
         baseBranch: 'main'
     }
 
+    if (md) {
+        try {
+            const bundle = await fetch(`${rawEndpoint}`, {
+                method: 'POST', headers: {
+                    'content-type': 'application/json'
+                }, body: JSON.stringify(body)
+            }).then(r => r.json())
+            code = bundle.code;
+            frontmatter = bundle.frontmatter;
+            headings = bundle.headings;
+        } catch (e) {
+            throw new Error('error bundling')
+        }
+    }
 
-    const bundle = await fetch(`${rawEndpoint}`, {
-        method: 'POST', headers: {
-            'content-type': 'application/json'
-        }, body: JSON.stringify(body)
-    }).then(r => r.json())
-
-    const { code, frontmatter, headings } = bundle;
 
 
     return {
@@ -271,9 +286,9 @@ const buildPreviewProps = async (params: any): Promise<DocumentationLoader> => {
         path: 'path',
         ref: 'HEAD',
         source: '',
-        code,
+        code: code || '',
         headings,
-        config: mergeConfig(params.config),
-        frontmatter,
+        config,
+        frontmatter: frontmatter || {},
     }
 }

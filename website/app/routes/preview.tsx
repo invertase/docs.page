@@ -48,6 +48,7 @@ export default function LocalPreview() {
     if (!handles || !data || !data.code) {
         return <LandingPage onSelect={select} />
     }
+    console.log('data', data);
 
     return <Documentation data={data} />
 }
