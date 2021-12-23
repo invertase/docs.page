@@ -7,6 +7,10 @@ export function NotFound({ error }: { error: ThrownNotFoundError }) {
   return (
     <div className="mt-20 max-w-lg mx-auto">
       <Title statusCode={error.status} title="This page could not be found"/>
+      <div className="mt-10 flex-col">
+      <div>{true ? 'The GitHub repository X could not be found.' : "We could not find the file Y"}</div>
+      <div>{true ? 'To get started, create a new repository on Github (add link)' : "Check the file exists in your repository here (add link)"}</div>
+      </div>
       <QuickLinks/>
     </div>
   );
@@ -42,7 +46,7 @@ export function Title({ statusCode, title }: TitleProps): JSX.Element {
             {statusCode}
           </span>
         </h1>
-        <h2 className="text-6xl lg:text-6xl text-gray-900 dark:text-white">{title}</h2>
+        <h2 className="text-5xl lg:text-4xl text-gray-900 dark:text-white">{title}</h2>
       </div>
     </>
   );

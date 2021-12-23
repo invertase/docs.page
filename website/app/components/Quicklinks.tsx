@@ -1,48 +1,58 @@
 
 import React from 'react';
-// import {
-//   GitHub,
-//   Adjustments,
-//   PullRequest,
-//   Template,
-//   GlobeAlt,
-//   Issue,
-//   Annotation,
-//   SearchCircle,
-// } from '../../components/Icons';
+import {
+  GitHub,
+  Adjustments,
+  PullRequest,
+  Template,
+  GlobeAlt,
+  Issue,
+  Annotation,
+  SearchCircle,
+} from './Icons';
+
+const defaultIconSize = 30
 
 const linkData : LinkProps[] = [
     {
         href: "https://github.com/invertase/docs.page",
-        children: "Contribute"
+        children: "Contribute",
+        icon: <GitHub size={defaultIconSize}/>
     },
     {
         href: "https://github.com/invertase/docs.page",
-        children: "Report an issue"
+        children: "Report an issue",
+        icon: <Issue size={defaultIconSize}/>
     },
     {
         href: "https://github.com/invertase/docs.page",
-        children: "Configuration"
+        children: "Configuration",
+        icon: <Adjustments size={defaultIconSize}/>
     },
     {
         href: "https://github.com/invertase/docs.page",
-        children: "Previews"
+        children: "Previews",
+        icon: <PullRequest size={defaultIconSize}/>
     },
     {
         href: "https://github.com/invertase/docs.page",
-        children: "Components"
+        children: "Components",
+        icon: <Template size={defaultIconSize}/>
     },
     {
         href: "https://github.com/invertase/docs.page",
-        children: "Custom Domains"
+        children: "Custom Domains",
+        icon: <GlobeAlt size={defaultIconSize}/>
     },
     {
         href: "https://github.com/invertase/docs.page",
-        children: "GitHub Bot"
+        children: "GitHub Bot",
+        icon: <Annotation size={defaultIconSize}/>
     },
     {
         href: "https://github.com/invertase/docs.page",
-        children: "Search"
+        children: "Search",
+        icon: <SearchCircle size={defaultIconSize}/>
     },
 ]
 
@@ -51,7 +61,7 @@ export function QuickLinks(): JSX.Element {
     <div className="dark:text-white mb-12 mt-10">
       <h2 className="text-xl font-semibold mb-4">Quick Links</h2>
         <div className="lg:flex flex-wrap">
-            {linkData.map((link,i) => <Link key={i} href={link.href}>{link.children}</Link>)}
+            {linkData.map((link,i) => <Link key={i} href={link.href} icon={link.icon}>{link.children}</Link>)}
         </div>
     </div>
   );
