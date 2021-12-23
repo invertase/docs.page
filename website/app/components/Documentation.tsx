@@ -18,7 +18,6 @@ import { ScrollSpy } from '~/components/ScrollSpy';
 
 
 export default function Documentation({ data }: { data: DocumentationLoader }) {
-    console.log(data.config);
 
     const MDX = useHydratedMdx({ code: data.code });
 

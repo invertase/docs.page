@@ -14,7 +14,8 @@ export default function Link(props: LinkProps) {
     const previewMode = usePreviewMode()
 
     if (previewMode.enabled) {
-        return <a {...props} />;
+
+        return <a />;
     }
 
     return (<a {...props} />);

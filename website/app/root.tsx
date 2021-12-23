@@ -13,6 +13,7 @@ import type { LinksFunction } from 'remix';
 
 import tailwind from './styles/tailwind.css';
 import { STORAGE_KEY } from './components/DarkModeToggle';
+import { useLocation } from 'react-router-dom';
 
 export let links: LinksFunction = () => {
   return [
@@ -94,6 +95,8 @@ export function CatchBoundary() {
 }
 
 function Document({ children, title }: { children: React.ReactNode; title?: string }) {
+  const location = useLocation()
+
   return (
     <html lang="en">
       <head>
@@ -118,7 +121,7 @@ function Document({ children, title }: { children: React.ReactNode; title?: stri
           }}
         />
         {children}
-        <ScrollRestoration />
+        {location.pathname !== '/preview' && <ScrollRestoration />}
         <Scripts />
         {process.env.NODE_ENV === 'development' && <LiveReload />}
       </body>

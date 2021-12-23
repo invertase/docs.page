@@ -207,9 +207,7 @@ export function usePollLocalDocs(
         //         obj[key] = handles[key];
         //         return obj;
         //     }, {});
-
         const handle = hash ? handles[hash] : handles[`/index.mdx`];
-        console.log('configHandle', configHandle);
 
         const interval = setInterval(
             () =>
@@ -237,7 +235,6 @@ export function usePollLocalDocs(
             },
         );
     }, [cache.text, cache.config]);
-    console.log('pageProps', pageProps);
 
     return [pageProps, errorCode];
 }
@@ -246,12 +243,10 @@ const rawEndpoint = `http://localhost:8000/raw`
 
 const buildPreviewProps = async (params: any): Promise<DocumentationLoader> => {
 
-    const owner = 'owner';
-    const repository = 'repo'
-    const path = 'index';
-    const config = params.config;
-    console.log('vv', config);
-
+    // const owner = 'owner';
+    // const repository = 'repo'
+    // const path = 'index';
+    const config = JSON.parse(params.config);
     const md = params.text;
 
     let code: string | null = null;
@@ -278,8 +273,6 @@ const buildPreviewProps = async (params: any): Promise<DocumentationLoader> => {
         }
     }
 
-
-
     return {
         owner: 'owner',
         repo: 'repo',
@@ -288,7 +281,7 @@ const buildPreviewProps = async (params: any): Promise<DocumentationLoader> => {
         source: '',
         code: code || '',
         headings,
-        config,
+        config: mergeConfig(config),
         frontmatter: frontmatter || {},
     }
 }

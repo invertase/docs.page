@@ -88,7 +88,6 @@ export const bundleRaw = async (
             return res.status(400).send(e);
         }
     }
-    console.log(code);
 
     const statusCode = code !== null ? 200 : 404;
 

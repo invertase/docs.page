@@ -113,7 +113,6 @@ export const defaultConfig: ProjectConfig = {
 
 // Merges any user config with default values.
 export function mergeConfig(json: Record<string, unknown>): ProjectConfig {
-  console.log('merging', mergeSidebarConfig(json));
 
   return {
     name: getString(json, 'name', defaultConfig.name),

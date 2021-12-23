@@ -27,8 +27,8 @@ export function ScrollSpy() {
     });
 
     headings.forEach(({ id }) => {
-      const el = document.querySelector(`#${id}`)
-      if (el) observer.observe(el);
+      // const el = document.querySelector(`#${id}`)
+      // if (el) observer.observe(el);
     });
 
     return () => {
@@ -41,16 +41,16 @@ export function ScrollSpy() {
     return <ul />
   }
 
-  function onClick(id : string) {
+  function onClick(id: string) {
     const el = document.getElementById(id)
     const sectionTop = el?.getBoundingClientRect().top;
     const currentTop = document.documentElement.scrollTop;
-    window.scrollTo({top: sectionTop! + currentTop - 100 , behavior: 'smooth'})
-    if(history.pushState) {
+    window.scrollTo({ top: sectionTop! + currentTop - 100, behavior: 'smooth' })
+    if (history.pushState) {
       history.pushState(null, `#${id}`);
     }
     else {
-        location.hash = `#${id}`;
+      location.hash = `#${id}`;
     }
     setActive(id!);
   }

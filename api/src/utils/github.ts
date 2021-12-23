@@ -63,7 +63,6 @@ export type Contents = {
 export async function getGitHubContents(metadata: MetaData): Promise<Contents> {
   const absolutePath = `docs/${metadata.path}`;
   const indexPath = `docs/${metadata.path}/index`;
-  console.log(metadata);
 
   const [error, response] = await A2A<PageContentsQuery>(
     getGithubGQLClient()({
