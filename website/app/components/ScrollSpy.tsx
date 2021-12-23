@@ -22,8 +22,8 @@ export function ScrollSpy() {
         }
       }
     }, {
-      rootMargin: '-100px 0px 0px 0px',
-      threshold: 0.5,
+      // rootMargin: '-100px 0px 0px 0px',
+      threshold: 0.25,
     });
 
     headings.forEach(({ id }) => {
@@ -43,7 +43,16 @@ export function ScrollSpy() {
 
   function onClick(id : string) {
     const el = document.getElementById(id)
-    el?.scrollIntoView({behavior: "smooth", block: 'start'})
+    const sectionTop = el?.getBoundingClientRect().top;
+    const currentTop = document.documentElement.scrollTop;
+    window.scrollTo({top: sectionTop! + currentTop - 100 , behavior: 'smooth'})
+    if(history.pushState) {
+      history.pushState(null, `#${id}`);
+    }
+    else {
+        location.hash = `#${id}`;
+    }
+    setActive(id!);
   }
 
   return (

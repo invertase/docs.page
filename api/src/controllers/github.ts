@@ -83,6 +83,7 @@ export const bundleGitHub = async (
         ]
 
         if (config?.experimentalMath) {
+          //@ts-ignore
           remarkPlugins.push(remarkMath);
           rehypePlugins.push(rehypeKatex);
         }
