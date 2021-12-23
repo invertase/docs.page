@@ -31,6 +31,9 @@ export const bundleRaw = async (
     } = req.body;
 
 
+    console.log(req.body.md);
+
+
     let code: string | null = null;
     let frontmatter: {
         [key: string]: any;
@@ -75,6 +78,8 @@ export const bundleRaw = async (
                 headerDepth,
             });
             code = bundleResult.code;
+            console.log(code);
+
 
             frontmatter = bundleResult.frontmatter;
 
@@ -83,6 +88,7 @@ export const bundleRaw = async (
             return res.status(400).send(e);
         }
     }
+    console.log(code);
 
     const statusCode = code !== null ? 200 : 404;
 

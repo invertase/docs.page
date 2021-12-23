@@ -21,7 +21,7 @@ import docsearch from '../styles/docsearch.css';
 import { ScrollSpy } from '~/components/ScrollSpy';
 import { BadRequest, NotFound, ServerError } from '~/components/Errors';
 import { GitHub } from '~/components/Icons';
-import { useDirectorySelector } from '~/utils/local-preview-mode';
+import { useDirectorySelector, usePollLocalDocs } from '~/utils/local-preview-mode';
 import Documentation from '~/components/Documentation';
 
 export let links: LinksFunction = () => {
@@ -43,13 +43,16 @@ export const meta: MetaFunction = () => {
 export default function LocalPreview() {
     const { select, handles, configHandle, error: directoryError } = useDirectorySelector();
 
-    const data = {}
+    const [data, pollErrorCode] = usePollLocalDocs(handles, configHandle, 500);
 
-    return <LandingPage onSelect={select} />
+    if (handles === null || !data) {
+        return <LandingPage onSelect={select} />
+    }
+    console.log(data);
 
 
 
-    // return <Documentation data={data} />
+    return <Documentation data={data} />
 }
 
 

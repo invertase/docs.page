@@ -179,8 +179,8 @@ const cache = {
 };
 
 export function usePollLocalDocs(
-    handles: FileSystemFileHandles,
-    configHandle: FileSystemFileHandle,
+    handles: FileSystemFileHandles | null,
+    configHandle: FileSystemFileHandle | null,
     ms = 500,
 ): [DocumentationLoader | null, number | null] {
     const [updating, setUpdating] = useState(0);
@@ -231,16 +231,41 @@ export function usePollLocalDocs(
     return [pageProps, errorCode];
 }
 
+const rawEndpoint = `http://localhost:8000/raw`
+
 const buildPreviewProps = async (params: any): Promise<DocumentationLoader> => {
+
+    const owner = 'csells';
+    const repository = 'go_router'
+    const path = params.hash;
+    const config = params.config;
+    const md = params.text;
+
+    const body = {
+        md,
+        config,
+        baseBranch: 'main'
+    }
+
+    const bundle = await fetch(`${rawEndpoint}`, {
+        method: 'POST', headers: {
+            'content-type': 'application/json'
+        }, body: JSON.stringify(body)
+    }).then(r => r.json())
+
+    console.log(bundle);
+    const { code, frontmatter, headings } = bundle;
+
+
     return {
         owner: 'owner',
         repo: 'repo',
         path: 'path',
         ref: 'HEAD',
         source: '',
-        code: '',
-        headings: [],
+        code,
+        headings,
         config: mergeConfig(params.config),
-        frontmatter: {},
+        frontmatter,
     }
 }
