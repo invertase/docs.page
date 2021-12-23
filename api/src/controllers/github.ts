@@ -82,11 +82,11 @@ export const bundleGitHub = async (
           rehypeAccessibleEmojis,
         ]
 
-        if (config?.experimentalMath) {
-          //@ts-ignore
-          remarkPlugins.push(remarkMath);
-          rehypePlugins.push(rehypeKatex);
-        }
+        // if (config?.experimentalMath) {
+        //   //@ts-ignore
+        //   remarkPlugins.push(remarkMath);
+        //   rehypePlugins.push(rehypeKatex);
+        // }
 
         const bundleResult = await bundle(markdown, {
           remarkPlugins,
