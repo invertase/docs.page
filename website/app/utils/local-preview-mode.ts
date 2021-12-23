@@ -1,4 +1,4 @@
-import { createContext, useCallback, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { DocumentationLoader } from '~/loaders/documentation.server';
 import { mergeConfig } from './config';
 export type PreviewMode = {
@@ -14,6 +14,11 @@ export const PreviewModeContext = createContext<PreviewMode>({
     },
     imageUrls: null,
 });
+
+export function usePreviewMode(): PreviewMode {
+    return useContext(PreviewModeContext);
+}
+
 
 export async function extractContents(
     handle: FileSystemFileHandle,
