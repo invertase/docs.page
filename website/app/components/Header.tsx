@@ -76,31 +76,12 @@ export function Header() {
                 </svg>
               </a>
             </li>
-            <li>
-              <a
-                href={
-                  {
-                    branch: `https://github.com/${owner}/${repo}/tree/${ref}`,
-                    pullrequest: `https://github.com/${owner}/${repo}/pull/${ref}`,
-                    commit: `https://github.com/${owner}/${repo}/commit/${ref}`
-                  }['pullrequest']
-                }
-              >
-                <div className={cx(
-                  'flex px-3 py-2 text-xs rounded-lg shadow text-white transition-colors whitespace-nowrap',
-                  {
-                    'bg-green-600 hover:bg-green-500 ': true,
-                    'bg-blue-600 hover:bg-blue-500 ': false,
-                    'bg-pink-600 hover:bg-pink-500 ': false,
-                  },
-                )}>
-                  {true && <Branch size={16} />}
-                  {false && <PullRequest size={16} />}
-                  {false && <Commit size={16} />}
-                  <div className="pl-1">{ref}</div>
-                </div>
-              </a>
-            </li>
+            {
+              !!ref &&
+              <li>
+                <RefLink pointer={ref} owner={owner} repo={repo} refType={"pullrequest"} />
+              </li>
+            }
             {!!config.docsearch && (
               <li>
                 <DocSearch
@@ -118,4 +99,47 @@ export function Header() {
       </div>
     </header>
   );
+}
+
+type refType = 'branch' | 'pullrequest' | 'commit'
+
+interface RefLinkProps {
+  pointer: string,
+  owner: string,
+  repo: string,
+  refType: refType
+}
+
+
+function RefLink({ pointer, owner, repo, refType }: RefLinkProps): JSX.Element {
+
+  const defaultIconSize = 16;
+
+  const linkData: Record<refType, any> = {
+    branch: {
+      href: `https://github.com/${owner}/${repo}/tree/${pointer}`,
+      icon: <Branch size={defaultIconSize} />,
+      className: 'bg-green-600 hover:bg-green-500 '
+    },
+    pullrequest: {
+      href: `https://github.com/${owner}/${repo}/pull/${pointer}`,
+      icon: <PullRequest size={defaultIconSize} />,
+      className: 'bg-blue-600 hover:bg-blue-500 '
+    },
+    commit: {
+      href: `https://github.com/${owner}/${repo}/tree/${pointer}`,
+      icon: <Commit size={defaultIconSize} />,
+      className: 'bg-pink-600 hover:bg-pink-500 '
+    }
+  }
+  const { href, icon, className } = linkData[refType];
+  return <a href={href}>
+    <div className={cx(
+      'flex px-3 py-2 text-xs rounded-lg shadow text-white transition-colors whitespace-nowrap',
+      `${className}`
+    )}>
+      {icon}
+      <div className="pl-1">{pointer}</div>
+    </div>
+  </a>
 }
