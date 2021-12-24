@@ -15,7 +15,7 @@ export function PreviewNotFound({ error }: { error: any }) {
           </div>
           <div>
             return to {' '}
-            <DocsLink className="text-blue-600" to="/preview"> Preview Mode</DocsLink>
+            <a className="text-blue-600" href="/preview"> Preview Mode</a>
           </div>
         </> :
           <div>docs.json not found</div>
