@@ -2,7 +2,7 @@ import { PathParams, rest } from 'msw';
 import { fixtures } from './fixtures';
 
 export const handlers = [
-  rest.post('http://localhost:8000/bundle', (req, res, ctx) => {
+  rest.get('http://localhost:8000/bundle', (req, res, ctx) => {
     // const owner = req.params.owner as string;
     // const repository = req.params.repository as '200' | '400' | '404' | '500';
     const owner = req.url.searchParams.get('owner');

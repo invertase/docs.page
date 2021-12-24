@@ -1,6 +1,7 @@
 import { renderToString } from "react-dom/server";
 import { RemixServer } from "remix";
 import type { EntryContext } from "remix";
+
 if (process.env.MSW_ENABLED === '1') { require('../tests/mocks') };
 export default function handleRequest(
   request: Request,

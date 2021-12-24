@@ -73,11 +73,11 @@ export function Title({ statusCode, title }: TitleProps): JSX.Element {
     <>
       <div className="font-anton mb-4 text-center lg:text-left">
         <h1 className="text-7xl lg:text-9xl">
-          <span className="bg-clip-text text-transparent bg-gradient-to-br from-purple-400 via-pink-500 to-red-500">
+          <span data-testid='error-status-code' className="bg-clip-text text-transparent bg-gradient-to-br from-purple-400 via-pink-500 to-red-500">
             {statusCode}
           </span>
         </h1>
-        <h2 className="text-5xl lg:text-4xl text-gray-900 dark:text-white">{title}</h2>
+        <h2 data-testid='error-title' className="text-5xl lg:text-4xl text-gray-900 dark:text-white">{title}</h2>
       </div>
     </>
   );
