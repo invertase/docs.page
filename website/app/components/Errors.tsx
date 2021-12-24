@@ -2,10 +2,6 @@ import type { ThrownBundleError, ThrownNotFoundError } from '../loaders/document
 import { DocsLink } from './DocsLink';
 import { QuickLinks } from './Quicklinks';
 
-// TODO descriptions etc
-
-
-
 export function NotFound({ error }: { error: ThrownNotFoundError }) {
 
   const { owner, repo, path, repositoryFound } = error.data;

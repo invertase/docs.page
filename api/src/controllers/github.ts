@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { BundleResponseData } from '@docs.page/server';
 import { bundle } from '../utils/bundler.js';
-import { getGitHubContents } from '../utils/github.js';
+import { getGitHubContents, getPullRequestMetadata } from '../utils/github.js';
 import { HeadingNode } from '../utils/plugins/rehype-headings.js';
 import { getPlugins } from '../utils/getPlugins.js';
 // import remarkMath from 'remark-math';
@@ -18,7 +18,7 @@ export const bundleGitHub = async (
   res: Response,
 ): Promise<Response<BundleResponseData>> => {
   // parse query params:
-  const {
+  let {
     owner,
     repository,
     ref,
@@ -39,6 +39,20 @@ export const bundleGitHub = async (
   let repositoryFound: boolean = false;
   if (owner && repository) {
     // fetch from github:
+    // If the ref looks like a PR
+    if (/^[0-9]*$/.test(ref)) {
+      // Fetch the PR metadata
+      const metadata = await getPullRequestMetadata(
+        owner,
+        repository,
+        ref,
+      );
+
+      // If the PR was found, update the pointer and source
+      if (metadata) {
+        ref = metadata.ref
+      }
+    }
     const {
       md: markdown,
       config: sourceConfig,

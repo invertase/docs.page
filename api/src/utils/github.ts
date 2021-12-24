@@ -117,3 +117,64 @@ export async function getGitHubContents(metadata: MetaData): Promise<Contents> {
   };
 }
 
+export type PullRequestMetadata = {
+  owner: string;
+  repository: string;
+  ref: string;
+};
+
+type PullRequestQuery = {
+  repository: {
+    pullRequest: {
+      owner: {
+        login: string;
+      };
+      repository: {
+        name: string;
+      };
+      ref: {
+        name: string;
+      };
+    };
+  };
+};
+
+export async function getPullRequestMetadata(
+  owner: string,
+  repository: string,
+  pullRequest: string,
+): Promise<PullRequestMetadata | null> {
+  const [error, response] = await A2A<PullRequestQuery>(
+    getGithubGQLClient()({
+      query: `
+        query RepositoryConfig($owner: String!, $repository: String!, $pullRequest: Int!) {
+          repository(owner: $owner, name: $repository) {
+            pullRequest(number: $pullRequest) {
+              owner: headRepositoryOwner {
+                login
+              }
+              repository: headRepository {
+                name
+              }
+              ref: headRef {
+                name
+              }
+            }
+          }
+        }
+      `,
+      owner: owner,
+      repository: repository,
+      pullRequest: parseInt(pullRequest),
+    }),
+  );
+  if (error || !response) {
+    return null;
+  }
+
+  return {
+    owner: response.repository.pullRequest.owner.login,
+    repository: response.repository.pullRequest.repository.name,
+    ref: response.repository.pullRequest.ref.name,
+  };
+}
