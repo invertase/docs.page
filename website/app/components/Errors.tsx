@@ -3,28 +3,6 @@ import type { ThrownBundleError, ThrownNotFoundError } from '../loaders/document
 import { DocsLink } from './DocsLink';
 import { QuickLinks } from './Quicklinks';
 
-const RepoNotFound = ({ owner, repo }: { owner: string, repo: string }) => <><p>
-  The GitHub repository{' '}
-  <DocsLink className="text-blue-600" to={`https://github.com/${owner}/${repo}`}>
-    {owner}/{repo}
-  </DocsLink>{' '}
-  was not found.
-</p>
-  <p>
-    To get started, create a new repository on{' '}
-    <DocsLink className="text-blue-600" to="https://github.com/new">GitHub</DocsLink>.
-  </p></>
-
-const FileNotFound = ({ owner, repo, path }: { owner: string, repo: string, path: string }) => <><p>
-  The file {' '}
-  <DocsLink className="text-blue-600" to={`https://github.com/${owner}/${repo}/blob/main/${path}.mdx`}>
-    {path}.mdx
-  </DocsLink>{' '}
-  was not found.
-</p>
-  <p>
-    This could be because of a typo in your sidebar config, or you've not made a file at this path.
-  </p></>
 
 export function NotFound({ error }: { error: ThrownNotFoundError }) {
 
@@ -87,3 +65,26 @@ export function Title({ statusCode, title }: TitleProps): JSX.Element {
     </>
   );
 }
+
+const RepoNotFound = ({ owner, repo }: { owner: string, repo: string }) => <><p>
+  The GitHub repository{' '}
+  <DocsLink className="text-blue-600" to={`https://github.com/${owner}/${repo}`}>
+    {owner}/{repo}
+  </DocsLink>{' '}
+  was not found.
+</p>
+  <p>
+    To get started, create a new repository on{' '}
+    <DocsLink className="text-blue-600" to="https://github.com/new">GitHub</DocsLink>.
+  </p></>
+
+const FileNotFound = ({ owner, repo, path }: { owner: string, repo: string, path: string }) => <><p>
+  The file {' '}
+  <DocsLink className="text-blue-600" to={`https://github.com/${owner}/${repo}/blob/main/${path}.mdx`}>
+    {path}.mdx
+  </DocsLink>{' '}
+  was not found.
+</p>
+  <p>
+    This could be because of a typo in your sidebar config, or you've not made a file at this path.
+  </p></>
