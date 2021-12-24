@@ -9,6 +9,7 @@ import { Theme } from '~/components/Theme';
 import components from '~/components/mdx';
 import { DocumentationProvider } from '~/context';
 import codeHikeStyles from '@code-hike/mdx/dist/index.css';
+import codeblocks from '../styles/codeblocks.css';
 import {
   docsLoader,
   DocumentationLoader,
@@ -27,6 +28,7 @@ export let links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/@docsearch/css@alpha' },
     { rel: 'stylesheet', href: docsearch },
+    { rel: 'stylesheet', href: codeblocks },
     { rel: 'stylesheet', href: codeHikeStyles }
   ];
 };
