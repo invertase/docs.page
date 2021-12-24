@@ -31,9 +31,6 @@ export const bundleRaw = async (
     } = req.body;
 
 
-    console.log(req.body.md);
-
-
     let code: string | null = null;
     let frontmatter: {
         [key: string]: any;

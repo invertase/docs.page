@@ -36,19 +36,25 @@ export const bundleGitHub = async (
   } | null = null;
   let headings: HeadingNode[] | null = [];
   let baseBranch: string | null = null;
-
+  let repositoryFound: boolean = false;
   if (owner && repository) {
     // fetch from github:
     const {
       md: markdown,
       config: sourceConfig,
       baseBranch: sourceBaseBranch,
+      repositoryFound: sourceRepositoryFound
     } = await getGitHubContents({
       owner,
       repository,
       ref: ref,
       path,
     });
+    repositoryFound = sourceRepositoryFound
+    if (!repositoryFound) {
+      console.error('repository not found');
+    }
+
 
     // check config
     if (sourceConfig) {
@@ -89,6 +95,7 @@ export const bundleGitHub = async (
     config,
     baseBranch,
     path,
+    repositoryFound
   });
 };
 

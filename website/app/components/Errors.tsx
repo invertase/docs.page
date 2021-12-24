@@ -8,22 +8,35 @@ import { QuickLinks } from './Quicklinks';
 
 export function NotFound({ error }: { error: ThrownNotFoundError }) {
 
-  const { owner, repo, path } = error.data;
+  const { owner, repo, path, repositoryFound } = error.data;
+
   return (
     <div className="mt-20 max-w-lg mx-auto">
       <Title statusCode={error.status} title="This page could not be found" />
       <div className="mt-10 flex-col">
-        <p>
-          The GitHub repository{' '}
-          <DocsLink className="text-blue-600" to={`https://github.com/${owner}/${repo}`}>
-            {owner}/{repo}
-          </DocsLink>{' '}
-          was not found.
-        </p>
-        <p>
-          To get started, create a new repository on{' '}
-          <DocsLink className="text-blue-600" to="https://github.com/new">GitHub</DocsLink>.
-        </p>
+        {
+          repositoryFound ? <><p>
+            The file {' '}
+            <DocsLink className="text-blue-600" to={`https://github.com/${owner}/${repo}/blob/main/${path}.mdx`}>
+              {path}.mdx
+            </DocsLink>{' '}
+            was not found.
+          </p>
+            <p>
+              This could be because of a typo in your sidebar config, or you've not made a file at this path.
+            </p></> :
+            <><p>
+              The GitHub repository{' '}
+              <DocsLink className="text-blue-600" to={`https://github.com/${owner}/${repo}`}>
+                {owner}/{repo}
+              </DocsLink>{' '}
+              was not found.
+            </p>
+              <p>
+                To get started, create a new repository on{' '}
+                <DocsLink className="text-blue-600" to="https://github.com/new">GitHub</DocsLink>.
+              </p></>
+        }
       </div>
       <QuickLinks />
     </div>

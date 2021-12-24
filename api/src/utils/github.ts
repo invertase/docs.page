@@ -53,11 +53,12 @@ type PageContentsQuery = {
 };
 
 export type Contents = {
-  isFork: boolean;
-  baseBranch: string;
+  isFork?: boolean;
+  baseBranch?: string;
   config?: string;
   md?: string;
-  path: string;
+  path?: string;
+  repositoryFound: boolean;
 };
 
 export async function getGitHubContents(metadata: MetaData): Promise<Contents> {
@@ -101,10 +102,13 @@ export async function getGitHubContents(metadata: MetaData): Promise<Contents> {
 
   // if an error is thrown then the repo is not found, if the repo is private then response = { repository: null }
   if (error || response?.repository === null) {
-    console.log(error);
+    return {
+      repositoryFound: false
+    }
   }
 
   return {
+    repositoryFound: true,
     isFork: response?.repository?.isFork ?? false,
     baseBranch: response?.repository.baseBranch.name ?? 'main',
     config: response?.repository.config?.text,
@@ -112,3 +116,4 @@ export async function getGitHubContents(metadata: MetaData): Promise<Contents> {
     path: response?.repository.mdxIndex?.text ? indexPath : absolutePath,
   };
 }
+

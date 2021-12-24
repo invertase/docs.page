@@ -10,7 +10,7 @@ export type ThrownBundleError = ThrownResponse<number, BundleError | null>;
 
 export type ThrownNotFoundError = ThrownResponse<
   number,
-  Pick<DocumentationLoader, 'owner' | 'repo' | 'path'>
+  Pick<DocumentationLoader, 'owner' | 'repo' | 'path'> & { repositoryFound: boolean }
 >;
 
 // Response from the loader containing the bundle data.
@@ -55,6 +55,8 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
 
   try {
     bundle = await fetchBundle({ owner, repository: repo, path, ref });
+    console.log(bundle);
+
   } catch (error) {
     // If the bundler failed (e.g. API down), throw a server error
     throw json(null, 500);
@@ -72,6 +74,7 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
         owner,
         repo,
         path,
+        repositoryFound: bundle.repositoryFound
       },
       404,
     );

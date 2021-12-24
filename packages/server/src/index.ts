@@ -26,6 +26,7 @@ export async function fetchBundle(params: FetchBundleInput): Promise<BundleRespo
       return r.json();
     } else throw new Error();
   });
+
   return data as unknown as BundleResponseData;
 }
 
