@@ -55,7 +55,7 @@ export function CatchBoundary() {
   let child: JSX.Element;
 
   if (e.status === 404) {
-    child = <NotFound data={e.data} error={e as ThrownNotFoundError} />;
+    child = <NotFound error={e as ThrownNotFoundError} />;
   } else if (e.status === 500) {
     child = <ServerError title="Internal server error" />;
   } else if (e.status === 400) {
