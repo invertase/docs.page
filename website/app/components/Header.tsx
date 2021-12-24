@@ -9,7 +9,9 @@ import { usePreviewMode } from '~/utils/local-preview-mode';
 
 // TODO link
 export function Header() {
-  const { owner, repo, config, ref } = useDocumentationContext();
+  const { owner, repo, config, ref, source } = useDocumentationContext();
+  console.log(source);
+
   const base = useBaseUrl();
 
   const logoLight = useImagePath(config.logo);
@@ -91,9 +93,9 @@ export function Header() {
               </button>
             )}
             {
-              !!ref && ref !== 'HEAD' &&
+              !!ref && source !== 'base' &&
               <li>
-                <RefLink pointer={ref} owner={owner} repo={repo} refType={"pullrequest"} />
+                <RefLink pointer={ref} owner={owner} repo={repo} source={source} />
               </li>
             }
             {!!config.docsearch && (
@@ -115,21 +117,19 @@ export function Header() {
   );
 }
 
-type refType = 'branch' | 'pullrequest' | 'commit'
-
 interface RefLinkProps {
   pointer: string,
   owner: string,
   repo: string,
-  refType: refType
+  source: string
 }
 
 
-function RefLink({ pointer, owner, repo, refType }: RefLinkProps): JSX.Element {
+function RefLink({ pointer, owner, repo, source }: RefLinkProps): JSX.Element {
 
   const defaultIconSize = 16;
 
-  const linkData: Record<refType, any> = {
+  const linkData: Record<string, any> = {
     branch: {
       href: `https://github.com/${owner}/${repo}/tree/${pointer}`,
       icon: <Branch size={defaultIconSize} />,
@@ -146,7 +146,7 @@ function RefLink({ pointer, owner, repo, refType }: RefLinkProps): JSX.Element {
       className: 'bg-pink-600 hover:bg-pink-500 '
     }
   }
-  const { href, icon, className } = linkData[refType];
+  const { href, icon, className } = linkData[source];
   return <a href={href}>
     <div className={cx(
       'flex px-3 py-2 text-xs rounded-lg shadow text-white transition-colors whitespace-nowrap',

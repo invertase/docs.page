@@ -95,7 +95,7 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
     repo,
     path,
     ref,
-    source: 'main',
+    source: bundle.source,
     code,
     headings: bundle.headings,
     config: mergeConfig(bundle.config),

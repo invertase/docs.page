@@ -37,6 +37,8 @@ export const bundleGitHub = async (
   let headings: HeadingNode[] | null = [];
   let baseBranch: string | null = null;
   let repositoryFound: boolean = false;
+  let source: string = 'base'
+
   if (owner && repository) {
     // fetch from github:
     // If the ref looks like a PR
@@ -51,8 +53,17 @@ export const bundleGitHub = async (
       // If the PR was found, update the pointer and source
       if (metadata) {
         ref = metadata.ref
+        source = 'pullrequest'
       }
+    } else if (/^[a-fA-F0-9]{40}$/.test(ref)) {
+      source = 'commit'
+    } else if (ref) {
+
+      source = 'branch';
     }
+
+
+
     const {
       md: markdown,
       config: sourceConfig,
@@ -109,7 +120,8 @@ export const bundleGitHub = async (
     config,
     baseBranch,
     path,
-    repositoryFound
+    repositoryFound,
+    source
   });
 };
 

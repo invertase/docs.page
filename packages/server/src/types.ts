@@ -29,6 +29,7 @@ export type BundleSuccess = {
   baseBranch: string | null;
   path: string | null;
   repositoryFound: boolean;
+  source: string;
 };
 
 export type BundleResponseData = BundleSuccess | BundleError;
