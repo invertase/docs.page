@@ -1,4 +1,3 @@
-import { usePreviewMode } from '~/utils/local-preview-mode';
 import type { ThrownBundleError, ThrownNotFoundError } from '../loaders/documentation.server';
 import { DocsLink } from './DocsLink';
 import { QuickLinks } from './Quicklinks';
@@ -11,10 +10,13 @@ export function PreviewNotFound({ error }: { error: any }) {
       {
         configFound ? <>
           <div>
-            file not found
+            We couldn't find your docs in this directory. Make sure you select a directory with a <code>docs.json</code> file, and a <code>docs/index.mdx</code> file.
           </div>
           <div>
-            return to {' '}
+            If you think something else is up, please let us know by filing an <a className="text-blue-600" href="https://github.com/invertase/docs.page/issues">issue</a>.
+          </div>
+          <div className="mt-10">
+            Return to {' '}
             <a className="text-blue-600" href="/preview"> Preview Mode</a>
           </div>
         </> :
