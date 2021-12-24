@@ -9,7 +9,7 @@ import {
     ThrownNotFoundError,
 } from '../loaders/documentation.server';
 import docsearch from '../styles/docsearch.css';
-import { BadRequest, NotFound, ServerError } from '~/components/Errors';
+import { BadRequest, NotFound, PreviewNotFound, ServerError } from '~/components/Errors';
 import { GitHub } from '~/components/Icons';
 import { PreviewModeContext, useDirectorySelector, usePollLocalDocs } from '~/utils/local-preview-mode';
 import Documentation from '~/components/Documentation';
@@ -32,8 +32,16 @@ export const meta: MetaFunction = () => {
 
 export default function LocalPreview() {
     const { select, handles, configHandle, error: directoryError } = useDirectorySelector();
-
     const [data, pollErrorCode] = usePollLocalDocs(handles, configHandle, 500);
+
+
+    // TODO handle 400 errors
+    if (directoryError) {
+        return <PreviewNotFound error='' />
+    }
+    if (pollErrorCode) {
+        return <PreviewNotFound error='' />
+    }
 
     if (!handles || !data || !data.code) {
         return <LandingPage onSelect={select} />
@@ -104,11 +112,13 @@ function LandingPage({ onSelect }: { onSelect: () => void }): JSX.Element {
 
 // TODO handle me
 export function CatchBoundary() {
-    const e = useCatch<ThrownError>();
+    const e = useCatch<any>();
+    console.log(e);
+
     let child: JSX.Element;
 
     if (e.status === 404) {
-        child = <NotFound error={e as ThrownNotFoundError} />;
+        child = <PreviewNotFound error={''} />;
     } else if (e.status === 500) {
         child = <ServerError title="Internal server error" />;
     } else if (e.status === 400) {

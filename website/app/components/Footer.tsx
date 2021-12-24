@@ -1,6 +1,9 @@
 import { Link } from 'remix';
+import { useDocumentationContext } from '~/context';
 
 export function Footer() {
+  const { owner, repo, ref, path } = useDocumentationContext();
+  const editUrl = `https://github.com/${owner}/${repo}/edit${ref}/${path}`
   return (
     <footer className="mt-16 py-8 px-4 lg:px-8 border-t border-gray-900/10">
       <div className="flex text-sm font-medium text-gray-500 dark:text-gray-300">
@@ -12,7 +15,7 @@ export function Footer() {
         </div>
         <div className="flex-shrink-0">
           <a
-            href="https://todo.com"
+            href={editUrl}
             target="_blank"
             rel="noopener"
             className="hover:text-gray-900 dark:hover:text-gray-100 transition-colors"

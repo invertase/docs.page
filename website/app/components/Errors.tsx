@@ -4,11 +4,29 @@ import { DocsLink } from './DocsLink';
 import { QuickLinks } from './Quicklinks';
 
 
+export function PreviewNotFound({ error }: { error: any }) {
+  const configFound = true
+  return (
+    <ErrorContainer title={"This page could not be found"} code={404}>
+      {
+        configFound ? <>
+          <div>
+            file not found
+          </div>
+          <div>
+            return to {' '}
+            <DocsLink className="text-blue-600" to="/preview"> Preview Mode</DocsLink>
+          </div>
+        </> :
+          <div>docs.json not found</div>
+      }
+    </ErrorContainer>
+  );
+}
+
 export function NotFound({ error }: { error: ThrownNotFoundError }) {
 
   const { owner, repo, path, repositoryFound } = error.data;
-
-  const previewMode = usePreviewMode();
 
   return (
     <ErrorContainer title={"This page could not be found"} code={error.status}>
