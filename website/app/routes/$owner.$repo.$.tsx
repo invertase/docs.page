@@ -1,6 +1,4 @@
-import { useHydratedMdx } from '@docs.page/client';
 import { MetaFunction, useLoaderData, LinksFunction, useCatch } from 'remix';
-import cx from 'classnames';
 
 import { Footer } from '~/components/Footer';
 import codeHikeStyles from '@code-hike/mdx/dist/index.css';

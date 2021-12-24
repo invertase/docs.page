@@ -4,10 +4,11 @@ import { DocSearch } from '@docsearch/react';
 
 import { DarkModeToggle } from './DarkModeToggle';
 import { useBaseUrl, useDocumentationContext, useImagePath } from '~/context';
+import { Branch, Commit, PullRequest } from './Icons';
 
 // TODO link
 export function Header() {
-  const { owner, repo, config } = useDocumentationContext();
+  const { owner, repo, config, ref } = useDocumentationContext();
   const base = useBaseUrl();
 
   const logoLight = useImagePath(config.logo);
@@ -73,6 +74,31 @@ export function Header() {
                     clipRule="evenodd"
                   />
                 </svg>
+              </a>
+            </li>
+            <li>
+              <a
+                href={
+                  {
+                    branch: `https://github.com/${owner}/${repo}/tree/${ref}`,
+                    pullrequest: `https://github.com/${owner}/${repo}/pull/${ref}`,
+                    commit: `https://github.com/${owner}/${repo}/commit/${ref}`
+                  }['pullrequest']
+                }
+              >
+                <div className={cx(
+                  'flex px-3 py-2 text-xs rounded-lg shadow text-white transition-colors whitespace-nowrap',
+                  {
+                    'bg-green-600 hover:bg-green-500 ': true,
+                    'bg-blue-600 hover:bg-blue-500 ': false,
+                    'bg-pink-600 hover:bg-pink-500 ': false,
+                  },
+                )}>
+                  {true && <Branch size={16} />}
+                  {false && <PullRequest size={16} />}
+                  {false && <Commit size={16} />}
+                  <div className="pl-1">{ref}</div>
+                </div>
               </a>
             </li>
             {!!config.docsearch && (
