@@ -5,6 +5,7 @@ import { DocSearch } from '@docsearch/react';
 import { DarkModeToggle } from './DarkModeToggle';
 import { useBaseUrl, useDocumentationContext, useImagePath } from '~/context';
 import { Branch, Commit, PullRequest } from './Icons';
+import { usePreviewMode } from '~/utils/local-preview-mode';
 
 // TODO link
 export function Header() {
@@ -13,7 +14,7 @@ export function Header() {
 
   const logoLight = useImagePath(config.logo);
   const logoDark = useImagePath(config.logoDark);
-
+  const previewMode = usePreviewMode();
   return (
     <header className="sticky top-0 z-40 w-full backdrop-blur flex-none transition-colors duration-500 lg:z-50 lg:border-b lg:border-gray-900/10 dark:lg:border-gray-400/10 bg-white/60 dark:bg-zinc-900/60">
       <div className="max-w-8xl mx-auto flex items-center h-14 px-4 lg:px-8">
@@ -40,6 +41,11 @@ export function Header() {
             <span>{config.name || `${owner}/${repo}`}</span>
           </Link>
         </div>
+        {previewMode.enabled && (
+          <span className="ml-4 px-4 py-2 dark:text-black text-white italic text-xs rounded-lg bg-gradient-to-br from-red-600 to-black dark:from-yellow-200 dark:to-red-400">
+            preview mode
+          </span>
+        )}
         <div className="flex-grow flex justify-end">
           <ul className="flex space-x-4">
             {!!config.twitter && (
@@ -76,8 +82,16 @@ export function Header() {
                 </svg>
               </a>
             </li>
+            {previewMode.enabled && (
+              <button
+                onClick={previewMode.onSelect}
+                className="mr-4 flex px-3 py-2 text-xs rounded-lg shadow text-white transition-colors whitespace-nowrap bg-green-600 hover:bg-green-500"
+              >
+                <span className="text-white">Change directory</span>
+              </button>
+            )}
             {
-              !!ref &&
+              !!ref && ref !== 'HEAD' &&
               <li>
                 <RefLink pointer={ref} owner={owner} repo={repo} refType={"pullrequest"} />
               </li>
