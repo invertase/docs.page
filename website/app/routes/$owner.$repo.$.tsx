@@ -50,10 +50,12 @@ export default function Page() {
 // TODO handle me
 export function CatchBoundary() {
   const e = useCatch<ThrownError>();
+  console.log(e);
+
   let child: JSX.Element;
 
   if (e.status === 404) {
-    child = <NotFound error={e as ThrownNotFoundError} />;
+    child = <NotFound data={e.data} error={e as ThrownNotFoundError} />;
   } else if (e.status === 500) {
     child = <ServerError title="Internal server error" />;
   } else if (e.status === 400) {

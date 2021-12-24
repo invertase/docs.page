@@ -3,15 +3,10 @@ import { BundleResponseData } from '@docs.page/server';
 import { bundle } from '../utils/bundler.js';
 import { getGitHubContents } from '../utils/github.js';
 import { HeadingNode } from '../utils/plugins/rehype-headings.js';
-import { theme } from '../utils/plugins/codeHikeTheme.js'
-import { remarkCodeHike } from '@code-hike/mdx';
-import remarkGfm from 'remark-gfm';
-import rehypeCodeBlocks from '../utils/plugins/rehype-code-blocks.js';
-import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
-import rehypeInlineBadges from '../utils/plugins/rehype-inline-badges.js';
-import rehypeSlug from 'rehype-slug';
+import { getPlugins } from '../utils/getPlugins.js';
 // import remarkMath from 'remark-math';
 // import rehypeKatex from 'rehype-katex';
+
 /**
  * Gets the API information.
  *
@@ -23,11 +18,13 @@ export const bundleGitHub = async (
   res: Response,
 ): Promise<Response<BundleResponseData>> => {
   // parse query params:
-  const owner = (req?.query?.owner as string) || null;
-  const repository = (req?.query?.repository as string) || null;
-  const ref = (req?.query.ref as string) || 'HEAD';
-  const path = (req?.query.path as string) || 'index';
-  const headerDepth = req?.query?.headerDepth ? parseInt(req?.query?.headerDepth as string) : 3;
+  const {
+    owner,
+    repository,
+    ref,
+    path,
+    headerDepth
+  } = extractQueryData(req)
 
 
   let code: string | null = null;
@@ -39,7 +36,8 @@ export const bundleGitHub = async (
   } | null = null;
   let headings: HeadingNode[] | null = [];
   let baseBranch: string | null = null;
-  if (owner && repository && ref && path) {
+
+  if (owner && repository) {
     // fetch from github:
     const {
       md: markdown,
@@ -48,9 +46,10 @@ export const bundleGitHub = async (
     } = await getGitHubContents({
       owner,
       repository,
-      ref: ref || 'HEAD',
+      ref: ref,
       path,
     });
+
     // check config
     if (sourceConfig) {
       try {
@@ -60,43 +59,20 @@ export const bundleGitHub = async (
         config = null;
       }
     }
+    // set the baseBranch
     if (sourceBaseBranch) {
       baseBranch = sourceBaseBranch;
     }
+    // bundle the mdx
     if (markdown) {
-
       try {
-        const remarkPlugins = config?.experimentalCodeHike ? [
-          remarkGfm,
-          [remarkCodeHike, { theme }],
-        ] : [remarkGfm];
-
-        const rehypePlugins = config?.experimentalCodeHike ? [
-          rehypeSlug,
-          rehypeInlineBadges,
-          rehypeAccessibleEmojis,
-        ] : [
-          rehypeCodeBlocks,
-          rehypeSlug,
-          rehypeInlineBadges,
-          rehypeAccessibleEmojis,
-        ]
-
-        // if (config?.experimentalMath) {
-        //   //@ts-ignore
-        //   remarkPlugins.push(remarkMath);
-        //   rehypePlugins.push(rehypeKatex);
-        // }
-
         const bundleResult = await bundle(markdown, {
-          remarkPlugins,
-          rehypePlugins,
+          ...getPlugins(config ?? {}),
           headerDepth,
         });
+
         code = bundleResult.code;
-
         frontmatter = bundleResult.frontmatter;
-
         headings = bundleResult.headings.length > 0 ? bundleResult.headings : null;
       } catch (e) {
         return res.status(400).send(e);
@@ -115,3 +91,21 @@ export const bundleGitHub = async (
     path,
   });
 };
+
+
+const extractQueryData = (req: Request) => {
+
+  // extract query params and set defaults if nec.
+  const owner = (req?.query?.owner as string) || null;
+  const repository = (req?.query?.repository as string) || null;
+  const ref = (req?.query.ref as string) || 'HEAD';
+  const path = (req?.query.path as string) || 'index';
+  const headerDepth = req?.query?.headerDepth ? parseInt(req?.query?.headerDepth as string) : 3;
+  return {
+    owner,
+    repository,
+    ref,
+    path,
+    headerDepth
+  }
+}

@@ -1,15 +1,29 @@
 import type { ThrownBundleError, ThrownNotFoundError } from '../loaders/documentation.server';
+import { DocsLink } from './DocsLink';
 import { QuickLinks } from './Quicklinks';
 
 // TODO descriptions etc
 
+
+
 export function NotFound({ error }: { error: ThrownNotFoundError }) {
+
+  const { owner, repo, path } = error.data;
   return (
     <div className="mt-20 max-w-lg mx-auto">
       <Title statusCode={error.status} title="This page could not be found" />
       <div className="mt-10 flex-col">
-        <div>{true ? 'The GitHub repository X could not be found.' : "We could not find the file Y"}</div>
-        <div>{true ? 'To get started, create a new repository on Github (add link)' : "Check the file exists in your repository here (add link)"}</div>
+        <p>
+          The GitHub repository{' '}
+          <DocsLink className="text-blue-600" to={`https://github.com/${owner}/${repo}`}>
+            {owner}/{repo}
+          </DocsLink>{' '}
+          was not found.
+        </p>
+        <p>
+          To get started, create a new repository on{' '}
+          <DocsLink className="text-blue-600" to="https://github.com/new">GitHub</DocsLink>.
+        </p>
       </div>
       <QuickLinks />
     </div>
