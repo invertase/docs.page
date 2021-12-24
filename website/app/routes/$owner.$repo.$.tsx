@@ -3,11 +3,6 @@ import { MetaFunction, useLoaderData, LinksFunction, useCatch } from 'remix';
 import cx from 'classnames';
 
 import { Footer } from '~/components/Footer';
-import { Header } from '~/components/Header';
-import { Sidebar } from '~/components/Sidebar';
-import { Theme } from '~/components/Theme';
-import components from '~/components/mdx';
-import { DocumentationProvider } from '~/context';
 import codeHikeStyles from '@code-hike/mdx/dist/index.css';
 import codeblocks from '../styles/codeblocks.css';
 import {
@@ -18,7 +13,6 @@ import {
   ThrownNotFoundError,
 } from '../loaders/documentation.server';
 import docsearch from '../styles/docsearch.css';
-import { ScrollSpy } from '~/components/ScrollSpy';
 import { BadRequest, NotFound, ServerError } from '~/components/Errors';
 import Documentation from '~/components/Documentation';
 

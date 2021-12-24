@@ -1,24 +1,14 @@
-import { useHydratedMdx } from '@docs.page/client';
 import { MetaFunction, useLoaderData, LinksFunction, useCatch } from 'remix';
 import { detect } from 'detect-browser';
-import cx from 'classnames';
 
 import { Footer } from '~/components/Footer';
-import { Header } from '~/components/Header';
-import { Sidebar } from '~/components/Sidebar';
-import { Theme } from '~/components/Theme';
-import components from '~/components/mdx';
-import { DocumentationProvider } from '~/context';
 import codeHikeStyles from '@code-hike/mdx/dist/index.css';
 import {
-    docsLoader,
-    DocumentationLoader,
     ThrownBundleError,
     ThrownError,
     ThrownNotFoundError,
 } from '../loaders/documentation.server';
 import docsearch from '../styles/docsearch.css';
-import { ScrollSpy } from '~/components/ScrollSpy';
 import { BadRequest, NotFound, ServerError } from '~/components/Errors';
 import { GitHub } from '~/components/Icons';
 import { PreviewModeContext, useDirectorySelector, usePollLocalDocs } from '~/utils/local-preview-mode';

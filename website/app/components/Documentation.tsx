@@ -12,6 +12,7 @@ import {
     DocumentationLoader,
 } from '../loaders/documentation.server';
 import { ScrollSpy } from '~/components/ScrollSpy';
+import { TabsContext } from './mdx/Tabs';
 
 
 
@@ -40,7 +41,9 @@ export default function Documentation({ data }: { data: DocumentationLoader }) {
               prose-code:font-fira prose-code:font-medium
             "
                         >
-                            <MDX components={components} />
+                            <TabsContext>
+                                <MDX components={components} />
+                            </TabsContext>
                         </main>
                         <Footer />
                     </div>
