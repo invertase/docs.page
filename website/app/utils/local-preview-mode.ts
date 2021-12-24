@@ -1,5 +1,5 @@
-import { BundleSuccess } from '@docs.page/server';
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { BundleSuccess } from '@docs.page/server';
 import { DocumentationLoader } from '~/loaders/documentation.server';
 import { mergeConfig } from './config';
 export type PreviewMode = {
@@ -274,9 +274,9 @@ const buildPreviewProps = async (params: any): Promise<DocumentationLoader> => {
     }
 
     return {
-        owner: 'owner',
-        repo: 'repo',
-        path: 'path',
+        owner: 'preview',
+        repo: 'docs',
+        path: '',
         ref: 'HEAD',
         source: '',
         code: code || '',
