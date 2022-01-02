@@ -3,5 +3,6 @@
 	["melos.invertase.dev", "invertase/melos"],
 	["extensions.invertase.dev", "invertase/firebase-extensions"],
 	["react-query-firebase.invertase.dev", "invertase/react-query-firebase"],
-	["gorouter.dev", "csells/go_router"]
+	["gorouter.dev", "csells/go_router"],
+	["goconfigenv.ganeshagrawal.com","iamganeshagrawal/goconfigenv"]
 ]
