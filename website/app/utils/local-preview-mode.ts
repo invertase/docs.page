@@ -229,6 +229,8 @@ export function usePollLocalDocs(
     }, [hash, handles, updating]);
 
     useEffect(() => {
+        console.log('%c Change detected, hot update! 🔥', 'color: #8b0000;');
+
         buildPreviewProps({ hash, config: cache.config, text: cache.text, urls: cache.urls }).then(
             previewProps => {
                 setPageProps(previewProps);
