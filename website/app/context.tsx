@@ -46,8 +46,7 @@ export function useImagePath(src: string) {
 
 // Returns a path to a blob in the `docs` directory.
 export function useRawBlob(path: string): string {
-  const context = React.useContext(DocumentationContext);
-  const { source, baseBranch } = context
+  const { source, baseBranch } = React.useContext(DocumentationContext);
   const { owner, repository: repo, ref } = source;
   if (source.type === 'branch') {
     return `https://raw.githubusercontent.com/${owner}/${repo}/${ref ?? baseBranch}/docs${ensureLeadingSlash(
