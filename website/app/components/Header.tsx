@@ -97,7 +97,7 @@ export function Header() {
                 <RefLink pointer={ref} owner={owner} repo={repo} source={source} />
               </li>
             }
-            {!!config.docsearch && (
+            {!!config.docsearch && !previewMode.enabled && (
               <li>
                 <DocSearch
                   appId={config.docsearch.appId}
