@@ -37,9 +37,21 @@ export const bundleGitHub = async (
   let headings: HeadingNode[] | null = [];
   let baseBranch: string | null = null;
   let repositoryFound: boolean = false;
-  let source: string = 'base'
 
   if (owner && repository) {
+
+    let source: {
+      type: 'PR' | 'commit' | 'branch'
+      owner: string,
+      repository: string,
+      ref: string
+    } = {
+      type: 'branch',
+      owner: owner || '',
+      repository,
+      ref: ref
+    }
+
     // fetch from github:
     // If the ref looks like a PR
     if (/^[0-9]*$/.test(ref)) {
@@ -53,13 +65,27 @@ export const bundleGitHub = async (
       // If the PR was found, update the pointer and source
       if (metadata) {
         ref = metadata.ref
-        source = 'pullrequest'
+        source = {
+          type: 'PR',
+          ...metadata
+        }
       }
     } else if (/^[a-fA-F0-9]{40}$/.test(ref)) {
-      source = 'commit'
+      source = {
+        type: 'commit',
+        owner,
+        repository,
+        ref
+      }
     } else if (ref) {
+      console.log(ref);
 
-      source = 'branch';
+      source = {
+        type: 'branch',
+        owner,
+        repository,
+        ref
+      };
     }
 
 
@@ -70,9 +96,7 @@ export const bundleGitHub = async (
       baseBranch: sourceBaseBranch,
       repositoryFound: sourceRepositoryFound
     } = await getGitHubContents({
-      owner,
-      repository,
-      ref: ref,
+      ...source,
       path,
     });
     repositoryFound = sourceRepositoryFound
@@ -109,27 +133,34 @@ export const bundleGitHub = async (
         return res.status(400).send(e);
       }
     }
+
+    const statusCode = code !== null ? 200 : 404;
+    console.log(ref);
+    console.log(code);
+
+    return res.status(statusCode).send({
+      code,
+      frontmatter,
+      headings,
+      config,
+      baseBranch,
+      path,
+      repositoryFound,
+      source,
+      ref
+    });
   }
-
-  const statusCode = code !== null ? 200 : 404;
-
-  return res.status(statusCode).send({
-    code,
-    frontmatter,
-    headings,
-    config,
-    baseBranch,
-    path,
-    repositoryFound,
-    source
-  });
+  return res.status(404).send({
+    code: '',
+    error: 'missing params'
+  })
 };
 
 
 const extractQueryData = (req: Request) => {
 
   // extract query params and set defaults if nec.
-  const owner = (req?.query?.owner as string) || null;
+  const owner = (req?.query?.owner as string);
   const repository = (req?.query?.repository as string) || null;
   const ref = (req?.query.ref as string) || 'HEAD';
   const path = (req?.query.path as string) || 'index';

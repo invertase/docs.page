@@ -24,7 +24,12 @@ export type DocumentationLoader = {
   // An optional ref (e.g. PR, branch, tag) provided to the URL.
   ref?: string;
   // The source of the content (e.g. main, master, PR, ref)
-  source: string;
+  source: {
+    type: 'PR' | 'commit' | 'branch',
+    owner: string,
+    repository: string,
+    ref: string,
+  };
   // The bundle data.
   code: string;
   // Page heading nodes.
@@ -33,6 +38,8 @@ export type DocumentationLoader = {
   config: ProjectConfig;
   // Any page frontmatter.
   frontmatter: BundleSuccess['frontmatter'];
+  // base branch
+  baseBranch: string
 };
 
 // Utility to guard against a bundler error.
@@ -55,10 +62,13 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
 
   try {
     bundle = await fetchBundle({ owner, repository: repo, path, ref });
-    console.log(bundle);
 
   } catch (error) {
     // If the bundler failed (e.g. API down), throw a server error
+    console.log('oh no our code');
+    console.log(error);
+
+
     throw json(null, 500);
   }
 
@@ -89,6 +99,7 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
 
   const code = replaceVariables(config.variables, bundle.code);
 
+  console.log(bundle.source);
 
   return json<DocumentationLoader>({
     owner,
@@ -100,5 +111,6 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
     headings: bundle.headings,
     config: mergeConfig(bundle.config),
     frontmatter: bundle.frontmatter,
+    baseBranch: bundle.baseBranch
   });
 };

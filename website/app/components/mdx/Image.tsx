@@ -1,5 +1,7 @@
-import { CSSProperties, DetailedHTMLProps } from "react";
+import { CSSProperties, DetailedHTMLProps, useCallback, useState } from "react";
 import { useImagePath } from "~/context";
+import { Controlled as ControlledZoom } from 'react-medium-image-zoom';
+import { DocsLink } from "../DocsLink";
 
 interface ImageProps
     extends DetailedHTMLProps<React.ImgHTMLAttributes<HTMLImageElement>, HTMLImageElement> {
@@ -7,15 +9,66 @@ interface ImageProps
     width?: string | number;
     alt?: string;
     src?: string;
+    caption?: string;
+    zoom?: boolean;
 }
 
-export function Image(props: ImageProps) {
+export function Image({ zoom, caption, ...props }: ImageProps & { href?: string }): JSX.Element {
     const src = useImagePath(props.src || '');
+
+    const zoomEnabled = zoom;
+
+    if (!src) {
+        return <></>;
+    }
+
+    const wrapper = (child: React.ReactElement) =>
+        props.href
+            ? withHref(withFigure(zoomEnabled ? withZoom(child) : child, caption), props.href)
+            : withFigure(zoomEnabled ? withZoom(child) : child, caption);
 
     const style: CSSProperties = {
         height: props.height ? parseInt(`${props.height}`) : 'inherit',
         width: props.width ? parseInt(`${props.width}`) : 'inherit',
     };
 
-    return <img {...props} style={style} src={src} alt={props.alt ?? ''} loading="lazy" />;
+    return wrapper(<img className="mx-auto" {...props} style={style} src={src} alt={props.alt ?? ''} loading="lazy" />);
+}
+
+function withHref(child: React.ReactElement, href: string) {
+    return <DocsLink to={href}>{child}</DocsLink>;
+}
+
+function withFigure(child: React.ReactElement, caption?: string) {
+    return (
+        <figure>
+            {child}
+            {!!caption && (
+                <figcaption className="text-center text-sm italic my-3 dark:text-white">
+                    {caption}
+                </figcaption>
+            )}
+        </figure>
+    );
+}
+
+function withZoom(child: React.ReactElement) {
+    const [isZoomed, setIsZoomed] = useState(false);
+
+    const handleZoomChange = useCallback(shouldZoom => {
+        setIsZoomed(shouldZoom);
+    }, []);
+    return (
+        <ControlledZoom
+            wrapStyle={
+                isZoomed
+                    ? { width: '100%', height: 'auto', transition: 'height ease-out  0.5s' }
+                    : { transition: 'height ease-out  0.5s' }
+            }
+            isZoomed={isZoomed}
+            onZoomChange={handleZoomChange}
+        >
+            {child}
+        </ControlledZoom>
+    );
 }
