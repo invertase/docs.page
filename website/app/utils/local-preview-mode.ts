@@ -229,7 +229,7 @@ export function usePollLocalDocs(
     }, [hash, handles, updating]);
 
     useEffect(() => {
-        console.log('%c Change detected, hot update! 🔥', 'color: #8b0000;');
+        console.log('%c File change detected, hot update! 🔥', 'color: #8b0000;');
 
         buildPreviewProps({ hash, config: cache.config, text: cache.text, urls: cache.urls }).then(
             previewProps => {
@@ -280,7 +280,8 @@ const buildPreviewProps = async (params: any): Promise<DocumentationLoader> => {
         repo: 'docs',
         path: '',
         ref: 'HEAD',
-        source: '',
+        baseBranch: 'main',
+        source: { type: 'branch', owner: 'preview', repository: 'docs', ref: 'ref' },
         code: code || '',
         headings,
         config: mergeConfig(config),
