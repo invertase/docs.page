@@ -10,7 +10,6 @@ import { usePreviewMode } from '~/utils/local-preview-mode';
 // TODO link
 export function Header() {
   const { owner, repo, config, ref, source } = useDocumentationContext();
-  console.log(source);
 
   const base = useBaseUrl();
 
@@ -93,7 +92,7 @@ export function Header() {
               </button>
             )}
             {
-              !!ref && source.type !== 'branch' && source.ref !== 'HEAD' &&
+              !!ref && source.type !== 'branch' && source.ref !== 'HEAD' && !previewMode.enabled &&
               <li>
                 <RefLink pointer={ref} owner={owner} repo={repo} source={source} />
               </li>
@@ -151,7 +150,9 @@ function RefLink({ pointer, owner, repo, source }: RefLinkProps): JSX.Element {
       className: 'bg-pink-600 hover:bg-pink-500 '
     }
   }
-  const { href, icon, className } = linkData[source.type];
+
+  const { href, icon, className } = linkData[source?.type ?? 'branch'];
+
   return <a href={href}>
     <div className={cx(
       'flex px-3 py-2 text-xs rounded-lg shadow text-white transition-colors whitespace-nowrap',

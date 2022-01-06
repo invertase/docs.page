@@ -5,8 +5,8 @@ import { Footer } from '~/components/Footer';
 import codeHikeStyles from '@code-hike/mdx/dist/index.css';
 import {
     ThrownBundleError,
-    ThrownError,
-    ThrownNotFoundError,
+    // ThrownError,
+    // ThrownNotFoundError,
 } from '../loaders/documentation.server';
 import docsearch from '../styles/docsearch.css';
 import { BadRequest, NotFound, PreviewNotFound, ServerError } from '~/components/Errors';

@@ -46,7 +46,7 @@ export type DocumentationLoader = {
 export function isBundleError(bundle: any): bundle is BundleError {
   return bundle.errors !== undefined;
 }
-
+// @ts-ignore
 export const docsLoader: LoaderFunction = async ({ params }) => {
   const owner = params.owner!;
   let repo = params.repo!;

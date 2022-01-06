@@ -1,6 +1,7 @@
 import React, { createContext } from 'react';
 import { DocumentationLoader } from './loaders/documentation.server';
 import { ensureLeadingSlash } from './utils';
+import { usePreviewMode } from './utils/local-preview-mode';
 
 const DocumentationContext = createContext<DocumentationLoader>({} as DocumentationLoader);
 
@@ -35,12 +36,18 @@ export function useRepositoryUrl(): string {
 }
 
 export function useImagePath(src: string) {
-  const blob = useRawBlob(src);
-
   if (src.startsWith('http')) {
     return src;
   }
 
+  const previewMode = usePreviewMode()
+
+  if (previewMode?.enabled && previewMode.imageUrls) {
+    return previewMode?.imageUrls[src] || ''
+  }
+
+
+  const blob = useRawBlob(src);
   return blob;
 }
 
