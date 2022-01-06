@@ -32,7 +32,7 @@ export const meta: MetaFunction = () => {
 
 export default function LocalPreview() {
     const { select, handles, configHandle, error: directoryError } = useDirectorySelector();
-    const [data, pollErrorCode] = usePollLocalDocs(handles, configHandle, 500);
+    const [data, urls, pollErrorCode] = usePollLocalDocs(handles, configHandle, 500);
 
 
     // TODO handle 400 errors
@@ -48,7 +48,7 @@ export default function LocalPreview() {
     }
 
     return (
-        <PreviewModeContext.Provider value={{ enabled: true, onSelect: select, imageUrls: {} }}>
+        <PreviewModeContext.Provider value={{ enabled: true, onSelect: select, imageUrls: urls }}>
             <Documentation data={data} />
         </PreviewModeContext.Provider>
     )

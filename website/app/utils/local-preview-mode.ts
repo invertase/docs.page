@@ -13,7 +13,7 @@ export const PreviewModeContext = createContext<PreviewMode>({
     onSelect: () => {
         return;
     },
-    imageUrls: null,
+    imageUrls: {},
 });
 
 export function usePreviewMode(): PreviewMode {
@@ -64,6 +64,8 @@ export async function extractContents(
         imageUrls = Object.fromEntries(
             await Promise.all(
                 Object.entries(imageHandles).map(async ([key, handle]) => {
+                    // console.log('test');
+
                     const url = URL.createObjectURL(await handle.getFile());
                     return [key, url];
                 }),
@@ -186,7 +188,7 @@ export function usePollLocalDocs(
     handles: FileSystemFileHandles | null,
     configHandle: FileSystemFileHandle | null,
     ms = 500,
-): [DocumentationLoader | null, number | null] {
+): [DocumentationLoader | null, Record<string, string>, number | null] {
     const [updating, setUpdating] = useState(0);
     const [pageProps, setPageProps] = useState<DocumentationLoader | null>(null);
     const hash = useHashChange();
@@ -201,17 +203,18 @@ export function usePollLocalDocs(
 
 
         // TODO: image handles once we've sorted out Link and Image Links etc
-        // const imageHandles = Object.keys(handles)
-        //     .filter(key => ['.png', '.jpg', '.gif', '.jpeg'].some(ext => key.endsWith(ext)))
-        //     .reduce((obj, key) => {
-        //         obj[key] = handles[key];
-        //         return obj;
-        //     }, {});
+        const imageHandles = Object.keys(handles)
+            .filter(key => ['.png', '.jpg', '.gif', '.jpeg'].some(ext => key.endsWith(ext)))
+            .reduce((obj, key) => {
+                //@ts-ignore
+                obj[key] = handles[key];
+                return obj;
+            }, {});
         const handle = hash ? handles[hash] : handles[`/index.mdx`];
 
         const interval = setInterval(
             () =>
-                extractContents(handle, configHandle, {})
+                extractContents(handle, configHandle, imageHandles)
                     .then(([text, config, urls]) => {
                         if (text !== cache.text || config !== cache.config || urls !== cache.urls) {
                             cache.urls = urls;
@@ -238,7 +241,7 @@ export function usePollLocalDocs(
         );
     }, [cache.text, cache.config]);
 
-    return [pageProps, errorCode];
+    return [pageProps, cache.urls, errorCode];
 }
 
 const rawEndpoint = `http://localhost:8000/raw`
