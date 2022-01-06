@@ -24,3 +24,15 @@ export function replaceVariables(variables: Record<string, string>, value: strin
 
   return output;
 }
+
+export function hash(value: string): string {
+  let hash = 0,
+    i: number,
+    chr: number;
+  for (i = 0; i < value.length; i++) {
+    chr = value.charCodeAt(i);
+    hash = (hash << 5) - hash + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return hash.toString();
+}

@@ -13,6 +13,7 @@ import {
 } from '../loaders/documentation.server';
 import { ScrollSpy } from '~/components/ScrollSpy';
 import { TabsContext } from './mdx/Tabs';
+import { hash as createHash } from '~/utils';
 
 
 
@@ -21,7 +22,7 @@ import { TabsContext } from './mdx/Tabs';
 export default function Documentation({ data }: { data: DocumentationLoader }) {
 
     const MDX = useHydratedMdx({ code: data.code });
-
+    const hash = createHash(`${data.owner}/${data.repo}`)
     return (
         <DocumentationProvider data={data}>
             <Theme />
@@ -41,7 +42,7 @@ export default function Documentation({ data }: { data: DocumentationLoader }) {
               prose-code:font-fira prose-code:font-medium
             "
                         >
-                            <TabsContext>
+                            <TabsContext hash={hash}>
                                 <MDX components={components} />
                             </TabsContext>
                         </main>

@@ -8,6 +8,7 @@ const PREFIX = 'docs.page:tabs';
 type ContextProps = {
     tabs: { [key: string]: string };
     updateTab: (key: string, value: string | null) => void;
+    hash: string
 };
 
 // Context holding all local storage items for the PREFIX
@@ -16,11 +17,12 @@ const Context = createContext<ContextProps>({
     updateTab: () => {
         return;
     },
+    hash: ''
 });
 
 // Provides context to all <Tabs /> components to allow for listening to
 // changes on synchronized tabs.
-export function TabsContext({ children }: { children: React.ReactNode }): JSX.Element {
+export function TabsContext({ children, hash }: { children: React.ReactNode, hash: string }): JSX.Element {
     const [tabs, setTabs] = useState<Record<string, string>>({});
 
     const updateTab = useCallback((key: string, value: string | null) => {
@@ -37,12 +39,14 @@ export function TabsContext({ children }: { children: React.ReactNode }): JSX.El
             value={{
                 tabs,
                 updateTab,
+                hash
             }}
         >
             {children}
         </Context.Provider>
     );
 }
+
 
 // Hook which provides access to any current stored local storage key
 // for a provided groupId. Also accepts a local state dispatch and updates it.
@@ -53,9 +57,8 @@ function useTabSynchronization(
     groupId: string,
     setState: React.Dispatch<React.SetStateAction<string | null>>,
 ): (tab: string) => void {
-    // TODO: fix the hash
-    const hash = 'hash'
-    const { tabs, updateTab } = useContext(Context);
+
+    const { tabs, updateTab, hash } = useContext(Context);
 
     const key = `${PREFIX}:${hash}:${groupId}`;
     const value = tabs[key];

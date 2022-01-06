@@ -39,7 +39,7 @@ export type DocumentationLoader = {
   // Any page frontmatter.
   frontmatter: BundleSuccess['frontmatter'];
   // base branch
-  baseBranch: string
+  baseBranch: string;
 };
 
 // Utility to guard against a bundler error.
