@@ -112,5 +112,10 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
     config: mergeConfig(bundle.config),
     frontmatter: bundle.frontmatter,
     baseBranch: bundle.baseBranch
-  });
+  },
+    {
+      headers: {
+        'cache-control': 'max-age=30, stale-while-revalidate=31560000, s-max-age=300'
+      }
+    });
 };

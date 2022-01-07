@@ -14,6 +14,13 @@ import docsearch from '../styles/docsearch.css';
 import { BadRequest, NotFound, ServerError } from '~/components/Errors';
 import Documentation from '~/components/Documentation';
 
+//@ts-ignore
+export function headers({ loaderHeaders }) {
+  return {
+    "cache-control": loaderHeaders.get('cache-control')
+  }
+}
+
 export const loader = docsLoader;
 
 export let links: LinksFunction = () => {
