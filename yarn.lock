@@ -1036,6 +1036,11 @@
   dependencies:
     "@types/estree" "*"
 
+"@types/base-64@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@types/base-64/-/base-64-1.0.0.tgz#de9c6070ea457fbd65a1b5ebf13976b3ac0bdad0"
+  integrity sha512-AvCJx/HrfYHmOQRFdVvgKMplXfzTUizmh0tz9GFTpDePWgCY4uoKll84zKlaRoeiYiCr7c9ZnqSTzkl0BUVD6g==
+
 "@types/body-parser@*":
   version "1.19.2"
   resolved "https://registry.yarnpkg.com/@types/body-parser/-/body-parser-1.19.2.tgz#aea2059e28b7658639081347ac4fab3de166e6f0"
@@ -1657,12 +1662,17 @@ balanced-match@^1.0.0:
   resolved "https://registry.yarnpkg.com/balanced-match/-/balanced-match-1.0.2.tgz#e83e3a7e3f300b34cb9d87f615fa0cbf357690ee"
   integrity sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==
 
+base-64@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/base-64/-/base-64-1.0.0.tgz#09d0f2084e32a3fd08c2475b973788eee6ae8f4a"
+  integrity sha512-kwDPIFCGx0NZHog36dj+tHiwP4QMzsZ3AgMViUBKI0+V5n4U0ufTCUMhnQ04diaRI8EX/QcPfql7zlhZ7j4zgg==
+
 base64-js@^1.3.1:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.5.1.tgz#1b1b440160a5bf7ad40b650f095963481903930a"
   integrity sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==
 
-basic-auth@~2.0.1:
+basic-auth@^2.0.1, basic-auth@~2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/basic-auth/-/basic-auth-2.0.1.tgz#b998279bf47ce38344b4f3cf916d4679bbf51e3a"
   integrity sha512-NF+epuEdnUYVlGuhaxbbq+dvJttwLnGY+YixlXlME5KpQ5W3CnXA5cVTneY3SPbPDRkcjMbifrwmFYcClgOZeg==
@@ -2895,6 +2905,13 @@ expect@=27.2.5:
     jest-matcher-utils "^27.2.5"
     jest-message-util "^27.2.5"
     jest-regex-util "^27.0.6"
+
+express-basic-auth@^1.1.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/express-basic-auth/-/express-basic-auth-1.2.1.tgz#d31241c03a915dd55db7e5285573049cfcc36381"
+  integrity sha512-L6YQ1wQ/mNjVLAmK3AG1RK6VkokA1BIY6wmiH304Xtt/cLTps40EusZsU1Uop+v9lTDPxdtzbFmdXfFO3KEnwA==
+  dependencies:
+    basic-auth "^2.0.1"
 
 express@^4.17.1:
   version "4.17.2"

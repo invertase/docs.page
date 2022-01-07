@@ -20,6 +20,7 @@
     "dotenv": "^10.0.0",
     "esbuild": "^0.14.2",
     "express": "^4.17.1",
+    "express-basic-auth": "^1.1.1",
     "hast-util-parse-selector": "^3.1.0",
     "http-status": "^1.5.0",
     "is-badge": "^2.1.0",

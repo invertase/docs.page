@@ -135,8 +135,6 @@ export const bundleGitHub = async (
     }
 
     const statusCode = code !== null ? 200 : 404;
-    console.log(ref);
-    console.log(code);
 
     return res.status(statusCode).send({
       code,

@@ -1,14 +1,21 @@
-import express, {text} from 'express';
+import express, { text } from 'express';
 import routes from "./routes.js";
 import morgan from "morgan";
 import cors from "cors";
+import basicAuth from 'express-basic-auth'
 import { config } from "dotenv";
 config();
 const PORT = process.env.PORT || 8000;
 
 const app = express();
+
+if (process.env.API_PASSWORD) {
+  app.use(basicAuth({
+    users: { 'admin': process.env.API_PASSWORD }
+  }))
+}
+
 app.use(text());
-console.log(process.env.GITHUB_PAT);
 
 app.use(cors());
 app.use(morgan("dev"));
