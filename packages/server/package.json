@@ -17,5 +17,10 @@
   "devDependencies": {
     "@types/base-64": "^1.0.0",
     "esbuild": "^0.14.3"
-  }
+  },
+  "files": [
+    "build",
+    "LICENSE",
+    "README.md"
+  ]
 }
