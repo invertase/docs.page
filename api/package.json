@@ -39,7 +39,8 @@
     "unist-util-visit": "^4.1.0"
   },
   "scripts": {
-    "dev": "nodemon"
+    "dev": "nodemon",
+    "postinstall": "tsc"
   },
   "devDependencies": {
     "@docs.page/server": "^1.0.0",
