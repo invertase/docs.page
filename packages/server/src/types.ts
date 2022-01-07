@@ -29,7 +29,12 @@ export type BundleSuccess = {
   baseBranch: string | null;
   path: string | null;
   repositoryFound: boolean;
-  source: string;
+  source: {
+    type: 'PR' | 'branch' | 'commit';
+    owner: string;
+    repository: string;
+    ref: string;
+  };
 };
 
 export type BundleResponseData = BundleSuccess | BundleError;
