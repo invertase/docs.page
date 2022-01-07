@@ -34,7 +34,7 @@ steps:
       [
         'build',
         '-f',
-        'bundler/bundler.dockerfile',
+        'api/api.dockerfile',
         '--build-arg',
         'ROOT_DIR=${_ROOT_DIR}',
         '--cache-from',
@@ -72,8 +72,8 @@ steps:
           kubectl --namespace=${_KUBE_NAMESPACE} set image deployment.v1.apps/${_DEPLOYMENT_NAME} ${_DEPLOYMENT_NAME}=gcr.io/$PROJECT_ID/${_DEPLOYMENT_NAME}:$COMMIT_SHA || exit 1
         else
           echo Creating a new deplyoment.
-          sed -i -e '/gcr.io\/project\/example/s//'"gcr.io\/$PROJECT_ID\/${_DEPLOYMENT_NAME}:$COMMIT_SHA"'/g' bundler/bundler.k8s.yaml
-          kubectl create -f bundler/bundler.k8s.yaml || exit 1
+          sed -i -e '/gcr.io\/project\/example/s//'"gcr.io\/$PROJECT_ID\/${_DEPLOYMENT_NAME}:$COMMIT_SHA"'/g' api/api.k8s.yaml
+          kubectl create -f api/api.k8s.yaml || exit 1
         fi
 images:
   - 'gcr.io/$PROJECT_ID/${_DEPLOYMENT_NAME}:latest'
