@@ -1,4 +1,4 @@
-import express, { text } from 'express';
+import express, { text, Request, Response, NextFunction } from 'express';
 import routes from "./routes.js";
 import morgan from "morgan";
 import cors from "cors";
@@ -9,10 +9,21 @@ const PORT = process.env.PORT || 8000;
 
 const app = express();
 
+const unless = function (path: string, middleware: any) {
+  return function (req: Request, res: Response, next: NextFunction) {
+    if (path === req.path) {
+      return next();
+    } else {
+      return middleware(req, res, next);
+    }
+  };
+};
+
+
 if (process.env.API_PASSWORD) {
-  app.use(basicAuth({
+  app.use(unless('/status', basicAuth({
     users: { 'admin': process.env.API_PASSWORD }
-  }))
+  })))
 }
 
 app.use(text());
@@ -25,7 +36,6 @@ app.use(
     extended: true,
   })
 );
-app.get("/", (req, res) => res.send("Express + TypeScript Server With ESM"));
 app.use("/", routes);
 // API Routes
 
