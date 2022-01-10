@@ -65,7 +65,6 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
 
   } catch (error) {
     // If the bundler failed (e.g. API down), throw a server error
-    console.log('oh no our code');
     console.log(error);
 
 
@@ -114,8 +113,8 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
     baseBranch: bundle.baseBranch ?? 'main'
   },
     {
-      // headers: {
-      //   'cache-control': 'max-age=30, stale-while-revalidate=31560000, s-max-age=300'
-      // }
+      headers: {
+        'cache-control': 'max-age=30, stale-while-revalidate=31560000, s-max-age=300'
+      }
     });
 };
