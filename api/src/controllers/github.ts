@@ -108,7 +108,6 @@ export const bundleGitHub = async (
     // check config
     if (sourceConfig) {
       try {
-        // console.log(sourceConfig);
         config = JSON.parse(sourceConfig);
       } catch (e) {
         config = null;
