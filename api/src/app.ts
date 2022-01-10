@@ -1,4 +1,4 @@
-import express, { text, Request, Response, NextFunction, RequestHandler } from 'express';
+import express, { text, RequestHandler } from 'express';
 import routes from "./routes.js";
 import morgan from "morgan";
 import cors from "cors";
