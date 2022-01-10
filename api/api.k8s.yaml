@@ -44,12 +44,12 @@ spec:
             - name: NODE_ENV
               value: production
             - name: PORT
-              value: '8080'
+              value: '8000'
             - name: HOST
               value: '0.0.0.0'
           ports:
             - name: 'http'
-              containerPort: 8080
+              containerPort: 8000
           resources:
             limits:
               cpu: 500m
