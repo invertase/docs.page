@@ -15,7 +15,7 @@ const getGitHubToken = (() => {
 
 export function getGithubGQLClient(): typeof graphql {
   const token = getGitHubToken();
-  if (!token.length) {
+  if (!token) {
     throw new Error(
       'Environment variable GITHUB_PAT is not defined or has no tokens or an invalid token.',
     );
