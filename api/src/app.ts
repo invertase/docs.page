@@ -1,4 +1,4 @@
-import express, { text, Request, Response, NextFunction } from 'express';
+import express, { text, Request, Response, NextFunction, RequestHandler } from 'express';
 import routes from "./routes.js";
 import morgan from "morgan";
 import cors from "cors";
@@ -9,8 +9,8 @@ const PORT = process.env.PORT || 8000;
 
 const app = express();
 
-const unless = function (path: string, middleware: any) {
-  return function (req: Request, res: Response, next: NextFunction) {
+const unless = function (path: string, middleware: RequestHandler): RequestHandler {
+  return function (req, res, next) {
     if (path === req.path) {
       return next();
     } else {
