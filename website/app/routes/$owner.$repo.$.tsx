@@ -53,7 +53,7 @@ export default function Page() {
   return <Documentation data={data} />
 }
 
-// TODO handle me
+// handling errors
 export function CatchBoundary() {
   const e = useCatch<ThrownError>();
   console.log(e);
