@@ -29,8 +29,9 @@ spelling.json
 .cache
 .vercel
 .output
-website/api/build
+website/api/_build
 website/public/build
+website/api/index.js
 
 # Tailwind file generated
 tailwind.css
