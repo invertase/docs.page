@@ -4,8 +4,7 @@ import { usePreviewMode } from '~/utils/local-preview-mode';
 
 export function DocsLink({ ...props }: NavLinkProps) {
   const { owner, repo, ref } = useDocumentationContext();
-  const previewMode = usePreviewMode()
-
+  const previewMode = usePreviewMode();
 
   if (typeof props.to === 'string' && isExternalLink(props.to)) {
     return (
@@ -26,7 +25,6 @@ export function DocsLink({ ...props }: NavLinkProps) {
 
   let to = `/${owner}/${repo}`;
 
-
   if (ref && ref !== 'HEAD') {
     to += `~${ref}`;
   }
@@ -39,8 +37,11 @@ export function DocsLink({ ...props }: NavLinkProps) {
             ? props.className({ isActive: false })
             : props.className
         }
-        href={`#${props.to}`}>{props.children}
-      </a>)
+        href={`#${props.to}`}
+      >
+        {props.children}
+      </a>
+    );
   }
 
   return <NavLink {...props} to={removeTrailingSlash(`${to}${props.to}`)} />;

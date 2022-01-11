@@ -6,9 +6,7 @@ import { YouTube } from './YouTube';
 import { Image } from './Image';
 import { Table } from './Table';
 import { Pre } from './Pre';
-import { Tabs, TabItem } from './Tabs'
-
-
+import { Tabs, TabItem } from './Tabs';
 
 function Anchor(
   props: DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>,
