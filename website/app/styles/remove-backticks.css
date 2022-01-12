@@ -5,3 +5,7 @@
 .prose :where(code)::after {
     content: none;
 }
+
+main, aside {
+    overflow-x: hidden;
+}
