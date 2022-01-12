@@ -247,14 +247,15 @@ type ButtonProps = {
   children: string;
 };
 
-export function Button({ href, children }: ButtonProps): JSX.Element {
+function Button({ href, children }: ButtonProps): JSX.Element {
+
   return (
-    <Link
-      to={href}
+    <a
+      href={href}
       className="px-6 py-2 border border-gray-600 hover:border-gray-300 dark:hover:border-white no-underline rounded transition-all duration-100"
     >
       {children}
-    </Link>
+    </a>
   );
 }
 
@@ -290,6 +291,8 @@ type FeatureProps = {
 };
 
 export function Feature({ href, icon, title, text }: FeatureProps) {
+  console.log(href);
+
   return (
     <div className="flex flex-col items-center justify-center p-3">
       <div className="flex-1 flex flex-col items-center justify-center">
