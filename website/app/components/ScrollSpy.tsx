@@ -13,12 +13,16 @@ export function ScrollSpy() {
 
     // TODO improve once wrapped heading sections are applied
     const observer = new IntersectionObserver((entries) => {
-      const visibleEntries = entries.filter(entry => entry.isIntersecting)
-      const id = visibleEntries[0].target.getAttribute('id');
-      setActive(id!)
+      for (let entry of entries) {
+        // console.log(entry.intersectionRatio)
+        if (entry.isIntersecting && entry.intersectionRatio === 1) {
+          const id = entry.target.getAttribute('id');
+          setActive(id!);
+          break;
+        }
+      }
     }, {
-      rootMargin: '-100px 0px 0px 0px',
-      threshold: 0.0,
+      threshold: 1,
     });
 
     headings.forEach(({ id }) => {
