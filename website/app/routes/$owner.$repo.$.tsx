@@ -2,6 +2,7 @@ import { MetaFunction, useLoaderData, LinksFunction, useCatch } from 'remix';
 
 import { Footer } from '~/components/Footer';
 import codeHikeStyles from '@code-hike/mdx/dist/index.css';
+import removeBackTicks from '../styles/remove-backticks.css';
 import codeblocks from '../styles/codeblocks.css';
 import {
   docsLoader,
@@ -28,7 +29,8 @@ export let links: LinksFunction = () => {
     { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/@docsearch/css@alpha' },
     { rel: 'stylesheet', href: docsearch },
     { rel: 'stylesheet', href: codeblocks },
-    { rel: 'stylesheet', href: codeHikeStyles }
+    { rel: 'stylesheet', href: codeHikeStyles },
+    { rel: 'stylesheet', href: removeBackTicks }
   ];
 };
 
