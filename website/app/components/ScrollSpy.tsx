@@ -13,22 +13,17 @@ export function ScrollSpy() {
 
     // TODO improve once wrapped heading sections are applied
     const observer = new IntersectionObserver((entries) => {
-      for (let entry of entries) {
-        // console.log(entry.intersectionRatio)
-        if (entry.isIntersecting) {
-          const id = entry.target.getAttribute('id');
-          setActive(id!);
-          break;
-        }
-      }
+      const visibleEntries = entries.filter(entry => entry.isIntersecting)
+      const id = visibleEntries[0].target.getAttribute('id');
+      setActive(id!)
     }, {
-      // rootMargin: '-100px 0px 0px 0px',
-      threshold: 0.25,
+      rootMargin: '-100px 0px 0px 0px',
+      threshold: 0.0,
     });
 
     headings.forEach(({ id }) => {
-      // const el = document.querySelector(`#${id}`)
-      // if (el) observer.observe(el);
+      const el = document.querySelector(`#${id}`)
+      if (el) observer.observe(el);
     });
 
     return () => {
@@ -47,7 +42,8 @@ export function ScrollSpy() {
     const currentTop = document.documentElement.scrollTop;
     window.scrollTo({ top: sectionTop! + currentTop - 100, behavior: 'smooth' })
     if (history.pushState) {
-      history.pushState(null, `#${id}`);
+      //@ts-ignore
+      history.pushState(null, null, `#${id}`);
     }
     else {
       location.hash = `#${id}`;
