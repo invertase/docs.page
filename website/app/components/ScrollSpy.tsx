@@ -60,9 +60,13 @@ export function ScrollSpy() {
       {headings.map(heading => (
         <li
           key={heading.id}
-          className={cx({
-            'text-docs-theme': active === heading.id,
-          })}
+          className={
+            cx('block pl-4 -ml-px border-l border-transparent', {
+              'hover:border-gray-400 hover:text-gray-800 dark:hover:text-gray-100':
+                !(active === heading.id),
+              'text-docs-theme font-medium !border-docs-theme': active === heading.id,
+            })
+          }
         >
           <a className="cursor-pointer" onClick={() => onClick(heading.id)} >{heading.title}</a>
         </li>
