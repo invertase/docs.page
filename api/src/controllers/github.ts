@@ -89,7 +89,7 @@ export const bundleGitHub = async (
     }
 
 
-
+    console.time('github req');
     const {
       md: markdown,
       config: sourceConfig,
@@ -103,7 +103,7 @@ export const bundleGitHub = async (
     if (!repositoryFound) {
       console.error('repository not found');
     }
-
+    console.timeEnd('github req');
 
     // check config
     if (sourceConfig) {
@@ -120,11 +120,12 @@ export const bundleGitHub = async (
     // bundle the mdx
     if (markdown) {
       try {
+        console.time('bundle');
         const bundleResult = await bundle(markdown, {
           ...getPlugins(config ?? {}),
           headerDepth,
         });
-
+        console.timeEnd('bundle');
         code = bundleResult.code;
         frontmatter = bundleResult.frontmatter;
         headings = bundleResult.headings.length > 0 ? bundleResult.headings : null;
