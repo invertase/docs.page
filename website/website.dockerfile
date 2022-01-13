@@ -26,7 +26,7 @@ FROM base as build
 
 RUN mkdir /app
 WORKDIR /app
-
+ADD website/package.json website/package-lock.json ./
 COPY --from=deps /app/node_modules /app/node_modules
 
 ADD . .
