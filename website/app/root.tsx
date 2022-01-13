@@ -45,6 +45,7 @@ export function loader() {
     },
   };
 }
+NProgress.configure({ showSpinner: false });
 
 export default function App() {
   const data = useLoaderData();
