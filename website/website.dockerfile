@@ -1,13 +1,18 @@
 # base node image
 FROM node:16-bullseye-slim as base
 
+ARG ROOT_DIR=default_value
+ARG BUILD_SHA=default_value
+ENV __BUILD_SHA=$BUILD_SHA
+ENV __ROOT_DIR=$ROOT_DIR
+
 # Install all node_modules, including dev dependencies
 FROM base as deps
 
 RUN mkdir /app
 WORKDIR /app
 
-ADD package.json package-lock.json ./
+ADD $ROOT_DIR/package.json $ROOT_DIR/package-lock.json ./
 RUN npm install --production=false
 
 # Setup production node_modules
@@ -17,7 +22,7 @@ RUN mkdir /app
 WORKDIR /app
 
 COPY --from=deps /app/node_modules /app/node_modules
-ADD package.json package-lock.json ./
+ADD $ROOT_DIR/package.json $ROOT_DIR/package-lock.json ./
 RUN npm prune --production
 
 # Build the app
