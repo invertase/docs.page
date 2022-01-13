@@ -14,6 +14,12 @@ import { GitHub } from '~/components/Icons';
 import { PreviewModeContext, useDirectorySelector, usePollLocalDocs } from '~/utils/local-preview-mode';
 import Documentation from '~/components/Documentation';
 
+export function headers() {
+    return {
+        "docs-page-preview": true
+    }
+}
+
 export let links: LinksFunction = () => {
     return [
         { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/@docsearch/css@alpha' },

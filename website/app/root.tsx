@@ -14,6 +14,11 @@ import type { LinksFunction } from 'remix';
 import tailwind from './styles/tailwind.css';
 import { STORAGE_KEY } from './components/DarkModeToggle';
 import { useLocation } from 'react-router-dom';
+import NProgress from "nprogress";
+import nProgressStyles from "nprogress/nprogress.css";
+import { useTransition } from "remix";
+import { useEffect } from 'react';
+
 
 export let links: LinksFunction = () => {
   return [
@@ -28,6 +33,7 @@ export let links: LinksFunction = () => {
       rel: 'stylesheet',
       href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=block',
     },
+    { rel: 'stylesheet', href: nProgressStyles },
     { rel: 'stylesheet', href: tailwind },
   ];
 };
@@ -42,6 +48,16 @@ export function loader() {
 
 export default function App() {
   const data = useLoaderData();
+
+  let transition = useTransition();
+  useEffect(() => {
+    // when the state is idle then we can to complete the progress bar
+    if (transition.state === "idle") NProgress.done();
+    // and when it's something else it means it's either submitting a form or
+    // waiting for the loaders of the next location so we start it
+    else NProgress.start();
+  }, [transition.state]);
+
   return (
     <Document>
       <script
