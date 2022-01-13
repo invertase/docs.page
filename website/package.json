@@ -33,7 +33,12 @@
     "react-dom": "^17.0.2",
     "react-medium-image-zoom": "^4.3.5",
     "remix": "^1.1.1",
-    "rimraf": "^3.0.2"
+    "rimraf": "^3.0.2",
+    "@remix-run/express": "^1.1.1",
+    "compression": "^1.7.4",
+    "cross-env": "^7.0.3",
+    "express": "^4.17.1",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "@playwright/test": "^1.17.1",
