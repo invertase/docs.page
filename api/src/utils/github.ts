@@ -22,7 +22,7 @@ export function getGithubGQLClient(): typeof graphql {
   }
   return graphql.defaults({
     headers: {
-      authorization: `token ${getGitHubToken()}`,
+      authorization: `token ${token}`,
     },
   });
 }
@@ -103,8 +103,8 @@ export async function getGitHubContents(metadata: MetaData): Promise<Contents> {
   // if an error is thrown then the repo is not found, if the repo is private then response = { repository: null }
   if (error || response?.repository === null) {
     return {
-      repositoryFound: false
-    }
+      repositoryFound: false,
+    };
   }
 
   return {

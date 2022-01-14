@@ -5,7 +5,12 @@
     "packages/*",
     "api"
   ],
+  "scripts": {
+    "dev:website": "cd website && yarn dev",
+    "dev:api": "cd api && yarn dev",
+    "format": "prettier --write '**/*.{js,json,md,yml,yaml,css,scss,ts,tsx}'"
+  },
   "dependencies": {
-    "typescript": "4.4.4"
+    "typescript": "^4.5.4"
   }
 }

@@ -291,8 +291,6 @@ type FeatureProps = {
 };
 
 export function Feature({ href, icon, title, text }: FeatureProps) {
-  console.log(href);
-
   return (
     <div className="flex flex-col items-center justify-center p-3">
       <div className="flex-1 flex flex-col items-center justify-center">

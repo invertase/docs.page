@@ -6,7 +6,7 @@
     "start": "remix-serve server/build",
     "build": "yarn build:css && remix build",
     "build:css": "tailwindcss -o ./app/styles/tailwind.css",
-    "dev": "PORT=3001 concurrently \"npm run dev:css\" \"remix dev\"",
+    "dev": "PORT=3001 ./node_modules/.bin/concurrently \"npm run dev:css\" \"remix dev\"",
     "dev:css": "tailwindcss -o ./app/styles/tailwind.css --watch",
     "dev:msw": "MSW_ENABLED=1 yarn dev",
     "postinstall": "remix setup node",
@@ -39,6 +39,7 @@
     "react": "^17.0.2",
     "react-copy-to-clipboard": "^5.0.4",
     "react-dom": "^17.0.2",
+    "react-router-dom": "^6.2.1",
     "react-medium-image-zoom": "^4.3.5",
     "remix": "^1.1.1",
     "rimraf": "^3.0.2"

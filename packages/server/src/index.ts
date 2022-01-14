@@ -1,39 +1,47 @@
+import fetch from 'node-fetch';
+import querystring from 'querystring';
+
 import { config } from 'dotenv';
-import fetch, { Headers } from 'node-fetch';
 import { BundleResponseData, FetchBundleInput } from './types';
-import base64 from 'base-64';
+
 config();
 
 // The base URL for the bundler.
-const { BUNDLER_URL, API_PASSWORD } = process.env;
+const { BUNDLER_URL, API_PASSWORD, NODE_ENV } = process.env;
 
 function getEndpoint(base: string, { owner, repository, ref, path }: FetchBundleInput): string {
-  let endpoint = `${base}/bundle?`;
-
-  const query = [];
-  query.push(`owner=${owner}`);
-  query.push(`repository=${repository}`);
-  if (path) query.push(`path=${path}`);
-  if (ref) query.push(`ref=${ref}`);
-
-  return endpoint + query.join('&');
+  const params: Record<string, string> = {
+    owner,
+    repository,
+  };
+  if (path) params['path'] = path;
+  if (ref) params['ref'] = ref;
+  return `${base}/bundle?${querystring.stringify(params)}`;
 }
 
 export async function fetchBundle(params: FetchBundleInput): Promise<BundleResponseData> {
-  const endpoint = getEndpoint(BUNDLER_URL || `https://api.docs.page`, params);
+  const endpoint = getEndpoint(
+    BUNDLER_URL || NODE_ENV == 'production' ? `https://api.docs.page` : 'http://localhost:8000',
+    params,
+  );
 
-  if (!API_PASSWORD) {
-    throw new Error('Please provide API_PASSWORD env variable')
+  if (NODE_ENV == 'production' && !API_PASSWORD) {
+    throw new Error('Please provide API_PASSWORD env variable');
   }
-  const token = base64.encode(`admin:${API_PASSWORD}`)
 
-  const data = await fetch(endpoint, { headers: new Headers({ 'Authorization': `Basic ${token}` }) }).then(r => {
-    if (r.status !== 500) {
-      return r.json();
-    } else throw new Error();
+  const token = Buffer.from(`admin:${API_PASSWORD}`).toString('base64');
+  const data = await fetch(endpoint, {
+    headers: { Authorization: `Basic ${token}` },
+  }).then(response => {
+    if (response.status == 200) {
+      return response.json();
+    } else
+      throw new Error(
+        `Failed to fetch bundle for "${endpoint}". HTTP Status: "${response.status}".`,
+      );
   });
 
-  return data as unknown as BundleResponseData;
+  return data as BundleResponseData;
 }
 
 export * from './types';
