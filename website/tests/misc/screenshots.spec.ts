@@ -1,4 +1,4 @@
-import { test, expect, Page } from '@playwright/test';
+import { test, Page } from '@playwright/test';
 
 const takeScreenshot = async (page: Page, fileName: string) => {
   await page.screenshot({ path: `tests/screenshots/${fileName}.png` });

@@ -26,7 +26,7 @@ export async function extractContents(
   imageHandles: FileSystemFileHandles,
 ): Promise<[string, string, Record<string, string>, Error[]]> {
   let config = mergeConfig({});
-  let text: string = '';
+  let text = '';
   let imageUrls;
 
   const errors: Error[] = [];

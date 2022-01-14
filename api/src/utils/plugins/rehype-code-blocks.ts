@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // @ts-ignore
-import { visit } from "unist-util-visit";
-import { Node } from "hast-util-heading-rank";
-import { toString } from "mdast-util-to-string";
-import * as shiki from "shiki";
+import { visit } from 'unist-util-visit';
+import { Node } from 'hast-util-heading-rank';
+import { toString } from 'mdast-util-to-string';
+import * as shiki from 'shiki';
 
 let highlighter: shiki.Highlighter;
 
@@ -13,7 +13,7 @@ let highlighter: shiki.Highlighter;
  */
 export default function rehypeCodeBlocks(): (ast: Node) => void {
   function visitor(node: any, _i: number, parent: any) {
-    if (!parent || parent.tagName !== "pre" || node.tagName !== "code") {
+    if (!parent || parent.tagName !== 'pre' || node.tagName !== 'code') {
       return;
     }
 
@@ -21,22 +21,22 @@ export default function rehypeCodeBlocks(): (ast: Node) => void {
     const raw = toString(node);
 
     // Raw value of the `code` block - used for copy/paste
-    parent.properties["raw"] = raw;
-    parent.properties["html"] = highlighter.codeToHtml(raw, language);
+    parent.properties['raw'] = raw;
+    parent.properties['html'] = highlighter.codeToHtml(raw, language);
 
     // Get any metadata from the code block
-    const meta = (node.data?.meta as string) ?? "";
+    const meta = (node.data?.meta as string) ?? '';
 
     const title = extractTitle(meta);
-    if (title) parent.properties["title"] = title;
+    if (title) parent.properties['title'] = title;
   }
 
   return async (ast: Node): Promise<void> => {
     highlighter = await shiki.getHighlighter({
-      theme: "github-dark",
+      theme: 'github-dark',
     });
     // @ts-ignore
-    visit(ast, "element", visitor);
+    visit(ast, 'element', visitor);
   };
 }
 
@@ -44,16 +44,14 @@ function extractTitle(meta: string): string | null {
   // https://regex101.com/r/4JngU0/1
   const match =
     /(?:title="(?<title1>.*)"|title='(?<title2>.*)'|title=(?<title3>.*?)\s|title=(?<title4>.*?)$)/gm.exec(
-      meta
+      meta,
     );
 
   if (!match) {
     return null;
   }
 
-  const title = Object.values(match.groups ?? []).find(
-    (value) => value !== undefined
-  );
+  const title = Object.values(match.groups ?? []).find(value => value !== undefined);
   return title || null;
 }
 
@@ -66,15 +64,15 @@ function getLanguage(node: any): string | undefined {
   while (++index < className.length) {
     value = className[index];
 
-    if (value === "no-highlight" || value === "nohighlight") {
+    if (value === 'no-highlight' || value === 'nohighlight') {
       return undefined;
     }
 
-    if (value.slice(0, 5) === "lang-") {
+    if (value.slice(0, 5) === 'lang-') {
       return value.slice(5);
     }
 
-    if (value.slice(0, 9) === "language-") {
+    if (value.slice(0, 9) === 'language-') {
       return value.slice(9);
     }
   }

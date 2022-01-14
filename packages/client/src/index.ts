@@ -6,7 +6,7 @@ interface UseHydratedProps {
 }
 
 function getMDXComp(code: string): FunctionComponent<MDXContentProps> {
-  return getMDXComponent(code)
+  return getMDXComponent(code);
 }
 
 export function useHydratedMdx({ code }: UseHydratedProps): FunctionComponent<MDXContentProps> {

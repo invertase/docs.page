@@ -1,9 +1,9 @@
 import express, { text, RequestHandler } from 'express';
-import routes from "./routes.js";
-import morgan from "morgan";
-import cors from "cors";
-import basicAuth from 'express-basic-auth'
-import { config } from "dotenv";
+import routes from './routes.js';
+import morgan from 'morgan';
+import cors from 'cors';
+import basicAuth from 'express-basic-auth';
+import { config } from 'dotenv';
 config();
 const PORT = process.env.PORT || 8000;
 
@@ -19,24 +19,28 @@ const unless = function (path: string, middleware: RequestHandler): RequestHandl
   };
 };
 
-
 if (process.env.API_PASSWORD) {
-  app.use(unless('/status', basicAuth({
-    users: { 'admin': process.env.API_PASSWORD }
-  })))
+  app.use(
+    unless(
+      '/status',
+      basicAuth({
+        users: { admin: process.env.API_PASSWORD },
+      }),
+    ),
+  );
 }
 
 app.use(text());
 
 app.use(cors());
-app.use(morgan("dev"));
+app.use(morgan('dev'));
 app.use(express.json());
 app.use(
   express.urlencoded({
     extended: true,
-  })
+  }),
 );
-app.use("/", routes);
+app.use('/', routes);
 // API Routes
 
 app.listen(PORT, () => {

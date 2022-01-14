@@ -33,11 +33,7 @@ export function Header() {
               </>
             )}
             {!!config.logoDark && (
-              <img
-                className="w-6 h-6 mr-3 hidden dark:inline-block"
-                src={logoDark}
-                alt="Logo"
-              />
+              <img className="w-6 h-6 mr-3 hidden dark:inline-block" src={logoDark} alt="Logo" />
             )}
             <span>{config.name || `${owner}/${repo}`}</span>
           </Link>
@@ -91,12 +87,11 @@ export function Header() {
                 <span className="text-white">Change directory</span>
               </button>
             )}
-            {
-              !!ref && source.type !== 'branch' && source.ref !== 'HEAD' && !previewMode.enabled &&
+            {!!ref && source.type !== 'branch' && source.ref !== 'HEAD' && !previewMode.enabled && (
               <li>
                 <RefLink pointer={ref} owner={owner} repo={repo} source={source} />
               </li>
-            }
+            )}
             {!!config.docsearch && !previewMode.enabled && (
               <li>
                 <DocSearch
@@ -117,49 +112,51 @@ export function Header() {
 }
 
 interface RefLinkProps {
-  pointer: string,
-  owner: string,
-  repo: string,
+  pointer: string;
+  owner: string;
+  repo: string;
   source: {
-    type: string,
-    owner: string,
-    repository: string,
-    ref: string
-  }
+    type: string;
+    owner: string;
+    repository: string;
+    ref: string;
+  };
 }
 
-
 function RefLink({ pointer, owner, repo, source }: RefLinkProps): JSX.Element {
-
   const defaultIconSize = 16;
 
   const linkData: Record<string, any> = {
     branch: {
       href: `https://github.com/${owner}/${repo}/tree/${pointer}`,
       icon: <Branch size={defaultIconSize} />,
-      className: 'bg-green-600 hover:bg-green-500 '
+      className: 'bg-green-600 hover:bg-green-500 ',
     },
     PR: {
       href: `https://github.com/${owner}/${repo}/pull/${pointer}`,
       icon: <PullRequest size={defaultIconSize} />,
-      className: 'bg-blue-600 hover:bg-blue-500 '
+      className: 'bg-blue-600 hover:bg-blue-500 ',
     },
     commit: {
       href: `https://github.com/${owner}/${repo}/tree/${pointer}`,
       icon: <Commit size={defaultIconSize} />,
-      className: 'bg-pink-600 hover:bg-pink-500 '
-    }
-  }
+      className: 'bg-pink-600 hover:bg-pink-500 ',
+    },
+  };
 
   const { href, icon, className } = linkData[source?.type ?? 'branch'];
 
-  return <a href={href}>
-    <div className={cx(
-      'flex px-3 py-2 text-xs rounded-lg shadow text-white transition-colors whitespace-nowrap',
-      `${className}`
-    )}>
-      {icon}
-      <div className="pl-1">{pointer}</div>
-    </div>
-  </a>
+  return (
+    <a href={href}>
+      <div
+        className={cx(
+          'flex px-3 py-2 text-xs rounded-lg shadow text-white transition-colors whitespace-nowrap',
+          `${className}`,
+        )}
+      >
+        {icon}
+        <div className="pl-1">{pointer}</div>
+      </div>
+    </a>
+  );
 }

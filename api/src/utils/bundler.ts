@@ -2,7 +2,6 @@ import { bundleMDX } from 'mdx-bundler';
 import { Message } from 'esbuild';
 import rehypeHeadings, { HeadingNode } from './plugins/rehype-headings.js';
 
-
 type MdxBundlerResponse = {
   code: string;
   frontmatter: {
@@ -40,10 +39,7 @@ export async function bundle(
     source: rawText,
     xdmOptions(options: any) {
       // @ts-ignore TODO fix types
-      options.remarkPlugins = [
-        ...(options.remarkPlugins ?? []),
-        ...bundleOptions.remarkPlugins
-      ];
+      options.remarkPlugins = [...(options.remarkPlugins ?? []), ...bundleOptions.remarkPlugins];
       // @ts-ignore TODO fix types
       options.rehypePlugins = [
         ...(options.rehypePlugins ?? []),

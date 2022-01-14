@@ -1,5 +1,4 @@
 import {
-  Link,
   Links,
   LiveReload,
   Meta,
@@ -14,13 +13,12 @@ import type { LinksFunction } from 'remix';
 import tailwind from './styles/tailwind.css';
 import { STORAGE_KEY } from './components/DarkModeToggle';
 import { useLocation } from 'react-router-dom';
-import NProgress from "nprogress";
-import nProgressStyles from "nprogress/nprogress.css";
-import { useTransition } from "remix";
+import NProgress from 'nprogress';
+import nProgressStyles from 'nprogress/nprogress.css';
+import { useTransition } from 'remix';
 import { useEffect } from 'react';
 
-
-export let links: LinksFunction = () => {
+export const links: LinksFunction = () => {
   return [
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
     { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous' },
@@ -47,13 +45,13 @@ export function loader() {
 }
 NProgress.configure({ showSpinner: false });
 
-export default function App() {
+export default function App(): JSX.Element {
   const data = useLoaderData();
 
-  let transition = useTransition();
+  const transition = useTransition();
   useEffect(() => {
     // when the state is idle then we can to complete the progress bar
-    if (transition.state === "idle") NProgress.done();
+    if (transition.state === 'idle') NProgress.done();
     // and when it's something else it means it's either submitting a form or
     // waiting for the loaders of the next location so we start it
     else NProgress.start();
@@ -71,7 +69,7 @@ export default function App() {
   );
 }
 
-export function ErrorBoundary({ error }: { error: Error }) {
+export function ErrorBoundary({ error }: { error: Error }): JSX.Element {
   console.error(error);
   return (
     <Document title="Error!">
@@ -85,8 +83,8 @@ export function ErrorBoundary({ error }: { error: Error }) {
   );
 }
 
-export function CatchBoundary() {
-  let caught = useCatch();
+export function CatchBoundary(): JSX.Element {
+  const caught = useCatch();
 
   let message;
   switch (caught.status) {
@@ -112,7 +110,7 @@ export function CatchBoundary() {
 }
 
 function Document({ children, title }: { children: React.ReactNode; title?: string }) {
-  const location = useLocation()
+  const location = useLocation();
 
   return (
     <html lang="en">

@@ -40,12 +40,11 @@ export function useImagePath(src: string) {
     return src;
   }
 
-  const previewMode = usePreviewMode()
+  const previewMode = usePreviewMode();
 
   if (previewMode?.enabled && previewMode.imageUrls) {
-    return previewMode?.imageUrls[src] || ''
+    return previewMode?.imageUrls[src] || '';
   }
-
 
   const blob = useRawBlob(src);
   return blob;
@@ -56,19 +55,15 @@ export function useRawBlob(path: string): string {
   const { source, baseBranch } = React.useContext(DocumentationContext);
   const { owner, repository: repo, ref } = source;
   if (source.type === 'branch') {
-    return `https://raw.githubusercontent.com/${owner}/${repo}/${ref ?? baseBranch}/docs${ensureLeadingSlash(
-      path,
-    )}`;
+    return `https://raw.githubusercontent.com/${owner}/${repo}/${
+      ref ?? baseBranch
+    }/docs${ensureLeadingSlash(path)}`;
   }
   if (source.type === 'PR') {
-    return `https://raw.githubusercontent.com/${owner}/${repo}/${ref ?? baseBranch}/docs${ensureLeadingSlash(
-      path,
-    )}`;
+    return `https://raw.githubusercontent.com/${owner}/${repo}/${
+      ref ?? baseBranch
+    }/docs${ensureLeadingSlash(path)}`;
   }
 
-
-
-  return `https://raw.githubusercontent.com/${owner}/${repo}/main/docs${ensureLeadingSlash(
-    path,
-  )}`;
+  return `https://raw.githubusercontent.com/${owner}/${repo}/main/docs${ensureLeadingSlash(path)}`;
 }

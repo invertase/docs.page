@@ -8,9 +8,22 @@
   "scripts": {
     "dev:website": "cd website && yarn dev",
     "dev:api": "cd api && yarn dev",
-    "format": "prettier --write '**/*.{js,json,md,yml,yaml,css,scss,ts,tsx}'"
+    "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,mdx}\"",
+    "check:linting": "eslint . --max-warnings=0",
+    "check:formatting": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md,mdx}\"",
+    "check:typescript": "tsc",
+    "check:spelling": "spellchecker --quiet --files=\"docs/**/*.{md,mdx}\" --dictionaries=\"./dictionary.js\" --reports=\"spelling.json\" --plugins spell indefinite-article repeated-words syntax-mentions syntax-urls frontmatter"
   },
   "dependencies": {
     "typescript": "^4.5.4"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.9.1",
+    "@typescript-eslint/parser": "^5.9.1",
+    "eslint": "^8.6.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-react": "^7.28.0",
+    "prettier": "2.5.1"
   }
 }

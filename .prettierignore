@@ -1,8 +1,7 @@
 .next
 node_modules
 build
+dist
 repositories.json
 domains.json
 spelling.json
-/public/_docs.page/shiki/themes/
-/public/_docs.page/shiki/languages/

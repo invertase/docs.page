@@ -18,14 +18,7 @@ export const bundleGitHub = async (
   res: Response,
 ): Promise<Response<BundleResponseData>> => {
   // parse query params:
-  let {
-    owner,
-    repository,
-    ref,
-    path,
-    headerDepth
-  } = extractQueryData(req)
-
+  let { owner, repository, ref, path, headerDepth } = extractQueryData(req);
 
   let code: string | null = null;
   let frontmatter: {
@@ -36,47 +29,42 @@ export const bundleGitHub = async (
   } | null = null;
   let headings: HeadingNode[] | null = [];
   let baseBranch: string | null = null;
-  let repositoryFound: boolean = false;
+  let repositoryFound = false;
 
   if (owner && repository) {
-
     let source: {
-      type: 'PR' | 'commit' | 'branch'
-      owner: string,
-      repository: string,
-      ref: string
+      type: 'PR' | 'commit' | 'branch';
+      owner: string;
+      repository: string;
+      ref: string;
     } = {
       type: 'branch',
       owner: owner || '',
       repository,
-      ref: ref
-    }
+      ref: ref,
+    };
 
     // fetch from github:
     // If the ref looks like a PR
     if (/^[0-9]*$/.test(ref)) {
       // Fetch the PR metadata
-      const metadata = await getPullRequestMetadata(
-        owner,
-        repository,
-        ref,
-      );
+      const metadata = await getPullRequestMetadata(owner, repository, ref);
 
       // If the PR was found, update the pointer and source
       if (metadata) {
-        ref = metadata.ref
+        ref = metadata.ref;
         source = {
           type: 'PR',
-          ...metadata
-        }
+          ...metadata,
+        };
       }
     } else if (/^[a-fA-F0-9]{40}$/.test(ref)) {
       source = {
         type: 'commit',
         owner,
         repository,
-        ref
-      }
+        ref,
+      };
     } else if (ref) {
       console.log(ref);
 
@@ -84,22 +72,21 @@ export const bundleGitHub = async (
         type: 'branch',
         owner,
         repository,
-        ref
+        ref,
       };
     }
-
 
     console.time('github req');
     const {
       md: markdown,
       config: sourceConfig,
       baseBranch: sourceBaseBranch,
-      repositoryFound: sourceRepositoryFound
+      repositoryFound: sourceRepositoryFound,
     } = await getGitHubContents({
       ...source,
       path,
     });
-    repositoryFound = sourceRepositoryFound
+    repositoryFound = sourceRepositoryFound;
     if (repositoryFound) {
       console.timeEnd('github req');
 
@@ -144,20 +131,18 @@ export const bundleGitHub = async (
       path,
       repositoryFound,
       source,
-      ref
+      ref,
     });
   }
   return res.status(404).send({
     code: '',
-    error: 'missing params'
-  })
+    error: 'missing params',
+  });
 };
 
-
 const extractQueryData = (req: Request) => {
-
   // extract query params and set defaults if nec.
-  const owner = (req?.query?.owner as string);
+  const owner = req?.query?.owner as string;
   const repository = (req?.query?.repository as string) || null;
   const ref = (req?.query.ref as string) || 'HEAD';
   const path = (req?.query.path as string) || 'index';
@@ -167,6 +152,6 @@ const extractQueryData = (req: Request) => {
     repository,
     ref,
     path,
-    headerDepth
-  }
-}
+    headerDepth,
+  };
+};

@@ -10,7 +10,7 @@ import { Tabs, TabItem } from './Tabs';
 
 function Anchor(
   props: DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>,
-) {
+): JSX.Element {
   return (
     <DocsLink
       to={props.href || ''}

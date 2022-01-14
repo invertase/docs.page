@@ -38,7 +38,7 @@ export default function rehypeHeadings(
     if (headingRank(node) && hasProperty(node, 'id')) {
       if (options.headings.includes(node.tagName as string)) {
         nodes.push({
-          id : (node?.properties as Record<string, string>).id,
+          id: (node?.properties as Record<string, string>).id,
           title: toString(node),
           rank: headingRank(node),
         });
@@ -46,35 +46,31 @@ export default function rehypeHeadings(
     }
   }
 
-  function newVisitor(node : any, index: number | null, parent: any) {
-
-    const newChildren = partition(node.children,headingTest).map(part => {
-      
-      const id = part.filter(child => headingTest(child))[0]?.properties?.id || null
-      return wrapSection(part,id); }
-    )
+  function newVisitor(node: any, index: number | null, parent: any) {
+    const newChildren = partition(node.children, headingTest).map(part => {
+      const id = part.filter(child => headingTest(child))[0]?.properties?.id || null;
+      return wrapSection(part, id);
+    });
 
     node.children = newChildren;
   }
 
   return (ast: Node): void => {
-    // console.log(ast)
     visit(ast, 'element', visitor);
-    // console.log(ast)
-    visit(ast,'root',newVisitor)
+    visit(ast, 'root', newVisitor);
     options.callback(nodes);
   };
 }
 
-const wrapSection : (children: any[],id: string) => any = (children,id) => { 
+const wrapSection: (children: any[], id: string) => any = (children, id) => {
   const wrap = parseSelector(`section${id ? `#${id}` : ''}`);
   wrap.children = children;
   return wrap;
-}
-const headingTest : (node: any) => boolean =  node => !!headingRank(node) && hasProperty(node,'id')
+};
+const headingTest: (node: any) => boolean = node => !!headingRank(node) && hasProperty(node, 'id');
 
 // partition an array based on a test function, e.g [a,b,b,b,a,b,b,a,b] should become [[a,b,b,b],[a,b,b],[a,b]]
-function partition<T>(array : T[], test : (input : T) => boolean) : T[][] {
+function partition<T>(array: T[], test: (input: T) => boolean): T[][] {
   return array.reduce<T[][]>((prev, current) => {
     if (prev.length === 0) {
       return [[current]];

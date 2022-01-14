@@ -1,4 +1,3 @@
-import { PathParams, rest } from 'msw';
 import { fixtures } from './fixtures';
 
 export const handlers = [

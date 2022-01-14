@@ -2,47 +2,55 @@ import type { ThrownBundleError, ThrownNotFoundError } from '../loaders/document
 import { DocsLink } from './DocsLink';
 import { QuickLinks } from './Quicklinks';
 
-
-export function PreviewNotFound({ error }: { error: any }) {
-  const configFound = true
+export function PreviewNotFound({ error }: { error: any }): JSX.Element {
+  const configFound = true;
   return (
-    <ErrorContainer title={"This page could not be found"} code={404}>
-      {
-        configFound ? <>
+    <ErrorContainer title={'This page could not be found'} code={404}>
+      {configFound ? (
+        <>
           <div>
-            We couldn't find your docs in this directory. Make sure you select a directory with a <code>docs.json</code> file, and a <code>docs/index.mdx</code> file.
+            We couldn't find your docs in this directory. Make sure you select a directory with a{' '}
+            <code>docs.json</code> file, and a <code>docs/index.mdx</code> file.
           </div>
           <div>
-            If you think something else is up, please let us know by filing an <a className="text-blue-600" href="https://github.com/invertase/docs.page/issues">issue</a>.
+            If you think something else is up, please let us know by filing an{' '}
+            <a className="text-blue-600" href="https://github.com/invertase/docs.page/issues">
+              issue
+            </a>
+            .
           </div>
           <div className="mt-10">
-            Return to {' '}
-            <a className="text-blue-600" href="/preview"> Preview Mode</a>
+            Return to{' '}
+            <a className="text-blue-600" href="/preview">
+              {' '}
+              Preview Mode
+            </a>
           </div>
-        </> :
-          <div>docs.json not found</div>
-      }
+        </>
+      ) : (
+        <div>docs.json not found</div>
+      )}
     </ErrorContainer>
   );
 }
 
 export function NotFound({ error }: { error: ThrownNotFoundError }) {
-
   const { owner, repo, path, repositoryFound } = error.data;
 
   return (
-    <ErrorContainer title={"This page could not be found"} code={error.status}>
-      {
-        repositoryFound ? <FileNotFound owner={owner} repo={repo} path={path} /> :
-          <RepoNotFound owner={owner} repo={repo} />
-      }
+    <ErrorContainer title={'This page could not be found'} code={error.status}>
+      {repositoryFound ? (
+        <FileNotFound owner={owner} repo={repo} path={path} />
+      ) : (
+        <RepoNotFound owner={owner} repo={repo} />
+      )}
     </ErrorContainer>
   );
 }
 
 export function BadRequest({ error }: { error: ThrownBundleError }) {
   return (
-    <ErrorContainer title={"This page could not be generated"} code={error.status}>
+    <ErrorContainer title={'This page could not be generated'} code={error.status}>
       <div>{'This may be due to an error in your mdx.'}</div>
     </ErrorContainer>
   );
@@ -51,19 +59,29 @@ export function BadRequest({ error }: { error: ThrownBundleError }) {
 export function ServerError({ title }: { title: string }) {
   return (
     <ErrorContainer title={title} code={500}>
-      <div>{'Something went wrong. Try again later or report an issue with us using the link below.'}</div>
+      <div>
+        {'Something went wrong. Try again later or report an issue with us using the link below.'}
+      </div>
     </ErrorContainer>
   );
 }
 
-function ErrorContainer({ title, code, children }: { title: string, code: number, children: React.ReactElement }) {
-  return <div className="mt-20 max-w-lg mx-auto">
-    <Title statusCode={code} title={title} />
-    <div className="mt-10 flex-col">
-      {children}
+function ErrorContainer({
+  title,
+  code,
+  children,
+}: {
+  title: string;
+  code: number;
+  children: React.ReactElement;
+}) {
+  return (
+    <div className="mt-20 max-w-lg mx-auto">
+      <Title statusCode={code} title={title} />
+      <div className="mt-10 flex-col">{children}</div>
+      <QuickLinks />
     </div>
-    <QuickLinks />
-  </div>
+  );
 }
 
 interface TitleProps {
@@ -76,35 +94,58 @@ export function Title({ statusCode, title }: TitleProps): JSX.Element {
     <>
       <div className="font-anton mb-4 text-center lg:text-left">
         <h1 className="text-7xl lg:text-9xl">
-          <span data-testid='error-status-code' className="bg-clip-text text-transparent bg-gradient-to-br from-purple-400 via-pink-500 to-red-500">
+          <span
+            data-testid="error-status-code"
+            className="bg-clip-text text-transparent bg-gradient-to-br from-purple-400 via-pink-500 to-red-500"
+          >
             {statusCode}
           </span>
         </h1>
-        <h2 data-testid='error-title' className="text-5xl lg:text-4xl text-gray-900 dark:text-white">{title}</h2>
+        <h2
+          data-testid="error-title"
+          className="text-5xl lg:text-4xl text-gray-900 dark:text-white"
+        >
+          {title}
+        </h2>
       </div>
     </>
   );
 }
 
-const RepoNotFound = ({ owner, repo }: { owner: string, repo: string }) => <><p>
-  The GitHub repository{' '}
-  <DocsLink className="text-blue-600" to={`https://github.com/${owner}/${repo}`}>
-    {owner}/{repo}
-  </DocsLink>{' '}
-  was not found.
-</p>
-  <p>
-    To get started, create a new repository on{' '}
-    <DocsLink className="text-blue-600" to="https://github.com/new">GitHub</DocsLink>.
-  </p></>
+const RepoNotFound = ({ owner, repo }: { owner: string; repo: string }) => (
+  <>
+    <p>
+      The GitHub repository{' '}
+      <DocsLink className="text-blue-600" to={`https://github.com/${owner}/${repo}`}>
+        {owner}/{repo}
+      </DocsLink>{' '}
+      was not found.
+    </p>
+    <p>
+      To get started, create a new repository on{' '}
+      <DocsLink className="text-blue-600" to="https://github.com/new">
+        GitHub
+      </DocsLink>
+      .
+    </p>
+  </>
+);
 
-const FileNotFound = ({ owner, repo, path }: { owner: string, repo: string, path: string }) => <><p>
-  The file {' '}
-  <DocsLink className="text-blue-600" to={`https://github.com/${owner}/${repo}/blob/main/${path}.mdx`}>
-    {path}.mdx
-  </DocsLink>{' '}
-  was not found.
-</p>
-  <p>
-    This could be because of a typo in your sidebar config, or you've not made a file at this path.
-  </p></>
+const FileNotFound = ({ owner, repo, path }: { owner: string; repo: string; path: string }) => (
+  <>
+    <p>
+      The file{' '}
+      <DocsLink
+        className="text-blue-600"
+        to={`https://github.com/${owner}/${repo}/blob/main/${path}.mdx`}
+      >
+        {path}.mdx
+      </DocsLink>{' '}
+      was not found.
+    </p>
+    <p>
+      This could be because of a typo in your sidebar config, or you've not made a file at this
+      path.
+    </p>
+  </>
+);

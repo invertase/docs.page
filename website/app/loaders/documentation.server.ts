@@ -25,10 +25,10 @@ export type DocumentationLoader = {
   ref?: string;
   // The source of the content (e.g. main, master, PR, ref)
   source: {
-    type: 'PR' | 'commit' | 'branch',
-    owner: string,
-    repository: string,
-    ref: string,
+    type: 'PR' | 'commit' | 'branch';
+    owner: string;
+    repository: string;
+    ref: string;
   };
   // The bundle data.
   code: string;
@@ -62,11 +62,9 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
 
   try {
     bundle = await fetchBundle({ owner, repository: repo, path, ref });
-
   } catch (error) {
     // If the bundler failed (e.g. API down), throw a server error
     console.log(error);
-
 
     throw json(null, 500);
   }
@@ -83,7 +81,7 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
         owner,
         repo,
         path,
-        repositoryFound: bundle.repositoryFound
+        repositoryFound: bundle.repositoryFound,
       },
       404,
     );
@@ -100,21 +98,23 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
 
   console.log(bundle.source);
 
-  return json<DocumentationLoader>({
-    owner,
-    repo,
-    path,
-    ref,
-    source: bundle.source,
-    code,
-    headings: bundle.headings,
-    config: mergeConfig(bundle.config),
-    frontmatter: bundle.frontmatter,
-    baseBranch: bundle.baseBranch ?? 'main'
-  },
+  return json<DocumentationLoader>(
+    {
+      owner,
+      repo,
+      path,
+      ref,
+      source: bundle.source,
+      code,
+      headings: bundle.headings,
+      config: mergeConfig(bundle.config),
+      frontmatter: bundle.frontmatter,
+      baseBranch: bundle.baseBranch ?? 'main',
+    },
     {
       headers: {
-        'cache-control': 'public, max-age=60, stale-while-revalidate=31560000'
-      }
-    });
+        'cache-control': 'public, max-age=60, stale-while-revalidate=31560000',
+      },
+    },
+  );
 };

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
 export function useNoSSR(): boolean {
   const [ready, setReady] = useState<boolean>(false);

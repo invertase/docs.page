@@ -2,7 +2,7 @@ import { NavLink, NavLinkProps } from 'react-router-dom';
 import { useDocumentationContext } from '~/context';
 import { usePreviewMode } from '~/utils/local-preview-mode';
 
-export function DocsLink({ ...props }: NavLinkProps) {
+export function DocsLink({ ...props }: NavLinkProps): JSX.Element {
   const { owner, repo, ref } = useDocumentationContext();
   const previewMode = usePreviewMode();
 
@@ -10,7 +10,7 @@ export function DocsLink({ ...props }: NavLinkProps) {
     return (
       <a
         target="_blank"
-        rel="noopener nofollow"
+        rel="noreferrer nofollow"
         href={props.to}
         className={
           typeof props.className === 'function'

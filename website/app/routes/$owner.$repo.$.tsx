@@ -18,8 +18,8 @@ import Documentation from '~/components/Documentation';
 //@ts-ignore
 export function headers({ loaderHeaders }) {
   return {
-    "cache-control": loaderHeaders.get('cache-control')
-  }
+    'cache-control': loaderHeaders.get('cache-control'),
+  };
 }
 
 export const loader = docsLoader;
@@ -30,7 +30,7 @@ export let links: LinksFunction = () => {
     { rel: 'stylesheet', href: docsearch },
     { rel: 'stylesheet', href: codeblocks },
     { rel: 'stylesheet', href: codeHikeStyles },
-    { rel: 'stylesheet', href: removeBackTicks }
+    { rel: 'stylesheet', href: removeBackTicks },
   ];
 };
 
@@ -52,7 +52,7 @@ export const meta: MetaFunction = (props: { data?: DocumentationLoader }) => {
 export default function Page() {
   const data = useLoaderData<DocumentationLoader>();
   // return <p>{data.code}</p>
-  return <Documentation data={data} />
+  return <Documentation data={data} />;
 }
 
 // handling errors
@@ -72,11 +72,14 @@ export function CatchBoundary() {
     child = <ServerError title="Something went wrong" />;
   }
 
-  return <div data-testid={'error-container'}>{child!}<Footer /></div>;
+  return (
+    <div data-testid={'error-container'}>
+      {child!}
+      <Footer />
+    </div>
+  );
 }
 
 export function ErrorBoundary() {
-
-
-  return <ServerError title="An uncaught error was thrown" />
+  return <ServerError title="An uncaught error was thrown" />;
 }

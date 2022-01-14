@@ -1,6 +1,5 @@
 import type { MetaFunction } from 'remix';
 import cx from 'classnames';
-import { Link } from 'react-router-dom';
 import {
   AdjustmentsIcon,
   AnnotationIcon,
@@ -24,7 +23,7 @@ export const meta: MetaFunction = () => ({
   'twitter:card': 'summary_large_image',
 });
 
-export default function Index() {
+export default function Index(): JSX.Element {
   return (
     <div>
       <section className="py-16 lg:py-32 text-center px-4 lg:text-left">
@@ -248,7 +247,6 @@ type ButtonProps = {
 };
 
 function Button({ href, children }: ButtonProps): JSX.Element {
-
   return (
     <a
       href={href}
