@@ -44,4 +44,4 @@ COPY --from=build /app/server /app/server
 COPY --from=build /app/public /app/public
 ADD . .
 
-CMD ["yarn, "start"]
+CMD ["yarn", "start"]
