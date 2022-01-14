@@ -23,7 +23,7 @@ ENV __ROOT_DIR=website
 WORKDIR /opt/app
 COPY . /opt/app
 RUN cd /opt/app && yarn install
-
 WORKDIR /opt/app/$__ROOT_DIR
+RUN yarn run build
 
 CMD ["yarn", "start"]
