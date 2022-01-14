@@ -100,37 +100,36 @@ export const bundleGitHub = async (
       path,
     });
     repositoryFound = sourceRepositoryFound
-    if (!repositoryFound) {
-      console.error('repository not found');
-    }
-    console.timeEnd('github req');
+    if (repositoryFound) {
+      console.timeEnd('github req');
 
-    // check config
-    if (sourceConfig) {
-      try {
-        config = JSON.parse(sourceConfig);
-      } catch (e) {
-        config = null;
+      // check config
+      if (sourceConfig) {
+        try {
+          config = JSON.parse(sourceConfig);
+        } catch (e) {
+          config = null;
+        }
       }
-    }
-    // set the baseBranch
-    if (sourceBaseBranch) {
-      baseBranch = sourceBaseBranch;
-    }
-    // bundle the mdx
-    if (markdown) {
-      try {
-        console.time('bundle');
-        const bundleResult = await bundle(markdown, {
-          ...getPlugins(config ?? {}),
-          headerDepth,
-        });
-        console.timeEnd('bundle');
-        code = bundleResult.code;
-        frontmatter = bundleResult.frontmatter;
-        headings = bundleResult.headings.length > 0 ? bundleResult.headings : null;
-      } catch (e) {
-        return res.status(400).send(e);
+      // set the baseBranch
+      if (sourceBaseBranch) {
+        baseBranch = sourceBaseBranch;
+      }
+      // bundle the mdx
+      if (markdown) {
+        try {
+          console.time('bundle');
+          const bundleResult = await bundle(markdown, {
+            ...getPlugins(config ?? {}),
+            headerDepth,
+          });
+          console.timeEnd('bundle');
+          code = bundleResult.code;
+          frontmatter = bundleResult.frontmatter;
+          headings = bundleResult.headings.length > 0 ? bundleResult.headings : null;
+        } catch (e) {
+          return res.status(400).send(e);
+        }
       }
     }
 
