@@ -33,6 +33,7 @@ export async function fetchBundle(params: FetchBundleInput): Promise<BundleRespo
   const data = await fetch(endpoint, {
     headers: { Authorization: `Basic ${token}` },
   }).then(response => {
+    console.dir(response.headers);
     if (response.status == 200) {
       return response.json();
     } else
