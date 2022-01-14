@@ -61,10 +61,7 @@ export const bundleRaw = async (
         headerDepth,
       });
       code = bundleResult.code;
-      console.log(code);
-
       frontmatter = bundleResult.frontmatter;
-
       headings = bundleResult.headings.length > 0 ? bundleResult.headings : null;
     } catch (e) {
       return res.status(400).send(e);

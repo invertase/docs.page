@@ -118,7 +118,7 @@ function LandingPage({ onSelect }: { onSelect: () => void }): JSX.Element {
 }
 
 // TODO handle me
-export function CatchBoundary() {
+export function CatchBoundary(): JSX.Element {
   const e = useCatch<any>();
   console.log(e);
 

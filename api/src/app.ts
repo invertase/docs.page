@@ -31,7 +31,6 @@ if (process.env.API_PASSWORD) {
 }
 
 app.use(text());
-
 app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
@@ -41,8 +40,7 @@ app.use(
   }),
 );
 app.use('/', routes);
-// API Routes
 
 app.listen(PORT, () => {
-  console.log(`⚡️[server]: Server is totally running at http://localhost:${PORT}`);
+  console.log(`docs.page api server is running at http://localhost:${PORT}`);
 });
