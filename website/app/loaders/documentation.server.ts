@@ -1,8 +1,7 @@
-import { BundleSuccess, BundleResponseData, BundleError } from '@docs.page/server';
+import { fetchBundle, BundleSuccess, BundleResponseData, BundleError } from '@docs.page/server';
 import { json, redirect, LoaderFunction, ThrownResponse } from 'remix';
 import { replaceVariables } from '~/utils';
 import { mergeConfig, ProjectConfig } from '~/utils/config';
-import { fetchBundle } from './tempFetcher';
 export type ThrownError = ThrownBundleError | ThrownNotFoundError;
 
 // A thrown error from the loader containing the bundle error.
