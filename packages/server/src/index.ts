@@ -22,7 +22,7 @@ function getEndpoint(base: string, { owner, repository, ref, path }: FetchBundle
 export async function fetchBundle(params: FetchBundleInput): Promise<BundleResponseData> {
 
   const endpoint = getEndpoint(
-    BUNDLER_URL || NODE_ENV == 'production' ? `http://34.95.103.53` : 'http://localhost:8000',
+    BUNDLER_URL || NODE_ENV !== 'production' ? `http://34.95.103.53` : 'http://localhost:8000',
     params,
   );
 

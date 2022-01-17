@@ -111,7 +111,7 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
     },
     {
       headers: {
-        'cache-control': 'public, max-age=60, stale-while-revalidate=31560000',
+        'cache-control': 'public, max-age=1, stale-while-revalidate=31560000',
       },
     },
   );

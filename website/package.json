@@ -15,8 +15,6 @@
   },
   "dependencies": {
     "@code-hike/mdx": "^0.3.0-next.15",
-    "@docs.page/client": "^1.0.0",
-    "@docs.page/server": "^1.0.0",
     "@docsearch/react": "^3.0.0-alpha.42",
     "@heroicons/react": "^1.0.5",
     "@playwright/test": "^1.17.1",
