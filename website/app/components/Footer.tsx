@@ -2,9 +2,9 @@ import { Link } from 'remix';
 import { useDocumentationContext } from '~/context';
 
 export function Footer(): JSX.Element {
-  const { owner, repo, ref, path } = useDocumentationContext();
+  const { source, baseBranch, path } = useDocumentationContext();
   // TODO: fix editUrl
-  const editUrl = `https://github.com/${owner}/${repo}/edit/${ref ? ref : 'main'}/docs/${path}`;
+  const editUrl = `https://github.com/${source.owner}/${source.repository}/edit/${source.type === 'branch' ? source.ref : baseBranch}/docs/${path || 'index'}.mdx`;
   return (
     <footer className="mt-16 py-8 px-4 lg:px-8 border-t border-gray-900/10">
       <div className="flex text-sm font-medium text-gray-500 dark:text-gray-300">
