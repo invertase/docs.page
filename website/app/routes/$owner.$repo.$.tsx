@@ -30,7 +30,7 @@ export let links: LinksFunction = () => {
     { rel: 'stylesheet', href: docsearch },
     { rel: 'stylesheet', href: codeblocks },
     { rel: 'stylesheet', href: codeHikeStyles },
-    { rel: 'stylesheet', href: removeBackTicks },
+    { rel: 'stylesheet', href: removeBackTicks }
   ];
 };
 
@@ -45,8 +45,15 @@ export const meta: MetaFunction = (props: { data?: DocumentationLoader }) => {
   console.log(props.data);
 
   return {
+    "twitter:card": "summary_large_image",
+    "twiter:image:alt": props.data.config?.name ?? '',
+    "og:url": `https://docs.page/${props.data.owner}/${props.data.repo}${props.data.path ? `/${props.data.path}` : ''}`,
+    "og:site_name": "docs.page",
+    "theme-color": props.data.config?.theme ?? '',
     title: props.data.frontmatter?.title ?? '',
     description: props.data.frontmatter?.description ?? '',
+    "og:description": props.data.frontmatter?.description ?? '',
+    "twitter:description": props.data.frontmatter?.description ?? '',
   };
 };
 
