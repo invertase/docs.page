@@ -49,6 +49,7 @@ export const meta: MetaFunction = (props: { data?: DocumentationLoader }) => {
     "twiter:image:alt": props.data.config?.name ?? '',
     "og:url": `https://docs.page/${props.data.owner}/${props.data.repo}${props.data.path ? `/${props.data.path}` : ''}`,
     "og:site_name": "docs.page",
+    "og:title": props.data.frontmatter?.title ?? '',
     "theme-color": props.data.config?.theme ?? '',
     title: props.data.frontmatter?.title ?? '',
     description: props.data.frontmatter?.description ?? '',
