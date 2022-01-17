@@ -13,3 +13,7 @@ aside {
 #nprogress .bar {
     background: var(--theme-color) !important;
 }
+
+code {
+    display: inline-block;
+}
