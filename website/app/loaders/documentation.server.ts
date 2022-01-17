@@ -96,8 +96,6 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
 
   const code = replaceVariables(config.variables, bundle.code);
 
-  console.log(bundle.source);
-
   return json<DocumentationLoader>(
     {
       owner,
