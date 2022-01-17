@@ -109,9 +109,11 @@ function LandingPage({ onSelect }: { onSelect: () => void }): JSX.Element {
             </p>
           )}
         </div>
-        <div className="mt-32 max-w-5xl mx-auto px-4 lg:px-0">
-          <Footer />
-        </div>
+        <PreviewModeContext.Provider value={{ enabled: true, onSelect: () => { }, imageUrls: {} }}>
+          <div className="mt-32 max-w-5xl mx-auto px-4 lg:px-0">
+            <Footer />
+          </div>
+        </PreviewModeContext.Provider>
       </section>
     </div>
   );
