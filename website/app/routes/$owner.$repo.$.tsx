@@ -42,6 +42,7 @@ export const meta: MetaFunction = (props: { data?: DocumentationLoader }) => {
       description: '',
     };
   }
+  console.log(props.data);
 
   return {
     title: props.data.frontmatter?.title ?? '',

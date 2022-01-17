@@ -48,7 +48,7 @@ export function Header() {
             {!!config.twitter && (
               <li>
                 <a
-                  href={`https://github.com/${owner}/${repo}`}
+                  href={`https://twitter.com/${config.twitter}`}
                   className="text-blue-500 hover:text-blue-400 transition-colors duration-100"
                 >
                   <svg
