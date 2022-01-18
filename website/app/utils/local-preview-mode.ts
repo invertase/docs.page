@@ -233,7 +233,7 @@ export function usePollLocalDocs(
 
 const buildPreviewProps = async (params: any): Promise<DocumentationLoader> => {
 
-  const config = JSON.parse(params.config);
+  const config = params.config;
   const md = params.text;
 
   let code: string | null = null;
