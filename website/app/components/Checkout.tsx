@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import cx from 'classnames';
-import { useNavigate } from "react-router-dom";
 
 export function Checkout(): JSX.Element {
-    const navigate = useNavigate();
     const [repo, setRepo] = useState<string>('');
     const [valid, setValid] = useState<boolean | null>(null);
     const url = useRef<string | null>();

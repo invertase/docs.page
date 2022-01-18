@@ -17,6 +17,8 @@ import NProgress from 'nprogress';
 import nProgressStyles from 'nprogress/nprogress.css';
 import { useTransition } from 'remix';
 import { useEffect } from 'react';
+import { BadRequest, PageNotFound, ServerError } from './components/Errors';
+import { Footer } from './components/Footer';
 
 export const links: LinksFunction = () => {
   return [
@@ -74,38 +76,26 @@ export function ErrorBoundary({ error }: { error: Error }): JSX.Element {
   console.error(error);
   return (
     <Document title="Error!">
-      <div>
-        <h1>There was an error</h1>
-        <p>{error.message}</p>
-        <hr />
-        <p>Hey, developer, you should replace this with what you want your users to see.</p>
-      </div>
+      <ServerError title="Internal Server Error" />
     </Document>
   );
 }
 
 export function CatchBoundary(): JSX.Element {
-  const caught = useCatch();
-
-  let message;
-  switch (caught.status) {
-    case 401:
-      message = <p>Oops! Looks like you tried to visit a page that you do not have access to.</p>;
-      break;
-    case 404:
-      message = <p>Oops! Looks like you tried to visit a page that does not exist.</p>;
-      break;
-
-    default:
-      throw new Error(caught.data || caught.statusText);
+  const e = useCatch();
+  let child: JSX.Element;
+  if (e.status === 404) {
+    child = <PageNotFound />;
+  } else {
+    child = <ServerError title="Internal server error" />;
   }
 
   return (
-    <Document title={`${caught.status} ${caught.statusText}`}>
-      <h1>
-        {caught.status}: {caught.statusText}
-      </h1>
-      {message}
+    <Document title={`${e.status} ${e.statusText}`}>
+      <div className="mt-32 max-w-5xl mx-auto px-4 lg:px-0" data-testid={'error-container'}>
+        {child!}
+        <Footer generic={true} />
+      </div>
     </Document>
   );
 }

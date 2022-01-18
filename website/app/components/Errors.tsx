@@ -34,6 +34,14 @@ export function PreviewNotFound({ error }: { error: any }): JSX.Element {
   );
 }
 
+export function PageNotFound() {
+
+  return (
+    <ErrorContainer title={'This page could not be found'} code={404}><></>
+    </ErrorContainer>
+  );
+}
+
 export function NotFound({ error }: { error: ThrownNotFoundError }) {
   const { owner, repo, path, repositoryFound } = error.data;
 

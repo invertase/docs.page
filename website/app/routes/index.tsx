@@ -8,9 +8,8 @@ import {
   SearchCircleIcon,
   TemplateIcon,
 } from '@heroicons/react/solid';
-import { DarkModeToggle } from '~/components/DarkModeToggle';
-import { DocsLink } from '~/components/DocsLink';
 import { Checkout } from '~/components/Checkout';
+import { Footer, GenericFooter } from '~/components/Footer';
 
 export const meta: MetaFunction = () => ({
   'theme-color': '#ffffff',
@@ -238,20 +237,7 @@ export default function Index(): JSX.Element {
             icon={<SearchCircleIcon width={80} />}
           />
         </div>
-        <footer className="mt-20 flex font-mono opacity-50 hover:opacity-100 transition-opacity text-sm mb-5 py-4">
-          <div className="flex-grow dark:text-white ">
-            <div>
-              © {new Date().getFullYear()}{' '}
-              <DocsLink to="https://invertase.io" className="hover:underline">
-                Invertase
-              </DocsLink>{' '}
-              | docs.page
-            </div>
-          </div>
-          <div className="flex-shrink-0">
-            <DarkModeToggle />
-          </div>
-        </footer>
+        <Footer generic={true} />
       </div>
     </div>
   );

@@ -38,7 +38,7 @@ function useDarkMode() {
  * The toggle itself provides the `checked` value, and enables/disables
  * the value via the `useDarkMode` hook.
  *
- * Since the user preference is only available on the client, an empty container
+ * Since the user przeference is only available on the client, an empty container
  * is rendered on the server.
  */
 export function DarkModeToggle() {
@@ -58,10 +58,10 @@ export function DarkModeToggle() {
     return !!mode
       ? mode
       : localStorage[STORAGE_KEY]
-      ? localStorage[STORAGE_KEY] === 'dark'
-        ? 'dark'
-        : 'light'
-      : 'system';
+        ? localStorage[STORAGE_KEY] === 'dark'
+          ? 'dark'
+          : 'light'
+        : 'system';
   }
 
   // Render an empty container during SSR
