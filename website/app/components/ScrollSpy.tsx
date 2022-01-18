@@ -29,7 +29,13 @@ export function ScrollSpy(): JSX.Element {
     );
 
     headings.forEach(({ id }) => {
-      const el = document.querySelector(`#${id}`);
+      let el;
+      try {
+        el = document.querySelector(`section#${id}`);
+      } catch (e) {
+        console.error(`heading ${id} cannot be found`);
+
+      }
       if (el) observer.observe(el);
     });
 

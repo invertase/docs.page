@@ -16,6 +16,8 @@ import {
   useDirectorySelector,
   usePollLocalDocs,
 } from '~/utils/local-preview-mode';
+import removeBackTicks from '../styles/remove-backticks.css';
+
 import Documentation from '~/components/Documentation';
 
 export function headers(): Record<string, string> {
@@ -29,6 +31,7 @@ export const links: LinksFunction = () => {
     { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/@docsearch/css@alpha' },
     { rel: 'stylesheet', href: docsearch },
     { rel: 'stylesheet', href: codeHikeStyles },
+    { rel: 'stylesheet', href: removeBackTicks }
   ];
 };
 
