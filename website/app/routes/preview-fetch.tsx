@@ -1,8 +1,7 @@
-import { ActionFunction, json } from "remix";
+import { ActionFunction } from "remix";
 
 export const action: ActionFunction = async ({ request }) => {
     const token = Buffer.from(`admin:${process.env.API_PASSWORD}`).toString('base64');
-    request.headers.append('Authorization', token);
     const rawEndpoint = 'http://localhost:8000/raw';
     const body = await request.text();
 
