@@ -43,6 +43,7 @@ export function loader() {
   return {
     ENV: {
       MSW_ENABLED: process.env.MSW_ENABLED,
+      NODE_ENV: process.env.NODE_ENV
     },
   };
 }
