@@ -232,8 +232,10 @@ export function usePollLocalDocs(
 }
 
 const buildPreviewProps = async (params: any): Promise<DocumentationLoader> => {
-
-  const config = params.config;
+  let config = {}
+  if (Object.keys(params.config).length > 0) {
+    config = JSON.parse(params.config);
+  }
   const md = params.text;
 
   let code: string | null = null;
@@ -248,7 +250,7 @@ const buildPreviewProps = async (params: any): Promise<DocumentationLoader> => {
   if (md) {
     try {
       //@ts-ignore
-      const host = window.ENV?.NODE_ENV === 'production' ? 'https://next.docs.page' : 'http://localhost:3000'
+      const host = window.ENV?.NODE_ENV === 'production' ? 'https://next.docs.page' : 'http://localhost:3001'
       const bundle = await fetch(`${host}/preview-fetch`, {
         method: 'POST',
         headers: {
