@@ -33,6 +33,7 @@ export const links: LinksFunction = () => {
     },
     { rel: 'stylesheet', href: nProgressStyles },
     { rel: 'stylesheet', href: tailwind },
+    { rel: 'icon', href: 'https://next.docs.page/favicon.ico?v=2' }
   ];
 };
 

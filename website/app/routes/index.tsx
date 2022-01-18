@@ -8,6 +8,9 @@ import {
   SearchCircleIcon,
   TemplateIcon,
 } from '@heroicons/react/solid';
+import { DarkModeToggle } from '~/components/DarkModeToggle';
+import { DocsLink } from '~/components/DocsLink';
+import { Checkout } from '~/components/Checkout';
 
 export const meta: MetaFunction = () => ({
   'theme-color': '#ffffff',
@@ -140,7 +143,7 @@ export default function Index(): JSX.Element {
           </div>
           <div className="flex-1">
             <p className="text-lg px-3">
-              Create a <code className="text-blue-500">{`index.mdx`}</code> file at the root of your{' '}
+              Create an <code className="text-blue-500">{`index.mdx`}</code> file at the root of your{' '}
               <code className="text-blue-500">/docs</code> directory. docs.page supports nested
               pages based on your directory structure of the directory.
             </p>
@@ -159,8 +162,7 @@ export default function Index(): JSX.Element {
           to="to-yellow-500"
         />
         <div className="lg:ml-20 mt-10 lg:flex">
-          <div className="flex-1">TODO</div>
-          <div className="flex-1"></div>
+          <Checkout />
         </div>
       </div>
       <div className="mt-32 max-w-5xl mx-auto px-4 lg:px-0">
@@ -236,6 +238,20 @@ export default function Index(): JSX.Element {
             icon={<SearchCircleIcon width={80} />}
           />
         </div>
+        <footer className="mt-20 flex font-mono opacity-50 hover:opacity-100 transition-opacity text-sm mb-5 py-4">
+          <div className="flex-grow dark:text-white ">
+            <div>
+              © {new Date().getFullYear()}{' '}
+              <DocsLink to="https://invertase.io" className="hover:underline">
+                Invertase
+              </DocsLink>{' '}
+              | docs.page
+            </div>
+          </div>
+          <div className="flex-shrink-0">
+            <DarkModeToggle />
+          </div>
+        </footer>
       </div>
     </div>
   );
