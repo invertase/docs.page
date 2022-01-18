@@ -9,7 +9,7 @@ import {
   TemplateIcon,
 } from '@heroicons/react/solid';
 import { Checkout } from '~/components/Checkout';
-import { Footer, GenericFooter } from '~/components/Footer';
+import { Footer } from '~/components/Footer';
 
 export const meta: MetaFunction = () => ({
   'theme-color': '#ffffff',

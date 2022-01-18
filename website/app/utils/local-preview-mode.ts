@@ -65,7 +65,7 @@ export async function extractContents(
         }),
       ),
     );
-  } catch (_) {}
+  } catch (_) { }
 
   return [text, JSON.stringify(config), imageUrls, errors];
 }
@@ -231,12 +231,8 @@ export function usePollLocalDocs(
   return [pageProps, cache.urls, errorCode];
 }
 
-const rawEndpoint = `http://localhost:8000/raw`;
-
 const buildPreviewProps = async (params: any): Promise<DocumentationLoader> => {
-  // const owner = 'owner';
-  // const repository = 'repo'
-  // const path = 'index';
+
   const config = JSON.parse(params.config);
   const md = params.text;
 
@@ -251,13 +247,16 @@ const buildPreviewProps = async (params: any): Promise<DocumentationLoader> => {
 
   if (md) {
     try {
-      const bundle = await fetch(`${rawEndpoint}`, {
+
+      const bundle = await fetch('http://localhost:3001/preview-fetch', {
         method: 'POST',
         headers: {
-          'content-type': 'application/json',
+          'Accept': 'application/json, text/plain, */*',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(body),
       }).then(r => r.json());
+
       code = bundle.code;
       frontmatter = bundle.frontmatter;
       headings = bundle.headings;

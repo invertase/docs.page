@@ -4,14 +4,15 @@ import morgan from 'morgan';
 import cors from 'cors';
 import basicAuth from 'express-basic-auth';
 import { config } from 'dotenv';
+import { isParenthesizedTypeNode } from 'typescript';
 config();
 const PORT = process.env.PORT || 8000;
 
 const app = express();
 
-const unless = function (path: string, middleware: RequestHandler): RequestHandler {
+const unless = function (paths: string[], middleware: RequestHandler): RequestHandler {
   return function (req, res, next) {
-    if (path === req.path) {
+    if (paths.includes(req.path) || req.method === 'OPTIONS') {
       return next();
     } else {
       return middleware(req, res, next);
@@ -22,7 +23,7 @@ const unless = function (path: string, middleware: RequestHandler): RequestHandl
 if (process.env.API_PASSWORD) {
   app.use(
     unless(
-      '/status',
+      ['/status'],
       basicAuth({
         users: { admin: process.env.API_PASSWORD },
       }),
@@ -32,6 +33,10 @@ if (process.env.API_PASSWORD) {
 
 app.use(text());
 app.use(cors());
+app.options('/raw', (req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*')
+  res.end
+})
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(
