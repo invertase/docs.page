@@ -31,7 +31,7 @@ export function ScrollSpy(): JSX.Element {
     headings.forEach(({ id }) => {
       let el;
       try {
-        el = document.querySelector(`section#${id}`);
+        el = document.querySelector(`#${id}`);
       } catch (e) {
         console.error(`heading ${id} cannot be found`);
 
