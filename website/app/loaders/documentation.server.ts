@@ -63,7 +63,7 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
     bundle = await fetchBundle({ owner, repository: repo, path, ref });
   } catch (error) {
     // If the bundler failed (e.g. API down), throw a server error
-    console.log(error);
+    console.error(error);
 
     throw json(null, 500);
   }
