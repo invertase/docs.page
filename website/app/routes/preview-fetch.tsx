@@ -2,7 +2,7 @@ import { ActionFunction } from "remix";
 
 export const action: ActionFunction = async ({ request }) => {
     const token = Buffer.from(`admin:${process.env.API_PASSWORD}`).toString('base64');
-    const rawEndpoint = 'http://localhost:8000/raw';
+    const rawEndpoint = process.env.NODE_ENV === 'production' ? 'https://next.docs.page/raw' : 'http://localhost:8000/raw';
     const body = await request.text();
 
     switch (request.method) {

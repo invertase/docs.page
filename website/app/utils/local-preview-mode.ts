@@ -247,8 +247,9 @@ const buildPreviewProps = async (params: any): Promise<DocumentationLoader> => {
 
   if (md) {
     try {
-
-      const bundle = await fetch('http://localhost:3001/preview-fetch', {
+      //@ts-ignore
+      const host = window.ENV?.NODE_ENV === 'production' ? 'https://next.docs.page' : 'http://localhost:3001'
+      const bundle = await fetch(`${host}/preview-fetch`, {
         method: 'POST',
         headers: {
           'Accept': 'application/json, text/plain, */*',

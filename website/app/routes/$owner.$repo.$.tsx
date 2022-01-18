@@ -60,7 +60,6 @@ export const meta: MetaFunction = (props: { data?: DocumentationLoader }) => {
 
 export default function Page() {
   const data = useLoaderData<DocumentationLoader>();
-  // return <p>{data.code}</p>
   return <Documentation data={data} />;
 }
 
