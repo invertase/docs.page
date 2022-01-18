@@ -138,6 +138,7 @@ export function useDirectorySelector(): {
     setPending(true);
     try {
       const handle = (await window.showDirectoryPicker()) || null;
+
       let docs: FileSystemDirectoryHandle | null = null;
       // let foundDocsJson = false;
       for await (const entry of handle.values()) {
@@ -151,14 +152,13 @@ export function useDirectorySelector(): {
       }
 
       if (!docs) {
-        throw new Error('No docs directory found');
+        setError(new Error('No docs directory found'));
+      } else {
+        const docsHandles = await iterateDirectory(docs);
+        setHandles(docsHandles);
       }
 
-      const docsHandles = await iterateDirectory(docs);
-
-      setHandles(docsHandles);
     } catch (e) {
-      setError(e);
     } finally {
       setPending(false);
     }
