@@ -43,24 +43,24 @@ export const meta: MetaFunction = () => {
 };
 
 export default function LocalPreview(): JSX.Element {
-  const { select, handles, configHandle, error: directoryError } = useDirectorySelector();
+  const { select, handles, configHandle, pending, error: directoryError } = useDirectorySelector();
   const [data, urls, pollErrorCode] = usePollLocalDocs(handles, configHandle, 500);
 
-  // TODO handle 400 errors
   if (directoryError) {
     return <PreviewNotFound error="" />;
   }
+  if (pending || !handles || !data || !data.code) {
+    return <LandingPage onSelect={select} />;
+  }
+  // TODO handle 400 errors
   if (pollErrorCode) {
     return <PreviewNotFound error="" />;
   }
 
-  if (!handles || !data || !data.code) {
-    return <LandingPage onSelect={select} />;
-  }
 
   return (
     <PreviewModeContext.Provider value={{ enabled: true, onSelect: select, imageUrls: urls }}>
-      <Documentation data={data} />
+      <Documentation data={data!} />
     </PreviewModeContext.Provider>
   );
 }
