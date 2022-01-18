@@ -42,7 +42,6 @@ export const meta: MetaFunction = (props: { data?: DocumentationLoader }) => {
       description: '',
     };
   }
-  console.log(props.data);
 
   return {
     "twitter:card": "summary_large_image",
@@ -66,7 +65,7 @@ export default function Page() {
 // handling errors
 export function CatchBoundary() {
   const e = useCatch<ThrownError>();
-  console.log(e);
+  console.error(e);
 
   let child: JSX.Element;
 

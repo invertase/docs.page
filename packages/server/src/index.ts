@@ -26,6 +26,7 @@ export async function fetchBundle(params: FetchBundleInput): Promise<BundleRespo
     params,
   );
 
+
   if (NODE_ENV == 'production' && !API_PASSWORD) {
     throw new Error('Please provide API_PASSWORD env variable');
   }

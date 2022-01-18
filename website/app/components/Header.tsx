@@ -4,11 +4,17 @@ import { DocSearch } from '@docsearch/react';
 
 import { DarkModeToggle } from './DarkModeToggle';
 import { useBaseUrl, useDocumentationContext, useImagePath } from '~/context';
-import { Branch, Commit, PullRequest } from './Icons';
+import { Branch, Commit, Menu, PullRequest } from './Icons';
 import { usePreviewMode } from '~/utils/local-preview-mode';
 
+export type OnSidebarToggle = () => void;
+
+export type HeaderProps = {
+  onSidebarToggle: OnSidebarToggle;
+};
+
 // TODO link
-export function Header() {
+export function Header(props: HeaderProps) {
   const { owner, repo, config, ref, source } = useDocumentationContext();
 
   const base = useBaseUrl();
@@ -17,7 +23,7 @@ export function Header() {
   const logoDark = useImagePath(config.logoDark);
   const previewMode = usePreviewMode();
   return (
-    <header className="sticky top-0 z-40 w-full backdrop-blur flex-none transition-colors duration-500 lg:z-50 lg:border-b lg:border-gray-900/10 dark:lg:border-gray-400/10 bg-white/60 dark:bg-zinc-900/60">
+    <header className="px-4 sticky top-0 z-40 w-screen backdrop-blur flex-none transition-colors duration-500 lg:z-50 lg:border-b lg:border-gray-900/10 dark:lg:border-gray-400/10 bg-white/60 dark:bg-zinc-900/60">
       <div className="max-w-8xl mx-auto flex items-center h-14 px-4 lg:px-8">
         <div className="flex-shrink-0">
           <Link to={base} className="flex items-center font-bold">
@@ -104,6 +110,9 @@ export function Header() {
             <li>
               <DarkModeToggle />
             </li>
+            <li>
+              <MobileMenuIcon onToggle={props.onSidebarToggle} />
+            </li>
           </ul>
         </div>
       </div>
@@ -158,5 +167,20 @@ function RefLink({ pointer, owner, repo, source }: RefLinkProps): JSX.Element {
         <div className="pl-1">{pointer}</div>
       </div>
     </a>
+  );
+}
+
+
+type MobileMenuIconProps = {
+  onToggle: OnSidebarToggle;
+};
+
+function MobileMenuIcon(props: MobileMenuIconProps) {
+  return (
+    <div className="flex lg:hidden ">
+      <div role="button" tabIndex={0} onClick={props.onToggle}>
+        <Menu size={24} />
+      </div>
+    </div>
   );
 }

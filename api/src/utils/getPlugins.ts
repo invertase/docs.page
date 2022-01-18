@@ -8,7 +8,7 @@ import rehypeSlug from 'rehype-slug';
 
 function getPlugins(config: Record<string, any>) {
   const remarkPlugins = config?.experimentalCodeHike
-    ? [remarkGfm, [remarkCodeHike, { theme }]]
+    ? [remarkGfm, [remarkCodeHike, { theme, lineNumbers: true }]]
     : [remarkGfm];
 
   const rehypePlugins = config?.experimentalCodeHike
