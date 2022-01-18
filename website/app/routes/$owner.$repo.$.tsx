@@ -90,7 +90,7 @@ export function CatchBoundary() {
 
 export function ErrorBoundary() {
   return <div className="mt-32 max-w-5xl mx-auto px-4 lg:px-0" data-testid={'error-container'}>
-    <ServerError title="An uncaught error was thrown" />;
+    <ServerError title="An uncaught error was thrown" />
     <Footer generic={true} />
   </div>
 }
