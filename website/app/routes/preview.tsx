@@ -45,7 +45,6 @@ export const meta: MetaFunction = () => {
 export default function LocalPreview(): JSX.Element {
   const { select, handles, configHandle, pending, error: directoryError } = useDirectorySelector();
   const [data, urls, pollErrorCode] = usePollLocalDocs(handles, configHandle, 500);
-  console.log('error', directoryError);
 
   if (directoryError) {
     return <PreviewNotFound error="" />;
