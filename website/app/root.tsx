@@ -9,7 +9,6 @@ import {
   useLoaderData,
 } from 'remix';
 import type { LinksFunction } from 'remix';
-
 import tailwind from './styles/tailwind.css';
 import { STORAGE_KEY } from './components/DarkModeToggle';
 import { useLocation } from 'react-router-dom';
@@ -17,7 +16,7 @@ import NProgress from 'nprogress';
 import nProgressStyles from 'nprogress/nprogress.css';
 import { useTransition } from 'remix';
 import { useEffect } from 'react';
-import { BadRequest, PageNotFound, ServerError } from './components/Errors';
+import { PageNotFound, ServerError } from './components/Errors';
 import { Footer } from './components/Footer';
 
 export const links: LinksFunction = () => {
