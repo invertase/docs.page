@@ -64,7 +64,7 @@ export default function App(): JSX.Element {
     <Document>
       <script
         dangerouslySetInnerHTML={{
-          __html: `window.ENV = ${JSON.stringify(data.ENV)}`,
+          __html: `window.ENV = ${JSON.stringify(data?.ENV)}`,
         }}
       />
       <Outlet />

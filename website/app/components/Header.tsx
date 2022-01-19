@@ -109,6 +109,8 @@ export function Header(props: HeaderProps) {
             )}
             <li>
               <DarkModeToggle />
+            </li>
+            <li>
               <MobileMenuIcon onToggle={props.onSidebarToggle} />
             </li>
           </ul>
@@ -175,7 +177,7 @@ type MobileMenuIconProps = {
 
 function MobileMenuIcon(props: MobileMenuIconProps) {
   return (
-    <div className="flex lg:hidden ml-4">
+    <div className="flex lg:hidden ">
       <div role="button" tabIndex={0} onClick={props.onToggle}>
         <Menu size={24} />
       </div>
