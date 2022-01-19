@@ -33,7 +33,7 @@ export default function Documentation({ data }: { data: DocumentationLoader }) {
           <div className="pt-10 px-8 lg:pr-8 lg:pl-72">
             <div
               className={cx({
-                'mr-52 pr-16': true,
+                'md:mr-52 md:pr-16': true,
               })}
             >
               <main
@@ -48,7 +48,7 @@ export default function Documentation({ data }: { data: DocumentationLoader }) {
               <Footer />
             </div>
             {!!data.headings && (
-              <aside className="pt-10 px-8 fixed top-14 bottom-0 w-52 overflow-y-auto right-[max(0px,calc(50%-45rem))]">
+              <aside className=" hidden md:block pt-10 px-8 fixed top-14 bottom-0 w-52 overflow-y-auto right-[max(0px,calc(50%-45rem))]">
                 <ScrollSpy />
               </aside>
             )}
