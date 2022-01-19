@@ -12,11 +12,15 @@ import { ScrollSpy } from '~/components/ScrollSpy';
 import { TabsContext } from './mdx/Tabs';
 import { hash as createHash } from '~/utils';
 import { MobileNav } from './MobileNav';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useTransition } from 'remix';
 
 export default function Documentation({ data }: { data: DocumentationLoader }) {
   const [open, toggleMenu] = useState<boolean>(false);
-
+  const transition = useTransition();
+  useEffect(() => {
+    toggleMenu(false)
+  }, [transition.state])
   const MDX = useHydratedMdx({ code: data.code });
   const hash = createHash(`${data.owner}/${data.repo}`);
   return (
