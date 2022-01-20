@@ -7,7 +7,6 @@ import { BundleResponseData, FetchBundleInput } from './types';
 config();
 
 // The base URL for the bundler.
-const { BUNDLER_URL, API_PASSWORD, NODE_ENV } = process.env;
 
 function getEndpoint(base: string, { owner, repository, ref, path }: FetchBundleInput): string {
   const params: Record<string, string> = {
@@ -20,9 +19,10 @@ function getEndpoint(base: string, { owner, repository, ref, path }: FetchBundle
 }
 
 export async function fetchBundle(params: FetchBundleInput): Promise<BundleResponseData> {
-
+  const { BUNDLER_URL, API_PASSWORD, NODE_ENV } = process.env;
+  console.log(BUNDLER_URL)
   const endpoint = getEndpoint(
-    BUNDLER_URL || NODE_ENV === 'production' ? `https://api.docs.page` : 'http://localhost:8000',
+    BUNDLER_URL ? BUNDLER_URL : (NODE_ENV === 'production' ? `https://api.docs.page` : 'http://localhost:8000'),
     params,
   );
 
@@ -32,12 +32,12 @@ export async function fetchBundle(params: FetchBundleInput): Promise<BundleRespo
   }
 
   const token = Buffer.from(`admin:${API_PASSWORD}`).toString('base64');
+  console.log('ENDPOINT', endpoint);
   const data = await fetch(endpoint, {
     headers: { Authorization: `Basic ${token}` },
   }).then(response => {
-    console.log(endpoint);
 
-    console.dir(response.headers);
+    // console.dir(response.headers);
     if (response.status == 200) {
       return response.json();
     } else
