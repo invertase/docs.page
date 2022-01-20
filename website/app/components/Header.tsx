@@ -107,10 +107,10 @@ export function Header(props: HeaderProps) {
                 />
               </li>
             )}
-            <li>
+            <li className="md:flex hidden">
               <DarkModeToggle />
             </li>
-            <li>
+            <li className="flex justify-center items-center">
               <MobileMenuIcon onToggle={props.onSidebarToggle} />
             </li>
           </ul>

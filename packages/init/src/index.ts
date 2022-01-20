@@ -7,7 +7,7 @@ const configString = `{
     "theme": "#36B9B9",
     "sidebar": [
       ["Home", "/"],
-      ["Another Page", "/another-page"],
+      ["Another Page", "/another-page"]
     ]
   }`
 
