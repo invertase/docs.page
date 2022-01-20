@@ -75,8 +75,8 @@ export default function Index(): JSX.Element {
               docs.page sources content directly from any Open Source GitHub repository.
             </p>
             <p className="mt-4 text-lg px-3">
-              To get started, create an empty <code className="text-red-400">docs</code> directory
-              at the root of your repository.
+              To get started, create an empty <code className="text-red-400">docs</code> directory and a
+              config <code className="text-red-400">docs.json</code> file, both at the root of your repository.
             </p>
           </div>
           <div className="flex-1">
