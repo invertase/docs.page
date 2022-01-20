@@ -6,6 +6,7 @@ import { DarkModeToggle } from './DarkModeToggle';
 import { useBaseUrl, useDocumentationContext, useImagePath } from '~/context';
 import { Branch, Commit, Menu, PullRequest } from './Icons';
 import { usePreviewMode } from '~/utils/local-preview-mode';
+import { LocaleSelect } from './LocaleSelect';
 
 export type OnSidebarToggle = () => void;
 
@@ -93,6 +94,9 @@ export function Header(props: HeaderProps) {
                 <span className="text-white">Change directory</span>
               </button>
             )}
+            <li>
+              <LocaleSelect />
+            </li>
             {!!ref && source.type !== 'branch' && source.ref !== 'HEAD' && !previewMode.enabled && (
               <li>
                 <RefLink pointer={ref} owner={owner} repo={repo} source={source} />
