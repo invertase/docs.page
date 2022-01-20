@@ -137,6 +137,6 @@ export function mergeConfig(json: Record<string, unknown>): ProjectConfig {
     variables: getValue(json, 'variables', defaultConfig.variables) as Record<string, string>,
     googleTagManager: getString(json, 'googleTagManager', defaultConfig.googleTagManager),
     zoomImages: getBoolean(json, 'zoomImages', defaultConfig.zoomImages),
-    locales: json.locales as string[] ?? []
+    locales: json.locales as string[] ?? undefined
   };
 }
