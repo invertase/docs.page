@@ -25,7 +25,6 @@ export const bundleGitHub = async (
       error: 'Missing owner or repository parameters.',
     });
   }
-
   let ref = queryData.ref;
   let code: string | null = null;
   let frontmatter: {
@@ -93,8 +92,18 @@ export const bundleGitHub = async (
     // check config
     if (sourceConfig) {
       try {
-        config = JSON.parse(sourceConfig);
+        config = JSON.parse(sourceConfig) || {};
+        //@ts-ignore
+        console.log('debug', config)
+        if (config && config.locales) {
+          const defaultLocale = config.locales[0];
+          const currentLocale = path.split('/')[0] || defaultLocale;
+          console.log(currentLocale)
+          config.sidebar = config?.sidebar[currentLocale];
+        }
       } catch (e) {
+        console.error(e)
+
         config = null;
       }
     }
