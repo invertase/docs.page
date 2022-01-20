@@ -3,18 +3,11 @@ import { useNavigate } from "react-router-dom";
 
 
 /**
- * Renders a switch which toggles light & dark mode.
- *
- * The toggle itself provides the `checked` value, and enables/disables
- * the value via the `useDarkMode` hook.
- *
- * Since the user przeference is only available on the client, an empty container
- * is rendered on the server.
+ * Renders a switch which toggles locale
  */
-export function LocaleSelect() {
-  const [locale, setLocale] = useState<string>()
+
+export function LocaleSelect({ locales }: { locales: string[] }) {
   const navigate = useNavigate();
-  // console.log(location)
   const onChange = (locale: string) => {
     navigate(locale, { replace: true });
   }
@@ -27,26 +20,15 @@ export function LocaleSelect() {
 
   return container(
     <>
-      <div className="flex-1">
-        <p>Language</p>
-      </div>
       <select
         role="button"
         className="absolute inset-0 appearance-none w-full flex items-center font-medium bg-transparent focus:outline-none pl-8 text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white text-xs pr-3"
-        value={locale}
+        value={undefined}
         onChange={e => {
-          const value = e.target.value;
-
-
-          if (value === 'es') {
-            onChange('es')
-          } else {
-            onChange('en')
-          }
+          onChange(e.target.value);
         }}
       >
-        <option value="en">EN</option>
-        <option value="es">ES</option>
+        {locales.map(locale => <option key={locale} value={locale}>{locale}</option>)}
       </select>
       <div>
         <svg

@@ -17,7 +17,7 @@ export type HeaderProps = {
 // TODO link
 export function Header(props: HeaderProps) {
   const { owner, repo, config, ref, source } = useDocumentationContext();
-
+  console.log(config)
   const base = useBaseUrl();
 
   const logoLight = useImagePath(config.logo);
@@ -94,9 +94,10 @@ export function Header(props: HeaderProps) {
                 <span className="text-white">Change directory</span>
               </button>
             )}
-            <li>
-              <LocaleSelect />
+            {!!config.locales && <li>
+              <LocaleSelect locales={config.locales} />
             </li>
+            }
             {!!ref && source.type !== 'branch' && source.ref !== 'HEAD' && !previewMode.enabled && (
               <li>
                 <RefLink pointer={ref} owner={owner} repo={repo} source={source} />
