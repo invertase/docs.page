@@ -55,6 +55,13 @@ export default function Index(): JSX.Element {
         </div>
       </section>
       <div className="max-w-5xl mx-auto px-4 lg:px-0">
+        <div className="lg:ml-20 mt-16 lg:flex items-center">
+          <div className="flex-1">
+            <p className="text-lg px-3 pb-8">
+              Note: You can skip steps 1 and 2 by running <code className="rounded p-2 bg-black text-white">npx @docs.page/init</code> at the root of your project (and commiting the result to Github)
+            </p>
+          </div>
+        </div>
         <Heading
           step={1}
           title={
@@ -97,7 +104,10 @@ export default function Index(): JSX.Element {
                       d="M1.75 1A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25v-8.5A1.75 1.75 0 0014.25 3h-6.5a.25.25 0 01-.2-.1l-.9-1.2c-.33-.44-.85-.7-1.4-.7h-3.5z"
                     />
                   </svg>
-                  <span className="flex-1">docs</span>
+                  <div className="flex-col pr-8" >
+                    <span className="flex">docs</span>
+                    <span className="flex">docs.json</span>
+                  </div>
                   <span className="text-gray-600">A few seconds ago</span>
                 </div>
                 <div className="mx-6 py-3 border-b border-l border-r rounded-br rounded-bl border-gray-700" />

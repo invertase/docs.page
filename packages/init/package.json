@@ -1,6 +1,6 @@
 {
   "name": "@docs.page/init",
-  "version": "1.0.3",
+  "version": "1.0.5",
   "description": "npx cli for docs.page initialization",
   "main": "index.js",
   "author": "cabljac",
