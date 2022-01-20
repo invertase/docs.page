@@ -98,7 +98,6 @@ export const bundleGitHub = async (
         if (config && config.locales) {
           const defaultLocale = config.locales[0];
           const currentLocale = path.split('/')[0] || defaultLocale;
-          console.log(currentLocale)
           config.sidebar = config?.sidebar[currentLocale];
         }
       } catch (e) {

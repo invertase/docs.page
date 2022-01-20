@@ -1,4 +1,9 @@
-export const getLocaleSidebar = (sidebar: any, locale?: string) => {
+
+type SidebarItem = [string, Array<[string, string]>] | [string, string];
+
+type SidebarConfig = SidebarItem[] | Record<string, SidebarItem[]>
+
+export const getLocaleSidebar = (sidebar: SidebarConfig, locale?: string) => {
     if (Array.isArray(sidebar)) {
         return sidebar;
     }

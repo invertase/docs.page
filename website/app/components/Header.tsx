@@ -17,7 +17,6 @@ export type HeaderProps = {
 // TODO link
 export function Header(props: HeaderProps) {
   const { owner, repo, config, ref, source } = useDocumentationContext();
-  console.log(config)
   const base = useBaseUrl();
 
   const logoLight = useImagePath(config.logo);
