@@ -3,9 +3,6 @@ import { json, redirect, LoaderFunction, ThrownResponse } from 'remix';
 import { replaceVariables } from '~/utils';
 import { mergeConfig, ProjectConfig } from '~/utils/config';
 export type ThrownError = ThrownBundleError | ThrownNotFoundError;
-import { config } from 'dotenv';
-
-config();
 
 // A thrown error from the loader containing the bundle error.
 export type ThrownBundleError = ThrownResponse<number, BundleError | null>;

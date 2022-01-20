@@ -1,0 +1,20 @@
+{
+  "name": "@docs.page/init",
+  "version": "1.0.3",
+  "description": "npx cli for docs.page initialization",
+  "main": "index.js",
+  "author": "cabljac",
+  "license": "MIT",
+  "dependencies": {
+    "typescript": "^4.5.4"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "bin": "./dist/index.js",
+  "files": [
+    "dist",
+    "LICENSE",
+    "README.md"
+  ]
+}
