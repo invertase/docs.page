@@ -6,6 +6,7 @@ import { DarkModeToggle } from './DarkModeToggle';
 import { useBaseUrl, useDocumentationContext, useImagePath } from '~/context';
 import { Branch, Commit, Menu, PullRequest } from './Icons';
 import { usePreviewMode } from '~/utils/local-preview-mode';
+import { LocaleSelect } from './LocaleSelect';
 
 export type OnSidebarToggle = () => void;
 
@@ -16,7 +17,6 @@ export type HeaderProps = {
 // TODO link
 export function Header(props: HeaderProps) {
   const { owner, repo, config, ref, source } = useDocumentationContext();
-
   const base = useBaseUrl();
 
   const logoLight = useImagePath(config.logo);

@@ -1,13 +1,22 @@
 import cx from 'classnames';
 import { useDocumentationContext } from '~/context';
+import { DarkModeToggle } from './DarkModeToggle';
 import { DocsLink } from './DocsLink';
+import { LocaleSelect } from './LocaleSelect';
 
 export function Sidebar() {
-  const { sidebar } = useDocumentationContext().config;
+  const { sidebar, locales } = useDocumentationContext().config;
 
   return (
     <nav>
       <ul className="text-sm text-gray-600 dark:text-gray-300">
+        {!!locales && <li className="mb-2">
+          <LocaleSelect locales={locales} />
+        </li>
+        }
+        <li className=" md:hidden flex">
+          <DarkModeToggle />
+        </li>
         {sidebar.map(([title, urlOrChildren]) => {
           if (typeof urlOrChildren === 'string') {
             return (

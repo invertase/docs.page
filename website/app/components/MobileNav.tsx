@@ -11,15 +11,12 @@ export function MobileNav({ visible }: MobileNavProps): JSX.Element {
     return (
         <div
             className={cx(
-                'bg-white dark:bg-zinc-900 dark:text-white z-40 fixed lg:hidden inset-0 top-12 w-[50vw] overflow-y-auto shadow-2xl p-4 transition-transform transform',
+                'bg-white dark:bg-zinc-900 dark:text-white z-40 fixed lg:hidden inset-0 top-12 w-[100vw] overflow-y-auto shadow-2xl p-4 transition-transform transform',
                 {
-                    'translate-x-[-75vw]': !visible,
+                    'translate-x-[-100vw]': !visible,
                 },
             )}
         >
-            <li className=" md:hidden flex">
-                <DarkModeToggle />
-            </li>
             <Sidebar />
         </div>
     );

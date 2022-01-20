@@ -84,6 +84,8 @@ export interface ProjectConfig {
   // navigation: NavigationItem[];
   // Sidebar
   sidebar: SidebarItem[];
+  // Locales:
+  locales?: string[];
   // The depth to heading tags are linked. Set to 0 to remove any linking.
   headerDepth: number;
   // Variables which can be injected into the pages content.
@@ -124,10 +126,10 @@ export function mergeConfig(json: Record<string, unknown>): ProjectConfig {
     theme: getString(json, 'theme', defaultConfig.theme),
     docsearch: getValue(json, 'docsearch')
       ? {
-          appId: getString(json, 'docsearch.appId', ''),
-          apiKey: getString(json, 'docsearch.apiKey', ''),
-          indexName: getString(json, 'docsearch.indexName', ''),
-        }
+        appId: getString(json, 'docsearch.appId', ''),
+        apiKey: getString(json, 'docsearch.apiKey', ''),
+        indexName: getString(json, 'docsearch.indexName', ''),
+      }
       : defaultConfig.docsearch,
     // navigation: mergeNavigationConfig(json),
     sidebar: mergeSidebarConfig(json),
@@ -135,5 +137,7 @@ export function mergeConfig(json: Record<string, unknown>): ProjectConfig {
     variables: getValue(json, 'variables', defaultConfig.variables) as Record<string, string>,
     googleTagManager: getString(json, 'googleTagManager', defaultConfig.googleTagManager),
     zoomImages: getBoolean(json, 'zoomImages', defaultConfig.zoomImages),
+    // TODO: tidy the following:
+    locales: json.locales as string[] ?? undefined
   };
 }
