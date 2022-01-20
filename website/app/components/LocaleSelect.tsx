@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate } from "react-router-dom";
 
 
 /**
  * Renders a switch which toggles locale
  */
 
+
+
 export function LocaleSelect({ locales }: { locales: string[] }) {
+  const location = useLocation()
   const navigate = useNavigate();
+
   const onChange = (locale: string) => {
     navigate(locale, { replace: true });
   }
@@ -23,7 +27,7 @@ export function LocaleSelect({ locales }: { locales: string[] }) {
       <select
         role="button"
         className="absolute inset-0 appearance-none w-full flex items-center font-medium bg-transparent focus:outline-none pl-8 text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white text-xs pr-3"
-        value={undefined}
+        value={location?.pathname?.split('/')[3]}
         onChange={e => {
           onChange(e.target.value);
         }}
