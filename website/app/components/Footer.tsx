@@ -16,9 +16,8 @@ export function Footer(props: FooterProps): JSX.Element {
     return <GenericFooter />
   }
 
-
   // TODO: fix editUrl
-  const editUrl = previewMode.enabled ? '' : `https://github.com/${source.owner}/${source.repository}/edit/${source.type === 'branch' ? source.ref : baseBranch}/docs/${path || 'index'}.mdx`;
+  const editUrl = previewMode.enabled ? '' : `https://github.com/${source.owner}/${source.repository}/edit/${(source.type === 'branch' && source.ref !== 'HEAD') ? source.ref : baseBranch}/docs/${path || 'index'}.mdx`;
   return (
     <footer className="mt-16 py-8 px-4 lg:px-8 border-t border-gray-900/10">
       <div className="flex text-sm font-medium text-gray-500 dark:text-gray-300">

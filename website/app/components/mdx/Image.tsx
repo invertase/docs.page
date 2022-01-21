@@ -18,10 +18,6 @@ export function Image({ zoom, caption, ...props }: ImageProps & { href?: string 
 
   const zoomEnabled = zoom;
 
-  // if (!src) {
-  //     return <></>;
-  // }
-
   const wrapper = (child: React.ReactElement) =>
     props.href
       ? withHref(withFigure(zoomEnabled ? withZoom(child) : child, caption), props.href)

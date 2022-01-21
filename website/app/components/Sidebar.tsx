@@ -1,4 +1,5 @@
 import cx from 'classnames';
+import { useLocation } from 'react-router-dom';
 import { useDocumentationContext } from '~/context';
 import { DarkModeToggle } from './DarkModeToggle';
 import { DocsLink } from './DocsLink';
@@ -6,23 +7,26 @@ import { LocaleSelect } from './LocaleSelect';
 
 export function Sidebar() {
   const { sidebar, locales } = useDocumentationContext().config;
+  const location = useLocation()
+  const currentLocale = location.pathname.split('/')[3];
 
   return (
     <nav>
       <ul className="text-sm text-gray-600 dark:text-gray-300">
-        {!!locales && <li className="mb-2">
+        {!!locales && <li className="mb-2 w-full">
           <LocaleSelect locales={locales} />
         </li>
         }
-        <li className=" md:hidden flex">
+        <li className=" md:hidden flex w-full">
           <DarkModeToggle />
         </li>
         {sidebar.map(([title, urlOrChildren]) => {
+
           if (typeof urlOrChildren === 'string') {
             return (
               <li key={urlOrChildren}>
                 <DocsLink
-                  end={urlOrChildren === '/'}
+                  end={urlOrChildren === (locales ? `/${currentLocale}` : '/')}
                   to={urlOrChildren}
                   className={({ isActive }) =>
                     cx('block my-2', {
@@ -46,7 +50,7 @@ export function Sidebar() {
                 {urlOrChildren.map(([title, url]) => (
                   <li key={url}>
                     <DocsLink
-                      end={url === '/'}
+                      end={url === (locales ? `/${currentLocale}` : '/')}
                       to={url}
                       className={({ isActive }) =>
                         cx('block pl-4 -ml-px border-l border-transparent', {

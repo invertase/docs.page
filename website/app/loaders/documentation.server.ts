@@ -1,5 +1,6 @@
 import { fetchBundle, BundleSuccess, BundleResponseData, BundleError } from '@docs.page/server';
 import { json, redirect, LoaderFunction, ThrownResponse } from 'remix';
+import { isExternalLink } from '~/components/DocsLink';
 import { replaceVariables } from '~/utils';
 import { mergeConfig, ProjectConfig } from '~/utils/config';
 export type ThrownError = ThrownBundleError | ThrownNotFoundError;
@@ -88,7 +89,11 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
 
   // Apply a redirect if provided in the frontmatter
   if (bundle.frontmatter.redirect) {
-    return redirect(bundle.frontmatter.redirect);
+    const href = bundle.frontmatter.redirect;
+    if (isExternalLink(href)) {
+      return redirect(href);
+    }
+    return redirect(`/${owner}/${repo}${bundle.frontmatter.redirect}`);
   }
 
   const config = mergeConfig(bundle.config);

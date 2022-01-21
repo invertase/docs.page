@@ -38,7 +38,7 @@ function useDarkMode() {
  * The toggle itself provides the `checked` value, and enables/disables
  * the value via the `useDarkMode` hook.
  *
- * Since the user przeference is only available on the client, an empty container
+ * Since the user preference is only available on the client, an empty container
  * is rendered on the server.
  */
 export function DarkModeToggle() {
@@ -49,7 +49,7 @@ export function DarkModeToggle() {
   const [mode, setMode] = useState<string | null>(null);
 
   const container = (children?: React.ReactElement) => (
-    <div className="relative w-28 px-2 h-8 flex items-center dark:text-white bg-[#fbfbfb] hover:bg-transparent dark:bg-transparent border hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 rounded focus:outline-none">
+    <div className="relative w-full md:w-28 px-2 h-8 flex items-center dark:text-white bg-[#fbfbfb] hover:bg-transparent dark:bg-transparent border hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 rounded focus:outline-none">
       {children}
     </div>
   );

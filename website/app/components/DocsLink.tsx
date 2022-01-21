@@ -1,4 +1,4 @@
-import { NavLink, NavLinkProps } from 'react-router-dom';
+import { NavLink, NavLinkProps, useLocation } from 'react-router-dom';
 import { useDocumentationContext } from '~/context';
 import { usePreviewMode } from '~/utils/local-preview-mode';
 
@@ -43,7 +43,6 @@ export function DocsLink({ ...props }: NavLinkProps): JSX.Element {
       </a>
     );
   }
-
   return <NavLink {...props} to={removeTrailingSlash(`${to}${props.to}`)} />;
 }
 
@@ -51,7 +50,7 @@ function removeTrailingSlash(path: string) {
   return path.replace(/\/$/, '');
 }
 
-function isExternalLink(to: string) {
+export function isExternalLink(to: string) {
   return to.startsWith('http');
 }
 

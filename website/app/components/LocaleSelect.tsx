@@ -21,7 +21,7 @@ export function LocaleSelect({ locales }: { locales: string[] }) {
   }
 
   const container = (children?: React.ReactElement) => (
-    <div className="relative w-28 px-2 h-8 flex items-center dark:text-white bg-[#fbfbfb] hover:bg-transparent dark:bg-transparent border hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 rounded focus:outline-none">
+    <div className="relative w-full px-2 h-8 flex items-center dark:text-white bg-[#fbfbfb] hover:bg-transparent dark:bg-transparent border hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 rounded focus:outline-none">
       {children}
     </div>
   );
