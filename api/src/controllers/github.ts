@@ -96,8 +96,8 @@ export const bundleGitHub = async (
         //@ts-ignore
         console.log('debug', config)
         if (config && config.locales) {
-          const defaultLocale = config.locales[0];
-          const currentLocale = path.split('/')[0] || defaultLocale;
+          const defaulLocale = config.locales[0];
+          const currentLocale = path.split('/')[0] || defaulLocale;
           config.sidebar = config?.sidebar[currentLocale];
         }
       } catch (e) {

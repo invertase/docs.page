@@ -6,7 +6,6 @@ import { DarkModeToggle } from './DarkModeToggle';
 import { useBaseUrl, useDocumentationContext, useImagePath } from '~/context';
 import { Branch, Commit, Menu, PullRequest } from './Icons';
 import { usePreviewMode } from '~/utils/local-preview-mode';
-import { LocaleSelect } from './LocaleSelect';
 
 export type OnSidebarToggle = () => void;
 

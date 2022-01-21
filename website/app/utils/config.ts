@@ -85,7 +85,7 @@ export interface ProjectConfig {
   // Sidebar
   sidebar: SidebarItem[];
   // Locales:
-  locales?: string[];
+  locales?: Record<string, string>;
   // The depth to heading tags are linked. Set to 0 to remove any linking.
   headerDepth: number;
   // Variables which can be injected into the pages content.
@@ -138,6 +138,6 @@ export function mergeConfig(json: Record<string, unknown>): ProjectConfig {
     googleTagManager: getString(json, 'googleTagManager', defaultConfig.googleTagManager),
     zoomImages: getBoolean(json, 'zoomImages', defaultConfig.zoomImages),
     // TODO: tidy the following:
-    locales: json.locales as string[] ?? undefined
+    locales: json.locales as Record<string, string> ?? undefined
   };
 }

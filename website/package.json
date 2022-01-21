@@ -30,6 +30,7 @@
     "classnames": "^2.3.1",
     "color": "^4.1.0",
     "compression": "^1.7.4",
+    "country-flag-icons": "^1.4.19",
     "cross-env": "^7.0.3",
     "detect-browser": "^5.3.0",
     "express": "^4.17.1",
