@@ -181,7 +181,11 @@ function Utils() {
         </div>
       )}
       {!!config.docsearch && (
-        <Search apiKey={config.docsearch.apiKey} indexName={config.docsearch.indexName} />
+        <Search
+          appId={config.docsearch.appId}
+          apiKey={config.docsearch.apiKey}
+          indexName={config.docsearch.indexName}
+        />
       )}
     </div>
   );
