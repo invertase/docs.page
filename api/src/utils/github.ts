@@ -178,3 +178,60 @@ export async function getPullRequestMetadata(
     ref: response?.repository?.pullRequest?.ref?.name,
   };
 }
+
+export async function getRepositorySymLinks(owner: string, repository: string, dir = 'docs', ref: string): Promise<any[]> {
+  let symLinks: any[] = [];
+
+  const [error, response] = await A2A(
+    getGithubGQLClient()({
+      query: `
+        query RepositoryPaths($owner: String!, $repository: String!, $path: String!) {
+          repository(owner: $owner, name: $repository) {
+            modes: object(expression: $path) {
+              ... on Tree {
+                entries {
+                  mode
+                  name
+                  path
+                  type
+                  extension
+                  object {
+                    ... on Blob {
+                      text
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      `,
+      owner: owner,
+      repository: repository,
+      path: `${ref}:${dir}`,
+    }),
+  );
+
+  if (error) {
+    console.error(error);
+    return symLinks;
+  }
+  //@ts-ignore
+  const entries = response?.repository?.modes?.entries ?? [];
+
+  for (let i = 0; i < entries.length; i++) {
+    const { mode, path, type, extension } = entries[i];
+
+    // If there is a symlink file, add it to the list
+    if (type === 'blob' && extension === '.mdx' && mode == '40960') {
+      symLinks.push(entries[i]);
+    }
+
+    // If there is a sub-directory fetch any paths for that.
+    if (type === 'tree') {
+      symLinks = [...symLinks, ...(await getRepositorySymLinks(owner, repository, path, ref))];
+    }
+  }
+
+  return symLinks;
+}
