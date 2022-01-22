@@ -22,7 +22,7 @@ export function Header(props: HeaderProps) {
   const logoDark = useImagePath(config.logoDark);
   const previewMode = usePreviewMode();
   return (
-    <header className="px-4 sticky top-0 z-40 w-screen backdrop-blur flex-none transition-colors duration-500 lg:z-50 lg:border-b lg:border-gray-900/10 dark:lg:border-gray-400/10 bg-white/60 dark:bg-zinc-900/60">
+    <header className="px-4 sticky top-0 z-40 w-screen bg-white dark:bg-zinc-900 md:backdrop-blur flex-none transition-colors duration-500 lg:z-50 lg:border-b lg:border-gray-900/10 dark:lg:border-gray-400/10 md:bg-white/60 md:dark:bg-zinc-900/60">
       <div className="max-w-8xl mx-auto flex items-center h-14 px-4 lg:px-8">
         <div className="flex-shrink-0">
           <Link to={base} className="flex items-center font-bold">
