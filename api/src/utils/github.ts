@@ -61,10 +61,10 @@ export type Contents = {
   repositoryFound: boolean;
 };
 
-export async function getGitHubContents(metadata: MetaData): Promise<Contents> {
-  const absolutePath = `docs/${metadata.path}`;
-  const indexPath = `docs/${metadata.path}/index`;
-
+export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Promise<Contents> {
+  const base = noDir ? '' : 'docs/'
+  const absolutePath = `${base}${metadata.path}`;
+  const indexPath = `${base}${metadata.path}/index`;
   const [error, response] = await A2A<PageContentsQuery>(
     getGithubGQLClient()({
       query: `
@@ -106,7 +106,6 @@ export async function getGitHubContents(metadata: MetaData): Promise<Contents> {
       repositoryFound: false,
     };
   }
-
   return {
     repositoryFound: true,
     isFork: response?.repository?.isFork ?? false,
@@ -177,61 +176,4 @@ export async function getPullRequestMetadata(
     repository: response?.repository?.pullRequest?.repository?.name,
     ref: response?.repository?.pullRequest?.ref?.name,
   };
-}
-
-export async function getRepositorySymLinks(owner: string, repository: string, dir = 'docs', ref: string): Promise<any[]> {
-  let symLinks: any[] = [];
-
-  const [error, response] = await A2A(
-    getGithubGQLClient()({
-      query: `
-        query RepositoryPaths($owner: String!, $repository: String!, $path: String!) {
-          repository(owner: $owner, name: $repository) {
-            modes: object(expression: $path) {
-              ... on Tree {
-                entries {
-                  mode
-                  name
-                  path
-                  type
-                  extension
-                  object {
-                    ... on Blob {
-                      text
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      `,
-      owner: owner,
-      repository: repository,
-      path: `${ref}:${dir}`,
-    }),
-  );
-
-  if (error) {
-    console.error(error);
-    return symLinks;
-  }
-  //@ts-ignore
-  const entries = response?.repository?.modes?.entries ?? [];
-
-  for (let i = 0; i < entries.length; i++) {
-    const { mode, path, type, extension } = entries[i];
-
-    // If there is a symlink file, add it to the list
-    if (type === 'blob' && extension === '.mdx' && mode == '40960') {
-      symLinks.push(entries[i]);
-    }
-
-    // If there is a sub-directory fetch any paths for that.
-    if (type === 'tree') {
-      symLinks = [...symLinks, ...(await getRepositorySymLinks(owner, repository, path, ref))];
-    }
-  }
-
-  return symLinks;
 }

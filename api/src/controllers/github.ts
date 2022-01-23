@@ -4,6 +4,7 @@ import { bundle } from '../utils/bundler.js';
 import { getGitHubContents, getPullRequestMetadata } from '../utils/github.js';
 import { HeadingNode } from '../utils/plugins/rehype-headings.js';
 import { getPlugins } from '../utils/getPlugins.js';
+import { getPath, getRepositorySymLinks } from '../utils/symlinks.js';
 // import remarkMath from 'remark-math';
 // import rehypeKatex from 'rehype-katex';
 
@@ -77,7 +78,7 @@ export const bundleGitHub = async (
     };
   }
 
-  const {
+  let {
     md: markdown,
     config: sourceConfig,
     baseBranch: sourceBaseBranch,
@@ -94,11 +95,20 @@ export const bundleGitHub = async (
       try {
         config = JSON.parse(sourceConfig) || {};
         //@ts-ignore
-        console.log('debug', config)
         if (config && config.locales) {
           const defaulLocale = config.locales[0];
           const currentLocale = path.split('/')[0] || defaulLocale;
           config.sidebar = config?.sidebar[currentLocale];
+        }
+
+        if (config && true) {
+          const symLinks = await getRepositorySymLinks(owner, repository, 'docs', source.ref);
+          const newPath = getPath(symLinks[0])
+          const { md: symMarkdown } = await getGitHubContents({
+            ...source,
+            path: newPath,
+          }, true);
+          markdown = symMarkdown
         }
       } catch (e) {
         console.error(e)
