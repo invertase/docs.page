@@ -17,3 +17,8 @@ aside {
 code {
     display: inline-block;
 }
+
+.prose :where(pre.ch-code):not(:where([class~="not-prose"] *)) {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
