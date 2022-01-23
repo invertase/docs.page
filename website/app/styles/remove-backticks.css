@@ -22,3 +22,11 @@ code {
     padding-top: 0;
     padding-bottom: 0;
   }
+
+.ch-spotlight-tab {
+    cursor: pointer;
+}
+
+.ch-scrollycoding-step-content {
+    cursor: pointer;
+}
