@@ -4,7 +4,7 @@ import { bundle } from '../utils/bundler.js';
 import { getGitHubContents, getPullRequestMetadata } from '../utils/github.js';
 import { HeadingNode } from '../utils/plugins/rehype-headings.js';
 import { getPlugins } from '../utils/getPlugins.js';
-import { getPath, getRepositorySymLinks } from '../utils/symlinks.js';
+import { getFilePath, getRepositorySymLinks } from '../utils/symlinks.js';
 // import remarkMath from 'remark-math';
 // import rehypeKatex from 'rehype-katex';
 
@@ -101,14 +101,20 @@ export const bundleGitHub = async (
           config.sidebar = config?.sidebar[currentLocale];
         }
 
-        if (config && true) {
+        if (config && config.enableSymLinks) {
           const symLinks = await getRepositorySymLinks(owner, repository, 'docs', source.ref);
-          const newPath = getPath(symLinks[0])
-          const { md: symMarkdown } = await getGitHubContents({
-            ...source,
-            path: newPath,
-          }, true);
-          markdown = symMarkdown
+
+          const matches = symLinks.filter(s => s.formattedPath === path);
+
+          if (matches.length) {
+            const filePath = matches[0].filePath;
+
+            const { md: symMarkdown } = await getGitHubContents({
+              ...source,
+              path: filePath,
+            }, true);
+            markdown = symMarkdown
+          }
         }
       } catch (e) {
         console.error(e)

@@ -10,6 +10,8 @@ type symLink = {
     object: {
         text: string
     }
+    filePath: string,
+    formattedPath: string
 }
 
 export async function getRepositorySymLinks(owner: string, repository: string, dir = 'docs', ref: string): Promise<symLink[]> {
@@ -65,11 +67,15 @@ export async function getRepositorySymLinks(owner: string, repository: string, d
             symLinks = [...symLinks, ...(await getRepositorySymLinks(owner, repository, path, ref))];
         }
     }
-
+    symLinks = symLinks.map(s => ({
+        ...s,
+        filePath: getFilePath(s),
+        formattedPath: s.path.slice('docs/'.length, -'.mdx'.length)
+    }))
     return symLinks;
 }
 
-export function getPath(symlink: symLink): string {
+export function getFilePath(symlink: symLink): string {
     const { path: filePath, object } = symlink;
     const content = object.text;
     // console.log(path.join(path.dirname(filePath), content));
