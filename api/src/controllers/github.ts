@@ -101,7 +101,7 @@ export const bundleGitHub = async (
           config.sidebar = config?.sidebar[currentLocale];
         }
 
-        if (config && config.enableSymLinks) {
+        if (config) {
           const symLinks = await getRepositorySymLinks(owner, repository, 'docs', source.ref);
 
           const matches = symLinks.filter(s => s.formattedPath === path);
