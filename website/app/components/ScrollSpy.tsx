@@ -68,7 +68,7 @@ export function ScrollSpy(): JSX.Element {
       {headings.map(heading => (
         <li
           key={heading.id}
-          className={cx('block pl-4 -ml-px border-l border-transparent', {
+          className={cx('whitespace-nowrap text-ellipsis overflow-x-hidden block pl-4 -ml-px border-l border-transparent', {
             'hover:border-gray-400 hover:text-gray-800 dark:hover:text-gray-100': !(
               active === heading.id
             ),
