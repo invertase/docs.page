@@ -9,6 +9,7 @@ import rehypeCodeBlocks from '../utils/plugins/rehype-code-blocks.js';
 import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
 import rehypeInlineBadges from '../utils/plugins/rehype-inline-badges.js';
 import rehypeSlug from 'rehype-slug';
+import { getPlugins } from '../utils/getPlugins.js';
 /**
  * Gets the API information.
  *
@@ -50,17 +51,8 @@ export const bundleRaw = async (
   }
   if (markdown) {
     try {
-      const remarkPlugins = config?.experimentalCodeHike
-        ? [remarkGfm, [remarkCodeHike, { theme }]]
-        : [remarkGfm];
-
-      const rehypePlugins = config?.experimentalCodeHike
-        ? [rehypeSlug, rehypeInlineBadges, rehypeAccessibleEmojis]
-        : [rehypeCodeBlocks, rehypeSlug, rehypeInlineBadges, rehypeAccessibleEmojis];
-
       const bundleResult = await bundle(markdown, {
-        remarkPlugins,
-        rehypePlugins,
+        ...getPlugins(config ?? {}),
         headerDepth,
       });
       code = bundleResult.code;

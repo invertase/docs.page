@@ -7,11 +7,11 @@ import rehypeInlineBadges from '../utils/plugins/rehype-inline-badges.js';
 import rehypeSlug from 'rehype-slug';
 
 function getPlugins(config: Record<string, any>) {
-  const remarkPlugins = config?.experimentalCodeHike
+  const remarkPlugins = config?.experimentalCodehike
     ? [remarkGfm, [remarkCodeHike, { theme, lineNumbers: true }]]
     : [remarkGfm];
 
-  const rehypePlugins = config?.experimentalCodeHike
+  const rehypePlugins = config?.experimentalCodehike
     ? [rehypeSlug, rehypeInlineBadges, rehypeAccessibleEmojis]
     : [rehypeCodeBlocks, rehypeSlug, rehypeInlineBadges, rehypeAccessibleEmojis];
 
