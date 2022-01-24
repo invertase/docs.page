@@ -112,7 +112,7 @@ function Document({ children, title }: { children: React.ReactNode; title?: stri
         <Meta />
         <Links />
       </head>
-      <body className="overflow-y-scroll font-inter dark:bg-zinc-900 dark:text-white">
+      <body className="overflow-x-hidden overflow-y-scroll font-inter dark:bg-zinc-900 dark:text-white">
         <script
           dangerouslySetInnerHTML={{
             __html: `
