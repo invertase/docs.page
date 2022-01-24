@@ -19,11 +19,13 @@ export function useDocumentationContext() {
 }
 
 export function useBaseUrl(): string {
+  const previewMode = usePreviewMode()
+  if (previewMode.enabled) { return '#/' }
   const { owner, repo, ref } = React.useContext(DocumentationContext);
   let url = `/${owner}/${repo}`;
 
   if (ref) {
-    url += `~${ref}`;
+    url += `${ref === 'HEAD' ? '' : `~${ref}`}`;
   }
 
   return url;
@@ -55,14 +57,12 @@ export function useRawBlob(path: string): string {
   const { source, baseBranch } = React.useContext(DocumentationContext);
   const { owner, repository: repo, ref } = source;
   if (source.type === 'branch') {
-    return `https://raw.githubusercontent.com/${owner}/${repo}/${
-      ref ?? baseBranch
-    }/docs${ensureLeadingSlash(path)}`;
+    return `https://raw.githubusercontent.com/${owner}/${repo}/${ref ?? baseBranch
+      }/docs${ensureLeadingSlash(path)}`;
   }
   if (source.type === 'PR') {
-    return `https://raw.githubusercontent.com/${owner}/${repo}/${
-      ref ?? baseBranch
-    }/docs${ensureLeadingSlash(path)}`;
+    return `https://raw.githubusercontent.com/${owner}/${repo}/${ref ?? baseBranch
+      }/docs${ensureLeadingSlash(path)}`;
   }
 
   return `https://raw.githubusercontent.com/${owner}/${repo}/main/docs${ensureLeadingSlash(path)}`;
