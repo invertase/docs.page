@@ -21,7 +21,7 @@ export function Footer(props: FooterProps): JSX.Element {
   return (
     <footer className="mt-16 py-8 px-4 lg:px-8 border-t border-gray-900/10">
       <div className="flex text-sm font-medium text-gray-500 dark:text-gray-300">
-        <div className="flex-grow pt-1">
+        <div className="flex-grow pt-2">
           Powered by{' '}
           <Link to="/" className="hover:text-gray-900 dark:hover:text-gray-100 transition-colors">
             docs.page
@@ -35,8 +35,8 @@ export function Footer(props: FooterProps): JSX.Element {
             rel="noreferrer"
             className="hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
           >
-            <div className="flex-row flex border hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 rounded focus:outline-none p-1 rounded px-2">
-              <div className="flex mr-2">
+            <div className="flex-row flex border hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 rounded focus:outline-none p-2 rounded px-2">
+              <div className="flex  mr-2">
                 <PencilIcon width={14} />
               </div>
               <div>
