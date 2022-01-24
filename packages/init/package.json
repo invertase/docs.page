@@ -3,8 +3,8 @@
   "version": "1.0.5",
   "description": "npx cli for docs.page initialization",
   "main": "index.js",
-  "author": "cabljac",
-  "license": "MIT",
+  "author": "Invertase <oss@invertase.io> (http://invertase.io)",
+  "license": "Apache-2.0",
   "dependencies": {
     "typescript": "^4.5.4"
   },
