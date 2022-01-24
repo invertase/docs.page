@@ -55,10 +55,10 @@ export default function Index(): JSX.Element {
         </div>
       </section>
       <div className="max-w-5xl mx-auto px-4 lg:px-0">
-        <div className="lg:ml-20 mt-16 lg:flex items-center">
-          <div className="flex-1">
-            <p className="text-lg px-3 pb-8">
-              Note: You can skip steps 1 and 2 by running <code className="rounded p-2 bg-black text-white">npx @docs.page/init</code> at the root of your project (and commiting the result to Github)
+        <div className="lg:ml-20 mt-4 mb-16 lg:flex items-center">
+          <div className="rounded flex-1 border bg-green-400 p-4 text-zinc-900">
+            <p className="text-lg text-center">
+              New! Get started instantly with our <a className="font-bold text-blue-600 hover:text-blue-800 visited:text-purple-600 cursor-pointer" href="https://use.docs.page/getting-started#using-our-cli-tool"> CLI tool</a>
             </p>
           </div>
         </div>
@@ -115,7 +115,7 @@ export default function Index(): JSX.Element {
             </div>
           </div>
         </div>
-      </div>
+      </div >
       <div className="mt-32 max-w-5xl mx-auto px-4 lg:px-0">
         <Heading
           step={2}
@@ -249,7 +249,7 @@ export default function Index(): JSX.Element {
         </div>
         <Footer generic={true} />
       </div>
-    </div>
+    </div >
   );
 }
 

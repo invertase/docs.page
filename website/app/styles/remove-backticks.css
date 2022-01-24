@@ -6,10 +6,6 @@
     content: none;
 }
 
-aside {
-    overflow-x: hidden;
-}
-
 #nprogress .bar {
     background: var(--theme-color) !important;
 }
