@@ -35,7 +35,7 @@ export function Footer(props: FooterProps): JSX.Element {
             rel="noreferrer"
             className="hover:text-gray-900 dark:hover:text-gray-100 transition-colors"
           >
-            <div className="flex-row flex border hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 rounded focus:outline-none p-2 rounded px-2">
+            <div className="text-xs font-medium flex-row flex border hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 rounded focus:outline-none p-2 rounded px-2">
               <div className="flex  mr-2">
                 <PencilIcon width={14} />
               </div>
