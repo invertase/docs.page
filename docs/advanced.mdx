@@ -15,7 +15,7 @@ First edit the `sidebar` property of your  `docs.json`. Instead of an array, it 
 
 You will also need to add a `locales` property, which is an array of your locale names.
 
-For example, to add spanish translations, we would change the following config
+For example, to add spanish translations, we would change the following config:
 ```
 /docs.json
 {
@@ -26,33 +26,31 @@ For example, to add spanish translations, we would change the following config
     ]
 }
 ```
-to
+to:
 ```
 /docs.json
 {
     ...
     "sidebar": {
-        "english" : [
+        "gb" : [
                         "Overview": "/",
                         "Installation": "/english/installation"
                     ],
-        "spanish" : [
+        "es" : [
                         "Resumen" : "/",
                         "Instalación" : '/spanish/installation'
                     ]
     },
-    "locales": ["english","spanish"]
+    "locales": ["gb","es"]
 }
 ```
 We would then of course have to change our directory structure to match this new sidebar config:
 ```
 /docs
-    /english
+    /gb
         /index.mdx
         /installation.mdx
-    /spanish
+    /es
         /index.mdx
         /installation.mdx
 ```
-
-You can make similar changes to provide a prefix for versioned documentation.
