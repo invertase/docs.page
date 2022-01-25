@@ -5,9 +5,12 @@
 :root {
   --docsearch-searchbox-background: #fbfbfb;
   --docsearch-highlight-color: var(--theme-color);
+  --docsearch-modal-background: #fbfbfb;
 }
 
 html.dark {
+  --docsearch-modal-background: rgb(39 39 42);
+  --docsearch-footer-background: rgb(39 39 42);
   --docsearch-searchbox-background: transparent;
   --docsearch-searchbox-focus-background: transparent;
   --docsearch-muted-color: #d1d5db;
@@ -43,4 +46,8 @@ html.dark .DocSearch-Button-Key {
   box-shadow: none;
   font-size: 13px;
   align-items: center;
+}
+
+html.dark .DocSearch.DocSearch-Container {
+  
 }
