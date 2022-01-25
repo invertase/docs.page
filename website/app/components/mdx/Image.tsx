@@ -49,7 +49,7 @@ function withFigure(child: React.ReactElement, caption?: string) {
     <figure>
       {child}
       {!!caption && (
-        <figcaption className="text-center text-sm italic my-3 dark:text-white">
+        <figcaption className="my-3 text-center text-sm italic dark:text-white">
           {caption}
         </figcaption>
       )}

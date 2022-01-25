@@ -19,30 +19,34 @@ export default function Documentation({ data }: { data: DocumentationLoader }) {
   const [open, toggleMenu] = useState<boolean>(false);
   const transition = useTransition();
   useEffect(() => {
-    toggleMenu(false)
-  }, [transition.state])
+    toggleMenu(false);
+  }, [transition.state]);
   const MDX = useHydratedMdx({ code: data.code });
   const hash = createHash(`${data.owner}/${data.repo}`);
   return (
     <DocumentationProvider data={data}>
       <Theme />
       <div className="w-screen">
-        <Header onSidebarToggle={() => { toggleMenu(!open) }} />
+        <Header
+          onSidebarToggle={() => {
+            toggleMenu(!open);
+          }}
+        />
         <div data-test-id={'documentation-provider'} className="max-w-8xl mx-auto">
           <div className="hidden lg:block">
-            <div className="fixed inset-0 py-10 px-8 overflow-x-auto top-14 left-[max(0px,calc(50%-45rem))] w-64">
+            <div className="fixed inset-0 top-14 left-[max(0px,calc(50%-45rem))] w-64 overflow-x-auto py-10 px-8">
               <Sidebar />
             </div>
           </div>
-          <div className="pt-10 px-8 lg:pr-8 lg:pl-72">
+          <div className="px-8 pt-10 lg:pr-8 lg:pl-72">
             <div
               className={cx({
                 'items-center lg:mr-52 lg:pr-16': true,
               })}
             >
               <main
-                className="justify-center prose dark:prose-invert max-w-none
-              prose-code:font-fira prose-code:font-medium
+                className="prose dark:prose-invert prose-code:font-fira prose-code:font-medium
+              max-w-none justify-center
             "
               >
                 <TabsContext hash={hash}>
@@ -52,7 +56,7 @@ export default function Documentation({ data }: { data: DocumentationLoader }) {
               <Footer />
             </div>
             {!!data.headings && (
-              <aside className="w-52 overflow-x-hidden whitespace-nowrap hidden lg:block pt-10 px-8 fixed top-14 bottom-0 overflow-y-auto right-[max(0px,calc(50%-45rem))]">
+              <aside className="fixed top-14 bottom-0 right-[max(0px,calc(50%-45rem))] hidden w-52 overflow-y-auto overflow-x-hidden whitespace-nowrap px-8 pt-10 lg:block">
                 <ScrollSpy />
               </aside>
             )}

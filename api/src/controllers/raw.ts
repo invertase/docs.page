@@ -25,7 +25,6 @@ export const bundleRaw = async (
   // const ref = (req?.query.ref as string) || 'HEAD';
   console.log(req.body);
 
-
   const path = (req?.query.path as string) || 'index';
   const headerDepth = req?.query?.headerDepth ? parseInt(req?.query?.headerDepth as string) : 3;
   const { md: markdown, config: sourceConfig, baseBranch: sourceBaseBranch } = req.body;

@@ -20,12 +20,15 @@ function getEndpoint(base: string, { owner, repository, ref, path }: FetchBundle
 
 export async function fetchBundle(params: FetchBundleInput): Promise<BundleResponseData> {
   const { BUNDLER_URL, API_PASSWORD, NODE_ENV } = process.env;
-  console.log(BUNDLER_URL)
+  console.log(BUNDLER_URL);
   const endpoint = getEndpoint(
-    BUNDLER_URL ? BUNDLER_URL : (NODE_ENV === 'production' ? `https://api.docs.page` : 'http://localhost:8000'),
+    BUNDLER_URL
+      ? BUNDLER_URL
+      : NODE_ENV === 'production'
+      ? `https://api.docs.page`
+      : 'http://localhost:8000',
     params,
   );
-
 
   if (NODE_ENV == 'production' && !API_PASSWORD) {
     throw new Error('Please provide API_PASSWORD env variable');
@@ -36,7 +39,6 @@ export async function fetchBundle(params: FetchBundleInput): Promise<BundleRespo
   const data = await fetch(endpoint, {
     headers: { Authorization: `Basic ${token}` },
   }).then(response => {
-
     // console.dir(response.headers);
     if (response.status == 200) {
       return response.json();

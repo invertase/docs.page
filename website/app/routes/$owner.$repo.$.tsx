@@ -30,7 +30,7 @@ export let links: LinksFunction = () => {
     { rel: 'stylesheet', href: docsearch },
     { rel: 'stylesheet', href: codeblocks },
     { rel: 'stylesheet', href: codeHikeStyles },
-    { rel: 'stylesheet', href: removeBackTicks }
+    { rel: 'stylesheet', href: removeBackTicks },
   ];
 };
 
@@ -44,16 +44,20 @@ export const meta: MetaFunction = (props: { data?: DocumentationLoader }) => {
   }
 
   return {
-    "twitter:card": "summary_large_image",
-    "twiter:image:alt": props.data?.config?.name ?? '',
-    "og:url": `https://docs.page/${props.data.owner}/${props.data.repo}${props.data.path ? `/${props.data.path}` : ''}`,
-    "og:site_name": "docs.page",
-    "og:title": props.data.frontmatter?.title ?? props.data?.config?.name ?? props.data.repo ?? 'docs.page',
-    "theme-color": props.data.config?.theme ?? '',
-    title: props.data.frontmatter?.title ?? props.data?.config?.name ?? props.data?.repo ?? 'docs.page',
+    'twitter:card': 'summary_large_image',
+    'twiter:image:alt': props.data?.config?.name ?? '',
+    'og:url': `https://docs.page/${props.data.owner}/${props.data.repo}${
+      props.data.path ? `/${props.data.path}` : ''
+    }`,
+    'og:site_name': 'docs.page',
+    'og:title':
+      props.data.frontmatter?.title ?? props.data?.config?.name ?? props.data.repo ?? 'docs.page',
+    'theme-color': props.data.config?.theme ?? '',
+    title:
+      props.data.frontmatter?.title ?? props.data?.config?.name ?? props.data?.repo ?? 'docs.page',
     description: props.data.frontmatter?.description ?? '',
-    "og:description": props.data.frontmatter?.description ?? '',
-    "twitter:description": props.data.frontmatter?.description ?? '',
+    'og:description': props.data.frontmatter?.description ?? '',
+    'twitter:description': props.data.frontmatter?.description ?? '',
   };
 };
 
@@ -88,8 +92,10 @@ export function CatchBoundary() {
 }
 
 export function ErrorBoundary() {
-  return <div className="mt-32 max-w-5xl mx-auto px-4 lg:px-0" data-testid={'error-container'}>
-    <ServerError title="An uncaught error was thrown" />
-    <Footer generic={true} />
-  </div>
+  return (
+    <div className="mx-auto mt-32 max-w-5xl px-4 lg:px-0" data-testid={'error-container'}>
+      <ServerError title="An uncaught error was thrown" />
+      <Footer generic={true} />
+    </div>
+  );
 }

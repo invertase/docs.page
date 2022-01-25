@@ -105,7 +105,7 @@ export const bundleGitHub = async (
           markdown = await matchSymLinks(owner, repository, path, source, markdown);
         }
       } catch (e) {
-        console.error(e)
+        console.error(e);
 
         config = null;
       }
@@ -129,7 +129,6 @@ export const bundleGitHub = async (
       }
     }
   }
-
 
   const statusCode = code !== null ? 200 : 404;
   res.header('cache-control', 'public, max-age=61');
@@ -161,13 +160,19 @@ const extractQueryData = (req: Request) => {
   };
 };
 
-const matchSymLinks = async (owner: string, repository: string, path: string, source: {
-  type: 'PR' | 'commit' | 'branch';
-  owner: string;
-  repository: string;
-  ref: string;
-}, markdown: string | undefined) => {
-  let md = markdown
+const matchSymLinks = async (
+  owner: string,
+  repository: string,
+  path: string,
+  source: {
+    type: 'PR' | 'commit' | 'branch';
+    owner: string;
+    repository: string;
+    ref: string;
+  },
+  markdown: string | undefined,
+) => {
+  let md = markdown;
   const symLinks = await getRepositorySymLinks(owner, repository, 'docs', source.ref);
 
   const matches = symLinks.filter(s => s.formattedPath === path);
@@ -175,13 +180,16 @@ const matchSymLinks = async (owner: string, repository: string, path: string, so
   if (matches.length) {
     const filePath = matches[0].filePath;
 
-    const { md: symMarkdown } = await getGitHubContents({
-      ...source,
-      path: filePath,
-    }, true);
+    const { md: symMarkdown } = await getGitHubContents(
+      {
+        ...source,
+        path: filePath,
+      },
+      true,
+    );
     if (symMarkdown) {
-      md = symMarkdown
+      md = symMarkdown;
     }
   }
   return md;
-}
+};

@@ -49,7 +49,7 @@ export function DarkModeToggle() {
   const [mode, setMode] = useState<string | null>(null);
 
   const container = (children?: React.ReactElement) => (
-    <div className="relative w-full md:w-28 px-2 h-8 flex items-center dark:text-white bg-[#fbfbfb] hover:bg-transparent dark:bg-transparent border hover:border-gray-300 dark:border-gray-700 dark:hover:border-gray-600 rounded focus:outline-none">
+    <div className="relative flex h-8 w-full items-center rounded border bg-[#fbfbfb] px-2 hover:border-gray-300 hover:bg-transparent focus:outline-none dark:border-gray-700 dark:bg-transparent dark:text-white dark:hover:border-gray-600 md:w-28">
       {children}
     </div>
   );
@@ -58,10 +58,10 @@ export function DarkModeToggle() {
     return !!mode
       ? mode
       : localStorage[STORAGE_KEY]
-        ? localStorage[STORAGE_KEY] === 'dark'
-          ? 'dark'
-          : 'light'
-        : 'system';
+      ? localStorage[STORAGE_KEY] === 'dark'
+        ? 'dark'
+        : 'light'
+      : 'system';
   }
 
   // Render an empty container during SSR
@@ -80,7 +80,7 @@ export function DarkModeToggle() {
       </div>
       <select
         role="button"
-        className="absolute inset-0 appearance-none w-full flex items-center font-medium bg-transparent focus:outline-none pl-8 text-gray-600 hover:text-black dark:text-gray-300 dark:hover:text-white text-xs pr-3"
+        className="absolute inset-0 flex w-full appearance-none items-center bg-transparent pl-8 pr-3 text-xs font-medium text-gray-600 hover:text-black focus:outline-none dark:text-gray-300 dark:hover:text-white"
         value={option}
         onChange={e => {
           const value = e.target.value;

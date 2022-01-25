@@ -28,11 +28,11 @@ export function Pre(props: PreProps): JSX.Element {
   return (
     <>
       {!!title && (
-        <div className="rounded-tr rounded-tl font-mono font-bold text-gray-300 text-sm px-4 py-2 border-b border-gray-700 bg-[#24292e]">
+        <div className="rounded-tr rounded-tl border-b border-gray-700 bg-[#24292e] px-4 py-2 font-mono text-sm font-bold text-gray-300">
           {title}
         </div>
       )}
-      <div className="relative group">
+      <div className="group relative">
         <div
           className={cx('shiki-parent', {
             'shiki-parent-title': !!title,
@@ -41,14 +41,14 @@ export function Pre(props: PreProps): JSX.Element {
         />
         <div
           className={cx(
-            'opacity-0 group-hover:opacity-100 transition-opacity absolute top-0 right-0 mr-2 mt-2',
+            'absolute top-0 right-0 mr-2 mt-2 opacity-0 transition-opacity group-hover:opacity-100',
             {
               'opacity-100': copied,
             },
           )}
         >
           <CopyToClipboard text={raw} onCopy={() => setCopied(true)}>
-            <button className="text-white text-xs font-mono bg-black hover:bg-black/40 transition-colors px-3 py-2 rounded-lg">
+            <button className="rounded-lg bg-black px-3 py-2 font-mono text-xs text-white transition-colors hover:bg-black/40">
               {copied ? 'Copied' : 'Copy'}
             </button>
           </CopyToClipboard>

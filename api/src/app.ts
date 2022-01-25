@@ -34,9 +34,9 @@ if (process.env.API_PASSWORD) {
 app.use(text());
 app.use(cors());
 app.options('/raw', (req, res, next) => {
-  res.setHeader('Access-Control-Allow-Origin', '*')
-  res.end
-})
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.end;
+});
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(

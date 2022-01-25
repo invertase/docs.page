@@ -14,7 +14,7 @@ function Anchor(
   return (
     <DocsLink
       to={props.href || ''}
-      className="no-underline border-b border-docs-theme hover:border-b-2"
+      className="border-docs-theme border-b no-underline hover:border-b-2"
     >
       {props.children}
     </DocsLink>
@@ -39,10 +39,10 @@ function Heading({ type, id, children, ...props }: HeadingProps) {
         children
       ) : (
         <>
-          <div id={id} className="absolute -top-16 opacity-0 pointer-events-none" />
+          <div id={id} className="pointer-events-none absolute -top-16 opacity-0" />
           <a
             href={`#${id}`}
-            className="before:content-['#'] before:absolute before:-left-6 before:text-docs-theme no-underline"
+            className="before:text-docs-theme no-underline before:absolute before:-left-6 before:content-['#']"
           />
           <span>{children}</span>
         </>

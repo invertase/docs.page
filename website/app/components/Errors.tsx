@@ -35,9 +35,9 @@ export function PreviewNotFound({ error }: { error: any }): JSX.Element {
 }
 
 export function PageNotFound() {
-
   return (
-    <ErrorContainer title={'This page could not be found'} code={404}><></>
+    <ErrorContainer title={'This page could not be found'} code={404}>
+      <></>
     </ErrorContainer>
   );
 }
@@ -84,7 +84,7 @@ function ErrorContainer({
   children: React.ReactElement;
 }) {
   return (
-    <div className="mt-20 max-w-lg mx-auto">
+    <div className="mx-auto mt-20 max-w-lg">
       <Title statusCode={code} title={title} />
       <div className="mt-10 flex-col">{children}</div>
       <QuickLinks />
@@ -104,14 +104,14 @@ export function Title({ statusCode, title }: TitleProps): JSX.Element {
         <h1 className="text-7xl lg:text-9xl">
           <span
             data-testid="error-status-code"
-            className="bg-clip-text text-transparent bg-gradient-to-br from-purple-400 via-pink-500 to-red-500"
+            className="bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent"
           >
             {statusCode}
           </span>
         </h1>
         <h2
           data-testid="error-title"
-          className="text-5xl lg:text-4xl text-gray-900 dark:text-white"
+          className="text-5xl text-gray-900 dark:text-white lg:text-4xl"
         >
           {title}
         </h2>

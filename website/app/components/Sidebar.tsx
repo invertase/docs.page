@@ -7,21 +7,21 @@ import { LocaleSelect } from './LocaleSelect';
 
 export function Sidebar() {
   const { sidebar, locales } = useDocumentationContext().config;
-  const location = useLocation()
+  const location = useLocation();
   const currentLocale = location.pathname.split('/')[3];
 
   return (
     <nav>
       <ul className="text-sm text-gray-600 dark:text-gray-300">
-        {!!locales && <li className="mb-2 w-full">
-          <LocaleSelect locales={locales} />
-        </li>
-        }
-        <li className=" md:hidden flex w-full">
+        {!!locales && (
+          <li className="mb-2 w-full">
+            <LocaleSelect locales={locales} />
+          </li>
+        )}
+        <li className=" flex w-full md:hidden">
           <DarkModeToggle />
         </li>
         {sidebar.map(([title, urlOrChildren]) => {
-
           if (typeof urlOrChildren === 'string') {
             return (
               <li key={urlOrChildren}>
@@ -29,9 +29,9 @@ export function Sidebar() {
                   end={urlOrChildren === (locales ? `/${currentLocale}` : '/')}
                   to={urlOrChildren}
                   className={({ isActive }) =>
-                    cx('block my-2', {
+                    cx('my-2 block', {
                       'hover:text-gray-800 dark:hover:text-gray-100': !isActive,
-                      'text-docs-theme font-medium border-docs-theme': isActive,
+                      'text-docs-theme border-docs-theme font-medium': isActive,
                     })
                   }
                 >
@@ -42,21 +42,21 @@ export function Sidebar() {
           }
 
           return (
-            <li key={title} className="mt-4 first:mt-0 mb-4">
-              <h5 className="text-gray-900 dark:text-gray-200 font-semibold tracking-wide pb-3">
+            <li key={title} className="mt-4 mb-4 first:mt-0">
+              <h5 className="pb-3 font-semibold tracking-wide text-gray-900 dark:text-gray-200">
                 {title}
               </h5>
-              <ul className="border-l border-gray-100 dark:border-gray-700 space-y-2">
+              <ul className="space-y-2 border-l border-gray-100 dark:border-gray-700">
                 {urlOrChildren.map(([title, url]) => (
                   <li key={url}>
                     <DocsLink
                       end={url === (locales ? `/${currentLocale}` : '/')}
                       to={url}
                       className={({ isActive }) =>
-                        cx('block pl-4 -ml-px border-l border-transparent', {
+                        cx('-ml-px block border-l border-transparent pl-4', {
                           'hover:border-gray-400 hover:text-gray-800 dark:hover:text-gray-100':
                             !isActive,
-                          'text-docs-theme font-medium !border-docs-theme': isActive,
+                          'text-docs-theme !border-docs-theme font-medium': isActive,
                         })
                       }
                     >

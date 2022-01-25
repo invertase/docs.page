@@ -7,7 +7,7 @@ export function Banner() {
   };
 
   return (
-    <div className="h-6 flex items-center justify-center font-medium text-xs" style={styles}>
+    <div className="flex h-6 items-center justify-center text-xs font-medium" style={styles}>
       Version 2.0 is released! Go check it out!
     </div>
   );

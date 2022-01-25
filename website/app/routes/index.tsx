@@ -28,13 +28,13 @@ export const meta: MetaFunction = () => ({
 export default function Index(): JSX.Element {
   return (
     <div>
-      <section className="py-16 lg:py-32 text-center px-4 lg:text-left">
-        <div className="max-w-6xl mx-auto tracking-wider">
-          <div className="flex items-center justify-center lg:justify-start mb-4 space-x-4">
+      <section className="py-16 px-4 text-center lg:py-32 lg:text-left">
+        <div className="mx-auto max-w-6xl tracking-wider">
+          <div className="mb-4 flex items-center justify-center space-x-4 lg:justify-start">
             <h3 className="font-anton text-4xl">docs.page</h3>
             <a
               href="https://github.com/invertase/docs.page"
-              className="text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white transition-colors duration-100"
+              className="text-gray-700 transition-colors duration-100 hover:text-black dark:text-gray-300 dark:hover:text-white"
             >
               <svg className="h-10 w-10 " fill="currentColor" viewBox="0 0 24 24">
                 <path
@@ -45,20 +45,27 @@ export default function Index(): JSX.Element {
               </svg>
             </a>
           </div>
-          <h1 className="font-anton mb-4 text-6xl lg:text-8xl bg-clip-text text-transparent bg-gradient-to-br from-gray-900 dark:from-gray-100 via-gray-700 dark:via-gray-300 to-gray-900 dark:to-gray-200">
+          <h1 className="font-anton mb-4 bg-gradient-to-br from-gray-900 via-gray-700 to-gray-900 bg-clip-text text-6xl text-transparent dark:from-gray-100 dark:via-gray-300 dark:to-gray-200 lg:text-8xl">
             Instant{' '}
-            <span className="bg-clip-text text-transparent bg-gradient-to-br from-green-400 to-blue-500">
+            <span className="bg-gradient-to-br from-green-400 to-blue-500 bg-clip-text text-transparent">
               Open Source
             </span>{' '}
             docs <br /> with zero configuration.
           </h1>
         </div>
       </section>
-      <div className="max-w-5xl mx-auto px-4 lg:px-0">
-        <div className="lg:ml-20 mt-4 mb-16 lg:flex items-center">
-          <div className="rounded flex-1 border bg-green-400 p-4 text-zinc-900">
-            <p className="text-lg text-center">
-              New! Get started instantly with our <a className="font-bold text-blue-600 hover:text-blue-800 visited:text-purple-600 cursor-pointer" href="https://use.docs.page/getting-started#using-our-cli-tool"> CLI tool</a>
+      <div className="mx-auto max-w-5xl px-4 lg:px-0">
+        <div className="mt-4 mb-16 items-center lg:ml-20 lg:flex">
+          <div className="flex-1 rounded border bg-green-400 p-4 text-zinc-900">
+            <p className="text-center text-lg">
+              New! Get started instantly with our{' '}
+              <a
+                className="cursor-pointer font-bold text-blue-600 visited:text-purple-600 hover:text-blue-800"
+                href="https://use.docs.page/getting-started#using-our-cli-tool"
+              >
+                {' '}
+                CLI tool
+              </a>
             </p>
           </div>
         </div>
@@ -67,7 +74,7 @@ export default function Index(): JSX.Element {
           title={
             <span>
               Add a{' '}
-              <span className="bg-clip-text text-transparent bg-gradient-to-br from-purple-400 via-pink-500 to-red-500">
+              <span className="bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
                 docs
               </span>{' '}
               directory to your GitHub repository.
@@ -76,27 +83,28 @@ export default function Index(): JSX.Element {
           from="from-purple-400"
           to="to-red-500"
         />
-        <div className="lg:ml-20 mt-16 lg:flex items-center">
+        <div className="mt-16 items-center lg:ml-20 lg:flex">
           <div className="flex-1">
-            <p className="text-lg px-3">
+            <p className="px-3 text-lg">
               docs.page sources content directly from any Open Source GitHub repository.
             </p>
-            <p className="mt-4 text-lg px-3">
-              To get started, create an empty <code className="text-red-400">docs</code> directory and a
-              config <code className="text-red-400">docs.json</code> file, both at the root of your repository.
+            <p className="mt-4 px-3 text-lg">
+              To get started, create an empty <code className="text-red-400">docs</code> directory
+              and a config <code className="text-red-400">docs.json</code> file, both at the root of
+              your repository.
             </p>
           </div>
           <div className="flex-1">
             <div className="mt-10 lg:mt-0 lg:pl-8">
               <div>
-                <div className="mx-6 py-3 border-t border-l border-r rounded-tr rounded-tl border-gray-700" />
-                <div className="py-3 px-3 flex items-center border rounded border-gray-700 font-mono text-sm shadow-xl">
+                <div className="mx-6 rounded-tr rounded-tl border-t border-l border-r border-gray-700 py-3" />
+                <div className="flex items-center rounded border border-gray-700 py-3 px-3 font-mono text-sm shadow-xl">
                   <svg
                     height="16"
                     viewBox="0 0 16 16"
                     version="1.1"
                     width="16"
-                    className="text-white mr-3"
+                    className="mr-3 text-white"
                   >
                     <path
                       fill="currentColor"
@@ -104,25 +112,25 @@ export default function Index(): JSX.Element {
                       d="M1.75 1A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25v-8.5A1.75 1.75 0 0014.25 3h-6.5a.25.25 0 01-.2-.1l-.9-1.2c-.33-.44-.85-.7-1.4-.7h-3.5z"
                     />
                   </svg>
-                  <div className="flex-col pr-8" >
+                  <div className="flex-col pr-8">
                     <span className="flex">docs</span>
                     <span className="flex">docs.json</span>
                   </div>
                   <span className="text-gray-600">A few seconds ago</span>
                 </div>
-                <div className="mx-6 py-3 border-b border-l border-r rounded-br rounded-bl border-gray-700" />
+                <div className="mx-6 rounded-br rounded-bl border-b border-l border-r border-gray-700 py-3" />
               </div>
             </div>
           </div>
         </div>
-      </div >
-      <div className="mt-32 max-w-5xl mx-auto px-4 lg:px-0">
+      </div>
+      <div className="mx-auto mt-32 max-w-5xl px-4 lg:px-0">
         <Heading
           step={2}
           title={
             <span>
               Create an{' '}
-              <span className="bg-clip-text text-transparent bg-gradient-to-br from-green-400 to-blue-500">
+              <span className="bg-gradient-to-br from-green-400 to-blue-500 bg-clip-text text-transparent">
                 index.mdx
               </span>{' '}
               file.
@@ -131,15 +139,15 @@ export default function Index(): JSX.Element {
           from="from-green-400"
           to="to-blue-500"
         />
-        <div className="lg:ml-20 mt-16 flex flex-col-reverse lg:flex-row items-center">
+        <div className="mt-16 flex flex-col-reverse items-center lg:ml-20 lg:flex-row">
           <div className="w-full flex-1">
-            <div className="pr-5 mt-10 lg:mt-0">
+            <div className="mt-10 pr-5 lg:mt-0">
               <div>
-                <div className="border rounded-tr rounded-tl bg-gray-50 border-gray-700 px-3 py-2">
+                <div className="rounded-tr rounded-tl border border-gray-700 bg-gray-50 px-3 py-2">
                   <code className="text-sm">docs/index.mdx</code>
                 </div>
                 <div className="flex">
-                  <div className="flex-1 p-3 font-mono border-gray-700 border-r border-l">
+                  <div className="flex-1 border-r border-l border-gray-700 p-3 font-mono">
                     <div># Installation</div>
                     <br />
                     <div>```bash</div>
@@ -151,32 +159,32 @@ export default function Index(): JSX.Element {
             </div>
           </div>
           <div className="flex-1">
-            <p className="text-lg px-3">
-              Create an <code className="text-blue-500">{`index.mdx`}</code> file at the root of your{' '}
-              <code className="text-blue-500">/docs</code> directory. docs.page supports nested
+            <p className="px-3 text-lg">
+              Create an <code className="text-blue-500">{`index.mdx`}</code> file at the root of
+              your <code className="text-blue-500">/docs</code> directory. docs.page supports nested
               pages based on your directory structure of the directory.
             </p>
-            <p className="mt-4 text-lg px-3">
+            <p className="mt-4 px-3 text-lg">
               Start by writing some <a href="https://www.markdownguide.org/">Markdown</a> content.
               Installation pages are always a great place to start!
             </p>
           </div>
         </div>
       </div>
-      <div className="mt-32 max-w-5xl mx-auto px-4 lg:px-0">
+      <div className="mx-auto mt-32 max-w-5xl px-4 lg:px-0">
         <Heading
           step={3}
           title="Checkout your new documentation!"
           from="from-yellow-400"
           to="to-yellow-500"
         />
-        <div className="lg:ml-20 mt-10 lg:flex">
+        <div className="mt-10 lg:ml-20 lg:flex">
           <Checkout />
         </div>
       </div>
-      <div className="mt-32 max-w-5xl mx-auto px-4 lg:px-0">
+      <div className="mx-auto mt-32 max-w-5xl px-4 lg:px-0">
         <Heading step={4} title="Learn more..." from="from-green-400" to="to-green-500" />
-        <div className="lg:ml-20 mt-10 grid lg:grid-cols-2 gap-16 text-center">
+        <div className="mt-10 grid gap-16 text-center lg:ml-20 lg:grid-cols-2">
           <Feature
             href="https://use.docs.page/configuration"
             title={<span className="text-blue-500">Configure</span>}
@@ -249,7 +257,7 @@ export default function Index(): JSX.Element {
         </div>
         <Footer generic={true} />
       </div>
-    </div >
+    </div>
   );
 }
 
@@ -262,7 +270,7 @@ function Button({ href, children }: ButtonProps): JSX.Element {
   return (
     <a
       href={href}
-      className="px-6 py-2 border border-gray-600 hover:border-gray-300 dark:hover:border-white no-underline rounded transition-all duration-100"
+      className="rounded border border-gray-600 px-6 py-2 no-underline transition-all duration-100 hover:border-gray-300 dark:hover:border-white"
     >
       {children}
     </a>
@@ -281,14 +289,14 @@ export function Heading({ step, title, from, to }: HeadingProps) {
     <div className="flex items-center">
       <div
         className={cx(
-          'w-16 h-16 flex items-center justify-center rounded-full bg-gradient-to-br shadow-xl',
+          'flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br shadow-xl',
           from,
           to,
         )}
       >
-        <span className="font-anton text-white text-4xl">{step}</span>
+        <span className="font-anton text-4xl text-white">{step}</span>
       </div>
-      <h2 className="flex-1 ml-6 font-anton text-4xl leading-relaxed">{title}</h2>
+      <h2 className="font-anton ml-6 flex-1 text-4xl leading-relaxed">{title}</h2>
     </div>
   );
 }
@@ -303,9 +311,9 @@ type FeatureProps = {
 export function Feature({ href, icon, title, text }: FeatureProps) {
   return (
     <div className="flex flex-col items-center justify-center p-3">
-      <div className="flex-1 flex flex-col items-center justify-center">
+      <div className="flex flex-1 flex-col items-center justify-center">
         {icon}
-        <h4 className="my-8 font-anton text-5xl tracking-wide">{title}</h4>
+        <h4 className="font-anton my-8 text-5xl tracking-wide">{title}</h4>
         <p className="min-h-[90px] leading-relaxed">{text}</p>
       </div>
       <div className="mt-10">

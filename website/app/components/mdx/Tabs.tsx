@@ -151,14 +151,14 @@ export function Tabs(props: TabsProps): JSX.Element {
   const sync = useTabSynchronization(props.groupId ?? '', setSelected);
 
   return (
-    <div className="mb-6 border dark:border-gray-700 rounded">
+    <div className="mb-6 rounded border dark:border-gray-700">
       <div className="flex p-2">
         {props.values.map(({ label, value }) => (
           <div
             role="button"
             key={value}
             className={cx(
-              'px-6 py-5 flex items-center border-b-2 font-bold hover:bg-gray-500 hover:bg-opacity-10 rounded',
+              'flex items-center rounded border-b-2 px-6 py-5 font-bold hover:bg-gray-500 hover:bg-opacity-10',
               {
                 'border-docs-theme': value === selected,
                 'border-transparent': value !== selected,

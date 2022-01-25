@@ -22,14 +22,14 @@ export function Header(props: HeaderProps) {
   const logoDark = useImagePath(config.logoDark);
   const previewMode = usePreviewMode();
   return (
-    <header className="px-4 sticky top-0 z-40 w-screen bg-white dark:bg-zinc-900 md:backdrop-blur flex-none transition-colors duration-500 lg:z-50 lg:border-b lg:border-gray-900/10 dark:lg:border-gray-400/10 md:bg-white/60 md:dark:bg-zinc-900/60">
-      <div className="max-w-8xl mx-auto flex items-center h-14 px-4 lg:px-8">
+    <header className="sticky top-0 z-40 w-screen flex-none bg-white px-4 transition-colors duration-500 dark:bg-zinc-900 md:bg-white/60 md:backdrop-blur md:dark:bg-zinc-900/60 lg:z-50 lg:border-b lg:border-gray-900/10 dark:lg:border-gray-400/10">
+      <div className="max-w-8xl mx-auto flex h-14 items-center px-4 lg:px-8">
         <div className="flex-shrink-0">
           <Link to={base} className="flex items-center font-bold">
             {!!config.logo && (
               <>
                 <img
-                  className={cx('w-6 h-6 mr-3 inline-block dark:hidden', {
+                  className={cx('mr-3 inline-block h-6 w-6 dark:hidden', {
                     'dark:hidden': !!config.logoDark,
                   })}
                   src={logoLight}
@@ -38,23 +38,23 @@ export function Header(props: HeaderProps) {
               </>
             )}
             {!!config.logoDark && (
-              <img className="w-6 h-6 mr-3 hidden dark:inline-block" src={logoDark} alt="Logo" />
+              <img className="mr-3 hidden h-6 w-6 dark:inline-block" src={logoDark} alt="Logo" />
             )}
             <span>{config.name || `${owner}/${repo}`}</span>
           </Link>
         </div>
         {previewMode.enabled && (
-          <span className="ml-4 px-4 py-2 dark:text-black text-white italic text-xs rounded-lg bg-gradient-to-br from-red-600 to-black dark:from-yellow-200 dark:to-red-400">
+          <span className="ml-4 rounded-lg bg-gradient-to-br from-red-600 to-black px-4 py-2 text-xs italic text-white dark:from-yellow-200 dark:to-red-400 dark:text-black">
             preview mode
           </span>
         )}
-        <div className="flex-grow flex justify-end">
+        <div className="flex flex-grow justify-end">
           <ul className="flex space-x-4">
             {!!config.twitter && (
               <li>
                 <a
                   href={`https://twitter.com/${config.twitter}`}
-                  className="text-blue-500 hover:text-blue-400 transition-colors duration-100"
+                  className="text-blue-500 transition-colors duration-100 hover:text-blue-400"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -70,11 +70,13 @@ export function Header(props: HeaderProps) {
                 </a>
               </li>
             )}
-            {previewMode.enabled ? '' :
+            {previewMode.enabled ? (
+              ''
+            ) : (
               <li>
                 <a
                   href={`https://github.com/${owner}/${repo}`}
-                  className="text-gray-700 hover:text-black dark:text-gray-300 dark:hover:text-white transition-colors duration-100"
+                  className="text-gray-700 transition-colors duration-100 hover:text-black dark:text-gray-300 dark:hover:text-white"
                 >
                   <svg className="h-8 w-8" fill="currentColor" viewBox="0 0 24 24">
                     <path
@@ -85,11 +87,11 @@ export function Header(props: HeaderProps) {
                   </svg>
                 </a>
               </li>
-            }
+            )}
             {previewMode.enabled && (
               <button
                 onClick={previewMode.onSelect}
-                className="mr-4 flex px-3 py-2 text-xs rounded-lg shadow text-white transition-colors whitespace-nowrap bg-green-600 hover:bg-green-500"
+                className="mr-4 flex whitespace-nowrap rounded-lg bg-green-600 px-3 py-2 text-xs text-white shadow transition-colors hover:bg-green-500"
               >
                 <span className="text-white">Change directory</span>
               </button>
@@ -108,10 +110,10 @@ export function Header(props: HeaderProps) {
                 />
               </li>
             )}
-            <li className="md:flex hidden">
+            <li className="hidden md:flex">
               <DarkModeToggle />
             </li>
-            <li className="flex justify-center items-center">
+            <li className="flex items-center justify-center">
               <MobileMenuIcon onToggle={props.onSidebarToggle} />
             </li>
           </ul>
@@ -160,7 +162,7 @@ function RefLink({ pointer, owner, repo, source }: RefLinkProps): JSX.Element {
     <a href={href}>
       <div
         className={cx(
-          'flex px-3 py-2 text-xs rounded-lg shadow text-white transition-colors whitespace-nowrap',
+          'flex whitespace-nowrap rounded-lg px-3 py-2 text-xs text-white shadow transition-colors',
           `${className}`,
         )}
       >
@@ -170,7 +172,6 @@ function RefLink({ pointer, owner, repo, source }: RefLinkProps): JSX.Element {
     </a>
   );
 }
-
 
 type MobileMenuIconProps = {
   onToggle: OnSidebarToggle;

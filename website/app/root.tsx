@@ -34,7 +34,7 @@ export const links: LinksFunction = () => {
     },
     { rel: 'stylesheet', href: nProgressStyles },
     { rel: 'stylesheet', href: tailwind },
-    { rel: 'icon', href: 'https://next.docs.page/favicon.ico?v=2' }
+    { rel: 'icon', href: 'https://next.docs.page/favicon.ico?v=2' },
   ];
 };
 
@@ -42,7 +42,7 @@ export function loader() {
   return {
     ENV: {
       MSW_ENABLED: process.env.MSW_ENABLED,
-      NODE_ENV: process.env.NODE_ENV
+      NODE_ENV: process.env.NODE_ENV,
     },
   };
 }
@@ -92,7 +92,7 @@ export function CatchBoundary(): JSX.Element {
 
   return (
     <Document title={`${e.status} ${e.statusText}`}>
-      <div className="mt-32 max-w-5xl mx-auto px-4 lg:px-0" data-testid={'error-container'}>
+      <div className="mx-auto mt-32 max-w-5xl px-4 lg:px-0" data-testid={'error-container'}>
         {child!}
         <Footer generic={true} />
       </div>
@@ -112,7 +112,7 @@ function Document({ children, title }: { children: React.ReactNode; title?: stri
         <Meta />
         <Links />
       </head>
-      <body className="overflow-x-hidden overflow-y-scroll font-inter dark:bg-zinc-900 dark:text-white">
+      <body className="font-inter overflow-x-hidden overflow-y-scroll dark:bg-zinc-900 dark:text-white">
         <script
           dangerouslySetInnerHTML={{
             __html: `

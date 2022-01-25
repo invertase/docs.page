@@ -62,7 +62,7 @@ export type Contents = {
 };
 
 export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Promise<Contents> {
-  const base = noDir ? '' : 'docs/'
+  const base = noDir ? '' : 'docs/';
   const absolutePath = `${base}${metadata.path}`;
   const indexPath = `${base}${metadata.path}/index`;
   const [error, response] = await A2A<PageContentsQuery>(

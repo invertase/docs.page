@@ -58,9 +58,9 @@ const linkData: QuickLinkProps[] = [
 
 export function QuickLinks(): JSX.Element {
   return (
-    <div className="dark:text-white mb-12 mt-10">
-      <h2 className="text-xl font-semibold mb-4">Quick Links</h2>
-      <div className="lg:flex flex-wrap">
+    <div className="mb-12 mt-10 dark:text-white">
+      <h2 className="mb-4 text-xl font-semibold">Quick Links</h2>
+      <div className="flex-wrap lg:flex">
         {linkData.map((link, i) => (
           <QuickLink key={i} href={link.href} icon={link.icon}>
             {link.children}
@@ -81,7 +81,7 @@ function QuickLink({ href, icon, children }: QuickLinkProps) {
   return (
     <div className="mt-2 flex lg:w-1/2 ">
       <a
-        className="flex items-center space-x-4 w-full mx-2 p-4 rounded hover:bg-gray-400/10"
+        className="mx-2 flex w-full items-center space-x-4 rounded p-4 hover:bg-gray-400/10"
         href={href}
       >
         {icon}

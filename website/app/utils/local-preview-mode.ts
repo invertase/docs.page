@@ -65,7 +65,7 @@ export async function extractContents(
         }),
       ),
     );
-  } catch (_) { }
+  } catch (_) {}
 
   return [text, JSON.stringify(config), imageUrls, errors];
 }
@@ -157,7 +157,6 @@ export function useDirectorySelector(): {
         const docsHandles = await iterateDirectory(docs);
         setHandles(docsHandles);
       }
-
     } catch (e) {
     } finally {
       setPending(false);
@@ -232,7 +231,7 @@ export function usePollLocalDocs(
 }
 
 const buildPreviewProps = async (params: any): Promise<DocumentationLoader> => {
-  let config = {}
+  let config = {};
   if (Object.keys(params.config).length > 0) {
     config = JSON.parse(params.config);
   }
@@ -250,13 +249,14 @@ const buildPreviewProps = async (params: any): Promise<DocumentationLoader> => {
   if (md) {
     try {
       //@ts-ignore
-      const host = window.ENV?.NODE_ENV === 'production' ? 'https://next.docs.page' : 'http://localhost:3001'
+      const host =
+        window.ENV?.NODE_ENV === 'production' ? 'https://next.docs.page' : 'http://localhost:3001';
       const bundle = await fetch(`${host}/preview-fetch`, {
         method: 'POST',
         headers: {
-          'Accept': 'application/json, text/plain, */*',
+          Accept: 'application/json, text/plain, */*',
           'Content-Type': 'application/json',
-          'docs-page-preview': 'true'
+          'docs-page-preview': 'true',
         },
         body: JSON.stringify(body),
       }).then(r => r.json());

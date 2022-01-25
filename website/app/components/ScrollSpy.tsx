@@ -34,7 +34,6 @@ export function ScrollSpy(): JSX.Element {
         el = document.querySelector(`#${id}`);
       } catch (e) {
         console.error(`heading ${id} cannot be found`);
-
       }
       if (el) observer.observe(el);
     });
@@ -64,16 +63,19 @@ export function ScrollSpy(): JSX.Element {
   }
 
   return (
-    <ul className="text-sm space-y-2">
+    <ul className="space-y-2 text-sm">
       {headings.map(heading => (
         <li
           key={heading.id}
-          className={cx('whitespace-nowrap text-ellipsis overflow-x-hidden block pl-4 -ml-px border-l border-transparent', {
-            'hover:border-gray-400 hover:text-gray-800 dark:hover:text-gray-100': !(
-              active === heading.id
-            ),
-            'text-docs-theme font-medium !border-docs-theme': active === heading.id,
-          })}
+          className={cx(
+            '-ml-px block overflow-x-hidden text-ellipsis whitespace-nowrap border-l border-transparent pl-4',
+            {
+              'hover:border-gray-400 hover:text-gray-800 dark:hover:text-gray-100': !(
+                active === heading.id
+              ),
+              'text-docs-theme !border-docs-theme font-medium': active === heading.id,
+            },
+          )}
         >
           <a className="cursor-pointer" onClick={() => onClick(heading.id)}>
             {heading.title}
