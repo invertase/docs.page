@@ -25,8 +25,8 @@ export async function fetchBundle(params: FetchBundleInput): Promise<BundleRespo
     BUNDLER_URL
       ? BUNDLER_URL
       : NODE_ENV === 'production'
-      ? `https://api.docs.page`
-      : 'http://localhost:8000',
+        ? `https://api.docs.page`
+        : 'http://localhost:8000',
     params,
   );
 
@@ -40,7 +40,7 @@ export async function fetchBundle(params: FetchBundleInput): Promise<BundleRespo
     headers: { Authorization: `Basic ${token}` },
   }).then(response => {
     // console.dir(response.headers);
-    if (response.status == 200) {
+    if ([200, 404, 400].includes(response.status)) {
       return response.json();
     } else
       throw new Error(
