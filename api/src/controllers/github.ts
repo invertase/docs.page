@@ -130,7 +130,7 @@ export const bundleGitHub = async (
     }
   }
 
-  const statusCode = code !== null ? 200 : 404;
+  const statusCode = 200;
   res.header('cache-control', 'public, max-age=61');
   return res.status(statusCode).send({
     code,

@@ -19,9 +19,8 @@ export function Footer(props: FooterProps): JSX.Element {
   // TODO: fix editUrl
   const editUrl = previewMode.enabled
     ? ''
-    : `https://github.com/${source.owner}/${source.repository}/edit/${
-        source.type === 'branch' && source.ref !== 'HEAD' ? source.ref : baseBranch
-      }/docs/${path || 'index'}.mdx`;
+    : `https://github.com/${source.owner}/${source.repository}/edit/${source.type === 'branch' && source.ref !== 'HEAD' ? source.ref : baseBranch
+    }/docs/${path || 'index'}.mdx`;
   return (
     <footer className="mt-16 border-t border-gray-900/10 py-8 px-4 lg:px-8">
       <div className="flex text-sm font-medium text-gray-500 dark:text-gray-300">
@@ -55,7 +54,7 @@ export function Footer(props: FooterProps): JSX.Element {
 
 function GenericFooter() {
   return (
-    <footer className="mt-20 mb-5 flex py-4 font-mono text-sm opacity-50 transition-opacity hover:opacity-100">
+    <footer className="mt-20 mb-5 flex p-4 font-mono text-sm opacity-50 transition-opacity hover:opacity-100">
       <div className="flex-grow dark:text-white ">
         <div>
           © {new Date().getFullYear()}{' '}

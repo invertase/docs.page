@@ -46,9 +46,8 @@ export const meta: MetaFunction = (props: { data?: DocumentationLoader }) => {
   return {
     'twitter:card': 'summary_large_image',
     'twiter:image:alt': props.data?.config?.name ?? '',
-    'og:url': `https://docs.page/${props.data.owner}/${props.data.repo}${
-      props.data.path ? `/${props.data.path}` : ''
-    }`,
+    'og:url': `https://docs.page/${props.data.owner}/${props.data.repo}${props.data.path ? `/${props.data.path}` : ''
+      }`,
     'og:site_name': 'docs.page',
     'og:title':
       props.data.frontmatter?.title ?? props.data?.config?.name ?? props.data.repo ?? 'docs.page',
@@ -86,7 +85,7 @@ export function CatchBoundary() {
   return (
     <div data-testid={'error-container'}>
       {child!}
-      <Footer />
+      <Footer generic={true} />
     </div>
   );
 }

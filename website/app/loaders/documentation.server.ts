@@ -63,9 +63,9 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
   try {
     bundle = await fetchBundle({ owner, repository: repo, path, ref });
   } catch (error) {
+
     // If the bundler failed (e.g. API down), throw a server error
     console.error(error);
-
     throw json(null, 500);
   }
 
@@ -76,6 +76,7 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
 
   // No bundled code or config should 404
   if (bundle.config === null || bundle.code === null) {
+
     throw json<ThrownNotFoundError['data']>(
       {
         owner,
@@ -86,7 +87,6 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
       404,
     );
   }
-
   // Apply a redirect if provided in the frontmatter
   if (bundle.frontmatter.redirect) {
     const href = bundle.frontmatter.redirect;
