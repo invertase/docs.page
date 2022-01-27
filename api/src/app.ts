@@ -20,6 +20,7 @@ const unless = function (paths: string[], middleware: RequestHandler): RequestHa
   };
 };
 
+/*
 if (process.env.API_PASSWORD) {
   app.use(
     unless(
@@ -30,6 +31,7 @@ if (process.env.API_PASSWORD) {
     ),
   );
 }
+*/
 
 app.use(text());
 app.use(cors());
