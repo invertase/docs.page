@@ -2,23 +2,25 @@ import express, { text, RequestHandler } from 'express';
 import routes from './routes.js';
 import morgan from 'morgan';
 import cors from 'cors';
-import basicAuth from 'express-basic-auth';
+// import basicAuth from 'express-basic-auth';
 import { config } from 'dotenv';
-import { isParenthesizedTypeNode } from 'typescript';
+// import { isParenthesizedTypeNode } from 'typescript';
+import ProbotMiddleWare from './utils/bot.js';
+
 config();
 const PORT = process.env.PORT || 8000;
 
 const app = express();
 
-const unless = function (paths: string[], middleware: RequestHandler): RequestHandler {
-  return function (req, res, next) {
-    if (paths.includes(req.path) || req.method === 'OPTIONS') {
-      return next();
-    } else {
-      return middleware(req, res, next);
-    }
-  };
-};
+// const unless = function (paths: string[], middleware: RequestHandler): RequestHandler {
+//   return function (req, res, next) {
+//     if (paths.includes(req.path) || req.method === 'OPTIONS') {
+//       return next();
+//     } else {
+//       return middleware(req, res, next);
+//     }
+//   };
+// };
 
 /*
 if (process.env.API_PASSWORD) {
@@ -47,6 +49,8 @@ app.use(
   }),
 );
 app.use('/', routes);
+
+app.use('/webhooks/bot-docs-page', (res, req, next) => ProbotMiddleWare(res, req))
 
 app.listen(PORT, () => {
   console.log(`docs.page api server is running at http://localhost:${PORT}`);
