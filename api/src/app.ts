@@ -5,7 +5,6 @@ import cors from 'cors';
 // import basicAuth from 'express-basic-auth';
 import { config } from 'dotenv';
 // import { isParenthesizedTypeNode } from 'typescript';
-import ProbotMiddleWare from './utils/bot.js';
 
 config();
 const PORT = process.env.PORT || 8000;
@@ -49,8 +48,6 @@ app.use(
   }),
 );
 app.use('/', routes);
-
-app.use('/webhooks/bot-docs-page', (res, req, next) => ProbotMiddleWare(res, req))
 
 app.listen(PORT, () => {
   console.log(`docs.page api server is running at http://localhost:${PORT}`);
