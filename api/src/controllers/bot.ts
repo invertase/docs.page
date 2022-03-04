@@ -3,7 +3,8 @@ import { createNodeMiddleware, createProbot, Probot } from 'probot';
 // Create a probot instance for the docs.page app
 const probot = createProbot({
   overrides: {
-    appId: '124461',
+    appId: process.env.GITHUB_APP_ID,
+    privateKey: process.env.GITHUB_APP_PRIVATE_KEY,
   },
 });
 
