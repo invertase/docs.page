@@ -54,7 +54,7 @@ export function DocsLink({ ...props }: NavLinkProps): JSX.Element {
             ? props.className({ isActive: false })
             : props.className
         }
-        href={`https://${domain}${to}`}
+        href={`https://${domain}${props.to}`}
       >
         {props.children}
       </a>
