@@ -5,6 +5,7 @@ import { usePreviewMode } from '~/utils/local-preview-mode';
 export function DocsLink({ ...props }: NavLinkProps): JSX.Element {
   const { owner, repo, ref } = useDocumentationContext();
   const previewMode = usePreviewMode();
+  console.log('ref', ref)
 
   const { domain } = useCustomDomain()
 
@@ -29,6 +30,7 @@ export function DocsLink({ ...props }: NavLinkProps): JSX.Element {
 
   if (ref && ref !== 'HEAD') {
     to += `~${ref}`;
+    console.log('here', to)
   }
 
   if (previewMode.enabled) {
@@ -39,14 +41,14 @@ export function DocsLink({ ...props }: NavLinkProps): JSX.Element {
             ? props.className({ isActive: false })
             : props.className
         }
-        href={`#${props.to}`}
+        href={`#${to}`}
       >
         {props.children}
       </a>
     );
   }
 
-  if (domain) {
+  if (domain && process.env.NODE_ENV === 'production') {
 
     return (
       <a
@@ -55,7 +57,7 @@ export function DocsLink({ ...props }: NavLinkProps): JSX.Element {
             ? props.className({ isActive: false })
             : props.className
         }
-        href={`https://${domain}${props.to}`}
+        href={`https://${domain}${to}`}
       >
         {props.children}
       </a>
