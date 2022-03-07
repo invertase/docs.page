@@ -48,7 +48,7 @@ export function DocsLink({ ...props }: NavLinkProps): JSX.Element {
     );
   }
 
-  if (domain && process.env.NODE_ENV === 'production') {
+  if (domain) {
 
     return (
       <a
