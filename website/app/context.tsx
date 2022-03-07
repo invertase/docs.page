@@ -45,12 +45,13 @@ export function useBaseUrl(): string {
     return '#/';
   }
 
-  if (domain) {
-    return '';
-  }
 
   const { owner, repo, ref } = React.useContext(DocumentationContext);
   let url = `/${owner}/${repo}`;
+
+  if (domain) {
+    url = '/'
+  }
 
   if (ref) {
     url += `${ref === 'HEAD' ? '' : `~${ref}`}`;

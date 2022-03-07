@@ -46,7 +46,7 @@ export function DocsLink({ ...props }: NavLinkProps): JSX.Element {
     );
   }
 
-  if (domain && !ref) {
+  if (domain) {
 
     return (
       <a
