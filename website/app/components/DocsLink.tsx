@@ -1,10 +1,12 @@
 import { NavLink, NavLinkProps, useLocation } from 'react-router-dom';
-import { useDocumentationContext } from '~/context';
+import { useCustomDomain, useDocumentationContext } from '~/context';
 import { usePreviewMode } from '~/utils/local-preview-mode';
 
 export function DocsLink({ ...props }: NavLinkProps): JSX.Element {
   const { owner, repo, ref } = useDocumentationContext();
   const previewMode = usePreviewMode();
+
+  const { domain } = useCustomDomain()
 
   if (typeof props.to === 'string' && isExternalLink(props.to)) {
     return (
@@ -43,6 +45,24 @@ export function DocsLink({ ...props }: NavLinkProps): JSX.Element {
       </a>
     );
   }
+
+  if (domain && !ref) {
+
+    return (
+      <a
+        className={
+          typeof props.className === 'function'
+            ? props.className({ isActive: false })
+            : props.className
+        }
+        href={`https://${domain}${props.to}`}
+      >
+        {props.children}
+      </a>
+    );
+  }
+
+
   return <NavLink {...props} to={removeTrailingSlash(`${to}${props.to}`)} />;
 }
 
