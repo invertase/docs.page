@@ -6,6 +6,7 @@ import { DarkModeToggle } from './DarkModeToggle';
 import { useBaseUrl, useDocumentationContext, useImagePath } from '~/context';
 import { Branch, Commit, Menu, PullRequest } from './Icons';
 import { usePreviewMode } from '~/utils/local-preview-mode';
+import { DocsLink } from './DocsLink';
 
 export type OnSidebarToggle = () => void;
 
@@ -25,7 +26,7 @@ export function Header(props: HeaderProps) {
     <header className="sticky top-0 z-40 w-screen flex-none bg-white px-4 transition-colors duration-500 dark:bg-zinc-900 md:bg-white/60 md:backdrop-blur md:dark:bg-zinc-900/60 lg:z-50 lg:border-b lg:border-gray-900/10 dark:lg:border-gray-400/10">
       <div className="max-w-8xl mx-auto flex h-14 items-center px-4 lg:px-8">
         <div className="flex-shrink-0">
-          <Link to={base} className="flex items-center font-bold">
+          <DocsLink to={base} className="flex items-center font-bold">
             {!!config.logo && (
               <>
                 <img
@@ -41,7 +42,7 @@ export function Header(props: HeaderProps) {
               <img className="mr-3 hidden h-6 w-6 dark:inline-block" src={logoDark} alt="Logo" />
             )}
             <span>{config.name || `${owner}/${repo}`}</span>
-          </Link>
+          </DocsLink>
         </div>
         {previewMode.enabled && (
           <span className="ml-4 rounded-lg bg-gradient-to-br from-red-600 to-black px-4 py-2 text-xs italic text-white dark:from-yellow-200 dark:to-red-400 dark:text-black">
