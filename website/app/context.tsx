@@ -53,7 +53,7 @@ export function useBaseUrl(): string {
     url = '/'
   }
 
-  if (ref) {
+  if (ref && !domain) {
     url += `${ref === 'HEAD' ? '' : `~${ref}`}`;
   }
 
