@@ -26,9 +26,9 @@ export function Footer(props: FooterProps): JSX.Element {
       <div className="flex text-sm font-medium text-gray-500 dark:text-gray-300">
         <div className="flex-grow pt-2">
           Powered by{' '}
-          <Link to="/" className="transition-colors hover:text-gray-900 dark:hover:text-gray-100">
+          <a href="https://docs.page" className="transition-colors hover:text-gray-900 dark:hover:text-gray-100">
             docs.page
-          </Link>
+          </a>
         </div>
         {previewMode.enabled ? (
           ''
