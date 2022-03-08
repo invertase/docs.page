@@ -48,7 +48,7 @@ export function DocsLink({ ...props }: NavLinkProps): JSX.Element {
     );
   }
 
-  if (domain) {
+  if (domain && process.env.NODE_ENV === 'production') {
     let href = `https://${domain}${props.to}`;
 
     if (ref && ref !== 'HEAD') {

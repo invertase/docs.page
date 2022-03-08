@@ -104,7 +104,7 @@ function Document({ children, title }: { children: React.ReactNode; title?: stri
   const location = useLocation();
 
   return (
-    <html lang="en">
+    <html className='overflow-y-scroll' lang="en">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width,initial-scale=1" />
