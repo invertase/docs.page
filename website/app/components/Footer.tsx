@@ -19,14 +19,18 @@ export function Footer(props: FooterProps): JSX.Element {
   // TODO: fix editUrl
   const editUrl = previewMode.enabled
     ? ''
-    : `https://github.com/${source.owner}/${source.repository}/edit/${source.type === 'branch' && source.ref !== 'HEAD' ? source.ref : baseBranch
-    }/docs/${path || 'index'}.mdx`;
+    : `https://github.com/${source.owner}/${source.repository}/edit/${
+        source.type === 'branch' && source.ref !== 'HEAD' ? source.ref : baseBranch
+      }/docs/${path || 'index'}.mdx`;
   return (
     <footer className="mt-16 border-t border-gray-900/10 py-8 px-4 lg:px-8">
       <div className="flex text-sm font-medium text-gray-500 dark:text-gray-300">
         <div className="flex-grow pt-2">
           Powered by{' '}
-          <a href="https://docs.page" className="transition-colors hover:text-gray-900 dark:hover:text-gray-100">
+          <a
+            href="https://docs.page"
+            className="transition-colors hover:text-gray-900 dark:hover:text-gray-100"
+          >
             docs.page
           </a>
         </div>
@@ -39,7 +43,7 @@ export function Footer(props: FooterProps): JSX.Element {
             rel="noreferrer"
             className="transition-colors hover:text-gray-900 dark:hover:text-gray-100"
           >
-            <div className="flex flex-row rounded rounded border p-2 px-2 text-xs font-medium hover:border-gray-300 focus:outline-none dark:border-gray-700 dark:hover:border-gray-600">
+            <div className="flex flex-row rounded border p-2 px-2 text-xs font-medium hover:border-gray-300 focus:outline-none dark:border-gray-700 dark:hover:border-gray-600">
               <div className="mr-2  flex">
                 <PencilIcon width={14} />
               </div>

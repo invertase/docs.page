@@ -6,7 +6,9 @@ export function DocsLink({ ...props }: NavLinkProps): JSX.Element {
   const { owner, repo, ref } = useDocumentationContext();
   const previewMode = usePreviewMode();
 
-  const { domain } = useCustomDomain()
+  const { domain } = useCustomDomain();
+
+  const { pathname } = useLocation();
 
   if (typeof props.to === 'string' && isExternalLink(props.to)) {
     return (
@@ -47,18 +49,19 @@ export function DocsLink({ ...props }: NavLinkProps): JSX.Element {
   }
 
   if (domain) {
-
     let href = `https://${domain}${props.to}`;
 
     if (ref && ref !== 'HEAD') {
       href = `https://${domain}/~${ref}${props.to}`;
     }
+    const path = '/' + pathname.split('/').slice(3).join('/');
+
+    const isActive = props.to === path;
+
     return (
       <a
         className={
-          typeof props.className === 'function'
-            ? props.className({ isActive: false })
-            : props.className
+          typeof props.className === 'function' ? props.className({ isActive }) : props.className
         }
         href={href}
       >
@@ -66,7 +69,6 @@ export function DocsLink({ ...props }: NavLinkProps): JSX.Element {
       </a>
     );
   }
-
 
   return <NavLink {...props} to={removeTrailingSlash(`${to}${props.to}`)} />;
 }

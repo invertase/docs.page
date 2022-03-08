@@ -16,7 +16,6 @@ import { useEffect, useState } from 'react';
 import { useTransition } from 'remix';
 import domains from '../../../domains.json';
 
-
 export default function Documentation({ data }: { data: DocumentationLoader }) {
   const [open, toggleMenu] = useState<boolean>(false);
   const transition = useTransition();
@@ -27,9 +26,7 @@ export default function Documentation({ data }: { data: DocumentationLoader }) {
   const hash = createHash(`${data.owner}/${data.repo}`);
 
   const domain =
-    domains.find(
-      ([, repository]) => repository === `${data.owner}/${data.repo}`,
-    )?.[0] || null;
+    domains.find(([, repository]) => repository === `${data.owner}/${data.repo}`)?.[0] || null;
 
   return (
     <DomainProvider data={{ domain }}>

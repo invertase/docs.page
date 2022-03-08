@@ -10,12 +10,12 @@
 
 // // Queries a repository and extracts a file
 // const getFile = `
-//   query GetDomains($owner: String!, $repo: String!, $file: String!) { 
+//   query GetDomains($owner: String!, $repo: String!, $file: String!) {
 //     repository(owner: $owner, name: $repo) {
 //       file: object(expression: $file) {
 //         ... on Blob {
 //           text
-          
+
 //         }
 //       }
 //     }

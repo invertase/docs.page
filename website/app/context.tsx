@@ -7,14 +7,12 @@ const DocumentationContext = createContext<DocumentationLoader>({} as Documentat
 
 export type DomainProviderProps = {
   data: {
-    domain: string | null
-  },
+    domain: string | null;
+  };
   children: React.ReactNode | React.ReactNode[];
-}
-
+};
 
 const DomainContext = createContext<{ domain: string | null }>({} as { domain: string | null });
-
 
 export function DomainProvider({ data, children }: DomainProviderProps) {
   return <DomainContext.Provider value={data}>{children}</DomainContext.Provider>;
@@ -45,10 +43,9 @@ export function useBaseUrl(): string {
     return '#/';
   }
 
-
   const { owner, repo, ref } = React.useContext(DocumentationContext);
 
-  let url = '/'
+  let url = '/';
 
   if (ref && !domain) {
     url += `${ref === 'HEAD' ? '' : `~${ref}`}`;
@@ -83,12 +80,14 @@ export function useRawBlob(path: string): string {
   const { source, baseBranch } = React.useContext(DocumentationContext);
   const { owner, repository: repo, ref } = source;
   if (source.type === 'branch') {
-    return `https://raw.githubusercontent.com/${owner}/${repo}/${ref ?? baseBranch
-      }/docs${ensureLeadingSlash(path)}`;
+    return `https://raw.githubusercontent.com/${owner}/${repo}/${
+      ref ?? baseBranch
+    }/docs${ensureLeadingSlash(path)}`;
   }
   if (source.type === 'PR') {
-    return `https://raw.githubusercontent.com/${owner}/${repo}/${ref ?? baseBranch
-      }/docs${ensureLeadingSlash(path)}`;
+    return `https://raw.githubusercontent.com/${owner}/${repo}/${
+      ref ?? baseBranch
+    }/docs${ensureLeadingSlash(path)}`;
   }
 
   return `https://raw.githubusercontent.com/${owner}/${repo}/main/docs${ensureLeadingSlash(path)}`;
