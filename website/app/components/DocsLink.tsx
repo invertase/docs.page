@@ -49,24 +49,24 @@ export function DocsLink({ ...props }: NavLinkProps): JSX.Element {
   }
 
   if (domain && process.env.NODE_ENV === 'production') {
-    let href = `https://${domain}${props.to}`;
+    let href = `${props.to}`;
 
     if (ref && ref !== 'HEAD') {
-      href = `https://${domain}/~${ref}${props.to}`;
+      href = `/~${ref}${props.to}`;
     }
     const path = '/' + pathname.split('/').slice(3).join('/');
 
     const isActive = props.to === path;
 
     return (
-      <a
+      <NavLink
         className={
           typeof props.className === 'function' ? props.className({ isActive }) : props.className
         }
-        href={href}
+        to={href}
       >
         {props.children}
-      </a>
+      </NavLink>
     );
   }
 
