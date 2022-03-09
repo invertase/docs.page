@@ -8,7 +8,9 @@ if (window.ENV.MSW_ENABLED === '1') {
 if (
   //@ts-ignore
   window.ENV.NODE_ENV === 'production' &&
-  window.location.host !== 'docs.page'
+  window.location.hostname !== 'next.docs.page' &&
+  window.location.hostname !== 'localhost' &&
+  window.location.hostname !== 'docs.page'
 ) {
   window.__remixManifest.routes['routes/$owner.$repo.$'].path = '*';
   window.__remixManifest.routes['routes/$owner.$repo.$'].index = false;

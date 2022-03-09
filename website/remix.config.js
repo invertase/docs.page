@@ -1,12 +1,13 @@
-require('dotenv').config();
 /**
- * @type {import('@remix-run/dev/config').AppConfig}
+ * @type {import('@remix-run/dev').AppConfig}
  */
 module.exports = {
-  appDirectory: 'app',
-  assetsBuildDirectory: 'public/build',
-  publicPath: '/build/',
-  serverBuildDirectory: 'server/build',
   devServerPort: 8002,
+  appDirectory: 'app',
+  assetsBuildDirectory: 'public/_docs.page',
   ignoredRouteFiles: ['.*'],
+  publicPath: '/_docs.page/',
+  // serverBuildDirectory: "server/build",
+  serverBuildPath: 'server/build/index.js',
+  serverBuildTarget: 'node-cjs',
 };

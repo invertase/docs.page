@@ -7,3 +7,4 @@ yarn.lock
 bundler/dist
 dist
 build
+_docs.page
