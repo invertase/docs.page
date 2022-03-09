@@ -65,7 +65,7 @@ export async function extractContents(
         }),
       ),
     );
-  } catch (_) {}
+  } catch (_) { }
 
   return [text, JSON.stringify(config), imageUrls, errors];
 }
@@ -250,7 +250,7 @@ const buildPreviewProps = async (params: any): Promise<DocumentationLoader> => {
     try {
       //@ts-ignore
       const host =
-        window.ENV?.NODE_ENV === 'production' ? 'https://next.docs.page' : 'http://localhost:3001';
+        window.ENV?.NODE_ENV === 'production' ? 'https://docs.page' : 'http://localhost:3001';
       const bundle = await fetch(`${host}/preview-fetch`, {
         method: 'POST',
         headers: {

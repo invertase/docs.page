@@ -55,7 +55,7 @@ export default function Index(): JSX.Element {
         </div>
       </section>
       <div className="mx-auto max-w-5xl px-4 lg:px-0">
-        <div className="mt-4 mb-16 items-center lg:ml-20 lg:flex">
+        {/* <div className="mt-4 mb-16 items-center lg:ml-20 lg:flex">
           <div className="flex-1 rounded border bg-green-400 p-4 text-zinc-900">
             <p className="text-center text-lg">
               New! Get started instantly with our{' '}
@@ -68,7 +68,7 @@ export default function Index(): JSX.Element {
               </a>
             </p>
           </div>
-        </div>
+        </div> */}
         <Heading
           step={1}
           title={
