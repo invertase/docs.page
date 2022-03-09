@@ -24,7 +24,7 @@ export function headers({ loaderHeaders }) {
 
 export const loader = docsLoader;
 
-export let links: LinksFunction = () => {
+export const links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/@docsearch/css@alpha' },
     { rel: 'stylesheet', href: docsearch },
