@@ -26,7 +26,7 @@ docs.page is designed to deliver instant documentation websites, with the conten
 GitHub repository. Features include:
 
 - [Configurable](https://use.docs.page/configuration): Add your own logo, theme, analytics, navigation and more with a simple config file.
-- [Previewing](https://use.docs.page/previews): View the documentation of any branch, pull request or specific commit,.
+- [Previewing](https://use.docs.page/previews): View the documentation of any branch, pull request or specific commit, and a new Local Preview Mode.
 - [GitHub Bot](https://use.docs.page/github-bot): Install our [GitHub bot](https://github.com/apps/docs-page) to automatically get a URL to pull request documentation previews.
 - [Components](https://use.docs.page/components): Powered by [MDX](https://github.com/mdx-js/mdx), use React components such as Tabs (useful for projects with multiple languages) directly in your docs.
 - [Search](https://use.docs.page/search): Easily add full search support powered by [DocSearch](https://docsearch.algolia.com/).

@@ -5,3 +5,6 @@ yarn.lock
 /public/_docs.page/shiki/themes/
 /public/_docs.page/shiki/languages/
 bundler/dist
+dist
+build
+_docs.page

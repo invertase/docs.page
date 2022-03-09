@@ -5,4 +5,57 @@ description: Learn about advanced features of docs.page.
 
 # Advanced
 
-Work in progress.
+Here we detail some advanced features you can use in your docs.page documentation.
+
+## Translations and Locales
+
+If you want to provide translations of your documentation into another language, we now support this.
+
+First edit the `sidebar` property of your `docs.json`. Instead of an array, it should now be an object, with the locale names as keys.
+
+You will also need to add a `locales` property, which is an array of your locale names.
+
+For example, to add spanish translations, we would change the following config:
+
+```
+/docs.json
+{
+    ...
+    "sidebar": [
+        "Overview": "/",
+        "Installation": "/installation"
+    ]
+}
+```
+
+to:
+
+```
+/docs.json
+{
+    ...
+    "sidebar": {
+        "gb" : [
+                        "Overview": "/",
+                        "Installation": "/english/installation"
+                    ],
+        "es" : [
+                        "Resumen" : "/",
+                        "Instalación" : '/spanish/installation'
+                    ]
+    },
+    "locales": ["gb","es"]
+}
+```
+
+We would then of course have to change our directory structure to match this new sidebar config:
+
+```
+/docs
+    /gb
+        /index.mdx
+        /installation.mdx
+    /es
+        /index.mdx
+        /installation.mdx
+```

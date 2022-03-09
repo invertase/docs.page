@@ -19,6 +19,22 @@ The documentation is available by providing the repositories owner and name afte
 https://docs.page/acme/awesome-project
 ```
 
+## Using our CLI tool
+
+To make setting up docs.page with your project as smooth and as seemless as possible, we've added a small CLI tool, `@docs.page/init` .
+
+If you have `node` and `npm` installed locally you can `cd` to the root of your project and run the command
+
+```
+npx @docs.page/init
+```
+
+This will add a `docs.json`, a `docs` directory, and a couple of `mdx` files to get you started.
+
+From there you can preview your documentation by visiting `docs.page/preview`, and selecting your root directory for preview.
+
+Once you're happy with your documentation you can push changes to your Github repository and your documentation site will be ready to visit!
+
 ## Working with Markdown
 
 The project supports rendering all [GitHub-flavored Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
