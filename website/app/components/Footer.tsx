@@ -1,4 +1,3 @@
-import { Link } from 'remix';
 import { useDocumentationContext } from '~/context';
 import { usePreviewMode } from '~/utils/local-preview-mode';
 import { DarkModeToggle } from './DarkModeToggle';

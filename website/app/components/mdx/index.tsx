@@ -31,23 +31,25 @@ interface HeadingProps extends HTMLHeadingProps {
 }
 
 function Heading({ type, id, children, ...props }: HeadingProps) {
-  return createElement(type, {
-    ...props,
-    className: cx('relative', props.className),
-    children:
-      type === 'h1' ? (
-        children
-      ) : (
-        <>
-          <div id={id} className="pointer-events-none absolute -top-16 opacity-0" />
-          <a
-            href={`#${id}`}
-            className="before:text-docs-theme no-underline before:absolute before:-left-6 before:content-['#']"
-          />
-          <span>{children}</span>
-        </>
-      ),
-  });
+  return createElement(
+    type,
+    {
+      ...props,
+      className: cx('relative', props.className),
+    },
+    type === 'h1' ? (
+      children
+    ) : (
+      <>
+        <div id={id} className="pointer-events-none absolute -top-16 opacity-0" />
+        <a
+          href={`#${id}`}
+          className="before:text-docs-theme no-underline before:absolute before:-left-6 before:content-['#']"
+        />
+        <span>{children}</span>
+      </>
+    ),
+  );
 }
 
 export default {
