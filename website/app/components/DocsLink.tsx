@@ -55,9 +55,7 @@ export function DocsLink({ ...props }: NavLinkProps): JSX.Element {
       href = `//${domain}/~${ref}${props.to}`;
     }
     const path = '/' + pathname.split('/').slice(3).join('/');
-
     const isActive = props.to === path;
-    console.log(href)
     return (
       <NavLink
         className={
