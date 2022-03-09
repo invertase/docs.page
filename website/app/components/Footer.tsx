@@ -16,7 +16,6 @@ export function Footer(props: FooterProps): JSX.Element {
     return <GenericFooter />;
   }
 
-  // TODO: fix editUrl
   const editUrl = previewMode.enabled
     ? ''
     : `https://github.com/${source.owner}/${source.repository}/edit/${

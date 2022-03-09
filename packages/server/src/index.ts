@@ -20,7 +20,6 @@ function getEndpoint(base: string, { owner, repository, ref, path }: FetchBundle
 
 export async function fetchBundle(params: FetchBundleInput): Promise<BundleResponseData> {
   const { BUNDLER_URL, API_PASSWORD, NODE_ENV } = process.env;
-  console.log(BUNDLER_URL);
   const endpoint = getEndpoint(
     BUNDLER_URL
       ? BUNDLER_URL

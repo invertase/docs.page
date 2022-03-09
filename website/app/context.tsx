@@ -43,7 +43,7 @@ export function useBaseUrl(): string {
     return '#/';
   }
 
-  const { owner, repo, ref } = React.useContext(DocumentationContext);
+  const { ref } = React.useContext(DocumentationContext);
 
   let url = '/';
 
