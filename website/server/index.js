@@ -15,9 +15,17 @@ app.disable('x-powered-by');
 app.use(express.static('public', { maxAge: '1h' }));
 
 // Remix fingerprints its assets so we can cache forever
-app.use(express.static('public/build', { immutable: true, maxAge: '1y' }));
+app.use(express.static('public/_docs.page', { immutable: true, maxAge: '1y' }));
 
-app.use(morgan('tiny'));
+// TODO switch to Bunyan for GCP logging in prod; https://cloud.google.com/logging/docs/setup/nodejs
+app.use(
+  morgan('tiny', {
+    skip: function (req) {
+      // Skipp logging assets.
+      return req.path.includes('_docs.page') || req.path.includes('favicon.ico');
+    },
+  }),
+);
 app.all(
   '*',
   MODE === 'production'
