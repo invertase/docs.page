@@ -15,7 +15,6 @@ export function ScrollSpy(): JSX.Element {
     const observer = new IntersectionObserver(
       entries => {
         for (const entry of entries) {
-          // console.log(entry.intersectionRatio)
           if (entry.isIntersecting && entry.intersectionRatio === 1) {
             const id = entry.target.getAttribute('id');
             setActive(id!);

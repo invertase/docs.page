@@ -87,7 +87,6 @@ export const bundleGitHub = async (
     ...source,
     path,
   });
-  console.log(markdown);
   repositoryFound = sourceRepositoryFound;
 
   if (repositoryFound) {

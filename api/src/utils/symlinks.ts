@@ -83,6 +83,5 @@ export async function getRepositorySymLinks(
 export function getFilePath(symlink: symLink): string {
   const { path: filePath, object } = symlink;
   const content = object.text;
-  // console.log(path.join(path.dirname(filePath), content));
   return path.join(path.dirname(filePath), content).slice(0, -4);
 }

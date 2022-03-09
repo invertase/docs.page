@@ -34,7 +34,6 @@ export async function fetchBundle(params: FetchBundleInput): Promise<BundleRespo
   }
 
   const token = Buffer.from(`admin:${API_PASSWORD}`).toString('base64');
-  console.log('ENDPOINT', endpoint);
   const data = await fetch(endpoint, {
     headers: { Authorization: `Basic ${token}` },
   }).then(response => {

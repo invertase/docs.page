@@ -3,12 +3,7 @@ import { detect } from 'detect-browser';
 
 import { Footer } from '~/components/Footer';
 import codeHikeStyles from '@code-hike/mdx/dist/index.css';
-import {
-  ThrownBundleError,
-  // ThrownError,
-  // ThrownNotFoundError,
-} from '../loaders/documentation.server';
-import docsearch from '../styles/docsearch.css';
+import { ThrownBundleError } from '../loaders/documentation.server';
 import { BadRequest, PreviewNotFound, ServerError } from '~/components/Errors';
 import { GitHub } from '~/components/Icons';
 import {
@@ -28,8 +23,6 @@ export function headers(): Record<string, string> {
 
 export const links: LinksFunction = () => {
   return [
-    { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/@docsearch/css@alpha' },
-    { rel: 'stylesheet', href: docsearch },
     { rel: 'stylesheet', href: codeHikeStyles },
     { rel: 'stylesheet', href: removeBackTicks },
   ];
@@ -124,7 +117,7 @@ function LandingPage({ onSelect }: { onSelect: () => void }): JSX.Element {
 // TODO handle me
 export function CatchBoundary(): JSX.Element {
   const e = useCatch<any>();
-  console.log(e);
+  console.error(e);
 
   let child: JSX.Element;
 
