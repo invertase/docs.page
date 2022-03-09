@@ -7,7 +7,6 @@ import { BundleResponseData, FetchBundleInput } from './types';
 config();
 
 // The base URL for the bundler.
-
 function getEndpoint(base: string, { owner, repository, ref, path }: FetchBundleInput): string {
   const params: Record<string, string> = {
     owner,
@@ -15,6 +14,7 @@ function getEndpoint(base: string, { owner, repository, ref, path }: FetchBundle
   };
   if (path) params['path'] = path;
   if (ref) params['ref'] = ref;
+  if (process.env.K_REVISION) params['_k_revision'] = process.env.K_REVISION;
   return `${base}/bundle?${querystring.stringify(params)}`;
 }
 
@@ -37,7 +37,6 @@ export async function fetchBundle(params: FetchBundleInput): Promise<BundleRespo
   const data = await fetch(endpoint, {
     headers: { Authorization: `Basic ${token}` },
   }).then(response => {
-    // console.dir(response.headers);
     if ([200, 404, 400].includes(response.status)) {
       return response.json();
     } else
