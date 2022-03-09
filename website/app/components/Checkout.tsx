@@ -16,7 +16,7 @@ export function Checkout(): JSX.Element {
     if (repo.startsWith('https://github.com')) {
       const chunks = repo.match(githubRegex);
       if (chunks && chunks.length === 3) {
-        url.current = `https://next.docs.page/${chunks[1]}/${chunks[2]}`;
+        url.current = `https://docs.page/${chunks[1]}/${chunks[2]}`;
         return setValid(true);
       }
     }
