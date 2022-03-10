@@ -125,11 +125,11 @@ export function useHashChange(): string {
 export function useDirectorySelector(): {
   select: () => void;
   handles: FileSystemFileHandles | null;
-  error: Error;
+  error: Error | null;
   pending: boolean;
   configHandle: FileSystemFileHandle | null;
 } {
-  const [error, setError] = useState<any>(null);
+  const [error, setError] = useState<Error | null>(null);
   const [pending, setPending] = useState(false);
   const [handles, setHandles] = useState<FileSystemFileHandles | null>(null);
   const [configHandle, setConfigHandle] = useState<FileSystemFileHandle | null>(null);
@@ -230,6 +230,7 @@ export function usePollLocalDocs(
   return [pageProps, cache.urls, errorCode];
 }
 
+//@ts-ignore
 const buildPreviewProps = async (params: any): Promise<DocumentationLoader> => {
   let config = {};
   if (Object.keys(params.config).length > 0) {
@@ -248,8 +249,8 @@ const buildPreviewProps = async (params: any): Promise<DocumentationLoader> => {
 
   if (md) {
     try {
-      //@ts-ignore
       const host =
+        //@ts-ignore
         window.ENV?.NODE_ENV === 'production' ? 'https://docs.page' : 'http://localhost:3001';
       const bundle = await fetch(`${host}/preview-fetch`, {
         method: 'POST',

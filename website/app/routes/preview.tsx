@@ -104,7 +104,7 @@ function LandingPage({ onSelect }: { onSelect: () => void }): JSX.Element {
             </p>
           )}
         </div>
-        <PreviewModeContext.Provider value={{ enabled: true, onSelect: () => {}, imageUrls: {} }}>
+        <PreviewModeContext.Provider value={{ enabled: true, onSelect: () => null, imageUrls: {} }}>
           <div className="mx-auto mt-32 max-w-5xl px-4 lg:px-0">
             <Footer />
           </div>
