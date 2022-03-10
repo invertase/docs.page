@@ -15,9 +15,6 @@ import { MobileNav } from './MobileNav';
 import { useEffect, useState } from 'react';
 import { useTransition } from 'remix';
 import domains from '../../../domains.json';
-import { usePreviewMode } from '~/utils/local-preview-mode';
-
-import { setTheme } from '~/utils/setTheme';
 
 export default function Documentation({ data }: { data: DocumentationLoader }) {
   const [open, toggleMenu] = useState<boolean>(false);

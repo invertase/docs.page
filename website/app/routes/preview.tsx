@@ -14,7 +14,6 @@ import {
 import removeBackTicks from '../styles/remove-backticks.css';
 
 import Documentation from '~/components/Documentation';
-import { Theme } from '~/components/Theme';
 
 export function headers(): Record<string, string> {
   return {
@@ -39,7 +38,6 @@ export const meta: MetaFunction = () => {
 export default function LocalPreview(): JSX.Element {
   const { select, handles, configHandle, pending, error: directoryError } = useDirectorySelector();
   const [data, urls, pollErrorCode] = usePollLocalDocs(handles, configHandle, 500);
-
   if (directoryError) {
     return <PreviewNotFound error="" />;
   }
