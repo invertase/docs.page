@@ -39,7 +39,6 @@ export function Theme({ config }: { config: ProjectConfig }) {
           root.style.setProperty('--docsearch-primary-color', '--var(--theme-color)');
         };
         window.setTheme();
-        console.log('here i am');
       `,
       }}
     />
