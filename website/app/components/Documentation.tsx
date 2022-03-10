@@ -62,7 +62,7 @@ export default function Documentation({ data }: { data: DocumentationLoader }) {
                 <Footer />
               </div>
               {!!data.headings && (
-                <aside className="fixed top-14 bottom-0 right-[max(0px,calc(50%-45rem))] hidden w-52 overflow-y-auto overflow-x-hidden whitespace-nowrap px-8 pt-10 lg:block">
+                <aside className="fixed top-14 bottom-0 right-[max(0px,calc(50%-45rem))] hidden w-60 overflow-y-auto overflow-x-hidden whitespace-nowrap px-8 pt-10 lg:block">
                   <ScrollSpy />
                 </aside>
               )}
