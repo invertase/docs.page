@@ -57,7 +57,12 @@ export function DocsLink({ ...props }: NavLinkProps): JSX.Element {
 
     const path = '/' + pathname.split('/').slice(1).join('/');
 
-    const isActive = props.to === `/${path}`;
+    const isActive = props.to === '/';
+    if (domain === 'melos.invertase.dev') {
+      console.log('domain:', domain)
+      console.log('docsLink to:', props.to)
+      console.log('pathname:', pathname)
+    }
     return (
       <NavLink
         className={
