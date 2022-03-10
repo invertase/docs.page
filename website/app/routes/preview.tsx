@@ -14,6 +14,7 @@ import {
 import removeBackTicks from '../styles/remove-backticks.css';
 
 import Documentation from '~/components/Documentation';
+import { Theme } from '~/components/Theme';
 
 export function headers(): Record<string, string> {
   return {

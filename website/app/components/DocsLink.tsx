@@ -8,7 +8,7 @@ export function DocsLink({ ...props }: NavLinkProps): JSX.Element {
 
   const { domain } = useCustomDomain();
 
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
 
   if (typeof props.to === 'string' && isExternalLink(props.to)) {
     return (
@@ -34,12 +34,12 @@ export function DocsLink({ ...props }: NavLinkProps): JSX.Element {
   }
 
   if (previewMode.enabled) {
+    const isActive = hash === `#${props.to}`;
     return (
       <a
+        id={`${hash},${`#${props.to}`},${isActive}`}
         className={
-          typeof props.className === 'function'
-            ? props.className({ isActive: false })
-            : props.className
+          typeof props.className === 'function' ? props.className({ isActive }) : props.className
         }
         href={`#${props.to}`}
       >
