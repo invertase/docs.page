@@ -1,13 +1,14 @@
 import Color from 'color';
+import { useEffect } from 'react';
 import { useDocumentationContext } from '~/context';
-import { defaultConfig } from '~/utils/config';
+import { defaultConfig, ProjectConfig } from '~/utils/config';
+import { setTheme } from '~/utils/setTheme';
 
 type Variant = 'base' | 'dark' | 'light';
 
 // TODO pass config
-export function Theme() {
-  const theme = useDocumentationContext().config.theme;
-
+export function Theme({ config }: { config: ProjectConfig }) {
+  const theme = config.theme;
   let color: Color;
   try {
     color = Color(theme);
@@ -21,15 +22,23 @@ export function Theme() {
     light: color.lighten(0.2).hex().toString(),
   };
 
+  useEffect(() => {
+    setTheme(theme);
+  }, []);
+
   return (
     <script
+      id="theme"
       dangerouslySetInnerHTML={{
         __html: `
+        window.setTheme = () => {
           const root = document.documentElement;
           root.style.setProperty('--theme-color', '${variants.base}');
           root.style.setProperty('--theme-color-dark', '${variants.dark}');
           root.style.setProperty('--theme-color-light', '${variants.light}');
           root.style.setProperty('--docsearch-primary-color', '--var(--theme-color)');
+        };
+        window.setTheme();
       `,
       }}
     />

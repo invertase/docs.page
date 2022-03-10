@@ -15,6 +15,9 @@ import { MobileNav } from './MobileNav';
 import { useEffect, useState } from 'react';
 import { useTransition } from 'remix';
 import domains from '../../../domains.json';
+import { usePreviewMode } from '~/utils/local-preview-mode';
+
+import { setTheme } from '~/utils/setTheme';
 
 export default function Documentation({ data }: { data: DocumentationLoader }) {
   const [open, toggleMenu] = useState<boolean>(false);
@@ -22,16 +25,16 @@ export default function Documentation({ data }: { data: DocumentationLoader }) {
   useEffect(() => {
     toggleMenu(false);
   }, [transition.state]);
+
   const MDX = useHydratedMdx({ code: data.code });
   const hash = createHash(`${data.owner}/${data.repo}`);
-
   const domain =
     domains.find(([, repository]) => repository === `${data.owner}/${data.repo}`)?.[0] || null;
 
   return (
     <DomainProvider data={{ domain }}>
       <DocumentationProvider data={data}>
-        <Theme />
+        <Theme config={data.config} />
         <div className="w-screen">
           <Header
             onSidebarToggle={() => {
