@@ -6,7 +6,7 @@ if (window.ENV.MSW_ENABLED === '1') {
 }
 
 if (
-  process.env.NODE_ENV === 'production' &&
+  // process.env.NODE_ENV === 'production' &&
   window.location.hostname !== 'localhost' &&
   !window.location.hostname.endsWith('docs.page')
 ) {
