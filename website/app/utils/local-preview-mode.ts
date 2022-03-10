@@ -65,7 +65,7 @@ export async function extractContents(
         }),
       ),
     );
-  } catch (_) {}
+  } catch (_) { }
 
   return [text, JSON.stringify(config), imageUrls, errors];
 }
@@ -224,7 +224,10 @@ export function usePollLocalDocs(
       previewProps => {
         setPageProps(previewProps);
       },
-    );
+    ).then(() => {
+      document.body.scrollTop = document.documentElement.scrollTop = 0;
+    });
+
   }, [cache.text, cache.config]);
 
   return [pageProps, cache.urls, errorCode];

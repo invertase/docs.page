@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { NavLink, NavLinkProps, useLocation } from 'react-router-dom';
 import { useCustomDomain, useDocumentationContext } from '~/context';
 import { usePreviewMode } from '~/utils/local-preview-mode';
