@@ -78,8 +78,8 @@ export const bundleGitHub = async (
     };
   }
 
-  let {
-    md: markdown,
+  const {
+    md: sourceMarkdown,
     config: sourceConfig,
     baseBranch: sourceBaseBranch,
     repositoryFound: sourceRepositoryFound,
@@ -87,6 +87,9 @@ export const bundleGitHub = async (
     ...source,
     path,
   });
+
+  let markdown = sourceMarkdown;
+
   repositoryFound = sourceRepositoryFound;
 
   if (repositoryFound) {

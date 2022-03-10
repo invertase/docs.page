@@ -5,6 +5,7 @@ import rehypeHeadings, { HeadingNode } from './plugins/rehype-headings.js';
 type MdxBundlerResponse = {
   code: string;
   frontmatter: {
+    // @ts-ignore TODO fix types
     [key: string]: any;
   };
   errors: Message[];
@@ -31,7 +32,6 @@ export async function bundle(
   },
 ): Promise<MdxBundlerResponse> {
   const output = {
-    // warnings: [],
     headings: [],
   };
 

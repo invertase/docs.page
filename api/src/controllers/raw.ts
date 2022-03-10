@@ -2,13 +2,6 @@ import { Request, Response } from 'express';
 import { BundleResponseData } from '@docs.page/server';
 import { bundle } from '../utils/bundler.js';
 import { HeadingNode } from '../utils/plugins/rehype-headings.js';
-import { theme } from '../utils/plugins/codeHikeTheme.js';
-import { remarkCodeHike } from '@code-hike/mdx';
-import remarkGfm from 'remark-gfm';
-import rehypeCodeBlocks from '../utils/plugins/rehype-code-blocks.js';
-import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
-import rehypeInlineBadges from '../utils/plugins/rehype-inline-badges.js';
-import rehypeSlug from 'rehype-slug';
 import { getPlugins } from '../utils/getPlugins.js';
 /**
  * Gets the API information.
