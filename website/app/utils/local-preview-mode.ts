@@ -65,7 +65,7 @@ export async function extractContents(
         }),
       ),
     );
-  } catch (_) { }
+  } catch (_) {}
 
   return [text, JSON.stringify(config), imageUrls, errors];
 }
