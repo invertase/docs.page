@@ -28,14 +28,6 @@ export default function Documentation({ data }: { data: DocumentationLoader }) {
 
   const MDX = useHydratedMdx({ code: data.code });
   const hash = createHash(`${data.owner}/${data.repo}`);
-  const previewMode = usePreviewMode();
-
-  // useEffect(() => {
-  //   if (previewMode.enabled) {
-  //     setTheme(data.config.theme);
-  //   }
-  // }, [MDX])
-
   const domain =
     domains.find(([, repository]) => repository === `${data.owner}/${data.repo}`)?.[0] || null;
 
