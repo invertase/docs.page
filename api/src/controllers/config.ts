@@ -73,7 +73,6 @@ export const getConfig = async (
 
     try {
         sourceConfig = await (await fetch(endpoint)).text();
-        console.log(sourceConfig)
     } catch (e) {
         console.error(e)
         sourceConfig = null;

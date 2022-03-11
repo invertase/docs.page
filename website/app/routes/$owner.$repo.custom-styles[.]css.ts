@@ -13,7 +13,6 @@ export let loader: LoaderFunction = async ({ params }) => {
   let css: Response = new Response();
 
   if (config.experimentalMath) {
-    console.log('here')
     const response = await fetch('https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css', {
       integrity: 'sha384-RZU/ijkSsFbcmivfdRBQDtwuwVqK7GMOw6IMvKyeWL2K5UAlyp6WonmB8m7Jd0Hn',
     });
