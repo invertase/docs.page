@@ -43,8 +43,8 @@ export type DocumentationLoader = {
 };
 
 // Utility to guard against a bundler error.
-export function isBundleError(bundle: any): bundle is BundleError {
-  return bundle.errors !== undefined;
+export function isBundleError(bundle: BundleSuccess | BundleError): bundle is BundleError {
+  return Object.hasOwnProperty('errors');
 }
 // @ts-ignore
 export const docsLoader: LoaderFunction = async ({ params }) => {

@@ -8,7 +8,7 @@ import rehypeSlug from 'rehype-slug';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 
-function getPlugins(config: Record<string, any>) {
+function getPlugins(config: Record<string, unknown>) {
   const remarkPlugins = config?.experimentalCodehike
     ? [remarkGfm, [remarkCodeHike, { theme, lineNumbers: true }]]
     : [remarkGfm];

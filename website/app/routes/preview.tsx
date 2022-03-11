@@ -12,6 +12,7 @@ import {
   usePollLocalDocs,
 } from '~/utils/local-preview-mode';
 import removeBackTicks from '../styles/remove-backticks.css';
+import codeblocks from '../styles/codeblocks.css';
 
 import Documentation from '~/components/Documentation';
 
@@ -25,6 +26,8 @@ export const links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: codeHikeStyles },
     { rel: 'stylesheet', href: removeBackTicks },
+    { rel: 'stylesheet', href: codeblocks },
+    { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css' },
   ];
 };
 

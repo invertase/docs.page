@@ -132,10 +132,10 @@ export function mergeConfig(json: Record<string, unknown>): ProjectConfig {
     theme: getString(json, 'theme', defaultConfig.theme),
     docsearch: getValue(json, 'docsearch')
       ? {
-        appId: getString(json, 'docsearch.appId', ''),
-        apiKey: getString(json, 'docsearch.apiKey', ''),
-        indexName: getString(json, 'docsearch.indexName', ''),
-      }
+          appId: getString(json, 'docsearch.appId', ''),
+          apiKey: getString(json, 'docsearch.apiKey', ''),
+          indexName: getString(json, 'docsearch.indexName', ''),
+        }
       : defaultConfig.docsearch,
     // navigation: mergeNavigationConfig(json),
     sidebar: mergeSidebarConfig(json),
@@ -154,18 +154,22 @@ export function mergeConfig(json: Record<string, unknown>): ProjectConfig {
   };
 }
 
-export async function getConfiguration({ owner, repo, ref }: Record<string, string>): Promise<ProjectConfig> {
-
+export async function getConfiguration({
+  owner,
+  repo,
+  ref,
+}: Record<string, string>): Promise<ProjectConfig> {
   let config: ProjectConfig = defaultConfig;
 
-  const host = process.env.NODE_ENV === 'production' ? 'https://api.docs.page' : 'http://localhost:8000';
+  const host =
+    process.env.NODE_ENV === 'production' ? 'https://api.docs.page' : 'http://localhost:8000';
 
   const endpoint = `${host}/config?owner=${owner}&repository=${repo}${ref ? `&ref=${ref}` : ''}`;
   try {
     const res = await (await fetch(endpoint)).json();
-    config = res.config
+    config = res.config;
   } catch (e) {
-    console.error(e)
+    console.error(e);
   }
 
   return config;

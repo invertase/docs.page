@@ -1,4 +1,3 @@
-import { Link } from 'remix';
 import cx from 'classnames';
 import { DocSearch } from '@docsearch/react';
 
@@ -136,10 +135,16 @@ interface RefLinkProps {
   };
 }
 
+type LinkDataElement = {
+  href: string;
+  icon: JSX.Element;
+  className: string;
+};
+
 function RefLink({ pointer, owner, repo, source }: RefLinkProps): JSX.Element {
   const defaultIconSize = 16;
 
-  const linkData: Record<string, any> = {
+  const linkData: Record<string, LinkDataElement> = {
     branch: {
       href: `https://github.com/${owner}/${repo}/tree/${pointer}`,
       icon: <Branch size={defaultIconSize} />,

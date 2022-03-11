@@ -1,6 +1,5 @@
 import Color from 'color';
 import { useEffect } from 'react';
-import { useDocumentationContext } from '~/context';
 import { defaultConfig, ProjectConfig } from '~/utils/config';
 import { setTheme } from '~/utils/setTheme';
 

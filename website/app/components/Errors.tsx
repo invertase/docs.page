@@ -2,7 +2,8 @@ import type { ThrownBundleError, ThrownNotFoundError } from '../loaders/document
 import { DocsLink } from './DocsLink';
 import { QuickLinks } from './Quicklinks';
 
-export function PreviewNotFound({ error }: { error: any }): JSX.Element {
+export function PreviewNotFound({ error }: { error: unknown }): JSX.Element {
+  console.error(error);
   const configFound = true;
   return (
     <ErrorContainer title={'This page could not be found'} code={404}>

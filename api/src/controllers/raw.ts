@@ -26,9 +26,7 @@ export const bundleRaw = async (
   let frontmatter: {
     [key: string]: any;
   } = {};
-  let config: {
-    [key: string]: any;
-  } | null = null;
+  let config: Record<string, unknown> | null = null;
   let headings: HeadingNode[] | null = [];
   let baseBranch: string | null = null;
   if (sourceConfig) {

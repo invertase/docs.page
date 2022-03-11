@@ -6,7 +6,7 @@ import { DocsLink } from './DocsLink';
 import { LocaleSelect } from './LocaleSelect';
 
 export function Sidebar() {
-  const { sidebar, locales, theme } = useDocumentationContext().config;
+  const { sidebar, locales } = useDocumentationContext().config;
   const location = useLocation();
   const currentLocale = location.pathname.split('/')[3];
   return (
