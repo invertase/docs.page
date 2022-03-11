@@ -5,6 +5,8 @@ import rehypeCodeBlocks from '../utils/plugins/rehype-code-blocks.js';
 import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
 import rehypeInlineBadges from '../utils/plugins/rehype-inline-badges.js';
 import rehypeSlug from 'rehype-slug';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 
 function getPlugins(config: Record<string, any>) {
   const remarkPlugins = config?.experimentalCodehike
@@ -15,11 +17,12 @@ function getPlugins(config: Record<string, any>) {
     ? [rehypeSlug, rehypeInlineBadges, rehypeAccessibleEmojis]
     : [rehypeCodeBlocks, rehypeSlug, rehypeInlineBadges, rehypeAccessibleEmojis];
 
-  // if (config?.experimentalMath) {
-  //   //@ts-ignore
-  //   remarkPlugins.push(remarkMath);
-  //   rehypePlugins.push(rehypeKatex);
-  // }
+  if (config?.experimentalMath) {
+    console.log('add math');
+    //@ts-ignore
+    remarkPlugins.push(remarkMath);
+    rehypePlugins.push(rehypeKatex);
+  }
   return { remarkPlugins, rehypePlugins };
 }
 

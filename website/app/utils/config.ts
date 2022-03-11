@@ -94,6 +94,10 @@ export interface ProjectConfig {
   googleTagManager: string;
   // Whether zoomable images are enabled by default
   zoomImages: boolean;
+  // Whether CodeHike is enabled
+  experimentalCodehike: boolean;
+  // Whether Math is enabled
+  experimentalMath: boolean;
 }
 
 export const defaultConfig: ProjectConfig = {
@@ -111,6 +115,8 @@ export const defaultConfig: ProjectConfig = {
   variables: {},
   googleTagManager: '',
   zoomImages: false,
+  experimentalCodehike: false,
+  experimentalMath: false,
 };
 
 // Merges any user config with default values.
@@ -139,5 +145,11 @@ export function mergeConfig(json: Record<string, unknown>): ProjectConfig {
     zoomImages: getBoolean(json, 'zoomImages', defaultConfig.zoomImages),
     // TODO: tidy the following:
     locales: (json.locales as Record<string, string>) ?? undefined,
+    experimentalCodehike: getBoolean(
+      json,
+      'experimentalCodehike',
+      defaultConfig.experimentalCodehike,
+    ),
+    experimentalMath: getBoolean(json, 'experimentalMath', defaultConfig.experimentalMath),
   };
 }

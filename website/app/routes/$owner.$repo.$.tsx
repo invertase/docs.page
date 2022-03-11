@@ -1,4 +1,11 @@
-import { MetaFunction, useLoaderData, LinksFunction, useCatch } from 'remix';
+import {
+  MetaFunction,
+  useLoaderData,
+  LinksFunction,
+  useCatch,
+  ActionFunction,
+  redirect,
+} from 'remix';
 
 import { Footer } from '~/components/Footer';
 import codeHikeStyles from '@code-hike/mdx/dist/index.css';
@@ -22,8 +29,6 @@ export function headers({ loaderHeaders }) {
   };
 }
 
-export const loader = docsLoader;
-
 export const links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/@docsearch/css@alpha' },
@@ -31,8 +36,11 @@ export const links: LinksFunction = () => {
     { rel: 'stylesheet', href: codeblocks },
     { rel: 'stylesheet', href: codeHikeStyles },
     { rel: 'stylesheet', href: removeBackTicks },
+    { rel: 'stylesheet', href: `custom-styles.css` },
   ];
 };
+
+export const loader = docsLoader;
 
 export const meta: MetaFunction = (props: { data?: DocumentationLoader }) => {
   // https://github.com/remix-run/remix/issues/1054

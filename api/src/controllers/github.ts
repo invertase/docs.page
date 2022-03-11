@@ -5,8 +5,6 @@ import { getGitHubContents, getPullRequestMetadata } from '../utils/github.js';
 import { HeadingNode } from '../utils/plugins/rehype-headings.js';
 import { getPlugins } from '../utils/getPlugins.js';
 import { getFilePath, getRepositorySymLinks } from '../utils/symlinks.js';
-// import remarkMath from 'remark-math';
-// import rehypeKatex from 'rehype-katex';
 
 /**
  * Gets the API information.
