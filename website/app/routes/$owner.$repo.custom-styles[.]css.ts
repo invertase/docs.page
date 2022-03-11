@@ -1,15 +1,6 @@
 import type { LoaderFunction } from 'remix';
+import { getConfiguration } from '~/utils/config';
 
-async function getConfiguration({ owner, repo, ref }: Record<string, string>) {
-
-  const host = process.env.NODE_ENV === 'production' ? 'https://api.docs.page' : 'http://localhost:8000';
-
-  const endpoint = `${host}/config?owner=${owner}&repository=${repo}&ref=${ref}`;
-
-  const { config } = await (await fetch(endpoint)).json();
-
-  return config;
-}
 
 export let loader: LoaderFunction = async ({ params }) => {
 
