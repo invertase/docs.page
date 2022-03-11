@@ -28,19 +28,9 @@ export default function Documentation({ data }: { data: DocumentationLoader }) {
   const domain =
     domains.find(([, repository]) => repository === `${data.owner}/${data.repo}`)?.[0] || null;
 
-  const [katexHref, setKatexHref] = useState<string>('');
-
   return (
     <DomainProvider data={{ domain }}>
       <DocumentationProvider data={data}>
-        {data.config.experimentalMath && (
-          <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css"
-            integrity="sha384-RZU/ijkSsFbcmivfdRBQDtwuwVqK7GMOw6IMvKyeWL2K5UAlyp6WonmB8m7Jd0Hn"
-            crossOrigin="anonymous"
-          ></link>
-        )}
         <Theme config={data.config} />
         <div className="w-screen">
           <Header
