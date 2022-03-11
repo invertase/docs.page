@@ -4,7 +4,7 @@ import { bundle } from '../utils/bundler.js';
 import { getGitHubContents, getPullRequestMetadata } from '../utils/github.js';
 import { HeadingNode } from '../utils/plugins/rehype-headings.js';
 import { getPlugins } from '../utils/getPlugins.js';
-import { getFilePath, getRepositorySymLinks } from '../utils/symlinks.js';
+import { getRepositorySymLinks } from '../utils/symlinks.js';
 
 /**
  * Gets the API information.
