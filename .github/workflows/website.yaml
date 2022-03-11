@@ -21,7 +21,7 @@ jobs:
       - name: Check Formatting
         run: yarn run check:formatting
       - name: Check TS Compiles
-        run: yarn run check:typescript
+        run: cd website && yarn build
       - name: Check Spelling & Grammar
         run: yarn run check:spelling
   test:
