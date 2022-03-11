@@ -20,10 +20,8 @@ jobs:
         run: yarn run check:linting
       - name: Check Formatting
         run: yarn run check:formatting
-      - name: Check TS Compiles
+      - name: Check Builds
         run: cd website && yarn build
-      - name: Check Spelling & Grammar
-        run: yarn run check:spelling
   test:
     runs-on: ubuntu-latest
     steps:
