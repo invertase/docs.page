@@ -160,7 +160,7 @@ export async function getConfiguration({ owner, repo, ref }: Record<string, stri
 
   const host = process.env.NODE_ENV === 'production' ? 'https://api.docs.page' : 'http://localhost:8000';
 
-  const endpoint = `${host}/config?owner=${owner}&repository=${repo}&ref=${ref}`;
+  const endpoint = `${host}/config?owner=${owner}&repository=${repo}${ref ? `&ref=${ref}` : ''}`;
   try {
     const res = await (await fetch(endpoint)).json();
     config = res.config
