@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { BundleResponseData } from '@docs.page/server';
+import { BundleResponseData, defaultConfig, ProjectConfig } from '@docs.page/server';
 import { bundle } from '../utils/bundler.js';
 import { HeadingNode } from '../utils/plugins/rehype-headings.js';
 import { getPlugins } from '../utils/getPlugins.js';
@@ -24,16 +24,16 @@ export const bundleRaw = async (
 
   let code: string | null = null;
   let frontmatter: {
-    [key: string]: any;
+    [key: string]: string;
   } = {};
-  let config: Record<string, unknown> | null = null;
+  let config: ProjectConfig = defaultConfig;
   let headings: HeadingNode[] | null = [];
   let baseBranch: string | null = null;
   if (sourceConfig) {
     try {
       config = JSON.parse(sourceConfig);
     } catch (e) {
-      config = null;
+      console.error(e);
     }
   }
   if (sourceBaseBranch) {
@@ -42,7 +42,7 @@ export const bundleRaw = async (
   if (markdown) {
     try {
       const bundleResult = await bundle(markdown, {
-        ...getPlugins(config ?? {}),
+        ...getPlugins(config),
         headerDepth,
       });
       code = bundleResult.code;

@@ -48,4 +48,23 @@ export async function fetchBundle(params: FetchBundleInput): Promise<BundleRespo
   return data as BundleResponseData;
 }
 
+export const defaultConfig = {
+  name: '',
+  logo: '',
+  logoDark: '',
+  favicon: '',
+  socialPreview: '',
+  twitter: '',
+  noindex: false,
+  theme: '#00bcd4',
+  // navigation: [],
+  sidebar: [],
+  headerDepth: 3,
+  variables: {},
+  googleTagManager: '',
+  zoomImages: false,
+  experimentalCodehike: false,
+  experimentalMath: false,
+};
+
 export * from './types';

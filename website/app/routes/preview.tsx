@@ -116,10 +116,9 @@ function LandingPage({ onSelect }: { onSelect: () => void }): JSX.Element {
   );
 }
 
-// TODO handle me
 export function CatchBoundary(): JSX.Element {
-  const e = useCatch<any>();
-  console.error(e);
+  // TODO handle error types here
+  const e = useCatch();
 
   let child: JSX.Element;
 

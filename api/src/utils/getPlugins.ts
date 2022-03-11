@@ -7,8 +7,9 @@ import rehypeInlineBadges from '../utils/plugins/rehype-inline-badges.js';
 import rehypeSlug from 'rehype-slug';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import { ProjectConfig } from '@docs.page/server';
 
-function getPlugins(config: Record<string, unknown>) {
+function getPlugins(config?: ProjectConfig) {
   const remarkPlugins = config?.experimentalCodehike
     ? [remarkGfm, [remarkCodeHike, { theme, lineNumbers: true }]]
     : [remarkGfm];

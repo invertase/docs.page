@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { BundleResponseData } from '@docs.page/server';
+import { BundleResponseData, ProjectConfig } from '@docs.page/server';
 import { getPullRequestMetadata } from '../utils/github.js';
 import fetch from 'node-fetch';
 
@@ -23,7 +23,7 @@ export const getConfig = async (
     });
   }
   let ref = queryData.ref;
-  let config: Record<string, any> | null = null;
+  let config: ProjectConfig | null = null;
   let source: {
     type: 'PR' | 'commit' | 'branch';
     owner: string;
@@ -82,6 +82,7 @@ export const getConfig = async (
       if (config && config.locales) {
         const defaulLocale = config.locales[0];
         const currentLocale = path.split('/')[0] || defaulLocale;
+        //@ts-ignore
         config.sidebar = config?.sidebar[currentLocale];
       }
     } catch (e) {

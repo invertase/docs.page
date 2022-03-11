@@ -1,3 +1,5 @@
+/* eslint-disable  @typescript-eslint/no-explicit-any */
+// TODO - fix types for bundling. ignored for now.
 import { bundleMDX } from 'mdx-bundler';
 import { Message } from 'esbuild';
 import rehypeHeadings, { HeadingNode } from './plugins/rehype-headings.js';
@@ -5,8 +7,7 @@ import rehypeHeadings, { HeadingNode } from './plugins/rehype-headings.js';
 type MdxBundlerResponse = {
   code: string;
   frontmatter: {
-    // @ts-ignore TODO fix types
-    [key: string]: any;
+    [key: string]: string;
   };
   errors: Message[];
   headings: HeadingNode[];

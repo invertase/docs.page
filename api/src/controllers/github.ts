@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { BundleResponseData } from '@docs.page/server';
+import { BundleResponseData, defaultConfig, ProjectConfig } from '@docs.page/server';
 import { bundle } from '../utils/bundler.js';
 import { getGitHubContents, getPullRequestMetadata } from '../utils/github.js';
 import { HeadingNode } from '../utils/plugins/rehype-headings.js';
@@ -27,11 +27,9 @@ export const bundleGitHub = async (
   let ref = queryData.ref;
   let code: string | null = null;
   let frontmatter: {
-    [key: string]: any;
+    [key: string]: string;
   } = {};
-  let config: {
-    [key: string]: any;
-  } | null = null;
+  let config: ProjectConfig = defaultConfig;
   let headings: HeadingNode[] | null = [];
   let baseBranch: string | null = null;
   let repositoryFound = false;
@@ -94,12 +92,13 @@ export const bundleGitHub = async (
     // check config
     if (sourceConfig) {
       try {
-        config = JSON.parse(sourceConfig) || {};
+        const parsedConfig = JSON.parse(sourceConfig) as ProjectConfig;
         //@ts-ignore
-        if (config && config.locales) {
-          const defaulLocale = config.locales[0];
-          const currentLocale = path.split('/')[0] || defaulLocale;
-          config.sidebar = config?.sidebar[currentLocale];
+        if (parsedConfig && parsedConfig.locales) {
+          const defaultLocale = parsedConfig.locales[0];
+          const currentLocale = path.split('/')[0] || defaultLocale;
+          //@ts-ignore
+          config.sidebar = parsedConfig?.sidebar[currentLocale];
         }
 
         if (config) {
@@ -107,8 +106,7 @@ export const bundleGitHub = async (
         }
       } catch (e) {
         console.error(e);
-
-        config = null;
+        config = defaultConfig;
       }
     }
     // set the baseBranch
