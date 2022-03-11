@@ -7,7 +7,7 @@ async function getConfig({ owner, repo }: Record<string, string>) {
   return JSON.parse(res);
 }
 
-export let loader: LoaderFunction = async ({ request, params }) => {
+export const loader: LoaderFunction = async ({ request, params }) => {
   const config = await getConfig({ owner: params.owner!, repo: params.repo! });
 
   let css: Response = new Response();
