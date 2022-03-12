@@ -1,12 +1,10 @@
 import type { LoaderFunction } from 'remix';
 import { getConfiguration } from '~/utils/config';
 
-
 export let loader: LoaderFunction = async ({ params }) => {
+  const owner = params.owner!;
 
-  const owner = params.owner!
-
-  const [repo, ref] = params.repo!.split('~')
+  const [repo, ref] = params.repo!.split('~');
 
   const config = await getConfiguration({ owner: params.owner!, repo, ref });
 
