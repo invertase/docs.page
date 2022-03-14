@@ -1,11 +1,10 @@
-import { defaultConfig } from "@docs.page/server"
 import { bundle } from "./bundler.js"
 import { getPlugins } from "./getPlugins.js"
 import { getGitHubContents } from "./github.js"
 import { HeadingNode } from "./plugins/rehype-headings.js"
 import { formatSourceAndRef } from "./ref.js"
 import { getRepositorySymLinks } from "./symlinks.js"
-import { hasLocales, InputConfig, OutputConfig } from "./types.js"
+import { hasLocales, InputConfig, OutputConfig, defaultConfig } from "./types.js"
 
 type Frontmatter = Record<string, any>
 

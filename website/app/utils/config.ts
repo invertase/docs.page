@@ -132,10 +132,10 @@ export function mergeConfig(json: Record<string, unknown>): ProjectConfig {
     theme: getString(json, 'theme', defaultConfig.theme),
     docsearch: getValue(json, 'docsearch')
       ? {
-          appId: getString(json, 'docsearch.appId', ''),
-          apiKey: getString(json, 'docsearch.apiKey', ''),
-          indexName: getString(json, 'docsearch.indexName', ''),
-        }
+        appId: getString(json, 'docsearch.appId', ''),
+        apiKey: getString(json, 'docsearch.apiKey', ''),
+        indexName: getString(json, 'docsearch.indexName', ''),
+      }
       : defaultConfig.docsearch,
     // navigation: mergeNavigationConfig(json),
     sidebar: mergeSidebarConfig(json),

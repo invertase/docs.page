@@ -129,3 +129,22 @@ export interface OutputConfig {
     // Whether Math is enabled
     experimentalMath: boolean;
 }
+
+export const defaultConfig: OutputConfig = {
+    name: '',
+    logo: '',
+    logoDark: '',
+    favicon: '',
+    socialPreview: '',
+    twitter: '',
+    noindex: false,
+    theme: '#00bcd4',
+    // navigation: [],
+    sidebar: [],
+    headerDepth: 3,
+    variables: {},
+    googleTagManager: '',
+    zoomImages: false,
+    experimentalCodehike: false,
+    experimentalMath: false,
+};

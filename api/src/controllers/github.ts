@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { BundleResponseData, defaultConfig } from '@docs.page/server';
+import { BundleResponseData } from '@docs.page/server';
 import { Bundle } from '../utils/bundle.js';
 
 /**
