@@ -18,7 +18,6 @@ function getPlugins(config: Record<string, any>) {
     : [rehypeCodeBlocks, rehypeSlug, rehypeInlineBadges, rehypeAccessibleEmojis];
 
   if (config?.experimentalMath) {
-    console.log('add math');
     //@ts-ignore
     remarkPlugins.push(remarkMath);
     rehypePlugins.push(rehypeKatex);

@@ -53,11 +53,11 @@ type PageContentsQuery = {
 };
 
 export type Contents = {
-  isFork?: boolean;
-  baseBranch?: string;
-  config?: string;
-  md?: string;
-  path?: string;
+  isFork: boolean;
+  baseBranch: string;
+  config: string;
+  md: string;
+  path: string;
   repositoryFound: boolean;
 };
 
@@ -102,6 +102,7 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
 
   // if an error is thrown then the repo is not found, if the repo is private then response = { repository: null }
   if (error || response?.repository === null) {
+    //@ts-ignore
     return {
       repositoryFound: false,
     };
@@ -110,8 +111,8 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
     repositoryFound: true,
     isFork: response?.repository?.isFork ?? false,
     baseBranch: response?.repository.baseBranch.name ?? 'main',
-    config: response?.repository.config?.text,
-    md: response?.repository.mdxIndex?.text ?? response?.repository.mdx?.text,
+    config: response?.repository.config?.text ?? '',
+    md: response?.repository.mdxIndex?.text ?? response?.repository.mdx?.text ?? '',
     path: response?.repository.mdxIndex?.text ? indexPath : absolutePath,
   };
 }
