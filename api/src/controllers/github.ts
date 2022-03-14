@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { BundleResponseData } from '@docs.page/server';
-import { Bundle } from '../utils/bundle.js';
+import { Bundle, BundleError } from '../utils/bundle.js';
 
 /**
  * Gets the API information.
@@ -25,12 +25,18 @@ export const bundleGitHub = async (
   }
 
   const bundleInstance = new Bundle(owner, repository, path, ref, headerDepth);
+
   await bundleInstance.updateSourceAndRef();
+
   await bundleInstance.getContent();
 
-  const data = await bundleInstance.build()
-  const statusCode = 200;
-  return res.status(statusCode).send(data);
+  try {
+    const data = await bundleInstance.build()
+    return res.status(200).send(data);
+  } catch (e) {
+    //@ts-ignore
+    return res.status(e.statusCode).send(e.message);
+  }
 };
 
 const extractQueryData = (req: Request) => {
