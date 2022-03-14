@@ -1,6 +1,6 @@
 import { bundle } from "./bundler.js"
 import { getPlugins } from "./getPlugins.js"
-import { getGitHubContents } from "./github.js"
+import { Contents, getGitHubContents } from "./github.js"
 import { HeadingNode } from "./plugins/rehype-headings.js"
 import { formatSourceAndRef } from "./ref.js"
 import { getRepositorySymLinks } from "./symlinks.js"
@@ -66,13 +66,18 @@ export class Bundle {
     // fetches markdown from github
     async getContent() {
         if (!this.sourceChecked) {
-            throw new Error("Haven't checked source and ref yet");
+            await this.updateSourceAndRef();
         }
         // fetch content
-        const githubContents = await getGitHubContents({
-            ...this.source,
-            path: this.path,
-        });
+        let githubContents: Contents
+        try {
+            githubContents = await getGitHubContents({
+                ...this.source,
+                path: this.path,
+            });
+        } catch (e) {
+            throw new BundleError(400)
+        }
 
         this.markdown = githubContents.md;
         this.baseBranch = githubContents.baseBranch;
@@ -86,7 +91,7 @@ export class Bundle {
     async build() {
 
         if (!this.contentFetched) {
-            throw new Error("Haven't fetched content yet");
+            await this.getContent();
         }
 
         try {
@@ -97,10 +102,10 @@ export class Bundle {
             this.code = bundleResult.code;
             this.frontmatter = bundleResult.frontmatter;
             this.headings = bundleResult.headings.length > 0 ? bundleResult.headings : [];
-
             this.built = true;
+
         } catch (e) {
-            throw new Error('bundle error')
+            throw new BundleError(500);
         }
         return {
             code: this.code,
@@ -158,4 +163,18 @@ export class Bundle {
         }
     }
 
+}
+
+export class BundleError extends Error {
+    statusCode: number
+    constructor(statusCode: number) {
+        super();
+        this.statusCode = statusCode;
+        switch (statusCode) {
+            case 500:
+                this.message = "Error bundling mdx, check syntax"
+            case 404:
+                this.message = "Couldn't find resource, mdx file missing at requested path"
+        }
+    }
 }

@@ -18,7 +18,7 @@ export const bundleGitHub = async (
   const { owner, repository, path, headerDepth, ref } = queryData;
 
   if (!owner || !repository) {
-    return res.status(404).send({
+    return res.status(400).send({
       code: 'BAD_REQUEST',
       error: 'Missing owner or repository parameters.',
     });
