@@ -8,7 +8,7 @@ if (window.ENV.MSW_ENABLED === '1') {
 if (
   process.env.NODE_ENV === 'production' &&
   window.location.hostname !== 'localhost' &&
-  !window.location.hostname.endsWith('docs.page')
+  window.location.hostname !== 'docs.page'
 ) {
   window.__remixManifest.routes['routes/$owner.$repo.$'].path = '*';
   window.__remixManifest.routes['root'].path = '*';
