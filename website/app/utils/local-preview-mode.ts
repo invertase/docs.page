@@ -168,7 +168,7 @@ export function useDirectorySelector(): {
 
 const cache = {
   text: '',
-  config: {},
+  config: '',
   props: null,
   urls: {},
 };
@@ -232,8 +232,14 @@ export function usePollLocalDocs(
   return [pageProps, cache.urls, errorCode];
 }
 
-//@ts-ignore
-const buildPreviewProps = async (params: any): Promise<DocumentationLoader> => {
+type PreviewParams = {
+  hash: string;
+  config: string;
+  text: string;
+  urls: Record<string, string>;
+};
+
+const buildPreviewProps = async (params: PreviewParams): Promise<DocumentationLoader> => {
   let config = {};
   if (Object.keys(params.config).length > 0) {
     config = JSON.parse(params.config);

@@ -6,10 +6,19 @@ type MdxBundlerResponse = {
   code: string;
   frontmatter: {
     // @ts-ignore TODO fix types
-    [key: string]: any;
+    [key: string]: string;
   };
   errors: Message[];
   headings: HeadingNode[];
+};
+
+// TODO - codehike types don't match other plugins
+type BundlerOptions = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  remarkPlugins: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  rehypePlugins: any;
+  headerDepth: number;
 };
 
 export function headerDepthToHeaderList(depth: number): string[] {
@@ -25,19 +34,19 @@ export function headerDepthToHeaderList(depth: number): string[] {
 
 export async function bundle(
   rawText: string,
-  bundleOptions: any = {
+  bundleOptions: BundlerOptions = {
     remarkPlugins: [],
     rehypePlugins: [],
     headerDepth: 3,
   },
 ): Promise<MdxBundlerResponse> {
-  const output = {
+  const output: { headings: HeadingNode[] } = {
     headings: [],
   };
 
   const { code, frontmatter, errors } = await bundleMDX({
     source: rawText,
-    xdmOptions(options: any) {
+    xdmOptions(options) {
       // @ts-ignore TODO fix types
       options.remarkPlugins = [...(options.remarkPlugins ?? []), ...bundleOptions.remarkPlugins];
       // @ts-ignore TODO fix types
@@ -48,7 +57,7 @@ export async function bundle(
           rehypeHeadings,
           {
             headings: headerDepthToHeaderList(bundleOptions.headerDepth),
-            callback: (headings: any) => {
+            callback: (headings: HeadingNode[]) => {
               output.headings = headings;
             },
           },

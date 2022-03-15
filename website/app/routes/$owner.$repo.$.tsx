@@ -1,11 +1,4 @@
-import {
-  MetaFunction,
-  useLoaderData,
-  LinksFunction,
-  useCatch,
-  ActionFunction,
-  redirect,
-} from 'remix';
+import { MetaFunction, useLoaderData, LinksFunction, useCatch } from 'remix';
 
 import { Footer } from '~/components/Footer';
 import codeHikeStyles from '@code-hike/mdx/dist/index.css';

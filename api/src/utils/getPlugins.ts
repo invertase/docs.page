@@ -7,8 +7,10 @@ import rehypeInlineBadges from '../utils/plugins/rehype-inline-badges.js';
 import rehypeSlug from 'rehype-slug';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import { OutputConfig } from '@docs.page/server';
 
-function getPlugins(config: Record<string, any>) {
+function getPlugins(config: OutputConfig) {
+  //
   const remarkPlugins = config?.experimentalCodehike
     ? [remarkGfm, [remarkCodeHike, { theme, lineNumbers: true }]]
     : [remarkGfm];
@@ -18,7 +20,6 @@ function getPlugins(config: Record<string, any>) {
     : [rehypeCodeBlocks, rehypeSlug, rehypeInlineBadges, rehypeAccessibleEmojis];
 
   if (config?.experimentalMath) {
-    console.log('add math');
     //@ts-ignore
     remarkPlugins.push(remarkMath);
     rehypePlugins.push(rehypeKatex);

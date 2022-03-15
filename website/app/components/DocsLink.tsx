@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { NavLink, NavLinkProps, useLocation } from 'react-router-dom';
 import { useCustomDomain, useDocumentationContext } from '~/context';
 import { usePreviewMode } from '~/utils/local-preview-mode';
@@ -49,7 +48,7 @@ export function DocsLink({ ...props }: NavLinkProps): JSX.Element {
     );
   }
 
-  if (domain) {
+  if (domain && process.env.NODE_ENV === 'production') {
     let href = `//${domain}${props.to}`;
 
     if (ref && ref !== 'HEAD') {

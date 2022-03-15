@@ -1,14 +1,18 @@
 import type { LoaderFunction } from 'remix';
 import { getConfiguration } from '~/utils/config';
 
-export let loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ params }) => {
   const owner = params.owner!;
 
   const [repo, ref] = params.repo!.split('~');
 
-  const config = await getConfiguration({ owner: params.owner!, repo, ref });
+  const config = await getConfiguration({ owner, repo, ref });
 
-  let css: Response = new Response();
+  let css: Response = new Response('', {
+    headers: {
+      'Content-Type': 'text/css',
+    },
+  });
 
   if (config.experimentalMath) {
     const response = await fetch('https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css', {

@@ -1,4 +1,4 @@
-import { MetaFunction, LinksFunction, useCatch } from 'remix';
+import { MetaFunction, LinksFunction, useCatch, ThrownResponse } from 'remix';
 import { detect } from 'detect-browser';
 
 import { Footer } from '~/components/Footer';
@@ -39,14 +39,14 @@ export default function LocalPreview(): JSX.Element {
   const { select, handles, configHandle, pending, error: directoryError } = useDirectorySelector();
   const [data, urls, pollErrorCode] = usePollLocalDocs(handles, configHandle, 500);
   if (directoryError) {
-    return <PreviewNotFound error="" />;
+    return <PreviewNotFound />;
   }
   if (pending || !handles || !data || !data.code) {
     return <LandingPage onSelect={select} />;
   }
   // TODO handle 400 errors
   if (pollErrorCode) {
-    return <PreviewNotFound error="" />;
+    return <PreviewNotFound />;
   }
 
   return (
@@ -113,15 +113,14 @@ function LandingPage({ onSelect }: { onSelect: () => void }): JSX.Element {
   );
 }
 
-// TODO handle me
 export function CatchBoundary(): JSX.Element {
-  const e = useCatch<any>();
+  const e = useCatch<ThrownResponse<number>>();
   console.error(e);
 
   let child: JSX.Element;
 
   if (e.status === 404) {
-    child = <PreviewNotFound error={''} />;
+    child = <PreviewNotFound />;
   } else if (e.status === 500) {
     child = <ServerError title="Internal server error" />;
   } else if (e.status === 400) {
