@@ -1,4 +1,3 @@
-import { Link } from 'remix';
 import cx from 'classnames';
 import { DocSearch } from '@docsearch/react';
 

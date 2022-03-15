@@ -1,12 +1,10 @@
 import Color from 'color';
 import { useEffect } from 'react';
-import { useDocumentationContext } from '~/context';
 import { defaultConfig, ProjectConfig } from '~/utils/config';
 import { setTheme } from '~/utils/setTheme';
 
 type Variant = 'base' | 'dark' | 'light';
 
-// TODO pass config
 export function Theme({ config }: { config: ProjectConfig }) {
   const theme = config.theme;
   let color: Color;

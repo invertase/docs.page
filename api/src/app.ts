@@ -1,4 +1,4 @@
-import express, { text, RequestHandler } from 'express';
+import express, { text } from 'express';
 import routes from './routes.js';
 import morgan from 'morgan';
 import cors from 'cors';
@@ -11,7 +11,7 @@ const app = express();
 
 app.use(text());
 app.use(cors());
-app.options('/raw', (req, res, next) => {
+app.options('/raw', (_req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.end;
 });

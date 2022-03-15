@@ -1,9 +1,8 @@
 import type { LoaderFunction } from 'remix';
 import { getConfiguration } from '~/utils/config';
 
-export let loader: LoaderFunction = async ({ params }) => {
+export const loader: LoaderFunction = async ({ params }) => {
   const owner = params.owner!;
-
 
   const [repo, ref] = params.repo!.split('~');
 
@@ -11,7 +10,7 @@ export let loader: LoaderFunction = async ({ params }) => {
 
   let css: Response = new Response('', {
     headers: {
-      "Content-Type": "text/css",
+      'Content-Type': 'text/css',
     },
   });
 

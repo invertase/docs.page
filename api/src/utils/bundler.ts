@@ -6,7 +6,7 @@ type MdxBundlerResponse = {
   code: string;
   frontmatter: {
     // @ts-ignore TODO fix types
-    [key: string]: any;
+    [key: string]: string;
   };
   errors: Message[];
   headings: HeadingNode[];

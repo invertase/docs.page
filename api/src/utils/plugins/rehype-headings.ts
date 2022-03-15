@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// @ts-ignore
 import { visit } from 'unist-util-visit';
 import { hasProperty } from 'hast-util-has-property';
 import { headingRank, Node } from 'hast-util-heading-rank';
@@ -34,7 +32,7 @@ export default function rehypeHeadings(
 ): (ast: Node) => void {
   const nodes: HeadingNode[] = [];
 
-  function visitor(node: any, index: number | null, parent: any): void {
+  function visitor(node: any): void {
     if (headingRank(node) && hasProperty(node, 'id')) {
       if (options.headings.includes(node.tagName as string)) {
         nodes.push({
@@ -46,7 +44,7 @@ export default function rehypeHeadings(
     }
   }
 
-  function newVisitor(node: any, index: number | null, parent: any) {
+  function newVisitor(node: any) {
     const newChildren = partition(node.children, headingTest).map(part => {
       const id = part.filter(child => headingTest(child))[0]?.properties?.id || null;
       return wrapSection(part, id);

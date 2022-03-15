@@ -12,7 +12,6 @@ export const bundleGitHub = async (
   req: Request,
   res: Response,
 ): Promise<Response<BundleResponseData>> => {
-  console.log('HERE')
   const queryData = extractQueryData(req);
 
   const { owner, repository, path, headerDepth, ref } = queryData;
@@ -26,19 +25,22 @@ export const bundleGitHub = async (
 
   const bundleInstance = new Bundle(owner, repository, path, ref, headerDepth);
 
-  await bundleInstance.updateSourceAndRef();
-
-  await bundleInstance.getContent();
-
   try {
-    const data = await bundleInstance.build()
+    await bundleInstance.updateSourceAndRef();
+
+    await bundleInstance.getContent();
+
+    const data = await bundleInstance.build();
     return res.status(200).send(data);
   } catch (e) {
-    //@ts-ignore
-    return res.status(e.statusCode).send(e.message);
+    if (e instanceof BundleError) {
+      return res.status(e.statusCode).send(e);
+    }
+    throw e;
   }
 };
 
+/** Extracts query data */
 const extractQueryData = (req: Request) => {
   const owner = req?.query?.owner as string;
   const repository = (req?.query?.repository as string) || null;
