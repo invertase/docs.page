@@ -22,8 +22,8 @@ ENV __BUILD_SHA=$BUILD_SHA
 ENV __ROOT_DIR=api
 
 WORKDIR /opt/app
-COPY $__ROOT_DIR /opt/app/$__ROOT_DIR
-RUN cd $__ROOT_DIR && yarn install
+COPY . /opt/app
+RUN cd /opt/app && yarn install
 
 WORKDIR /opt/app/$__ROOT_DIR
 RUN node node_modules/esbuild/install.js
