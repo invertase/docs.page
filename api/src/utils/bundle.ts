@@ -5,7 +5,7 @@ import { Contents, getGitHubContents } from './github.js';
 import { HeadingNode } from './plugins/rehype-headings.js';
 import { formatSourceAndRef } from './ref.js';
 import { getRepositorySymLinks } from './symlinks.js';
-import { hasLocales, InputConfig, OutputConfig, defaultConfig } from './types.js';
+import { hasLocales, InputConfig, OutputConfig, defaultConfig } from '@docs.page/server';
 
 type Frontmatter = Record<string, string>;
 
