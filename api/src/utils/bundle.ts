@@ -16,6 +16,16 @@ type Source = {
   ref: string;
 };
 
+type BundleConstructorParams = {
+  owner: string;
+  repository: string;
+  path?: string;
+  ref?: string;
+  headerDepth?: number;
+  markdown?: string;
+  config?: OutputConfig;
+};
+
 export class Bundle {
   code: string;
   markdown: string;
@@ -32,23 +42,31 @@ export class Bundle {
   built: boolean;
   contentFetched: boolean;
 
-  constructor(owner: string, repository: string, path: string, ref: string, headerDepth?: number) {
+  constructor({
+    owner,
+    repository,
+    path,
+    ref,
+    headerDepth,
+    markdown,
+    config,
+  }: BundleConstructorParams) {
     this.code = '';
-    this.markdown = '';
+    this.markdown = markdown || '';
     this.frontmatter = {};
     this.headings = [];
     this.headerDepth = headerDepth || 3;
-    this.config = defaultConfig;
-    this.path = path;
+    this.config = config || defaultConfig;
+    this.path = path || 'index';
     this.baseBranch = 'main';
     this.repositoryFound = false;
     this.source = {
       type: 'branch',
       owner,
       repository,
-      ref,
+      ref: ref || 'HEAD',
     };
-    this.ref = ref;
+    this.ref = ref || 'HEAD';
     this.sourceChecked = false;
     this.built = false;
     this.contentFetched = false;
@@ -109,10 +127,6 @@ export class Bundle {
 
   // bundles markdown and return data for frontend
   async build() {
-    if (!this.contentFetched) {
-      await this.getContent();
-    }
-
     try {
       const bundleResult = await bundle(this.markdown, {
         ...getPlugins(this.config),

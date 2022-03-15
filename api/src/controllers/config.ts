@@ -22,7 +22,7 @@ export const getConfig = async (
     });
   }
 
-  const bundleInstance = new Bundle(owner, repository, path, ref);
+  const bundleInstance = new Bundle({ owner, repository, path, ref });
 
   try {
     await bundleInstance.updateSourceAndRef();

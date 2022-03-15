@@ -23,7 +23,7 @@ export const bundleGitHub = async (
     });
   }
 
-  const bundleInstance = new Bundle(owner, repository, path, ref, headerDepth);
+  const bundleInstance = new Bundle({ owner, repository, path, ref, headerDepth });
 
   try {
     await bundleInstance.updateSourceAndRef();

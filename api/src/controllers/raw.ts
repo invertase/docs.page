@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
 import { BundleResponseData } from '@docs.page/server';
-import { bundle } from '../utils/bundler.js';
-import { HeadingNode } from '../utils/plugins/rehype-headings.js';
-import { getPlugins } from '../utils/getPlugins.js';
+import { Bundle, BundleError } from '../utils/bundle.js';
 /**
  * Gets the API information.
  *
@@ -17,47 +15,23 @@ export const bundleRaw = async (
   const headerDepth = req?.query?.headerDepth ? parseInt(req?.query?.headerDepth as string) : 3;
   const { md: markdown, config: sourceConfig, baseBranch: sourceBaseBranch } = req.body;
 
-  let code: string | null = null;
-  let frontmatter: {
-    [key: string]: any;
-  } = {};
-  let config: {
-    [key: string]: any;
-  } | null = null;
-  let headings: HeadingNode[] | null = [];
-  let baseBranch: string | null = null;
-  if (sourceConfig) {
-    try {
-      config = JSON.parse(sourceConfig);
-    } catch (e) {
-      config = null;
-    }
-  }
-  if (sourceBaseBranch) {
-    baseBranch = sourceBaseBranch;
-  }
-  if (markdown) {
-    try {
-      const bundleResult = await bundle(markdown, {
-        ...getPlugins(config ?? {}),
-        headerDepth,
-      });
-      code = bundleResult.code;
-      frontmatter = bundleResult.frontmatter;
-      headings = bundleResult.headings.length > 0 ? bundleResult.headings : null;
-    } catch (e) {
-      return res.status(400).send(e);
-    }
-  }
-
-  const statusCode = code !== null ? 200 : 404;
-
-  return res.status(statusCode).send({
-    code,
-    frontmatter,
-    headings,
-    config,
-    baseBranch,
+  const inputConfig = sourceConfig || undefined;
+  const bundleInstance = new Bundle({
+    owner: 'n/a',
+    repository: 'n/a',
     path,
+    headerDepth,
+    markdown,
+    config: inputConfig,
   });
+
+  try {
+    const data = await bundleInstance.build();
+    return res.status(200).send(data);
+  } catch (e) {
+    if (e instanceof BundleError) {
+      return res.status(e.statusCode).send(e);
+    }
+    throw e;
+  }
 };
