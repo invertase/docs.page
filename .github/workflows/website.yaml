@@ -23,8 +23,8 @@ jobs:
       # TODO: refactor to tsc on individual packages
       # - name: Check TS Compiles
       #   run: yarn run check:typescript
-      - name: Check Spelling & Grammar
-        run: yarn run check:spelling
+      # - name: Check Spelling & Grammar
+      #   run: yarn run check:spelling
   # TODO: tests need fixing
   # test:
   #   runs-on: ubuntu-latest
