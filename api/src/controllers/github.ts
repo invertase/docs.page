@@ -40,7 +40,7 @@ export const bundleGitHub = async (
   }
 };
 
-/** Extracts query data */
+// Extracts query data
 const extractQueryData = (req: Request) => {
   const owner = req?.query?.owner as string;
   const repository = (req?.query?.repository as string) || null;
