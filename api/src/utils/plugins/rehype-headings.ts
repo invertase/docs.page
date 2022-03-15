@@ -28,7 +28,7 @@ interface MyData extends UnistData {
   children: UnistNode[];
   tagName: string;
   properties: {
-    id: string
+    id: string | number | boolean | (string | number)[];
   };
 }
 
@@ -74,7 +74,7 @@ export default function rehypeHeadings(
   };
 }
 
-const wrapSection: (children: HastElement[], id: string) => any = (children, id) => {
+const wrapSection: (children: HastElement[], id: string) => HastElement = (children, id) => {
   const wrap = parseSelector(`section${id ? `#${id}` : ''}`);
   wrap.children = children;
   return wrap;
