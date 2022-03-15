@@ -13,7 +13,7 @@ export const bundleRaw = async (
 ): Promise<Response<BundleResponseData>> => {
   const path = (req?.query.path as string) || 'index';
   const headerDepth = req?.query?.headerDepth ? parseInt(req?.query?.headerDepth as string) : 3;
-  const { md: markdown, config: sourceConfig, baseBranch: sourceBaseBranch } = req.body;
+  const { md: markdown, config: sourceConfig } = req.body;
 
   const inputConfig = sourceConfig || undefined;
   const bundleInstance = new Bundle({
