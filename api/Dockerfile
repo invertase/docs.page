@@ -24,8 +24,7 @@ ENV __ROOT_DIR=api
 WORKDIR /opt/app
 COPY . /opt/app
 RUN cd /opt/app && yarn install
-
-WORKDIR /opt/app/$__ROOT_DIR
 RUN node node_modules/esbuild/install.js
 
+WORKDIR /opt/app/$__ROOT_DIR
 CMD ["pm2-runtime","dist/app.js"]
