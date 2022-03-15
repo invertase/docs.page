@@ -116,7 +116,7 @@ export class Bundle {
     let configString: string;
     try {
       configString = await (await fetch(endpoint)).text();
-      //TODO: validate config
+      // TODO: validate config
     } catch (e) {
       throw new BundleError(404, 'Unable to fetch config file.');
     }
