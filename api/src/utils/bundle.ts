@@ -103,7 +103,6 @@ export class Bundle {
     this.baseBranch = githubContents.baseBranch;
     this.repositoryFound = githubContents.repositoryFound;
 
-    console.log('debug');
     this.formatConfigLocales(githubContents.config);
     await this.matchSymLinks();
     this.contentFetched = true;
