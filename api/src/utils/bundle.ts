@@ -193,7 +193,6 @@ export class Bundle {
         inputConfig = yaml.load(configYaml) as InputConfig;
       } else if (configToml) {
         inputConfig = Object.assign({}, toml.parse(configToml)) as InputConfig;
-        console.log(JSON.parse(JSON.stringify(inputConfig)));
       }
     } catch (e) {
       throw new BundleError(500, 'Error parsing config');
