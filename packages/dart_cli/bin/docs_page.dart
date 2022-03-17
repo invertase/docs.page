@@ -35,7 +35,7 @@ experimentalCodehike: false
 experimentalMath: false
 ''';
 
-  var current = Directory.current;
+  final current = Directory.current;
 
   var configPath = path.joinAll([current.path, 'docs.yaml']);
 
