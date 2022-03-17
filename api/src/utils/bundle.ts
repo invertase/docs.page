@@ -1,11 +1,12 @@
-import fetch from 'node-fetch';
 import { bundle } from './bundler.js';
 import { getPlugins } from './getPlugins.js';
-import { Contents, getGitHubContents } from './github.js';
+import { Contents, getConfigs, getGitHubContents } from './github.js';
 import { HeadingNode } from './plugins/rehype-headings.js';
 import { formatSourceAndRef } from './ref.js';
 import { getRepositorySymLinks } from './symlinks.js';
 import { hasLocales, InputConfig, OutputConfig, defaultConfig } from '@docs.page/server';
+import yaml from 'js-yaml';
+import toml from 'toml';
 
 type Frontmatter = Record<string, string>;
 
@@ -109,18 +110,16 @@ export class Bundle {
   }
 
   async getConfig() {
-    const { owner, repository, ref } = this.source;
-    const extension = '.json';
+    const { repositoryFound, config } = await getConfigs({
+      ...this.source,
+      path: this.path,
+    });
 
-    const endpoint = `https://raw.githubusercontent.com/${owner}/${repository}/${ref}/docs${extension}`;
-    let configString: string;
-    try {
-      configString = await (await fetch(endpoint)).text();
-      // TODO: validate config
-    } catch (e) {
+    if (!repositoryFound || !config) {
       throw new BundleError(404, 'Unable to fetch config file.');
     }
-    this.formatConfigLocales(configString);
+    this.formatConfigLocales(config);
+
     return this.config;
   }
 
@@ -177,12 +176,24 @@ export class Bundle {
     }
   }
 
-  formatConfigLocales(configString: string) {
-    let inputConfig: InputConfig;
+  formatConfigLocales(config?: { configJson?: string; configYaml?: string; configToml?: string }) {
+    if (!config) {
+      this.config = defaultConfig;
+      return;
+    }
+    const { configJson, configYaml, configToml } = config;
 
+    let inputConfig: InputConfig = defaultConfig;
     // TODO: validation of config?
+
     try {
-      inputConfig = JSON.parse(configString) as InputConfig;
+      if (configJson) {
+        inputConfig = JSON.parse(configJson) as InputConfig;
+      } else if (configYaml) {
+        inputConfig = yaml.load(configYaml) as InputConfig;
+      } else if (configToml) {
+        inputConfig = Object.assign({}, toml.parse(configToml)) as InputConfig;
+      }
     } catch (e) {
       throw new BundleError(500, 'Error parsing config');
     }

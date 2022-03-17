@@ -40,7 +40,13 @@ type PageContentsQuery = {
       name: string;
     };
     isFork: boolean;
-    config?: {
+    configJson?: {
+      text: string;
+    };
+    configYaml?: {
+      text: string;
+    };
+    configToml?: {
       text: string;
     };
     mdx?: {
@@ -55,7 +61,11 @@ type PageContentsQuery = {
 export type Contents = {
   isFork: boolean;
   baseBranch: string;
-  config: string;
+  config: {
+    configJson?: string;
+    configYaml?: string;
+    configToml?: string;
+  };
   md: string;
   path: string;
   repositoryFound: boolean;
@@ -68,13 +78,23 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
   const [error, response] = await A2A<PageContentsQuery>(
     getGithubGQLClient()({
       query: `
-      query RepositoryConfig($owner: String!, $repository: String!, $config: String!, $mdx: String!, $mdxIndex: String!) {
+      query RepositoryConfig($owner: String!, $repository: String!, $configJson: String!, $configYaml: String!, $configToml: String!, $mdx: String!, $mdxIndex: String!) {
         repository(owner: $owner, name: $repository) {
           baseBranch: defaultBranchRef {
             name
           }
           isFork
-          config: object(expression: $config) {
+          configJson: object(expression: $configJson) {
+            ... on Blob {
+              text
+            }
+          }
+          configYaml: object(expression: $configYaml) {
+            ... on Blob {
+              text
+            }
+          }
+          configToml: object(expression: $configToml) {
             ... on Blob {
               text
             }
@@ -94,7 +114,9 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
     `,
       owner: metadata.owner,
       repository: metadata.repository,
-      config: `${metadata.ref}:docs.json`,
+      configJson: `${metadata.ref}:docs.json`,
+      configYaml: `${metadata.ref}:docs.yaml`,
+      configToml: `${metadata.ref}:docs.toml`,
       mdx: `${metadata.ref}:${absolutePath}.mdx`,
       mdxIndex: `${metadata.ref}:${indexPath}.mdx`,
     }),
@@ -107,11 +129,16 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
       repositoryFound: false,
     };
   }
+
   return {
     repositoryFound: true,
     isFork: response?.repository?.isFork ?? false,
     baseBranch: response?.repository.baseBranch.name ?? 'main',
-    config: response?.repository.config?.text ?? '',
+    config: {
+      configJson: response?.repository.configJson?.text,
+      configYaml: response?.repository.configYaml?.text,
+      configToml: response?.repository.configToml?.text,
+    },
     md: response?.repository.mdxIndex?.text ?? response?.repository.mdx?.text ?? '',
     path: response?.repository.mdxIndex?.text ? indexPath : absolutePath,
   };
@@ -176,5 +203,78 @@ export async function getPullRequestMetadata(
     owner: response?.repository?.pullRequest?.owner?.login,
     repository: response?.repository?.pullRequest?.repository?.name,
     ref: response?.repository?.pullRequest?.ref?.name,
+  };
+}
+
+type Configs = {
+  repositoryFound: boolean;
+  config?: {
+    configJson?: string;
+    configYaml?: string;
+    configToml?: string;
+  };
+};
+
+type ConfigResponse = {
+  repository: {
+    configJson?: {
+      text: string;
+    };
+    configYaml?: {
+      text: string;
+    };
+    configToml?: {
+      text: string;
+    };
+  };
+};
+
+export async function getConfigs(metadata: MetaData): Promise<Configs> {
+  console.log(metadata);
+
+  const [error, response] = await A2A<ConfigResponse>(
+    getGithubGQLClient()({
+      query: `
+      query RepositoryConfig($owner: String!, $repository: String!, $json: String!, $yaml: String!, $toml: String!) {
+        repository(owner: $owner, name: $repository) {
+          configYaml: object(expression: $yaml) {
+            ... on Blob {
+              text
+            }
+          }
+          configJson: object(expression: $json) {
+            ... on Blob {
+              text
+            }
+          }
+          configToml: object(expression: $toml) {
+            ... on Blob {
+              text
+            }
+          }
+        }
+      }
+    `,
+      owner: metadata.owner,
+      repository: metadata.repository,
+      json: `${metadata.ref}:docs.json`,
+      yaml: `${metadata.ref}:docs.yaml`,
+      toml: `${metadata.ref}:docs.toml`,
+    }),
+  );
+
+  // if an error is thrown then the repo is not found, if the repo is private then response = { repository: null }
+  if (error || response?.repository === null) {
+    return {
+      repositoryFound: false,
+    };
+  }
+  return {
+    repositoryFound: true,
+    config: {
+      configJson: response?.repository.configJson?.text,
+      configYaml: response?.repository.configYaml?.text,
+      configToml: response?.repository.configToml?.text,
+    },
   };
 }
