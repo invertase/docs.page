@@ -43,7 +43,7 @@ experimentalMath: false
 
   await configFile.writeAsString(configContent);
 
-  var indexPath = path.joinAll([current.path, 'docs', 'index.mdx']);
+  final indexPath = path.joinAll([current.path, 'docs', 'index.mdx']);
 
   File indexFile = await File(indexPath).create(recursive: true);
 
