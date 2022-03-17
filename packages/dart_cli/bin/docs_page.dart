@@ -37,7 +37,7 @@ experimentalMath: false
 
   final current = Directory.current;
 
-  var configPath = path.joinAll([current.path, 'docs.yaml']);
+  final configPath = path.joinAll([current.path, 'docs.yaml']);
 
   File configFile = await File(configPath).create(recursive: true);
 
