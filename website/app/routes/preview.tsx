@@ -25,6 +25,7 @@ export const links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: codeHikeStyles },
     { rel: 'stylesheet', href: removeBackTicks },
+    { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css' }
   ];
 };
 
