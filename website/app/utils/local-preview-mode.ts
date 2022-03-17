@@ -140,11 +140,15 @@ export function useDirectorySelector(): {
       const handle = (await window.showDirectoryPicker()) || null;
 
       let docs: FileSystemDirectoryHandle | null = null;
-      // let foundDocsJson = false;
+      let foundConfig = false;
       for await (const entry of handle.values()) {
-        if (entry.kind === 'file' && entry.name === 'docs.json') {
+        if (
+          !foundConfig &&
+          entry.kind === 'file' &&
+          ['docs.json', 'docs.yaml', 'docs.toml'].includes(entry.name)
+        ) {
           setConfigHandle(entry);
-          // foundDocsJson = true;
+          foundConfig = true;
         }
         if (entry.kind === 'directory' && entry.name === 'docs') {
           docs = entry;
