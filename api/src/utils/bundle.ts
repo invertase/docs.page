@@ -192,7 +192,6 @@ export class Bundle {
       } else if (configYaml) {
         inputConfig = yaml.load(configYaml) as InputConfig;
       } else if (configToml) {
-        // inputConfig = toml.parse(configToml) as InputConfig;
         inputConfig = Object.assign({}, toml.parse(configToml)) as InputConfig;
         console.log(JSON.parse(JSON.stringify(inputConfig)));
       }
