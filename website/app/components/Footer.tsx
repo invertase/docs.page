@@ -1,5 +1,5 @@
 import { useDocumentationContext } from '~/context';
-import { usePreviewMode } from '~/utils/local-preview-mode';
+import { usePreviewMode } from '~/utils/preview';
 import { DarkModeToggle } from './DarkModeToggle';
 import { DocsLink } from './DocsLink';
 import { PencilIcon } from '@heroicons/react/solid';

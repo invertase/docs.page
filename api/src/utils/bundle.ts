@@ -4,9 +4,15 @@ import { Contents, getConfigs, getGitHubContents } from './github.js';
 import { HeadingNode } from './plugins/rehype-headings.js';
 import { formatSourceAndRef } from './ref.js';
 import { getRepositorySymLinks } from './symlinks.js';
-import { hasLocales, InputConfig, OutputConfig, defaultConfig } from '@docs.page/server';
+import {
+  hasLocales,
+  InputConfig,
+  OutputConfig,
+  defaultConfig,
+  ErrorReason,
+} from '@docs.page/server';
 import yaml from 'js-yaml';
-import toml from 'toml';
+import toml from '@ltd/j-toml';
 
 type Frontmatter = Record<string, string>;
 
@@ -95,10 +101,10 @@ export class Bundle {
         path: this.path,
       });
     } catch (e) {
-      throw new BundleError(404, "Couldn't fetch github contents");
+      throw new BundleError(404, "Couldn't fetch github contents", 'REPO_NOT_FOUND');
     }
     if (!githubContents.repositoryFound) {
-      throw new BundleError(404, "Couldn't find github contents");
+      throw new BundleError(404, "Couldn't find github contents", 'REPO_NOT_FOUND');
     }
     this.markdown = githubContents.md;
     this.baseBranch = githubContents.baseBranch;
@@ -135,7 +141,7 @@ export class Bundle {
       this.headings = bundleResult.headings.length > 0 ? bundleResult.headings : [];
       this.built = true;
     } catch (e) {
-      throw new BundleError(500, 'Error bundling markdown');
+      throw new BundleError(500, 'Error bundling markdown', 'BUNDLE_ERROR');
     }
     return {
       code: this.code,
@@ -177,9 +183,8 @@ export class Bundle {
   }
 
   formatConfigLocales(config?: { configJson?: string; configYaml?: string; configToml?: string }) {
-    if (!config) {
-      this.config = defaultConfig;
-      return;
+    if (!config?.configJson && !config?.configYaml && !config?.configToml) {
+      throw new BundleError(404, 'Not found: Config file missing', 'MISSING_CONFIG');
     }
     const { configJson, configYaml, configToml } = config;
 
@@ -192,10 +197,12 @@ export class Bundle {
       } else if (configYaml) {
         inputConfig = yaml.load(configYaml) as InputConfig;
       } else if (configToml) {
-        inputConfig = Object.assign({}, toml.parse(configToml)) as InputConfig;
+        //@ts-ignore
+        inputConfig = Object.assign({}, toml.parse(configToml) as InputConfig);
       }
     } catch (e) {
-      throw new BundleError(500, 'Error parsing config');
+      console.error(e);
+      throw new BundleError(500, 'Error parsing config', 'BAD_CONFIG');
     }
 
     if (hasLocales(inputConfig)) {
@@ -215,9 +222,12 @@ export class Bundle {
 
 export class BundleError extends Error {
   statusCode: number;
-  constructor(statusCode: number, message: string) {
+  reason?: ErrorReason;
+
+  constructor(statusCode: number, message: string, reason?: ErrorReason) {
     super();
     this.statusCode = statusCode;
     this.message = message;
+    this.reason = reason;
   }
 }

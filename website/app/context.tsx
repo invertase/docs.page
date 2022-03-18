@@ -1,7 +1,7 @@
 import React, { createContext } from 'react';
 import { DocumentationLoader } from './loaders/documentation.server';
 import { ensureLeadingSlash } from './utils';
-import { usePreviewMode } from './utils/local-preview-mode';
+import { usePreviewMode } from './utils/preview';
 
 const DocumentationContext = createContext<DocumentationLoader>({} as DocumentationLoader);
 

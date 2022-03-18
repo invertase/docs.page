@@ -1,4 +1,10 @@
-import { fetchBundle, BundleSuccess, BundleResponseData, BundleError } from '@docs.page/server';
+import {
+  fetchBundle,
+  BundleSuccess,
+  BundleResponseData,
+  BundleError,
+  ErrorReason,
+} from '@docs.page/server';
 import { json, redirect, LoaderFunction, ThrownResponse } from 'remix';
 import { isExternalLink } from '~/components/DocsLink';
 import { replaceVariables } from '~/utils';
@@ -10,7 +16,7 @@ export type ThrownBundleError = ThrownResponse<number, BundleError | null>;
 
 export type ThrownNotFoundError = ThrownResponse<
   number,
-  Pick<DocumentationLoader, 'owner' | 'repo' | 'path'> & { repositoryFound: boolean }
+  Pick<DocumentationLoader, 'owner' | 'repo' | 'path'> & { reason: ErrorReason }
 >;
 
 // Response from the loader containing the bundle data.
@@ -44,7 +50,7 @@ export type DocumentationLoader = {
 
 // Utility to guard against a bundler error.
 export function isBundleError(bundle: BundleSuccess | BundleError): bundle is BundleError {
-  return bundle.hasOwnProperty('errors');
+  return bundle.hasOwnProperty('statusCode');
 }
 
 // @ts-ignore
@@ -59,45 +65,46 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
     [repo, ref] = repo.split('~');
   }
 
-  let bundle: BundleResponseData;
+  let response: BundleResponseData;
 
   try {
-    bundle = await fetchBundle({ owner, repository: repo, path, ref });
+    response = await fetchBundle({ owner, repository: repo, path, ref });
   } catch (error) {
     // If the bundler failed (e.g. API down), throw a server error
-    console.error(error);
     throw json(null, 500);
   }
 
   // If the bundler errors, return the error as a bad request.
-  if (isBundleError(bundle)) {
-    throw json(bundle, 400);
+  if (isBundleError(response)) {
+    switch (response.statusCode) {
+      case 404:
+        throw json<ThrownNotFoundError['data']>(
+          {
+            owner,
+            repo,
+            path,
+            reason: response.reason,
+          },
+          404,
+        );
+
+      default:
+        throw json(response, response.statusCode);
+    }
   }
 
-  // No bundled code or config should 404
-  if (bundle.config === null || bundle.code === null) {
-    throw json<ThrownNotFoundError['data']>(
-      {
-        owner,
-        repo,
-        path,
-        repositoryFound: bundle.repositoryFound,
-      },
-      404,
-    );
-  }
   // Apply a redirect if provided in the frontmatter
-  if (bundle.frontmatter.redirect) {
-    const href = bundle.frontmatter.redirect;
+  if (response.frontmatter.redirect) {
+    const href = response.frontmatter.redirect;
     if (isExternalLink(href)) {
       return redirect(href);
     }
-    return redirect(`/${owner}/${repo}${bundle.frontmatter.redirect}`);
+    return redirect(`/${owner}/${repo}${response.frontmatter.redirect}`);
   }
 
-  const config = mergeConfig(bundle.config);
+  const config = mergeConfig(response.config);
 
-  const code = replaceVariables(config.variables, bundle.code);
+  const code = replaceVariables(config.variables, response.code);
 
   return json<DocumentationLoader>(
     {
@@ -105,12 +112,12 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
       repo,
       path,
       ref,
-      source: bundle.source,
+      source: response.source,
       code,
-      headings: bundle.headings,
-      config: mergeConfig(bundle.config),
-      frontmatter: bundle.frontmatter,
-      baseBranch: bundle.baseBranch ?? 'main',
+      headings: response.headings,
+      config: mergeConfig(response.config),
+      frontmatter: response.frontmatter,
+      baseBranch: response.baseBranch ?? 'main',
     },
     {
       headers: {

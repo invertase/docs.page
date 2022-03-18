@@ -1,6 +1,6 @@
 import { NavLink, NavLinkProps, useLocation } from 'react-router-dom';
 import { useCustomDomain, useDocumentationContext } from '~/context';
-import { usePreviewMode } from '~/utils/local-preview-mode';
+import { usePreviewMode } from '~/utils/preview';
 
 export function DocsLink({ ...props }: NavLinkProps): JSX.Element {
   const { owner, repo, ref } = useDocumentationContext();

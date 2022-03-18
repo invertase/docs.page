@@ -15,16 +15,16 @@ export const bundleRaw = async (
   const headerDepth = req?.query?.headerDepth ? parseInt(req?.query?.headerDepth as string) : 3;
   const { md: markdown, config: sourceConfig } = req.body;
 
-  const inputConfig = sourceConfig || undefined;
   const bundleInstance = new Bundle({
     owner: 'n/a',
     repository: 'n/a',
     path,
     headerDepth,
     markdown,
-    config: inputConfig,
   });
-
+  if (sourceConfig) {
+    bundleInstance.formatConfigLocales(sourceConfig);
+  }
   try {
     const data = await bundleInstance.build();
     return res.status(200).send(data);

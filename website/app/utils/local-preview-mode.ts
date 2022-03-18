@@ -1,74 +1,7 @@
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { BundleSuccess } from '@docs.page/server';
 import { DocumentationLoader } from '~/loaders/documentation.server';
 import { mergeConfig } from './config';
-export type PreviewMode = {
-  enabled: boolean;
-  onSelect: () => void;
-  imageUrls: Record<string, string> | null;
-};
-
-export const PreviewModeContext = createContext<PreviewMode>({
-  enabled: false,
-  onSelect: () => {
-    return;
-  },
-  imageUrls: {},
-});
-
-export function usePreviewMode(): PreviewMode {
-  return useContext(PreviewModeContext);
-}
-
-export async function extractContents(
-  handle: FileSystemFileHandle,
-  configHandle: FileSystemFileHandle | null,
-  imageHandles: FileSystemFileHandles,
-): Promise<[string, string, Record<string, string>, Error[]]> {
-  let config = mergeConfig({});
-  let text = '';
-  let imageUrls;
-
-  const errors: Error[] = [];
-  try {
-    // get docs.json from config handle
-    const configFile = await configHandle!.getFile();
-    try {
-      // build config from the file contents
-      config = await mergeConfig(JSON.parse(await configFile!.text()));
-    } catch (e) {
-      console.error('Problems with docs.json format');
-      // errors.push(e);
-    }
-  } catch (e) {
-    console.error('Unable to getFile config');
-    // errors.push(e);
-  }
-  try {
-    const file = await handle.getFile();
-    try {
-      text = await file.text();
-    } catch (e) {
-      console.error('unable to extract text from file.');
-      errors.push(e as Error);
-    }
-  } catch (e) {
-    console.error('unable to getFile page');
-    errors.push(e as Error);
-  }
-  try {
-    imageUrls = Object.fromEntries(
-      await Promise.all(
-        Object.entries(imageHandles).map(async ([key, handle]) => {
-          const url = URL.createObjectURL(await handle.getFile());
-          return [key, url];
-        }),
-      ),
-    );
-  } catch (_) {}
-
-  return [text, JSON.stringify(config), imageUrls, errors];
-}
 
 export type FileSystemFileHandles = { [path: string]: FileSystemFileHandle };
 
@@ -122,13 +55,15 @@ export function useHashChange(): string {
   return hash;
 }
 
-export function useDirectorySelector(): {
+interface DirectorySelector {
   select: () => void;
   handles: FileSystemFileHandles | null;
   error: Error | null;
   pending: boolean;
   configHandle: FileSystemFileHandle | null;
-} {
+}
+
+export function useDirectorySelector(): DirectorySelector {
   const [error, setError] = useState<Error | null>(null);
   const [pending, setPending] = useState(false);
   const [handles, setHandles] = useState<FileSystemFileHandles | null>(null);
@@ -140,11 +75,15 @@ export function useDirectorySelector(): {
       const handle = (await window.showDirectoryPicker()) || null;
 
       let docs: FileSystemDirectoryHandle | null = null;
-      // let foundDocsJson = false;
+      let foundConfig = false;
       for await (const entry of handle.values()) {
-        if (entry.kind === 'file' && entry.name === 'docs.json') {
+        if (
+          !foundConfig &&
+          entry.kind === 'file' &&
+          ['docs.json', 'docs.yaml', 'docs.toml'].includes(entry.name)
+        ) {
           setConfigHandle(entry);
-          // foundDocsJson = true;
+          foundConfig = true;
         }
         if (entry.kind === 'directory' && entry.name === 'docs') {
           docs = entry;
@@ -166,18 +105,25 @@ export function useDirectorySelector(): {
   return { select, handles, error, pending, configHandle };
 }
 
-const cache = {
-  text: '',
-  config: '',
-  props: null,
-  urls: {},
+type PreviewCache = {
+  text?: string;
+  config?: Configs;
+  props?: string;
+  urls?: Record<string, string>;
 };
+const cache: PreviewCache = {};
+
+interface PolledLocalDocs {
+  documentationLoader: DocumentationLoader | null;
+  urls?: Record<string, string>;
+  errorCode: number | null;
+}
 
 export function usePollLocalDocs(
   handles: FileSystemFileHandles | null,
   configHandle: FileSystemFileHandle | null,
   ms = 500,
-): [DocumentationLoader | null, Record<string, string>, number | null] {
+): PolledLocalDocs {
   const [updating, setUpdating] = useState(0);
   const [pageProps, setPageProps] = useState<DocumentationLoader | null>(null);
   const hash = useHashChange();
@@ -202,12 +148,12 @@ export function usePollLocalDocs(
       () =>
         extractContents(handle, configHandle, imageHandles)
           .then(([text, config, urls]) => {
-            if (text !== cache.text || config !== cache.config || urls !== cache.urls) {
+            if (text !== cache.text || urls !== cache.urls) {
               cache.urls = urls;
               cache.text = text;
               cache.config = config;
-              setUpdating(updating + 1);
             }
+            setUpdating(updating + 1);
           })
           .catch(() => {
             setErrorCode(404);
@@ -219,65 +165,62 @@ export function usePollLocalDocs(
 
   useEffect(() => {
     console.log('%c File change detected, hot update! 🔥', 'color: #8b0000;');
-
-    buildPreviewProps({ hash, config: cache.config, text: cache.text, urls: cache.urls })
-      .then(previewProps => {
-        setPageProps(previewProps);
-      })
+    buildPreviewProps({
+      hash,
+      config: cache.config,
+      text: cache.text || '',
+      urls: cache.urls || {},
+    })
+      .then(setPageProps)
       .then(() => {
         document.body.scrollTop = document.documentElement.scrollTop = 0;
       });
-  }, [cache.text, cache.config]);
+  }, [cache.text, cache.config, cache.urls]);
 
-  return [pageProps, cache.urls, errorCode];
+  return { documentationLoader: pageProps, urls: cache.urls, errorCode };
 }
 
 type PreviewParams = {
   hash: string;
-  config: string;
+  config?: Configs;
   text: string;
   urls: Record<string, string>;
 };
 
 const buildPreviewProps = async (params: PreviewParams): Promise<DocumentationLoader> => {
-  let config = {};
-  if (Object.keys(params.config).length > 0) {
-    config = JSON.parse(params.config);
-  }
   const md = params.text;
 
   let code: string | null = null;
   let frontmatter: BundleSuccess['frontmatter'] | null = null;
   let headings: BundleSuccess['headings'] | null = null;
+  let config: Record<string, unknown> | null = null;
   const body = {
     md,
-    config,
+    config: params.config,
     baseBranch: 'main',
   };
 
-  if (md) {
-    try {
-      const host =
-        //@ts-ignore
-        window.ENV?.NODE_ENV === 'production' ? 'https://docs.page' : 'http://localhost:3001';
-      const bundle = await fetch(`${host}/preview-fetch`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json, text/plain, */*',
-          'Content-Type': 'application/json',
-          'docs-page-preview': 'true',
-        },
-        body: JSON.stringify(body),
-      }).then(r => r.json());
+  try {
+    const host =
+      //@ts-ignore
+      window.ENV?.NODE_ENV === 'production' ? 'https://docs.page' : 'http://localhost:3001';
+    const bundle = await fetch(`${host}/preview-fetch`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Content-Type': 'application/json',
+        'docs-page-preview': 'true',
+      },
+      body: JSON.stringify(body),
+    }).then(r => r.json());
 
-      code = bundle.code;
-      frontmatter = bundle.frontmatter;
-      headings = bundle.headings;
-    } catch (e) {
-      throw new Error('error bundling');
-    }
+    code = bundle.code;
+    frontmatter = bundle.frontmatter;
+    headings = bundle.headings;
+    config = bundle.config;
+  } catch (e) {
+    throw new Error('error bundling');
   }
-
   return {
     owner: 'preview',
     repo: 'docs',
@@ -287,7 +230,61 @@ const buildPreviewProps = async (params: PreviewParams): Promise<DocumentationLo
     source: { type: 'branch', owner: 'preview', repository: 'docs', ref: 'ref' },
     code: code || '',
     headings,
-    config: mergeConfig(config),
+    config: mergeConfig(config || {}),
     frontmatter: frontmatter || {},
   };
 };
+
+type Configs = {
+  configJson?: string;
+  configYaml?: string;
+  configToml?: string;
+};
+
+export async function extractContents(
+  handle: FileSystemFileHandle,
+  configHandle: FileSystemFileHandle | null,
+  imageHandles: FileSystemFileHandles,
+): Promise<[string, Configs, Record<string, string>, Error[]]> {
+  let text = '';
+  let imageUrls;
+  let config: Configs = {};
+  const errors: Error[] = [];
+  try {
+    // get docs.json from config handle
+    const configText = await (await configHandle!.getFile()).text();
+    switch (configHandle?.name) {
+      case 'docs.json':
+        config = { configJson: configText };
+      case 'docs.yaml':
+        config = { configYaml: configText };
+      case 'docs.toml':
+        config = { configToml: configText };
+    }
+  } catch (e) {
+    console.error(e);
+    throw new Error('Unable to find config file');
+  }
+  try {
+    text = await (await handle.getFile()).text();
+  } catch (e) {
+    console.error('unable to get page content');
+    errors.push(e as Error);
+  }
+  try {
+    imageUrls = Object.fromEntries(
+      await Promise.all(
+        Object.entries(imageHandles).map(async ([key, handle]) => {
+          const url = URL.createObjectURL(await handle.getFile());
+          return [key, url];
+        }),
+      ),
+    );
+  } catch (_) {}
+
+  if (config?.configToml) {
+    config.configToml = config.configToml.replace('\\n', '');
+  }
+
+  return [text, config, imageUrls, errors];
+}

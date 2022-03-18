@@ -4,7 +4,7 @@ import { DocSearch } from '@docsearch/react';
 import { DarkModeToggle } from './DarkModeToggle';
 import { useBaseUrl, useDocumentationContext, useImagePath } from '~/context';
 import { Branch, Commit, Menu, PullRequest } from './Icons';
-import { usePreviewMode } from '~/utils/local-preview-mode';
+import { usePreviewMode } from '~/utils/preview';
 import { DocsLink } from './DocsLink';
 
 export type OnSidebarToggle = () => void;
