@@ -164,7 +164,8 @@ export type ErrorReason =
   | 'BUNDLE_ERROR'
   | 'REF_NOT_FOUND'
   | 'BAD_CONFIG'
-  | 'MISSING_CONFIG';
+  | 'MISSING_CONFIG'
+  | 'FILE_NOT_FOUND';
 
 export type BundleError = {
   statusCode: number;
