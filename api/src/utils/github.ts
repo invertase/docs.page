@@ -230,8 +230,6 @@ type ConfigResponse = {
 };
 
 export async function getConfigs(metadata: MetaData): Promise<Configs> {
-  console.log(metadata);
-
   const [error, response] = await A2A<ConfigResponse>(
     getGithubGQLClient()({
       query: `
