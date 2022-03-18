@@ -6,7 +6,7 @@ import { formatSourceAndRef } from './ref.js';
 import { getRepositorySymLinks } from './symlinks.js';
 import { hasLocales, InputConfig, OutputConfig, defaultConfig } from '@docs.page/server';
 import yaml from 'js-yaml';
-import toml from 'toml';
+import toml from '@ltd/j-toml';
 
 type Frontmatter = Record<string, string>;
 
@@ -192,9 +192,11 @@ export class Bundle {
       } else if (configYaml) {
         inputConfig = yaml.load(configYaml) as InputConfig;
       } else if (configToml) {
-        inputConfig = Object.assign({}, toml.parse(configToml)) as InputConfig;
+        //@ts-ignore
+        inputConfig = Object.assign({}, toml.parse(configToml) as InputConfig);
       }
     } catch (e) {
+      console.error(e)
       throw new BundleError(500, 'Error parsing config');
     }
 

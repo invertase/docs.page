@@ -6,8 +6,8 @@ import codeHikeStyles from '@code-hike/mdx/dist/index.css';
 import { ThrownBundleError } from '../loaders/documentation.server';
 import { BadRequest, PreviewNotFound, ServerError } from '~/components/Errors';
 import { GitHub } from '~/components/Icons';
+import { PreviewModeContext } from '~/utils/preview';
 import {
-  PreviewModeContext,
   useDirectorySelector,
   usePollLocalDocs,
 } from '~/utils/local-preview-mode';
@@ -25,6 +25,7 @@ export const links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: codeHikeStyles },
     { rel: 'stylesheet', href: removeBackTicks },
+    { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css' }
   ];
 };
 
@@ -37,7 +38,7 @@ export const meta: MetaFunction = () => {
 
 export default function LocalPreview(): JSX.Element {
   const { select, handles, configHandle, pending, error: directoryError } = useDirectorySelector();
-  const [data, urls, pollErrorCode] = usePollLocalDocs(handles, configHandle, 500);
+  const { documentationLoader: data, urls, errorCode: pollErrorCode } = usePollLocalDocs(handles, configHandle, 500);
   if (directoryError) {
     return <PreviewNotFound />;
   }
@@ -50,7 +51,7 @@ export default function LocalPreview(): JSX.Element {
   }
 
   return (
-    <PreviewModeContext.Provider value={{ enabled: true, onSelect: select, imageUrls: urls }}>
+    <PreviewModeContext.Provider value={{ enabled: true, onSelect: select, imageUrls: urls || {} }}>
       <Documentation data={data!} />
     </PreviewModeContext.Provider>
   );

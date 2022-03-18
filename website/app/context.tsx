@@ -1,7 +1,7 @@
 import React, { createContext } from 'react';
 import { DocumentationLoader } from './loaders/documentation.server';
 import { ensureLeadingSlash } from './utils';
-import { usePreviewMode } from './utils/local-preview-mode';
+import { usePreviewMode } from './utils/preview';
 
 const DocumentationContext = createContext<DocumentationLoader>({} as DocumentationLoader);
 
@@ -80,14 +80,12 @@ export function useRawBlob(path: string): string {
   const { source, baseBranch } = React.useContext(DocumentationContext);
   const { owner, repository: repo, ref } = source;
   if (source.type === 'branch') {
-    return `https://raw.githubusercontent.com/${owner}/${repo}/${
-      ref ?? baseBranch
-    }/docs${ensureLeadingSlash(path)}`;
+    return `https://raw.githubusercontent.com/${owner}/${repo}/${ref ?? baseBranch
+      }/docs${ensureLeadingSlash(path)}`;
   }
   if (source.type === 'PR') {
-    return `https://raw.githubusercontent.com/${owner}/${repo}/${
-      ref ?? baseBranch
-    }/docs${ensureLeadingSlash(path)}`;
+    return `https://raw.githubusercontent.com/${owner}/${repo}/${ref ?? baseBranch
+      }/docs${ensureLeadingSlash(path)}`;
   }
 
   return `https://raw.githubusercontent.com/${owner}/${repo}/main/docs${ensureLeadingSlash(path)}`;
