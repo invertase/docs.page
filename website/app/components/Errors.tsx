@@ -44,7 +44,6 @@ export function PageNotFound() {
 
 export function NotFound({ error }: { error: ThrownNotFoundError }) {
   const { owner, repo, path, reason } = error.data;
-  console.log(reason);
   switch (reason) {
     case 'REPO_NOT_FOUND':
       return (

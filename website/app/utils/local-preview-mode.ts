@@ -148,7 +148,7 @@ export function usePollLocalDocs(
       () =>
         extractContents(handle, configHandle, imageHandles)
           .then(([text, config, urls]) => {
-            if (text !== cache.text || urls !== cache.urls) {
+            if (text !== cache.text) {
               cache.urls = urls;
               cache.text = text;
               cache.config = config;
@@ -199,7 +199,6 @@ const buildPreviewProps = async (params: PreviewParams): Promise<DocumentationLo
     config: params.config,
     baseBranch: 'main',
   };
-
   try {
     const host =
       //@ts-ignore
@@ -253,13 +252,14 @@ export async function extractContents(
   try {
     // get docs.json from config handle
     const configText = await (await configHandle!.getFile()).text();
-    switch (configHandle?.name) {
-      case 'docs.json':
-        config = { configJson: configText };
-      case 'docs.yaml':
-        config = { configYaml: configText };
-      case 'docs.toml':
-        config = { configToml: configText };
+    const configExt = configHandle?.name;
+
+    if (configExt === 'docs.json') {
+      config = { configJson: configText };
+    } else if (configExt === 'docs.yaml') {
+      config = { configYaml: configText };
+    } else if (configExt === 'docs.toml') {
+      config = { configToml: configText };
     }
   } catch (e) {
     console.error(e);
@@ -281,10 +281,6 @@ export async function extractContents(
       ),
     );
   } catch (_) {}
-
-  if (config?.configToml) {
-    config.configToml = config.configToml.replace('\\n', '');
-  }
 
   return [text, config, imageUrls, errors];
 }
