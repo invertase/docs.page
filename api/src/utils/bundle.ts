@@ -106,15 +106,15 @@ export class Bundle {
     if (!githubContents.repositoryFound) {
       throw new BundleError(404, "Couldn't find github contents", 'REPO_NOT_FOUND');
     }
-    if (githubContents.md === null) {
-      throw new BundleError(404, "Couldn't find file", 'FILE_NOT_FOUND');
-    }
-    this.markdown = githubContents.md;
     this.baseBranch = githubContents.baseBranch;
     this.repositoryFound = githubContents.repositoryFound;
 
     this.formatConfigLocales(githubContents.config);
     await this.matchSymLinks();
+    if (githubContents.md === null) {
+      throw new BundleError(404, "Couldn't find file", 'FILE_NOT_FOUND');
+    }
+    this.markdown = githubContents.md;
     this.contentFetched = true;
   }
 
