@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react';
 import { BundleSuccess } from '@docs.page/server';
 import { DocumentationLoader } from '~/loaders/documentation.server';
 import { mergeConfig } from './config';
-import TOML from '@ltd/j-toml';
 
 export type FileSystemFileHandles = { [path: string]: FileSystemFileHandle };
 
@@ -78,7 +77,11 @@ export function useDirectorySelector(): DirectorySelector {
       let docs: FileSystemDirectoryHandle | null = null;
       let foundConfig = false;
       for await (const entry of handle.values()) {
-        if (!foundConfig && entry.kind === 'file' && ['docs.json', 'docs.yaml', 'docs.toml'].includes(entry.name)) {
+        if (
+          !foundConfig &&
+          entry.kind === 'file' &&
+          ['docs.json', 'docs.yaml', 'docs.toml'].includes(entry.name)
+        ) {
           setConfigHandle(entry);
           foundConfig = true;
         }
@@ -103,18 +106,17 @@ export function useDirectorySelector(): DirectorySelector {
 }
 
 type PreviewCache = {
-  text?: string,
-  config?: Configs
-  props?: string,
-  urls?: Record<string, string>
-}
+  text?: string;
+  config?: Configs;
+  props?: string;
+  urls?: Record<string, string>;
+};
 const cache: PreviewCache = {};
 
-
 interface PolledLocalDocs {
-  documentationLoader: DocumentationLoader | null,
-  urls?: Record<string, string>,
-  errorCode: number | null
+  documentationLoader: DocumentationLoader | null;
+  urls?: Record<string, string>;
+  errorCode: number | null;
 }
 
 export function usePollLocalDocs(
@@ -146,12 +148,12 @@ export function usePollLocalDocs(
       () =>
         extractContents(handle, configHandle, imageHandles)
           .then(([text, config, urls]) => {
-            if (text !== cache.text || config !== cache.config || urls !== cache.urls) {
+            if (text !== cache.text || urls !== cache.urls) {
               cache.urls = urls;
               cache.text = text;
               cache.config = config;
-              setUpdating(updating + 1);
             }
+            setUpdating(updating + 1);
           })
           .catch(() => {
             setErrorCode(404);
@@ -163,13 +165,17 @@ export function usePollLocalDocs(
 
   useEffect(() => {
     console.log('%c File change detected, hot update! 🔥', 'color: #8b0000;');
-
-    buildPreviewProps({ hash, config: cache.config, text: cache.text || '', urls: cache.urls || {} })
+    buildPreviewProps({
+      hash,
+      config: cache.config,
+      text: cache.text || '',
+      urls: cache.urls || {},
+    })
       .then(setPageProps)
       .then(() => {
         document.body.scrollTop = document.documentElement.scrollTop = 0;
       });
-  }, [cache.text, cache.config]);
+  }, [cache.text, cache.config, cache.urls]);
 
   return { documentationLoader: pageProps, urls: cache.urls, errorCode };
 }
@@ -230,16 +236,16 @@ const buildPreviewProps = async (params: PreviewParams): Promise<DocumentationLo
 };
 
 type Configs = {
-  configJson?: string,
-  configYaml?: string,
-  configToml?: string,
-}
+  configJson?: string;
+  configYaml?: string;
+  configToml?: string;
+};
 
 export async function extractContents(
   handle: FileSystemFileHandle,
   configHandle: FileSystemFileHandle | null,
   imageHandles: FileSystemFileHandles,
-): Promise<[string, Configs, string, Record<string, string>, Error[]]> {
+): Promise<[string, Configs, Record<string, string>, Error[]]> {
   let text = '';
   let imageUrls;
   let config: Configs = {};
@@ -250,11 +256,11 @@ export async function extractContents(
     let configText = await (await configHandle!.getFile()).text();
     switch (configHandle?.name) {
       case 'docs.json':
-        config = { configJson: configText }
+        config = { configJson: configText };
       case 'docs.yaml':
-        config = { configYaml: configText }
+        config = { configYaml: configText };
       case 'docs.toml':
-        config = { configToml: configText }
+        config = { configToml: configText };
     }
   } catch (e) {
     console.error(e);
@@ -278,8 +284,8 @@ export async function extractContents(
   } catch (_) { }
 
   if (config?.configToml) {
-    config.configToml = config.configToml.replace('\\n', '')
+    config.configToml = config.configToml.replace('\\n', '');
   }
 
-  return [text, config, configName, imageUrls, errors];
+  return [text, config, imageUrls, errors];
 }

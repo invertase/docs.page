@@ -161,13 +161,17 @@ type HeadingNode = {
   rank: number | null;
 };
 
+export type ErrorReason = 'REPO_NOT_FOUND' | 'BUNDLE_ERROR' | 'REF_NOT_FOUND' | 'BAD_CONFIG' | 'MISSING_CONFIG'
+
 export type BundleError = {
-  errors: Message[];
+  statusCode: number
+  message: string
+  reason: ErrorReason
 };
 
 export type BundleSuccess = {
-  code: string | null;
-  config: Record<string, unknown> | null;
+  code: string;
+  config: Record<string, unknown>;
   frontmatter: {
     [key: string]: string;
   };
