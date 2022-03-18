@@ -193,7 +193,7 @@ const buildPreviewProps = async (params: PreviewParams): Promise<DocumentationLo
   let code: string | null = null;
   let frontmatter: BundleSuccess['frontmatter'] | null = null;
   let headings: BundleSuccess['headings'] | null = null;
-  let config: Record<string, any> | null = null;
+  let config: Record<string, unknown> | null = null;
   const body = {
     md,
     config: params.config,
@@ -249,11 +249,10 @@ export async function extractContents(
   let text = '';
   let imageUrls;
   let config: Configs = {};
-  let configName = '';
   const errors: Error[] = [];
   try {
     // get docs.json from config handle
-    let configText = await (await configHandle!.getFile()).text();
+    const configText = await (await configHandle!.getFile()).text();
     switch (configHandle?.name) {
       case 'docs.json':
         config = { configJson: configText };
@@ -281,7 +280,7 @@ export async function extractContents(
         }),
       ),
     );
-  } catch (_) { }
+  } catch (_) {}
 
   if (config?.configToml) {
     config.configToml = config.configToml.replace('\\n', '');

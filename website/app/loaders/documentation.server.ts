@@ -1,4 +1,10 @@
-import { fetchBundle, BundleSuccess, BundleResponseData, BundleError, ErrorReason } from '@docs.page/server';
+import {
+  fetchBundle,
+  BundleSuccess,
+  BundleResponseData,
+  BundleError,
+  ErrorReason,
+} from '@docs.page/server';
 import { json, redirect, LoaderFunction, ThrownResponse } from 'remix';
 import { isExternalLink } from '~/components/DocsLink';
 import { replaceVariables } from '~/utils';
@@ -70,7 +76,6 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
 
   // If the bundler errors, return the error as a bad request.
   if (isBundleError(response)) {
-
     switch (response.statusCode) {
       case 404:
         throw json<ThrownNotFoundError['data']>(

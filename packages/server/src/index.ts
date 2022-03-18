@@ -24,8 +24,8 @@ export async function fetchBundle(params: FetchBundleInput): Promise<BundleRespo
     BUNDLER_URL
       ? BUNDLER_URL
       : NODE_ENV === 'production'
-        ? `https://api.docs.page`
-        : 'http://localhost:8000',
+      ? `https://api.docs.page`
+      : 'http://localhost:8000',
     params,
   );
 

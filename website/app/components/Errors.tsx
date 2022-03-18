@@ -46,12 +46,20 @@ export function NotFound({ error }: { error: ThrownNotFoundError }) {
   const { owner, repo, path, reason } = error.data;
   switch (reason) {
     case 'REPO_NOT_FOUND':
-      return <ErrorContainer title={'This page could not be found'} code={error.status}>
-        <RepoNotFound owner={owner} repo={repo} />
-      </ErrorContainer>;
+      return (
+        <ErrorContainer title={'This page could not be found'} code={error.status}>
+          <RepoNotFound owner={owner} repo={repo} />
+        </ErrorContainer>
+      );
     case 'MISSING_CONFIG':
-      return <ErrorContainer title={'This page could not be found'} code={error.status}>
-        <ConfigNotFound owner={owner} repo={repo} />
+      return (
+        <ErrorContainer title={'This page could not be found'} code={error.status}>
+          <ConfigNotFound owner={owner} repo={repo} />
+        </ErrorContainer>
+      );
+    default:
+      <ErrorContainer title={'This page could not be found'} code={error.status}>
+        <FileNotFound owner={owner} repo={repo} path={path} />
       </ErrorContainer>;
   }
 }
@@ -148,7 +156,7 @@ const ConfigNotFound = ({ owner, repo }: { owner: string; repo: string }) => (
       </DocsLink>{' '}
       is missing a configuration file.
     </p>
-    <p className='pt-4'>
+    <p className="pt-4">
       To fix this, see our docs on{' '}
       <DocsLink className="text-blue-600" to="https://use.docs.page/configuration">
         configuring your docs.page project

@@ -4,7 +4,13 @@ import { Contents, getConfigs, getGitHubContents } from './github.js';
 import { HeadingNode } from './plugins/rehype-headings.js';
 import { formatSourceAndRef } from './ref.js';
 import { getRepositorySymLinks } from './symlinks.js';
-import { hasLocales, InputConfig, OutputConfig, defaultConfig, ErrorReason } from '@docs.page/server';
+import {
+  hasLocales,
+  InputConfig,
+  OutputConfig,
+  defaultConfig,
+  ErrorReason,
+} from '@docs.page/server';
 import yaml from 'js-yaml';
 import toml from '@ltd/j-toml';
 
@@ -116,7 +122,7 @@ export class Bundle {
     });
 
     if (!repositoryFound || !config) {
-      throw new BundleError(404, 'Unable to fetch config file.',);
+      throw new BundleError(404, 'Unable to fetch config file.');
     }
     this.formatConfigLocales(config);
 
@@ -177,8 +183,8 @@ export class Bundle {
   }
 
   formatConfigLocales(config?: { configJson?: string; configYaml?: string; configToml?: string }) {
-    if (!config?.configJson || !config?.configYaml || !config?.configToml) {
-      throw new BundleError(404, 'Not found: Config file missing', "MISSING_CONFIG")
+    if (!config?.configJson && !config?.configYaml && !config?.configToml) {
+      throw new BundleError(404, 'Not found: Config file missing', 'MISSING_CONFIG');
     }
     const { configJson, configYaml, configToml } = config;
 
@@ -215,9 +221,8 @@ export class Bundle {
 }
 
 export class BundleError extends Error {
-
   statusCode: number;
-  reason?: ErrorReason
+  reason?: ErrorReason;
 
   constructor(statusCode: number, message: string, reason?: ErrorReason) {
     super();
