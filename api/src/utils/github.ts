@@ -66,7 +66,7 @@ export type Contents = {
     configYaml?: string;
     configToml?: string;
   };
-  md: string;
+  md: string | null;
   path: string;
   repositoryFound: boolean;
 };
@@ -139,7 +139,7 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
       configYaml: response?.repository.configYaml?.text,
       configToml: response?.repository.configToml?.text,
     },
-    md: response?.repository.mdxIndex?.text ?? response?.repository.mdx?.text ?? '',
+    md: response?.repository.mdxIndex?.text || response?.repository.mdx?.text || null,
     path: response?.repository.mdxIndex?.text ? indexPath : absolutePath,
   };
 }

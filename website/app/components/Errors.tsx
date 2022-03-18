@@ -44,6 +44,7 @@ export function PageNotFound() {
 
 export function NotFound({ error }: { error: ThrownNotFoundError }) {
   const { owner, repo, path, reason } = error.data;
+  console.log(reason);
   switch (reason) {
     case 'REPO_NOT_FOUND':
       return (
@@ -57,11 +58,12 @@ export function NotFound({ error }: { error: ThrownNotFoundError }) {
           <ConfigNotFound owner={owner} repo={repo} />
         </ErrorContainer>
       );
-    default:
-      <ErrorContainer title={'This page could not be found'} code={error.status}>
-        <FileNotFound owner={owner} repo={repo} path={path} />
-      </ErrorContainer>;
   }
+  return (
+    <ErrorContainer title={'This page could not be found'} code={error.status}>
+      <FileNotFound owner={owner} repo={repo} path={path} />
+    </ErrorContainer>
+  );
 }
 
 export function BadRequest({ error }: { error: ThrownBundleError }) {
