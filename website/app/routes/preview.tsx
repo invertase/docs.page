@@ -5,7 +5,7 @@ import { ThrownBundleError } from '../loaders/documentation.server';
 import { BadRequest, PreviewNotFound, ServerError } from '~/components/Errors';
 import { PreviewModeContext } from '~/utils/preview';
 import { usePollLocalDocs } from '~/utils/preview/local-preview-mode';
-import { useDirectorySelector } from '~/utils/preview/directory-selector'
+import { useDirectorySelector } from '~/utils/preview/directory-selector';
 import removeBackTicks from '../styles/remove-backticks.css';
 import { LandingPage } from '../components/PreviewLandingPage';
 import Documentation from '~/components/Documentation';
@@ -43,7 +43,9 @@ export default function LocalPreview(): JSX.Element {
   }
 
   return (
-    <PreviewModeContext.Provider value={{ enabled: true, onSelect: dir.select, imageUrls: localDocs.urls || {} }}>
+    <PreviewModeContext.Provider
+      value={{ enabled: true, onSelect: dir.select, imageUrls: localDocs.urls || {} }}
+    >
       <Documentation data={localDocs.data!} />
     </PreviewModeContext.Provider>
   );

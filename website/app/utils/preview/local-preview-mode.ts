@@ -180,7 +180,7 @@ export async function extractContents(
         }),
       ),
     );
-  } catch (_) { }
+  } catch (_) {}
 
   return [text, config, imageUrls, errors];
 }
