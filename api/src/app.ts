@@ -27,3 +27,5 @@ app.use('/', routes);
 app.listen(PORT, () => {
   console.log(`docs.page api server is running at http://localhost:${PORT}`);
 });
+
+export default app;
