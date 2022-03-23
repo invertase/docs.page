@@ -17,4 +17,5 @@ export default {
     // preset: "ts-jest",
     preset: 'ts-jest/presets/default-esm', // or other ESM presets
     transformIgnorePatterns: [],
+    testTimeout: 15000
 };

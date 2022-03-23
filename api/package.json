@@ -48,7 +48,7 @@
     "build": "tsc",
     "start": "node dist/app.js",
     "postinstall": "tsc",
-    "test": "concurrently \"yarn dev\" \"node --experimental-vm-modules ../node_modules/.bin/jest\""
+    "test": "node --experimental-vm-modules ../node_modules/.bin/jest"
   },
   "devDependencies": {
     "@docs.page/server": "^1.0.0",
