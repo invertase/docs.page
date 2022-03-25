@@ -9,6 +9,7 @@ export function useHashChange(): string {
       window.location.hash.replace('#', '') === '/'
         ? '/index'
         : window.location.hash.replace('#', '');
+
     return setHash(newHash);
   }
 

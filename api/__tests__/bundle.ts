@@ -9,10 +9,20 @@ describe('/bundle', () => {
     let serverProcess: ChildProcessWithoutNullStreams;
 
     beforeAll(async () => {
+
         serverProcess = spawn('node', ['dist/app.js']);
-        // Give it enough time to start:
-        await new Promise(resolve => setTimeout(resolve, 2000))
-    })
+
+        await new Promise<void>(resolve => {
+            function handler(data: Buffer) {
+
+                if (data.toString("utf8").includes("is running at")) {
+                    serverProcess.stdout.removeListener("data", handler)
+                    resolve();
+                }
+            }
+            serverProcess.stdout.on("data", handler)
+        });
+    });
 
     afterAll(() => {
         serverProcess.kill();
@@ -30,12 +40,10 @@ describe('/bundle', () => {
         expect(data.message).toBe("Couldn't find github contents");
 
 
-        await new Promise(resolve => setTimeout(resolve, 4000))
-
     });
 
     ownerRepositoryList.forEach(([owner, repository]) => {
-        test(`should return a 200 on invertase docs indexes at least`, async () => {
+        test(`should return a 200 on ${owner}/${repository} docs indexes at least`, async () => {
 
             if (owner !== "invertase") {
                 return
@@ -53,8 +61,6 @@ describe('/bundle', () => {
             expect(data.source).toBeDefined();
             expect(data.config).toBeDefined();
 
-
-            await new Promise(resolve => setTimeout(resolve, 4000))
 
         });
 
