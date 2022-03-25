@@ -1,6 +1,9 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:path/path.dart' as path;
+import 'dart:io';
+import 'dart:convert';
 
-part 'build_api_mdx.g.dart';
+part 'typedoc.g.dart';
 
 @JsonSerializable()
 class Node {
@@ -61,7 +64,20 @@ class Source {
   Map<String, dynamic> toJson() => _$SourceToJson(this);
 }
 
-// TODO
 // get the typedoc.json from the repo
+
+Future<Node> getJson() async {
+  final current = Directory.current;
+
+  final jsonPath = path.joinAll([current.path, 'docs', 'typedoc.json']);
+
+  File typedocFile = File(jsonPath);
+
+  String typedocString = await typedocFile.readAsString();
+
+  Node parsed = Node.fromJson(jsonDecode(typedocString));
+
+  return parsed;
+}
 // parse it
 // build mdx files from it for each of the types
