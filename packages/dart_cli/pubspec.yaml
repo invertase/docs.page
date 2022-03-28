@@ -11,6 +11,7 @@ dependencies:
   args: ^2.3.0
   json_serializable: ^6.1.5
   path: ^1.8.1
+  toml: "^0.12.0"
 
 dev_dependencies:
   lints: ^1.0.0

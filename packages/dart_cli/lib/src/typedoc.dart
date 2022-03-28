@@ -1,3 +1,4 @@
+import 'package:docs_page/src/config.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart' as path;
 import 'dart:io';
@@ -8,27 +9,28 @@ part 'typedoc.g.dart';
 @JsonSerializable()
 class Node {
   /// The generated code assumes these values exist in JSON.
-  final int id;
-  final String name;
-  final int kind;
+  final int? id;
+  final String? name;
+  final int? kind;
   final String? kindString;
-  final Map<String, bool> flags;
-  final List<Node> children;
-  final List<Group> groups;
+  final Map<String, bool>? flags;
+  final List<Node>? children;
+  final List<Group>? groups;
   final List<Source>? sources;
+  final Comment? comment;
 
-  Node({
-    required this.id,
-    required this.name,
-    required this.kind,
-    required this.flags,
-    required this.children,
-    required this.groups,
-    this.kindString,
-    this.sources,
-  });
+  Node(
+      {this.id,
+      this.name,
+      this.kind,
+      this.flags,
+      this.children,
+      this.groups,
+      this.kindString,
+      this.sources,
+      this.comment});
 
-  /// Connect the generated [_$PersonFromJson] function to the `fromJson`
+  /// Connect the generated [_$NodeFromJson] function to the `fromJson`
   /// factory.
   factory Node.fromJson(Map<String, dynamic> json) => _$NodeFromJson(json);
 
@@ -46,7 +48,7 @@ class Group {
 
   factory Group.fromJson(Map<String, dynamic> json) => _$GroupFromJson(json);
 
-  /// Connect the generated [_$PersonToJson] function to the `toJson` method.
+  /// Connect the generated [_GroupToJson] function to the `toJson` method.
   Map<String, dynamic> toJson() => _$GroupToJson(this);
 }
 
@@ -54,16 +56,43 @@ class Group {
 class Source {
   final String fileName;
   final int line;
-  final List<int> character;
+  final int character;
 
   Source({required this.fileName, required this.line, required this.character});
 
   factory Source.fromJson(Map<String, dynamic> json) => _$SourceFromJson(json);
 
-  /// Connect the generated [_$PersonToJson] function to the `toJson` method.
+  /// Connect the generated [_$SourceToJson] function to the `toJson` method.
   Map<String, dynamic> toJson() => _$SourceToJson(this);
 }
 
+@JsonSerializable()
+class Comment {
+  final String? shortText;
+  final String? text;
+  final List<Tag>? tags;
+
+  Comment({this.shortText, this.text, this.tags});
+
+  factory Comment.fromJson(Map<String, dynamic> json) =>
+      _$CommentFromJson(json);
+
+  /// Connect the generated [_$CommentToJson] function to the `toJson` method.
+  Map<String, dynamic> toJson() => _$CommentToJson(this);
+}
+
+@JsonSerializable()
+class Tag {
+  final String tag;
+  final String text;
+
+  Tag({required this.tag, required this.text});
+
+  factory Tag.fromJson(Map<String, dynamic> json) => _$TagFromJson(json);
+
+  /// Connect the generated [_$TagToJson] function to the `toJson` method.
+  Map<String, dynamic> toJson() => _$TagToJson(this);
+}
 // get the typedoc.json from the repo
 
 Future<Node> getJson() async {
@@ -80,4 +109,56 @@ Future<Node> getJson() async {
   return parsed;
 }
 // parse it
+
+Future<void> generate(Node ast) async {
+  final current = Directory.current;
+  final groups = ast.groups;
+  final children = ast.children;
+
+  if (groups != null && children != null && children.isNotEmpty) {
+    for (final group in groups) {
+      String filePath =
+          path.joinAll([current.path, 'docs', 'api', group.title + '.mdx']);
+
+      File groupDoc = await File(filePath).create(recursive: true);
+
+      await groupDoc.writeAsString('# ' + group.title + ' \n');
+      final groupKind = group.kind;
+
+      for (final child in children) {
+        final childKind = child.kind;
+        final childName = child.name;
+        final childShortText =
+            child.comment?.shortText?.replaceAll(RegExp('<.+>'), '');
+        final childText = child.comment?.text?.replaceAll(RegExp('<.+>'), '');
+
+        if (childKind != null && childKind == groupKind && childName != null) {
+          await groupDoc.writeAsString('## ' + childName + ' \n ',
+              mode: FileMode.append);
+          if (childShortText != null) {
+            await groupDoc.writeAsString('\n  **Description:** \n',
+                mode: FileMode.append);
+            await groupDoc.writeAsString('\n $childShortText \n',
+                mode: FileMode.append);
+          }
+          if (childText != null) {
+            await groupDoc.writeAsString('\n  **Detail:** \n',
+                mode: FileMode.append);
+            await groupDoc.writeAsString('\n $childText \n',
+                mode: FileMode.append);
+          }
+        }
+      }
+      // create an mdx file called group.title
+      // populate with headings from node.children[group.children]
+    }
+  }
+}
+
+Future<void> appendToSidebar(String groupName) async {
+  final config = Config.fromDirectory();
+}
+
+// 1. separate into groups
+// 2. just make headings for enums
 // build mdx files from it for each of the types
