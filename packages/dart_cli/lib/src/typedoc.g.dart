@@ -8,7 +8,7 @@ part of 'typedoc.dart';
 
 Node _$NodeFromJson(Map<String, dynamic> json) => Node(
       id: json['id'] as int?,
-      name: json['name'] as String?,
+      name: json['name'] as String,
       kind: json['kind'] as int?,
       flags: (json['flags'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, e as bool),

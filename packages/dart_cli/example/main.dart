@@ -1,7 +1,9 @@
+import 'dart:io';
+
 import 'package:docs_page/src/typedoc.dart';
 
 void main() async {
   final rootAst = await getJson();
 
-  await generate(rootAst);
+  await generate(ast: rootAst);
 }

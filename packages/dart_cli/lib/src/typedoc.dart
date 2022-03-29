@@ -10,7 +10,7 @@ part 'typedoc.g.dart';
 class Node {
   /// The generated code assumes these values exist in JSON.
   final int? id;
-  final String? name;
+  final String name;
   final int? kind;
   final String? kindString;
   final Map<String, bool>? flags;
@@ -21,7 +21,7 @@ class Node {
 
   Node(
       {this.id,
-      this.name,
+      required this.name,
       this.kind,
       this.flags,
       this.children,
@@ -110,47 +110,51 @@ Future<Node> getJson() async {
 }
 // parse it
 
-Future<void> generate(Node ast) async {
-  final current = Directory.current;
+Future<void> generate({required Node ast, String? docPath}) async {
+  String currentPath =
+      docPath ?? path.joinAll([Directory.current.path, 'docs', '_API']);
   final groups = ast.groups;
   final children = ast.children;
 
-  if (groups != null && children != null && children.isNotEmpty) {
+  List<Object> refs = [];
+
+// If there are more than one group defined, make a subdirectory and continue recursively
+  if (groups != null &&
+      children != null &&
+      children.isNotEmpty &&
+      groups.length > 1) {
     for (final group in groups) {
-      String filePath =
-          path.joinAll([current.path, 'docs', 'api', group.title + '.mdx']);
+      // Make a directory group.title
+      String dirPath = path.joinAll([currentPath, group.title]);
 
-      File groupDoc = await File(filePath).create(recursive: true);
+      await Directory(dirPath).create(recursive: true);
 
-      await groupDoc.writeAsString('# ' + group.title + ' \n');
-      final groupKind = group.kind;
-
+      // go through ast.children and call generate on them with new path
       for (final child in children) {
-        final childKind = child.kind;
-        final childName = child.name;
-        final childShortText =
-            child.comment?.shortText?.replaceAll(RegExp('<.+>'), '');
-        final childText = child.comment?.text?.replaceAll(RegExp('<.+>'), '');
-
-        if (childKind != null && childKind == groupKind && childName != null) {
-          await groupDoc.writeAsString('## ' + childName + ' \n ',
-              mode: FileMode.append);
-          if (childShortText != null) {
-            await groupDoc.writeAsString('\n  **Description:** \n',
-                mode: FileMode.append);
-            await groupDoc.writeAsString('\n $childShortText \n',
-                mode: FileMode.append);
-          }
-          if (childText != null) {
-            await groupDoc.writeAsString('\n  **Detail:** \n',
-                mode: FileMode.append);
-            await groupDoc.writeAsString('\n $childText \n',
-                mode: FileMode.append);
-          }
-        }
+        await generate(ast: child, docPath: dirPath);
       }
     }
-    await appendToSidebar(ast);
+  } else {
+    // otherwise create file from node
+    final filePath = path.joinAll([currentPath, '${ast.name}.mdx']);
+    // title
+    await File(filePath)
+        .writeAsString("# ${ast.name} \n \n", mode: FileMode.append);
+    // description
+    await File(filePath)
+        .writeAsString("**Description**: \n \n", mode: FileMode.append);
+    final shortText = ast.comment?.shortText;
+    if (shortText != null) {
+      await File(filePath)
+          .writeAsString("$shortText \n \n", mode: FileMode.append);
+    }
+    if (children != null && children.isNotEmpty) {
+      for (final child in children) {
+        final childName = child.name;
+        await File(filePath)
+            .writeAsString("child: $childName \n", mode: FileMode.append);
+      }
+    }
   }
 }
 
