@@ -14,7 +14,7 @@ void main(List<String> arguments) async {
       break;
     case 'typedoc':
       Node ast = await getJson();
-      await generate(ast);
+      await generate(ast: ast);
       break;
 
     default:

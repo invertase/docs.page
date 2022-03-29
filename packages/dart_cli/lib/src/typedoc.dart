@@ -108,72 +108,59 @@ Future<Node> getJson() async {
 
   return parsed;
 }
+
 // parse it
 
-Future<void> generate({required Node ast, String? docPath}) async {
+Future<void> generate(
+    {required Node ast, String? docPath, List<Object>? refs}) async {
+  DocsPageConfig config = DocsPageConfig.fromDirectory();
+
+  String referenceRoot = config.references ?? '_API';
+
   String currentPath =
-      docPath ?? path.joinAll([Directory.current.path, 'docs', '_API']);
+      docPath ?? path.joinAll([Directory.current.path, 'docs', referenceRoot]);
   final groups = ast.groups;
   final children = ast.children;
 
-  List<Object> refs = [];
-
-// If there are more than one group defined, make a subdirectory and continue recursively
-  if (groups != null &&
-      children != null &&
-      children.isNotEmpty &&
-      groups.length > 1) {
-    for (final group in groups) {
-      // Make a directory group.title
-      String dirPath = path.joinAll([currentPath, group.title]);
-
-      await Directory(dirPath).create(recursive: true);
-
-      // go through ast.children and call generate on them with new path
-      for (final child in children) {
-        await generate(ast: child, docPath: dirPath);
-      }
-    }
-  } else {
-    // otherwise create file from node
-    final filePath = path.joinAll([currentPath, '${ast.name}.mdx']);
-    // title
-    await File(filePath)
-        .writeAsString("# ${ast.name} \n \n", mode: FileMode.append);
-    // description
-    await File(filePath)
-        .writeAsString("**Description**: \n \n", mode: FileMode.append);
-    final shortText = ast.comment?.shortText;
-    if (shortText != null) {
-      await File(filePath)
-          .writeAsString("$shortText \n \n", mode: FileMode.append);
-    }
-    if (children != null && children.isNotEmpty) {
-      for (final child in children) {
-        final childName = child.name;
-        await File(filePath)
-            .writeAsString("child: $childName \n", mode: FileMode.append);
-      }
+  if (children != null && children.isNotEmpty) {
+    for (final child in children) {
+      final childPath = path.joinAll([currentPath, '${child.name}.mdx']);
+      final refPath = path.joinAll([currentPath, child.name]);
+      await addRef(child.name, refPath);
+      await createDoc(child, childPath);
     }
   }
 }
 
-Future<void> appendToSidebar(Node rootAst) async {
-  final groups = rootAst.groups;
-  if (groups == null) {
-    throw Exception('No groups found');
-  }
-  List<Object> refs = [];
+Future<void> addRef(String name, String filePath) async {
+  File refsFile =
+      File(path.joinAll([Directory.current.path, 'docs.refs.json']));
 
-  for (final group in groups) {
-    final href = Uri.encodeFull(group.title);
+  String refsString = "[]";
 
-    List<String> refItem = [group.title, '/_API/$href'];
-
-    refs.add(refItem);
+  if (await refsFile.exists()) {
+    refsString = await refsFile.readAsString();
   }
 
-  final refsPath = path.joinAll([Directory.current.path, 'docs.refs.json']);
+  List<dynamic> refs = jsonDecode(refsString);
 
-  File(refsPath).writeAsStringSync(json.encode(refs));
+  refs.add([name, Uri.encodeFull(filePath)]);
+
+  refsFile.writeAsString(json.encode(refs));
+}
+
+Future<void> createDoc(Node node, String childPath) async {
+  File file = await File(childPath).create(recursive: true);
+  String frontmatter = '''
+---
+title: ${node.name}
+description: ${node.comment?.shortText}
+reference: true
+---
+''';
+
+  await file.writeAsString(frontmatter);
+  await file.writeAsString('\n \n', mode: FileMode.append);
+
+  await file.writeAsString('# ${node.name} \n \n', mode: FileMode.append);
 }

@@ -17,7 +17,7 @@ class DocsPageConfig {
   final String? googleTagManager;
   final bool? experimentalCodeHike;
   final bool? experimentalMath;
-  final List<Object>? refs;
+  final String? references;
 
   DocsPageConfig(
       {this.name,
@@ -28,7 +28,7 @@ class DocsPageConfig {
       this.googleTagManager,
       this.experimentalCodeHike,
       this.experimentalMath,
-      this.refs});
+      this.references});
 
   factory DocsPageConfig.fromJson(Map<String, dynamic> json) =>
       _$DocsPageConfigFromJson(json);

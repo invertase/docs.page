@@ -19,7 +19,7 @@ DocsPageConfig _$DocsPageConfigFromJson(Map<String, dynamic> json) =>
       googleTagManager: json['googleTagManager'] as String?,
       experimentalCodeHike: json['experimentalCodeHike'] as bool?,
       experimentalMath: json['experimentalMath'] as bool?,
-      refs: (json['refs'] as List<dynamic>?)?.map((e) => e as Object).toList(),
+      references: json['references'] as String?,
     );
 
 Map<String, dynamic> _$DocsPageConfigToJson(DocsPageConfig instance) =>
@@ -32,7 +32,7 @@ Map<String, dynamic> _$DocsPageConfigToJson(DocsPageConfig instance) =>
       'googleTagManager': instance.googleTagManager,
       'experimentalCodeHike': instance.experimentalCodeHike,
       'experimentalMath': instance.experimentalMath,
-      'refs': instance.refs,
+      'references': instance.references,
     };
 
 DocSearch _$DocSearchFromJson(Map<String, dynamic> json) => DocSearch(
