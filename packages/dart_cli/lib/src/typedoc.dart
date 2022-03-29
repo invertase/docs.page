@@ -119,32 +119,47 @@ Future<void> generate(
 
   String currentPath =
       docPath ?? path.joinAll([Directory.current.path, 'docs', referenceRoot]);
-  final groups = ast.groups;
+
   final children = ast.children;
+
+  File refsFile =
+      File(path.joinAll([Directory.current.path, 'docs.refs.json']));
+
+  refsFile.delete(recursive: true);
 
   if (children != null && children.isNotEmpty) {
     for (final child in children) {
       final childPath = path.joinAll([currentPath, '${child.name}.mdx']);
-      final refPath = path.joinAll([currentPath, child.name]);
-      await addRef(child.name, refPath);
+
+      final refPath = path.relative(path.joinAll([currentPath, child.name]),
+          from: path.joinAll([Directory.current.path, 'docs']));
+
+      await addRef(child, refPath);
+
       await createDoc(child, childPath);
     }
   }
 }
 
-Future<void> addRef(String name, String filePath) async {
+Future<void> addRef(Node node, String filePath) async {
   File refsFile =
       File(path.joinAll([Directory.current.path, 'docs.refs.json']));
 
   String refsString = "[]";
 
-  if (await refsFile.exists()) {
+  if (await refsFile.exists() && refsFile.readAsStringSync() != '') {
     refsString = await refsFile.readAsString();
   }
 
   List<dynamic> refs = jsonDecode(refsString);
 
-  refs.add([name, Uri.encodeFull(filePath)]);
+  Map ref = {
+    "name": node.name,
+    "path": Uri.encodeFull(filePath),
+    "kind": node.kindString
+  };
+
+  refs.add(ref);
 
   refsFile.writeAsString(json.encode(refs));
 }
@@ -156,6 +171,7 @@ Future<void> createDoc(Node node, String childPath) async {
 title: ${node.name}
 description: ${node.comment?.shortText}
 reference: true
+referenceKind: ${node.kindString ?? ''}
 ---
 ''';
 
@@ -163,4 +179,15 @@ reference: true
   await file.writeAsString('\n \n', mode: FileMode.append);
 
   await file.writeAsString('# ${node.name} \n \n', mode: FileMode.append);
+
+  final shortText = node.comment?.shortText;
+  final text = node.comment?.text;
+  // final tags = node.comment?.tags;
+
+  if (shortText != null) {
+    await file.writeAsString('$shortText \n \n', mode: FileMode.append);
+  }
+  if (text != null) {
+    await file.writeAsString('$text \n \n', mode: FileMode.append);
+  }
 }
