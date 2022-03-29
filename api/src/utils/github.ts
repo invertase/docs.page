@@ -1,6 +1,7 @@
 import A2A from 'a2a';
 import { graphql } from '@octokit/graphql';
 import dotenv from 'dotenv';
+import { References } from './bundle';
 dotenv.config();
 
 const getGitHubToken = (() => {
@@ -55,6 +56,9 @@ type PageContentsQuery = {
     mdxIndex?: {
       text: string;
     };
+    referenceConfig?: {
+      text: string;
+    }
   };
 };
 
@@ -69,6 +73,7 @@ export type Contents = {
   md: string | null;
   path: string;
   repositoryFound: boolean;
+  referenceConfig: References | null
 };
 
 export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Promise<Contents> {
@@ -78,7 +83,7 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
   const [error, response] = await A2A<PageContentsQuery>(
     getGithubGQLClient()({
       query: `
-      query RepositoryConfig($owner: String!, $repository: String!, $configJson: String!, $configYaml: String!, $configToml: String!, $mdx: String!, $mdxIndex: String!) {
+      query RepositoryConfig($owner: String!, $repository: String!, $configJson: String!, $configYaml: String!, $configToml: String!, $mdx: String!, $mdxIndex: String!, $referenceConfig: String!) {
         repository(owner: $owner, name: $repository) {
           baseBranch: defaultBranchRef {
             name
@@ -109,6 +114,11 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
               text
             }
           }
+          references: object(expression: $referenceConfig) {
+            ... on Blob {
+              text
+            }
+          }
         }
       }
     `,
@@ -119,6 +129,7 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
       configToml: `${metadata.ref}:docs.toml`,
       mdx: `${metadata.ref}:${absolutePath}.mdx`,
       mdxIndex: `${metadata.ref}:${indexPath}.mdx`,
+      referenceConfig: `${metadata.ref}:docs.ref.json`
     }),
   );
 
@@ -128,6 +139,14 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
     return {
       repositoryFound: false,
     };
+  }
+
+  let referenceConfig = null;
+  try {
+    referenceConfig = response?.repository.referenceConfig?.text ? JSON.parse(response?.repository.referenceConfig?.text) : null
+  } catch (e) {
+    console.error('Could not parse reference config')
+    console.error(e);
   }
 
   return {
@@ -141,6 +160,7 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
     },
     md: response?.repository.mdxIndex?.text || response?.repository.mdx?.text || null,
     path: response?.repository.mdxIndex?.text ? indexPath : absolutePath,
+    referenceConfig
   };
 }
 

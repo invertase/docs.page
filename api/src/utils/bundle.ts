@@ -33,6 +33,12 @@ type BundleConstructorParams = {
   config?: OutputConfig;
 };
 
+export type References = {
+  name: string,
+  path: string,
+  kind: string
+}[]
+
 export class Bundle {
   code: string;
   markdown: string;
@@ -48,6 +54,7 @@ export class Bundle {
   headerDepth: number;
   built: boolean;
   contentFetched: boolean;
+  referenceConfig: References | null
 
   constructor({
     owner,
@@ -77,6 +84,7 @@ export class Bundle {
     this.sourceChecked = false;
     this.built = false;
     this.contentFetched = false;
+    this.referenceConfig = null;
   }
 
   // check for branch/PR ref
@@ -112,7 +120,7 @@ export class Bundle {
     this.markdown = githubContents.md;
     this.baseBranch = githubContents.baseBranch;
     this.repositoryFound = githubContents.repositoryFound;
-
+    this.referenceConfig = githubContents.referenceConfig;
     this.formatConfigLocales(githubContents.config);
     await this.matchSymLinks();
     this.contentFetched = true;
@@ -156,6 +164,7 @@ export class Bundle {
       repositoryFound: this.repositoryFound,
       source: this.source,
       ref: this.ref,
+      referenceConfig: this.referenceConfig
     };
   }
 
