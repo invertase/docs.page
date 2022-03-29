@@ -1,4 +1,4 @@
-import 'package:docs_page/src/config.dart';
+import 'package:docs_page/src/docs_page_config.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart' as path;
 import 'dart:io';
@@ -149,16 +149,27 @@ Future<void> generate(Node ast) async {
           }
         }
       }
-      // create an mdx file called group.title
-      // populate with headings from node.children[group.children]
     }
+    await appendToSidebar(ast);
   }
 }
 
-Future<void> appendToSidebar(String groupName) async {
-  final config = Config.fromDirectory();
-}
+Future<void> appendToSidebar(Node rootAst) async {
+  final groups = rootAst.groups;
+  if (groups == null) {
+    throw Exception('No groups found');
+  }
+  List<Object> refs = [];
 
-// 1. separate into groups
-// 2. just make headings for enums
-// build mdx files from it for each of the types
+  for (final group in groups) {
+    final href = Uri.encodeFull(group.title);
+
+    List<String> refItem = [group.title, '/_API/$href'];
+
+    refs.add(refItem);
+  }
+
+  final refsPath = path.joinAll([Directory.current.path, 'docs.refs.json']);
+
+  File(refsPath).writeAsStringSync(json.encode(refs));
+}

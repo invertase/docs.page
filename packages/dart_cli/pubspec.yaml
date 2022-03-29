@@ -10,6 +10,7 @@ dependencies:
   ansi_styles: ^0.3.2+1
   args: ^2.3.0
   json_serializable: ^6.1.5
+  json_annotation: ^4.4.0
   path: ^1.8.1
   toml: "^0.12.0"
 

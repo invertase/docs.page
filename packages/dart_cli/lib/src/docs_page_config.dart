@@ -5,10 +5,10 @@ import 'package:yaml/yaml.dart';
 import 'package:toml/toml.dart';
 import 'package:path/path.dart' as path;
 
-part 'config.g.dart';
+part 'docs_page_config.g.dart';
 
 @JsonSerializable()
-class Config {
+class DocsPageConfig {
   final String? name;
   final String? theme;
   final String? twitter;
@@ -17,8 +17,9 @@ class Config {
   final String? googleTagManager;
   final bool? experimentalCodeHike;
   final bool? experimentalMath;
+  final List<Object>? refs;
 
-  Config(
+  DocsPageConfig(
       {this.name,
       this.theme,
       this.docsearch,
@@ -26,11 +27,13 @@ class Config {
       this.sidebar,
       this.googleTagManager,
       this.experimentalCodeHike,
-      this.experimentalMath});
+      this.experimentalMath,
+      this.refs});
 
-  factory Config.fromJson(Map<String, dynamic> json) => _$ConfigFromJson(json);
+  factory DocsPageConfig.fromJson(Map<String, dynamic> json) =>
+      _$DocsPageConfigFromJson(json);
 
-  factory Config.fromDirectory({Directory? dir}) {
+  factory DocsPageConfig.fromDirectory({Directory? dir}) {
     final directory = dir ?? Directory.current;
 
     String configJsonPath = path.joinAll([directory.path, 'docs.json']);
@@ -42,17 +45,41 @@ class Config {
     File configToml = File(configTomlPath);
 
     if (configJson.existsSync()) {
-      return _$ConfigFromJson(jsonDecode(configJson.readAsStringSync()));
+      return _$DocsPageConfigFromJson(
+          jsonDecode(configJson.readAsStringSync()));
     } else if (configYaml.existsSync()) {
-      return _$ConfigFromJson(jsonDecode(configYaml.readAsStringSync()));
+      return _$DocsPageConfigFromJson(
+          Map.from(loadYaml(configYaml.readAsStringSync())));
     } else if (configToml.existsSync()) {
-      return _$ConfigFromJson(jsonDecode(configToml.readAsStringSync()));
+      return _$DocsPageConfigFromJson(
+          TomlDocument.parse(configToml.readAsStringSync()).toMap());
     } else {
       throw Exception("can't find config");
     }
   }
 
-  Map<String, dynamic> toJson() => _$ConfigToJson(this);
+  void overwriteInDirectory({Directory? dir, DocsPageConfig? config}) {
+    final directory = dir ?? Directory.current;
+
+    String configJsonPath = path.joinAll([directory.path, 'docs.json']);
+    String configYamlPath = path.joinAll([directory.path, 'docs.yaml']);
+
+    File configJson = File(configJsonPath);
+    File configYaml = File(configYamlPath);
+    final config = this;
+
+    if (configJson.existsSync()) {
+      configJson.writeAsStringSync(json.encode(config));
+      return;
+    } else if (configYaml.existsSync()) {
+      configJson.writeAsStringSync(json.encode(config));
+      return;
+    } else {
+      throw UnsupportedError("Can only overwrite yaml and json formats");
+    }
+  }
+
+  Map<String, dynamic> toJson() => _$DocsPageConfigToJson(this);
 }
 
 @JsonSerializable()

@@ -1,12 +1,13 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'config.dart';
+part of 'docs_page_config.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Config _$ConfigFromJson(Map<String, dynamic> json) => Config(
+DocsPageConfig _$DocsPageConfigFromJson(Map<String, dynamic> json) =>
+    DocsPageConfig(
       name: json['name'] as String?,
       theme: json['theme'] as String?,
       docsearch: json['docsearch'] == null
@@ -18,9 +19,11 @@ Config _$ConfigFromJson(Map<String, dynamic> json) => Config(
       googleTagManager: json['googleTagManager'] as String?,
       experimentalCodeHike: json['experimentalCodeHike'] as bool?,
       experimentalMath: json['experimentalMath'] as bool?,
+      refs: (json['refs'] as List<dynamic>?)?.map((e) => e as Object).toList(),
     );
 
-Map<String, dynamic> _$ConfigToJson(Config instance) => <String, dynamic>{
+Map<String, dynamic> _$DocsPageConfigToJson(DocsPageConfig instance) =>
+    <String, dynamic>{
       'name': instance.name,
       'theme': instance.theme,
       'twitter': instance.twitter,
@@ -29,6 +32,7 @@ Map<String, dynamic> _$ConfigToJson(Config instance) => <String, dynamic>{
       'googleTagManager': instance.googleTagManager,
       'experimentalCodeHike': instance.experimentalCodeHike,
       'experimentalMath': instance.experimentalMath,
+      'refs': instance.refs,
     };
 
 DocSearch _$DocSearchFromJson(Map<String, dynamic> json) => DocSearch(
