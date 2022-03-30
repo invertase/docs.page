@@ -142,8 +142,7 @@ Future<void> generate(
   await addRef(
       name: 'Overview', filePath: path.joinAll([currentPath, 'index.mdx']));
 
-  await createDoc(
-      name: 'Overview', filePath: path.joinAll([currentPath, 'index.mdx']));
+  await createIndexFile(filePath: path.joinAll([currentPath, 'index.mdx']));
 }
 
 Future<void> addRef(
@@ -176,12 +175,9 @@ Future<void> addRef(
   refsFile.writeAsString(json.encode(refs));
 }
 
-Future<void> createDoc(
-    {Node? node, String? name, required String filePath}) async {
+Future<void> createDoc({required Node node, required String filePath}) async {
   File file = await File(filePath).create(recursive: true);
-  String frontmatter;
-  if (node != null) {
-    frontmatter = '''
+  String frontmatter = '''
 ---
 title: ${node.name}
 description: ${node.comment?.shortText}
@@ -190,38 +186,40 @@ referenceKind: ${node.kindString ?? ''}
 ---
 ''';
 
-    await file.writeAsString(frontmatter);
-    await file.writeAsString('\n \n', mode: FileMode.append);
+  await file.writeAsString(frontmatter);
+  await file.writeAsString('\n \n', mode: FileMode.append);
 
-    await file.writeAsString('# ${node.name} \n \n', mode: FileMode.append);
+  await file.writeAsString('# ${node.name} \n \n', mode: FileMode.append);
 
-    final shortText = node.comment?.shortText;
-    final text = node.comment?.text;
-    // final tags = node.comment?.tags;
+  final shortText = node.comment?.shortText;
+  final text = node.comment?.text;
+  // final tags = node.comment?.tags;
 
-    if (shortText != null) {
-      await file.writeAsString('$shortText \n \n', mode: FileMode.append);
-    }
-    if (text != null) {
-      await file.writeAsString('$text \n \n', mode: FileMode.append);
-    }
-  } else if (name != null) {
-    frontmatter = '''
+  if (shortText != null) {
+    await file.writeAsString('$shortText \n \n', mode: FileMode.append);
+  }
+  if (text != null) {
+    await file.writeAsString('$text \n \n', mode: FileMode.append);
+  }
+}
+
+Future<void> createIndexFile({required String filePath}) async {
+  File file = await File(filePath).create(recursive: true);
+
+  String frontmatter = '''
 ---
-title: $name
+title: Overview
 description: Overview for references
 reference: true
 referenceKind: null
 ---
 ''';
-    await file.writeAsString(frontmatter);
-    await file.writeAsString('\n \n', mode: FileMode.append);
 
-    await file.writeAsString('# $name \n \n', mode: FileMode.append);
+  await file.writeAsString(frontmatter);
+  await file.writeAsString('\n \n', mode: FileMode.append);
 
-    await file.writeAsString('# Overview for API references',
-        mode: FileMode.append);
-  } else {
-    throw Exception('Must provide node or name');
-  }
+  await file.writeAsString('# References \n \n', mode: FileMode.append);
+
+  await file.writeAsString('# Overview for API references',
+      mode: FileMode.append);
 }
