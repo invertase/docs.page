@@ -134,14 +134,32 @@ Future<void> generate(
       final refPath = path.relative(path.joinAll([currentPath, child.name]),
           from: path.joinAll([Directory.current.path, 'docs']));
 
-      await addRef(child, refPath);
+      await addRef(node: child, filePath: refPath);
 
-      await createDoc(child, childPath);
+      await createDoc(node: child, filePath: childPath);
     }
   }
+  await addRef(
+      name: 'Overview', filePath: path.joinAll([currentPath, 'index.mdx']));
+
+  await createDoc(
+      name: 'Overview', filePath: path.joinAll([currentPath, 'index.mdx']));
 }
 
-Future<void> addRef(Node node, String filePath) async {
+Future<void> addRef(
+    {Node? node, String? name, required String filePath}) async {
+  Map ref;
+  if (node != null) {
+    ref = {
+      "name": node.name,
+      "path": Uri.encodeFull(filePath),
+      "kind": node.kindString
+    };
+  } else if (name != null) {
+    ref = {"name": name, "path": Uri.encodeFull(filePath), "kind": "Overview"};
+  } else {
+    throw Exception('need to specify node or name');
+  }
   File refsFile =
       File(path.joinAll([Directory.current.path, 'docs.refs.json']));
 
@@ -153,20 +171,17 @@ Future<void> addRef(Node node, String filePath) async {
 
   List<dynamic> refs = jsonDecode(refsString);
 
-  Map ref = {
-    "name": node.name,
-    "path": Uri.encodeFull(filePath),
-    "kind": node.kindString
-  };
-
   refs.add(ref);
 
   refsFile.writeAsString(json.encode(refs));
 }
 
-Future<void> createDoc(Node node, String childPath) async {
-  File file = await File(childPath).create(recursive: true);
-  String frontmatter = '''
+Future<void> createDoc(
+    {Node? node, String? name, required String filePath}) async {
+  File file = await File(filePath).create(recursive: true);
+  String frontmatter;
+  if (node != null) {
+    frontmatter = '''
 ---
 title: ${node.name}
 description: ${node.comment?.shortText}
@@ -175,19 +190,38 @@ referenceKind: ${node.kindString ?? ''}
 ---
 ''';
 
-  await file.writeAsString(frontmatter);
-  await file.writeAsString('\n \n', mode: FileMode.append);
+    await file.writeAsString(frontmatter);
+    await file.writeAsString('\n \n', mode: FileMode.append);
 
-  await file.writeAsString('# ${node.name} \n \n', mode: FileMode.append);
+    await file.writeAsString('# ${node.name} \n \n', mode: FileMode.append);
 
-  final shortText = node.comment?.shortText;
-  final text = node.comment?.text;
-  // final tags = node.comment?.tags;
+    final shortText = node.comment?.shortText;
+    final text = node.comment?.text;
+    // final tags = node.comment?.tags;
 
-  if (shortText != null) {
-    await file.writeAsString('$shortText \n \n', mode: FileMode.append);
-  }
-  if (text != null) {
-    await file.writeAsString('$text \n \n', mode: FileMode.append);
+    if (shortText != null) {
+      await file.writeAsString('$shortText \n \n', mode: FileMode.append);
+    }
+    if (text != null) {
+      await file.writeAsString('$text \n \n', mode: FileMode.append);
+    }
+  } else if (name != null) {
+    frontmatter = '''
+---
+title: $name
+description: Overview for references
+reference: true
+referenceKind: null
+---
+''';
+    await file.writeAsString(frontmatter);
+    await file.writeAsString('\n \n', mode: FileMode.append);
+
+    await file.writeAsString('# $name \n \n', mode: FileMode.append);
+
+    await file.writeAsString('# Overview for API references',
+        mode: FileMode.append);
+  } else {
+    throw Exception('Must provide node or name');
   }
 }
