@@ -8,11 +8,11 @@ import { LocaleSelect } from './LocaleSelect';
 
 export function Sidebar() {
   const documentationContext = useDocumentationContext();
-  const { sidebar, locales, reference } = documentationContext.config;
+  const { sidebar, locales, references } = documentationContext.config;
   const { referenceConfig, frontmatter } = documentationContext;
 
-  const referencePath = reference ?? 'API';
-
+  const referencePath = references ?? 'API';
+  console.log('boop', references);
   const location = useLocation();
   const currentLocale = location.pathname.split('/')[3];
 

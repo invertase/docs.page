@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:docs_page/src/typedoc.dart';
 
 void main() async {
