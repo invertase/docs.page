@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:docs_page/src/docs_page_config.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart' as path;
@@ -93,7 +95,6 @@ class Tag {
   /// Connect the generated [_$TagToJson] function to the `toJson` method.
   Map<String, dynamic> toJson() => _$TagToJson(this);
 }
-// get the typedoc.json from the repo
 
 Future<Node> getJson() async {
   final current = Directory.current;
@@ -108,8 +109,6 @@ Future<Node> getJson() async {
 
   return parsed;
 }
-
-// parse it
 
 Future<void> generate(
     {required Node ast, String? docPath, List<Object>? refs}) async {
@@ -175,9 +174,14 @@ Future<void> addRef(
   refsFile.writeAsString(json.encode(refs));
 }
 
-Future<void> createDoc({required Node node, required String filePath}) async {
+Future<void> createDoc(
+    {required Node node,
+    required String filePath,
+    bool frontmatterEnabled = true,
+    int depth = 1}) async {
   File file = await File(filePath).create(recursive: true);
-  String frontmatter = '''
+  if (frontmatterEnabled) {
+    String frontmatter = '''
 ---
 title: ${node.name}
 description: ${node.comment?.shortText}
@@ -186,20 +190,60 @@ referenceKind: ${node.kindString ?? ''}
 ---
 ''';
 
-  await file.writeAsString(frontmatter);
-  await file.writeAsString('\n \n', mode: FileMode.append);
-
-  await file.writeAsString('# ${node.name} \n \n', mode: FileMode.append);
-
-  final shortText = node.comment?.shortText;
-  final text = node.comment?.text;
-  // final tags = node.comment?.tags;
-
-  if (shortText != null) {
-    await file.writeAsString('$shortText \n \n', mode: FileMode.append);
+    await file.writeAsString(frontmatter);
   }
-  if (text != null) {
-    await file.writeAsString('$text \n \n', mode: FileMode.append);
+
+  String headerPrefix = '';
+
+  for (int i = 0; i < depth; i++) {
+    headerPrefix += '#';
+  }
+  await appendAllToFile(file, [
+    '$headerPrefix ${node.name}',
+    node.comment?.shortText,
+    node.comment?.text,
+  ]);
+
+  List<Node>? children = node.children;
+
+  if (children != null) {
+    for (final child in children) {
+      await createDoc(
+          node: child,
+          filePath: filePath,
+          frontmatterEnabled: false,
+          depth: depth + 1);
+    }
+  }
+
+  List<Source>? sources = node.sources;
+
+  if (sources != null) {
+    await appendToFile(file, '**Source(s)**');
+    for (final source in sources) {
+      String fileName = source.fileName;
+      String character = source.character.toString();
+      String line = source.line.toString();
+
+      await appendAllToFile(file, [
+        'fileName: $fileName',
+        'Character: $character',
+        'line: $line',
+        '---'
+      ]);
+    }
+  }
+}
+
+Future<void> appendToFile(File file, String? content) async {
+  if (content != null) {
+    await file.writeAsString(content + '\n \n ', mode: FileMode.append);
+  }
+}
+
+Future<void> appendAllToFile(File file, List<String?> content) async {
+  for (final text in content) {
+    await appendToFile(file, text);
   }
 }
 
