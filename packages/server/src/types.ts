@@ -199,9 +199,9 @@ export type BundleSuccess = {
 };
 
 export type References = {
-  name: string,
-  path: string,
-  kind: string
-}[]
+  name: string;
+  path: string;
+  kind: string;
+}[];
 
 export type BundleResponseData = BundleSuccess | BundleError;

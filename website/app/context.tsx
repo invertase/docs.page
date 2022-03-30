@@ -38,6 +38,7 @@ export function useDocumentationContext() {
 export function useBaseUrl(): string {
   const previewMode = usePreviewMode();
   const { domain } = useCustomDomain();
+  const { owner, repo } = React.useContext(DocumentationContext);
 
   if (previewMode.enabled) {
     return '#/';
@@ -47,6 +48,9 @@ export function useBaseUrl(): string {
 
   let url = '/';
 
+  if (!domain) {
+    url += `${owner}/${repo}`;
+  }
   if (ref && !domain) {
     url += `${ref === 'HEAD' ? '' : `~${ref}`}`;
   }

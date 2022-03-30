@@ -58,7 +58,7 @@ type PageContentsQuery = {
     };
     referenceConfig?: {
       text: string;
-    }
+    };
   };
 };
 
@@ -73,7 +73,7 @@ export type Contents = {
   md: string | null;
   path: string;
   repositoryFound: boolean;
-  referenceConfig: References | null
+  referenceConfig: References | null;
 };
 
 export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Promise<Contents> {
@@ -114,7 +114,7 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
               text
             }
           }
-          references: object(expression: $referenceConfig) {
+          referenceConfig: object(expression: $referenceConfig) {
             ... on Blob {
               text
             }
@@ -129,7 +129,7 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
       configToml: `${metadata.ref}:docs.toml`,
       mdx: `${metadata.ref}:${absolutePath}.mdx`,
       mdxIndex: `${metadata.ref}:${indexPath}.mdx`,
-      referenceConfig: `${metadata.ref}:docs.ref.json`
+      referenceConfig: `${metadata.ref}:docs.refs.json`,
     }),
   );
 
@@ -143,9 +143,11 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
 
   let referenceConfig = null;
   try {
-    referenceConfig = response?.repository.referenceConfig?.text ? JSON.parse(response?.repository.referenceConfig?.text) : null
+    referenceConfig = response?.repository.referenceConfig?.text
+      ? JSON.parse(response?.repository.referenceConfig?.text)
+      : null;
   } catch (e) {
-    console.error('Could not parse reference config')
+    console.error('Could not parse reference config');
     console.error(e);
   }
 
@@ -160,7 +162,7 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
     },
     md: response?.repository.mdxIndex?.text || response?.repository.mdx?.text || null,
     path: response?.repository.mdxIndex?.text ? indexPath : absolutePath,
-    referenceConfig
+    referenceConfig,
   };
 }
 

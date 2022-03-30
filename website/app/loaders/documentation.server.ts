@@ -46,6 +46,14 @@ export type DocumentationLoader = {
   frontmatter: BundleSuccess['frontmatter'];
   // base branch
   baseBranch: string;
+  //
+  referenceConfig?:
+    | {
+        name: string;
+        kind: string;
+        path: string;
+      }[]
+    | null;
 };
 
 // Utility to guard against a bundler error.
@@ -118,6 +126,7 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
       config: mergeConfig(response.config),
       frontmatter: response.frontmatter,
       baseBranch: response.baseBranch ?? 'main',
+      referenceConfig: response.referenceConfig,
     },
     {
       headers: {

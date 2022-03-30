@@ -34,10 +34,10 @@ type BundleConstructorParams = {
 };
 
 export type References = {
-  name: string,
-  path: string,
-  kind: string
-}[]
+  name: string;
+  path: string;
+  kind: string;
+}[];
 
 export class Bundle {
   code: string;
@@ -54,7 +54,7 @@ export class Bundle {
   headerDepth: number;
   built: boolean;
   contentFetched: boolean;
-  referenceConfig: References | null
+  referenceConfig: References | null;
 
   constructor({
     owner,
@@ -164,7 +164,7 @@ export class Bundle {
       repositoryFound: this.repositoryFound,
       source: this.source,
       ref: this.ref,
-      referenceConfig: this.referenceConfig
+      referenceConfig: this.referenceConfig,
     };
   }
 

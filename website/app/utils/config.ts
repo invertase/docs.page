@@ -98,6 +98,8 @@ export interface ProjectConfig {
   experimentalCodehike: boolean;
   // Whether Math is enabled
   experimentalMath: boolean;
+  // Whether Math is enabled
+  reference: string;
 }
 
 export const defaultConfig: ProjectConfig = {
@@ -117,6 +119,7 @@ export const defaultConfig: ProjectConfig = {
   zoomImages: false,
   experimentalCodehike: false,
   experimentalMath: false,
+  reference: 'API',
 };
 
 // Merges any user config with default values.
@@ -151,6 +154,7 @@ export function mergeConfig(json: Record<string, unknown>): ProjectConfig {
       defaultConfig.experimentalCodehike,
     ),
     experimentalMath: getBoolean(json, 'experimentalMath', defaultConfig.experimentalMath),
+    reference: getString(json, 'reference', defaultConfig.reference),
   };
 }
 

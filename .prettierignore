@@ -6,3 +6,5 @@ repositories.json
 domains.json
 spelling.json
 _docs.page
+packages/dart_cli/example
+packages/dart_cli/docs
