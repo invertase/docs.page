@@ -1,0 +1,23 @@
+---
+title: Typedoc Support
+description: Learn how to generate docs.page references using typedoc comments
+---
+
+# Typedoc Support
+
+If you've added typedoc-compliant comments to your code, Docs.page is able to generate reference pages from your typedoc.json.
+
+The steps are as follows:
+
+1. In your root directory, generate your `typedoc.json` from your code, using the flag `--json`, and specifying your output path as `docs/typedoc.json`. You will have to install typedoc first, and the command should look similar to:
+
+```
+npm run typedoc --json docs/typedoc.json src/index.ts
+```
+or if you're using yarn,
+```
+yarn typedoc --json docs/typedoc.json src/index.ts
+```
+2. Add a `reference` field to your `docs.json` or `docs.yaml` configuration file. This value specifies the folder in which your references will be generated. If you're unsure, set it as `Reference` or `API`.
+3. Add a `typedocEntryDir` field to your `docs.json` or `docs.yaml` configuration file. This should be set as the path of the directory where your typedoc entry file is.
+4. Run `docs_page typedoc` from your root directory.
