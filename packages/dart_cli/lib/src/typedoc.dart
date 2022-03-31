@@ -246,9 +246,10 @@ Future<void> appendAllToFile(File file, List<String?> content) async {
 }
 
 Future<void> createIndexFile({required String filePath}) async {
-  File file = await File(filePath).create(recursive: true);
+  if (!File(filePath).existsSync()) {
+    File file = await File(filePath).create(recursive: true);
 
-  String frontmatter = '''
+    String frontmatter = '''
 ---
 title: Overview
 description: Overview for references
@@ -257,13 +258,15 @@ referenceKind: null
 ---
 ''';
 
-  await file.writeAsString(frontmatter);
-  await file.writeAsString('\n \n', mode: FileMode.append);
+    await file.writeAsString(frontmatter);
+    await file.writeAsString('\n \n', mode: FileMode.append);
 
-  await file.writeAsString('# References \n \n', mode: FileMode.append);
+    await file.writeAsString('# References \n \n', mode: FileMode.append);
 
-  await file.writeAsString('# Overview for API references',
-      mode: FileMode.append);
+    await file.writeAsString('## Overview Page for API references \n \n',
+        mode: FileMode.append);
+    await file.writeAsString('Edit this page!', mode: FileMode.append);
+  }
 }
 
 String getGithubLink({required DocsPageConfig config, required Source source}) {
