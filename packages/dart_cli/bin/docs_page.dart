@@ -13,7 +13,7 @@ void main(List<String> arguments) async {
       await createFiles();
       break;
     case 'typedoc':
-      Node ast = await getJson();
+      Node ast = await getTypedocJson();
       await generate(ast: ast);
       break;
 

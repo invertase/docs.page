@@ -1,10 +1,9 @@
-import 'dart:ffi';
-
 import 'package:docs_page/src/docs_page_config.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:path/path.dart' as path;
 import 'dart:io';
 import 'dart:convert';
+import 'package:ansi_styles/extension.dart';
 
 part 'typedoc.g.dart';
 
@@ -96,7 +95,7 @@ class Tag {
   Map<String, dynamic> toJson() => _$TagToJson(this);
 }
 
-Future<Node> getJson() async {
+Future<Node> getTypedocJson() async {
   final current = Directory.current;
 
   final jsonPath = path.joinAll([current.path, 'docs', 'typedoc.json']);
@@ -127,6 +126,8 @@ Future<void> generate(
   refsFile.delete(recursive: true);
 
   if (children != null && children.isNotEmpty) {
+    print('Docs.page created files:'.blueBright);
+
     for (final child in children) {
       final childPath = path.joinAll([currentPath, '${child.name}.mdx']);
 
@@ -136,6 +137,7 @@ Future<void> generate(
       await addRef(node: child, filePath: refPath);
 
       await createDoc(node: child, filePath: childPath);
+      print(childPath.blue);
     }
   }
   await addRef(
@@ -180,6 +182,7 @@ Future<void> createDoc(
     bool frontmatterEnabled = true,
     int depth = 1}) async {
   File file = await File(filePath).create(recursive: true);
+
   if (frontmatterEnabled) {
     String frontmatter = '''
 ---
@@ -204,6 +207,16 @@ referenceKind: ${node.kindString ?? ''}
     node.comment?.text,
   ]);
 
+  List<Source>? sources = node.sources;
+
+  if (sources != null) {
+    await appendToFile(file, '**Source**');
+    for (final source in sources) {
+      DocsPageConfig config = DocsPageConfig.fromDirectory();
+      await appendToFile(file, getGithubLink(config: config, source: source));
+    }
+  }
+
   List<Node>? children = node.children;
 
   if (children != null) {
@@ -213,24 +226,6 @@ referenceKind: ${node.kindString ?? ''}
           filePath: filePath,
           frontmatterEnabled: false,
           depth: depth + 1);
-    }
-  }
-
-  List<Source>? sources = node.sources;
-
-  if (sources != null) {
-    await appendToFile(file, '**Source(s)**');
-    for (final source in sources) {
-      String fileName = source.fileName;
-      String character = source.character.toString();
-      String line = source.line.toString();
-
-      await appendAllToFile(file, [
-        'fileName: $fileName',
-        'Character: $character',
-        'line: $line',
-        '---'
-      ]);
     }
   }
 }
@@ -266,4 +261,18 @@ referenceKind: null
 
   await file.writeAsString('# Overview for API references',
       mode: FileMode.append);
+}
+
+String getGithubLink({required DocsPageConfig config, required Source source}) {
+  final typedocEntryDir = config.typedocEntryDir;
+
+  final fileName = source.fileName;
+  final line = source.line;
+
+  if (typedocEntryDir != null) {
+    final filePath = path.joinAll([typedocEntryDir, fileName]);
+    return '<GithubLink title="${source.fileName}" src="$filePath#L${line.toString()}"/>';
+  } else {
+    throw Exception('Missing typedocEntryDir option in docs.json');
+  }
 }

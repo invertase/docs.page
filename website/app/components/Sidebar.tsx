@@ -12,9 +12,20 @@ export function Sidebar() {
   const { referenceConfig, frontmatter } = documentationContext;
 
   const referencePath = references ?? 'API';
-  console.log('boop', references);
   const location = useLocation();
   const currentLocale = location.pathname.split('/')[3];
+
+  const formattedRefs: Record<string, { name: string; path: string; kind: string }[]> = {};
+
+  for (const ref of referenceConfig || []) {
+    if (!formattedRefs[ref.kind]) {
+      formattedRefs[ref.kind] = [ref];
+    } else {
+      formattedRefs[ref.kind].push(ref);
+    }
+  }
+
+  const formattedRefsArray = Object.entries(formattedRefs);
 
   return (
     <nav>
@@ -82,21 +93,31 @@ export function Sidebar() {
           })}
         {frontmatter.reference &&
           referenceConfig &&
-          referenceConfig.map(ref => {
+          formattedRefsArray.map(([kind, refs]) => {
             return (
-              <li key={ref.name}>
-                <DocsLink
-                  // end={urlOrChildren === (locales ? `/${currentLocale}` : '/')}
-                  to={`/${ref.path}`}
-                  className={({ isActive }) =>
-                    cx('my-2 block', {
-                      'hover:text-gray-800 dark:hover:text-gray-100': !isActive,
-                      'text-docs-theme border-docs-theme font-medium': isActive,
-                    })
-                  }
-                >
-                  {ref.name}
-                </DocsLink>
+              <li className="mt-4 mb-4 first:mt-0" key={kind}>
+                <h5 className="pb-3 font-semibold tracking-wide text-gray-900 dark:text-gray-200">
+                  {kind}
+                </h5>
+                <ul className="space-y-2 border-l border-gray-100 dark:border-gray-700">
+                  {refs.map(ref => {
+                    return (
+                      <DocsLink
+                        key={ref.name}
+                        to={`/${ref.path}`}
+                        className={({ isActive }) =>
+                          cx('-ml-px block border-l border-transparent pl-4', {
+                            'hover:border-gray-400 hover:text-gray-800 dark:hover:text-gray-100':
+                              !isActive,
+                            'text-docs-theme !border-docs-theme font-medium': isActive,
+                          })
+                        }
+                      >
+                        {ref.name}
+                      </DocsLink>
+                    );
+                  })}
+                </ul>
               </li>
             );
           })}

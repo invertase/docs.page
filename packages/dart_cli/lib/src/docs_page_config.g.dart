@@ -20,6 +20,7 @@ DocsPageConfig _$DocsPageConfigFromJson(Map<String, dynamic> json) =>
       experimentalCodeHike: json['experimentalCodeHike'] as bool?,
       experimentalMath: json['experimentalMath'] as bool?,
       references: json['references'] as String?,
+      typedocEntryDir: json['typedocEntryDir'] as String?,
     );
 
 Map<String, dynamic> _$DocsPageConfigToJson(DocsPageConfig instance) =>
@@ -33,6 +34,7 @@ Map<String, dynamic> _$DocsPageConfigToJson(DocsPageConfig instance) =>
       'experimentalCodeHike': instance.experimentalCodeHike,
       'experimentalMath': instance.experimentalMath,
       'references': instance.references,
+      'typedocEntryDir': instance.typedocEntryDir,
     };
 
 DocSearch _$DocSearchFromJson(Map<String, dynamic> json) => DocSearch(
