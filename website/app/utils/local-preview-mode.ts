@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { BundleSuccess } from '@docs.page/server';
 import { DocumentationLoader } from '~/loaders/documentation.server';
 import { mergeConfig } from './config';
-
+import * as path from 'path';
 export type FileSystemFileHandles = { [path: string]: FileSystemFileHandle };
 
 export async function iterateDirectory(
@@ -61,6 +61,7 @@ interface DirectorySelector {
   error: Error | null;
   pending: boolean;
   configHandle: FileSystemFileHandle | null;
+  refsConfigHandle: FileSystemFileHandle | null;
 }
 
 export function useDirectorySelector(): DirectorySelector {
@@ -68,7 +69,7 @@ export function useDirectorySelector(): DirectorySelector {
   const [pending, setPending] = useState(false);
   const [handles, setHandles] = useState<FileSystemFileHandles | null>(null);
   const [configHandle, setConfigHandle] = useState<FileSystemFileHandle | null>(null);
-
+  const [refsConfigHandle, setRefsConfigHandle] = useState<FileSystemFileHandle | null>(null);
   const select = useCallback(async () => {
     setPending(true);
     try {
@@ -76,6 +77,7 @@ export function useDirectorySelector(): DirectorySelector {
 
       let docs: FileSystemDirectoryHandle | null = null;
       let foundConfig = false;
+      let foundRefsConfig = false;
       for await (const entry of handle.values()) {
         if (
           !foundConfig &&
@@ -84,6 +86,10 @@ export function useDirectorySelector(): DirectorySelector {
         ) {
           setConfigHandle(entry);
           foundConfig = true;
+        }
+        if (!foundRefsConfig && entry.kind === 'file' && entry.name === 'docs.refs.json') {
+          setRefsConfigHandle(entry);
+          foundRefsConfig = true;
         }
         if (entry.kind === 'directory' && entry.name === 'docs') {
           docs = entry;
@@ -102,12 +108,13 @@ export function useDirectorySelector(): DirectorySelector {
     }
   }, []);
 
-  return { select, handles, error, pending, configHandle };
+  return { select, handles, error, pending, configHandle, refsConfigHandle };
 }
 
 type PreviewCache = {
   text?: string;
   config?: Configs;
+  refsConfig?: { name: string; path: string; kind: string }[] | null;
   props?: string;
   urls?: Record<string, string>;
 };
@@ -122,6 +129,7 @@ interface PolledLocalDocs {
 export function usePollLocalDocs(
   handles: FileSystemFileHandles | null,
   configHandle: FileSystemFileHandle | null,
+  refsConfigHandle: FileSystemFileHandle | null,
   ms = 500,
 ): PolledLocalDocs {
   const [updating, setUpdating] = useState(0);
@@ -142,16 +150,23 @@ export function usePollLocalDocs(
         obj[key] = handles[key];
         return obj;
       }, {});
-    const handle = hash ? handles[hash] : handles[`/index.mdx`];
+
+    const indexHash = hash ? path.join(hash, 'index.mdx') : '/index.mdx';
+    const handle = handles[hash] || handles[indexHash];
+
+    if (!handle) {
+      throw new Error('cant get handle');
+    }
 
     const interval = setInterval(
       () =>
-        extractContents(handle, configHandle, imageHandles)
-          .then(([text, config, urls]) => {
-            if (text !== cache.text || urls !== cache.urls) {
+        extractContents(handle, configHandle, imageHandles, refsConfigHandle)
+          .then(([text, config, urls, refsConfig]) => {
+            if (text !== cache.text || urls !== cache.urls || refsConfig != cache.refsConfig) {
               cache.urls = urls;
               cache.text = text;
               cache.config = config;
+              cache.refsConfig = refsConfig;
             }
             setUpdating(updating + 1);
           })
@@ -170,6 +185,7 @@ export function usePollLocalDocs(
       config: cache.config,
       text: cache.text || '',
       urls: cache.urls || {},
+      refsConfig: cache.refsConfig || null,
     })
       .then(setPageProps)
       .then(() => {
@@ -185,6 +201,7 @@ type PreviewParams = {
   config?: Configs;
   text: string;
   urls: Record<string, string>;
+  refsConfig: { name: string; path: string; kind: string }[] | null;
 };
 
 const buildPreviewProps = async (params: PreviewParams): Promise<DocumentationLoader> => {
@@ -232,6 +249,7 @@ const buildPreviewProps = async (params: PreviewParams): Promise<DocumentationLo
     headings,
     config: mergeConfig(config || {}),
     frontmatter: frontmatter || {},
+    referenceConfig: params.refsConfig,
   };
 };
 
@@ -245,25 +263,43 @@ export async function extractContents(
   handle: FileSystemFileHandle,
   configHandle: FileSystemFileHandle | null,
   imageHandles: FileSystemFileHandles,
-): Promise<[string, Configs, Record<string, string>, Error[]]> {
+  refsConfigHandle: FileSystemFileHandle | null,
+): Promise<
+  [
+    string,
+    Configs,
+    Record<string, string>,
+    { name: string; path: string; kind: string }[] | null,
+    Error[],
+  ]
+> {
   let text = '';
   let imageUrls;
   let config: Configs = {};
+  let refsConfig: { name: string; path: string; kind: string }[] | null = null;
   const errors: Error[] = [];
   try {
     // get docs.json from config handle
     const configText = await (await configHandle!.getFile()).text();
-    switch (configHandle?.name) {
-      case 'docs.json':
-        config = { configJson: configText };
-      case 'docs.yaml':
-        config = { configYaml: configText };
-      case 'docs.toml':
-        config = { configToml: configText };
+    if (configHandle?.name === 'docs.json') {
+      config = { configJson: configText };
+    } else if (configHandle?.name === 'docs.yaml') {
+      config = { configYaml: configText };
+    } else if (configHandle?.name === 'docs.toml') {
+      config = { configToml: configText };
     }
   } catch (e) {
     console.error(e);
     throw new Error('Unable to find config file');
+  }
+  try {
+    refsConfig = JSON.parse(await (await refsConfigHandle!.getFile()).text()) as {
+      name: string;
+      path: string;
+      kind: string;
+    }[];
+  } catch (e) {
+    refsConfig = null;
   }
   try {
     text = await (await handle.getFile()).text();
@@ -286,5 +322,5 @@ export async function extractContents(
     config.configToml = config.configToml.replace('\\n', '');
   }
 
-  return [text, config, imageUrls, errors];
+  return [text, config, imageUrls, refsConfig, errors];
 }

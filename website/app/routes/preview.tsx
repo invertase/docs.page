@@ -34,12 +34,19 @@ export const meta: MetaFunction = () => {
 };
 
 export default function LocalPreview(): JSX.Element {
-  const { select, handles, configHandle, pending, error: directoryError } = useDirectorySelector();
+  const {
+    select,
+    handles,
+    configHandle,
+    pending,
+    error: directoryError,
+    refsConfigHandle,
+  } = useDirectorySelector();
   const {
     documentationLoader: data,
     urls,
     errorCode: pollErrorCode,
-  } = usePollLocalDocs(handles, configHandle, 500);
+  } = usePollLocalDocs(handles, configHandle, refsConfigHandle, 500);
   if (directoryError) {
     return <PreviewNotFound />;
   }

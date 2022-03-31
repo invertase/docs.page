@@ -14,7 +14,6 @@ export const bundleRaw = async (
   const path = (req?.query.path as string) || 'index';
   const headerDepth = req?.query?.headerDepth ? parseInt(req?.query?.headerDepth as string) : 3;
   const { md: markdown, config: sourceConfig } = req.body;
-
   const bundleInstance = new Bundle({
     owner: 'n/a',
     repository: 'n/a',

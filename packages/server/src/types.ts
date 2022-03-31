@@ -38,6 +38,8 @@ export interface ConfigWithoutLocales {
   experimentalMath: boolean;
   // alias for references (root of path for references)
   reference?: string;
+  //entry directory for typedoc
+  typedocEntryDir?: string;
 }
 
 export interface ConfigWithLocales {
@@ -81,6 +83,8 @@ export interface ConfigWithLocales {
   experimentalMath: boolean;
   // alias for references (root of path for references)
   reference?: string;
+  // entry dir for typedoc
+  typedocEntryDir?: string;
 }
 export type InputConfig = ConfigWithoutLocales | ConfigWithLocales;
 
@@ -131,6 +135,8 @@ export interface OutputConfig {
   experimentalMath: boolean;
   // alias for references (root of path for references)
   reference?: string;
+  // entry directory for typedoc
+  typedocEntryDir?: string;
 }
 
 export const defaultConfig: OutputConfig = {
