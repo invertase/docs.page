@@ -102,51 +102,56 @@ Future<Node> getTypedocJson() async {
 
   File typedocFile = File(jsonPath);
 
-  String typedocString = await typedocFile.readAsString();
-
-  Node parsed = Node.fromJson(jsonDecode(typedocString));
-
-  return parsed;
+  if (typedocFile.existsSync()) {
+    String typedocString = await typedocFile.readAsString();
+    Node parsed = Node.fromJson(jsonDecode(typedocString));
+    return parsed;
+  }
+  throw Exception('Missing docs/typedoc.json, please generate this first.');
 }
 
 Future<void> generate(
     {required Node ast, String? docPath, List<Object>? refs}) async {
   DocsPageConfig config = DocsPageConfig.fromDirectory();
 
-  String referenceRoot = config.references ?? '_API';
-
-  String currentPath =
-      docPath ?? path.joinAll([Directory.current.path, 'docs', referenceRoot]);
-  if (config.locales != null) {
-    currentPath = docPath ??
-        path.joinAll([Directory.current.path, 'docs', 'gb', referenceRoot]);
-  }
-  final children = ast.children;
-
-  File refsFile =
-      File(path.joinAll([Directory.current.path, 'docs.refs.json']));
-
-  refsFile.delete(recursive: true);
-
-  if (children != null && children.isNotEmpty) {
-    print('Docs.page created files:'.blueBright);
-
-    for (final child in children) {
-      final childPath = path.joinAll([currentPath, '${child.name}.mdx']);
-
-      final refPath = path.relative(path.joinAll([currentPath, child.name]),
-          from: path.joinAll([Directory.current.path, 'docs']));
-
-      await addRef(node: child, filePath: refPath);
-
-      await createDoc(node: child, filePath: childPath);
-      print(childPath.blue);
+  String? referenceRoot = config.references;
+  if (referenceRoot != null) {
+    String currentPath = docPath ??
+        path.joinAll([Directory.current.path, 'docs', referenceRoot]);
+    if (config.locales != null) {
+      currentPath = docPath ??
+          path.joinAll([Directory.current.path, 'docs', 'gb', referenceRoot]);
     }
-  }
-  await addRef(
-      name: 'Overview', filePath: path.joinAll([currentPath, 'index.mdx']));
+    final children = ast.children;
 
-  await createIndexFile(filePath: path.joinAll([currentPath, 'index.mdx']));
+    File refsFile =
+        File(path.joinAll([Directory.current.path, 'docs.refs.json']));
+
+    refsFile.delete(recursive: true);
+
+    if (children != null && children.isNotEmpty) {
+      print('Docs.page created files:'.blueBright);
+
+      for (final child in children) {
+        final childPath = path.joinAll([currentPath, '${child.name}.mdx']);
+
+        final refPath = path.relative(path.joinAll([currentPath, child.name]),
+            from: path.joinAll([Directory.current.path, 'docs']));
+
+        await addRef(node: child, filePath: refPath);
+
+        await createDoc(node: child, filePath: childPath);
+        print(childPath.blue);
+      }
+    }
+    await addRef(
+        name: 'Overview', filePath: path.joinAll([currentPath, 'index.mdx']));
+
+    await createIndexFile(filePath: path.joinAll([currentPath, 'index.mdx']));
+  } else {
+    throw Exception(
+        'Missing field "reference" in your docs.json or docs.yaml file. This field should be a string which determines the subdirectory in which your API references are generated');
+  }
 }
 
 Future<void> addRef(
