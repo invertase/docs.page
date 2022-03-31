@@ -37,7 +37,7 @@ export function Sidebar() {
         )}
         {referenceConfig && (
           <li className="mb-2 w-full">
-            <DocsRefsSwitch isReference={!!frontmatter.reference} referencePath={referencePath} />
+            <DocsRefsSwitch locales={locales} currentLocale={currentLocale} isReference={!!frontmatter.reference} referencePath={referencePath} />
           </li>
         )}
         <li className=" flex w-full md:hidden">

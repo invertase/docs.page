@@ -14,13 +14,15 @@ DocsPageConfig _$DocsPageConfigFromJson(Map<String, dynamic> json) =>
           ? null
           : DocSearch.fromJson(json['docsearch'] as Map<String, dynamic>),
       twitter: json['twitter'] as String?,
-      sidebar:
-          (json['sidebar'] as List<dynamic>?)?.map((e) => e as Object).toList(),
+      sidebar: json['sidebar'],
       googleTagManager: json['googleTagManager'] as String?,
       experimentalCodeHike: json['experimentalCodeHike'] as bool?,
       experimentalMath: json['experimentalMath'] as bool?,
       references: json['references'] as String?,
       typedocEntryDir: json['typedocEntryDir'] as String?,
+      locales: (json['locales'] as Map<String, dynamic>?)?.map(
+        (k, e) => MapEntry(k, e as String),
+      ),
     );
 
 Map<String, dynamic> _$DocsPageConfigToJson(DocsPageConfig instance) =>
@@ -35,6 +37,7 @@ Map<String, dynamic> _$DocsPageConfigToJson(DocsPageConfig instance) =>
       'experimentalMath': instance.experimentalMath,
       'references': instance.references,
       'typedocEntryDir': instance.typedocEntryDir,
+      'locales': instance.locales,
     };
 
 DocSearch _$DocSearchFromJson(Map<String, dynamic> json) => DocSearch(

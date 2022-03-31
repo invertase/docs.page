@@ -12,13 +12,14 @@ class DocsPageConfig {
   final String? name;
   final String? theme;
   final String? twitter;
-  final List<Object>? sidebar;
+  final Object? sidebar;
   final DocSearch? docsearch;
   final String? googleTagManager;
   final bool? experimentalCodeHike;
   final bool? experimentalMath;
   final String? references;
   final String? typedocEntryDir;
+  final Map<String, String>? locales;
 
   DocsPageConfig(
       {this.name,
@@ -30,7 +31,8 @@ class DocsPageConfig {
       this.experimentalCodeHike,
       this.experimentalMath,
       this.references,
-      this.typedocEntryDir});
+      this.typedocEntryDir,
+      this.locales});
 
   factory DocsPageConfig.fromJson(Map<String, dynamic> json) =>
       _$DocsPageConfigFromJson(json);

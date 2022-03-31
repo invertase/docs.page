@@ -117,7 +117,10 @@ Future<void> generate(
 
   String currentPath =
       docPath ?? path.joinAll([Directory.current.path, 'docs', referenceRoot]);
-
+  if (config.locales != null) {
+    currentPath = docPath ??
+        path.joinAll([Directory.current.path, 'docs', 'gb', referenceRoot]);
+  }
   final children = ast.children;
 
   File refsFile =

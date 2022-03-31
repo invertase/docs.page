@@ -4,9 +4,13 @@ import cx from 'classnames';
 import { AcademicCapIcon, ArchiveIcon } from '@heroicons/react/solid';
 
 export function DocsRefsSwitch({
+  locales,
+  currentLocale,
   isReference,
   referencePath,
 }: {
+  locales: Record<string, string> | undefined
+  currentLocale: string
   isReference: boolean;
   referencePath: string;
 }) {
@@ -18,7 +22,7 @@ export function DocsRefsSwitch({
             <AcademicCapIcon width={14} />
           </div>
           <DocsLink
-            to={'/'}
+            to={locales ? `/${currentLocale}` : '/'}
             className={() =>
               cx('my-2 block', {
                 'hover:text-gray-800 dark:hover:text-gray-100': isReference,
@@ -36,7 +40,7 @@ export function DocsRefsSwitch({
             <ArchiveIcon width={14} />
           </div>
           <DocsLink
-            to={`/${referencePath}`}
+            to={locales ? `/${currentLocale}/${referencePath}` : `/${referencePath}`}
             className={() =>
               cx('my-2 block', {
                 'hover:text-gray-800 dark:hover:text-gray-100': !isReference,
