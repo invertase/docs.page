@@ -33,7 +33,7 @@ experimentalMath: false
       configYaml.existsSync() ||
       configToml.existsSync()) {
     print(
-        "Docs.page tries to create a docs.yaml configuration file, but a docs.json/docs.yaml/docs.toml file already exists."
+        "Docs.page tried to create a docs.yaml configuration file, but a docs.json/docs.yaml/docs.toml file already exists."
             .yellow);
   } else {
     await configYaml.create(recursive: true);
@@ -45,7 +45,7 @@ experimentalMath: false
 
   if (File(indexPath).existsSync()) {
     print(
-        "Docs.page tries to create an docs/index.mdx file, but one already exists."
+        "Docs.page tried to create an docs/index.mdx file, but one already exists."
             .yellow);
   } else {
     File indexFile = await File(indexPath).create(recursive: true);

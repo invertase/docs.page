@@ -7,6 +7,7 @@ void main(List<String> arguments) async {
   final parser = ArgParser();
   parser.addCommand('init');
   parser.addCommand('typedoc');
+  parser.addCommand('help');
   final argResults = parser.parse(arguments);
 
   switch (argResults.command?.name) {
