@@ -126,8 +126,9 @@ Future<void> generate(
 
     File refsFile =
         File(path.joinAll([Directory.current.path, 'docs.refs.json']));
-
-    refsFile.delete(recursive: true);
+    if (refsFile.existsSync()) {
+      refsFile.delete(recursive: true);
+    }
 
     if (children != null && children.isNotEmpty) {
       print('Docs.page created files:'.blueBright);
