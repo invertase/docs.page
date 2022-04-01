@@ -1,6 +1,7 @@
 import 'package:args/args.dart';
-import 'package:docs_page/src/create_files.dart';
+import 'package:docs_page/src/init.dart';
 import 'package:docs_page/src/typedoc.dart';
+import 'package:docs_page/src/help.dart';
 
 void main(List<String> arguments) async {
   final parser = ArgParser();
@@ -16,8 +17,11 @@ void main(List<String> arguments) async {
       Node ast = await getTypedocJson();
       await generate(ast: ast);
       break;
-
+    case 'help':
+      displayHelp();
+      break;
     default:
-      throw UnsupportedError('Only the init command is currently supported.');
+      throw UnsupportedError(
+          'Only help, init, typedoc commands are currently supported.');
   }
 }

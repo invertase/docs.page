@@ -1,11 +1,12 @@
 {
   "name": "@docs.page/cli",
-  "version": "1.0.5",
+  "version": "0.1.1",
   "description": "npx cli for docs.page initialization",
   "author": "Invertase <oss@invertase.io> (http://invertase.io)",
   "license": "Apache-2.0",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "prepublish": "chmod u+x binaries/darwin/docs_page && chmod u+x binaries/linux/docs_page && chmod u+x binaries/win32/docs_page.exe"
   },
   "bin": {
     "docs_page": "./index.js"
@@ -13,6 +14,7 @@
   "files": [
     "dist",
     "LICENSE",
-    "README.md"
+    "README.md",
+    "binaries"
   ]
 }
