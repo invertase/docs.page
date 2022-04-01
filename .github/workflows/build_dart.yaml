@@ -80,12 +80,12 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: macos-binary
-          path: ~/binaries/macos
+          path: ~/binaries/darwin
       - name: Download windows artifact
         uses: actions/download-artifact@v3
         with:
           name: windows-binary
-          path: ~/binaries/windows
+          path: ~/binaries/win32
       - name: Store binaries
         uses: actions/upload-artifact@v3
         with:
