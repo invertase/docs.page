@@ -1,5 +1,5 @@
 name: docs_page
-description: A sample command-line application.
+description: Docs.page CLI package
 version: 0.0.1
 
 environment:
