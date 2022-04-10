@@ -9,8 +9,8 @@ export function DocsRefsSwitch({
   isReference,
   referencePath,
 }: {
-  locales: Record<string, string> | undefined
-  currentLocale: string
+  locales: Record<string, string> | undefined;
+  currentLocale: string;
   isReference: boolean;
   referencePath: string;
 }) {

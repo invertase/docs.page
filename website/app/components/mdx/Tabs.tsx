@@ -123,7 +123,8 @@ function extractTabItems(children: React.ReactNode): TabItemElement[] {
       // @ts-ignore access private name which works on production
       const name = child.type.name;
 
-      if (name === 'TabItem') {
+      // in production the element gets minified to 'q4' instead of 'TabItem'
+      if (name === (process.env.NODE_ENV === 'production' ? 'q4' : 'TabItem')) {
         items = [...items, child];
       }
     }
@@ -141,6 +142,7 @@ export function Tabs(props: TabsProps): JSX.Element {
   }
 
   // MDX wraps components in a `p` tag: https://github.com/mdx-js/mdx/issues/1451
+
   const tabs = extractTabItems(props.children);
 
   const [selected, setSelected] = useState<string | null>(() => {
@@ -184,7 +186,6 @@ export function Tabs(props: TabsProps): JSX.Element {
         `}</style>
         {tabs.map(child => {
           const tab = props.values.find(v => v.value === child.props.value);
-
           // Ensure the TabItem actually matches the values provided
           if (!tab) {
             return null;

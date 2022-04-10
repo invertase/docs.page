@@ -70,7 +70,7 @@ jobs:
   combine_outputs:
     runs-on: ubuntu-latest
     needs: [build_linux, build_macos, build_windows]
-    steps:  
+    steps:
       - name: Download linux artifact
         uses: actions/download-artifact@v3
         with:
@@ -91,5 +91,3 @@ jobs:
         with:
           name: binaries
           path: ~/binaries
-
-    
