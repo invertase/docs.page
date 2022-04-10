@@ -70,7 +70,6 @@ export default function Page() {
 // handling errors
 export function CatchBoundary() {
   const e = useCatch<ThrownError>();
-  console.error(e);
 
   let child: JSX.Element;
 
