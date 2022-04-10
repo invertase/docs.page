@@ -22,5 +22,9 @@
 	[
 		"gorouter.dev",
 		"csells/go_router"
+	],
+	[
+		"docs.lunasea.app",
+		"JagandeepBrar/LunaSea"
 	]
 ]
