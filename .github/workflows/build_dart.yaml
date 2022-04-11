@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - typedoc-cli
+      - main
 
 jobs:
   build_linux:
