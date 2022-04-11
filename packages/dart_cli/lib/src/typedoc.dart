@@ -151,7 +151,7 @@ Future<void> generate(
     await createIndexFile(filePath: path.joinAll([currentPath, 'index.mdx']));
   } else {
     throw Exception(
-        'Missing field "reference" in your docs.json or docs.yaml file. This field should be a string which determines the subdirectory in which your API references are generated');
+        'Missing field "references" in your docs.json or docs.yaml file. This field should be a string which determines the subdirectory in which your API references are generated');
   }
 }
 
