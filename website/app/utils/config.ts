@@ -98,8 +98,10 @@ export interface ProjectConfig {
   experimentalCodehike: boolean;
   // Whether Math is enabled
   experimentalMath: boolean;
-  // Whether Math is enabled
+  // The name of the reference subdirectoy (of docs) and reference route.
   references: string;
+  // The entry directory of the typedoc command
+  typedocEntryDir: string;
 }
 
 export const defaultConfig: ProjectConfig = {
@@ -120,6 +122,7 @@ export const defaultConfig: ProjectConfig = {
   experimentalCodehike: false,
   experimentalMath: false,
   references: 'API',
+  typedocEntryDir: 'src',
 };
 
 // Merges any user config with default values.
@@ -135,10 +138,10 @@ export function mergeConfig(json: Record<string, unknown>): ProjectConfig {
     theme: getString(json, 'theme', defaultConfig.theme),
     docsearch: getValue(json, 'docsearch')
       ? {
-          appId: getString(json, 'docsearch.appId', ''),
-          apiKey: getString(json, 'docsearch.apiKey', ''),
-          indexName: getString(json, 'docsearch.indexName', ''),
-        }
+        appId: getString(json, 'docsearch.appId', ''),
+        apiKey: getString(json, 'docsearch.apiKey', ''),
+        indexName: getString(json, 'docsearch.indexName', ''),
+      }
       : defaultConfig.docsearch,
     // navigation: mergeNavigationConfig(json),
     sidebar: mergeSidebarConfig(json),
@@ -155,6 +158,7 @@ export function mergeConfig(json: Record<string, unknown>): ProjectConfig {
     ),
     experimentalMath: getBoolean(json, 'experimentalMath', defaultConfig.experimentalMath),
     references: getString(json, 'references', defaultConfig.references),
+    typedocEntryDir: getString(json, 'typedocEntryDir', defaultConfig.typedocEntryDir),
   };
 }
 
