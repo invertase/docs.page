@@ -123,8 +123,7 @@ function extractTabItems(children: React.ReactNode): TabItemElement[] {
       // @ts-ignore access private name which works on production
       const name = child.type.name;
 
-      // in production the element gets minified to 'q4' instead of 'TabItem'
-      if (name === (process.env.NODE_ENV === 'production' ? 'q4' : 'TabItem')) {
+      if (name) {
         items = [...items, child];
       }
     }
@@ -213,5 +212,5 @@ type TabItemProps = {
 };
 
 export const TabItem: React.FC<TabItemProps> = (props: TabItemProps) => {
-  return <>{props.children}</>;
+  return <div>{props.children}</div>;
 };

@@ -5,7 +5,6 @@ import { useDocumentationContext } from '~/context';
 export function ScrollSpy(): JSX.Element {
   const { headings } = useDocumentationContext();
   const [active, setActive] = useState<string>('');
-
   useEffect(() => {
     if (!headings) {
       return;
@@ -30,7 +29,7 @@ export function ScrollSpy(): JSX.Element {
     headings.forEach(({ id }) => {
       let el;
       try {
-        el = document.querySelector(`#${id}`);
+        el = document.getElementById(id);
       } catch (e) {
         console.error(`heading ${id} cannot be found`);
       }
