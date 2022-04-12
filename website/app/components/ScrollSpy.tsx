@@ -5,7 +5,6 @@ import { useDocumentationContext } from '~/context';
 export function ScrollSpy(): JSX.Element {
   const { headings } = useDocumentationContext();
   const [active, setActive] = useState<string>('');
-  console.log(headings);
   useEffect(() => {
     if (!headings) {
       return;
