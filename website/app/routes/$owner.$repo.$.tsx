@@ -12,6 +12,7 @@ import {
   ThrownNotFoundError,
 } from '../loaders/documentation.server';
 import docsearch from '../styles/docsearch.css';
+import reactMediumImage from 'react-medium-image-zoom/dist/styles.css';
 import { BadRequest, NotFound, ServerError } from '~/components/Errors';
 import Documentation from '~/components/Documentation';
 
@@ -30,6 +31,7 @@ export const links: LinksFunction = () => {
     { rel: 'stylesheet', href: codeHikeStyles },
     { rel: 'stylesheet', href: removeBackTicks },
     { rel: 'stylesheet', href: `custom-styles.css` },
+    { rel: 'stylesheet', href: reactMediumImage },
   ];
 };
 
