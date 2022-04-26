@@ -114,30 +114,6 @@ For example:
 }
 ```
 
-### `navigation`
-
-An array of navigation items. If provided, the links will be displayed in the website header.
-
-| Key          | Type               | Default |
-| ------------ | ------------------ | ------- |
-| `navigation` | `NavigationItem[]` | `[]`    |
-
-| `NavigationItem` | Type     | Default |
-| ---------------- | -------- | ------- |
-| [0]              | `string` |         |
-| [1]              | `string` |         |
-
-The fist item of an item is the title, and the second item is a URL, for example:
-
-```json
-{
-  "navigation": [
-    ["Example", "/example"],
-    ["External", "https://google.com"]
-  ]
-}
-```
-
 ### `sidebar`
 
 An array containing nested sidebar array items. If provided, will be rendered on every page down the left hand side.
@@ -162,7 +138,7 @@ For example, the following will create a sidebar with a single link and nested e
 
 ```json
 {
-  "navigation": [
+  "sidebar": [
     ["Example", "/example"],
     [
       "Expandable",
