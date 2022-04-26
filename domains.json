@@ -30,5 +30,9 @@
 	[
 		"docs.lunasea.app",
 		"JagandeepBrar/LunaSea"
+	],
+	[
+		"docs.widgetbook.io",
+		"widgetbook/widgetbook"
 	]
 ]
