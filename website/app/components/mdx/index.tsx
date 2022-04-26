@@ -8,6 +8,7 @@ import { Table } from './Table';
 import { Pre } from './Pre';
 import { Tabs, TabItem } from './Tabs';
 import { Vimeo } from './Vimeo';
+import { Tweet } from './Tweet';
 
 function Anchor(
   props: DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>,
@@ -69,5 +70,6 @@ export default {
   Image,
   Tabs,
   TabItem,
+  Tweet,
   Vimeo,
 };
