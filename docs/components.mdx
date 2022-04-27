@@ -134,13 +134,28 @@ The `YouTube` component renders an embedded YouTube video by providing a video i
 
 ## `<Vimeo />`
 
-The `Vimeo` component renders an embedded YouTube video by providing a video id:
+The `Vimeo` component renders an embedded Vimeo video by providing a video id:
 
 ```
 <Vimeo video="253989945" />
 ```
 
 <Vimeo video="253989945" />
+
+This wraps [@ui-wave/react-video](https://www.npmjs.com/package/@u-wave/react-vimeo), and accepts lots of optional parameters
+which can be found in their documentation.
+
+We also support a `caption` property for adding captions to your videos.
+
+## `<Tweet />`
+
+The `Tweet` component renders an embedded Tweet by providing a tweet id:
+
+```
+<Tweet id="253989945" />
+```
+
+<Tweet id="1513662173796605958" />
 
 This wraps [@ui-wave/react-video](https://www.npmjs.com/package/@u-wave/react-vimeo), and accepts lots of optional parameters
 which can be found in their documentation.

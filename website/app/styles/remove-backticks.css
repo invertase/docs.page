@@ -29,6 +29,4 @@ code {
 
 .tweet-container>div>div>iframe {
   border-radius: 12px;
-  max-width: 400px;
-  width: 80vw;
 }
