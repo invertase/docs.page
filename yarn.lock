@@ -1772,6 +1772,15 @@
     "@types/scheduler" "*"
     csstype "^3.0.2"
 
+"@types/react@^17.0.0 || ^18.0.0":
+  version "18.0.7"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-18.0.7.tgz#8437a226763adf854969954dfe582529a406cbad"
+  integrity sha512-CXSXHzTexlX9esf4ReIUJeaemKcmBEvYzxHDUk19c3BCcEGUvUjkeC3jkscPSfSaQ6SPDRNd/zMxi8oc/P1zxA==
+  dependencies:
+    "@types/prop-types" "*"
+    "@types/scheduler" "*"
+    csstype "^3.0.2"
+
 "@types/resolve@1.17.1":
   version "1.17.1"
   resolved "https://registry.yarnpkg.com/@types/resolve/-/resolve-1.17.1.tgz#3afd6ad8967c77e4376c598a82ddd58f46ec45d6"
@@ -1840,6 +1849,11 @@
   dependencies:
     "@types/configstore" "*"
     boxen "^4.2.0"
+
+"@types/vimeo__player@^2.10.0":
+  version "2.16.2"
+  resolved "https://registry.yarnpkg.com/@types/vimeo__player/-/vimeo__player-2.16.2.tgz#e9adf3f91332f49788a391d2d23c30fdc6bd6beb"
+  integrity sha512-NP9D08Q7+7UhtqixME4cu5PfldMZcLDUfTr0KETGDbEHBXYAWKa1HW+bL9kVa02PBGUuUePhR3n0RHt440qxbA==
 
 "@types/wicg-file-system-access@^2020.9.4":
   version "2020.9.4"
@@ -1944,6 +1958,24 @@
   dependencies:
     "@typescript-eslint/types" "5.9.1"
     eslint-visitor-keys "^3.0.0"
+
+"@u-wave/react-vimeo@^0.9.8":
+  version "0.9.8"
+  resolved "https://registry.yarnpkg.com/@u-wave/react-vimeo/-/react-vimeo-0.9.8.tgz#f95f82689774070fded13ba074d7d907f794af40"
+  integrity sha512-Ka+jFDcCOp2GBOYRShG3qqsXPI9CUhaOlZMozdEWZVw9EoOdOyma7S3nLVLrp4lxePNu7YZTP4CnyYpd3gsJiA==
+  dependencies:
+    "@types/react" "^17.0.0 || ^18.0.0"
+    "@types/vimeo__player" "^2.10.0"
+    "@vimeo/player" "^2.14.1"
+    prop-types "^15.7.2"
+
+"@vimeo/player@^2.14.1":
+  version "2.16.4"
+  resolved "https://registry.yarnpkg.com/@vimeo/player/-/player-2.16.4.tgz#40043a55f440b94753461da44dfe94bae077133e"
+  integrity sha512-i+ids9ziQuai3mp8XzF9Q5b2hLgRCekRcefdnoy+RkKUR8Xq0cJndnk9jHugEOw8v6PLj7tO3eEAw4lu2/AG2Q==
+  dependencies:
+    native-promise-only "0.8.1"
+    weakmap-polyfill "2.0.4"
 
 "@web-std/blob@^3.0.0":
   version "3.0.1"
@@ -6425,6 +6457,11 @@ nanoid@^3.1.30:
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.32.tgz#8f96069e6239cc0a9ae8c0d3b41a3b4933a88c0a"
   integrity sha512-F8mf7R3iT9bvThBoW4tGXhXFHCctyCiUUPrWF8WaTqa3h96d9QybkSeba43XVOOE3oiLfkVDe4bT8MeGmkrTxw==
 
+native-promise-only@0.8.1:
+  version "0.8.1"
+  resolved "https://registry.yarnpkg.com/native-promise-only/-/native-promise-only-0.8.1.tgz#20a318c30cb45f71fe7adfbf7b21c99c1472ef11"
+  integrity sha1-IKMYwwy0X3H+et+/eyHJnBRy7xE=
+
 natural-compare@^1.4.0:
   version "1.4.0"
   resolved "https://registry.yarnpkg.com/natural-compare/-/natural-compare-1.4.0.tgz#4abebfeed7541f2c27acfb29bdbbd15c8d5ba4f7"
@@ -8945,6 +8982,11 @@ wcwidth@^1.0.1:
   integrity sha1-8LDc+RW8X/FSivrbLA4XtTLaL+g=
   dependencies:
     defaults "^1.0.3"
+
+weakmap-polyfill@2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/weakmap-polyfill/-/weakmap-polyfill-2.0.4.tgz#bcc301e4c8eb4eda3e406f08f1a691093e407884"
+  integrity sha512-ZzxBf288iALJseijWelmECm/1x7ZwQn3sMYIkDr2VvZp7r6SEKuT8D0O9Wiq6L9Nl5mazrOMcmiZE/2NCenaxw==
 
 web-encoding@1.1.5:
   version "1.1.5"
