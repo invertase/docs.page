@@ -157,5 +157,17 @@ The `Tweet` component renders an embedded Tweet by providing a tweet id:
 
 <Tweet id="1513662173796605958" />
 
-This wraps [@ui-wave/react-video](https://www.npmjs.com/package/@u-wave/react-vimeo), and accepts lots of optional parameters
-which can be found in their documentation.
+This component accepts the following props:
+
+| Key            | Type     | Description                                                                                                           | Default  |
+| -------------- | -------- | --------------------------------------------------------------------------------------------------------------------- | -------- |
+| `id`           | `string` | The numerical ID of the desired Tweet.                                                                                |          |
+| `cards`        | `string` | When set to hidden, links in a Tweet are not expanded to photo, video, or link previews.                              | `hidden` |
+| `conversation` | `string` | When set to `none`, only the cited Tweet will be displayed even if it is in reply to another Tweet.                   | `none`   |
+| `theme`        | `string` | When set to `dark`, displays Tweet with light text over a dark background.                                            | `light`  |
+| `width`        | `number` | The maximum width of the rendered Tweet in whole pixels. This value should be between 250 and 550 pixels.             |          |
+| `align`        | `string` | Float the Tweet left, right, or center relative to its container.                                                     |          |
+| `lang`         | `string` | A supported Twitter language code. Note: doesn't change text of actual tweet.                                         |          |
+| `dnt`          | `string` | When `true`, the Tweet and its embedded page are not used for purposes that include personalized suggestions and ads. | `true`   |
+
+This component is built on top of the Twitter embedded tweet API, more information can be found [here](https://developer.twitter.com/en/docs/twitter-for-websites/embedded-tweets/guides/embedded-tweet-parameter-reference).
