@@ -26,3 +26,9 @@ code {
 .ch-scrollycoding-step-content {
   cursor: pointer;
 }
+
+.tweet-container>div>div>iframe {
+  border-radius: 12px;
+  max-width: 400px;
+  width: 80vw;
+}
