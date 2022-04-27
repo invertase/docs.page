@@ -30,7 +30,7 @@ export function getGithubGQLClient(): typeof graphql {
 export type MetaData = {
   owner: string;
   repository: string;
-  ref: string;
+  ref?: string;
   path: string;
 };
 
@@ -75,6 +75,9 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
   const base = noDir ? '' : 'docs/';
   const absolutePath = `${base}${metadata.path}`;
   const indexPath = `${base}${metadata.path}/index`;
+
+  const ref = metadata.ref || 'HEAD';
+
   const [error, response] = await A2A<PageContentsQuery>(
     getGithubGQLClient()({
       query: `
@@ -114,11 +117,11 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
     `,
       owner: metadata.owner,
       repository: metadata.repository,
-      configJson: `${metadata.ref}:docs.json`,
-      configYaml: `${metadata.ref}:docs.yaml`,
-      configToml: `${metadata.ref}:docs.toml`,
-      mdx: `${metadata.ref}:${absolutePath}.mdx`,
-      mdxIndex: `${metadata.ref}:${indexPath}.mdx`,
+      configJson: `${ref}:docs.json`,
+      configYaml: `${ref}:docs.yaml`,
+      configToml: `${ref}:docs.toml`,
+      mdx: `${ref}:${absolutePath}.mdx`,
+      mdxIndex: `${ref}:${indexPath}.mdx`,
     }),
   );
 
@@ -230,6 +233,8 @@ type ConfigResponse = {
 };
 
 export async function getConfigs(metadata: MetaData): Promise<Configs> {
+  const ref = metadata.ref || 'HEAD';
+
   const [error, response] = await A2A<ConfigResponse>(
     getGithubGQLClient()({
       query: `
@@ -255,9 +260,9 @@ export async function getConfigs(metadata: MetaData): Promise<Configs> {
     `,
       owner: metadata.owner,
       repository: metadata.repository,
-      json: `${metadata.ref}:docs.json`,
-      yaml: `${metadata.ref}:docs.yaml`,
-      toml: `${metadata.ref}:docs.toml`,
+      json: `${ref}:docs.json`,
+      yaml: `${ref}:docs.yaml`,
+      toml: `${ref}:docs.toml`,
     }),
   );
 

@@ -40,7 +40,7 @@ export const getConfig = async (
 const extractQueryData = (req: Request) => {
   const owner = req?.query?.owner as string;
   const repository = (req?.query?.repository as string) || null;
-  const ref = (req?.query.ref as string) || 'HEAD';
+  const ref = req?.query.ref as string;
   const path = (req?.query.path as string) || 'index';
   return {
     owner,

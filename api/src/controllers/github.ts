@@ -44,7 +44,7 @@ export const bundleGitHub = async (
 const extractQueryData = (req: Request) => {
   const owner = req?.query?.owner as string;
   const repository = (req?.query?.repository as string) || null;
-  const ref = (req?.query.ref as string) || 'HEAD';
+  const ref = req?.query.ref as string;
   const path = (req?.query.path as string) || 'index';
   const headerDepth = req?.query?.headerDepth ? parseInt(req?.query?.headerDepth as string) : 3;
   return {

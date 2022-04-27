@@ -1,11 +1,11 @@
 import { getPullRequestMetadata } from './github.js';
 
-export async function formatSourceAndRef(owner: string, repository: string, ref: string) {
+export async function formatSourceAndRef(owner: string, repository: string, ref?: string) {
   let source: {
     type: 'PR' | 'commit' | 'branch';
     owner: string;
     repository: string;
-    ref: string;
+    ref?: string;
   } = {
     type: 'branch',
     owner: owner || '',
@@ -13,7 +13,7 @@ export async function formatSourceAndRef(owner: string, repository: string, ref:
     ref: ref,
   };
 
-  if (/^[0-9]*$/.test(ref)) {
+  if (ref && /^[0-9]*$/.test(ref)) {
     // Fetch the PR metadata
     const metadata = await getPullRequestMetadata(owner, repository, ref);
     // If the PR was found, update the pointer and source
@@ -24,7 +24,7 @@ export async function formatSourceAndRef(owner: string, repository: string, ref:
         ...metadata,
       };
     }
-  } else if (/^[a-fA-F0-9]{40}$/.test(ref)) {
+  } else if (ref && /^[a-fA-F0-9]{40}$/.test(ref)) {
     source = {
       type: 'commit',
       owner,

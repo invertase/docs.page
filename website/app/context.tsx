@@ -74,6 +74,8 @@ export function useImagePath(src: string) {
 export function useRawBlob(path: string): string {
   const { source, baseBranch } = React.useContext(DocumentationContext);
   const { owner, repository: repo, ref } = source;
+  console.log(ref, baseBranch, source);
+
   if (source.type === 'branch') {
     return `https://raw.githubusercontent.com/${owner}/${repo}/${
       ref ?? baseBranch
