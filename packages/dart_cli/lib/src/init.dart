@@ -14,7 +14,7 @@ socialPreview: ''
 twitter: ''
 noindex: false
 theme: "#00bcd4"
-sidebar: []
+sidebar: [['Home', '/']]
 headerDepth: 3
 variables: {}
 googleTagManager: ''
