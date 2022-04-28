@@ -20,7 +20,7 @@ type Source = {
   type: 'PR' | 'commit' | 'branch';
   owner: string;
   repository: string;
-  ref: string;
+  ref?: string;
 };
 
 type BundleConstructorParams = {
@@ -50,7 +50,7 @@ export class Bundle {
   repositoryFound: boolean;
   source: Source;
   sourceChecked: boolean;
-  ref: string;
+  ref?: string;
   headerDepth: number;
   built: boolean;
   contentFetched: boolean;
@@ -78,9 +78,9 @@ export class Bundle {
       type: 'branch',
       owner,
       repository,
-      ref: ref || 'HEAD',
+      ref: ref,
     };
-    this.ref = ref || 'HEAD';
+    this.ref = ref;
     this.sourceChecked = false;
     this.built = false;
     this.contentFetched = false;
@@ -115,6 +115,12 @@ export class Bundle {
       throw new BundleError(404, "Couldn't find github contents", 'REPO_NOT_FOUND');
     }
     this.baseBranch = githubContents.baseBranch;
+
+    if (!this.ref) {
+      this.ref = this.baseBranch;
+      this.source.ref = this.baseBranch;
+    }
+
     this.repositoryFound = githubContents.repositoryFound;
     this.referenceConfig = githubContents.referenceConfig;
     this.formatConfigLocales(githubContents.config);
@@ -173,7 +179,7 @@ export class Bundle {
       this.source.owner,
       this.source.repository,
       'docs',
-      this.source.ref,
+      this.source.ref!,
     );
 
     const matches = symLinks.filter(s => s.formattedPath === this.path);

@@ -68,7 +68,7 @@ function withZoom(child: React.ReactElement) {
       wrapStyle={
         isZoomed
           ? { width: '100%', height: 'auto', transition: 'height ease-out  0.5s' }
-          : { transition: 'height ease-out  0.5s' }
+          : { width: '100%', transition: 'height ease-out  0.5s' }
       }
       isZoomed={isZoomed}
       onZoomChange={handleZoomChange}

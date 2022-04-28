@@ -8,6 +8,7 @@ import { Table } from './Table';
 import { Pre } from './Pre';
 import { Tabs, TabItem } from './Tabs';
 import { GithubLink } from './GithubLink';
+import { Vimeo } from './Vimeo';
 
 function Anchor(
   props: DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>,
@@ -70,4 +71,5 @@ export default {
   Tabs,
   TabItem,
   GithubLink,
+  Vimeo,
 };
