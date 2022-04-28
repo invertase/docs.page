@@ -16,7 +16,7 @@ if (!fs.existsSync(binary)) {
 
 var docsPage = childProcess.spawn(binary, process.argv.slice(2), {
   stdio: ['inherit', 'inherit', 'inherit'],
-  env: process.env,
+  env: { DOCS_PAGE_CONFIG_FORMAT: 'json', ...process.env },
 });
 
 docsPage.on('exit', event => process.exit(event.code));

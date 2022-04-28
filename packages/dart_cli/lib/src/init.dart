@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:path/path.dart' as path;
 import 'package:ansi_styles/extension.dart';
+import 'package:yaml/yaml.dart' as yaml;
 
 createFiles() async {
   final indexContent = '# Welcome to your new documentation!';
@@ -24,21 +26,30 @@ experimentalMath: false
 ''';
 
   final current = Directory.current;
-  String configPath = path.joinAll([current.path, 'docs.yaml']);
   final configJson = File(path.joinAll([current.path, 'docs.json']));
-  final configYaml = File(configPath);
+  final configYaml = File(path.joinAll([current.path, 'docs.yaml']));
   final configToml = File(path.joinAll([current.path, 'docs.toml']));
 
   if (configJson.existsSync() ||
       configYaml.existsSync() ||
       configToml.existsSync()) {
     print(
-        "Docs.page tried to create a docs.yaml configuration file, but a docs.json/docs.yaml/docs.toml file already exists."
+        "Docs.page tried to create a docs.page configuration file, but a docs.json/docs.yaml/docs.toml file already exists."
             .yellow);
+  } else if (Platform.environment['DOCS_PAGE_CONFIG_FORMAT'] == 'json') {
+    await configJson.create(recursive: true);
+
+    final yamlMap = Map.from(yaml.loadYaml(configContent));
+
+    final jsonString = JsonEncoder.withIndent('  ').convert(yamlMap);
+
+    await configJson.writeAsString(jsonString);
+
+    print('Docs.page created file: \n  ${configJson.path}'.blueBright);
   } else {
     await configYaml.create(recursive: true);
     await configYaml.writeAsString(configContent);
-    print('Docs.page created file: \n  $configPath'.blueBright);
+    print('Docs.page created file: \n  ${configYaml.path}'.blueBright);
   }
 
   final indexPath = path.joinAll([current.path, 'docs', 'index.mdx']);
