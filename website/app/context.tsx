@@ -43,7 +43,7 @@ export function useBaseUrl(): string {
   let url = '/';
 
   if (ref && !domain) {
-    url += `${ref === 'HEAD' ? '' : `~${ref}`}`;
+    url += `${ref === 'HEAD' ? '' : `~${encodeURIComponent(ref)}`}`;
   }
 
   return url;
@@ -52,7 +52,7 @@ export function useBaseUrl(): string {
 export function useRepositoryUrl(): string {
   const { owner, repo, ref } = React.useContext(DocumentationContext);
 
-  return `https://github.com/${owner}/${repo}/tree/${ref}`;
+  return `https://github.com/${owner}/${repo}/tree/${encodeURIComponent(ref)}`;
 }
 
 export function useImagePath(src: string) {
@@ -76,14 +76,14 @@ export function useRawBlob(path: string): string {
   const { owner, repository: repo, ref } = source;
 
   if (source.type === 'branch') {
-    return `https://raw.githubusercontent.com/${owner}/${repo}/${
-      ref ?? baseBranch
-    }/docs${ensureLeadingSlash(path)}`;
+    return `https://raw.githubusercontent.com/${owner}/${repo}/${encodeURIComponent(
+      ref ?? baseBranch,
+    )}/docs${ensureLeadingSlash(path)}`;
   }
   if (source.type === 'PR') {
-    return `https://raw.githubusercontent.com/${owner}/${repo}/${
-      ref ?? baseBranch
-    }/docs${ensureLeadingSlash(path)}`;
+    return `https://raw.githubusercontent.com/${owner}/${repo}/${encodeURIComponent(
+      ref ?? baseBranch,
+    )}/docs${ensureLeadingSlash(path)}`;
   }
 
   return `https://raw.githubusercontent.com/${owner}/${repo}/main/docs${ensureLeadingSlash(path)}`;
