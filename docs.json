@@ -13,7 +13,6 @@
     ["GitHub Bot", "/github-bot"],
     ["Search", "/search"],
     ["Debugging", "/debugging"],
-    ["Pre-rendering", "/pre-rendering"],
     ["Advanced", "/advanced"],
     ["Contributing", "/contributing"]
   ],
