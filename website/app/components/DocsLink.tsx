@@ -30,7 +30,7 @@ export function DocsLink({ ...props }: NavLinkProps): JSX.Element {
   let to = `/${owner}/${repo}`;
 
   if (ref && ref !== 'HEAD') {
-    to += `~${ref}`;
+    to += `~${encodeURIComponent(ref)}`;
   }
 
   if (previewMode.enabled) {
@@ -52,7 +52,7 @@ export function DocsLink({ ...props }: NavLinkProps): JSX.Element {
     let href = `//${domain}${props.to}`;
 
     if (ref && ref !== 'HEAD') {
-      href = `//${domain}/~${ref}${props.to}`;
+      href = `//${domain}/~${encodeURIComponent(ref)}${props.to}`;
     }
 
     const formattedPathname = pathname.replace(`/${owner}/${repo}`, '') || '/';
