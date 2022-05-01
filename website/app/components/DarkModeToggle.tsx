@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useNoSSR } from '../hooks';
 import { MoonIcon, SunIcon, DesktopComputerIcon } from '@heroicons/react/solid';
+import { DarkModeContext } from '~/context';
 
 export const STORAGE_KEY = 'docs.page:dark-mode';
 export const DARK_MODE_CLASS_NAME = '';
@@ -42,6 +43,8 @@ function useDarkMode() {
  * is rendered on the server.
  */
 export function DarkModeToggle() {
+  const { setDarkModeValue } = useContext(DarkModeContext);
+
   const ready = useNoSSR();
   const darkMode = useDarkMode();
 
@@ -85,7 +88,7 @@ export function DarkModeToggle() {
         onChange={e => {
           const value = e.target.value;
           setMode(value);
-
+          setDarkModeValue(value as 'light' | 'dark' | 'system');
           if (value === 'dark') {
             darkMode.enable();
           } else if (value === 'light') {
