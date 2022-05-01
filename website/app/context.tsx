@@ -50,9 +50,9 @@ export function useBaseUrl(): string {
 }
 
 export function useRepositoryUrl(): string {
-  const { owner, repo, ref } = React.useContext(DocumentationContext);
+  const { owner, repo, source } = React.useContext(DocumentationContext);
 
-  return `https://github.com/${owner}/${repo}/tree/${encodeURIComponent(ref)}`;
+  return `https://github.com/${owner}/${repo}/tree/${encodeURIComponent(source.ref)}`;
 }
 
 export function useImagePath(src: string) {

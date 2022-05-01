@@ -1,7 +1,7 @@
 import { MetaFunction, useLoaderData, LinksFunction, useCatch } from 'remix';
 
 import { Footer } from '~/components/Footer';
-import codeHikeStyles from '@code-hike/mdx/dist/index.css';
+
 import extraStyles from '../styles/extra-styles.css';
 import codeblocks from '../styles/codeblocks.css';
 import {
@@ -15,6 +15,7 @@ import docsearch from '../styles/docsearch.css';
 import reactMediumImage from 'react-medium-image-zoom/dist/styles.css';
 import { BadRequest, NotFound, ServerError } from '~/components/Errors';
 import Documentation from '~/components/Documentation';
+import { Head } from '~/components/Head';
 
 //@ts-ignore
 export function headers({ loaderHeaders }) {
@@ -28,9 +29,7 @@ export const links: LinksFunction = () => {
     { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/@docsearch/css@alpha' },
     { rel: 'stylesheet', href: docsearch },
     { rel: 'stylesheet', href: codeblocks },
-    { rel: 'stylesheet', href: codeHikeStyles },
     { rel: 'stylesheet', href: extraStyles },
-    { rel: 'stylesheet', href: `custom-styles.css` },
     { rel: 'stylesheet', href: reactMediumImage },
   ];
 };
@@ -65,7 +64,12 @@ export const meta: MetaFunction = (props: { data?: DocumentationLoader }) => {
 
 export default function Page() {
   const data = useLoaderData<DocumentationLoader>();
-  return <Documentation data={data} />;
+  return (
+    <>
+      <Head data={data} />
+      <Documentation data={data} />
+    </>
+  );
 }
 
 // handling errors
