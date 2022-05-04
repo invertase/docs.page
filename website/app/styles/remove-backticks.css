@@ -30,3 +30,7 @@ code {
 .tweet-container>div>div>iframe {
   border-radius: 12px;
 }
+
+.mdx-table img {
+  display: inline;
+}
