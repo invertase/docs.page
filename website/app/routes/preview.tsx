@@ -6,7 +6,7 @@ import { BadRequest, PreviewNotFound, ServerError } from '~/components/Errors';
 import { PreviewModeContext } from '~/utils/preview';
 import { usePollLocalDocs } from '~/utils/preview/local-preview-mode';
 import { useDirectorySelector } from '~/utils/preview/directory-selector';
-import removeBackTicks from '../styles/remove-backticks.css';
+import extraStyles from '../styles/extra-styles.css';
 import { LandingPage } from '../components/PreviewLandingPage';
 import Documentation from '~/components/Documentation';
 
@@ -19,7 +19,7 @@ export function headers(): Record<string, string> {
 export const links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: codeHikeStyles },
-    { rel: 'stylesheet', href: removeBackTicks },
+    { rel: 'stylesheet', href: extraStyles },
     { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css' },
   ];
 };
