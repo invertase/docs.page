@@ -50,9 +50,9 @@ export function useBaseUrl(): string {
 }
 
 export function useRepositoryUrl(): string {
-  const { owner, repo, ref } = React.useContext(DocumentationContext);
+  const { owner, repo, source } = React.useContext(DocumentationContext);
 
-  return `https://github.com/${owner}/${repo}/tree/${encodeURIComponent(ref)}`;
+  return `https://github.com/${owner}/${repo}/tree/${encodeURIComponent(source.ref)}`;
 }
 
 export function useImagePath(src: string) {
@@ -88,3 +88,8 @@ export function useRawBlob(path: string): string {
 
   return `https://raw.githubusercontent.com/${owner}/${repo}/main/docs${ensureLeadingSlash(path)}`;
 }
+
+export const DarkModeContext = createContext<{
+  darkModeValue: 'light' | 'dark' | 'system';
+  setDarkModeValue: (newVal: 'light' | 'dark' | 'system') => void;
+}>({ darkModeValue: 'system', setDarkModeValue: () => null });

@@ -15,9 +15,10 @@ import { useLocation } from 'react-router-dom';
 import NProgress from 'nprogress';
 import nProgressStyles from 'nprogress/nprogress.css';
 import { useTransition } from 'remix';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { PageNotFound, ServerError } from './components/Errors';
 import { Footer } from './components/Footer';
+import { DarkModeContext } from './context';
 
 export const links: LinksFunction = () => {
   return [
@@ -60,6 +61,14 @@ export default function App(): JSX.Element {
     else NProgress.start();
   }, [transition.state]);
 
+  const [darkMode, setDarkMode] = useState<'light' | 'dark' | 'system'>('system');
+
+  useEffect(() => {
+    if (document.documentElement.classList.contains('dark')) {
+      setDarkMode('dark');
+    }
+  }, []);
+
   return (
     <Document>
       <script
@@ -67,7 +76,10 @@ export default function App(): JSX.Element {
           __html: `window.ENV = ${JSON.stringify(data?.ENV)}`,
         }}
       />
-      <Outlet />
+      <script async src="https://platform.twitter.com/widgets.js"></script>
+      <DarkModeContext.Provider value={{ darkModeValue: darkMode, setDarkModeValue: setDarkMode }}>
+        <Outlet />
+      </DarkModeContext.Provider>
     </Document>
   );
 }
