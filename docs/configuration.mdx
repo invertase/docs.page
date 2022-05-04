@@ -129,9 +129,9 @@ A sidebar item can contain an array with two string values, or an array where th
 | [0]               | `string` |         |
 | [1]               | `string` |         |
 
-| `SidebarItem` (2) | Type            | Default |
-| ----------------- | --------------- | ------- |
-| [0]               | `string`        |         |
+| `SidebarItem` (2) | Type              | Default |
+| ----------------- | ----------------- | ------- |
+| [0]               | `string`          |         |
 | [1]               | `[string,string]` |         |
 
 For example, the following will create a sidebar with a single link and nested expandable sidebar:
@@ -140,12 +140,7 @@ For example, the following will create a sidebar with a single link and nested e
 {
   "sidebar": [
     ["Example", "/example"],
-    [
-      "Section Title",
-      [
-        ["Nested Title", "/nested-example"],
-      ]
-    ]
+    ["Section Title", [["Nested Title", "/nested-example"]]]
   ]
 }
 ```
