@@ -44,7 +44,6 @@
     "react-helmet": "^6.1.0",
     "react-medium-image-zoom": "^4.3.5",
     "react-router-dom": "^6.2.1",
-    "react-twitter-embed": "^4.0.4",
     "remix": "^1.2.3",
     "rimraf": "^3.0.2"
   },

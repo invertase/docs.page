@@ -1,10 +1,10 @@
-import { TwitterTweetEmbed } from 'react-twitter-embed';
-
+import { useEffect, useState, useRef, useContext } from 'react';
+import { DarkModeContext } from '~/context';
 interface TweetProps {
   /*
   The numerical ID of the desired Tweet.	
   */
-  id?: string;
+  id: string;
   /*
   When set to hidden, links in a Tweet are not expanded to photo, video, or link previews.	
   */
@@ -36,25 +36,62 @@ interface TweetProps {
   dnt: boolean;
 }
 
-export const Tweet = (props: TweetProps) => {
-  const id = props.id;
-
-  if (!id) {
-    return <></>;
+declare global {
+  interface Window {
+    twttr: {
+      widgets: {
+        createTweet: (tweetId: string, el: HTMLElement, options: TweetProps) => Promise<void>;
+      };
+    };
   }
+}
 
-  return (
-    <figure className="tweet-container flex w-full items-center justify-center overflow-hidden">
-      <TwitterTweetEmbed
-        tweetId={id}
-        options={{
+export function Tweet(props: TweetProps) {
+  const [isLoading, setIsLoading] = useState(true);
+  const elementRef = useRef<HTMLDivElement | null>(null);
+  const { darkModeValue } = useContext(DarkModeContext);
+  useEffect(() => {
+    if (window.twttr && elementRef.current) {
+      window.twttr.widgets
+        .createTweet(props.id, elementRef.current, {
           ...props,
           cards: props.cards || 'hidden',
           conversation: props.conversation || 'none',
           dnt: props.dnt || true,
           width: props.width || 550,
-        }}
-      />
-    </figure>
+          align: props.align || 'center',
+          theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
+        })
+        .then(() => {
+          setIsLoading(false);
+        });
+    }
+  }, [props.id]);
+
+  useEffect(() => {
+    if (elementRef.current) {
+      const iframe = elementRef.current.firstChild?.firstChild as HTMLIFrameElement;
+      if (iframe && darkModeValue !== 'system') {
+        const oldSrc = iframe.src;
+        const notTheme = darkModeValue === 'dark' ? 'light' : 'dark';
+
+        if (oldSrc.includes(notTheme)) {
+          const newSrc = iframe.src.replace(notTheme, darkModeValue);
+          iframe.src = newSrc;
+        }
+      }
+    }
+  }, [darkModeValue]);
+
+  return (
+    <div ref={elementRef} className={`tweet-container`}>
+      {isLoading && <LoadingTweet />}
+    </div>
   );
-};
+}
+
+interface TweetProps {
+  tweetID: string;
+}
+
+const LoadingTweet = () => <></>;

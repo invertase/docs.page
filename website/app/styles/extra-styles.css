@@ -34,3 +34,31 @@ code {
 .mdx-table img {
   display: inline;
 }
+
+.tweet-container {
+  -webkit-transition: none !important;
+  -moz-transition: none !important;
+  -o-transition: none !important;
+  transition: none !important;
+}
+
+.tweet-container {
+  overflow: hidden;
+  /* 16:9 aspect ratio */
+  /* padding-top: 56.25%; */
+  position: relative;
+}
+
+.tweet-container iframe {
+  border-radius: 13px;
+  box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  left: 0;
+  position: absolute;
+  transform: scale(1.01)
+}
+
+.twitter-tweet {
+  border: solid gray 1px;
+  border-radius: 13px;
+  overflow: hidden !important;
+}

@@ -88,3 +88,8 @@ export function useRawBlob(path: string): string {
 
   return `https://raw.githubusercontent.com/${owner}/${repo}/main/docs${ensureLeadingSlash(path)}`;
 }
+
+export const DarkModeContext = createContext<{
+  darkModeValue: 'light' | 'dark' | 'system';
+  setDarkModeValue: (newVal: 'light' | 'dark' | 'system') => void;
+}>({ darkModeValue: 'system', setDarkModeValue: () => null });
