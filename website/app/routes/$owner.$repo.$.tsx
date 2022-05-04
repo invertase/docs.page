@@ -2,7 +2,7 @@ import { MetaFunction, useLoaderData, LinksFunction, useCatch } from 'remix';
 
 import { Footer } from '~/components/Footer';
 import codeHikeStyles from '@code-hike/mdx/dist/index.css';
-import removeBackTicks from '../styles/remove-backticks.css';
+import extraStyles from '../styles/extra-styles.css';
 import codeblocks from '../styles/codeblocks.css';
 import {
   docsLoader,
@@ -29,7 +29,7 @@ export const links: LinksFunction = () => {
     { rel: 'stylesheet', href: docsearch },
     { rel: 'stylesheet', href: codeblocks },
     { rel: 'stylesheet', href: codeHikeStyles },
-    { rel: 'stylesheet', href: removeBackTicks },
+    { rel: 'stylesheet', href: extraStyles },
     { rel: 'stylesheet', href: `custom-styles.css` },
     { rel: 'stylesheet', href: reactMediumImage },
   ];
@@ -49,9 +49,8 @@ export const meta: MetaFunction = (props: { data?: DocumentationLoader }) => {
   return {
     'twitter:card': 'summary_large_image',
     'twiter:image:alt': props.data?.config?.name ?? '',
-    'og:url': `https://docs.page/${props.data.owner}/${props.data.repo}${
-      props.data.path ? `/${props.data.path}` : ''
-    }`,
+    'og:url': `https://docs.page/${props.data.owner}/${props.data.repo}${props.data.path ? `/${props.data.path}` : ''
+      }`,
     'og:site_name': 'docs.page',
     'og:title':
       props.data.frontmatter?.title ?? props.data?.config?.name ?? props.data.repo ?? 'docs.page',
