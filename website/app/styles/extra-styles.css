@@ -62,3 +62,7 @@ code {
   border-radius: 13px;
   overflow: hidden !important;
 }
+
+div.text-red {
+  color: red !important;
+}

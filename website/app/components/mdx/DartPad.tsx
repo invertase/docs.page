@@ -1,3 +1,6 @@
+import { useContext, useEffect, useRef } from 'react';
+import { DarkModeContext } from '~/context';
+
 interface DartPadProps {
   // ID of a GitHub gist to load into the editor
   id?: string;
@@ -7,23 +10,24 @@ interface DartPadProps {
   //  Set this to 'dark' to use the dark theme (seen in the first screenshot above).
   theme?: 'dark';
   //  Set this to true to enable null safety mode.
-  null_safety: boolean;
+  nullSafety: boolean;
   //
+  height: string;
   // Set this to 'true' to auto-run the sample once loaded.
   run: boolean;
   // ID of an API doc sample to load into the editor (see https://api.flutter.dev/snippets/index.json for a list)
-  sample_id?: string;
+  sampleId?: string;
   // If this parameter is set to "master", DartPad will load API Doc samples from the master doc server (master-api.flutter.dev). Any other values (or no value) will cause DartPad to load from the stable doc server (api.flutter.dev).
-  sample_channel?: string;
+  sampleChannel?: string;
   // The following parameters are used together when loading a sample directly from a GitHub repo
   // Owner of the GitHub account.
-  gh_owner?: string;
+  ghOwner?: string;
   // Name of the repo within the above account.
-  gh_repo?: string;
+  ghRepo?: string;
   // Path to a dartpad_metadata.yaml file within the repo.
-  gh_path?: string;
+  ghPath?: string;
   // Optional ref, defaults to master
-  gh_ref?: string;
+  ghRef?: string;
 }
 
 // TODO: css styling (how do we want to do layout?)
@@ -33,16 +37,40 @@ export const DartPad = ({
   split,
   mode,
   theme,
-  null_safety,
+  nullSafety,
   run,
-  sample_id,
-  sample_channel,
-  gh_owner,
-  gh_repo,
-  gh_path,
-  gh_ref,
+  sampleId,
+  sampleChannel,
+  ghOwner,
+  ghRepo,
+  ghPath,
+  ghRef,
+  height,
 }: DartPadProps) => {
-  if (!id && !gh_owner && !gh_repo && !gh_path) {
+  const elementRef = useRef<HTMLDivElement | null>(null);
+
+  const { darkModeValue } = useContext(DarkModeContext);
+
+  useEffect(() => {
+    if (elementRef.current) {
+      const iframe = elementRef.current.firstChild as HTMLIFrameElement;
+
+      if (iframe && darkModeValue !== 'system' && !theme) {
+        console.log(iframe);
+        console.log(darkModeValue);
+
+        const oldSrc = iframe.src;
+        const notTheme = darkModeValue === 'dark' ? 'light' : 'dark';
+
+        if (oldSrc.includes(notTheme)) {
+          const newSrc = iframe.src.replace(notTheme, darkModeValue);
+          iframe.src = newSrc;
+        }
+      }
+    }
+  }, [darkModeValue]);
+
+  if (!id && !ghOwner && !ghRepo && !ghPath) {
     return (
       <div className="items-align flex w-full justify-center">
         (Insufficient Source info to load DartPad)
@@ -55,21 +83,25 @@ export const DartPad = ({
   if (id) {
     src += `?id=${id}`;
   } else {
-    src += `?id=${gh_owner}`;
-    src += serialize({ gh_repo, gh_path, gh_ref });
+    src += `?id=${ghOwner}`;
+    src += serialize({ gh_repo: ghRepo, gh_path: ghPath, gh_ref: ghRef });
   }
+
   src += serialize({
     split,
-    theme,
-    null_safety,
+    theme: theme || 'light',
+    null_safety: nullSafety,
     run,
-    sample_id,
-    sample_channel,
+    sample_id: sampleId,
+    sample_channel: sampleChannel,
   });
 
   return (
-    <div className="dartpad-container h-[600px] w-full overflow-hidden rounded">
-      <iframe className="h-[600px] w-full" src={src}></iframe>
+    <div
+      ref={elementRef}
+      className={`dartpad-container h-[${height || '600px'}] overflow-hidden rounded py-4`}
+    >
+      <iframe className="h-full w-full" src={src}></iframe>
     </div>
   );
 };
@@ -82,7 +114,7 @@ const serialize = function (obj: Record<string, string | boolean | number | unde
       str.push(encodeURIComponent(p) + '=' + encodeURIComponent(val));
     }
   }
-  return str.join('&');
+  return '&' + str.join('&');
 };
 
 const getMode = (mode: 'default' | 'inline' | 'flutter' | 'html') => {
