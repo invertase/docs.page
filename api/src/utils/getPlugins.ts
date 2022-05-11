@@ -8,12 +8,13 @@ import rehypeSlug from 'rehype-slug';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import { OutputConfig } from '@docs.page/server';
+import remarkComment from 'remark-comment';
 
 function getPlugins(config: OutputConfig) {
   //
   const remarkPlugins = config?.experimentalCodehike
-    ? [remarkGfm, [remarkCodeHike, { theme, lineNumbers: true }]]
-    : [remarkGfm];
+    ? [remarkGfm, remarkComment, [remarkCodeHike, { theme, lineNumbers: true }]]
+    : [remarkGfm, remarkComment];
 
   const rehypePlugins = config?.experimentalCodehike
     ? [rehypeSlug, rehypeInlineBadges, rehypeAccessibleEmojis]
