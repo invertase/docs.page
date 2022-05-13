@@ -67,7 +67,7 @@ const Flow = ({
       className={cx(
         `my-16 w-full h-[${
           height || '800px'
-        }] flex flex-col justify-center overflow-hidden rounded`,
+        }] flex flex-col items-center justify-center overflow-hidden rounded`,
         {
           'no-drag': !enableNodeDragging,
         },
