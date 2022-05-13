@@ -20,6 +20,7 @@ const Flow = ({
   initialNodes,
   initialEdges,
   height,
+  width,
   minimap,
   controls,
   caption,
@@ -30,6 +31,7 @@ const Flow = ({
   initialNodes: Node[];
   initialEdges: Edge[];
   height?: string;
+  width?: string;
   minimap?: boolean;
   controls?: boolean;
   caption?: string;
@@ -53,20 +55,26 @@ const Flow = ({
     };
   }
 
+  const reactFlowStyle = {
+    width,
+    height,
+    borderRadius: '12px',
+    border: 'solid',
+  };
+
   return (
     <figure
       className={cx(
-        'm-16 w-full',
-        {
-          [`h-[${height}]`]: height,
-          'h-[800px]': !height,
-        },
+        `my-16 w-full h-[${
+          height || '800px'
+        }] flex flex-col justify-center overflow-hidden rounded`,
         {
           'no-drag': !enableNodeDragging,
         },
       )}
     >
       <ReactFlow
+        style={reactFlowStyle}
         {...props}
         nodes={nodes}
         edges={edges}
