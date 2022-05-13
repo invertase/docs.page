@@ -62,3 +62,7 @@ code {
   border-radius: 13px;
   overflow: hidden !important;
 }
+
+html.dark .react-flow__node strong {
+  color: black;
+}
