@@ -11,6 +11,8 @@ import ReactFlow, {
   ReactFlowProps,
 } from 'react-flow-renderer';
 
+import cx from 'classnames';
+
 const onInit = (reactFlowInstance: ReactFlowInstance) =>
   console.log('flow loaded:', reactFlowInstance);
 
@@ -22,30 +24,54 @@ const Flow = ({
   controls,
   caption,
   reactFlowProps,
+  enablePanAndZoom,
+  enableNodeDragging,
 }: {
   initialNodes: Node[];
   initialEdges: Edge[];
-  height?: number;
+  height?: string;
   minimap?: boolean;
   controls?: boolean;
   caption?: string;
   reactFlowProps: ReactFlowProps;
+  enablePanAndZoom?: boolean;
+  enableNodeDragging?: boolean;
 }) => {
   const [nodes, , onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   //@ts-ignore
   const onConnect = params => setEdges(eds => addEdge(params, eds));
 
-  const containerClassName = height ? `w-full h-[${height}]` : `w-full h-[800px]`;
+  let props = reactFlowProps;
+  if (!enablePanAndZoom) {
+    props = {
+      ...props,
+      zoomOnDoubleClick: false,
+      zoomOnPinch: false,
+      zoomOnScroll: false,
+      panOnDrag: false,
+    };
+  }
 
   return (
-    <figure className={containerClassName}>
+    <figure
+      className={cx(
+        'm-16 w-full',
+        {
+          [`h-[${height}]`]: height,
+          'h-[800px]': !height,
+        },
+        {
+          'no-drag': !enableNodeDragging,
+        },
+      )}
+    >
       <ReactFlow
-        {...reactFlowProps}
+        {...props}
         nodes={nodes}
         edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
+        onNodesChange={enableNodeDragging ? onNodesChange : () => null}
+        onEdgesChange={enableNodeDragging ? onEdgesChange : () => null}
         onConnect={onConnect}
         onInit={onInit}
         fitView

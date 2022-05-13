@@ -66,3 +66,7 @@ code {
 html.dark .react-flow__node strong {
   color: black;
 }
+
+figure.no-drag .react-flow__node {
+  cursor: default
+}
