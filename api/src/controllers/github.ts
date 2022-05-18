@@ -15,7 +15,6 @@ export const bundleGitHub = async (
   const queryData = extractQueryData(req);
 
   const { owner, repository, path, headerDepth, ref } = queryData;
-
   if (!owner || !repository) {
     return res.status(400).send({
       code: 'BAD_REQUEST',
