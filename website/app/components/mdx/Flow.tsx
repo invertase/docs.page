@@ -57,7 +57,7 @@ const Flow = ({
 
   const reactFlowStyle = {
     width,
-    height,
+    height: height || '800px',
     borderRadius: '12px',
     border: 'solid',
   };
@@ -65,8 +65,7 @@ const Flow = ({
   return (
     <figure
       className={cx(
-        `my-16 w-full h-[${
-          height || '800px'
+        `my-16 w-full h-[${height || '800px'
         }] flex flex-col items-center justify-center overflow-hidden rounded`,
         {
           'no-drag': !enableNodeDragging,
