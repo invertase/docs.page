@@ -11,7 +11,7 @@ import {
 } from './Icons';
 
 const defaultIconSize = 30;
-const documentationLocation = 'https://use.docs.page/search';
+const documentationLocation = 'https://use.docs.page';
 
 const linkData: QuickLinkProps[] = [
   {
