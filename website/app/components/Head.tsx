@@ -1,7 +1,6 @@
 import { Helmet } from 'react-helmet';
 import { DocumentationLoader } from '~/loaders/documentation.server';
 import codeHikeStyles from '@code-hike/mdx/dist/index.css';
-import { useEffect } from 'react';
 
 export const Head = ({ data }: { data: DocumentationLoader }) => {
   const favicon = getFavicon({ data });
