@@ -6,52 +6,51 @@ import { useEffect } from 'react';
 export const Head = ({ data }: { data: DocumentationLoader }) => {
   const favicon = getFavicon({ data });
 
-
   useEffect(() => {
     if (data.config.googleTagManager) {
       const tagScript = document.createElement('noscript');
       const tagIframe = document.createElement('iframe');
       tagIframe.src = `https://www.googletagmanager.com/ns.html?id=${data.config.googleTagManager}`;
-      tagIframe.height = "0";
-      tagIframe.width = "0";
-      tagIframe.style.display = "none";
-      tagIframe.style.visibility = "hidden";
+      tagIframe.height = '0';
+      tagIframe.width = '0';
+      tagIframe.style.display = 'none';
+      tagIframe.style.visibility = 'hidden';
 
       tagScript.appendChild(tagIframe);
-      document.body.insertBefore(tagScript, document.body.firstChild)
+      document.body.insertBefore(tagScript, document.body.firstChild);
     }
-  }, [])
+  }, []);
 
   return (
     <Helmet>
-      {data.config.googleAnalytics &&
-        <script async src={`https://www.googletagmanager.com/gtag/js?id=${data.config.googleAnalytics}`}></script>
-      }
-      {
-        data.config.googleAnalytics &&
-        <script type='text/javascript'>
-          {
-            `
+      {data.config.googleAnalytics && (
+        <script
+          async
+          src={`https://www.googletagmanager.com/gtag/js?id=${data.config.googleAnalytics}`}
+        ></script>
+      )}
+      {data.config.googleAnalytics && (
+        <script type="text/javascript">
+          {`
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
             
               gtag('config', '${data.config.googleAnalytics}');
-            `
-          }
+            `}
         </script>
-      }
-      {data.config.googleTagManager && <script type='text/javascript'>
-        {
-          `
+      )}
+      {data.config.googleTagManager && (
+        <script type="text/javascript">
+          {`
           (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
           new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
           j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
           })(window,document,'script','dataLayer','${data.config.googleTagManager}');
-          `
-        }
-      </script>}
+          `}
+        </script>
+      )}
       <link rel="icon" href={favicon} />
       {data.config.experimentalMath && (
         <link
