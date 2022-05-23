@@ -6,21 +6,6 @@ import { useEffect } from 'react';
 export const Head = ({ data }: { data: DocumentationLoader }) => {
   const favicon = getFavicon({ data });
 
-  useEffect(() => {
-    if (data.config.googleTagManager) {
-      const tagScript = document.createElement('noscript');
-      const tagIframe = document.createElement('iframe');
-      tagIframe.src = `https://www.googletagmanager.com/ns.html?id=${data.config.googleTagManager}`;
-      tagIframe.height = '0';
-      tagIframe.width = '0';
-      tagIframe.style.display = 'none';
-      tagIframe.style.visibility = 'hidden';
-
-      tagScript.appendChild(tagIframe);
-      document.body.insertBefore(tagScript, document.body.firstChild);
-    }
-  }, []);
-
   return (
     <Helmet>
       {data.config.googleAnalytics && (
