@@ -31,6 +31,8 @@ export interface ConfigWithoutLocales {
   // Adds Google Tag Manager to your documentation pages.
   googleTagManager: string;
   // Whether zoomable images are enabled by default
+  googleAnalytics: string;
+  // Whether zoomable images are enabled by default
   zoomImages: boolean;
   // Whether CodeHike is enabled
   experimentalCodehike: boolean;
@@ -71,6 +73,8 @@ export interface ConfigWithLocales {
   variables: Record<string, string>;
   // Adds Google Tag Manager to your documentation pages.
   googleTagManager: string;
+  // Adds Google Analytics to your documentation pages.
+  googleAnalytics: string;
   // Whether zoomable images are enabled by default
   zoomImages: boolean;
   // Whether CodeHike is enabled
@@ -119,6 +123,8 @@ export interface OutputConfig {
   variables: Record<string, string>;
   // Adds Google Tag Manager to your documentation pages.
   googleTagManager: string;
+  // Adds Google Analytics to your documentation pages.
+  googleAnalytics: string;
   // Whether zoomable images are enabled by default
   zoomImages: boolean;
   // Whether CodeHike is enabled
@@ -141,6 +147,7 @@ export const defaultConfig: OutputConfig = {
   headerDepth: 3,
   variables: {},
   googleTagManager: '',
+  googleAnalytics: '',
   zoomImages: false,
   experimentalCodehike: false,
   experimentalMath: false,

@@ -92,6 +92,8 @@ export interface ProjectConfig {
   variables: Record<string, string>;
   // Adds Google Tag Manager to your documentation pages.
   googleTagManager: string;
+  // Adds Google Analytics to your documentation pages.
+  googleAnalytics: string;
   // Whether zoomable images are enabled by default
   zoomImages: boolean;
   // Whether CodeHike is enabled
@@ -114,6 +116,7 @@ export const defaultConfig: ProjectConfig = {
   headerDepth: 3,
   variables: {},
   googleTagManager: '',
+  googleAnalytics: '',
   zoomImages: false,
   experimentalCodehike: false,
   experimentalMath: false,
@@ -142,6 +145,7 @@ export function mergeConfig(json: Record<string, unknown>): ProjectConfig {
     headerDepth: getNumber(json, 'headerDepth', defaultConfig.headerDepth),
     variables: getValue(json, 'variables', defaultConfig.variables) as Record<string, string>,
     googleTagManager: getString(json, 'googleTagManager', defaultConfig.googleTagManager),
+    googleAnalytics: getString(json, 'googleAnalytics', defaultConfig.googleAnalytics),
     zoomImages: getBoolean(json, 'zoomImages', defaultConfig.zoomImages),
     // TODO: tidy the following:
     locales: (json.locales as Record<string, string>) ?? undefined,
