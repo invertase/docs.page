@@ -92,6 +92,8 @@ export interface ProjectConfig {
   variables: Record<string, string>;
   // Adds Google Tag Manager to your documentation pages.
   googleTagManager: string;
+  // Adds Google Analytics to your documentation pages.
+  googleAnalytics: string;
   // Whether zoomable images are enabled by default
   zoomImages: boolean;
   // Whether CodeHike is enabled
@@ -114,6 +116,7 @@ export const defaultConfig: ProjectConfig = {
   headerDepth: 3,
   variables: {},
   googleTagManager: '',
+  googleAnalytics: '',
   zoomImages: false,
   experimentalCodehike: false,
   experimentalMath: false,
@@ -132,16 +135,17 @@ export function mergeConfig(json: Record<string, unknown>): ProjectConfig {
     theme: getString(json, 'theme', defaultConfig.theme),
     docsearch: getValue(json, 'docsearch')
       ? {
-          appId: getString(json, 'docsearch.appId', ''),
-          apiKey: getString(json, 'docsearch.apiKey', ''),
-          indexName: getString(json, 'docsearch.indexName', ''),
-        }
+        appId: getString(json, 'docsearch.appId', ''),
+        apiKey: getString(json, 'docsearch.apiKey', ''),
+        indexName: getString(json, 'docsearch.indexName', ''),
+      }
       : defaultConfig.docsearch,
     // navigation: mergeNavigationConfig(json),
     sidebar: mergeSidebarConfig(json),
     headerDepth: getNumber(json, 'headerDepth', defaultConfig.headerDepth),
     variables: getValue(json, 'variables', defaultConfig.variables) as Record<string, string>,
     googleTagManager: getString(json, 'googleTagManager', defaultConfig.googleTagManager),
+    googleAnalytics: getString(json, 'googleAnalytics', defaultConfig.googleAnalytics),
     zoomImages: getBoolean(json, 'zoomImages', defaultConfig.zoomImages),
     // TODO: tidy the following:
     locales: (json.locales as Record<string, string>) ?? undefined,
@@ -164,9 +168,8 @@ export async function getConfiguration({
   const host =
     process.env.NODE_ENV === 'production' ? 'https://api.docs.page' : 'http://localhost:8000';
 
-  const endpoint = `${host}/config?owner=${owner}&repository=${repo}${
-    ref ? `&ref=${encodeURIComponent(ref)}` : ''
-  }`;
+  const endpoint = `${host}/config?owner=${owner}&repository=${repo}${ref ? `&ref=${encodeURIComponent(ref)}` : ''
+    }`;
   try {
     const res = await (await fetch(endpoint)).json();
     config = res.config;
