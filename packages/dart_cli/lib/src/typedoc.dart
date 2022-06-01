@@ -133,6 +133,11 @@ Future<void> generate(
     if (children != null && children.isNotEmpty) {
       print('Docs.page created files:'.blueBright);
 
+      await addRef(
+          name: 'Overview',
+          filePath: path.relative(path.joinAll([currentPath, 'index.mdx']),
+              from: path.joinAll([Directory.current.path, 'docs'])));
+
       for (final child in children) {
         final childPath = path.joinAll([currentPath, '${child.name}.mdx']);
 
@@ -145,8 +150,6 @@ Future<void> generate(
         print(childPath.blue);
       }
     }
-    await addRef(
-        name: 'Overview', filePath: path.joinAll([currentPath, 'index.mdx']));
 
     await createIndexFile(filePath: path.joinAll([currentPath, 'index.mdx']));
   } else {

@@ -12,6 +12,7 @@ export function Sidebar() {
   const { referenceConfig, frontmatter } = documentationContext;
 
   const referencePath = references ?? 'API';
+
   const location = useLocation();
   const currentLocale = location.pathname.split('/')[3];
 

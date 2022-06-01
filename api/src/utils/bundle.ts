@@ -109,9 +109,12 @@ export class Bundle {
         path: this.path,
       });
     } catch (e) {
+
       throw new BundleError(404, "Couldn't fetch github contents", 'REPO_NOT_FOUND');
     }
     if (!githubContents.repositoryFound) {
+      console.log(githubContents);
+
       throw new BundleError(404, "Couldn't find github contents", 'REPO_NOT_FOUND');
     }
     this.baseBranch = githubContents.baseBranch;
@@ -123,6 +126,7 @@ export class Bundle {
 
     this.repositoryFound = githubContents.repositoryFound;
     this.referenceConfig = githubContents.referenceConfig;
+
     this.formatConfigLocales(githubContents.config);
     await this.matchSymLinks();
     if (githubContents.md === null) {
