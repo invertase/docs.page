@@ -82,7 +82,6 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
   const indexPath = `${base}${metadata.path}/index`;
 
   const ref = metadata.ref || 'HEAD';
-  console.log(ref);
 
   const [error, response] = await A2A<PageContentsQuery>(
     getGithubGQLClient()({
@@ -139,7 +138,7 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
 
   // if an error is thrown then the repo is not found, if the repo is private then response = { repository: null }
   if (error || response?.repository === null) {
-    console.log(error.response.errors);
+    console.error(error.response.errors);
 
     //@ts-ignore
     return {

@@ -113,7 +113,6 @@ export class Bundle {
       throw new BundleError(404, "Couldn't fetch github contents", 'REPO_NOT_FOUND');
     }
     if (!githubContents.repositoryFound) {
-      console.log(githubContents);
 
       throw new BundleError(404, "Couldn't find github contents", 'REPO_NOT_FOUND');
     }
