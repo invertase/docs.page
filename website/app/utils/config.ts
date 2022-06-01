@@ -172,7 +172,9 @@ export async function getConfiguration({
   const host =
     process.env.NODE_ENV === 'production' ? 'https://api.docs.page' : 'http://localhost:8000';
 
-  const endpoint = `${host}/config?owner=${owner}&repository=${repo}${ref ? `&ref=${ref}` : ''}`;
+  const endpoint = `${host}/config?owner=${owner}&repository=${repo}${
+    ref ? `&ref=${encodeURIComponent(ref)}` : ''
+  }`;
   try {
     const res = await (await fetch(endpoint)).json();
     config = res.config;

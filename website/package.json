@@ -14,7 +14,7 @@
     "test:headed": "yarn rimraf tests/screenshots/* && MSW_ENABLED=1 playwright test --headed"
   },
   "dependencies": {
-    "@code-hike/mdx": "0.3.0-next.20",
+    "@code-hike/mdx": "^0.4.0",
     "@docs.page/client": "^1.0.4",
     "@docs.page/server": "^1.0.1",
     "@docsearch/react": "^3.0.0-alpha.42",
@@ -41,6 +41,7 @@
     "react": "^17.0.2",
     "react-copy-to-clipboard": "^5.0.4",
     "react-dom": "^17.0.2",
+    "react-helmet": "^6.1.0",
     "react-medium-image-zoom": "^4.3.5",
     "react-router-dom": "^6.2.1",
     "remix": "^1.2.3",
@@ -56,6 +57,7 @@
     "@types/react": "^17.0.24",
     "@types/react-copy-to-clipboard": "^5.0.2",
     "@types/react-dom": "^17.0.9",
+    "@types/react-helmet": "^6.1.5",
     "@types/wicg-file-system-access": "^2020.9.4",
     "concurrently": "^6.4.0",
     "msw": "^0.36.3",
@@ -67,5 +69,8 @@
   "engines": {
     "node": ">=14"
   },
-  "sideEffects": false
+  "sideEffects": false,
+  "msw": {
+    "workerDirectory": "public"
+  }
 }

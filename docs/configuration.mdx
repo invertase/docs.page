@@ -74,7 +74,7 @@ project config file is not found.
 | --------- | --------- | ------- |
 | `noindex` | `boolean` | `false` |
 
-To learn more about indexing, view the [Advanced documentation](advanced).
+To learn more about indexing, view the [Advanced documentation](/advanced).
 
 ### `theme`
 
@@ -118,7 +118,7 @@ For example:
 
 An array containing nested sidebar array items. If provided, will be rendered on every page down the left hand side.
 
-A sidebar item can contain an array with two string values, or an array where the first string value is a title and the second value is another nested array (which will be displayed as an expandable list).
+A sidebar item can contain an array with two string values, or an array where the first string value is a title and the second value is an array with two string values.
 
 | Key       | Type            | Default |
 | --------- | --------------- | ------- |
@@ -129,10 +129,10 @@ A sidebar item can contain an array with two string values, or an array where th
 | [0]               | `string` |         |
 | [1]               | `string` |         |
 
-| `SidebarItem` (2) | Type            | Default |
-| ----------------- | --------------- | ------- |
-| [0]               | `string`        |         |
-| [1]               | `SidebarItem[]` |         |
+| `SidebarItem` (2) | Type              | Default |
+| ----------------- | ----------------- | ------- |
+| [0]               | `string`          |         |
+| [1]               | `[string,string]` |         |
 
 For example, the following will create a sidebar with a single link and nested expandable sidebar:
 
@@ -140,13 +140,7 @@ For example, the following will create a sidebar with a single link and nested e
 {
   "sidebar": [
     ["Example", "/example"],
-    [
-      "Expandable",
-      [
-        ["Nested Example", "/example-nested"],
-        ["Nested Expandable", [["Nested x2 Example", "/example-nested-x2"]]]
-      ]
-    ]
+    ["Section Title", [["Nested Title", "/nested-example"]]]
   ]
 }
 ```
