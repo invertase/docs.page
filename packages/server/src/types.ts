@@ -38,6 +38,10 @@ export interface ConfigWithoutLocales {
   experimentalCodehike: boolean;
   // Whether Math is enabled
   experimentalMath: boolean;
+  // alias for references (root of path for references)
+  reference?: string;
+  //entry directory for typedoc
+  typedocEntryDir?: string;
 }
 
 export interface ConfigWithLocales {
@@ -81,6 +85,10 @@ export interface ConfigWithLocales {
   experimentalCodehike: boolean;
   // Whether Math is enabled
   experimentalMath: boolean;
+  // alias for references (root of path for references)
+  reference?: string;
+  // entry dir for typedoc
+  typedocEntryDir?: string;
 }
 export type InputConfig = ConfigWithoutLocales | ConfigWithLocales;
 
@@ -131,6 +139,10 @@ export interface OutputConfig {
   experimentalCodehike: boolean;
   // Whether Math is enabled
   experimentalMath: boolean;
+  // alias for references (root of path for references)
+  reference?: string;
+  // entry directory for typedoc
+  typedocEntryDir?: string;
 }
 
 export const defaultConfig: OutputConfig = {
@@ -196,6 +208,13 @@ export type BundleSuccess = {
     repository: string;
     ref: string;
   };
+  referenceConfig: References;
 };
+
+export type References = {
+  name: string;
+  path: string;
+  kind: string;
+}[];
 
 export type BundleResponseData = BundleSuccess | BundleError;

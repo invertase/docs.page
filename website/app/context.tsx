@@ -37,11 +37,15 @@ export function useDocumentationContext() {
 
 export function useBaseUrl(): string {
   const { domain } = useCustomDomain();
+  const { owner, repo } = React.useContext(DocumentationContext);
 
   const { ref } = React.useContext(DocumentationContext);
 
   let url = '/';
 
+  if (!domain) {
+    url += `${owner}/${repo}`;
+  }
   if (ref && !domain) {
     url += `${ref === 'HEAD' ? '' : `~${encodeURIComponent(ref)}`}`;
   }

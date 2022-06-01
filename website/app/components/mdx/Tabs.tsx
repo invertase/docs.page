@@ -141,6 +141,7 @@ export function Tabs(props: TabsProps): JSX.Element {
   }
 
   // MDX wraps components in a `p` tag: https://github.com/mdx-js/mdx/issues/1451
+
   const tabs = extractTabItems(props.children);
 
   const [selected, setSelected] = useState<string | null>(() => {
@@ -184,7 +185,6 @@ export function Tabs(props: TabsProps): JSX.Element {
         `}</style>
         {tabs.map(child => {
           const tab = props.values.find(v => v.value === child.props.value);
-
           // Ensure the TabItem actually matches the values provided
           if (!tab) {
             return null;

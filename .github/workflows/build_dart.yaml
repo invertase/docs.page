@@ -1,0 +1,94 @@
+name: build_dart
+
+on:
+  pull_request:
+  push:
+    branches:
+      - typedoc-cli
+      - main
+
+jobs:
+  build_linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dart-lang/setup-dart@v1
+
+      - name: Install dependencies
+        working-directory: packages/dart_cli
+        run: dart pub get
+
+      - name: Compiling
+        working-directory: packages/dart_cli
+        run: dart compile exe bin/docs_page.dart -o docs_page
+
+      - name: Store binary
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux-binary
+          path: packages/dart_cli/docs_page
+
+  build_macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dart-lang/setup-dart@v1
+
+      - name: Install dependencies
+        working-directory: packages/dart_cli
+        run: dart pub get
+
+      - name: Compiling
+        working-directory: packages/dart_cli
+        run: dart compile exe bin/docs_page.dart -o docs_page
+
+      - name: Store binary
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos-binary
+          path: packages/dart_cli/docs_page
+
+  build_windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dart-lang/setup-dart@v1
+
+      - name: Install dependencies
+        working-directory: packages/dart_cli
+        run: dart pub get
+
+      - name: Compiling
+        working-directory: packages/dart_cli
+        run: dart compile exe bin/docs_page.dart -o docs_page.exe
+
+      - name: Store binary
+        uses: actions/upload-artifact@v3
+        with:
+          name: windows-binary
+          path: packages/dart_cli/docs_page.exe
+
+  combine_outputs:
+    runs-on: ubuntu-latest
+    needs: [build_linux, build_macos, build_windows]
+    steps:
+      - name: Download linux artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: linux-binary
+          path: ~/binaries/linux
+      - name: Download macos artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: macos-binary
+          path: ~/binaries/darwin
+      - name: Download windows artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: windows-binary
+          path: ~/binaries/win32
+      - name: Store binaries
+        uses: actions/upload-artifact@v3
+        with:
+          name: binaries
+          path: ~/binaries

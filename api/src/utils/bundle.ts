@@ -33,6 +33,12 @@ type BundleConstructorParams = {
   config?: OutputConfig;
 };
 
+export type References = {
+  name: string;
+  path: string;
+  kind: string;
+}[];
+
 export class Bundle {
   code: string;
   markdown: string;
@@ -48,6 +54,7 @@ export class Bundle {
   headerDepth: number;
   built: boolean;
   contentFetched: boolean;
+  referenceConfig: References | null;
 
   constructor({
     owner,
@@ -77,6 +84,7 @@ export class Bundle {
     this.sourceChecked = false;
     this.built = false;
     this.contentFetched = false;
+    this.referenceConfig = null;
   }
 
   // check for branch/PR ref
@@ -101,9 +109,11 @@ export class Bundle {
         path: this.path,
       });
     } catch (e) {
+
       throw new BundleError(404, "Couldn't fetch github contents", 'REPO_NOT_FOUND');
     }
     if (!githubContents.repositoryFound) {
+
       throw new BundleError(404, "Couldn't find github contents", 'REPO_NOT_FOUND');
     }
     this.baseBranch = githubContents.baseBranch;
@@ -114,6 +124,7 @@ export class Bundle {
     }
 
     this.repositoryFound = githubContents.repositoryFound;
+    this.referenceConfig = githubContents.referenceConfig;
 
     this.formatConfigLocales(githubContents.config);
     await this.matchSymLinks();
@@ -162,6 +173,7 @@ export class Bundle {
       repositoryFound: this.repositoryFound,
       source: this.source,
       ref: this.ref,
+      referenceConfig: this.referenceConfig,
     };
   }
 

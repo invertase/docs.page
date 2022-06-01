@@ -1,56 +1,28 @@
 import 'package:args/args.dart';
-import 'dart:io';
-import 'package:path/path.dart' as path;
-import 'package:ansi_styles/extension.dart';
+import 'package:docs_page/src/init.dart';
+import 'package:docs_page/src/typedoc.dart';
+import 'package:docs_page/src/help.dart';
 
 void main(List<String> arguments) async {
   final parser = ArgParser();
   parser.addCommand('init');
+  parser.addCommand('typedoc');
+  parser.addCommand('help');
   final argResults = parser.parse(arguments);
-  if (argResults.command?.name == 'init') {
-    await createFiles();
-  } else {
-    throw UnsupportedError('Only the init command is currently supported.');
+
+  switch (argResults.command?.name) {
+    case 'init':
+      await createFiles();
+      break;
+    case 'typedoc':
+      Node ast = await getTypedocJson();
+      await generate(ast: ast);
+      break;
+    case 'help':
+      displayHelp();
+      break;
+    default:
+      throw UnsupportedError(
+          'Only help, init, typedoc commands are currently supported.');
   }
-}
-
-createFiles() async {
-  final indexContent = '# Welcome to your new documentation!';
-  final configContent = '''
----
-name: ''
-logo: ''
-logoDark: ''
-favicon: ''
-socialPreview: ''
-twitter: ''
-noindex: false
-theme: "#00bcd4"
-sidebar: []
-headerDepth: 3
-variables: {}
-googleTagManager: ''
-zoomImages: false
-experimentalCodehike: false
-experimentalMath: false
-''';
-
-  final current = Directory.current;
-
-  final configPath = path.joinAll([current.path, 'docs.yaml']);
-
-  File configFile = await File(configPath).create(recursive: true);
-
-  await configFile.writeAsString(configContent);
-
-  final indexPath = path.joinAll([current.path, 'docs', 'index.mdx']);
-
-  File indexFile = await File(indexPath).create(recursive: true);
-
-  await indexFile.writeAsString(indexContent);
-
-  print('Docs.page created files: \n  $configPath \n  $indexPath'.blueBright);
-  print(
-      'To learn more about config file options and how customize your Docs.page project, visit ' +
-          "https://use.docs.page".underline.blueBright);
 }

@@ -100,6 +100,10 @@ export interface ProjectConfig {
   experimentalCodehike: boolean;
   // Whether Math is enabled
   experimentalMath: boolean;
+  // The name of the reference subdirectoy (of docs) and reference route.
+  references: string;
+  // The entry directory of the typedoc command
+  typedocEntryDir: string;
 }
 
 export const defaultConfig: ProjectConfig = {
@@ -120,6 +124,8 @@ export const defaultConfig: ProjectConfig = {
   zoomImages: false,
   experimentalCodehike: false,
   experimentalMath: false,
+  references: 'API',
+  typedocEntryDir: 'src',
 };
 
 // Merges any user config with default values.
@@ -155,6 +161,8 @@ export function mergeConfig(json: Record<string, unknown>): ProjectConfig {
       defaultConfig.experimentalCodehike,
     ),
     experimentalMath: getBoolean(json, 'experimentalMath', defaultConfig.experimentalMath),
+    references: getString(json, 'references', defaultConfig.references),
+    typedocEntryDir: getString(json, 'typedocEntryDir', defaultConfig.typedocEntryDir),
   };
 }
 
