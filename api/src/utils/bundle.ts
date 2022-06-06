@@ -1,7 +1,7 @@
-import { bundle } from './bundler.js';
-import { getPlugins } from './getPlugins.js';
+import { bundle } from '../bundler/bundler.js';
+import { getPlugins } from '../bundler/getPlugins.js';
 import { Contents, getConfigs, getGitHubContents } from './github.js';
-import { HeadingNode } from './plugins/rehype-headings.js';
+import { HeadingNode } from '../bundler/plugins/rehype-headings.js';
 import { formatSourceAndRef } from './ref.js';
 import { getRepositorySymLinks } from './symlinks.js';
 import { OutputConfig, defaultConfig, ErrorReason } from '@docs.page/server';
