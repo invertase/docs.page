@@ -1,5 +1,5 @@
-import { getBoolean, getNumber, getString, getValue } from './get';
 import get from 'lodash.get';
+import { getBoolean, getNumber, getString, getValue } from './get';
 
 // Represents how the sidebar should look in the config file.
 export type SidebarItem = [string, Array<[string, string]>] | [string, string];
@@ -100,6 +100,8 @@ export interface ProjectConfig {
   experimentalCodehike: boolean;
   // Whether Math is enabled
   experimentalMath: boolean;
+  // Whether Next/Previous buttons are showing automatically based on the sidebar
+  automaticallyInferNextPrevious: boolean;
 }
 
 export const defaultConfig: ProjectConfig = {
@@ -120,6 +122,7 @@ export const defaultConfig: ProjectConfig = {
   zoomImages: false,
   experimentalCodehike: false,
   experimentalMath: false,
+  automaticallyInferNextPrevious: true,
 };
 
 // Merges any user config with default values.
@@ -155,6 +158,11 @@ export function mergeConfig(json: Record<string, unknown>): ProjectConfig {
       defaultConfig.experimentalCodehike,
     ),
     experimentalMath: getBoolean(json, 'experimentalMath', defaultConfig.experimentalMath),
+    automaticallyInferNextPrevious: getBoolean(
+      json,
+      'automaticallyInferNextPrevious',
+      defaultConfig.automaticallyInferNextPrevious,
+    ),
   };
 }
 

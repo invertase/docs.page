@@ -1,4 +1,5 @@
 import { BundleSuccess, SidebarItem } from '@docs.page/server';
+import { useLocation } from 'react-router-dom';
 import { useDocumentationContext } from '~/context';
 import { DocsLink } from './DocsLink';
 
@@ -22,17 +23,101 @@ function findNameInSidebar(sidebarItems: SidebarItem[], url: string): string | u
   }
 }
 
+/**
+ * Return the previous item;
+ * The found parameters allow use to know we should use this item or not.
+ */
+function findPreviousInSidebar(
+  sidebarItems: SidebarItem[],
+  url: string,
+  previousItem?: { url: string; name: string; found?: boolean },
+): { url: string; name: string; found?: boolean } | undefined {
+  let previous = previousItem;
+  for (const item of sidebarItems) {
+    const [title, urlOrChildren] = item;
+    if (typeof urlOrChildren === 'string') {
+      if (urlOrChildren === url && previous) {
+        return { ...previous, found: true };
+      }
+      previous = { url: urlOrChildren, name: title as string };
+    } else {
+      const previousRecursive = findPreviousInSidebar(urlOrChildren, url, previous);
+      if (previousRecursive?.found) {
+        return previousRecursive;
+      } else {
+        previous = previousRecursive;
+      }
+    }
+  }
+  return previous;
+}
+
+/**
+ * Return the next item or a boolean;
+ * If a boolean is returned, there were no next items.
+ */
+function findNextInSidebar(
+  sidebarItems: SidebarItem[],
+  url: string,
+  takeNext: boolean,
+): { url: string; name: string } | undefined | boolean {
+  let _takeNext = takeNext;
+  for (const item of sidebarItems) {
+    const [title, urlOrChildren] = item;
+    if (typeof urlOrChildren === 'string') {
+      if (_takeNext) {
+        return { url: urlOrChildren, name: title as string };
+      }
+
+      if (urlOrChildren === url) {
+        _takeNext = true;
+      }
+    } else {
+      const nextRecursive = findNextInSidebar(urlOrChildren, url, _takeNext);
+      if (typeof nextRecursive === 'boolean') {
+        _takeNext = nextRecursive;
+      } else if (nextRecursive) {
+        return nextRecursive;
+      }
+    }
+  }
+  if (_takeNext) {
+    return true;
+  }
+  return undefined;
+}
+
 export function PreviousNext({ frontmatter }: PreviousNextProps) {
-  const previous = frontmatter.previous;
-  const next = frontmatter.next;
+  const { owner, repo } = useDocumentationContext();
+  const { sidebar, automaticallyInferNextPrevious } = useDocumentationContext().config;
+  const { pathname } = useLocation();
 
-  const previousTitle = frontmatter.previousTitle;
-  const nextTitle = frontmatter.nextTitle;
+  const formattedPathname = pathname.replace(`/${owner}/${repo}`, '') || '/';
 
-  const { sidebar } = useDocumentationContext().config;
+  let previous: string | undefined = frontmatter.previous;
+  let next: string | undefined = frontmatter.next;
 
-  if (!previous && !next) {
+  let previousTitle: string | undefined = frontmatter.previousTitle;
+  let nextTitle: string | undefined = frontmatter.nextTitle;
+
+  if (!previous && !next && !automaticallyInferNextPrevious) {
     return null;
+  }
+
+  if (previous === undefined && automaticallyInferNextPrevious) {
+    const result = findPreviousInSidebar(sidebar, formattedPathname);
+    if (result?.found) {
+      previous = result?.url;
+      previousTitle = result?.name;
+    }
+  }
+
+  if (next === undefined && automaticallyInferNextPrevious) {
+    const result = findNextInSidebar(sidebar, formattedPathname, false);
+    if (typeof result !== 'boolean') {
+      next = result?.url;
+      nextTitle = result?.name;
+    }
   }
 
   return (
