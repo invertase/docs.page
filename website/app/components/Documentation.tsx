@@ -1,20 +1,21 @@
 import { useHydratedMdx } from '@docs.page/client';
 import cx from 'classnames';
 
-import { Footer } from '~/components/Footer';
-import { Header } from '~/components/Header';
-import { Sidebar } from '~/components/Sidebar';
-import { Theme } from '~/components/Theme';
-import components from '~/components/mdx';
-import { DocumentationProvider, DomainProvider } from '~/context';
-import { DocumentationLoader } from '../loaders/documentation.server';
-import { ScrollSpy } from '~/components/ScrollSpy';
-import { TabsContext } from './mdx/Tabs';
-import { hash as createHash } from '~/utils';
-import { MobileNav } from './MobileNav';
 import { useEffect, useState } from 'react';
 import { useTransition } from 'remix';
+import { Footer } from '~/components/Footer';
+import { Header } from '~/components/Header';
+import components from '~/components/mdx';
+import { ScrollSpy } from '~/components/ScrollSpy';
+import { Sidebar } from '~/components/Sidebar';
+import { Theme } from '~/components/Theme';
+import { DocumentationProvider, DomainProvider } from '~/context';
+import { hash as createHash } from '~/utils';
 import domains from '../../../domains.json';
+import { DocumentationLoader } from '../loaders/documentation.server';
+import { TabsContext } from './mdx/Tabs';
+import { MobileNav } from './MobileNav';
+import { PreviousNext } from './PreviousNext';
 
 export default function Documentation({ data }: { data: DocumentationLoader }) {
   const [open, toggleMenu] = useState<boolean>(false);
@@ -58,6 +59,8 @@ export default function Documentation({ data }: { data: DocumentationLoader }) {
                   <TabsContext hash={hash}>
                     <MDX components={components} />
                   </TabsContext>
+
+                  <PreviousNext frontmatter={data.frontmatter} />
                 </main>
                 <Footer />
               </div>

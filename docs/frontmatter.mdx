@@ -75,3 +75,43 @@ redirect: /getting-started
 redirect: https://github.com/acme/awesome-project
 ---
 ```
+
+## previous
+
+A path which if set, will show a link to the previous page at the bottom of the page.
+If the previousTitle is not set, the title will be get from the `docs.json`.
+If not found in the configuration file, an empty string will be used.
+
+Can be a relative internal path or external URL.
+
+| Key             | Type     | Default                                               |
+| --------------- | -------- | ----------------------------------------------------- |
+| `previous`      | `string` |                                                       |
+| `previousTitle` | `string` | The value for the previous path in the docs.json file |
+
+```text title=index.md
+---
+previous: /getting-started
+previousTitle: Getting started
+---
+```
+
+## next
+
+A path which if set, will show a link to the next page at the bottom of the page.
+If the nextTitle is not set, the title will be get from the `docs.json`.
+If not found in the configuration file, an empty string will be used.
+
+Can be a relative internal path or external URL.
+
+| Key         | Type     | Default                                           |
+| ----------- | -------- | ------------------------------------------------- |
+| `next`      | `string` |                                                   |
+| `nextTitle` | `string` | The value for the next path in the docs.json file |
+
+```text title=index.md
+---
+next: /getting-started
+nextTitle: Getting started
+---
+```
