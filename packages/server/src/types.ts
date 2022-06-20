@@ -38,6 +38,8 @@ export interface ConfigWithoutLocales {
   experimentalCodehike: boolean;
   // Whether Math is enabled
   experimentalMath: boolean;
+  // automatically infer next/previous
+  automaticallyInferNextPrevious: boolean;
 }
 
 export interface ConfigWithLocales {
@@ -81,6 +83,8 @@ export interface ConfigWithLocales {
   experimentalCodehike: boolean;
   // Whether Math is enabled
   experimentalMath: boolean;
+  // automatically infer next/previous
+  automaticallyInferNextPrevious: boolean;
 }
 export type InputConfig = ConfigWithoutLocales | ConfigWithLocales;
 
@@ -131,6 +135,8 @@ export interface OutputConfig {
   experimentalCodehike: boolean;
   // Whether Math is enabled
   experimentalMath: boolean;
+  // automatically infer next/previous
+  automaticallyInferNextPrevious: boolean;
 }
 
 export const defaultConfig: OutputConfig = {
@@ -151,6 +157,7 @@ export const defaultConfig: OutputConfig = {
   zoomImages: false,
   experimentalCodehike: false,
   experimentalMath: false,
+  automaticallyInferNextPrevious: true,
 };
 
 export type FetchBundleInput = {
