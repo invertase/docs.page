@@ -1,0 +1,148 @@
+import { BundleSuccess, SidebarItem } from '@docs.page/server';
+import { useLocation } from 'react-router-dom';
+import { useDocumentationContext } from '~/context';
+import { DocsLink } from './DocsLink';
+
+interface PreviousNextProps {
+  frontmatter: BundleSuccess['frontmatter'];
+}
+
+function findNameInSidebar(sidebarItems: SidebarItem[], url: string): string | undefined {
+  for (const item of sidebarItems) {
+    const [title, urlOrChildren] = item;
+    if (typeof urlOrChildren === 'string') {
+      if (urlOrChildren === url) {
+        return title as string;
+      }
+    } else {
+      const name = findNameInSidebar(urlOrChildren, url);
+      if (name) {
+        return name;
+      }
+    }
+  }
+}
+
+/**
+ * Return the previous item;
+ * The found parameters allow use to know we should use this item or not.
+ */
+function findPreviousInSidebar(
+  sidebarItems: SidebarItem[],
+  url: string,
+  previousItem?: { url: string; name: string; found?: boolean },
+): { url: string; name: string; found?: boolean } | undefined {
+  let previous = previousItem;
+  for (const item of sidebarItems) {
+    const [title, urlOrChildren] = item;
+    if (typeof urlOrChildren === 'string') {
+      if (urlOrChildren === url && previous) {
+        return { ...previous, found: true };
+      }
+      previous = { url: urlOrChildren, name: title as string };
+    } else {
+      const previousRecursive = findPreviousInSidebar(urlOrChildren, url, previous);
+      if (previousRecursive?.found) {
+        return previousRecursive;
+      } else {
+        previous = previousRecursive;
+      }
+    }
+  }
+  return previous;
+}
+
+/**
+ * Return the next item or a boolean;
+ * If a boolean is returned, there were no next items.
+ */
+function findNextInSidebar(
+  sidebarItems: SidebarItem[],
+  url: string,
+  takeNext: boolean,
+): { url: string; name: string } | undefined | boolean {
+  let _takeNext = takeNext;
+  for (const item of sidebarItems) {
+    const [title, urlOrChildren] = item;
+    if (typeof urlOrChildren === 'string') {
+      if (_takeNext) {
+        return { url: urlOrChildren, name: title as string };
+      }
+
+      if (urlOrChildren === url) {
+        _takeNext = true;
+      }
+    } else {
+      const nextRecursive = findNextInSidebar(urlOrChildren, url, _takeNext);
+      if (typeof nextRecursive === 'boolean') {
+        _takeNext = nextRecursive;
+      } else if (nextRecursive) {
+        return nextRecursive;
+      }
+    }
+  }
+  if (_takeNext) {
+    return true;
+  }
+  return undefined;
+}
+
+export function PreviousNext({ frontmatter }: PreviousNextProps) {
+  const { owner, repo } = useDocumentationContext();
+  const { sidebar, automaticallyInferNextPrevious } = useDocumentationContext().config;
+  const { pathname } = useLocation();
+
+  const formattedPathname = pathname.replace(`/${owner}/${repo}`, '') || '/';
+
+  let previous: string | undefined = frontmatter.previous;
+  let next: string | undefined = frontmatter.next;
+
+  let previousTitle: string | undefined = frontmatter.previousTitle;
+  let nextTitle: string | undefined = frontmatter.nextTitle;
+
+  if (!previous && !next && !automaticallyInferNextPrevious) {
+    return null;
+  }
+
+  if (previous === undefined && automaticallyInferNextPrevious) {
+    const result = findPreviousInSidebar(sidebar, formattedPathname);
+    if (result?.found) {
+      previous = result?.url;
+      previousTitle = result?.name;
+    }
+  }
+
+  if (next === undefined && automaticallyInferNextPrevious) {
+    const result = findNextInSidebar(sidebar, formattedPathname, false);
+    if (typeof result !== 'boolean') {
+      next = result?.url;
+      nextTitle = result?.name;
+    }
+  }
+
+  return (
+    <nav aria-label="Docs pages navigation" className="mt-10 flex items-center justify-between">
+      {!!previous && (
+        <DocsLink
+          to={previous}
+          className="transition-border rounded-md border p-4 no-underline hover:border-gray-300"
+        >
+          <div className="text-sm text-gray-600 dark:text-gray-200">Previous</div>
+          <div className="text-docs-theme">
+            « {previousTitle ?? findNameInSidebar(sidebar, previous)}
+          </div>
+        </DocsLink>
+      )}
+      <div />
+      {!!next && (
+        <DocsLink
+          to={next}
+          className="transition-border rounded-md border p-4 text-right no-underline hover:border-gray-300"
+        >
+          <div className="text-sm text-gray-600 dark:text-gray-200">Next</div>
+          <div className="text-docs-theme">{nextTitle ?? findNameInSidebar(sidebar, next)} »</div>
+        </DocsLink>
+      )}
+    </nav>
+  );
+}

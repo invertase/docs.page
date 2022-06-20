@@ -114,6 +114,15 @@ For example:
 }
 ```
 
+### `automaticallyInferNextPrevious`
+
+A boolean indicating if the next and previous links should be automatically inferred from the sidebar configuration.
+You can still overwrite a specific link by providing the `next` and `previous` keys in the [frontmatter](/frontmatter).
+
+| Key                              | Type      | Default |
+| -------------------------------- | --------- | ------- |
+| `automaticallyInferNextPrevious` | `boolean` | `true`  |
+
 ### `sidebar`
 
 An array containing nested sidebar array items. If provided, will be rendered on every page down the left hand side.
@@ -194,8 +203,8 @@ If provided, Google Tag Manager will be added to all of your documentation pages
 
 If provided, Google Analytics will be added to all of your documentation pages.
 
-| Key                | Type     | Default |
-| ------------------ | -------- | ------- |
+| Key               | Type     | Default |
+| ----------------- | -------- | ------- |
 | `googleAnalytics` | `string` |         |
 
 ### `zoomImages`
