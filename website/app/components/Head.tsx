@@ -4,7 +4,7 @@ import codeHikeStyles from '@code-hike/mdx/dist/index.css';
 
 export const Head = ({ data }: { data: DocumentationLoader }) => {
   const favicon = getFavicon({ data });
-
+  data.repo;
   return (
     <Helmet>
       {data.config.googleAnalytics && (
