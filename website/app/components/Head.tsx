@@ -7,6 +7,12 @@ export const Head = ({ data }: { data: DocumentationLoader }) => {
 
   return (
     <Helmet>
+      {data.config.socialPreview && (
+        <meta property="og:image" content={data.config.socialPreview}></meta>
+      )}
+      <meta property="og:image:type" content="image/png"></meta>
+      <meta property="og:image:width" content="200"></meta>
+      <meta property="og:image:height" content="200"></meta>
       {data.config.googleAnalytics && (
         <script
           async
