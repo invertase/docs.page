@@ -16,6 +16,7 @@ import reactMediumImage from 'react-medium-image-zoom/dist/styles.css';
 import { BadRequest, NotFound, ServerError } from '~/components/Errors';
 import Documentation from '~/components/Documentation';
 import { Head } from '~/components/Head';
+import { getSocialImage } from '~/utils';
 
 //@ts-ignore
 export function headers({ loaderHeaders }) {
@@ -45,8 +46,12 @@ export const meta: MetaFunction = (props: { data?: DocumentationLoader }) => {
     };
   }
 
+  const socialPreviewImage = getSocialImage(props.data);
+
   return {
     'twitter:card': 'summary_large_image',
+    'twitter:image': socialPreviewImage,
+    'og:image': socialPreviewImage,
     'twiter:image:alt': props.data?.config?.name ?? '',
     'og:url': `https://docs.page/${props.data.owner}/${props.data.repo}${
       props.data.path ? `/${props.data.path}` : ''

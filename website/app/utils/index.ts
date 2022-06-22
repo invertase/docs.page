@@ -1,3 +1,4 @@
+import { DocumentationLoader } from '~/loaders/documentation.server';
 import { getValue } from './get';
 
 export function ensureLeadingSlash(path: string) {
@@ -35,4 +36,24 @@ export function hash(value: string): string {
     hash |= 0; // Convert to 32bit integer
   }
   return hash.toString();
+}
+
+export function getSocialImage(data?: DocumentationLoader): string {
+  if (!data?.config.socialPreview || !data) {
+    return 'https://raw.githubusercontent.com/invertase/docs.page/main/docs/assets/docs-page-social.png';
+  }
+
+  let socialPreviewUrl = data.config.socialPreview;
+
+  if (socialPreviewUrl.startsWith('http')) {
+    return new URL(socialPreviewUrl).href;
+  }
+  if (!socialPreviewUrl.startsWith('/')) {
+    socialPreviewUrl = '/' + socialPreviewUrl;
+  }
+  const ref = encodeURIComponent(data.source.ref);
+
+  socialPreviewUrl = `https://raw.githubusercontent.com/${data.owner}/${data.repo}/${ref}/docs${socialPreviewUrl}`;
+
+  return new URL(socialPreviewUrl).href;
 }
