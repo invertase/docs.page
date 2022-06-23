@@ -182,7 +182,7 @@ export type BundleError = {
 
 export type BundleSuccess = {
   code: string;
-  config: Record<string, unknown>;
+  config: OutputConfig;
   frontmatter: {
     [key: string]: string;
   };

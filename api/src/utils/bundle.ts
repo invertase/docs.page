@@ -4,15 +4,8 @@ import { Contents, getConfigs, getGitHubContents } from './github.js';
 import { HeadingNode } from './plugins/rehype-headings.js';
 import { formatSourceAndRef } from './ref.js';
 import { getRepositorySymLinks } from './symlinks.js';
-import {
-  hasLocales,
-  InputConfig,
-  OutputConfig,
-  defaultConfig,
-  ErrorReason,
-} from '@docs.page/server';
-import yaml from 'js-yaml';
-import toml from '@ltd/j-toml';
+import { OutputConfig, defaultConfig, ErrorReason } from '@docs.page/server';
+import { formatConfigLocales } from './config.js';
 
 type Frontmatter = Record<string, string>;
 
@@ -115,7 +108,8 @@ export class Bundle {
 
     this.repositoryFound = githubContents.repositoryFound;
 
-    this.formatConfigLocales(githubContents.config);
+    this.config = formatConfigLocales(githubContents.config, this.path);
+
     await this.matchSymLinks();
     if (githubContents.md === null) {
       throw new BundleError(404, "Couldn't find file", 'FILE_NOT_FOUND');
@@ -133,7 +127,8 @@ export class Bundle {
     if (!repositoryFound || !config) {
       throw new BundleError(404, 'Unable to fetch config file.');
     }
-    this.formatConfigLocales(config);
+
+    this.config = formatConfigLocales(config, this.path);
 
     return this.config;
   }
@@ -188,43 +183,6 @@ export class Bundle {
       if (symMarkdown) {
         this.markdown = symMarkdown;
       }
-    }
-  }
-
-  formatConfigLocales(config?: { configJson?: string; configYaml?: string; configToml?: string }) {
-    if (!config?.configJson && !config?.configYaml && !config?.configToml) {
-      throw new BundleError(404, 'Not found: Config file missing', 'MISSING_CONFIG');
-    }
-    const { configJson, configYaml, configToml } = config;
-
-    let inputConfig: InputConfig = defaultConfig;
-    // TODO: validation of config?
-
-    try {
-      if (configJson) {
-        inputConfig = JSON.parse(configJson) as InputConfig;
-      } else if (configYaml) {
-        inputConfig = yaml.load(configYaml) as InputConfig;
-      } else if (configToml) {
-        //@ts-ignore
-        inputConfig = Object.assign({}, toml.parse(configToml) as InputConfig);
-      }
-    } catch (e) {
-      console.error(e);
-      throw new BundleError(500, 'Error parsing config', 'BAD_CONFIG');
-    }
-
-    if (hasLocales(inputConfig)) {
-      const defaulLocale = inputConfig.locales[0];
-
-      const currentLocale = this.path.split('/')[0] || defaulLocale;
-
-      this.config = {
-        ...inputConfig,
-        sidebar: inputConfig?.sidebar[currentLocale],
-      };
-    } else {
-      this.config = inputConfig;
     }
   }
 }

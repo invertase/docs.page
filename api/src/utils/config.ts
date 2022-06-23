@@ -1,5 +1,8 @@
+import { getBoolean, getNumber, getString, getValue } from './get.js';
 import get from 'lodash.get';
-import { getBoolean, getNumber, getString, getValue } from './get';
+
+import yaml from 'js-yaml';
+import toml from '@ltd/j-toml';
 
 // Represents how the sidebar should look in the config file.
 export type SidebarItem = [string, Array<[string, string]>] | [string, string];
@@ -166,25 +169,49 @@ export function mergeConfig(json: Record<string, unknown>): ProjectConfig {
   };
 }
 
-export async function getConfiguration({
-  owner,
-  repo,
-  ref,
-}: Record<string, string>): Promise<ProjectConfig> {
-  let config: ProjectConfig = defaultConfig;
+type Configs = {
+  configJson?: string;
+  configYaml?: string;
+  configToml?: string;
+};
 
-  const host =
-    process.env.NODE_ENV === 'production' ? 'https://api.docs.page' : 'http://localhost:8000';
+export function formatConfigLocales(configFiles: Configs, path: string): ProjectConfig {
+  const { configJson, configYaml, configToml } = configFiles;
 
-  const endpoint = `${host}/config?owner=${owner}&repository=${repo}${
-    ref ? `&ref=${encodeURIComponent(ref)}` : ''
-  }`;
+  let config: Record<string, unknown> = {};
+
   try {
-    const res = await (await fetch(endpoint)).json();
-    config = res.config;
+    if (configJson) {
+      config = JSON.parse(configJson);
+    } else if (configYaml) {
+      config = yaml.load(configYaml) as Record<string, unknown>;
+    } else if (configToml) {
+      config = Object.assign({}, toml.parse(configToml));
+    }
   } catch (e) {
-    console.error(e);
+    console.error('Error parsing config, using default.');
+    return defaultConfig;
   }
 
-  return config;
+  if (
+    config.hasOwnProperty('locales') &&
+    Array.isArray(config.locales) &&
+    config.hasOwnProperty('sidebar')
+  ) {
+    // TODO: edge cases of bad configs, e.g what if locales is not an array?
+
+    const defaulLocale = config.locales[0];
+
+    const currentLocale = path.split('/')[0] || defaulLocale;
+
+    const sidebar = (getValue(config, 'sidebar') as Record<string, unknown>)[currentLocale];
+
+    config = {
+      ...config,
+      sidebar,
+    };
+
+    return mergeConfig(config);
+  }
+  return mergeConfig(config);
 }
