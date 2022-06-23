@@ -47,6 +47,8 @@ export const meta: MetaFunction = (props: { data?: DocumentationLoader }) => {
   }
 
   const socialPreviewImage = getSocialImage(props.data);
+  const title =
+    props.data.frontmatter?.title || props.data?.config?.name || props.data.repo || 'docs.page';
 
   return {
     'twitter:card': 'summary_large_image',
@@ -57,14 +59,14 @@ export const meta: MetaFunction = (props: { data?: DocumentationLoader }) => {
       props.data.path ? `/${props.data.path}` : ''
     }`,
     'og:site_name': 'docs.page',
-    'og:title':
-      props.data.frontmatter?.title ?? props.data?.config?.name ?? props.data.repo ?? 'docs.page',
+    'og:title': title,
     'theme-color': props.data.config?.theme ?? '',
-    title:
-      props.data.frontmatter?.title ?? props.data?.config?.name ?? props.data?.repo ?? 'docs.page',
+    title,
     description: props.data.frontmatter?.description ?? '',
     'og:description': props.data.frontmatter?.description ?? '',
     'twitter:description': props.data.frontmatter?.description ?? '',
+    'twitter:title': title,
+    'twitter:text:title': title,
   };
 };
 
