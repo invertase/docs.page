@@ -103,8 +103,7 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
   }
 
   const config = response.config;
-
-  const code = replaceVariables(config.variables as Record<string, string>, response.code);
+  const code = replaceVariables(config.variables, response.code);
 
   return json<DocumentationLoader>(
     {

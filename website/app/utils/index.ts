@@ -19,8 +19,7 @@ export function replaceVariables(variables: Record<string, string>, value: strin
     if (m.index === VARIABLE_REGEX.lastIndex) {
       VARIABLE_REGEX.lastIndex++;
     }
-
-    output = output.replace(m[0], get(variables, m[1], ''));
+    output = output.replace(m[0], get(variables, m[1], '') || m[0]);
   }
 
   return output;
