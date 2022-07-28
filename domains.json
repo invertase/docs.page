@@ -38,5 +38,9 @@
 	[
 		"goconfigenv.ganeshagrawal.com", 
 		"iamganeshagrawal/goconfigenv"
+	],
+	[
+		"docs.ayphu.com", 
+		"ayphu/docs"
 	]
 ]
