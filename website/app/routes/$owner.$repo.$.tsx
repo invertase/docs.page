@@ -19,7 +19,6 @@ import { Head } from '~/components/Head';
 import { getSocialImage } from '~/utils';
 import codeHikeStyles from '@code-hike/mdx/dist/index.css';
 
-
 //@ts-ignore
 export function headers({ loaderHeaders }) {
   return {
@@ -58,8 +57,9 @@ export const meta: MetaFunction = (props: { data?: DocumentationLoader }) => {
     'twitter:image': socialPreviewImage,
     'og:image': socialPreviewImage,
     'twiter:image:alt': props.data?.config?.name ?? '',
-    'og:url': `https://docs.page/${props.data.owner}/${props.data.repo}${props.data.path ? `/${props.data.path}` : ''
-      }`,
+    'og:url': `https://docs.page/${props.data.owner}/${props.data.repo}${
+      props.data.path ? `/${props.data.path}` : ''
+    }`,
     'og:site_name': 'docs.page',
     'og:title': title,
     'theme-color': props.data.config?.theme ?? '',
