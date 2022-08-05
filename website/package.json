@@ -42,7 +42,7 @@
     "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^18.2.0",
     "react-helmet": "^6.1.0",
-    "react-medium-image-zoom": "^4.4.3",
+    "react-medium-image-zoom": "^5.0.1",
     "react-router-dom": "^6.3.0",
     "remix": "^1.6.1",
     "rimraf": "^3.0.2"
@@ -60,7 +60,7 @@
     "@types/react-helmet": "^6.1.5",
     "@types/wicg-file-system-access": "^2020.9.5",
     "concurrently": "^7.2.2",
-    "msw": "^0.42.3",
+    "msw": "^0.44.2",
     "postcss": "^8.4.14",
     "prettier": "^2.7.1",
     "tailwindcss": "^3.1.4",
