@@ -14,7 +14,7 @@
     "test:headed": "yarn rimraf tests/screenshots/* && MSW_ENABLED=1 playwright test --headed"
   },
   "dependencies": {
-    "@code-hike/mdx": "^0.6.1",
+    "@code-hike/mdx": "^0.7.2",
     "@docs.page/client": "^1.0.4",
     "@docs.page/server": "^1.0.1",
     "@docsearch/react": "^3.1.0",
