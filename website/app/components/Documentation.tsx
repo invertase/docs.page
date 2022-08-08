@@ -25,6 +25,7 @@ export default function Documentation({ data }: { data: DocumentationLoader }) {
   }, [transition.state]);
 
   const MDX = useHydratedMdx({ code: data.code });
+
   const hash = createHash(`${data.owner}/${data.repo}`);
   const domain =
     domains.find(([, repository]) => repository === `${data.owner}/${data.repo}`)?.[0] || null;

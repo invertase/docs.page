@@ -4,11 +4,11 @@ import {
   BundleResponseData,
   BundleError,
   ErrorReason,
+  OutputConfig,
 } from '@docs.page/server';
 import { json, redirect, LoaderFunction, ThrownResponse } from 'remix';
 import { isExternalLink } from '~/components/DocsLink';
 import { replaceVariables } from '~/utils';
-import { mergeConfig, ProjectConfig } from '~/utils/config';
 export type ThrownError = ThrownBundleError | ThrownNotFoundError;
 
 // A thrown error from the loader containing the bundle error.
@@ -41,7 +41,7 @@ export type DocumentationLoader = {
   // Page heading nodes.
   headings: BundleSuccess['headings'];
   // Configuration for the repo.
-  config: ProjectConfig;
+  config: OutputConfig;
   // Any page frontmatter.
   frontmatter: BundleSuccess['frontmatter'];
   // base branch
@@ -102,8 +102,7 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
     return redirect(`/${owner}/${repo}${response.frontmatter.redirect}`);
   }
 
-  const config = mergeConfig(response.config);
-
+  const config = response.config;
   const code = replaceVariables(config.variables, response.code);
 
   return json<DocumentationLoader>(
@@ -115,7 +114,7 @@ export const docsLoader: LoaderFunction = async ({ params }) => {
       source: response.source,
       code,
       headings: response.headings,
-      config: mergeConfig(response.config),
+      config,
       frontmatter: response.frontmatter,
       baseBranch: response.baseBranch ?? 'main',
     },

@@ -17,6 +17,7 @@ import { BadRequest, NotFound, ServerError } from '~/components/Errors';
 import Documentation from '~/components/Documentation';
 import { Head } from '~/components/Head';
 import { getSocialImage } from '~/utils';
+import codeHikeStyles from '@code-hike/mdx/dist/index.css';
 
 //@ts-ignore
 export function headers({ loaderHeaders }) {
@@ -28,6 +29,7 @@ export function headers({ loaderHeaders }) {
 export const links: LinksFunction = () => {
   return [
     { rel: 'stylesheet', href: 'https://cdn.jsdelivr.net/npm/@docsearch/css@alpha' },
+    { rel: 'stylesheet', href: codeHikeStyles },
     { rel: 'stylesheet', href: docsearch },
     { rel: 'stylesheet', href: codeblocks },
     { rel: 'stylesheet', href: extraStyles },

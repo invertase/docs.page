@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { BundleResponseData } from '@docs.page/server';
 import { Bundle, BundleError } from '../utils/bundle.js';
+import { formatConfigLocales } from '../utils/config.js';
 /**
  * Gets the API information.
  *
@@ -23,7 +24,7 @@ export const bundleRaw = async (
     markdown,
   });
   if (sourceConfig) {
-    bundleInstance.formatConfigLocales(sourceConfig);
+    bundleInstance.config = formatConfigLocales(sourceConfig, path);
   }
   try {
     const data = await bundleInstance.build();

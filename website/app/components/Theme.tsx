@@ -1,17 +1,17 @@
+import { OutputConfig } from '@docs.page/server';
 import Color from 'color';
 import { useEffect } from 'react';
-import { defaultConfig, ProjectConfig } from '~/utils/config';
 import { setTheme } from '~/utils/setTheme';
 
 type Variant = 'base' | 'dark' | 'light';
 
-export function Theme({ config }: { config: ProjectConfig }) {
+export function Theme({ config }: { config: OutputConfig }) {
   const theme = config.theme;
   let color: Color;
   try {
     color = Color(theme);
   } catch {
-    color = Color(defaultConfig.theme);
+    color = Color('#00bcd4');
   }
 
   const variants: { [key in Variant]: string } = {
