@@ -10,6 +10,7 @@ import {
 } from '@heroicons/react/solid';
 import { Checkout } from '~/components/Checkout';
 import { Footer } from '~/components/Footer';
+import { getSocialImage } from '~/utils';
 
 export const meta: MetaFunction = () => ({
   'theme-color': '#ffffff',
@@ -17,11 +18,11 @@ export const meta: MetaFunction = () => ({
   description: 'Create an instant Open Source docs page with zero configuration.',
   'og:title': 'docs.page',
   'og:description': 'Create an instant Open Source docs page with zero configuration.',
-  'og:image': 'http://docs.page/assets/docs-page-social.png',
+  'og:image': getSocialImage(),
   'og:url': 'http://docs.page',
   'twitter:title': 'docs.page',
   'twitter:description': 'Create an instant Open Source docs page with zero configuration.',
-  'twitter:image': 'http://docs.page/assets/docs-page-social.png',
+  'twitter:image': getSocialImage(),
   'twitter:card': 'summary_large_image',
 });
 

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
-import { BundleSuccess } from '@docs.page/server';
+import { BundleSuccess, OutputConfig } from '@docs.page/server';
 import { DocumentationLoader } from '~/loaders/documentation.server';
-import { mergeConfig } from '../config';
 import { useHashChange } from './hash-change';
 
 export type FileSystemFileHandles = { [path: string]: FileSystemFileHandle };
@@ -98,7 +97,7 @@ const buildPreviewProps = async (params: PreviewParams): Promise<DocumentationLo
   let code: string | null = null;
   let frontmatter: BundleSuccess['frontmatter'] | null = null;
   let headings: BundleSuccess['headings'] | null = null;
-  let config: Record<string, unknown> | null = null;
+  let config: OutputConfig;
   const body = {
     md,
     config: params.config,
@@ -135,7 +134,7 @@ const buildPreviewProps = async (params: PreviewParams): Promise<DocumentationLo
     source: { type: 'branch', owner: 'preview', repository: 'docs', ref: 'ref' },
     code: code || '',
     headings,
-    config: mergeConfig(config || {}),
+    config,
     frontmatter: frontmatter || {},
   };
 };

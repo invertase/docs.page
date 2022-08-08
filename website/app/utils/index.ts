@@ -1,4 +1,5 @@
-import { getValue } from './get';
+import { DocumentationLoader } from '~/loaders/documentation.server';
+import get from 'lodash.get';
 
 export function ensureLeadingSlash(path: string) {
   if (!path.startsWith('/')) {
@@ -18,8 +19,7 @@ export function replaceVariables(variables: Record<string, string>, value: strin
     if (m.index === VARIABLE_REGEX.lastIndex) {
       VARIABLE_REGEX.lastIndex++;
     }
-
-    output = output.replace(m[0], getValue(variables, m[1], ''));
+    output = output.replace(m[0], get(variables, m[1], m[0]));
   }
 
   return output;
@@ -35,4 +35,24 @@ export function hash(value: string): string {
     hash |= 0; // Convert to 32bit integer
   }
   return hash.toString();
+}
+
+export function getSocialImage(data?: DocumentationLoader): string {
+  if (!data?.config.socialPreview || !data) {
+    return 'https://raw.githubusercontent.com/invertase/docs.page/main/docs/assets/docs-page-social.png';
+  }
+
+  let socialPreviewUrl = data.config.socialPreview;
+
+  if (socialPreviewUrl.startsWith('http')) {
+    return new URL(socialPreviewUrl).href;
+  }
+  if (!socialPreviewUrl.startsWith('/')) {
+    socialPreviewUrl = '/' + socialPreviewUrl;
+  }
+  const ref = encodeURIComponent(data.source.ref);
+
+  socialPreviewUrl = `https://raw.githubusercontent.com/${data.owner}/${data.repo}/${ref}/docs${socialPreviewUrl}`;
+
+  return new URL(socialPreviewUrl).href;
 }

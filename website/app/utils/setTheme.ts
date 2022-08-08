@@ -1,12 +1,11 @@
 import Color from 'color';
-import { defaultConfig } from './config';
 
 export function setTheme(theme: string): void {
   let color: Color;
   try {
     color = Color(theme);
   } catch {
-    color = Color(defaultConfig.theme);
+    color = Color('#00bcd4');
   }
 
   const variants = {

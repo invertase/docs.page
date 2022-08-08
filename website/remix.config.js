@@ -10,4 +10,5 @@ module.exports = {
   // serverBuildDirectory: "server/build",
   serverBuildPath: 'server/build/index.js',
   serverBuildTarget: 'node-cjs',
+  serverDependenciesToBundle: ['react-medium-image-zoom'],
 };

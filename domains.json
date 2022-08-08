@@ -34,5 +34,13 @@
 	[
 		"docs.widgetbook.io",
 		"widgetbook/widgetbook"
+	],
+	[
+		"goconfigenv.ganeshagrawal.com", 
+		"iamganeshagrawal/goconfigenv"
+	],
+	[
+		"docs.ayphu.com", 
+		"ayphu/docs"
 	]
 ]

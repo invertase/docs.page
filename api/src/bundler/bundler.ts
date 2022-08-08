@@ -46,7 +46,7 @@ export async function bundle(
 
   const { code, frontmatter, errors } = await bundleMDX({
     source: rawText,
-    xdmOptions(options) {
+    mdxOptions(options) {
       // @ts-ignore TODO fix types
       options.remarkPlugins = [...(options.remarkPlugins ?? []), ...bundleOptions.remarkPlugins];
       // @ts-ignore TODO fix types
