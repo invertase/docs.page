@@ -42,5 +42,9 @@
 	[
 		"docs.ayphu.com", 
 		"ayphu/docs"
+	],
+	[
+		"docs.zapp.run", 
+		"invertase/zapp.run"
 	]
 ]
