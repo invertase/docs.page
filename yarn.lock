@@ -1092,10 +1092,10 @@
     "@babel/helper-validator-identifier" "^7.18.6"
     to-fast-properties "^2.0.0"
 
-"@code-hike/mdx@^0.7.2":
-  version "0.7.2"
-  resolved "https://registry.yarnpkg.com/@code-hike/mdx/-/mdx-0.7.2.tgz#ad1474192d6f0882aff41eb478830bdd9952e633"
-  integrity sha512-vMu4FZ091WIEqQS+9NMKhCAThxaZkLjieZqhvhw5iDNOG+UCawES0AMbSSF394pxi9i4vTTBlLnU/LuFvtpwYA==
+"@code-hike/mdx@^0.7.3":
+  version "0.7.3"
+  resolved "https://registry.yarnpkg.com/@code-hike/mdx/-/mdx-0.7.3.tgz#2d25bff10f3bab81914a90b3d6aebe5c7781deba"
+  integrity sha512-7YaSG0QIGB32oEEbVWDEEu62jS6ijj0VeQdOtFr2dweFiMvfjeuFYyywfF9nmqXloAi5apBupKCc+D/fIsPkKw==
   dependencies:
     hast-util-to-estree "^1.4.0"
     is-plain-obj "^3.0.0"
