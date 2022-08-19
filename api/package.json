@@ -7,7 +7,7 @@
   "author": "<jacobcable94@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@code-hike/mdx": "^0.7.2",
+    "@code-hike/mdx": "^0.7.3",
     "@ltd/j-toml": "^1.30.0",
     "@octokit/graphql": "^5.0.0",
     "@types/cors": "^2.8.12",
