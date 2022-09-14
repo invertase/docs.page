@@ -38,7 +38,7 @@ export function hash(value: string): string {
 }
 
 export function getSocialImage(data?: DocumentationLoader): string {
-  if (!data?.config.socialPreview || !data) {
+  if (!data?.config?.socialPreview) {
     return 'https://raw.githubusercontent.com/invertase/docs.page/main/docs/assets/docs-page-social.png';
   }
 
