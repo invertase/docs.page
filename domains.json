@@ -50,5 +50,9 @@
 	[
 		"dokumentacja.otwartaturystyka.pl", 
 		"opentouristics/database-tools"
+	],
+	[
+		"patrol.leancode.co",
+		"leancodepl/patrol"
 	]
 ]
