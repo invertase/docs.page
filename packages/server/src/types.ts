@@ -40,6 +40,8 @@ export interface ConfigWithoutLocales {
   experimentalMath: boolean;
   // automatically infer next/previous
   automaticallyInferNextPrevious: boolean;
+  // Adds Plausible Analytics to your documentation pages.
+  plausibleAnalytics: string;
 }
 
 export interface ConfigWithLocales {
@@ -85,6 +87,8 @@ export interface ConfigWithLocales {
   experimentalMath: boolean;
   // automatically infer next/previous
   automaticallyInferNextPrevious: boolean;
+  // Adds Plausible Analytics to your documentation pages.
+  plausibleAnalytics: string;
 }
 export type InputConfig = ConfigWithoutLocales | ConfigWithLocales;
 
@@ -137,6 +141,8 @@ export interface OutputConfig {
   experimentalMath: boolean;
   // automatically infer next/previous
   automaticallyInferNextPrevious: boolean;
+  // Adds Plausible Analytics to your documentation pages.
+  plausibleAnalytics: string;
 }
 
 export const defaultConfig: OutputConfig = {
@@ -158,6 +164,7 @@ export const defaultConfig: OutputConfig = {
   experimentalCodehike: false,
   experimentalMath: false,
   automaticallyInferNextPrevious: true,
+  plausibleAnalytics: '',
 };
 
 export type FetchBundleInput = {

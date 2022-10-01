@@ -81,6 +81,7 @@ export const defaultConfig: OutputConfig = {
   experimentalCodehike: false,
   experimentalMath: false,
   automaticallyInferNextPrevious: true,
+  plausibleAnalytics: '',
 };
 
 // Merges any user config with default values.
@@ -121,6 +122,7 @@ export function mergeConfig(json: Record<string, unknown>): OutputConfig {
       'automaticallyInferNextPrevious',
       defaultConfig.automaticallyInferNextPrevious,
     ),
+    plausibleAnalytics: getString(json, 'plausibleAnalytics', defaultConfig.plausibleAnalytics),
   };
 }
 

@@ -1,9 +1,12 @@
 import { Helmet } from 'react-helmet';
 import { DocumentationLoader } from '~/loaders/documentation.server';
 import codeHikeStyles from '@code-hike/mdx/dist/index.css';
+import domains from '../../../domains.json';
 
 export const Head = ({ data }: { data: DocumentationLoader }) => {
   const favicon = getFavicon({ data });
+  const domain =
+    domains.find(([, repository]) => repository === `${data.owner}/${data.repo}`)?.[0] || null;
   data.repo;
   return (
     <Helmet>
@@ -34,6 +37,9 @@ export const Head = ({ data }: { data: DocumentationLoader }) => {
           })(window,document,'script','dataLayer','${data.config.googleTagManager}');
           `}
         </script>
+      )}
+      {data.config.plausibleAnalytics && domain && (
+        <script defer data-domain={domain} src="https://plausible.io/js/plausible.js"></script>
       )}
       <link rel="icon" href={favicon} />
       {data.config.experimentalMath && (
