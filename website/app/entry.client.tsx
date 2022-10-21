@@ -19,13 +19,8 @@ if (
   delete window.__remixManifest.routes['routes/preview-fetch'];
 }
 
-const container = document.getElementById('app');
-if (!container) {
-  throw new Error('No element with id "app" found');
-}
-
 hydrateRoot(
-  container,
+  document,
   <BrowserRouter>
     <RemixBrowser />
   </BrowserRouter>,
