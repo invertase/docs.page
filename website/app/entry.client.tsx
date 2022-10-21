@@ -1,4 +1,4 @@
-import { hydrate } from 'react-dom';
+import { hydrateRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { RemixBrowser } from 'remix';
 //@ts-ignore
@@ -19,6 +19,14 @@ if (
   delete window.__remixManifest.routes['routes/preview-fetch'];
 }
 
-hydrate(<BrowserRouter>
-  <RemixBrowser />
-</BrowserRouter>, document);
+const container = document.getElementById('app');
+if (!container) {
+  throw new Error('No element with id "app" found');
+}
+
+hydrateRoot(
+  container,
+  <BrowserRouter>
+    <RemixBrowser />
+  </BrowserRouter>,
+);

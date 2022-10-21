@@ -1090,7 +1090,7 @@
     "@babel/helper-validator-identifier" "^7.19.1"
     to-fast-properties "^2.0.0"
 
-"@code-hike/mdx@^0.7.3":
+"@code-hike/mdx@^0.7.4":
   version "0.7.4"
   resolved "https://registry.yarnpkg.com/@code-hike/mdx/-/mdx-0.7.4.tgz#0a7446eb541a0667cbdf4557ecf9ec98d8920415"
   integrity sha512-MHnoSJ7wxJ2LJfJ/x+18jh6JOBCPwk1EMQRgVINj3yyejqsYgOQx2ChE+/n+n3AdP7J5RLKfQ6qm/jiNxD8+Lg==
@@ -1116,7 +1116,7 @@
   resolved "https://registry.yarnpkg.com/@docsearch/css/-/css-3.2.2.tgz#859572757de61037b2da5ec408f521451ac59e45"
   integrity sha512-VB0Evx4ikS1ZlW1YVUw+vI9b3H/UXMCo4W/ZWy+n56Sho4KOqyCHcINVays91TJt7HTV/CKO3FCbm2VJg5Wipw==
 
-"@docsearch/react@^3.1.0":
+"@docsearch/react@^3.2.2":
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/@docsearch/react/-/react-3.2.2.tgz#c892ab208031d1631e09ba0e6e43c22b7a058cf2"
   integrity sha512-1Hn2SNQUFVPrzqvaj+vxXZfsfn3rnW8CoyGAJ1LqXMY9py8GbxK8VfmJ5Z6z4LwG9849tGru/N6dp0cQO6r9Ag==
@@ -1674,7 +1674,7 @@
     readable-stream "^3.6.0"
     split2 "^4.0.0"
 
-"@remix-run/dev@^1.6.1":
+"@remix-run/dev@^1.7.3":
   version "1.7.3"
   resolved "https://registry.yarnpkg.com/@remix-run/dev/-/dev-1.7.3.tgz#b141989780243bdbd36956bb8ef59cbefe3150e9"
   integrity sha512-5PZ4xxitY7Pr7+qd4f2Ko9OHPtoSSD4KzHR66guFHMSb9379my6GBgm9hIbUXooyJAPbJgEmgJXvUjKuVB2IaA==
@@ -8981,7 +8981,7 @@ supports-preserve-symlinks-flag@^1.0.0:
   resolved "https://registry.yarnpkg.com/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz#6eda4bd344a3c94aea376d4cc31bc77311039e09"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
-tailwindcss@^3.1.4:
+tailwindcss@^3.2.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/tailwindcss/-/tailwindcss-3.2.0.tgz#0164a930645e7e1df301df1e9d434a52602c918d"
   integrity sha512-ARh/W0uH5UlWIC2nn02V0+5fyF0k6qZliyt4QYic2upOhPUE/Spu1EURNc9txJ3+4j8OEmdigqfDpw4d2tA4vA==

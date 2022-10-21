@@ -14,10 +14,10 @@
     "test:headed": "yarn rimraf tests/screenshots/* && MSW_ENABLED=1 playwright test --headed"
   },
   "dependencies": {
-    "@code-hike/mdx": "^0.7.3",
+    "@code-hike/mdx": "^0.7.4",
     "@docs.page/client": "^1.0.4",
     "@docs.page/server": "^1.0.1",
-    "@docsearch/react": "^3.1.0",
+    "@docsearch/react": "^3.2.2",
     "@heroicons/react": "^1.0.6",
     "@playwright/test": "^1.22.2",
     "@remix-run/express": "^1.7.3",
@@ -49,7 +49,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.22.2",
-    "@remix-run/dev": "^1.6.1",
+    "@remix-run/dev": "^1.7.3",
     "@tailwindcss/typography": "^0.5.2",
     "@types/color": "^3.0.3",
     "@types/lodash.get": "^4.4.7",
@@ -63,7 +63,7 @@
     "msw": "^0.47.4",
     "postcss": "^8.4.14",
     "prettier": "^2.7.1",
-    "tailwindcss": "^3.1.4",
+    "tailwindcss": "^3.2.0",
     "typescript": "^4.7.4"
   },
   "engines": {
