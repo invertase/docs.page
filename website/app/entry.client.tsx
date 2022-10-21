@@ -1,4 +1,5 @@
 import { hydrate } from 'react-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { RemixBrowser } from 'remix';
 //@ts-ignore
 if (window.ENV.MSW_ENABLED === '1') {
@@ -18,4 +19,6 @@ if (
   delete window.__remixManifest.routes['routes/preview-fetch'];
 }
 
-hydrate(<RemixBrowser />, document);
+hydrate(<BrowserRouter>
+  <RemixBrowser />
+</BrowserRouter>, document);
