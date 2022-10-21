@@ -39,7 +39,7 @@
     "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
     "remark-parse": "^10.0.1",
-    "shiki": "^0.10.1",
+    "shiki": "^0.11.1",
     "tiny-invariant": "^1.2.0",
     "unist-util-visit": "^4.1.0"
   },

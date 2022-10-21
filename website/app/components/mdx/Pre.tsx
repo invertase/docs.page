@@ -47,7 +47,12 @@ export function Pre(props: PreProps): JSX.Element {
             },
           )}
         >
-          <CopyToClipboard text={raw} onCopy={() => setCopied(true)}>
+          <CopyToClipboard
+            text={raw}
+            onCopy={() => {
+              setCopied(true);
+            }}
+          >
             <button className="rounded-lg bg-black px-3 py-2 font-mono text-xs text-white transition-colors hover:bg-black/40">
               {copied ? 'Copied' : 'Copy'}
             </button>

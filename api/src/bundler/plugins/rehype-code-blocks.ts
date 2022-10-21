@@ -18,11 +18,18 @@ export default function rehypeCodeBlocks(): (ast: Node) => void {
     }
 
     const language = getLanguage(node);
+
     const raw = toString(node);
 
-    // Raw value of the `code` block - used for copy/paste
-    parent.properties['raw'] = raw;
-    parent.properties['html'] = highlighter.codeToHtml(raw, language);
+    // If the user provides the `console` language, we add the 'shell' language and remove $ from the raw code, for copying purposes.
+    if (language === 'console') {
+      parent.properties['html'] = highlighter.codeToHtml(raw, { lang: 'shell' });
+      const removedDollarSymbol = raw.replace(/^(^ *)\$/g, '');
+
+      parent.properties['raw'] = removedDollarSymbol;
+    } else {
+      parent.properties['raw'] = raw;
+    }
 
     // Get any metadata from the code block
     const meta = (node.data?.meta as string) ?? '';
@@ -63,7 +70,6 @@ function getLanguage(node: any): string | undefined {
 
   while (++index < className.length) {
     value = className[index];
-
     if (value === 'no-highlight' || value === 'nohighlight') {
       return undefined;
     }
