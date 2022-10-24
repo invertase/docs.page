@@ -155,9 +155,9 @@ export function formatConfigLocales(configFiles: Configs, path: string): OutputC
   ) {
     // TODO: edge cases of bad configs, e.g what if locales is not an array?
 
-    const defaulLocale = config.locales[0];
+    const defaultLocale = config.locales[0];
 
-    const currentLocale = path.split('/')[0] || defaulLocale;
+    const currentLocale = path.split('/')[0] || defaultLocale;
 
     const sidebar = (getValue(config, 'sidebar') as Record<string, unknown>)[currentLocale];
 
