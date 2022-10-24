@@ -115,6 +115,7 @@ export class Bundle {
       throw new BundleError(404, "Couldn't find file", 'FILE_NOT_FOUND');
     }
     this.markdown = githubContents.md;
+    this.path = githubContents.path;
     this.contentFetched = true;
   }
 
