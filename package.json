@@ -1,5 +1,10 @@
 {
   "private": true,
+  "workspaces": [
+    "website",
+    "packages/*",
+    "api"
+  ],
   "scripts": {
     "dev": "concurrently \"yarn dev:api\" \"yarn dev:website\"",
     "dev:website": "cd website && yarn dev",
