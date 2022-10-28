@@ -8,10 +8,6 @@
 		"invertase/melos"
 	],
 	[
-		"melos.invertase.io",
-		"invertase/melos"
-	],
-	[
 		"extensions.invertase.dev",
 		"invertase/firebase-extensions"
 	],
@@ -20,7 +16,7 @@
 		"invertase/react-query-firebase"
 	],
 	[
-		"docs.flexcolorscheme.com",
+  		"docs.flexcolorscheme.com",
 		"rydmike/flex_color_scheme_docs"
 	],
 	[

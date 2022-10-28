@@ -1,4 +1,5 @@
 import { hydrateRoot } from 'react-dom/client';
+import { hydrate } from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { RemixBrowser } from 'remix';
 //@ts-ignore
@@ -19,9 +20,13 @@ if (
   delete window.__remixManifest.routes['routes/preview-fetch'];
 }
 
-hydrateRoot(
-  document,
-  <BrowserRouter>
-    <RemixBrowser />
-  </BrowserRouter>,
-);
+
+// I think this is causing an error in prod. switching to legacy, to check.
+// hydrateRoot(
+//   document,
+//   <BrowserRouter>
+//     <RemixBrowser />
+//   </BrowserRouter>,
+// );
+
+hydrate(<RemixBrowser/>, document);
