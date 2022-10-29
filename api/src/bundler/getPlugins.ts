@@ -12,6 +12,7 @@ import remarkComment from 'remark-comment';
 
 function getPlugins(config: OutputConfig) {
   //
+
   const remarkPlugins = config?.experimentalCodehike
     ? [remarkGfm, remarkComment, [remarkCodeHike, { theme, lineNumbers: true }]]
     : [remarkGfm, remarkComment];

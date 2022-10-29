@@ -9,6 +9,7 @@ import { Pre } from './Pre';
 import { Tabs, TabItem } from './Tabs';
 import { Vimeo } from './Vimeo';
 import { Tweet } from './Tweet';
+import { Mermaid } from 'mdx-mermaid/lib/Mermaid';
 
 function Anchor(
   props: DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>,
@@ -72,4 +73,9 @@ export default {
   TabItem,
   Tweet,
   Vimeo,
+  Mermaid: ({ chart }: { chart: string }) => {
+    console.log('here', chart);
+
+    return <Mermaid chart={chart} />;
+  },
 };
