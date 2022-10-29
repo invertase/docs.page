@@ -12,6 +12,7 @@ import remarkComment from 'remark-comment';
 
 function getPlugins(config: OutputConfig) {
   //
+
   const remarkPlugins = config?.experimentalCodehike
     ? [remarkGfm, remarkComment, [remarkCodeHike, { theme, lineNumbers: true }]]
     : [remarkGfm, remarkComment];
@@ -23,6 +24,7 @@ function getPlugins(config: OutputConfig) {
   if (config?.experimentalMath) {
     //@ts-ignore
     remarkPlugins.push(remarkMath);
+    //@ts-ignore
     rehypePlugins.push(rehypeKatex);
   }
   return { remarkPlugins, rehypePlugins };

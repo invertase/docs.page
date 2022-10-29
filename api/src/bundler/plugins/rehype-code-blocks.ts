@@ -4,7 +4,6 @@ import { visit } from 'unist-util-visit';
 import { Node } from 'hast-util-heading-rank';
 import { toString } from 'mdast-util-to-string';
 import * as shiki from 'shiki';
-
 let highlighter: shiki.Highlighter;
 
 /**
@@ -12,7 +11,7 @@ let highlighter: shiki.Highlighter;
  * @returns
  */
 export default function rehypeCodeBlocks(): (ast: Node) => void {
-  function visitor(node: any, _i: number, parent: any) {
+  function visitor(node: any, i: number, parent: any) {
     if (!parent || parent.tagName !== 'pre' || node.tagName !== 'code') {
       return;
     }
@@ -20,6 +19,21 @@ export default function rehypeCodeBlocks(): (ast: Node) => void {
     const language = getLanguage(node);
 
     const raw = toString(node);
+
+    if (language === 'mermaid') {
+      Object.assign(parent, {
+        type: 'mdxJsxFlowElement',
+        name: 'Mermaid',
+        attributes: [
+          {
+            type: 'mdxJsxAttribute',
+            name: 'chart',
+            value: node.children[0].value,
+          },
+        ],
+      });
+      return;
+    }
 
     // If the user provides the `console` language, we add the 'shell' language and remove $ from the raw code, for copying purposes.
     if (language === 'console') {

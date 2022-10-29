@@ -28,6 +28,7 @@
     "js-yaml": "^4.1.0",
     "lodash.get": "^4.4.2",
     "mdx-bundler": "^9.0.1",
+    "mermaid": "^9.1.7",
     "morgan": "^1.10.0",
     "node-fetch": "^3.2.6",
     "probot": "^12.2.4",
