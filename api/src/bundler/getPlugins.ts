@@ -24,6 +24,7 @@ function getPlugins(config: OutputConfig) {
   if (config?.experimentalMath) {
     //@ts-ignore
     remarkPlugins.push(remarkMath);
+    //@ts-ignore
     rehypePlugins.push(rehypeKatex);
   }
   return { remarkPlugins, rehypePlugins };
