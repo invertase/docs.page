@@ -7,6 +7,7 @@ import {
   ScrollRestoration,
   useCatch,
   useLoaderData,
+  useMatches,
 } from 'remix';
 import type { LinksFunction } from 'remix';
 import tailwind from './styles/tailwind.css';
@@ -113,7 +114,10 @@ export function CatchBoundary(): JSX.Element {
 
 function Document({ children, title }: { children: React.ReactNode; title?: string }) {
   const location = useLocation();
+  const matches = useMatches();
 
+  // If at least one route wants to hydrate, this will return true
+  const includeScripts = matches.some(match => match.handle?.hydrate);
   return (
     <html lang="en">
       <head>
@@ -139,7 +143,7 @@ function Document({ children, title }: { children: React.ReactNode; title?: stri
         />
         {children}
         {location.pathname !== '/preview' && <ScrollRestoration />}
-        <Scripts />
+        {includeScripts ? <Scripts /> : null}
         {process.env.NODE_ENV === 'development' && <LiveReload />}
       </body>
     </html>
