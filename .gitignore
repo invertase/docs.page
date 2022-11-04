@@ -39,3 +39,6 @@ tailwind.css*
 
 # Tests
 website/tests/screenshots/*
+/test-results/
+/playwright-report/
+/playwright/.cache/
