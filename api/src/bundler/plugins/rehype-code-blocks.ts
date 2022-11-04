@@ -11,7 +11,7 @@ let highlighter: shiki.Highlighter;
  * @returns
  */
 export default function rehypeCodeBlocks(): (ast: Node) => void {
-  function visitor(node: any, i: number, parent: any) {
+  function visitor(node: any, _i: number, parent: any) {
     if (!parent || parent.tagName !== 'pre' || node.tagName !== 'code') {
       return;
     }
