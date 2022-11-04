@@ -19,6 +19,8 @@ import { Head } from '~/components/Head';
 import { getSocialImage } from '~/utils';
 import codeHikeStyles from '@code-hike/mdx/dist/index.css';
 
+export const handle = { hydrate: true };
+
 //@ts-ignore
 export function headers({ loaderHeaders }) {
   return {
