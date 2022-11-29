@@ -15,7 +15,7 @@ You can configure your documentation by adding a `docs.json` file to the root of
 
 Each option undergoes validation, and any invalid value passed will be removed.
 
-### `name`
+### `Name`
 
 The name of the project. If provided, the name is displayed in a few places throughout the website such
 as the meta title and website header.
@@ -24,7 +24,7 @@ as the meta title and website header.
 | ------ | -------- | ------- |
 | `name` | `string` |         |
 
-### `logo`
+### `Logo`
 
 The URL or local repository path to the project logo. If provided, will be used as the favicon and will be displayed in the header.
 
@@ -32,7 +32,7 @@ The URL or local repository path to the project logo. If provided, will be used 
 | ------ | -------- | ------- |
 | `logo` | `string` |         |
 
-### `logoDark`
+### `LogoDark`
 
 The URL or local repository path to the project logo. If provided, will be displayed in the header when
 Dark Mode is currently enabled.
@@ -41,7 +41,7 @@ Dark Mode is currently enabled.
 | ---------- | -------- | ------- |
 | `logoDark` | `string` |         |
 
-### `favicon`
+### `Favicon`
 
 The URL or local repository path to the project favicon. If omitted, the docs.page favicon will be displayed.
 
@@ -49,15 +49,15 @@ The URL or local repository path to the project favicon. If omitted, the docs.pa
 | --------- | -------- | ------- |
 | `favicon` | `string` |         |
 
-### `socialPreview`
+### `SocialPreview`
 
 The URL to the social preview image, used when a URL to the documentation is being shared on social media platforms or Open Graph. Images should be at least 640×320px (1280×640px for best display).
 
 | Key             | Type     | Default |
 | --------------- | -------- | ------- |
-| `socialPreview` | `string` |         |
+| `socialpreview` | `string` |         |
 
-### `twitter`
+### `Twitter`
 
 A Twitter username handle. If provided, a Twitter logo will be placed in the header of the website.
 
@@ -65,7 +65,7 @@ A Twitter username handle. If provided, a Twitter logo will be placed in the hea
 | --------- | -------- | ------- |
 | `twitter` | `string` |         |
 
-### `noindex`
+### `Noindex`
 
 Whether or not the website should be indexed. By default, documentation websites are not indexed if a
 project config file is not found.
@@ -76,7 +76,7 @@ project config file is not found.
 
 To learn more about indexing, view the [Advanced documentation](/advanced).
 
-### `theme`
+### `Theme`
 
 A color used throughout the website on anchor tags, search and for general highlighting usage. It is
 recommended that the color is vibrant/light. The provided value must be parsable by the [`color`](https://www.npmjs.com/package/color) library.
@@ -85,7 +85,7 @@ recommended that the color is vibrant/light. The provided value must be parsable
 | ------- | -------- | ----------- |
 | `theme` | `string` | `'#00bcd4'` |
 
-### `docsearch`
+### `Docsearch`
 
 If provided, the `docsearch` value should be an object containing your `apiKey` and `indexName` for your DocSearch instance.
 If the `appId` is provided, a pre-connection to the Algolia database instance will be established which should help speed up initial search times users with slow connections.
@@ -114,7 +114,7 @@ For example:
 }
 ```
 
-### `automaticallyInferNextPrevious`
+### `Automaticallyinfernextprevious`
 
 A boolean indicating if the next and previous links should be automatically inferred from the sidebar configuration.
 You can still overwrite a specific link by providing the `next` and `previous` keys in the [frontmatter](/frontmatter).
@@ -123,7 +123,7 @@ You can still overwrite a specific link by providing the `next` and `previous` k
 | -------------------------------- | --------- | ------- |
 | `automaticallyInferNextPrevious` | `boolean` | `true`  |
 
-### `sidebar`
+### `Sidebar`
 
 An array containing nested sidebar array items. If provided, will be rendered on every page down the left hand side.
 
@@ -154,7 +154,7 @@ For example, the following will create a sidebar with a single link and nested e
 }
 ```
 
-### `headerDepth`
+### `Headerdepth`
 
 A number representing how deep headers remain important. Headers within the depth will be shown on the table of contents. All "h1" tags are ignored.
 
@@ -164,7 +164,7 @@ For example, a depth of `4` will handle `h2`, `h3` & `h4` tags.
 | ------------- | -------- | ------- |
 | `headerDepth` | `number` | `3`     |
 
-### `variables`
+### `Variables`
 
 A deeply nested object which contains values which can be injected on any documentation page.
 This is useful for projects which have repetitive common values (such a versions) which should be reflected consistently across all pages.
@@ -191,7 +191,7 @@ Example:
 
 Within your Markdown, provide the dot-notated path to the variable (e.g `versions.alpha`) surrounded by `{{ }}` brackets.
 
-### `googleTagManager`
+### `Googletagmanager`
 
 If provided, Google Tag Manager will be added to all of your documentation pages. Tags should start with `GTM-`.
 
@@ -199,7 +199,7 @@ If provided, Google Tag Manager will be added to all of your documentation pages
 | ------------------ | -------- | ------- |
 | `googleTagManager` | `string` |         |
 
-### `googleAnalytics`
+### `Googleanalytics`
 
 If provided, Google Analytics will be added to all of your documentation pages.
 
@@ -207,7 +207,7 @@ If provided, Google Analytics will be added to all of your documentation pages.
 | ----------------- | -------- | ------- |
 | `googleAnalytics` | `string` |         |
 
-### `zoomImages`
+### `Zoomimages`
 
 A boolean value representing whether images are zoomable by default.
 
