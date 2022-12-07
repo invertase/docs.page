@@ -144,7 +144,7 @@ export default function Index(): JSX.Element {
           <div className="w-full flex-1">
             <div className="mt-10 pr-5 lg:mt-0">
               <div>
-                <div className="rounded-tr rounded-tl border border-gray-700 bg-gray-50 px-3 py-2">
+                <div className="rounded-tr rounded-tl border border-gray-700 px-3 py-2">
                   <code className="text-sm">docs/index.mdx</code>
                 </div>
                 <div className="flex">
