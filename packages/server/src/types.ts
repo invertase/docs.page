@@ -164,7 +164,7 @@ export const defaultConfig: OutputConfig = {
   experimentalCodehike: false,
   experimentalMath: false,
   automaticallyInferNextPrevious: true,
-  plausibleAnalytics: '',
+  plausibleAnalytics: false,
 };
 
 export type FetchBundleInput = {

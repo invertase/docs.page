@@ -1,13 +1,12 @@
 import { Helmet } from 'react-helmet';
 import { DocumentationLoader } from '~/loaders/documentation.server';
 import codeHikeStyles from '@code-hike/mdx/dist/index.css';
-import domains from '../../../domains.json';
+import { useCustomDomain } from '~/context';
 
 export const Head = ({ data }: { data: DocumentationLoader }) => {
   const favicon = getFavicon({ data });
-  const domain =
-    domains.find(([, repository]) => repository === `${data.owner}/${data.repo}`)?.[0] || null;
-  data.repo;
+  const { domain } = useCustomDomain();
+
   return (
     <Helmet>
       {data.config.googleAnalytics && (
