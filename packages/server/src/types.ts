@@ -142,7 +142,7 @@ export interface OutputConfig {
   // automatically infer next/previous
   automaticallyInferNextPrevious: boolean;
   // Adds Plausible Analytics to your documentation pages.
-  plausibleAnalytics: string;
+  plausibleAnalytics: boolean;
 }
 
 export const defaultConfig: OutputConfig = {
