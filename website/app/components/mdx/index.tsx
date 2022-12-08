@@ -9,7 +9,7 @@ import { Pre } from './Pre';
 import { Tabs, TabItem } from './Tabs';
 import { Vimeo } from './Vimeo';
 import { Tweet } from './Tweet';
-
+import { DartPad } from './DartPad';
 function Anchor(
   props: DetailedHTMLProps<React.AnchorHTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement>,
 ): JSX.Element {
@@ -72,4 +72,5 @@ export default {
   TabItem,
   Tweet,
   Vimeo,
+  DartPad,
 };
