@@ -50,5 +50,9 @@
 	[
 		"patrol.leancode.co",
 		"leancodepl/patrol"
+	],
+	[
+		"patrol.leancode.pl",
+		"leancodepl/patrol"
 	]
 ]
