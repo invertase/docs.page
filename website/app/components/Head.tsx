@@ -1,10 +1,10 @@
 import { Helmet } from 'react-helmet';
 import { DocumentationLoader } from '~/loaders/documentation.server';
 import codeHikeStyles from '@code-hike/mdx/dist/index.css';
-import { useCustomDomain } from '~/context';
+import { useCustomDomain, useImagePath } from '~/context';
 
 export const Head = ({ data }: { data: DocumentationLoader }) => {
-  const favicon = getFavicon({ data });
+  const favicon = useImagePath(data.config.favicon || 'https://docs.page/favicon.ico?v=2');
   const { domain } = useCustomDomain();
 
   return (
@@ -52,23 +52,4 @@ export const Head = ({ data }: { data: DocumentationLoader }) => {
       )}
     </Helmet>
   );
-};
-
-const getFavicon = ({ data }: { data: DocumentationLoader }) => {
-  let favicon = new URL('https://docs.page/favicon.ico?v=2');
-
-  const logoConfig = data.config.logo || data.config.logoDark;
-  const ref = encodeURIComponent(data.source.ref);
-
-  if (logoConfig) {
-    if (logoConfig.startsWith('http')) {
-      favicon = new URL(logoConfig);
-    } else if (logoConfig.startsWith('/')) {
-      favicon = new URL(
-        `https://raw.githubusercontent.com/${data.owner}/${data.repo}/${ref}/docs${logoConfig}`,
-      );
-    }
-  }
-
-  return favicon.href;
 };
