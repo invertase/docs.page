@@ -1,0 +1,20 @@
+---
+type Props = {
+  step: number;
+  from: string;
+  to: string;
+};
+
+const { step, from, to } = Astro.props;
+---
+
+<div class="flex items-center">
+  <div
+    class={`flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br shadow-xl ${from} ${to}`}
+  >
+    <span class="font-anton text-4xl text-white">{step}</span>
+  </div>
+  <h2 class="font-anton ml-6 flex-1 text-4xl leading-relaxed">
+    <slot />
+  </h2>
+</div>
