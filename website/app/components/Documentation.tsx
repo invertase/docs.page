@@ -42,7 +42,7 @@ export default function Documentation({ data }: { data: DocumentationLoader }) {
           />
           <div data-test-id={'documentation-provider'} className="max-w-8xl mx-auto">
             <div className="hidden lg:block">
-              <div className="fixed inset-0 top-14 left-[max(0px,calc(50%-45rem))] w-64 overflow-x-auto py-10 px-8">
+              <div className="fixed inset-0 top-16 left-[max(0px,calc(50%-45rem))] w-64 overflow-x-auto py-10 pl-4 pr-8">
                 <Sidebar />
               </div>
             </div>
@@ -52,21 +52,17 @@ export default function Documentation({ data }: { data: DocumentationLoader }) {
                   'items-center lg:mr-52 lg:pr-16': true,
                 })}
               >
-                <main
-                  className="prose dark:prose-invert prose-code:font-fira prose-code:font-medium
-              max-w-none justify-center
-            "
-                >
+                <main className="prose dark:prose-invert prose-code:font-fira prose-code:font-medium max-w-none justify-center pb-6">
                   <TabsContext hash={hash}>
-                    <MDX components={components} />
+                    <MDX components={components as any} />
                   </TabsContext>
-
-                  <PreviousNext frontmatter={data.frontmatter} />
                 </main>
+                <PreviousNext frontmatter={data.frontmatter} />
+                <div className="my-12 h-px bg-gray-100 dark:bg-gray-700" />
                 <Footer />
               </div>
               {!!data.headings && (
-                <aside className="fixed top-14 bottom-0 right-[max(0px,calc(50%-45rem))] hidden w-60 overflow-y-auto overflow-x-hidden whitespace-nowrap px-8 pt-10 lg:block">
+                <aside className="fixed top-16 bottom-0 right-[max(0px,calc(50%-45rem))] hidden w-60 overflow-y-auto px-8 pt-10 lg:block">
                   <ScrollSpy />
                 </aside>
               )}

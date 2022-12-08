@@ -23,7 +23,7 @@ export function Sidebar() {
         {sidebar.map(([title, urlOrChildren]) => {
           if (typeof urlOrChildren === 'string') {
             return (
-              <li key={urlOrChildren}>
+              <li key={urlOrChildren} className="mb-3">
                 <DocsLink
                   end={urlOrChildren === (locales ? `/${currentLocale}` : '/')}
                   to={urlOrChildren}
@@ -41,11 +41,11 @@ export function Sidebar() {
           }
 
           return (
-            <li key={title} className="mt-4 mb-4 first:mt-0">
+            <li key={title} className="mt-10 mb-8 first:mt-0">
               <h5 className="pb-3 font-semibold tracking-wide text-gray-900 dark:text-gray-200">
                 {title}
               </h5>
-              <ul className="space-y-2 border-l border-gray-100 dark:border-gray-700">
+              <ul className="space-y-2 border-l border-gray-100 text-gray-500 dark:border-gray-700 dark:text-gray-400">
                 {urlOrChildren.map(([title, url]) => (
                   <li key={url}>
                     <DocsLink

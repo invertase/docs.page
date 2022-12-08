@@ -1,7 +1,9 @@
 import { BundleSuccess, SidebarItem } from '@docs.page/server';
+import cx from 'classnames';
 import { useLocation } from 'react-router-dom';
 import { useDocumentationContext } from '~/context';
 import { DocsLink } from './DocsLink';
+import { ChevronLeft, ChevronRight } from './Icons';
 
 interface PreviousNextProps {
   frontmatter: BundleSuccess['frontmatter'];
@@ -121,28 +123,55 @@ export function PreviousNext({ frontmatter }: PreviousNextProps) {
   }
 
   return (
-    <nav aria-label="Docs pages navigation" className="mt-10 flex items-center justify-between">
-      {!!previous && (
-        <DocsLink
-          to={previous}
-          className="transition-border rounded-md border p-4 no-underline hover:border-gray-300"
-        >
-          <div className="text-sm text-gray-600 dark:text-gray-200">Previous</div>
-          <div className="text-docs-theme">
-            « {previousTitle ?? findNameInSidebar(sidebar, previous)}
-          </div>
-        </DocsLink>
+    <nav
+      aria-label="Docs pages navigation"
+      className="mt-10 grid grid-cols-2 items-center justify-between gap-2 md:grid-cols-3"
+    >
+      {!!previous ? (
+        <Action action="previous" url={previous}>
+          <span>{previousTitle ?? findNameInSidebar(sidebar, previous)}</span>
+        </Action>
+      ) : (
+        <div />
       )}
-      <div />
+      <div className="hidden md:block" />
       {!!next && (
-        <DocsLink
-          to={next}
-          className="transition-border rounded-md border p-4 text-right no-underline hover:border-gray-300"
-        >
-          <div className="text-sm text-gray-600 dark:text-gray-200">Next</div>
-          <div className="text-docs-theme">{nextTitle ?? findNameInSidebar(sidebar, next)} »</div>
-        </DocsLink>
+        <Action action="next" url={next}>
+          <span>{nextTitle ?? findNameInSidebar(sidebar, next)}</span>
+        </Action>
       )}
     </nav>
+  );
+}
+
+type ActionProps = {
+  action: 'previous' | 'next';
+  url: string;
+  children: JSX.Element;
+};
+
+function Action(props: ActionProps) {
+  return (
+    <DocsLink
+      to={props.url}
+      className={cx(
+        'font-inter flex items-center gap-3 font-bold tracking-wide no-underline opacity-75 transition hover:opacity-100',
+        {
+          'justify-end': props.action === 'next',
+        },
+      )}
+    >
+      {props.action === 'previous' && (
+        <span>
+          <ChevronLeft size={16} />
+        </span>
+      )}
+      <span>{props.children}</span>
+      {props.action === 'next' && (
+        <span>
+          <ChevronRight size={16} />
+        </span>
+      )}
+    </DocsLink>
   );
 }

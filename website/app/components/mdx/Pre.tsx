@@ -28,7 +28,7 @@ export function Pre(props: PreProps): JSX.Element {
   return (
     <>
       {!!title && (
-        <div className="rounded-tr rounded-tl border-b border-gray-700 bg-[#24292e] px-4 py-2 font-mono text-sm font-bold text-gray-300">
+        <div className="rounded-tr rounded-tl border-b border-gray-800 bg-[#0D1118] px-4 py-2 font-mono text-sm font-bold text-gray-300">
           {title}
         </div>
       )}

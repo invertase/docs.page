@@ -52,8 +52,7 @@ export function ScrollSpy(): JSX.Element {
     const currentTop = document.documentElement.scrollTop;
     window.scrollTo({ top: sectionTop! + currentTop - 100, behavior: 'smooth' });
     if (history.pushState) {
-      //@ts-ignore
-      history.pushState(null, null, `#${id}`);
+      history.pushState(null, '', `#${id}`);
     } else {
       location.hash = `#${id}`;
     }
@@ -61,19 +60,16 @@ export function ScrollSpy(): JSX.Element {
   }
 
   return (
-    <ul className="space-y-2 text-sm">
+    <ul className="space-y-3 text-sm text-gray-500 dark:text-gray-400">
       {headings.map(heading => (
         <li
           key={heading.id}
-          className={cx(
-            '-ml-px block overflow-x-hidden text-ellipsis whitespace-nowrap border-l border-transparent pl-4',
-            {
-              'hover:border-gray-400 hover:text-gray-800 dark:hover:text-gray-100': !(
-                active === heading.id
-              ),
-              'text-docs-theme !border-docs-theme font-medium': active === heading.id,
-            },
-          )}
+          className={cx('-ml-px block border-l border-transparent pl-4', {
+            'hover:border-gray-400 hover:text-gray-800 dark:hover:text-gray-100': !(
+              active === heading.id
+            ),
+            'text-docs-theme !border-docs-theme font-medium': active === heading.id,
+          })}
         >
           <a className="cursor-pointer" onClick={() => onClick(heading.id)}>
             {heading.title}
