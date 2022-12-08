@@ -1,0 +1,102 @@
+---
+import Root from "@layouts/Root.astro";
+import { getBundle  } from "src/bundle";
+import type { Context } from "src/types";
+import type { GetBundleResponse } from "src/bundle";
+import { isExternalLink, replaceMoustacheVariables } from "src/utils";
+import domains from '../../../../../domains.json';
+
+let { owner, repository } = Astro.params;
+let ref: string | undefined;
+
+if (!owner || !repository) {
+  return Astro.redirect('/404');
+}
+
+// Check if the repo includes a ref (invertase/foo~bar)
+if (repository.includes('~')) {
+  [repository, ref] = repository.split('~');
+}
+
+let bundle: GetBundleResponse;
+
+try {
+  bundle = await getBundle({
+    owner,
+    repository,
+    ref,
+    path: Astro.params.slug!,
+  });
+} catch (e) {
+  console.error(e);
+}
+
+if ('statusCode' in bundle!) {
+  // TODO handle 404
+  return Astro.redirect('/404');
+}
+
+// Handle a frontmatter redirect
+const redirect = bundle!.frontmatter.redirect;
+if (redirect && isExternalLink(redirect)) {
+  return Astro.redirect(redirect);
+} else if (redirect) {
+  return Astro.redirect(`/${owner}/${repository}${redirect}`)
+}
+
+const context: Context = {
+  owner,
+  repository,
+  config: bundle!.config,
+  frontmatter: bundle!.frontmatter,
+  code: replaceMoustacheVariables(bundle!.config.variables ?? {}, bundle!.code),
+  headings: bundle!.headings,
+  domain: domains.find(([, repository]) => repository === `${owner}/${repository}`)?.at(0),
+};
+---
+
+<Root>
+  {context.config.googleAnalytics && (
+    <script
+      slot="head"
+      async
+      src={`https://www.googletagmanager.com/gtag/js?id=${context.config.googleAnalytics}`}
+    />
+  )}
+  {context.config.googleAnalytics && (
+    <script slot="head" type="text/javascript">
+      {`
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+      
+        gtag('config', '${config.googleAnalytics}');
+      `}
+    </script>
+  )}
+  {context.config.googleTagManager && (
+    <script slot="head" type="text/javascript">
+      {`
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','${config.googleTagManager}');
+      `}
+    </script>
+  )}
+  {context.config.plausibleAnalytics && context.domain && (
+    <script slot="head" defer data-domain={domain} src="https://plausible.io/js/plausible.js"></script>
+  )}
+  <!-- TODO: <link rel="icon" href={favicon} /> -->
+  {context.config.experimentalMath && (
+    <link
+      slot="head"
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css"
+    />
+  )}
+  <!-- TODO: {config.experimentalCodehike && (
+    <link slot="head" data-testid="codehike-styles" rel="stylesheet" href={codeHikeStyles} />
+  )} -->
+</Root>
