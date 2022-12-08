@@ -18,7 +18,7 @@ export interface ConfigWithoutLocales {
   theme: string;
   // Docsearch Application ID. If populated, a search box with autocomplete will be rendered.
   docsearch?: {
-    appId?: string;
+    appId: string;
     apiKey: string;
     indexName: string;
   };
