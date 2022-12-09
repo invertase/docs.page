@@ -64,7 +64,7 @@ const $GetBundleResponseSuccess = z.object({
       }),
     )
     .nullable(),
-  baseBranch: z.string().nullable(),
+  baseBranch: z.string(),
   path: z.string().nullable(),
   repositoryFound: z.boolean(),
   source: z.object({
@@ -75,7 +75,10 @@ const $GetBundleResponseSuccess = z.object({
   }),
 });
 
-const $GetBundleResponse = z.union([$GetBundleResponseError, $GetBundleResponseSuccess]);
+const $GetBundleResponse = z.object({
+  status: z.number(),
+  bundle: z.union([$GetBundleResponseError, $GetBundleResponseSuccess]),
+});
 
 export type GetBundleRequest = z.infer<typeof $GetBundleRequest>;
 export type GetBundleResponse = z.infer<typeof $GetBundleResponse>;
@@ -103,7 +106,10 @@ export async function getBundle(options: GetBundleRequest): Promise<GetBundleRes
 
   // These are valid JSON responses from the server.
   if ([200, 404, 400].includes(response.status)) {
-    return $GetBundleResponse.parse(await response.json());
+    return $GetBundleResponse.parse({
+      status: response.status,
+      bundle: await response.json(),
+    });
   }
 
   throw new Error(`Failed to fetch bundle for "${endpoint}". HTTP Status: "${response.status}".`);

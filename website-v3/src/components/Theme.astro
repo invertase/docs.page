@@ -1,0 +1,28 @@
+---
+import Color from 'color';
+import context from 'src/context';
+
+type Props = {
+  fallback: string;
+};
+
+let color: Color;
+try {
+  color = Color(context.get().config.theme);
+} catch {
+  color = Color(Astro.props.fallback);
+}
+---
+
+<script
+  is:inline
+  data-base={color.hex().toString()}
+  data-light={color.lighten(0.2).hex().toString()}
+  data-dark={color.darken(0.2).hex().toString()}
+>
+  const root = document.documentElement;
+  root.style.setProperty('--theme-color', document.currentScript.getAttribute('data-base'));
+  root.style.setProperty('--theme-color-light', document.currentScript.getAttribute('data-light'));
+  root.style.setProperty('--theme-color-dark', document.currentScript.getAttribute('data-dark'));
+  root.style.setProperty('--docsearch-primary-color', document.currentScript.getAttribute('data-base'));
+</script>
