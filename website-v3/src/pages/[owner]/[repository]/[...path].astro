@@ -1,13 +1,21 @@
 ---
 import Root from '@layouts/Root.astro';
+import Header from '@layouts/Header.astro';
+import Sidebar from '@layouts/Sidebar.astro';
+import Navigation from '@layouts/Navigation.astro';
+
+import Scripts from '@components/Scripts.astro';
+import Links from '@components/Links.astro';
+import Markdown from '@components/Markdown';
+
 import { getBundle } from 'src/bundle';
 import context from 'src/context';
 import type { GetBundleResponse } from 'src/bundle';
-import { isExternalLink, replaceMoustacheVariables, getImagePath } from 'src/utils';
+import { isExternalLink, replaceMoustacheVariables, getImagePath, ensureLeadingSlash } from 'src/utils';
 import domains from '../../../../../domains.json';
 import Theme from '@components/Theme.astro';
 
-let { owner, repository } = Astro.params;
+let { owner, repository, path } = Astro.params;
 let ref: string | undefined;
 
 if (!owner || !repository) {
@@ -23,12 +31,15 @@ let status: GetBundleResponse['status'];
 let bundle: GetBundleResponse['bundle'];
 
 try {
-  let { status, bundle } = await getBundle({
+  const response = await getBundle({
     owner,
     repository,
     ref,
-    path: Astro.params.slug!,
+    path,
   });
+
+  status = response.status;
+  bundle = response.bundle;
 } catch (e) {
   console.error(e);
 }
@@ -57,6 +68,8 @@ const domain = domains.find(([, repository]) => repository === `${owner}/${repos
 context.set({
   owner,
   repository,
+  relativePath: ensureLeadingSlash(path || '/'),
+  ref,
   config,
   frontmatter: bundle!.frontmatter,
   code: replaceMoustacheVariables(config.variables ?? {}, bundle!.code),
@@ -67,69 +80,33 @@ context.set({
 });
 
 // TODO: Handle status codes
+// TODO: Handle meta tags
 ---
 
 <Root>
-  <link
-    slot="head"
-    rel="shortcut icon"
-    href={getImagePath(config.favicon || 'https://docs.page/favicon.ico?v=2')}
-  />
-  {
-    config.googleAnalytics && (
-      <script
-        slot="head"
-        async
-        src={`https://www.googletagmanager.com/gtag/js?id=${config.googleAnalytics}`}
-      />
-    )
-  }
-  {
-    config.googleAnalytics && (
-      <script
-        slot="head"
-        type="text/javascript"
-        data-value={config.googleAnalytics}
-        set:html={`
-        window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments)}
-        gtag('js', new Date()); gtag('config', document.currentScript.getAttribute('data-value'));
-        `}
-      />
-    )
-  }
-  {
-    config.googleTagManager && (
-      <script
-        slot="head"
-        type="text/javascript"
-        data-value={config.googleTagManager}
-        set:html={`
-      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-      })(window,document,'script','dataLayer',document.currentScript.getAttribute('data-value'));
-      `}
-      />
-    )
-  }
-  {
-    config.plausibleAnalytics && domain && (
-      <script slot="head" defer data-domain={domain} src="https://plausible.io/js/plausible.js" />
-    )
-  }
-  {
-    config.experimentalMath && (
-      <link
-        slot="head"
-        rel="stylesheet"
-        href="https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css"
-      />
-    )
-  }
-
-  <!-- TODO: {config.experimentalCodehike && (
-    <link slot="head" data-testid="codehike-styles" rel="stylesheet" href={codeHikeStyles} />
-  )} -->
-  <Theme fallback="#00bcd4" />
+  <Theme slot="head" fallback="#00bcd4" />
+  <Scripts slot="head" />
+  <Links slot="head" />
+  <Header />
+  <section class="max-w-8xl mx-auto px-4 sm:px-6 md:px-8">
+    <div
+      class="hidden lg:block fixed z-20 top-16 bottom-0 left-[max(0px,calc(50%-46rem))] right-auto w-[19.5rem] pb-10 px-8 overflow-y-auto"
+    >
+      <Sidebar />
+    </div>
+    <div class="lg:pl-[20rem]">
+      <div class="flex flex-row pt-9 gap-12 items-stretch">
+        <div
+          class="relative flex-grow mx-auto xl:-ml-12 overflow-auto xl:pr-1 xl:pl-12 max-w-3xl xl:max-w-[47rem] text-slate-500 dark:text-slate-400"
+        >
+          <Markdown />
+        </div>
+        <div class="hidden xl:flex flex-none z-10 pl-10 w-[19rem]">
+          <nav class="fixed text-sm leading-6 w-[16.5rem] h-[calc(100%-8rem)] overflow-y-auto">
+            <Navigation />
+          </nav>
+        </div>
+      </div>
+    </div>
+  </section>
 </Root>

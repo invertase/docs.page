@@ -1,0 +1,26 @@
+---
+import context from 'src/context';
+import { getImagePath } from 'src/utils';
+
+const { config } = context.get();
+
+// TODO experimental code hike
+---
+
+<link
+  slot="head"
+  rel="shortcut icon"
+  href={getImagePath(config.favicon || 'https://docs.page/favicon.ico?v=2')}
+/>
+{
+  config.experimentalMath && (
+    <link
+      slot="head"
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css"
+    />
+  )
+}
+<!-- TODO: {config.experimentalCodehike && (
+    <link slot="head" data-testid="codehike-styles" rel="stylesheet" href={codeHikeStyles} />
+  )} -->

@@ -1,0 +1,20 @@
+---
+import context from 'src/context';
+const headings = context.get().headings || [];
+---
+
+<ul id="navigation">
+  {
+    headings.map(heading => (
+      <li>
+        <a
+          href={`#${heading.id}`}
+          class="block break-words py-1 font-medium opacity-75 transition hover:opacity-100"
+        >
+          {heading.title}
+        </a>
+      </li>
+    ))
+  }
+</ul>
+<script></script>
