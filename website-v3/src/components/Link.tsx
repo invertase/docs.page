@@ -33,8 +33,6 @@ const Link: React.FC<LinkProps> = props => {
       href = `//${domain}/~${encodeURIComponent(ref)}${props.href}`;
     }
 
-    // TODO is active
-
     return (
       <a
         {...props}
@@ -45,7 +43,7 @@ const Link: React.FC<LinkProps> = props => {
       />
     );
   }
-  console.log(props.href, relativePath);
+
   return (
     <a
       {...props}
