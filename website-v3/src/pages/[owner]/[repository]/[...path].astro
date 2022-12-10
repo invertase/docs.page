@@ -4,6 +4,7 @@ import Header from '@layouts/Header.astro';
 import Sidebar from '@layouts/Sidebar.astro';
 import Navigation from '@layouts/Navigation.astro';
 
+import Meta from '@components/Meta.astro';
 import Scripts from '@components/Scripts.astro';
 import Links from '@components/Links.astro';
 import Markdown from '@components/Markdown';
@@ -18,6 +19,7 @@ import Theme from '@components/Theme.astro';
 let { owner, repository, path } = Astro.params;
 let ref: string | undefined;
 
+// TODO keep URL but show 404 page
 if (!owner || !repository) {
   return Astro.redirect('/404');
 }
@@ -80,10 +82,10 @@ context.set({
 });
 
 // TODO: Handle status codes
-// TODO: Handle meta tags
 ---
 
 <Root>
+  <Meta slot="head" />
   <Theme slot="head" fallback="#00bcd4" />
   <Scripts slot="head" />
   <Links slot="head" />

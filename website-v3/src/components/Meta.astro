@@ -1,0 +1,30 @@
+---
+import context from 'src/context';
+
+const { owner, repository, ref, domain, relativePath, frontmatter, config } = context.get();
+
+const title = frontmatter.title || frontmatter.name || `${owner}/${repository}`;
+const description = frontmatter.description || '';
+const url = domain
+  ? `https://${domain}${ref && `/~${ref}`}${relativePath}`
+  : `https://docs.page/${owner}/${repository}${ref && `~${ref}`}${relativePath}`;
+const image =
+  frontmatter.image ||
+  config.socialPreview ||
+  `/api/social-preview?owner=${owner}&repository=${repository}&ref=${ref}&path=${relativePath}`;
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+
+<meta name="twitter:card" content="summary_large_image" />
+{config.twitter && <meta name="twitter:site" content={`@${config.twitter}`} />}
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={image} />
+
+<meta property="og:type" content="article" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={url} />
+<meta property="og:image" content={image} />
