@@ -9,9 +9,14 @@ export interface Props {
 }
 
 const { title = '', description = '', image = '', author = '' } = Astro.props;
+const theme = Astro.cookies.get('theme').value;
 ---
 
-<html>
+<html
+  class:list={{
+    dark: !!theme && theme === 'dark',
+  }}
+>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -52,14 +57,10 @@ const { title = '', description = '', image = '', author = '' } = Astro.props;
     <meta name="twitter:creator" content={`@${author}`} />
   </head>
   <body class="font-inter overflow-x-hidden overflow-y-scroll dark:bg-zinc-900 dark:text-white">
-    <script is:inline>
-      if (
-        localStorage.theme === 'dark' ||
-        (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
-      ) {
+    <script is:inline define:vars={{ theme }}>
+      // Only check users preference if they haven't already set a theme
+      if (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
       }
     </script>
     <slot />

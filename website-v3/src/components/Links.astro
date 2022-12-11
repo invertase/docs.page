@@ -24,3 +24,8 @@ const { config } = context.get();
 <!-- TODO: {config.experimentalCodehike && (
     <link slot="head" data-testid="codehike-styles" rel="stylesheet" href={codeHikeStyles} />
   )} -->
+{
+  !!config.docsearch && (
+    <link rel="preconnect" href={`https://${config.docsearch.appId}-dsn.algolia.net`} crossorigin />
+  )
+}
