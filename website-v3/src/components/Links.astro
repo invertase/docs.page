@@ -26,6 +26,13 @@ const { config } = context.get();
   )} -->
 {
   !!config.docsearch && (
-    <link rel="preconnect" href={`https://${config.docsearch.appId}-dsn.algolia.net`} crossorigin />
+    <>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
+      <link
+        rel="preconnect"
+        href={`https://${config.docsearch.appId}-dsn.algolia.net`}
+        crossorigin
+      />
+    </>
   )
 }

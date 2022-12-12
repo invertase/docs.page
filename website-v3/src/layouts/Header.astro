@@ -34,7 +34,7 @@ const logoDark = getImagePath(config.logoDark);
         </Link>
       </div>
       <div>
-        {!!config.docsearch && <Search />}
+        {!!config.docsearch && <Search {...config.docsearch} />}
       </div>
       <div class="flex-1 flex items-center justify-end">Menu</div>
     </div>

@@ -1,15 +1,23 @@
 ---
-import '@docsearch/css';
+type Props = {
+  appId: string;
+  apiKey: string;
+  indexName: string;
+};
+
+const { appId, apiKey, indexName } = Astro.props;
 ---
 
-<div id="#docsearch"></div>
+<div data-docsearch data-appId={appId} data-apiKey={apiKey} data-indexName={indexName}></div>
 <script>
   import docsearch from '@docsearch/js';
 
+  const element = document.querySelector('div[data-docsearch]') as HTMLDivElement;
+
   docsearch({
-    container: '#docsearch',
-    appId: 'R2IYF7ETH7',
-    apiKey: '599cec31baffa4868cae4e79f180729b',
-    indexName: 'docsearch',
+    container: element,
+    appId: element.dataset.appid!,
+    indexName: element.dataset.indexname!,
+    apiKey: element.dataset.apikey!,
   });
 </script>
