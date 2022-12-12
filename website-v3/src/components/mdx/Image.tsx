@@ -7,17 +7,21 @@ interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
 
 const Image: React.FC<ImageProps> = props => {
   const src = getImagePath(props.src ?? '');
+  const { width, height, ...other } = props;
 
   return (
-    <img
-      {...props}
-      src={src}
-      loading="lazy"
-      style={{
-        width: props.width ? parseInt(props.width.toString()) : 'inherit',
-        height: props.height ? parseInt(props.height.toString()) : 'inherit',
-      }}
-    />
+    <figure>
+      <img
+        {...other}
+        src={src}
+        loading="lazy"
+        className="mx-auto"
+        style={{
+          width: width ? parseInt(width.toString()) : 'inherit',
+          height: height ? parseInt(height.toString()) : 'inherit',
+        }}
+      />
+    </figure>
   );
 };
 

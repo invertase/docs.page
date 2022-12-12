@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@astrojs/react": "^1.2.2",
-    "@astrojs/vercel": "^2.3.5",
+    "@astrojs/vercel": "2.3.4",
     "@tailwindcss/typography": "^0.5.8",
     "@types/classnames": "^2.3.1",
     "@types/color": "^3.0.3",

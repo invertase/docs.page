@@ -60,7 +60,7 @@ const theme = Astro.cookies.get('theme').value;
     <script is:inline define:vars={{ theme }}>
       // Only check users preference if they haven't already set a theme
       if (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        document.documentElement.classList.add('dark');
+        document.documentElement.setAttribute('data-theme', 'dark');
       }
     </script>
     <slot />
