@@ -1,0 +1,6 @@
+{
+  "buildCommand": "cd website-v3 && npm run build",
+  "devCommand": "cd website-v3 && npm run dev",
+  "installCommand": "cd website-v3 && npm install",
+  "outputDirectory": "website-v3/dist"
+}

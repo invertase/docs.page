@@ -12,9 +12,9 @@ import Markdown from '@components/Markdown';
 import { getBundle } from 'src/bundle';
 import context from 'src/context';
 import type { GetBundleResponse } from 'src/bundle';
-import { isExternalLink, replaceMoustacheVariables, getImagePath, ensureLeadingSlash } from 'src/utils';
-import domains from '../../../../../domains.json';
+import { isExternalLink, replaceMoustacheVariables, ensureLeadingSlash } from 'src/utils';
 import Theme from '@components/Theme.astro';
+import domains from '../../../../../domains.json';
 
 let { owner, repository, path } = Astro.params;
 let ref: string | undefined;

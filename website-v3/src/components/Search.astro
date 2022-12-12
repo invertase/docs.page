@@ -6,6 +6,8 @@ type Props = {
 };
 
 const { appId, apiKey, indexName } = Astro.props;
+
+// TODO: improve styling
 ---
 
 <div data-docsearch data-appId={appId} data-apiKey={apiKey} data-indexName={indexName}></div>
