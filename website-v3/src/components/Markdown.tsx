@@ -1,4 +1,4 @@
-import { getMDXComponent } from 'mdx-bundler/client';
+import { getMDXComponent } from 'mdx-bundler/client/index.js';
 import context from 'src/context';
 
 import Link from './Link';
