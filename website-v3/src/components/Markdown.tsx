@@ -8,6 +8,7 @@ import YouTube from './mdx/YouTube';
 import Vimeo from './mdx/Vimeo';
 import Table from './mdx/Table';
 import Heading from './mdx/Heading';
+import Tabs, { TabItem } from './mdx/Tabs';
 
 const Markdown: React.FC = () => {
   const code = context.get().code;
@@ -30,8 +31,8 @@ const Markdown: React.FC = () => {
           h6: props => <Heading {...props} type="h6" />,
           Heading,
           Tweet: props => <div>TODO</div>,
-          Tabs: props => <div>TODO</div>,
-          TabItem: props => <div>TODO</div>,
+          Tabs: props => <Tabs {...props} />,
+          TabItem: props => <TabItem {...props} />,
           Image,
           YouTube,
           Vimeo,
