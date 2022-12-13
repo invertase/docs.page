@@ -2,6 +2,7 @@ import { getMDXComponent } from 'mdx-bundler/client/index.js';
 import context from 'src/context';
 
 import Link from './Link';
+import CodeBlock, { CodeBlockProps } from './mdx/CodeBlock';
 import Image from './mdx/Image';
 import YouTube from './mdx/YouTube';
 import Vimeo from './mdx/Vimeo';
@@ -19,6 +20,7 @@ const Markdown: React.FC = () => {
           a: props => <Link {...props} href={props.href || '/'} />,
           img: props => <Image {...props} />,
           table: props => <Table {...props} />,
+          pre: props => <CodeBlock {...(props as CodeBlockProps)} />,
           code: props => <code {...props} className="before:content-[''] after:content-['']" />,
           h1: props => <Heading {...props} type="h1" />,
           h2: props => <Heading {...props} type="h2" />,

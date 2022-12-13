@@ -1,4 +1,6 @@
 ---
+import context from 'src/context';
+
 export interface Props {
   // Sets the <title> tag of the page
   title?: string;
@@ -9,7 +11,7 @@ export interface Props {
 }
 
 const { title = '', description = '', image = '', author = '' } = Astro.props;
-const theme = Astro.cookies.get('theme').value;
+const { theme } = context.get();
 ---
 
 <html

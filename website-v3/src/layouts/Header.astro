@@ -23,10 +23,19 @@ const logoDark = getImagePath(config.logoDark);
               <img
                 alt="Logo"
                 class:list={['inline-block h-[30px]', { 'dark:hidden': !!logoDark }]}
+                src={getImagePath(logoLight)}
               />
             )
           }
-          {!!logoDark && <img alt="Logo" class="hidden h-[30px] dark:inline-block" />}
+          {
+            !!logoDark && (
+              <img
+                alt="Logo"
+                class="hidden h-[30px] dark:inline-block"
+                src={getImagePath(logoDark)}
+              />
+            )
+          }
           {
             !logoLight && !logoDark && (
               <span class="text-2xl font-bold">{config.name || `${owner}/${repository}`}</span>

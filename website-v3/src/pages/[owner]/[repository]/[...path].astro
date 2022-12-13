@@ -1,6 +1,7 @@
 ---
 import Root from '@layouts/Root.astro';
 import Header from '@layouts/Header.astro';
+import Footer from '@layouts/Footer.astro';
 import Sidebar from '@layouts/Sidebar.astro';
 import Navigation from '@layouts/Navigation.astro';
 
@@ -63,6 +64,7 @@ if (redirect && isExternalLink(redirect)) {
 }
 
 // Set the theme color
+const theme = Astro.cookies.get('theme').value;
 const config = bundle!.config;
 const domain = domains.find(([, repository]) => repository === `${owner}/${repository}`)?.at(0);
 
@@ -79,6 +81,7 @@ context.set({
   domain,
   baseBranch: bundle!.baseBranch,
   source: bundle!.source,
+  theme: theme ? (theme === 'dark' ? 'dark' : 'light') : undefined,
 });
 
 // TODO: Handle status codes
@@ -102,8 +105,9 @@ context.set({
           class="relative flex-grow mx-auto xl:-ml-12 overflow-auto xl:pr-1 xl:pl-12 max-w-3xl xl:max-w-[47rem] text-slate-500 dark:text-slate-400"
         >
           <Markdown />
+          <Footer />
         </div>
-        <div class="hidden xl:flex flex-none z-10 pl-10 w-[19rem]">
+        <div class="hidden xl:flex flex-none z-10 pl-10 w-[17rem]">
           <nav class="fixed text-sm leading-6 w-[16.5rem] h-[calc(100%-8rem)] overflow-y-auto">
             <Navigation />
           </nav>

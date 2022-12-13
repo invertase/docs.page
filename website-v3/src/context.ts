@@ -24,6 +24,8 @@ export type Context = {
   baseBranch: GetBundleResponseSuccess['baseBranch'];
   // The source of the page contents
   source: GetBundleResponseSuccess['source'];
+  // The theme of the site
+  theme: 'light' | 'dark' | undefined;
 };
 
 const store = map<Context>();
