@@ -13,6 +13,7 @@
   "dependencies": {
     "@astrojs/node": "^3.1.0",
     "@astrojs/tailwind": "^2.1.3",
+    "@astrojs/prefetch": "^0.1.1",
     "@docsearch/js": "^3.3.0",
     "@docsearch/react": "^3.3.0",
     "@vercel/og": "^0.0.21",
