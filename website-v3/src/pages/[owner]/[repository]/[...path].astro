@@ -66,6 +66,7 @@ if (redirect && isExternalLink(redirect)) {
 // Set the theme color
 const theme = Astro.cookies.get('theme').value;
 const config = bundle!.config;
+const source = bundle!.source;
 const domain = domains.find(([, repository]) => repository === `${owner}/${repository}`)?.at(0);
 
 // Set the context store.
@@ -73,6 +74,9 @@ context.set({
   owner,
   repository,
   relativePath: ensureLeadingSlash(path || '/'),
+  githubPath: `https://github.com/${owner}/${repository}/edit/${
+    source.type === 'branch' && source.ref !== 'HEAD' ? source.ref : bundle!.baseBranch
+  }/docs/${path || 'index'}.mdx`,
   ref,
   config,
   frontmatter: bundle!.frontmatter,
@@ -80,7 +84,7 @@ context.set({
   headings: bundle!.headings,
   domain,
   baseBranch: bundle!.baseBranch,
-  source: bundle!.source,
+  source,
   theme: theme ? (theme === 'dark' ? 'dark' : 'light') : undefined,
 });
 

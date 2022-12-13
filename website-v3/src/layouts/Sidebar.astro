@@ -28,7 +28,7 @@ const sidebar = context.get().config.sidebar || [];
         return (
           <li class="my-8">
             <h5 class="mb-3 block font-semibold tracking-wide">{title}</h5>
-            <ul class="space-y-2 border-l border-slate-700">
+            <ul class="space-y-2 border-l dark:border-slate-700">
               {urlOrChildren.map(([title, url]) => (
                 <li>
                   <Link

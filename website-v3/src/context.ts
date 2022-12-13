@@ -10,6 +10,8 @@ export type Context = {
   ref: string | undefined;
   // The relative path of the page (e.g. /getting-started)
   relativePath: string;
+  // The path to the page on github
+  githubPath: string;
   // The docs.json config file
   config: BundleConfig;
   // Frontmatter of the current page
