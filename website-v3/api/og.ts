@@ -1,4 +1,5 @@
 import { ImageResponse } from '@vercel/og';
+import { OgComponent } from './OgComponent';
 
 // Note; this API route is deployed to Vercel separatly from Astro since it
 // needs to run on the edge.
@@ -20,11 +21,8 @@ export default function handler(req: Request) {
   const domain = params.get('domain');
   const logo = params.get('logo');
 
-  return new ImageResponse(
-    <div tw="w-full h-full flex flex-col items-center justify-center bg-white">Hello world!</div>,
-    {
-      width: 1200,
-      height: 600,
-    },
-  );
+  return new ImageResponse(OgComponent({ owner, repository }), {
+    width: 1200,
+    height: 600,
+  });
 }

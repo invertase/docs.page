@@ -1,6 +1,7 @@
 ---
 import Link from '@components/Link';
 import context from 'src/context';
+import { isExternalLink } from 'src/utils';
 
 const sidebar = context.get().config.sidebar || [];
 ---
@@ -16,6 +17,7 @@ const sidebar = context.get().config.sidebar || [];
                 href={urlOrChildren}
                 className="mb-3 block font-medium tracking-wide opacity-75 transition hover:opacity-100"
                 activeClassName="text-docs-theme opacity-100"
+                rel={isExternalLink(urlOrChildren) ? 'noopener noreferrer' : 'prefetch'}
               >
                 {title}
               </Link>
@@ -33,6 +35,7 @@ const sidebar = context.get().config.sidebar || [];
                     href={url}
                     className="hover:border-docs-theme relative -left-px block border-l border-transparent pl-4 opacity-75 transition hover:opacity-100"
                     activeClassName="border-docs-theme opacity-100 font-semibold tracking-wide text-docs-theme"
+                    rel={isExternalLink(url) ? 'noopener noreferrer' : 'prefetch'}
                   >
                     {title}
                   </Link>
