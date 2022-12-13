@@ -12,7 +12,6 @@ export interface Props {
 
 const { title = '', description = '', image = '', author = '' } = Astro.props;
 const { theme } = context.get();
-console.log('theme', theme);
 ---
 
 <html data-theme={!!theme && theme === 'dark' ? 'dark' : ''}>
