@@ -10,6 +10,7 @@ const headings = context.get().headings || [];
         <a
           href={`#${heading.id}`}
           class="block break-words py-1 font-medium opacity-75 transition hover:opacity-100"
+          class:list={{}}
         >
           {heading.title}
         </a>

@@ -1,6 +1,7 @@
 ---
 import Link from '@components/Link';
 import Search from '@components/Search.astro';
+import ThemeToggle from '@components/ThemeToggle.astro';
 import context from 'src/context';
 import { getImagePath } from 'src/utils';
 
@@ -40,7 +41,9 @@ const logoDark = getImagePath(config.logoDark);
       >
         {!!config.docsearch && <Search {...config.docsearch} />}
       </div>
-      <div class="flex-1 flex items-center justify-end">Menu</div>
+      <div class="flex-1 flex items-center justify-end">
+        <ThemeToggle />
+      </div>
     </div>
   </div>
 </header>

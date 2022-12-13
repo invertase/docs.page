@@ -4,7 +4,9 @@ import context from 'src/context';
 import Link from './Link';
 import Image from './mdx/Image';
 import YouTube from './mdx/YouTube';
+import Vimeo from './mdx/Vimeo';
 import Table from './mdx/Table';
+import Heading from './mdx/Heading';
 
 const Markdown: React.FC = () => {
   const code = context.get().code;
@@ -18,8 +20,19 @@ const Markdown: React.FC = () => {
           img: props => <Image {...props} />,
           table: props => <Table {...props} />,
           code: props => <code {...props} className="before:content-[''] after:content-['']" />,
+          h1: props => <Heading {...props} type="h1" />,
+          h2: props => <Heading {...props} type="h2" />,
+          h3: props => <Heading {...props} type="h3" />,
+          h4: props => <Heading {...props} type="h4" />,
+          h5: props => <Heading {...props} type="h5" />,
+          h6: props => <Heading {...props} type="h6" />,
+          Heading,
+          Tweet: props => <div>TODO</div>,
+          Tabs: props => <div>TODO</div>,
+          TabItem: props => <div>TODO</div>,
           Image,
           YouTube,
+          Vimeo,
         }}
       />
     </main>
