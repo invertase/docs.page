@@ -63,6 +63,23 @@ const { config, domain } = ctx;
 </script>
 
 <script>
+  const elements = document.querySelectorAll('main img[data-zoom="true"]');
+
+  // Only download the library if we need it.
+  if (elements.length) {
+    const zoom = (await import('medium-zoom')).default;
+    zoom('main img[data-zoom="true"]', {
+      container: document.body,
+      // Theme is applied via CSS in Styles.astro
+      background: 'transparent',
+    });
+  }
+
+  console.log(elements);
+  import zoom from 'medium-zoom';
+</script>
+
+<script>
   import type { Context } from 'src/context';
   const { owner, repository, domain } = (window as any).docs_page as Context;
 
