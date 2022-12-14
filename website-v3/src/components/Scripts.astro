@@ -25,6 +25,44 @@ const { config, domain } = ctx;
 </script>
 
 <script>
+  declare global {
+    interface Window {
+      twttr: {
+        widgets: {
+          createTweet: (tweetId: string, el: HTMLElement, options?: any) => Promise<void>;
+        };
+      };
+    }
+  }
+
+  import type { Context } from 'src/context';
+  const { theme } = (window as any).docs_page as Context;
+
+  const tweets = document.querySelectorAll('div[data-tweet]');
+
+  if (tweets.length) {
+    const script = document.createElement('script');
+    script.src = 'https://platform.twitter.com/widgets.js';
+
+    script.onload = () => {
+      for (const tweet of tweets) {
+        const id = tweet.getAttribute('data-tweet-id')!;
+        window.twttr.widgets.createTweet(id, tweet as HTMLElement, {
+          dnt: true,
+          cards: tweet.getAttribute('data-tweet-cards') === 'true' ? '' : 'hidden',
+          conversation: tweet.getAttribute('data-tweet-conversation') === 'true' ? '' : 'hidden',
+          theme:
+            theme ||
+            (document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'),
+        });
+      }
+    };
+
+    document.head.appendChild(script);
+  }
+</script>
+
+<script>
   import type { Context } from 'src/context';
   const { owner, repository, domain } = (window as any).docs_page as Context;
 
