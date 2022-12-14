@@ -28,6 +28,8 @@ export type Context = {
   source: GetBundleResponseSuccess['source'];
   // The theme of the site
   theme: 'light' | 'dark' | undefined;
+  // Any syncronized tabs (via groupId).
+  tabs: Record<string, string>;
 };
 
 const store = map<Context>();

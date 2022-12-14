@@ -1,9 +1,69 @@
 ---
 import context from 'src/context';
 
-const { domain, config } = context.get();
+const ctx = context.get();
+const { config, domain } = ctx;
 ---
 
+<script is:inline define:vars={{ ctx }}>
+  window.docs_page = { ...ctx };
+</script>
+
+<script>
+  import type { Context } from 'src/context';
+  const { owner, repository, domain } = (window as any).docs_page as Context;
+
+  const tabs = document.querySelectorAll('div[data-tab-group]');
+
+  const getButtons = (el: Element) => el.querySelectorAll('button[data-tab-group-button]');
+  const getPanes = (el: Element) => el.querySelectorAll('div[data-tab-group-pane]');
+
+  const setButtonState = (button: Element, id: string) => {
+    const active = (button.getAttribute('data-tab-group-button-id') === id).toString();
+    button.setAttribute('aria-selected', active);
+  };
+
+  const setPaneState = (pane: Element, id: string) => {
+    if (pane.getAttribute('data-tab-group-pane-id') === id) {
+      pane.classList.remove('hidden');
+    } else {
+      pane.classList.add('hidden');
+    }
+  };
+
+  for (const tab of tabs) {
+    const groupId = tab.getAttribute('data-tab-group-id');
+    const groups = groupId ? document.querySelectorAll(`div[data-tab-group-id="${groupId}"]`) : [];
+
+    const buttons = getButtons(tab);
+    const panes = getPanes(tab);
+
+    for (const button of buttons) {
+      const buttonId = button.getAttribute('data-tab-group-button-id')!;
+
+      button.addEventListener('click', () => {
+        if (groupId) {
+          fetch('/api/tabs-sync', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ owner, repository, domain, groupId, buttonId }),
+          });
+        }
+
+        for (const button of buttons) setButtonState(button, buttonId);
+        for (const pane of panes) setPaneState(pane, buttonId);
+
+        for (const group of groups) {
+          const buttons = getButtons(group);
+          const panes = getPanes(group);
+
+          for (const button of buttons) setButtonState(button, buttonId);
+          for (const pane of panes) setPaneState(pane, buttonId);
+        }
+      });
+    }
+  }
+</script>
 {
   config.googleAnalytics && (
     <script async src={`https://www.googletagmanager.com/gtag/js?id=${config.googleAnalytics}`} />

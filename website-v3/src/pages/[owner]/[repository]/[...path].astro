@@ -60,6 +60,15 @@ if (owner && repository) {
 
     // Set the theme color
     const theme = Astro.cookies.get('theme').value;
+
+    // Get any syncronized tabs
+    let tabs = {};
+    try {
+      tabs = Astro.cookies.get('tabs').json();
+    } catch {
+      // noop
+    }
+
     const config = bundle!.config;
     const source = bundle!.source;
     const domain = domains.find(([, repository]) => repository === `${owner}/${repository}`)?.at(0);
@@ -81,6 +90,7 @@ if (owner && repository) {
       baseBranch: bundle!.baseBranch,
       source,
       theme: theme ? (theme === 'dark' ? 'dark' : 'light') : undefined,
+      tabs,
     });
   }
 }
