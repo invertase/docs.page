@@ -31,7 +31,7 @@ const Markdown: React.FC = () => {
           h5: props => <Heading {...props} type="h5" />,
           h6: props => <Heading {...props} type="h6" />,
           Heading,
-          Tweet: props => <Tweet id={props.id} />,
+          Tweet: props => <Tweet {...props} />,
           Tabs: props => <Tabs {...props} />,
           TabItem: props => <TabItem {...props} />,
           Image,
