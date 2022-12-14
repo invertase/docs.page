@@ -10,6 +10,21 @@ const { config, domain } = ctx;
 </script>
 
 <script>
+  const copy = document.querySelectorAll('[data-copy]');
+
+  for (const button of copy) {
+    button.addEventListener('click', () => {
+      button.innerHTML = 'Copied';
+      navigator.clipboard.writeText(button.getAttribute('data-copy-value') || '');
+
+      setTimeout(() => {
+        button.innerHTML = 'Copy';
+      }, 1500);
+    });
+  }
+</script>
+
+<script>
   import type { Context } from 'src/context';
   const { owner, repository, domain } = (window as any).docs_page as Context;
 

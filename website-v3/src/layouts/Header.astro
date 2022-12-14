@@ -48,7 +48,7 @@ const logoDark = getImagePath(config.logoDark);
           'lg:w-64 xl:w-80': !!config.docsearch,
         }}
       >
-        {!!config.docsearch && <Search {...config.docsearch} />}
+        {!!config.docsearch && <Search />}
       </div>
       <div class="flex-1 flex items-center justify-end">
         <ThemeToggle />

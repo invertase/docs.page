@@ -1,18 +1,8 @@
 ---
 import { MagnifyingGlassIcon } from './icons';
-
-type Props = {
-  appId: string;
-  apiKey: string;
-  indexName: string;
-};
-
-const { appId, apiKey, indexName } = Astro.props;
-
-// TODO: improve styling
 ---
 
-<div data-docsearch data-appId={appId} data-apiKey={apiKey} data-indexName={indexName}></div>
+<div data-docsearch></div>
 <button
   data-docsearch-override
   class="w-full bg-gradient-to-b from-gray-100 to-gray-100 dark:from-zinc-800/80 dark:to-zinc-800/40 flex items-center rounded px-4 py-2 border dark:border-zinc-800 hover:border-zinc-700/30 dark:hover:border-zinc-700/50 gap-2 text-sm text-gray-500 dark:text-white/70 dark:hover:text-white/90 transition"
@@ -24,23 +14,24 @@ const { appId, apiKey, indexName } = Astro.props;
 <style is:global></style>
 <script>
   import docsearch from '@docsearch/js';
+  import type { Context } from 'src/context';
 
-  const element = document.querySelector('div[data-docsearch]') as HTMLDivElement;
-  const override = document.querySelector('button[data-docsearch-override]') as HTMLButtonElement;
+  const { config } = (window as any).docs_page as Context;
 
-  docsearch({
-    container: element,
-    appId: element.dataset.appid!,
-    indexName: element.dataset.indexname!,
-    apiKey: element.dataset.apikey!,
-  });
+  if (config.docsearch) {
+    const element = document.querySelector('div[data-docsearch]') as HTMLDivElement;
+    const override = document.querySelector('button[data-docsearch-override]') as HTMLButtonElement;
+    
+    docsearch({
+      container: element,
+      ...config.docsearch,
+    });
 
-  // Once triggered, get the native docsearch button
-  const button = element.querySelector('button.DocSearch') as HTMLButtonElement;
+    // Once triggered, get the native docsearch button and hide it.
+    const button = element.querySelector('button.DocSearch') as HTMLButtonElement;
+    button.style.display = 'none';
 
-  // Hide it
-  button.style.display = 'none';
-
-  // Then attach our own button to the native one
-  override.addEventListener('click', () => button.click());
+    // Then attach our own button to the native one
+    override.addEventListener('click', () => button.click());
+  }
 </script>
