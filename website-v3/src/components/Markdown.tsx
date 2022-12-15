@@ -9,6 +9,7 @@ import Vimeo from './mdx/Vimeo';
 import Table from './mdx/Table';
 import Heading from './mdx/Heading';
 import Tweet from './mdx/Tweet';
+import Zapp from './mdx/Zapp';
 import Tabs, { TabItem } from './mdx/Tabs';
 
 const Markdown: React.FC = () => {
@@ -37,6 +38,7 @@ const Markdown: React.FC = () => {
           Image,
           YouTube,
           Vimeo,
+          Zapp,
         }}
       />
     </main>
