@@ -17,9 +17,9 @@ import type { GetBundleResponse } from 'src/bundle';
 import { isExternalLink, replaceMoustacheVariables, ensureLeadingSlash } from 'src/utils';
 import Theme from '@components/Theme.astro';
 import domains from '../../../../../domains.json';
+import { trackPageRequest } from 'src/plausible';
 
 let status: GetBundleResponse['status'] = 404;
-
 let { owner, repository, path } = Astro.params;
 let ref: string | undefined;
 
@@ -58,6 +58,9 @@ if (owner && repository) {
     } else if (redirect) {
       return Astro.redirect(`/${owner}/${repository}${redirect}`);
     }
+
+    // Track the page request
+    await trackPageRequest(Astro.request);
 
     // Set the theme color
     const theme = Astro.cookies.get('theme').value;
