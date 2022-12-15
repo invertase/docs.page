@@ -6,10 +6,17 @@ const { config, domain } = ctx;
 ---
 
 <script is:inline define:vars={{ ctx }}>
+  // Load the context into the window, so we can access it from other scripts
+  // without losing access to Astros script hoisting.
   window.docs_page = { ...ctx };
 </script>
 
 <script>
+  /**
+   * This script looks for any buttons with the `data-copy` attribute, and adds
+   * an event listener to copy the value of the `data-copy-value` attribute to.
+   */
+
   const copy = document.querySelectorAll('[data-copy]');
 
   for (const button of copy) {
@@ -25,6 +32,10 @@ const { config, domain } = ctx;
 </script>
 
 <script>
+  /**
+   * This script is used to load the Twitter library, and apply it to any tweets
+   * with the `data-tweet="true"` attribute.
+   */
   declare global {
     interface Window {
       twttr: {
@@ -63,10 +74,13 @@ const { config, domain } = ctx;
 </script>
 
 <script>
-  const elements = document.querySelectorAll('main img[data-zoom="true"]');
+  /**
+   * This script is used to load the Medium Zoom library, and apply it to any images
+   * with the `data-zoom="true"` attribute.
+   */
 
   // Only download the library if we need it.
-  if (elements.length) {
+  if (document.querySelectorAll('main img[data-zoom="true"]').length) {
     const zoom = (await import('medium-zoom')).default;
     zoom('main img[data-zoom="true"]', {
       container: document.body,
@@ -74,12 +88,15 @@ const { config, domain } = ctx;
       background: 'transparent',
     });
   }
-
-  console.log(elements);
-  import zoom from 'medium-zoom';
 </script>
 
 <script>
+  /**
+   * This script is used to identify any tab groups on the page, and add event
+   * when a tab button is clicked. It also syncs the state of the tabs with a
+   * group ID across the page, and onto a cookie via the server.
+   */
+
   import type { Context } from 'src/context';
   const { owner, repository, domain } = (window as any).docs_page as Context;
 
