@@ -10,6 +10,7 @@ import Table from './mdx/Table';
 import Heading from './mdx/Heading';
 import Tweet from './mdx/Tweet';
 import Zapp from './mdx/Zapp';
+import * as callouts from './mdx/callouts';
 import Tabs, { TabItem } from './mdx/Tabs';
 
 const Markdown: React.FC = () => {
@@ -31,6 +32,10 @@ const Markdown: React.FC = () => {
           h4: props => <Heading {...props} type="h4" />,
           h5: props => <Heading {...props} type="h5" />,
           h6: props => <Heading {...props} type="h6" />,
+          Info: props => <callouts.Info>{props.children}</callouts.Info>,
+          Warning: props => <callouts.Warning>{props.children}</callouts.Warning>,
+          Error: props => <callouts.Error>{props.children}</callouts.Error>,
+          Success: props => <callouts.Success>{props.children}</callouts.Success>,
           Heading,
           Tweet: props => <Tweet {...props} />,
           Tabs: props => <Tabs {...props} />,
