@@ -4,39 +4,73 @@ import { visit } from 'unist-util-visit';
 import { Node } from 'hast-util-heading-rank';
 import { toString } from 'mdast-util-to-string';
 import * as shiki from 'shiki';
-
 let highlighter: shiki.Highlighter;
-
+//@ts-ignore
+import mermaid from 'headless-mermaid';
+//@ts-ignore
+import { fromHtml } from 'hast-util-from-html';
 /**
  * Matches any `pre code` elements and extracts the raw code and titles from the code block and assigns to the parent.
  * @returns
  */
 export default function rehypeCodeBlocks(): (ast: Node) => void {
-  function visitor(node: any, _i: number, parent: any) {
-    if (!parent || parent.tagName !== 'pre' || node.tagName !== 'code') {
-      return;
+
+  return async (ast: Node): Promise<null> => {
+
+    const promises: any[] = [];
+
+    async function visitor(node: any, i: number, parent: any) {
+      if (!parent || parent.tagName !== 'pre' || node.tagName !== 'code') {
+        return;
+      }
+
+      const language = getLanguage(node);
+
+      const raw = toString(node);
+
+      if (language === 'mermaid') {
+
+        const value = node.children[0].value;
+
+
+        promises.push(mermaid.execute(value).then((svgResult: string) => {
+          //@ts-ignore
+          console.log(fromHtml(svgResult).children[0].children[1].children)
+          //@ts-ignore
+          const svgNode = fromHtml(svgResult).children[0].children[1].children[0];
+
+          Object.assign(parent, svgNode);
+        }))
+
+        return;
+      }
+
+      // If the user provides the `console` language, we add the 'shell' language and remove $ from the raw code, for copying purposes.
+      if (language === 'console') {
+        const removedDollarSymbol = raw.replace(/^(^ *)\$/g, '');
+
+        parent.properties['raw'] = removedDollarSymbol;
+        parent.properties['html'] = highlighter.codeToHtml(raw, { lang: 'shell' });
+      } else {
+        parent.properties['raw'] = raw;
+        parent.properties['html'] = highlighter.codeToHtml(raw, { lang: language });
+      }
+
+      // Get any metadata from the code block
+      const meta = (node.data?.meta as string) ?? '';
+
+      const title = extractTitle(meta);
+      if (title) parent.properties['title'] = title;
     }
 
-    const language = getLanguage(node);
-    const raw = toString(node);
-
-    // Raw value of the `code` block - used for copy/paste
-    parent.properties['raw'] = raw;
-    parent.properties['html'] = highlighter.codeToHtml(raw, language);
-
-    // Get any metadata from the code block
-    const meta = (node.data?.meta as string) ?? '';
-
-    const title = extractTitle(meta);
-    if (title) parent.properties['title'] = title;
-  }
-
-  return async (ast: Node): Promise<void> => {
     highlighter = await shiki.getHighlighter({
       theme: 'github-dark',
     });
     // @ts-ignore
     visit(ast, 'element', visitor);
+
+    await Promise.all(promises);
+    return null;
   };
 }
 

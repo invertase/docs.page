@@ -70,6 +70,7 @@ export async function bundle(
   return {
     code,
     frontmatter,
+    //@ts-ignore
     errors,
     headings: output.headings,
   };
