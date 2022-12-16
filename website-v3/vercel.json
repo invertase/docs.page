@@ -1,7 +1,1 @@
-{
-  "functions": {
-    "api/og.ts": {
-      "maxDuration": 10
-    }
-  }
-}
+{}
