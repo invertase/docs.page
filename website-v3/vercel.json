@@ -1,5 +1,7 @@
 {
   "functions": {
-    "api/*.ts": {}
+    "api/*.ts": {
+      "runtime": "vercel-nodejs"
+    }
   }
 }
