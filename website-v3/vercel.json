@@ -1,7 +1,7 @@
 {
   "functions": {
     "api/*.ts": {
-      "runtime": "vercel-nodejs"
+      "maxDuration": 10
     }
   }
 }
