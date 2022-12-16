@@ -1,5 +1,0 @@
-{
-  "functions": {
-    "website-v3/api/*.ts": {}
-  }
-}
