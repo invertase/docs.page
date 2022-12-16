@@ -62,6 +62,9 @@ if (owner && repository) {
     // Track the page request
     await trackPageRequest(Astro.request);
 
+    // Set the cache headers - see https://vercel.com/docs/concepts/edge-network/caching
+    Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate=59');
+
     // Set the theme color
     const theme = Astro.cookies.get('theme').value;
 
