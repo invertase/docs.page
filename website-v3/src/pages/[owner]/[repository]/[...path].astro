@@ -13,13 +13,15 @@ import Markdown from '@components/Markdown';
 
 import { getBundle } from 'src/bundle';
 import context from 'src/context';
-import type { GetBundleResponse } from 'src/bundle';
+import type { GetBundleResponse, GetBundleResponseError } from 'src/bundle';
 import { isExternalLink, replaceMoustacheVariables, ensureLeadingSlash } from 'src/utils';
 import Theme from '@components/Theme.astro';
 import domains from '../../../../../domains.json';
 import { trackPageRequest } from 'src/plausible';
+import NotFound from '@layouts/NotFound.astro';
 
 let status: GetBundleResponse['status'] = 404;
+let reason: GetBundleResponseError['reason'] | undefined = undefined;
 let { owner, repository, path } = Astro.params;
 let ref: string | undefined;
 
@@ -50,6 +52,7 @@ if (owner && repository) {
 
   if ('statusCode' in bundle!) {
     Astro.response.status = bundle!.statusCode;
+    reason = bundle!.reason;
   } else {
     // Handle a frontmatter redirect
     const redirect = bundle!.frontmatter.redirect;
@@ -115,11 +118,59 @@ switch (status) {
     break;
 }
 
-// TODO: Handle status codes
+function reasonToTitle(reason: GetBundleResponseError['reason']) {
+  switch (reason) {
+    case 'REPO_NOT_FOUND':
+      return 'Repository not found';
+    case 'BUNDLE_ERROR':
+      return 'Something went wrong';
+    case 'REF_NOT_FOUND':
+      return 'Git ref not found';
+    case 'BAD_CONFIG':
+    case 'MISSING_CONFIG':
+      return 'Invalid configuration file';
+  }
+}
+
+function reasonToDescription(reason: GetBundleResponseError['reason']) {
+  switch (reason) {
+    case 'REPO_NOT_FOUND':
+      return 'Sorry, we could not find the repository you were looking for.';
+    case 'BUNDLE_ERROR':
+      return 'Sorry, something went wrong whilst bundling the page.';
+    case 'REF_NOT_FOUND':
+      return 'Sorry, the provided Git ref was not found within the repository.';
+    case 'BAD_CONFIG':
+    case 'MISSING_CONFIG':
+      return 'Sorry, the provided docs.page configuration file is invalid.';
+  }
+}
 ---
 
-{state === 'not-found' && <div>404</div>}
-{state === 'error' && <div>500</div>}
+{
+  state === 'not-found' && (
+    <Root>
+      <NotFound
+        title={reasonToTitle(reason!)}
+        description={reasonToDescription(reason!)}
+        href={reason === 'REPO_NOT_FOUND' ? '/' : `/${owner}/${repository}`}
+      />
+    </Root>
+  )
+}
+
+{
+  state === 'error' && (
+    <Root>
+      <NotFound
+        title="Something went wrong"
+        description="Sorry, something went wrong whilst bundling the page."
+        href={`/${owner}/${repository}`}
+      />
+    </Root>
+  )
+}
+
 {
   state === 'success' && (
     <Root>

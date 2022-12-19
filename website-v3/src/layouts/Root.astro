@@ -54,7 +54,7 @@ const { theme } = context.get();
     <meta name="twitter:image" content={image} />
     <meta name="twitter:creator" content={`@${author}`} />
   </head>
-  <body class="font-inter overflow-x-hidden overflow-y-scroll dark:bg-zinc-900 dark:text-white">
+  <body class="font-inter overflow-x-hidden overflow-y-auto dark:bg-zinc-900 dark:text-white">
     <script is:inline define:vars={{ theme }}>
       // Only check users preference if they haven't already set a theme
       if (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches) {
