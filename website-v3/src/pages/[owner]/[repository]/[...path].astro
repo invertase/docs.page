@@ -9,6 +9,7 @@ import Meta from '@components/Meta.astro';
 import Scripts from '@components/Scripts.astro';
 import Styles from '@components/Styles.astro';
 import Links from '@components/Links.astro';
+import PreviousNext from '@components/PreviousNext.astro';
 import Markdown from '@components/Markdown';
 
 import { getBundle } from 'src/bundle';
@@ -188,6 +189,7 @@ function reasonToDescription(reason: GetBundleResponseError['reason']) {
           <div class="flex flex-row items-stretch gap-12 pt-9">
             <div class="relative mx-auto max-w-3xl flex-grow overflow-auto text-slate-500 dark:text-slate-400 xl:-ml-12 xl:max-w-[47rem] xl:pr-1 xl:pl-12">
               <Markdown />
+              <PreviousNext />
               <Footer />
             </div>
             <div class="z-10 hidden w-[17rem] flex-none pl-10 xl:flex">

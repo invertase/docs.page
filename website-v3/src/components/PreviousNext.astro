@@ -1,0 +1,71 @@
+---
+import context from 'src/context';
+import { ChevronLeftIcon, ChevronRightIcon } from './icons';
+import Link from './Link';
+
+const { relativePath, config, frontmatter } = context.get();
+const { sidebar, automaticallyInferNextPrevious } = config;
+
+const links: [string, string][] = [];
+
+// Finds any links in the sidebar and pushes them to a flattened array.
+function iterateSidebarArray(array: typeof sidebar) {
+  for (const [title, urlOrChildren] of array || []) {
+    if (typeof urlOrChildren === 'string') links.push([title, urlOrChildren]);
+    else if (Array.isArray(urlOrChildren)) iterateSidebarArray(urlOrChildren);
+  }
+}
+
+// Iterate the sidebar
+iterateSidebarArray(sidebar);
+
+// title, href
+type Anchor = [string, string];
+
+let previous: Anchor | undefined;
+let next: Anchor | undefined;
+
+// If the user has specified a previous or next page, use that.
+if (frontmatter.previous) previous = [frontmatter.previous, frontmatter.previousTitle];
+if (frontmatter.next) next = [frontmatter.next, frontmatter.nextTitle];
+
+// If the user wants auto infered previous/next, find them (if not already set).
+if (automaticallyInferNextPrevious) {
+  const currentIndex = links.findIndex(([title, href]) => href === relativePath);
+  if (currentIndex > -1 && !previous) previous = links[currentIndex - 1];
+  if (currentIndex > -1 && !next) next = links[currentIndex + 1];
+}
+---
+
+{
+  (!!previous || !!next) && (
+    <nav class="flex items-center pt-6 text-sm font-semibold tracking-wide text-white">
+      <div class="flex-1">
+        {!!previous && (
+          <Link
+            href={previous[1]}
+            className="group inline-flex items-center gap-2 opacity-75 transition hover:opacity-100"
+          >
+            <span class="group-hover:text-docs-theme h-4 w-4 transition">
+              <ChevronLeftIcon />
+            </span>
+            <span>{previous[0]}</span>
+          </Link>
+        )}
+      </div>
+      <div class="flex flex-1 justify-end">
+        {!!next && (
+          <Link
+            href={next[1]}
+            className="group inline-flex items-center gap-2 opacity-75 transition hover:opacity-100"
+          >
+            <span>{next[0]}</span>
+            <span class="group-hover:text-docs-theme h-4 w-4 transition">
+              <ChevronRightIcon />
+            </span>
+          </Link>
+        )}
+      </div>
+    </nav>
+  )
+}
