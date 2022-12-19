@@ -11,7 +11,9 @@ const headings = context.get().headings || [];
           data-id={heading.id}
           href={`#${heading.id}`}
           class="block break-words py-1 font-medium opacity-75 transition hover:opacity-100"
-          class:list={{}}
+          style={{
+            'padding-left': `${(heading.rank || 2) - 1 * 0.2}rem`,
+          }}
         >
           {heading.title}
         </a>

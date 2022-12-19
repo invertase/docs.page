@@ -4,6 +4,18 @@ import context from 'src/context';
 import { isExternalLink } from 'src/utils';
 
 const sidebar = context.get().config.sidebar || [];
+
+function getLinkRef(href: string): string {
+  if (import.meta.env.DEV) {
+    return '';
+  }
+
+  if (isExternalLink(href)) {
+    return 'noopener noreferrer';
+  }
+
+  return 'prefetch';
+}
 ---
 
 <nav class="mt-9 px-4">
@@ -17,7 +29,7 @@ const sidebar = context.get().config.sidebar || [];
                 href={urlOrChildren}
                 className="mb-3 block font-medium tracking-wide opacity-75 transition hover:opacity-100"
                 activeClassName="text-docs-theme opacity-100"
-                rel={isExternalLink(urlOrChildren) ? 'noopener noreferrer' : 'prefetch'}
+                rel={getLinkRef(urlOrChildren)}
               >
                 {title}
               </Link>
@@ -35,7 +47,7 @@ const sidebar = context.get().config.sidebar || [];
                     href={url}
                     className="hover:border-docs-theme relative -left-px block border-l border-transparent pl-4 opacity-75 transition hover:opacity-100"
                     activeClassName="border-docs-theme opacity-100 font-semibold tracking-wide text-docs-theme"
-                    rel={isExternalLink(url) ? 'noopener noreferrer' : 'prefetch'}
+                    rel={getLinkRef(url)}
                   >
                     {title}
                   </Link>

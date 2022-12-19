@@ -56,7 +56,7 @@ const Tabs: React.FC<TabsProps> = props => {
           </button>
         ))}
       </div>
-      <div className="my-3">
+      <div className="py-6">
         {tabs.map((tab: React.ReactElement, index) => {
           return (
             <div

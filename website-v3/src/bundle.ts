@@ -131,6 +131,5 @@ function getEndpoint(options: GetBundleRequest): string {
 
   if (import.meta.env.K_REVISION) params['_k_revision'] = import.meta.env.K_REVISION;
 
-  // TODO: querystring is deprecated
   return `${base}/bundle?${querystring.stringify(params)}`;
 }

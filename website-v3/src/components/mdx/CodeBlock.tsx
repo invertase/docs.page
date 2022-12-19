@@ -13,7 +13,10 @@ const CodeBlock: React.FC<CodeBlockProps> = props => {
       >
         Copy
       </button>
-      <div dangerouslySetInnerHTML={{ __html: props.html }}></div>
+      <div
+        dangerouslySetInnerHTML={{ __html: props.html }}
+        className="mb-6 rounded border dark:border-zinc-800"
+      />
     </div>
   );
 };
