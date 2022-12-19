@@ -7,13 +7,9 @@ import { isExternalLink } from 'src/utils';
 const { owner, repository, config } = context.get();
 const sidebar = config.sidebar || [];
 
-function getLinkRef(href: string): string {
-  if (import.meta.env.DEV) {
-    return '';
-  }
-
-  if (isExternalLink(href)) {
-    return 'noopener noreferrer';
+function getLinkRef(href: string): string | undefined {
+  if (import.meta.env.DEV || isExternalLink(href)) {
+    return;
   }
 
   return 'prefetch';
