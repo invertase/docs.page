@@ -1,5 +1,6 @@
 {
   "name": "docs.page",
+  "logo": "https://static.invertase.io/assets/docs.page/docs-page-logo.png",  
   "theme": "#36B9B9",
   "twitter": "invertaseio",
   "sidebar": [
@@ -28,6 +29,7 @@
     [
       "Advanced",
       [
+         ["Assets", "/assets"],
          ["Frontmatter", "/frontmatter"],
          ["Previews", "/previews"],
          ["Search", "/search"],
