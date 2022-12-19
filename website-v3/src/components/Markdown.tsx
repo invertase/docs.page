@@ -2,6 +2,8 @@ import { getMDXComponent } from 'mdx-bundler/client/index.js';
 import context from 'src/context';
 
 import Link from './Link';
+import FontAwesome from './FontAwesome';
+
 import CodeBlock, { CodeBlockProps } from './mdx/CodeBlock';
 import Image from './mdx/Image';
 import YouTube from './mdx/YouTube';
@@ -33,6 +35,7 @@ const Markdown: React.FC = () => {
           h5: props => <Heading {...props} type="h5" />,
           h6: props => <Heading {...props} type="h6" />,
           section: props => <section {...props} className="-mt-16 pt-16" />,
+          Icon: props => <FontAwesome name={props.name} />,
           Info: props => <callouts.Info>{props.children}</callouts.Info>,
           Warning: props => <callouts.Warning>{props.children}</callouts.Warning>,
           Error: props => <callouts.Error>{props.children}</callouts.Error>,

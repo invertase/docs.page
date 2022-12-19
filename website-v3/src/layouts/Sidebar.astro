@@ -1,9 +1,11 @@
 ---
+import FontAwesome, { FontAwesomeProps } from '@components/FontAwesome';
 import Link from '@components/Link';
 import context from 'src/context';
 import { isExternalLink } from 'src/utils';
 
-const sidebar = context.get().config.sidebar || [];
+const { owner, repository, config } = context.get();
+const sidebar = config.sidebar || [];
 
 function getLinkRef(href: string): string {
   if (import.meta.env.DEV) {
@@ -16,9 +18,37 @@ function getLinkRef(href: string): string {
 
   return 'prefetch';
 }
+
+type Anchor = { icon: FontAwesomeProps['name']; title: string; href: string };
+
+const anchors = [{
+  icon: 'github',
+  title: 'GitHub',
+  href: `https://github.com/${owner}/${repository}`
+}] satisfies Anchor[];
+
+if (config.twitter) {
+  anchors.push({
+    icon: 'twitter',
+    title: 'Twitter',
+    href: `https://twitter.com/${config.twitter}`
+  });
+}
 ---
 
 <nav class="mt-9">
+  <ul class="mb-6 space-y-3">
+    {anchors.map((anchor) => (
+      <li>
+        <Link href={anchor.href} className="group flex items-center gap-2">
+          <span class="w-6 h-6 rounded border opacity-75 dark:border-zinc-700 group-hover:border-transparent inline-flex items-center justify-center text-[14px] group-hover:bg-docs-theme group-hover:opacity-100 transition group-hover:text-white">
+            <FontAwesome name={anchor.icon} />
+          </span>
+          <span class="text-sm font-medium tracking-wide opacity-75 group-hover:opacity-100 transition">{anchor.title}</span>
+        </Link>
+      </li>
+    ))}
+  </ul>
   <ul class="lg:text-sm lg:leading-6">
     {
       sidebar.map(([title, urlOrChildren]) => {
@@ -27,7 +57,7 @@ function getLinkRef(href: string): string {
             <li>
               <Link
                 href={urlOrChildren}
-                className="mb-3 block font-medium tracking-wide opacity-75 transition hover:opacity-100"
+                className="mb-3 block font-medium  opacity-75 transition hover:opacity-100"
                 activeClassName="text-docs-theme opacity-100"
                 rel={getLinkRef(urlOrChildren)}
               >
