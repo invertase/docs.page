@@ -45,7 +45,7 @@ export function getImagePath(src: string) {
     return src;
   }
 
-  return;
+  return getBlobPath(src);
 }
 
 // Returns a raw blob path for a given path.
