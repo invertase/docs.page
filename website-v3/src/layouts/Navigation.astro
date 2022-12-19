@@ -8,6 +8,7 @@ const headings = context.get().headings || [];
     headings.map(heading => (
       <li>
         <a
+          data-id={heading.id}
           href={`#${heading.id}`}
           class="block break-words py-1 font-medium opacity-75 transition hover:opacity-100"
           class:list={{}}
@@ -19,5 +20,23 @@ const headings = context.get().headings || [];
   }
 </ul>
 <script>
-  // TODO - scrollspy
+  const nav = document.querySelector('ul#navigation')!;
+  const links = nav.querySelectorAll('a[data-id]');
+  const sections = document.querySelectorAll('main section[id]');
+
+  window.onscroll = () => {
+    let spied: Element | null = null;
+
+    for (const link of links) link.classList.remove('text-docs-theme');
+
+    for (const section of sections) {
+      if (section.getBoundingClientRect().y < 1) spied = section;
+    }
+
+    if (spied) {
+      const id = spied.getAttribute('id')!;
+      const link = nav.querySelector(`a[data-id="${id}"]`);
+      link?.classList.add('text-docs-theme');
+    }
+  };
 </script>

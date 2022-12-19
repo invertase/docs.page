@@ -6,8 +6,9 @@ interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
 }
 
 const Heading: React.FC<HeadingProps> = props => {
+  const { id, type, ...other } = props;
   const el = createElement(props.type, {
-    ...props,
+    ...other,
   });
 
   return el;

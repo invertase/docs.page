@@ -32,6 +32,7 @@ const Markdown: React.FC = () => {
           h4: props => <Heading {...props} type="h4" />,
           h5: props => <Heading {...props} type="h5" />,
           h6: props => <Heading {...props} type="h6" />,
+          section: props => <section {...props} className="-mt-16 pt-16" />,
           Info: props => <callouts.Info>{props.children}</callouts.Info>,
           Warning: props => <callouts.Warning>{props.children}</callouts.Warning>,
           Error: props => <callouts.Error>{props.children}</callouts.Error>,
