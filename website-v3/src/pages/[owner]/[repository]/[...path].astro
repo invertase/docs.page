@@ -92,6 +92,14 @@ if (owner && repository) {
       githubPath: `https://github.com/${owner}/${repository}/edit/${
         source.type === 'branch' && source.ref !== 'HEAD' ? source.ref : bundle!.baseBranch
       }/docs/${path || 'index'}.mdx`,
+      githubRefPath: (() => {
+        let base = `https://github.com/${owner}/${repository}`;
+        if (source.ref === 'HEAD') return base;
+        if (source.type === 'branch') return base + `/tree/${ref}`;
+        if (source.type === 'commit') return base + `/commit/${ref}`;
+        if (source.type === 'PR') return base + `/pull/${ref}`;
+        return '';
+      })(),
       ref,
       config,
       frontmatter: bundle!.frontmatter,
