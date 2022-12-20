@@ -13,17 +13,16 @@ const Zapp: React.FC<ZappProps> = props => {
   const theme = props.theme || 'dark';
 
   return (
-    <div className="my-6">
-      <iframe
-        src={`http://zapp.run/embed/${props.id}?theme=${theme}&lazy=${lazy}`}
-        style={{
-          width: '100%',
-          height: '100%',
-          border: 0,
-          overflow: 'hidden',
-        }}
-      />
-    </div>
+    <iframe
+      src={`http://zapp.run/embed/${props.id}?theme=${theme}&lazy=${lazy}`}
+      className="aspect-video w-full"
+      style={{
+        width: '100%',
+        height: '100%',
+        border: 0,
+        overflow: 'hidden',
+      }}
+    />
   );
 };
 
