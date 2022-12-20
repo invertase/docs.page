@@ -11,7 +11,7 @@ const Tweet: React.FC<TweetProps> = props => {
   }
 
   const cards = props.cards ? props.cards : false;
-  const conversation = props.conversation ? props.conversation : true;
+  const conversation = props.conversation ? props.conversation : false;
 
   return (
     <div

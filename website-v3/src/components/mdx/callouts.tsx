@@ -16,7 +16,7 @@ const Callout: React.FC<Props> = props => {
   return (
     <div
       className={cx(
-        'bg:bg-slate-600 mb-3 flex items-center gap-2 overflow-hidden px-5 py-4',
+        'mb-3 flex items-center gap-2 overflow-hidden rounded-xl px-5 py-4 text-sm',
         props.className,
       )}
     >
@@ -34,7 +34,7 @@ export const Info: React.FC<PropsWithChildren> = props => {
           <InformationalCircleIcon />
         </span>
       }
-      className=""
+      className="border border-sky-500/50 bg-sky-200/50 text-sky-900 dark:border-sky-500/50 dark:bg-sky-500/10 dark:text-white"
     >
       {props.children}
     </Callout>
@@ -49,7 +49,7 @@ export const Warning: React.FC<PropsWithChildren> = props => {
           <ExclaimationTriangleIcon />
         </span>
       }
-      className=""
+      className="border border-yellow-500/50 bg-yellow-200/50 text-yellow-900 dark:border-yellow-500/50 dark:bg-yellow-500/10 dark:text-white"
     >
       {props.children}
     </Callout>
@@ -64,7 +64,7 @@ export const Error: React.FC<PropsWithChildren> = props => {
           <ExclaimationTriangleIcon />
         </span>
       }
-      className=""
+      className="border border-red-500/50 bg-red-200/50 text-red-900 dark:border-red-500/50 dark:bg-red-500/10 dark:text-white"
     >
       {props.children}
     </Callout>
@@ -79,7 +79,7 @@ export const Success: React.FC<PropsWithChildren> = props => {
           <CheckCircleIcon />
         </span>
       }
-      className=""
+      className="border border-green-500/50 bg-green-200/50 text-green-900 dark:border-green-500/50 dark:bg-green-500/10 dark:text-white"
     >
       {props.children}
     </Callout>
