@@ -65,7 +65,7 @@ const Tabs: React.FC<TabsProps> = props => {
               data-tab-group-pane-id={values[index].value}
               key={tab.props.value}
               data-tab={tab.props.value}
-              className={cx('py-6 [&>:first-child]:mt-0', {
+              className={cx('pt-6 [&>:first-child]:mt-0', {
                 hidden: tab.props.value !== active,
               })}
             >
