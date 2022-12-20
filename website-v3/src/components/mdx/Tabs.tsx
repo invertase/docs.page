@@ -50,7 +50,7 @@ const Tabs: React.FC<TabsProps> = props => {
             data-tab-group-button-id={value.value}
             aria-selected={value.value === active}
             className={
-              'aria-selected:border-docs-theme relative top-[2px] whitespace-nowrap border-b-2 border-transparent py-2 font-semibold tracking-wide opacity-75 transition hover:opacity-100 aria-selected:opacity-100'
+              'aria-selected:border-docs-theme relative top-[2px] whitespace-nowrap border-b-2 border-transparent py-2 font-semibold tracking-wide opacity-75 transition hover:opacity-100 aria-selected:opacity-100 dark:aria-selected:text-white'
             }
           >
             {value.label}
