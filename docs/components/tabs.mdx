@@ -69,27 +69,6 @@ don't have to keep selecting it everywhere.
     { label: 'Dart Tab', value: 'dart' },
   ]}
 >
-  <TabItem>
-    Perform a network request to `https://example.com`:
-
-    ```js
-    fetch('https://example.com')
-      .then(response => response.json())
-      .then(data => console.log(data));
-    ````
-  </TabItem>
-  <TabItem>
-    Perform a network request to `https://example.com`:
-
-    ```dart
-    import 'package:http/http.dart' as http;
-
-    var url = Uri.https('example.com');
-    var response = await http.get(url);
-    print('Response body: ${response.body}');
-    ````
-  </TabItem>
-</Tabs>
 ```
 
 ### Example
