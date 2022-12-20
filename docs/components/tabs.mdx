@@ -19,8 +19,8 @@ To display tabs, provide the `<Tabs>` component with a list of values:
     { label: 'Second Tab', value: 'second' },
   ]}
 >
-  <TabItem>👋 This is the content for the first tab.</TabItem>
-  <TabItem>...and this is the content for the second tab!</TabItem>
+  <TabItem value="first">👋 This is the content for the first tab.</TabItem>
+  <TabItem value="second">...and this is the content for the second tab!</TabItem>
 </Tabs>
 ```
 
@@ -30,8 +30,8 @@ To display tabs, provide the `<Tabs>` component with a list of values:
     { label: 'Second Tab', value: 'second' },
   ]}
 >
-  <TabItem>👋 This is the content for the first tab.</TabItem>
-  <TabItem>...and this is the content for the second tab!</TabItem>
+  <TabItem value="first">👋 This is the content for the first tab.</TabItem>
+  <TabItem value="second">...and this is the content for the second tab!</TabItem>
 </Tabs>
 
 ## Default Value
@@ -46,8 +46,8 @@ By default, the first tab will be displayed. To display the second tab, provide 
     { label: 'Second Tab', value: 'second' },
   ]}
 >
-  <TabItem>👋 This is the content for the first tab.</TabItem>
-  <TabItem>...and this is the content for the second tab!</TabItem>
+  <TabItem value="first">👋 This is the content for the first tab.</TabItem>
+  <TabItem value="second">...and this is the content for the second tab!</TabItem>
 </Tabs>
 ```
 
@@ -84,7 +84,7 @@ First, import the package:
     { label: 'Dart', value: 'dart' },
   ]}
 >
-  <TabItem>
+  <TabItem value="js">
     Import the `axios` package:
 
     ```bash
@@ -97,7 +97,7 @@ First, import the package:
     import axios from 'axios';
     ````
   </TabItem>
-  <TabItem>
+  <TabItem value="dart">
     Add the `dio` package:
 
     ```bash
@@ -121,13 +121,13 @@ Next, perform a network request to 'https://example.com':
     { label: 'Dart', value: 'dart' },
   ]}
 >
-  <TabItem>
+  <TabItem value="js">
     ```js
     const response = await axios.get('https://example.com');
     console.log(response.data);
     ````
   </TabItem>
-  <TabItem>
+  <TabItem value="dart">
     ```dart
     var dio = Dio();
     final response = await dio.get('https://example.com');
