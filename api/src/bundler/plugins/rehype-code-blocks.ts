@@ -33,7 +33,7 @@ export default function rehypeCodeBlocks(): (ast: Node) => void {
 
   return async (ast: Node): Promise<void> => {
     highlighter = await shiki.getHighlighter({
-      theme: 'github-dark',
+      theme: 'css-variables',
     });
     // @ts-ignore
     visit(ast, 'element', visitor);

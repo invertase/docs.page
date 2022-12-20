@@ -31,7 +31,7 @@ echo "Hello World"
 Following the backticks, you can optionally specify a language identifier to enable syntax highlighting:
 
 ```javascript
-export async function myFunction(options) {
+export async function apiRequest(options) {
   const response = await fetch(options.url);
   const data = await response.json();
   return data;
@@ -42,7 +42,7 @@ The above code block was created with the following snippet:
 
 ````text
 ```javascript
-export async function myFunction(options) {
+export async function apiRequest(options) {
   // ...
 ````
 
@@ -53,16 +53,18 @@ Syntax highlighting is generated using [Shiki](https://github.com/shikijs/shiki)
 
 You can add a title to code blocks by adding an attribute to the opening backticks:
 
-```javascript title="myFunction.js"
-export async function myFunction(options) {
+```javascript title="Sending a request"
+export async function apiRequest(options) {
   const response = await fetch(options.url);
   const data = await response.json();
   return data;
 }
 ```
 
+The above code block was created with the following snippet:
+
 ````text
-```javascript title="myFunction.js"
-export async function myFunction(options) {
+```javascript title="Sending a request"
+export async function apiRequest(options) {
   // ...
 ````
