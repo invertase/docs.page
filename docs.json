@@ -15,6 +15,7 @@
     [
       "Components",
       [
+        ["Accordion", "/components/accordion"],
         ["Code Blocks", "/components/code-blocks"],
         ["Callouts", "/components/callouts"],
         ["Headings", "/components/headings"],
