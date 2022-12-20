@@ -154,6 +154,8 @@ function reasonToDescription(reason: GetBundleResponseError['reason']) {
     case 'BAD_CONFIG':
     case 'MISSING_CONFIG':
       return 'Sorry, the provided docs.page configuration file is invalid.';
+    case 'FILE_NOT_FOUND':
+      return 'Sorry, the page was not matched to a file in the repository.';
   }
 }
 ---
