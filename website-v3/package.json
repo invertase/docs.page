@@ -16,7 +16,7 @@
     "@docsearch/js": "^3.3.0",
     "@docsearch/react": "^3.3.0",
     "@vercel/og": "^0.0.21",
-    "astro": "^1.6.15",
+    "astro": "^1.7.2",
     "classnames": "^2.3.2",
     "color": "^4.2.3",
     "cookie": "^0.5.0",
