@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as runtime from 'react/jsx-runtime';
 import { runSync } from '@mdx-js/mdx';
 import context from 'src/context';
@@ -6,6 +7,7 @@ import Link from './Link';
 import FontAwesome from './FontAwesome';
 
 import CodeBlock, { CodeBlockProps } from './mdx/CodeBlock';
+import Accordion from './mdx/Accordion';
 import Image from './mdx/Image';
 import YouTube from './mdx/YouTube';
 import Vimeo from './mdx/Vimeo';
@@ -38,6 +40,7 @@ const Markdown: React.FC = () => {
           h5: (props: any) => <Heading {...props} type="h5" />,
           h6: (props: any) => <Heading {...props} type="h6" />,
           section: (props: any) => <section {...props} className="-mt-16 pt-16" />,
+          Accordion,
           Icon: (props: any) => <FontAwesome name={props.name} />,
           Info: (props: any) => <callouts.Info>{props.children}</callouts.Info>,
           Warning: (props: any) => <callouts.Warning>{props.children}</callouts.Warning>,
