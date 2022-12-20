@@ -49,7 +49,6 @@ const Markdown: React.FC = () => {
             );
           },
           Accordion,
-          Eyebrow: (props: any) => <Heading {...props} type="h6" eyebrow />,
           Icon: (props: any) => <FontAwesome name={props.name} />,
           Info: (props: any) => <callouts.Info>{props.children}</callouts.Info>,
           Warning: (props: any) => <callouts.Warning>{props.children}</callouts.Warning>,
