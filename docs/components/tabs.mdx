@@ -14,7 +14,7 @@ To display tabs, provide the `<Tabs>` component with a list of values:
 
 ```jsx
 <Tabs
-  value={[
+  values={[
     { label: 'First Tab', value: 'first' },
     { label: 'Second Tab', value: 'second' },
   ]}
@@ -25,7 +25,7 @@ To display tabs, provide the `<Tabs>` component with a list of values:
 ```
 
 <Tabs
-  value={[
+  values={[
     { label: 'First Tab', value: 'first' },
     { label: 'Second Tab', value: 'second' },
   ]}
@@ -41,7 +41,7 @@ By default, the first tab will be displayed. To display the second tab, provide 
 ```jsx
 <Tabs
   defaultValue="second"
-  value={[
+  values={[
     { label: 'First Tab', value: 'first' },
     { label: 'Second Tab', value: 'second' },
   ]}
@@ -64,7 +64,7 @@ don't have to keep selecting it everywhere.
 ```jsx
 <Tabs
   groupId="language"
-  value={[
+  values={[
     { label: 'JavaScript Example', value: 'js' },
     { label: 'Dart Tab', value: 'dart' },
   ]}
@@ -79,7 +79,7 @@ First, import the package:
 
 <Tabs
   groupId="language"
-  value={[
+  values={[
     { label: 'JavaScript', value: 'js' },
     { label: 'Dart', value: 'dart' },
   ]}
@@ -116,7 +116,7 @@ Next, perform a network request to 'https://example.com':
 
 <Tabs
   groupId="language"
-  value={[
+  values={[
     { label: 'JavaScript', value: 'js' },
     { label: 'Dart', value: 'dart' },
   ]}
