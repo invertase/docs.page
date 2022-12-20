@@ -98,7 +98,7 @@ const { config, domain } = ctx;
    */
 
   import type { Context } from 'src/context';
-  const { owner, repository, domain } = (window as any).docs_page as Context;
+  const { owner, repository, ref, domain } = (window as any).docs_page as Context;
 
   const tabs = document.querySelectorAll('div[data-tab-group]');
 
@@ -133,7 +133,7 @@ const { config, domain } = ctx;
           fetch('/api/tabs-sync', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ owner, repository, domain, groupId, buttonId }),
+            body: JSON.stringify({ owner, repository, ref, domain, groupId, buttonId }),
           });
         }
 

@@ -16,11 +16,12 @@ const Tabs: React.FC<TabsProps> = props => {
   const ctx = context.get();
   const { children, values, groupId, defaultValue } = props;
 
-  if (values.length === 0) {
+  if (!values || values.length === 0) {
     return <div />;
   }
 
   const tabs = React.Children.map(children, child => {
+    console.log('child', child, isValidElement(child));
     if (isValidElement(child)) {
       const el = child as React.ReactElement;
       if (values.find(({ value }) => value === el.props.value)) {
@@ -38,7 +39,7 @@ const Tabs: React.FC<TabsProps> = props => {
   if (!values.find(({ value }) => value === active)) {
     active = values[0].value;
   }
-
+  console.log(tabs);
   return (
     <div data-tab-group data-tab-group-id={groupId}>
       <div className="flex items-center gap-6 border-b-2 dark:border-slate-600/80">
@@ -56,7 +57,7 @@ const Tabs: React.FC<TabsProps> = props => {
           </button>
         ))}
       </div>
-      <div className="py-6">
+      <div>
         {tabs.map((tab: React.ReactElement, index) => {
           return (
             <div
@@ -64,7 +65,7 @@ const Tabs: React.FC<TabsProps> = props => {
               data-tab-group-pane-id={values[index].value}
               key={tab.props.value}
               data-tab={tab.props.value}
-              className={cx({
+              className={cx('py-6 [&>:first-child]:mt-0', {
                 hidden: tab.props.value !== active,
               })}
             >

@@ -1,5 +1,6 @@
-import { bundleMDX } from 'mdx-bundler';
+import { compile } from '@mdx-js/mdx';
 import { Message } from 'esbuild';
+import frontmatter from 'gray-matter';
 import rehypeHeadings, { HeadingNode } from './plugins/rehype-headings.js';
 
 type MdxBundlerResponse = {
@@ -40,18 +41,22 @@ export async function bundle(
     headerDepth: 3,
   },
 ): Promise<MdxBundlerResponse> {
-  const output: { headings: HeadingNode[] } = {
-    headings: [],
+  const output = {
+    headings: [] as HeadingNode[],
+    frontmatter: {} as { [key: string]: string },
   };
 
-  const { code, frontmatter, errors } = await bundleMDX({
-    source: rawText,
-    mdxOptions(options) {
-      // @ts-ignore TODO fix types
-      options.remarkPlugins = [...(options.remarkPlugins ?? []), ...bundleOptions.remarkPlugins];
-      // @ts-ignore TODO fix types
-      options.rehypePlugins = [
-        ...(options.rehypePlugins ?? []),
+  const parsed = frontmatter(rawText);
+  output.frontmatter = parsed.data;
+
+  let code = '';
+
+  try {
+    const vfile = await compile(parsed.content, {
+      format: 'mdx',
+      outputFormat: 'function-body',
+      remarkPlugins: [...bundleOptions.remarkPlugins],
+      rehypePlugins: [
         ...bundleOptions.rehypePlugins,
         [
           rehypeHeadings,
@@ -62,15 +67,18 @@ export async function bundle(
             },
           },
         ],
-      ];
+      ],
+    });
 
-      return options;
-    },
-  });
+    code = String(vfile);
+  } catch (error) {
+    console.error(error);
+  }
+
   return {
     code,
-    frontmatter,
-    errors,
+    frontmatter: output.frontmatter,
+    errors: [],
     headings: output.headings,
   };
 }

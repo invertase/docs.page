@@ -7,7 +7,6 @@ export interface CodeBlockProps extends React.HTMLProps<HTMLPreElement> {
 }
 
 const CodeBlock: React.FC<CodeBlockProps> = props => {
-  console.log('title', props.title);
   return (
     <div>
       <div className="group mb-6 rounded-xl">
