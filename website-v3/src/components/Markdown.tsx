@@ -39,7 +39,15 @@ const Markdown: React.FC = () => {
           h4: (props: any) => <Heading {...props} type="h4" />,
           h5: (props: any) => <Heading {...props} type="h5" />,
           h6: (props: any) => <Heading {...props} type="h6" />,
-          section: (props: any) => <section {...props} className="-mt-16 pt-16" />,
+          section: (props: any) => {
+            const { id, ...rest } = props;
+            return (
+              <section className="relative">
+                <span id={id} className="pointer-events-none absolute -mt-20 pt-20" />
+                <div {...rest} />
+              </section>
+            );
+          },
           Accordion,
           Icon: (props: any) => <FontAwesome name={props.name} />,
           Info: (props: any) => <callouts.Info>{props.children}</callouts.Info>,

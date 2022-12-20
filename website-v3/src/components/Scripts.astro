@@ -91,20 +91,6 @@ const { config, domain } = ctx;
 </script>
 
 <script>
-  const accordions = document.querySelectorAll('div[data-accordion]');
-
-  for (const accordion of accordions) {
-    const button = accordion.querySelector('button[data-accordion-button]');
-    const pane = accordion.querySelector('div[data-accordion-pane]');
-
-    button?.addEventListener('click', () => {
-      const open = button.getAttribute('aria-expanded') === 'true';
-      pane?.setAttribute('aria-expanded', (!open).toString());
-    });
-  }
-</script>
-
-<script>
   /**
    * This script is used to identify any tab groups on the page, and add event
    * when a tab button is clicked. It also syncs the state of the tabs with a

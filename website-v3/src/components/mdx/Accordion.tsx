@@ -5,19 +5,15 @@ export interface AccordionProps extends React.HTMLProps<HTMLDivElement> {
 
 const Accordion: React.FC<AccordionProps> = props => {
   return (
-    <div data-accordion>
-      <button data-accordion-button className="flex items-center gap-3">
-        <span>ARROW</span>
-        <span>{props.title}</span>
-      </button>
-      <div
-        data-accordion-pane
-        aria-expanded={!!props.defaultOpen}
-        className="hidden aria-expanded:block"
-      >
-        {props.children}
-      </div>
-    </div>
+    <details
+      open={!!props.defaultOpen}
+      className="cursor-pointer overflow-hidden rounded-xl border dark:border-white/10"
+    >
+      <summary className="w-full gap-3 px-6 py-3 hover:bg-black/10 dark:hover:bg-black/20">
+        <span className="pl-1 font-semibold">{props.title}</span>
+      </summary>
+      <div className="p-6 [&>:first-child]:mt-0">{props.children}</div>
+    </details>
   );
 };
 
