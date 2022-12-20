@@ -4,7 +4,7 @@ type VimeoProps = {
 };
 
 function Vimeo({ id, video }: VimeoProps) {
-  if (!id || !video) {
+  if (!id && !video) {
     return <div />;
   }
 
