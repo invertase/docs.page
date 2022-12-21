@@ -5,6 +5,7 @@ import { bundle } from './mdx.js';
 export const ERROR_CODES = {
   REPO_NOT_FOUND: 'REPO_NOT_FOUND',
   FILE_NOT_FOUND: 'FILE_NOT_FOUND',
+  BUNDLE_ERROR: 'BUNDLE_ERROR',
 } as const;
 
 type Source = {
@@ -114,22 +115,27 @@ class Bundler {
       this.#config = defaultConfig;
     }
 
-    // Bundle the markdown file via MDX.
-    const mdx = await bundle(this.#markdown, {
-      headerDepth: this.#config.headerDepth,
-    });
+    try {
+      // Bundle the markdown file via MDX.
+      const mdx = await bundle(this.#markdown, {
+        headerDepth: this.#config.headerDepth,
+      });
 
-    return {
-      source: this.#source,
-      ref: this.#ref,
-      baseBranch: metadata.baseBranch,
-      path: this.#path,
-      config: this.#config,
-      markdown: this.#markdown,
-      headings: mdx.headings,
-      frontmatter: mdx.frontmatter,
-      code: mdx.code,
-    };
+      return {
+        source: this.#source,
+        ref: this.#ref,
+        baseBranch: metadata.baseBranch,
+        path: this.#path,
+        config: this.#config,
+        markdown: this.#markdown,
+        headings: mdx.headings,
+        frontmatter: mdx.frontmatter,
+        code: mdx.code,
+      };
+    } catch (e) {
+      console.error(e);
+      throw ERROR_CODES.BUNDLE_ERROR;
+    }
   };
 }
 

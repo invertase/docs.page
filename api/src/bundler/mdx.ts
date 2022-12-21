@@ -36,37 +36,26 @@ export async function bundle(
   const parsed = frontmatter(rawText);
   output.frontmatter = parsed.data;
 
-  let code = '';
-
-  try {
-    const vfile = await compile(parsed.content, {
-      format: 'mdx',
-      outputFormat: 'function-body',
-      remarkPlugins: getRemarkPlugins(),
-      rehypePlugins: [
-        ...getRehypePlugins(),
-        // rehypeHeadings,
-        // {
-        //   headings: headerDepthToHeaderList(bundleOptions.headerDepth),
-        //   callback: (headings: HeadingNode[]) => {
-        //     output.headings = headings;
-        //   },
-        // },
-        // ]
+  const vfile = await compile(parsed.content, {
+    format: 'mdx',
+    outputFormat: 'function-body',
+    remarkPlugins: getRemarkPlugins(),
+    rehypePlugins: [
+      ...getRehypePlugins(),
+      [
+        rehypeHeadings,
+        {
+          headings: headerDepthToHeaderList(options.headerDepth),
+          callback: (headings: HeadingNode[]) => {
+            output.headings = headings;
+          },
+        },
       ],
-      // rehypePlugins: [
-      //   ...bundleOptions.rehypePlugins,
-      //   [,
-      // ],
-    });
-
-    code = String(vfile);
-  } catch (error) {
-    console.error(error);
-  }
+    ],
+  });
 
   return {
-    code,
+    code: String(vfile),
     frontmatter: output.frontmatter,
     errors: [],
     headings: output.headings,

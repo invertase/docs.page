@@ -42,6 +42,12 @@ export default async function bundle(req: Request, res: Response): Promise<Respo
       });
     }
 
+    if (e === ERROR_CODES.BUNDLE_ERROR) {
+      return response(res, 500, 'BUNDLE_ERROR', {
+        error: 'Something went wrong while bundling the file. Are you sure the MDX is valid?',
+      });
+    }
+
     return serverError(res, e);
   }
 }
