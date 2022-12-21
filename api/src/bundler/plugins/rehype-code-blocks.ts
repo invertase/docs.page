@@ -7,6 +7,12 @@ import * as shiki from 'shiki';
 
 let highlighter: shiki.Highlighter;
 
+// Gets a list of supported languages from skiki.
+// If a language which is not supported is supported is used, it will be ignored.
+const languages = shiki.BUNDLED_LANGUAGES.reduce((list, lang) => {
+  return [...list, lang.id, ...(lang.aliases || [])];
+}, [] as string[]);
+
 /**
  * Matches any `pre code` elements and extracts the raw code and titles from the code block and assigns to the parent.
  * @returns
@@ -18,11 +24,12 @@ export default function rehypeCodeBlocks(): (ast: Node) => void {
     }
 
     const raw = toString(node);
+    const language = getLanguage(node);
 
     // Raw value of the `code` block - used for copy/paste
     parent.properties['raw'] = raw;
     parent.properties['html'] = highlighter.codeToHtml(raw, {
-      lang: getLanguage(node),
+      lang: languages.includes(language || '') ? language : undefined,
     });
 
     // Get any metadata from the code block
