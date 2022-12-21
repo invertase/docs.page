@@ -4,6 +4,7 @@ import Header from '@layouts/Header.astro';
 import Footer from '@layouts/Footer.astro';
 import Sidebar from '@layouts/Sidebar.astro';
 import Navigation from '@layouts/Navigation.astro';
+import ErrorPage from '@layouts/ErrorPage.astro';
 
 import Meta from '@components/Meta.astro';
 import Scripts from '@components/Scripts.astro';
@@ -14,170 +15,152 @@ import Markdown from '@components/Markdown';
 
 import { getBundle } from 'src/bundle';
 import context from 'src/context';
-import type { GetBundleResponse, GetBundleResponseError } from 'src/bundle';
+import type { GetBundleResponse } from 'src/bundle';
 import { isExternalLink, replaceMoustacheVariables, ensureLeadingSlash } from 'src/utils';
 import Theme from '@components/Theme.astro';
 import domains from '../../../../../domains.json';
 import { trackPageRequest } from 'src/plausible';
-import NotFound from '@layouts/NotFound.astro';
 
-let status: GetBundleResponse['status'] = 404;
-let reason: GetBundleResponseError['reason'] | undefined = undefined;
 let { owner, repository, path } = Astro.params;
 let ref: string | undefined;
+let status: number = 200;
 
-if (owner && repository) {
-  // Check if the repo includes a ref (invertase/foo~bar)
-  if (repository.includes('~')) {
-    [repository, ref] = repository.split('~');
+if (!owner || !repository) {
+  throw new Error('Something went wrong - owner and repository are required.')
+}
+
+// Check if the repo includes a ref (invertase/foo~bar)
+if (repository.includes('~')) {
+  [repository, ref] = repository.split('~');
+}
+
+let response: GetBundleResponse | undefined;
+let code: GetBundleResponse['code'];
+let message: string = '';
+
+try {
+  response = await getBundle({
+    owner,
+    repository,
+    ref,
+    path,
+  });
+  console.log(response);
+  code = response.code;
+  if ('error' in response) message = response.error;
+} catch {
+  code = 'BUNDLE_ERROR';
+  message = 'An error occurred while fetching the bundle.'
+}
+
+const statusCodes = {
+  OK: 200,
+  BAD_REQUEST: 404,
+  NOT_FOUND: 404,
+  FILE_NOT_FOUND: 404,
+  REPO_NOT_FOUND: 404,
+  BUNDLE_ERROR: 500,
+} satisfies { [key in GetBundleResponse['code']]: number };
+
+// Get & set the status code from the bundle code.
+status = statusCodes[code];
+
+// Set the status code for the request
+Astro.response.status = status;
+
+if (response?.code === 'OK') {
+  const { frontmatter, config, source, baseBranch, code, headings } = response!.data;
+
+  // Handle a frontmatter redirect
+  const redirect = frontmatter.redirect;
+  if (redirect && isExternalLink(redirect)) {
+    return Astro.redirect(redirect);
+  } else if (redirect) {
+    return Astro.redirect(`/${owner}/${repository}${redirect}`);
   }
 
-  let bundle: GetBundleResponse['bundle'];
-
-  try {
-    const response = await getBundle({
-      owner,
-      repository,
-      ref,
-      path,
-    });
-
-    status = response.status;
-    bundle = response.bundle;
-  } catch (e) {
-    console.error(e);
-  }
-
-  // Set the status code for the request
-  Astro.response.status = status!;
-
-  if ('statusCode' in bundle!) {
-    Astro.response.status = bundle!.statusCode;
-    reason = bundle!.reason;
-  } else {
-    // Handle a frontmatter redirect
-    const redirect = bundle!.frontmatter.redirect;
-    if (redirect && isExternalLink(redirect)) {
-      return Astro.redirect(redirect);
-    } else if (redirect) {
-      return Astro.redirect(`/${owner}/${repository}${redirect}`);
-    }
-
-    if (import.meta.env.PROD) {
-      // Track the page request
-      await trackPageRequest(Astro.request);
-    }
+  if (import.meta.env.PROD) {
+    // Track the page request
+    await trackPageRequest(Astro.request);
 
     // Set the cache headers - see https://vercel.com/docs/concepts/edge-network/caching
     Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate=59');
-
-    // Set the theme color
-    const theme = Astro.cookies.get('theme').value;
-
-    // Get any syncronized tabs
-    let tabs = {};
-    try {
-      tabs = Astro.cookies.get('tabs').json();
-    } catch {
-      // noop
-    }
-
-    const config = bundle!.config;
-    const source = bundle!.source;
-    const domain = domains.find(([, repository]) => repository === `${owner}/${repository}`)?.at(0);
-
-    // Set the context store.
-    context.set({
-      owner,
-      repository,
-      relativePath: ensureLeadingSlash(path || '/'),
-      githubPath: `https://github.com/${owner}/${repository}/edit/${
-        source.type === 'branch' && source.ref !== 'HEAD' ? source.ref : bundle!.baseBranch
-      }/docs/${path || 'index'}.mdx`,
-      githubRefPath: (() => {
-        let base = `https://github.com/${owner}/${repository}`;
-        if (source.ref === 'HEAD') return base;
-        if (source.type === 'branch') return base + `/tree/${ref}`;
-        if (source.type === 'commit') return base + `/commit/${ref}`;
-        if (source.type === 'PR') return base + `/pull/${ref}`;
-        return '';
-      })(),
-      ref,
-      config,
-      frontmatter: bundle!.frontmatter,
-      code: replaceMoustacheVariables(config.variables ?? {}, bundle!.code),
-      headings: bundle!.headings,
-      domain,
-      baseBranch: bundle!.baseBranch,
-      source,
-      theme: theme ? (theme === 'dark' ? 'dark' : 'light') : undefined,
-      tabs,
-    });
   }
+
+  // Set the theme color
+  const theme = Astro.cookies.get('theme').value;
+
+  // Get any syncronized tabs
+  let tabs = {};
+  try {
+    tabs = Astro.cookies.get('tabs').json();
+  } catch {}
+
+  const domain = domains.find(([, repository]) => repository === `${owner}/${repository}`)?.at(0);
+
+  // Set the context store.
+  context.set({
+    owner,
+    repository,
+    relativePath: ensureLeadingSlash(path || '/'),
+    githubPath: `https://github.com/${owner}/${repository}/edit/${
+      source.type === 'branch' && source.ref !== 'HEAD' ? source.ref : baseBranch
+    }/docs/${path || 'index'}.mdx`,
+    githubRefPath: (() => {
+      let base = `https://github.com/${owner}/${repository}`;
+      if (source.ref === 'HEAD') return base;
+      if (source.type === 'branch') return base + `/tree/${ref}`;
+      if (source.type === 'commit') return base + `/commit/${ref}`;
+      if (source.type === 'PR') return base + `/pull/${ref}`;
+      return '';
+    })(),
+    ref,
+    config,
+    frontmatter,
+    code: replaceMoustacheVariables(config.variables ?? {}, code),
+    headings,
+    domain,
+    baseBranch,
+    source,
+    theme: theme ? (theme === 'dark' ? 'dark' : 'light') : undefined,
+    tabs,
+  });
 }
 
-let state: 'success' | 'error' | 'not-found';
-switch (status) {
-  case 200:
-    state = 'success';
-    break;
-  case 404:
-    state = 'not-found';
-    break;
-  default:
-    state = 'error';
-    break;
-}
-
-function reasonToTitle(reason: GetBundleResponseError['reason']) {
-  switch (reason) {
+function codeToTitle(code: GetBundleResponse['code']) {
+  switch (code) {
+    case 'NOT_FOUND':
     case 'REPO_NOT_FOUND':
-      return 'Repository not found';
-    case 'BUNDLE_ERROR':
-      return 'Something went wrong';
-    case 'REF_NOT_FOUND':
-      return 'Git ref not found';
-    case 'BAD_CONFIG':
-    case 'MISSING_CONFIG':
-      return 'Invalid configuration file';
-  }
-}
-
-function reasonToDescription(reason: GetBundleResponseError['reason']) {
-  switch (reason) {
-    case 'REPO_NOT_FOUND':
-      return 'Sorry, we could not find the repository you were looking for.';
-    case 'BUNDLE_ERROR':
-      return 'Sorry, something went wrong whilst bundling the page.';
-    case 'REF_NOT_FOUND':
-      return 'Sorry, the provided Git ref was not found within the repository.';
-    case 'BAD_CONFIG':
-    case 'MISSING_CONFIG':
-      return 'Sorry, the provided docs.page configuration file is invalid.';
+    case 'BAD_REQUEST':
+      return 'Repository not found.';
     case 'FILE_NOT_FOUND':
-      return 'Sorry, the page was not matched to a file in the repository.';
+      return 'Page not found.';
+    case 'BUNDLE_ERROR':
+      return 'Something went wrong.';
   }
 }
 ---
 
 {
-  state === 'not-found' && (
+  status === 404 && (
     <Root>
-      <NotFound
-        title={reasonToTitle(reason!)}
-        description={reasonToDescription(reason!) + ` (${reason})`}
-        href={reason === 'REPO_NOT_FOUND' ? '/' : `/${owner}/${repository}`}
+      <ErrorPage
+        code={404}
+        title={codeToTitle(code)}
+        description={message + ` (${code})`}
+        href={code === 'REPO_NOT_FOUND' ? '/' : `/${owner}/${repository}`}
       />
     </Root>
   )
 }
 
 {
-  state === 'error' && (
+  status === 500 && (
     <Root>
-      <NotFound
+      <ErrorPage
+        code={500}
         title="Something went wrong"
-        description="Sorry, something went wrong whilst bundling the page."
+        description={message + ` (${code})`}
         href={`/${owner}/${repository}`}
       />
     </Root>
@@ -185,7 +168,7 @@ function reasonToDescription(reason: GetBundleResponseError['reason']) {
 }
 
 {
-  state === 'success' && (
+  status === 200 && (
     <Root>
       <Meta slot="head" />
       <Theme slot="head" fallback="#00bcd4" />

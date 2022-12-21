@@ -72,12 +72,15 @@ export type Contents = {
     configYaml?: string;
     configToml?: string;
   };
-  md: string | null;
+  md?: string;
   path: string;
   repositoryFound: boolean;
 };
 
-export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Promise<Contents> {
+export async function getGitHubContents(
+  metadata: MetaData,
+  noDir?: boolean,
+): Promise<Contents | undefined> {
   const base = noDir ? '' : 'docs/';
   const absolutePath = `${base}${metadata.path}`;
   const indexPath = `${base}${metadata.path}/index`;
@@ -133,10 +136,7 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
 
   // if an error is thrown then the repo is not found, if the repo is private then response = { repository: null }
   if (error || response?.repository === null) {
-    //@ts-ignore
-    return {
-      repositoryFound: false,
-    };
+    return;
   }
 
   return {
@@ -148,7 +148,7 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
       configYaml: response?.repository.configYaml?.text,
       configToml: response?.repository.configToml?.text,
     },
-    md: response?.repository.mdxIndex?.text || response?.repository.mdx?.text || null,
+    md: response?.repository.mdxIndex?.text || response?.repository.mdx?.text,
     path: response?.repository.mdxIndex?.text ? indexPath : absolutePath,
   };
 }

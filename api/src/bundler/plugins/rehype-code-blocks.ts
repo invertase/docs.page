@@ -17,12 +17,13 @@ export default function rehypeCodeBlocks(): (ast: Node) => void {
       return;
     }
 
-    const language = getLanguage(node);
     const raw = toString(node);
 
     // Raw value of the `code` block - used for copy/paste
     parent.properties['raw'] = raw;
-    parent.properties['html'] = highlighter.codeToHtml(raw, language);
+    parent.properties['html'] = highlighter.codeToHtml(raw, {
+      lang: getLanguage(node),
+    });
 
     // Get any metadata from the code block
     const meta = (node.data?.meta as string) ?? '';
