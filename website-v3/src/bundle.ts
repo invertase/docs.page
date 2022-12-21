@@ -75,6 +75,7 @@ const $GetBundleResponse = z.union([
 
 export type GetBundleRequest = z.infer<typeof $GetBundleRequest>;
 export type GetBundleResponse = z.infer<typeof $GetBundleResponse>;
+export type GetBundleResponseSuccess = z.infer<typeof $GetBundleResponseSuccess>;
 
 export type BundleConfig = z.infer<typeof $BundleConfig>;
 

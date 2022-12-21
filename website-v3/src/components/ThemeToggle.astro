@@ -11,7 +11,7 @@ import { MoonIcon, SunIcon } from './icons';
   const { owner, repository, domain, ref } = (window as any).docs_page as Context;
   const html = document.documentElement;
   const isDark = () => html.getAttribute('data-theme') === 'dark';
-  console.log(ref)
+
   const toggle = document.querySelector('button[data-theme-toggle]')!;
   const light = toggle.querySelector('span[data-theme-type="light"]') as HTMLSpanElement;
   const dark = toggle.querySelector('span[data-theme-type="dark"]') as HTMLSpanElement;

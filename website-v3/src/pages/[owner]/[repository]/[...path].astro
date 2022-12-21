@@ -12,14 +12,14 @@ import Styles from '@components/Styles.astro';
 import Links from '@components/Links.astro';
 import PreviousNext from '@components/PreviousNext.astro';
 import Markdown from '@components/Markdown';
+import Theme from '@components/Theme.astro';
 
 import { getBundle } from 'src/bundle';
 import context from 'src/context';
 import type { GetBundleResponse } from 'src/bundle';
 import { isExternalLink, replaceMoustacheVariables, ensureLeadingSlash } from 'src/utils';
-import Theme from '@components/Theme.astro';
-import domains from '../../../../../domains.json';
 import { trackPageRequest } from 'src/plausible';
+import domains from '../../../../../domains.json';
 
 let { owner, repository, path } = Astro.params;
 let ref: string | undefined;
@@ -45,7 +45,7 @@ try {
     ref,
     path,
   });
-  console.log(response);
+  
   code = response.code;
   if ('error' in response) message = response.error;
 } catch {

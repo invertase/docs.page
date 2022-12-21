@@ -42,7 +42,7 @@ const Markdown: React.FC = () => {
           section: (props: any) => {
             const { id, ...rest } = props;
             return (
-              <section className="relative">
+              <section className="relative" data-id={id}>
                 <span id={id} className="pointer-events-none absolute -mt-20 pt-20" />
                 <div {...rest} />
               </section>
