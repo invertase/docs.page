@@ -3,7 +3,13 @@ export default `{
   "logo": "https://static.invertase.io/assets/docs.page/docs-page-logo.png",  
   "theme": "#36B9B9",
   "twitter": "invertaseio",
-  "sidebar": { 
+  "sidebar": {
+    "default": [
+      ["Overview", "/"]
+    ],
+    "fr": [
+      ["French", "/"]
+    ],
     "en": [
       [
         "Getting Started",

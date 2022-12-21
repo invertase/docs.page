@@ -54,7 +54,9 @@ const $Config = z
   .transform(config => {
     return {
       ...config,
-      locales: Array.isArray(config.sidebar) ? [] : Object.keys(config.sidebar),
+      locales: Array.isArray(config.sidebar)
+        ? []
+        : Object.keys(config.sidebar).filter(key => key !== 'default'),
     };
   });
 

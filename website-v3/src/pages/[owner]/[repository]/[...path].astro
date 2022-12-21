@@ -97,7 +97,8 @@ if (response?.code === 'OK') {
     tabs = Astro.cookies.get('tabs').json();
   } catch {}
 
-  const domain = domains.find(([, repository]) => repository === `${owner}/${repository}`)?.at(0);
+  const domain = domains.find(([, repo]) => repo === `${owner}/${repository}`)?.at(0);
+  console.log('DOMAIN', domains, domain);
 
   // Set the context store.
   context.set({

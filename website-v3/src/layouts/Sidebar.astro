@@ -1,17 +1,26 @@
 ---
+import locales from 'locale-codes';
 import FontAwesome, { FontAwesomeProps } from '@components/FontAwesome';
+import { ChevronDownIcon } from '@components/icons';
 import Link from '@components/Link';
 import context from 'src/context';
 import { isExternalLink } from 'src/utils';
 
 const { owner, repository, config, relativePath } = context.get();
 let sidebar = config.sidebar || [];
+let locale: string | undefined;
 
 // If the sidebar is an object (locales), find the right one.
 if (!Array.isArray(sidebar)) {
   console.log(relativePath);
-  const [locale] = relativePath.split('/').filter(Boolean);
-  sidebar = sidebar[locale] || [];
+  [locale] = relativePath.split('/').filter(Boolean);
+
+  if (sidebar[locale]) {
+    sidebar = sidebar[locale];
+  } else {
+    locale = undefined;
+    sidebar = sidebar['default'] || [];
+  }
 }
 
 function getLinkRef(href: string): string | undefined {
@@ -20,6 +29,11 @@ function getLinkRef(href: string): string | undefined {
   }
 
   return 'prefetch';
+}
+
+function getLocaleString(locale: string): string {
+  const found = locales.getByTag(locale);
+  return found ? found.name : locale;
 }
 
 type Anchor = { icon: FontAwesomeProps['name']; title: string; href: string };
@@ -37,8 +51,31 @@ if (config.twitter) {
     href: `https://twitter.com/${config.twitter}`
   });
 }
----
 
+console.log(locale);
+---
+<script>
+  import type { Context } from 'src/context';
+  const { owner, repository, ref, domain } = (window as any).docs_page as Context;
+
+  const locale = document.querySelector('select#locale');
+  
+  if (locale) {
+    locale.addEventListener('change', (event) => {
+      const { value } = event.target as HTMLSelectElement;
+
+      if (import.meta.env.PROD && domain) {
+        let href = `https://${domain}`;
+        if (ref) href += `/~${encodeURIComponent(ref)}`;
+        window.location.href = href + `/${value}`;
+      } else {
+        let href = `/${owner}/${repository}`;
+        if (ref) href += `~${encodeURIComponent(ref)}`;
+        window.location.href = href + `/${value}`;
+      }
+    });
+  }
+</script>
 <nav class="mt-9">
   <ul class="mb-6 space-y-3">
     {anchors.map((anchor) => (
@@ -52,6 +89,18 @@ if (config.twitter) {
       </li>
     ))}
   </ul>
+  {locale && config.locales.length > 0 && (
+    <ul class="pr-8">
+      <li class="relative">
+        <select id="locale" class="w-full pl-2 pr-8 py-1 appearance-none rounded text-sm bg-transparent border dark:border-zinc-700">
+          {config.locales.map((value) => (
+            <option selected={locale === value} value={value}>{getLocaleString(value)}</option>
+          ))}
+        </select>
+        <div class="absolute top-[7px] right-2 w-4 h-4 pointer-events-none"><ChevronDownIcon /></div>
+      </li>
+    </ul>
+  )}
   <ul class="lg:text-sm lg:leading-6">
     {
       sidebar.map(([title, urlOrChildren]) => {
