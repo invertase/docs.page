@@ -4,8 +4,15 @@ import Link from '@components/Link';
 import context from 'src/context';
 import { isExternalLink } from 'src/utils';
 
-const { owner, repository, config } = context.get();
-const sidebar = config.sidebar || [];
+const { owner, repository, config, relativePath } = context.get();
+let sidebar = config.sidebar || [];
+
+// If the sidebar is an object (locales), find the right one.
+if (!Array.isArray(sidebar)) {
+  console.log(relativePath);
+  const [locale] = relativePath.split('/').filter(Boolean);
+  sidebar = sidebar[locale] || [];
+}
 
 function getLinkRef(href: string): string | undefined {
   if (import.meta.env.DEV || isExternalLink(href)) {

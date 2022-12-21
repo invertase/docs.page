@@ -48,7 +48,8 @@ try {
   
   code = response.code;
   if ('error' in response) message = response.error;
-} catch {
+} catch (e) {
+  console.error(e);
   code = 'BUNDLE_ERROR';
   message = 'An error occurred while fetching the bundle.'
 }

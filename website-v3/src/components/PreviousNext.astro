@@ -4,12 +4,15 @@ import { ChevronLeftIcon, ChevronRightIcon } from './icons';
 import Link from './Link';
 
 const { relativePath, config, frontmatter } = context.get();
-const { sidebar, automaticallyInferNextPrevious } = config;
+let { sidebar, automaticallyInferNextPrevious } = config;
+
+if (!Array.isArray(sidebar)) sidebar = sidebar['en'];
 
 const links: [string, string][] = [];
 
 // Finds any links in the sidebar and pushes them to a flattened array.
-function iterateSidebarArray(array: typeof sidebar) {
+// TODO fix array.
+function iterateSidebarArray(array: any[]) {
   for (const [title, urlOrChildren] of array || []) {
     if (typeof urlOrChildren === 'string') links.push([title, urlOrChildren]);
     else if (Array.isArray(urlOrChildren)) iterateSidebarArray(urlOrChildren);

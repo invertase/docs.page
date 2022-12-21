@@ -38,7 +38,7 @@ export default async function bundle(req: Request, res: Response): Promise<Respo
 
     if (e === ERROR_CODES.FILE_NOT_FOUND) {
       return response(res, 404, 'FILE_NOT_FOUND', {
-        error: `The file "/docs/${input.data.path}.mdx" in repository ${input.data.owner}/${input.data.repository} was not found.`,
+        error: `The file "/docs/${input.data.path}.mdx" or "/docs/${input.data.path}/index.mdx" in repository ${input.data.owner}/${input.data.repository} was not found.`,
       });
     }
 

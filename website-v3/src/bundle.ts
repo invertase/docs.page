@@ -1,6 +1,9 @@
 import { z } from 'zod';
 
-const $SidebarItem = z.tuple([z.string(), z.string()]);
+const $SidebarItem = z.tuple([
+  z.string(),
+  z.union([z.string(), z.array(z.tuple([z.string(), z.string()]))]),
+]);
 
 const $BundleConfig = z.object({
   name: z.string(),
@@ -19,7 +22,7 @@ const $BundleConfig = z.object({
       indexName: z.string(),
     })
     .optional(),
-  sidebar: z.array(z.tuple([z.string(), z.union([z.string(), z.array($SidebarItem)])])).optional(),
+  sidebar: z.union([z.record(z.array($SidebarItem)), z.array($SidebarItem)]),
   locales: z.array(z.string()),
   headerDepth: z.number(),
   variables: z.record(z.any()),
