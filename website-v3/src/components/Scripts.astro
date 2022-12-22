@@ -111,13 +111,22 @@ const { config, domain } = ctx;
   for (const group of groups) {
     const buttons = getButtons(group);
     const panes = getPanes(group);
+    const copyButton = group.querySelector('button[data-copy]');
 
     for (const button of buttons) {
       const buttonId = button.getAttribute('data-code-group-button-id')!;
 
       button.addEventListener('click', () => {
         for (const button of buttons) setButtonState(button, buttonId);
-        for (const pane of panes) setPaneState(pane, buttonId);
+        for (const pane of panes) {
+          if (pane.getAttribute('data-code-group-pane-id') == buttonId) {
+            copyButton?.setAttribute(
+              'data-copy-value',
+              pane.getAttribute('data-code-group-pane-raw') ?? '',
+            );
+          }
+          setPaneState(pane, buttonId);
+        }
       });
     }
   }

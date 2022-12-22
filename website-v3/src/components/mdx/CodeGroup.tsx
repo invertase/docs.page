@@ -17,7 +17,7 @@ const CodeGroup: React.FC<CodeGroupProps> = props => {
     }
   });
 
-  const groups = (preTags || []).filter(Boolean);
+  const groups = (preTags || []).filter(Boolean) as ReactElement[];
 
   if (groups.length === 0) {
     return <div />;
@@ -52,7 +52,7 @@ const CodeGroup: React.FC<CodeGroupProps> = props => {
       <div className="relative">
         <button
           data-copy
-          data-copy-value="TODO"
+          data-copy-value={groups.find(g => g.props.language === defaultLanguage)?.props.raw ?? ''}
           className="absolute top-2 right-2 rounded bg-[#19191d] px-3 py-1 font-mono text-xs text-white opacity-0 transition hover:bg-black/50 group-hover:opacity-100 data-[copied=true]:[&>span]:hidden"
         >
           Copy
@@ -63,6 +63,7 @@ const CodeGroup: React.FC<CodeGroupProps> = props => {
             dangerouslySetInnerHTML={{ __html: group.props.html }}
             data-code-group-pane
             data-code-group-pane-id={languages[index]}
+            data-code-group-pane-raw={group.props.raw}
             aria-expanded={defaultLanguage === languages[index]}
             className={cx(
               'not-prose hidden overflow-hidden border-white/10 text-xs [&>pre>code>.line]:leading-6 [&>pre]:p-3',
