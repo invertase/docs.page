@@ -3,7 +3,7 @@ import cx from 'classnames';
 
 interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
   id?: string;
-  eyebrow?: boolean;
+  anchor?: boolean;
   type: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 }
 
@@ -19,12 +19,14 @@ const Heading: React.FC<HeadingProps> = props => {
     },
     <>
       <span>{props.children}</span>
-      <a
-        href={`#${id}`}
-        className="no-prose inline-flex h-6 w-6 items-center justify-center rounded border bg-gray-50/50 text-sm no-underline opacity-0 transition hover:border-gray-300 group-hover:opacity-100 dark:border-zinc-800 dark:bg-zinc-800/50 hover:dark:border-zinc-600"
-      >
-        #
-      </a>
+      {!!props.anchor && props.type !== 'h1' && (
+        <a
+          href={`#${id}`}
+          className="no-prose inline-flex h-6 w-6 items-center justify-center rounded border bg-gray-50/50 text-sm no-underline opacity-0 transition hover:border-gray-300 group-hover:opacity-100 dark:border-zinc-800 dark:bg-zinc-800/50 hover:dark:border-zinc-600"
+        >
+          #
+        </a>
+      )}
     </>,
   );
 

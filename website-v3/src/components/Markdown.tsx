@@ -36,12 +36,12 @@ const Markdown: React.FC = () => {
               className="rounded border bg-gray-50/50 px-1.5 py-1 text-xs font-thin before:content-[''] after:content-[''] dark:border-zinc-700 dark:bg-zinc-800/50"
             />
           ),
-          h1: (props: any) => <Heading {...props} type="h1" />,
-          h2: (props: any) => <Heading {...props} type="h2" />,
-          h3: (props: any) => <Heading {...props} type="h3" />,
-          h4: (props: any) => <Heading {...props} type="h4" />,
-          h5: (props: any) => <Heading {...props} type="h5" />,
-          h6: (props: any) => <Heading {...props} type="h6" />,
+          h1: (props: any) => <Heading {...props} type="h1" anchor />,
+          h2: (props: any) => <Heading {...props} type="h2" anchor />,
+          h3: (props: any) => <Heading {...props} type="h3" anchor />,
+          h4: (props: any) => <Heading {...props} type="h4" anchor />,
+          h5: (props: any) => <Heading {...props} type="h5" anchor />,
+          h6: (props: any) => <Heading {...props} type="h6" anchor />,
           section: (props: any) => {
             const { id, ...rest } = props;
             return (
