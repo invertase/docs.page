@@ -106,11 +106,6 @@ export async function getGitHubContents(
               text
             }
           }
-          configToml: object(expression: $configToml) {
-            ... on Blob {
-              text
-            }
-          }
           mdx: object(expression: $mdx) {
             ... on Blob {
               text
@@ -128,7 +123,6 @@ export async function getGitHubContents(
       repository: metadata.repository,
       configJson: `${ref}:docs.json`,
       configYaml: `${ref}:docs.yaml`,
-      configToml: `${ref}:docs.toml`,
       mdx: `${ref}:${absolutePath}.mdx`,
       mdxIndex: `${ref}:${indexPath}.mdx`,
     }),

@@ -108,7 +108,6 @@ class Bundler {
       this.#config = parseConfig({
         json: metadata.config.configJson,
         yaml: metadata.config.configYaml,
-        toml: metadata.config.configToml,
       });
     } catch {
       this.#warnings.push('Failed to parse config file. Using default config.');

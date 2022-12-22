@@ -80,19 +80,13 @@ export type Config = z.infer<typeof $Config>;
 export const defaultConfig = $Config.parse({});
 
 // Given a user config, merges the config with the default config.
-export default function parseConfig(configs: {
-  json?: string;
-  yaml?: string;
-  toml?: string;
-}): Config {
+export default function parseConfig(configs: { json?: string; yaml?: string }): Config {
   let parsedConfig: unknown;
 
   if (configs.json) {
     parsedConfig = JSON.parse(configs.json);
   } else if (configs.yaml) {
     parsedConfig = yaml.load(configs.yaml);
-  } else if (configs.toml) {
-    parsedConfig = Object.assign({}, toml.parse(configs.toml));
   }
 
   // return $Config.parse(JSON.parse(test));

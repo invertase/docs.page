@@ -13,7 +13,7 @@ instead (see below for details).
 
 ## Getting Started
 
-Add a `docs.json`, `docs.yaml` or `docs.toml` file to the root of your repository. Below is a list of all
+Add a `docs.json` or `docs.yaml` file to the root of your repository. Below is a list of all
 available configuration options, which can be used to modify the logos, theme, analytics and more. For example
 a basic configuration might look like:
 
@@ -21,7 +21,6 @@ a basic configuration might look like:
   values={[
     { label: 'JSON', value: 'json' },
     { label: 'YAML', value: 'yaml' },
-    { label: 'TOML', value: 'toml' },
   ]}
 >
   <TabItem value="json">
@@ -40,14 +39,6 @@ a basic configuration might look like:
   description: My Project is a project that does awesome things.
   logo: "/assets/logo.png"
   logoDark: "/assets/logo-dark.png"
-  ```
-  </TabItem>
-  <TabItem value="toml">
-  ```toml title="docs.toml"
-  name = "My Project"
-  description = "My Project is a project that does awesome things."
-  logo = "/assets/logo.png"
-  logoDark = "/assets/logo-dark.png"
   ```
   </TabItem>
 </Tabs>
@@ -220,15 +211,32 @@ or [Brand Icons](https://fontawesome.com/search?o=r&s=solid&f=brands), for examp
 An object containing the details of your [DocSearch](https://docsearch.algolia.com/) account. This will enable
 a search bar at the top of the page. Note, all properies must be provided.
 
-```json title="Example DocSearch config"
-{
-  "docsearch": {
-    "appId": "R2IYF7ETH7",
-    "apiKey": "599cec31baffa4868cae4e79f180729b",
-    "indexName": "docsearch",
+<Tabs
+  value={[
+    { label: 'JSON', value: 'json' },
+    { label: 'YAML', value: 'yaml' },
+  ]}
+>
+  <TabItem value="json">
+  ```json title="Example DocSearch config"
+  {
+    "docsearch": {
+      "appId": "R2IYF7ETH7",
+      "apiKey": "599cec31baffa4868cae4e79f180729b",
+      "indexName": "docsearch"
+    }
   }
-}
-```
+  ```
+  </TabItem>
+  <TabItem value="yaml">
+  ```yaml title="Example DocSearch config"
+  docsearch:
+    appId: R2IYF7ETH7
+    apiKey: 599cec31baffa4868cae4e79f180729b
+    indexName: docsearch
+  ```
+  </TabItem>
+</Tabs>
 </Property>
 
 <hr />
@@ -240,17 +248,39 @@ and the value the sidebar links for that locale.
 
 The sidebar only supports a single level of nesting.
 
-```json
-{
-  "sidebar": [
-    ['Getting Started', '/'],
-    ['Advanced', [
-      ['Reference API', '/reference'],
-      ['FAQs', '/faqs']
-    ]]
-  ]
-}
-```
+<Tabs
+  value={[
+    { label: 'JSON', value: 'json' },
+    { label: 'YAML', value: 'yaml' },
+  ]}
+>
+  <TabItem value="json">
+  ```json
+  {
+    "sidebar": [
+      ["Getting Started", "/"],
+      ["Advanced", [
+        ["Reference API", "/reference"],
+        ["FAQs", "/faqs"]
+      ]]
+    ]
+  }
+  ```
+  </TabItem>
+  <TabItem value="json">
+  ```yaml
+  sidebar:
+  - - Getting Started
+    - "/"
+  - - Advanced
+    - - - Reference API
+        - "/reference"
+      - - FAQs
+        - "/faqs"
+  ```
+  </TabItem>
+</Tabs>
+
 
 <Info>View the [locales](/locales) documentation for more details.</Info>
 </Property>
