@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import yaml from 'js-yaml';
 import toml from '@ltd/j-toml';
-import test from './test_config.js';
+// import test from './test_config.js';
 
 const $SidebarItem = z.tuple([
   z.coerce.string(),
@@ -95,6 +95,6 @@ export default function parseConfig(configs: {
     parsedConfig = Object.assign({}, toml.parse(configs.toml));
   }
 
-  return $Config.parse(JSON.parse(test));
+  // return $Config.parse(JSON.parse(test));
   return $Config.parse(parsedConfig);
 }
