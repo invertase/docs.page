@@ -25,7 +25,8 @@
         ["Images", "/components/images"],
         ["YouTube", "/components/youtube"],
         ["Vimeo", "/components/vimeo"],
-        ["Zapp!", "/components/zapp"]
+        ["Zapp!", "/components/zapp"],
+        ["Custom Components", "/components/custom-components"]
       ]
     ],
     [
