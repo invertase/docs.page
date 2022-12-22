@@ -23,19 +23,22 @@ const Markdown: React.FC = () => {
   const { default: MDX } = runSync(code, runtime);
 
   return (
-    <main className="prose prose-slate dark:prose-invert prose-p:leading-loose dark:prose-a:text-white prose-a:font-bold prose-a:underline-offset-[5px] prose-a:decoration-docs-theme prose-a:decoration-2 hover:prose-a:decoration-4 prose-headings:mb-[1rem] prose-pre:m-0 prose-pre:rounded-none max-w-none">
+    <main
+      className="
+      prose prose-slate dark:prose-invert prose-p:leading-loose
+      dark:prose-a:text-white 
+      prose-a:font-bold prose-a:underline-offset-[5px] prose-a:decoration-docs-theme prose-a:decoration-2 hover:prose-a:decoration-4 prose-headings:mb-[1rem] 
+      prose-pre:m-0 
+      prose-pre:rounded-none prose-code:rounded
+      prose-code:border prose-code:bg-gray-50/50 prose-code:px-1.5 prose-code:py-1 prose-code:text-xs prose-code:font-thin prose-code:before:content-[''] prose-code:after:content-[''] prose-code:dark:border-zinc-700 prose-code:dark:bg-zinc-800/50 max-w-none
+      "
+    >
       <MDX
         components={{
           a: (props: any) => <Link {...props} href={props.href || '/'} />,
           img: (props: any) => <Image {...props} />,
           table: (props: any) => <Table {...props} />,
           pre: (props: any) => <CodeBlock {...(props as CodeBlockProps)} />,
-          code: (props: any) => (
-            <code
-              {...props}
-              className="rounded border bg-gray-50/50 px-1.5 py-1 text-xs font-thin before:content-[''] after:content-[''] dark:border-zinc-700 dark:bg-zinc-800/50"
-            />
-          ),
           h1: (props: any) => <Heading {...props} type="h1" />,
           h2: (props: any) => <Heading {...props} type="h2" anchor />,
           h3: (props: any) => <Heading {...props} type="h3" anchor />,

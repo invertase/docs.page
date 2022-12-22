@@ -65,10 +65,10 @@ export const Property = (props) => (
   <div>
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <div style={{ flexGrow: 1 }}>
-        <code>{props.name}</code>
+        <code className="text-docs-theme" style={{ fontSize: 16 }}>{props.name}</code>
       </div>
       <div>
-        <span>{props.type}</span>
+        <span className="font-mono">{props.type}</span>
       </div>
     </div>
     <div>{props.children}</div>
