@@ -35,14 +35,14 @@ const CodeGroup: React.FC<CodeGroupProps> = props => {
             <span className="text-xs font-semibold tracking-wide text-white">{props.title}</span>
           )}
         </span>
-        <span className="flex items-center gap-2 text-xs">
+        <span className="flex items-center gap-2 text-xs text-white">
           {languages.map((language, i) => (
             <button
               aria-selected={i === 0}
               data-code-group-button
               data-code-group-button-id={language}
               key={language}
-              className="aria-selected:text-docs-theme opacity-75 transition hover:opacity-100 aria-selected:opacity-100"
+              className="aria-selected:text-docs-theme opacity-50 transition hover:opacity-100 aria-selected:opacity-100"
             >
               {language}
             </button>
