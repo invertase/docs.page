@@ -21,7 +21,7 @@ const Callout: React.FC<Props> = props => {
       )}
     >
       <span className="h-6 w-6">{props.icon}</span>
-      <span>{props.children}</span>
+      <span className="[&>p]:m-0">{props.children}</span>
     </div>
   );
 };
