@@ -55,3 +55,22 @@ a basic configuration might look like:
 ## Configuration Options
 
 Below is a list of all available configuration options, their type and default values.
+
+<Property name="name" type="string">
+The name of your project. This will be displayed in the header of the website. If not provided,
+the GitHub repository name will be used instead.
+</Property>
+
+export const Property = (props) => (
+  <div>
+    <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div style={{ flexGrow: 1 }}>
+        <code>{props.name}</code>
+      </div>
+      <div>
+        <span>{props.type}</span>
+      </div>
+    </div>
+    <div>{props.children}</div>
+  </div>
+);
