@@ -241,6 +241,13 @@ and the value the sidebar links for that locale.
 
 The sidebar only supports a single level of nesting.
 
+```ts
+type Sidebar = [
+  string,
+  string | [string, string][]
+][];
+```
+
 <Tabs
   values={[
     { label: 'JSON', value: 'json' },
