@@ -18,6 +18,13 @@ const $BundleConfig = z.object({
   twitter: z.string(),
   noindex: z.boolean(),
   theme: z.string(),
+  anchors: z.array(
+    z.object({
+      icon: z.string(),
+      title: z.string(),
+      link: z.string(),
+    }),
+  ),
   docsearch: z
     .object({
       appId: z.string(),

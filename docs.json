@@ -1,8 +1,9 @@
 {
   "name": "docs.page",
-  "logo": "https://static.invertase.io/assets/docs.page/docs-page-logo.png",  
+  "logo": "https://static.invertase.io/assets/docs.page/docs-page-logo.png",
   "theme": "#36B9B9",
   "twitter": "invertaseio",
+  "anchors": [{ "title": "Homepage", "icon": "house", "link": "https://docs.page" }],
   "sidebar": [
     [
       "Getting Started",
@@ -30,21 +31,16 @@
     [
       "Advanced",
       [
-         ["Assets", "/assets"],
-         ["Frontmatter", "/frontmatter"],
-         ["Previews", "/previews"],
-         ["Search", "/search"],
-         ["Custom Domains", "/custom-domains"],
-         ["Locales", "/locales"],
-         ["GitHub Bot", "/github-bot"]
+        ["Assets", "/assets"],
+        ["Frontmatter", "/frontmatter"],
+        ["Previews", "/previews"],
+        ["Search", "/search"],
+        ["Custom Domains", "/custom-domains"],
+        ["Locales", "/locales"],
+        ["GitHub Bot", "/github-bot"]
       ]
     ],
-    [
-      "Misc.",
-      [
-         ["Contributing", "/contributing"]
-      ]
-    ]    
+    ["Misc.", [["Contributing", "/contributing"]]]
   ],
   "docsearch": {
     "apiKey": "9b58d13ee3195094105d528fc6161a01",

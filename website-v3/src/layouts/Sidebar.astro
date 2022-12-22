@@ -21,19 +21,19 @@ function getLocaleString(locale: string): string {
   return found ? found.name : locale;
 }
 
-type Anchor = { icon: FontAwesomeProps['name']; title: string; href: string };
+const anchors = config.anchors satisfies typeof config.anchors;
 
-const anchors = [{
+anchors.push({
   icon: 'github',
   title: 'GitHub',
-  href: `https://github.com/${owner}/${repository}`
-}] satisfies Anchor[];
+  link: `https://github.com/${owner}/${repository}`
+});
 
 if (config.twitter) {
   anchors.push({
     icon: 'twitter',
     title: 'Twitter',
-    href: `https://twitter.com/${config.twitter}`
+    link: `https://twitter.com/${config.twitter}`
   });
 }
 ---
@@ -63,7 +63,7 @@ if (config.twitter) {
   <ul class="mb-6 space-y-3">
     {anchors.map((anchor) => (
       <li>
-        <Link href={anchor.href} className="group flex items-center gap-2">
+        <Link href={anchor.link} className="group flex items-center gap-2">
           <span class="w-6 h-6 rounded border opacity-75 dark:border-zinc-700 group-hover:border-transparent inline-flex items-center justify-center text-[14px] group-hover:bg-docs-theme group-hover:opacity-100 transition group-hover:text-white">
             <FontAwesome name={anchor.icon} />
           </span>

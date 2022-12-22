@@ -42,6 +42,19 @@ const $Config = z
     automaticallyDisplayName: z.boolean().catch(true),
     automaticallyInferNextPrevious: z.boolean().catch(true),
     plausibleAnalytics: z.boolean().catch(false),
+    anchors: z
+      .array(
+        z
+          .object({
+            icon: z.string(),
+            title: z.string(),
+            link: z.string(),
+          })
+          .optional()
+          .catch(undefined),
+      )
+      .transform(items => items.filter(Boolean))
+      .catch([]),
     docsearch: z
       .object({
         appId: z.string().catch(''),
