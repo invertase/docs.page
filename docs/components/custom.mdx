@@ -36,8 +36,8 @@ Components have some advantages and disadvantages you can note below.
 - <Icon name="check" /> Component children also supports other components.
 - <Icon name="check" /> You can pass props (including other components) to the component.
 - <Icon name="check" /> You can provide custom CSS styles (in object format).
-- <Icon name="check" /> You use React state.
 
+- <Icon name="xmark" /> You cannot use React state.
 - <Icon name="xmark" /> You cannot share components across pages.
 - <Icon name="xmark" /> You cannot use custom Tailwind class names (since they are not bundled).
 
@@ -58,25 +58,3 @@ Class names follow the Tailwind naming convention, so you can apply the theme to
 | background | bg-docs-theme     |
 | color      | text-docs-theme   |
 | border     | border-docs-theme |
-
-## Using State
-
-You can use React state in your components. For example:
-
-```
-export const Counter = () => {
-  const [count, setCount] = useState(0)
-  return (
-    <button onClick={() => setCount(count + 1)}>Clicked {count} times!</button>
-  )
-}
-```
-
-Here's a real-life example: <Counter />
-
-export const Counter = () => {
-  const [count, setCount] = React.useState(0)
-  return (
-    <button onClick={() => setCount(count + 1)}>Clicked {count} times!</button>
-  )
-}
