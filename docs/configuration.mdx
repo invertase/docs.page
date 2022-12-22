@@ -70,12 +70,197 @@ If a page frontmatter description is provided, it will be used instead.
 
 <hr />
 
+<Property name="logo" type="string">
+The path (either absolute or relative to the `/docs` directory) to the logo of your project. This will be
+displayed in the header. 
+
+<Info>Logos have a forced height of 30px.</Info>
+</Property>
+
+<hr />
+
+<Property name="logoDark" type="string">
+The path (either absolute or relative to the `/docs` directory) to the logo of your project, used
+when dark mode is enabled. If not provided, but a `logo` is, the `logo` will be used instead.
+</Property>
+
+<hr />
+
+<Property name="logoDark" type="string">
+The path (either absolute or relative to the `/docs` directory) to the favicon of your project.
+</Property>
+
+<hr />
+
+<Property name="socialPreview" type="string">
+The path (either absolute or relative to the `/docs` directory) to social preview card which will be displayed
+when linked on social media (e.g. Twitter). If page frontmatter provides a social card, it will be used instead.
+If not provided, a card will be automatically generated for you.
+</Property>
+
+<hr />
+
+<Property name="twitter" type="string">
+The Twitter handle of your project. This will be used as a page anchor and social metadata.
+</Property>
+
+<hr />
+
+<Property name="noindex" type="string">
+Whether to apply a [`noindex`](https://developers.google.com/search/docs/crawling-indexing/block-indexing) 
+meta tag on every page of your project, to prevent it from showing in search engines.
+
+<Info>When viewing a [preview](/previews), noindex will be applied by default.</Info>
+</Property>
+
+<hr />
+
+<Property name="theme" type="string" default="#00bcd4">
+The theme of your project, applied to active links and other subtle places. This should color be visible on
+both dark and light modes. Can either be a hex color (e.g. `#00bcd4`) or a RGB (e.g. `rgb(0,188,212)`).
+</Property>
+
+<hr />
+
+<Property name="headerDepth" type="number" default="3">
+The maxium header depths to apply to the navigation menu on each page.
+</Property>
+
+<hr />
+
+<Property name="variables" type="object">
+Any variables to apply to the markdown pages. When providing a variable within mustache syntax (e.g. `{{ variable }}`),
+it will be replaced with the value provided here. For example:
+
+```json
+{
+  "variables": {
+    "versions": {
+      "latest": "1.0.0",
+      "next": "1.1.0"
+    }
+  }
+}
+```
+
+Within the markdown `{{ versions.latest }}` would display `1.0.0`.
+
+</Property>
+
+<hr />
+
+<Property name="googleTagManager" type="string">
+If provided, the [GTM](https://tagmanager.google.com/) script with the ID will be added to each documentation webpage.
+</Property>
+
+<hr />
+
+<Property name="googleAnalytics" type="string">
+If provided, the [Google Analytics](https://analytics.google.com/analytics/web/) script with the ID will be added to each documentation webpage.
+</Property>
+
+<hr />
+
+<Property name="zoomImages" type="boolean" default="false">
+If enabled, all images will zoom when clicked by default.
+</Property>
+
+<hr />
+
+<Property name="automaticallyDisplayName" type="boolean" default="true">
+If enabled, the `name` of your project (or repository name) will be automatically displayed in the header,
+next to the logo. Set to `false` to only show a logo.
+</Property>
+
+<hr />
+
+<Property name="automaticallyInferNextPrevious" type="boolean" default="true">
+If true, the next and previous links will be automatically inferred from the sidebar menu.
+
+If frontmatter next/previous links are provided on a page level, they will be used instead.
+</Property>
+
+<hr />
+
+<Property name="plausibleAnalytics" type="boolean" default="false">
+If set to true, the [Plausible](https://plausible.io/) analytics script will be added to each documentation webpage.
+
+<Warning>This property will only take effect when using a [custom domain](/custom-domains).</Warning>
+</Property>
+
+<hr />
+
+<Property name="anchors" type="Anchor[]">
+When provided, the anchors will be displayed above the sidebar menu. These are useful for important links
+which persist across your documentation (e.g. homepage, CTA buttons etc).
+
+```ts
+type Anchor = {
+  title: string;
+  icon: string;
+  link: string;
+}
+```
+
+For the icons, you can use the name of any standard [Font Awesome Classic Icon](https://fontawesome.com/search?o=r&s=solid)
+or [Brand Icons](https://fontawesome.com/search?o=r&s=solid&f=brands), for example:
+
+```json
+{
+  "anchors": [
+    { title: "Homepage", icon: "house", link: "https://example.com" }
+  ]
+}
+```
+</Property>
+
+<hr />
+
+<Property name="docsearch" type="object">
+An object containing the details of your [DocSearch](https://docsearch.algolia.com/) account. This will enable
+a search bar at the top of the page. Note, all properies must be provided.
+
+```json title="Example DocSearch config"
+{
+  "docsearch": {
+    "appId": "R2IYF7ETH7",
+    "apiKey": "599cec31baffa4868cae4e79f180729b",
+    "indexName": "docsearch",
+  }
+}
+```
+</Property>
+
+<hr />
+
+<Property name="sidebar" type="Array<Sidebar> | Record<string, Sidebar>">
+This property allows you to render sidebar links to navigate around your documentation.
+It can either be an array/list of links, or an object where the key is a locale identifier
+and the value the sidebar links for that locale.
+
+The sidebar only supports a single level of nesting.
+
+```json
+{
+  "sidebar": [
+    ['Getting Started', '/'],
+    ['Advanced', [
+      ['Reference API', '/reference'],
+      ['FAQs', '/faqs']
+    ]]
+  ]
+}
+```
+
+<Info>View the [locales](/locales) documentation for more details.</Info>
+</Property>
 
 export const Property = (props) => (
   <div>
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <div style={{ flexGrow: 1 }}>
         <code className="text-docs-theme" style={{ fontSize: 16 }}>{props.name}</code>
+        {!!props.default && <span style={{ paddingLeft: 8 }}>Default: ${props.default}</span>}
       </div>
       <div>
         <span className="font-mono">{props.type}</span>
