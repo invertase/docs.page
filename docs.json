@@ -32,7 +32,6 @@
     [
       "Advanced",
       [
-        ["Assets", "/assets"],
         ["Frontmatter", "/frontmatter"],
         ["Previews", "/previews"],
         ["Search", "/search"],

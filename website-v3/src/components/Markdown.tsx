@@ -56,6 +56,7 @@ const Markdown: React.FC = () => {
             );
           },
           Accordion,
+          CodeGroup: (props: any) => <div>{props.children}</div>,
           Icon: (props: any) => <FontAwesome name={props.name} />,
           Info: (props: any) => <callouts.Info>{props.children}</callouts.Info>,
           Warning: (props: any) => <callouts.Warning>{props.children}</callouts.Warning>,
