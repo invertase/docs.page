@@ -31,7 +31,10 @@ const Markdown: React.FC = () => {
           table: (props: any) => <Table {...props} />,
           pre: (props: any) => <CodeBlock {...(props as CodeBlockProps)} />,
           code: (props: any) => (
-            <code {...props} className="before:content-[''] after:content-['']" />
+            <code
+              {...props}
+              className="rounded border bg-gray-50/50 px-1.5 py-1 text-xs font-thin before:content-[''] after:content-[''] dark:border-zinc-700 dark:bg-zinc-800/50"
+            />
           ),
           h1: (props: any) => <Heading {...props} type="h1" />,
           h2: (props: any) => <Heading {...props} type="h2" />,
