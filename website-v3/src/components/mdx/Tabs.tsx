@@ -15,7 +15,7 @@ type TabsProps = {
 const Tabs: React.FC<TabsProps> = props => {
   const ctx = context.get();
   const { children, values, groupId, defaultValue } = props;
-
+  
   if (!values || values.length === 0) {
     return <div />;
   }

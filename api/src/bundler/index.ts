@@ -79,14 +79,14 @@ class Bundler {
     // Update the ref to the real ref
     this.#ref = this.#source.ref;
 
-    // TODO handle errors
+    
     const metadata = await getGitHubContents({
       owner: this.#source.owner,
       repository: this.#source.repository,
       path: this.#path,
       ref: this.#ref,
     });
-
+    
     if (!metadata) {
       throw ERROR_CODES.REPO_NOT_FOUND;
     }

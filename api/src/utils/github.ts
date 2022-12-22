@@ -90,7 +90,7 @@ export async function getGitHubContents(
   const [error, response] = await A2A<PageContentsQuery>(
     getGithubGQLClient()({
       query: `
-      query RepositoryConfig($owner: String!, $repository: String!, $configJson: String!, $configYaml: String!, $configToml: String!, $mdx: String!, $mdxIndex: String!) {
+      query RepositoryConfig($owner: String!, $repository: String!, $configJson: String!, $configYaml: String!, $mdx: String!, $mdxIndex: String!) {
         repository(owner: $owner, name: $repository) {
           baseBranch: defaultBranchRef {
             name
@@ -140,7 +140,6 @@ export async function getGitHubContents(
     config: {
       configJson: response?.repository.configJson?.text,
       configYaml: response?.repository.configYaml?.text,
-      configToml: response?.repository.configToml?.text,
     },
     md: response?.repository.mdxIndex?.text || response?.repository.mdx?.text,
     path: response?.repository.mdxIndex?.text ? indexPath : absolutePath,

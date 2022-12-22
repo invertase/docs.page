@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import yaml from 'js-yaml';
-import toml from '@ltd/j-toml';
 // import test from './test_config.js';
 
 const $SidebarItem = z.tuple([

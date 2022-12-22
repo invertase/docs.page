@@ -8,7 +8,6 @@
   "license": "MIT",
   "dependencies": {
     "@code-hike/mdx": "^0.7.2",
-    "@ltd/j-toml": "^1.30.0",
     "@mdx-js/mdx": "^2.2.1",
     "@octokit/graphql": "^5.0.0",
     "@types/cors": "^2.8.12",
