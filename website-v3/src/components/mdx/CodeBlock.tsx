@@ -11,7 +11,7 @@ const CodeBlock: React.FC<CodeBlockProps> = props => {
     <div>
       <div className="group mb-6 rounded-xl">
         {!!props.title && (
-          <div className="rounded-t-xl border border-white/10 bg-[#19191d] py-2 px-4">
+          <div className="flex h-12 items-center rounded-t-xl border border-white/10 bg-[#19191d] px-3">
             <span className="text-xs font-semibold tracking-wide text-white">{props.title}</span>
           </div>
         )}

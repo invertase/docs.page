@@ -73,7 +73,10 @@ export async function apiRequest(options) {
 
 ## Code Groups
 
-<CodeGroup>
+You can group multiple code blocks together by using the `<CodeGroup>` component.  This is useful for showing
+variations of the "same" code in a different language
+
+<CodeGroup title="Logging: Hello World">
   ```javascript
   console.log("Hello World");
   ```
@@ -89,3 +92,29 @@ export async function apiRequest(options) {
   ```
 </CodeGroup>
 
+Specify the code blocks with their language like so:
+
+```
+<CodeGroup title="Logging: Hello World">
+  ```javascript
+  console.log("Hello World");
+  ```
+
+  ```python
+  print('Hello World!')
+  ```
+
+  ```dart
+  void main() {
+    print('Hello World!');
+  }
+  ```
+
+  // ...
+```
+
+You can also specify the default language using the `defaultLanguage` property:
+
+```jsx
+<CodeGroup defaultLanguage="dart" title="Logging: Hello World">
+```

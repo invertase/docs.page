@@ -91,6 +91,39 @@ const { config, domain } = ctx;
 </script>
 
 <script>
+  const groups = document.querySelectorAll('div[data-code-group]');
+
+  const getButtons = (el: Element) => el.querySelectorAll('button[data-code-group-button]');
+  const getPanes = (el: Element) => el.querySelectorAll('div[data-code-group-pane]');
+
+  const setButtonState = (button: Element, id: string) => {
+    const active = (button.getAttribute('data-code-group-button-id') === id).toString();
+    button.setAttribute('aria-selected', active);
+  };
+
+  const setPaneState = (pane: Element, id: string) => {
+    pane.setAttribute(
+      'aria-expanded',
+      (pane.getAttribute('data-code-group-pane-id') === id).toString(),
+    );
+  };
+
+  for (const group of groups) {
+    const buttons = getButtons(group);
+    const panes = getPanes(group);
+
+    for (const button of buttons) {
+      const buttonId = button.getAttribute('data-code-group-button-id')!;
+
+      button.addEventListener('click', () => {
+        for (const button of buttons) setButtonState(button, buttonId);
+        for (const pane of panes) setPaneState(pane, buttonId);
+      });
+    }
+  }
+</script>
+
+<script>
   /**
    * This script is used to identify any tab groups on the page, and add event
    * when a tab button is clicked. It also syncs the state of the tabs with a
@@ -111,11 +144,10 @@ const { config, domain } = ctx;
   };
 
   const setPaneState = (pane: Element, id: string) => {
-    if (pane.getAttribute('data-tab-group-pane-id') === id) {
-      pane.classList.remove('hidden');
-    } else {
-      pane.classList.add('hidden');
-    }
+    pane.setAttribute(
+      'aria-expanded',
+      (pane.getAttribute('data-tab-group-pane-id') === id).toString(),
+    );
   };
 
   for (const tab of tabs) {

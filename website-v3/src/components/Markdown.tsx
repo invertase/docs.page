@@ -7,6 +7,7 @@ import Link from './Link';
 import FontAwesome from './FontAwesome';
 
 import CodeBlock, { CodeBlockProps } from './mdx/CodeBlock';
+import CodeGroup from './mdx/CodeGroup';
 import Accordion from './mdx/Accordion';
 import Image from './mdx/Image';
 import YouTube from './mdx/YouTube';
@@ -56,7 +57,7 @@ const Markdown: React.FC = () => {
             );
           },
           Accordion,
-          CodeGroup: (props: any) => <div>{props.children}</div>,
+          CodeGroup,
           Icon: (props: any) => <FontAwesome name={props.name} />,
           Info: (props: any) => <callouts.Info>{props.children}</callouts.Info>,
           Warning: (props: any) => <callouts.Warning>{props.children}</callouts.Warning>,

@@ -1,5 +1,4 @@
 import React, { isValidElement, PropsWithChildren } from 'react';
-import cx from 'classnames';
 import context from 'src/context';
 
 type TabsProps = {
@@ -65,9 +64,8 @@ const Tabs: React.FC<TabsProps> = props => {
               data-tab-group-pane-id={values[index].value}
               key={tab.props.value}
               data-tab={tab.props.value}
-              className={cx('pt-6 [&>:first-child]:mt-0', {
-                hidden: tab.props.value !== active,
-              })}
+              aria-expanded={tab.props.value === active}
+              className="hidden pt-6 aria-expanded:block [&>:first-child]:mt-0"
             >
               {tab}
             </div>

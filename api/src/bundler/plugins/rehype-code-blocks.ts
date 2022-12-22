@@ -28,6 +28,7 @@ export default function rehypeCodeBlocks(): (ast: Node) => void {
 
     // Raw value of the `code` block - used for copy/paste
     parent.properties['raw'] = raw;
+    parent.properties['language'] = language;
     parent.properties['html'] = highlighter.codeToHtml(raw, {
       lang: languages.includes(language || '') ? language : undefined,
     });
