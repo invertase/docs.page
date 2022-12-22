@@ -19,7 +19,7 @@ const Heading: React.FC<HeadingProps> = props => {
     },
     <>
       <span>{props.children}</span>
-      {!!props.anchor && props.type !== 'h1' && (
+      {!!props.anchor && (
         <a
           href={`#${id}`}
           className="no-prose inline-flex h-6 w-6 items-center justify-center rounded border bg-gray-50/50 text-sm no-underline opacity-0 transition hover:border-gray-300 group-hover:opacity-100 dark:border-zinc-800 dark:bg-zinc-800/50 hover:dark:border-zinc-600"
