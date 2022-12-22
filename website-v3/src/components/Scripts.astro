@@ -91,6 +91,11 @@ const { config, domain } = ctx;
 </script>
 
 <script>
+  /**
+   * The script finds any CodeGroup components, and applies some basic JS to handle
+   * changing between different languages.
+   */
+
   const groups = document.querySelectorAll('div[data-code-group]');
 
   const getButtons = (el: Element) => el.querySelectorAll('button[data-code-group-button]');
