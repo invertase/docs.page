@@ -25,10 +25,13 @@ const CodeBlock: React.FC<CodeBlockProps> = props => {
           </button>
           <div
             dangerouslySetInnerHTML={{ __html: props.html }}
-            className={cx('overflow-hidden border-white/10 text-sm [&>pre>code>.line]:leading-6', {
-              'rounded-xl border': !props.title,
-              'rounded-b-xl dark:border-b dark:border-r dark:border-l': !!props.title,
-            })}
+            className={cx(
+              'not-prose overflow-hidden border-white/10 text-xs [&>pre>code>.line]:leading-6 [&>pre]:p-3',
+              {
+                'rounded-xl border': !props.title,
+                'rounded-b-xl dark:border-b dark:border-r dark:border-l': !!props.title,
+              },
+            )}
           />
         </div>
       </div>
