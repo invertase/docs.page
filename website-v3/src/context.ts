@@ -1,5 +1,5 @@
 import { map } from 'nanostores';
-import type { BundleConfig, GetBundleResponseSuccess } from './bundle';
+import type { BundleConfig, GetBundleResponseSuccess, SidebarArray } from './bundle';
 
 export type Context = {
   // The owner of the repository (e.g. invertase)
@@ -8,12 +8,16 @@ export type Context = {
   repository: string;
   // The optional ref provided in the URL (invertase/docs.page~next)
   ref: string | undefined;
+  // The locale of the request.
+  locale: string | undefined;
   // The relative path of the page (e.g. /getting-started)
   relativePath: string;
   // The path to the page on github
   githubPath: string;
   // The path to the ref on github
   githubRefPath: string;
+  // The sidebar for the page
+  sidebar: SidebarArray;
   // The docs.json config file
   config: BundleConfig;
   // Frontmatter of the current page

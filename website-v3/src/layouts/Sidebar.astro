@@ -6,22 +6,7 @@ import Link from '@components/Link';
 import context from 'src/context';
 import { isExternalLink } from 'src/utils';
 
-const { owner, repository, config, relativePath } = context.get();
-let sidebar = config.sidebar || [];
-let locale: string | undefined;
-
-// If the sidebar is an object (locales), find the right one.
-if (!Array.isArray(sidebar)) {
-  console.log(relativePath);
-  [locale] = relativePath.split('/').filter(Boolean);
-
-  if (sidebar[locale]) {
-    sidebar = sidebar[locale];
-  } else {
-    locale = undefined;
-    sidebar = sidebar['default'] || [];
-  }
-}
+const { owner, repository, config, locale, sidebar } = context.get();
 
 function getLinkRef(href: string): string | undefined {
   if (import.meta.env.DEV || isExternalLink(href)) {
@@ -51,8 +36,6 @@ if (config.twitter) {
     href: `https://twitter.com/${config.twitter}`
   });
 }
-
-console.log(locale);
 ---
 <script>
   import type { Context } from 'src/context';

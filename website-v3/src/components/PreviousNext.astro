@@ -3,17 +3,14 @@ import context from 'src/context';
 import { ChevronLeftIcon, ChevronRightIcon } from './icons';
 import Link from './Link';
 
-const { relativePath, config, frontmatter } = context.get();
-let { sidebar, automaticallyInferNextPrevious } = config;
-
-if (!Array.isArray(sidebar)) sidebar = sidebar['en'];
+const { relativePath, config, frontmatter, sidebar } = context.get();
+let { automaticallyInferNextPrevious } = config;
 
 const links: [string, string][] = [];
 
 // Finds any links in the sidebar and pushes them to a flattened array.
-// TODO fix array.
-function iterateSidebarArray(array: any[]) {
-  for (const [title, urlOrChildren] of array || []) {
+function iterateSidebarArray(array: typeof sidebar) {
+  for (const [title, urlOrChildren] of array) {
     if (typeof urlOrChildren === 'string') links.push([title, urlOrChildren]);
     else if (Array.isArray(urlOrChildren)) iterateSidebarArray(urlOrChildren);
   }
@@ -34,7 +31,7 @@ if (frontmatter.next) next = [frontmatter.next, frontmatter.nextTitle];
 
 // If the user wants auto infered previous/next, find them (if not already set).
 if (automaticallyInferNextPrevious) {
-  const currentIndex = links.findIndex(([title, href]) => href === relativePath);
+  const currentIndex = links.findIndex(([_, href]) => href === relativePath);
   if (currentIndex > -1 && !previous) previous = links[currentIndex - 1];
   if (currentIndex > -1 && !next) next = links[currentIndex + 1];
 }

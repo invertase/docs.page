@@ -98,13 +98,36 @@ if (response?.code === 'OK') {
   } catch {}
 
   const domain = domains.find(([, repo]) => repo === `${owner}/${repository}`)?.at(0);
-  console.log('DOMAIN', domains, domain);
+  
+  let relativePath = ensureLeadingSlash(path || '/');
+  let locale: string | undefined;
+
+  // Check whether the request is for a valid locale.
+  if (config.locales.length) {
+    [locale] = relativePath.split('/').filter(Boolean);
+    if (!config.locales.includes(locale)) {
+      locale = undefined;
+    } else {
+      relativePath = relativePath.replace(`/${locale}`, '');
+    }
+  }
+
+  // Figure out the sidebar based on the locale.
+  let sidebar = [];
+  if (locale && !Array.isArray(config.sidebar)) {
+    sidebar = config.sidebar[locale];
+  } else if (!Array.isArray(config.sidebar)) {
+    sidebar = config.sidebar['default'] || [];
+  } else {
+    sidebar = config.sidebar;
+  }
 
   // Set the context store.
   context.set({
     owner,
     repository,
-    relativePath: ensureLeadingSlash(path || '/'),
+    relativePath,
+    locale,
     githubPath: `https://github.com/${owner}/${repository}/edit/${
       source.type === 'branch' && source.ref !== 'HEAD' ? source.ref : baseBranch
     }/docs/${path || 'index'}.mdx`,
@@ -117,6 +140,7 @@ if (response?.code === 'OK') {
       return '';
     })(),
     ref,
+    sidebar,
     config,
     frontmatter,
     code: replaceMoustacheVariables(config.variables ?? {}, code),

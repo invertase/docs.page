@@ -5,6 +5,9 @@ const $SidebarItem = z.tuple([
   z.union([z.string(), z.array(z.tuple([z.string(), z.string()]))]),
 ]);
 
+const $SidebarArray = z.array($SidebarItem);
+const $SidebarRecord = z.record(z.array($SidebarItem));
+
 const $BundleConfig = z.object({
   name: z.string(),
   description: z.string(),
@@ -22,7 +25,7 @@ const $BundleConfig = z.object({
       indexName: z.string(),
     })
     .optional(),
-  sidebar: z.union([z.record(z.array($SidebarItem)), z.array($SidebarItem)]),
+  sidebar: z.union([$SidebarArray, $SidebarRecord]),
   locales: z.array(z.string()),
   headerDepth: z.number(),
   variables: z.record(z.any()),
@@ -81,6 +84,8 @@ export type GetBundleResponse = z.infer<typeof $GetBundleResponse>;
 export type GetBundleResponseSuccess = z.infer<typeof $GetBundleResponseSuccess>;
 
 export type BundleConfig = z.infer<typeof $BundleConfig>;
+export type SidebarArray = z.infer<typeof $SidebarArray>;
+export type SidebarRecord = z.infer<typeof $SidebarRecord>;
 
 export async function getBundle(options: GetBundleRequest): Promise<GetBundleResponse> {
   // Validate the input

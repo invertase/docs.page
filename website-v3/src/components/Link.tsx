@@ -8,7 +8,7 @@ interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
 }
 
 const Link: React.FC<LinkProps> = props => {
-  const { owner, repository, ref, domain, relativePath, config } = context.get();
+  const { owner, repository, ref, domain, relativePath, locale } = context.get();
 
   if (isExternalLink(props.href)) {
     return (
@@ -26,9 +26,8 @@ const Link: React.FC<LinkProps> = props => {
     }
 
     // All links with locales should be relative to that locale.
-    if (config.locales.length > 0) {
-      const [locale] = relativePath.split('/').filter(Boolean);
-      if (locale) href += `/${locale}`;
+    if (locale) {
+      href += `/${locale}`;
     }
 
     href += props.href;
@@ -50,10 +49,8 @@ const Link: React.FC<LinkProps> = props => {
     to += `~${encodeURIComponent(ref)}`;
   }
 
-  // Add the locale to the link if it's not the default locale.
-  if (config.locales.length > 0) {
-    const [locale] = relativePath.split('/').filter(Boolean);
-    if (locale) to += `/${locale}`;
+  if (locale) {
+    to += `/${locale}`;
   }
 
   return (
