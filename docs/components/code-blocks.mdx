@@ -94,6 +94,22 @@ variations of the "same" code in a different language
 
 Specify each of the code blocks and their language as children of the component.
 
+   <CodeGroup title="Logging: Hello World">
+     ```javascript
+     console.log("Hello World");
+     ```
+
+     ```python
+     print('Hello World!')
+     ```
+
+     ```dart
+     void main() {
+       print('Hello World!');
+     }
+     ```
+   </CodeGroup>
+
 You can also specify the default language using the `defaultLanguage` property:
 
 ```jsx
