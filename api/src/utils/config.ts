@@ -39,6 +39,7 @@ const $Config = z
     zoomImages: z.boolean().catch(false),
     experimentalCodehike: z.boolean().catch(false),
     experimentalMath: z.boolean().catch(false),
+    automaticallyDisplayName: z.boolean().catch(true),
     automaticallyInferNextPrevious: z.boolean().catch(true),
     plausibleAnalytics: z.boolean().catch(false),
     docsearch: z

@@ -35,6 +35,7 @@ const $BundleConfig = z.object({
   experimentalCodehike: z.boolean(),
   experimentalMath: z.boolean(),
   automaticallyInferNextPrevious: z.boolean(),
+  automaticallyDisplayName: z.boolean(),
   plausibleAnalytics: z.boolean(),
 });
 
