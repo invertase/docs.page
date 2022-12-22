@@ -290,7 +290,7 @@ export const Property = (props) => (
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <div style={{ flexGrow: 1 }}>
         <code className="text-docs-theme" style={{ fontSize: 16 }}>{props.name}</code>
-        {!!props.default && <span style={{ paddingLeft: 8 }}>Default: ${props.default}</span>}
+        {!!props.default && <span style={{ paddingLeft: 8 }}>Default: <code>{props.default}</code></span>}
       </div>
       <div>
         <span className="font-mono">{props.type}</span>
