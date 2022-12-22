@@ -28,7 +28,7 @@ export const post: APIRoute = async function ({ request }) {
 
     const getPath = () => {
       // Set to the root for domains.
-      if (domain) {
+      if (import.meta.env.PROD && domain) {
         return '/';
       }
 
