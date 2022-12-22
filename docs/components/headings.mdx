@@ -1,0 +1,32 @@
+---
+title: Headings
+description: Use headings in your documentation
+---
+
+# Headings
+
+All markdown headings will be rendered in a size ordered format. You can render headings using the `#` symbol,
+with the number of hashes indicating the heading type.
+
+```
+# Heading 1
+## Heading 2
+### Heading 3
+#### Heading 4
+##### Heading 5
+###### Heading 6
+```
+
+The name of the heading will be "slugified", and used as the anchor link for the heading. These headings
+will also be displayed in the right page navigation list.
+
+<Info>`h1` tags will not have an anchor tag.</Info>
+
+## Custom headings
+
+If you're unable to use markdown syntax to render a heading, you can use the `<Heading>` component instead.
+Note, using the heading component manually will not render a link in the page navigation list.
+
+```jsx
+<Heading type="h2">My Heading</Heading>
+```
