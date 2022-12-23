@@ -9,11 +9,14 @@ export default function handler(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
 
-    // ?title=<title>
-    const hasTitle = searchParams.has('title');
-    const title = hasTitle
-      ? searchParams.get('title')?.slice(0, 100)
-      : 'My default title';
+    if (!searchParams.has('owner') || !searchParams.has('repository')) {
+      return new Response('Missing required query parameters', {
+        status: 400,
+      });
+    }
+
+    const owner = searchParams.get('owner');
+    const repository = searchParams.get('repository');
 
     return new ImageResponse(
       (
@@ -53,7 +56,7 @@ export default function handler(req: NextRequest) {
               whiteSpace: 'pre-wrap',
             }}
           >
-            {title}
+            {owner}/{repository}
           </div>
         </div>
       ),
