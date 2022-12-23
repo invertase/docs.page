@@ -10,7 +10,6 @@ export interface CodeGroupProps extends React.HTMLProps<HTMLDivElement> {
 const CodeGroup: React.FC<CodeGroupProps> = props => {
   const preTags = React.Children.map(props.children, child => {
     if (isValidElement(child)) {
-      console.log(child);
       if (child.props?.html?.startsWith('<pre')) {
         return child;
       }
