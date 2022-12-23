@@ -15,7 +15,7 @@ With MDX, you can create your own components and use them in your markdown files
 
 ## Creating a custom component
 
-Somewhere in your MDX file, add an export which returns a React component. For example:
+Somewhere in your MDX file, add an export which returns a JSX component. For example:
 
 ```jsx
 export const BoldText = props => {
@@ -37,7 +37,6 @@ Components have some advantages and disadvantages you can note below.
 - <Icon name="check" /> You can pass props (including other components) to the component.
 - <Icon name="check" /> You can provide custom CSS styles (in object format).
 
-- <Icon name="xmark" /> You cannot use React state.
 - <Icon name="xmark" /> You cannot share components across pages.
 - <Icon name="xmark" /> You cannot use custom Tailwind class names (since they are not bundled).
 

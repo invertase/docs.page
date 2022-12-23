@@ -14,7 +14,7 @@ const Zapp: React.FC<ZappProps> = props => {
 
   return (
     <iframe
-      src={`http://zapp.run/embed/${props.id}?theme=${theme}&lazy=${lazy}`}
+      src={`https://zapp.run/embed/${props.id}?theme=${theme}&lazy=${lazy}`}
       className="aspect-video w-full"
       style={{
         width: '100%',

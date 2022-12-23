@@ -7,11 +7,15 @@ import * as shiki from 'shiki';
 
 let highlighter: shiki.Highlighter;
 
-// Gets a list of supported languages from skiki.
-// If a language which is not supported is supported is used, it will be ignored.
-const languages = shiki.BUNDLED_LANGUAGES.reduce((list, lang) => {
-  return [...list, lang.id, ...(lang.aliases || [])];
-}, [] as string[]);
+// Returns an object of supported languages.
+const languages = shiki.BUNDLED_LANGUAGES.reduce(
+  (map, lang) => {
+    const out = { [lang.id]: lang.id };
+    for (const alias of lang.aliases || []) out[alias] = lang.id;
+    return { ...map, ...out };
+  },
+  { '': 'text' } as Record<string, string>,
+);
 
 /**
  * Matches any `pre code` elements and extracts the raw code and titles from the code block and assigns to the parent.
@@ -24,13 +28,13 @@ export default function rehypeCodeBlocks(): (ast: Node) => void {
     }
 
     const raw = toString(node);
-    const language = getLanguage(node);
+    const language = languages[getLanguage(node) || ''];
 
     // Raw value of the `code` block - used for copy/paste
     parent.properties['raw'] = raw;
     parent.properties['language'] = language;
     parent.properties['html'] = highlighter.codeToHtml(raw, {
-      lang: languages.includes(language || '') ? language : undefined,
+      lang: language,
     });
 
     // Get any metadata from the code block
