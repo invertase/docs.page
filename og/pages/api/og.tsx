@@ -1,65 +1,65 @@
 import { ImageResponse } from '@vercel/og';
-import { NextRequest as Request } from 'next/server';
+import { NextRequest } from 'next/server';
 
 export const config = {
   runtime: 'edge',
 };
 
-export default async function (req: Request) {
+export default function handler(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
 
-    // const owner = searchParams.get('owner');
-    // const repository = searchParams.get('repository');
-
-    // if (!owner || !repository) {
-    //   return new Response(`Required parameters owner and repository are missing`, {
-    //     status: 400,
-    //   });
-    // }
-
-    console.log('Passed');
-    // console.log(owner, repository);
+    // ?title=<title>
+    const hasTitle = searchParams.has('title');
+    const title = hasTitle
+      ? searchParams.get('title')?.slice(0, 100)
+      : 'My default title';
 
     return new ImageResponse(
       (
-        // Modified based on https://tailwindui.com/components/marketing/sections/cta-sections
         <div
           style={{
+            backgroundColor: 'black',
+            backgroundSize: '150px 150px',
             height: '100%',
             width: '100%',
             display: 'flex',
-            flexDirection: 'column',
+            textAlign: 'center',
             alignItems: 'center',
             justifyContent: 'center',
-            backgroundColor: 'white',
+            flexDirection: 'column',
+            flexWrap: 'nowrap',
           }}
         >
-          <div tw="bg-gray-50 flex">
-            <div tw="flex flex-col md:flex-row w-full py-12 px-4 md:items-center justify-between p-8">
-              <h2 tw="flex flex-col text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 text-left">
-                <span>Ready to dive in?</span>
-                <span tw="text-indigo-600">Start your free trial today.</span>
-              </h2>
-              <div tw="mt-8 flex md:mt-0">
-                <div tw="flex rounded-md shadow">
-                  <a
-                    href="#"
-                    tw="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-5 py-3 text-base font-medium text-white"
-                  >
-                    Get started
-                  </a>
-                </div>
-                <div tw="ml-3 flex rounded-md shadow">
-                  <a
-                    href="#"
-                    tw="flex items-center justify-center rounded-md border border-transparent bg-white px-5 py-3 text-base font-medium text-indigo-600"
-                  >
-                    Learn more
-                  </a>
-                </div>
-              </div>
-            </div>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              justifyItems: 'center',
+            }}
+          >
+            <img
+              alt="Vercel"
+              height={200}
+              src="data:image/svg+xml,%3Csvg width='116' height='100' fill='white' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M57.5 0L115 100H0L57.5 0z' /%3E%3C/svg%3E"
+              style={{ margin: '0 30px' }}
+              width={232}
+            />
+          </div>
+          <div
+            style={{
+              fontSize: 60,
+              fontStyle: 'normal',
+              letterSpacing: '-0.025em',
+              color: 'white',
+              marginTop: 30,
+              padding: '0 120px',
+              lineHeight: 1.4,
+              whiteSpace: 'pre-wrap',
+            }}
+          >
+            {title}
           </div>
         </div>
       ),
@@ -68,9 +68,9 @@ export default async function (req: Request) {
         height: 630,
       },
     );
-  } catch (e) {
-    console.error(e);
-    return new Response(`Failed to generate the image - see function logs for more details`, {
+  } catch (e: any) {
+    console.log(`${e.message}`);
+    return new Response(`Failed to generate the image`, {
       status: 500,
     });
   }
