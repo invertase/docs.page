@@ -49,7 +49,7 @@ export default function handler(req: NextRequest) {
               whiteSpace: 'pre-wrap',
             }}
           >
-            {owner}/{repository}
+            {owner}
           </div>
         </div>
       ),
