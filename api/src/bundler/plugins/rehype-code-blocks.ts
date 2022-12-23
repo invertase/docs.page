@@ -7,7 +7,6 @@ import * as shiki from 'shiki';
 
 let highlighter: shiki.Highlighter;
 
-
 // Returns an object of supported languages.
 const languages = shiki.BUNDLED_LANGUAGES.reduce(
   (map, lang) => {
