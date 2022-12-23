@@ -9,14 +9,16 @@ export default function handler(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
 
-    if (!searchParams.has('owner') || !searchParams.has('repository')) {
+    const owner = searchParams.get('owner');
+    const repository = searchParams.get('repository');
+
+    if (!owner || !repository) {
       return new ImageResponse(<>Missing required fields.</>, {
         width: 1200,
         height: 630,
       });
     }
 
-    const owner = searchParams.get('owner');
     // const repository = searchParams.get('repository');
 
     return new ImageResponse(
@@ -37,16 +39,6 @@ export default function handler(req: NextRequest) {
         >
           <div
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              justifyItems: 'center',
-            }}
-          >
-            Lol image broke
-          </div>
-          <div
-            style={{
               fontSize: 60,
               fontStyle: 'normal',
               letterSpacing: '-0.025em',
@@ -57,7 +49,7 @@ export default function handler(req: NextRequest) {
               whiteSpace: 'pre-wrap',
             }}
           >
-            {owner}
+            {owner}/{repository}
           </div>
         </div>
       ),
