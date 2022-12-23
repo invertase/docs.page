@@ -8,10 +8,22 @@ const description = frontmatter.description || config.description || '';
 const url = domain
   ? `https://${domain}${ref && `/~${ref}`}${relativePath}`
   : `https://docs.page/${owner}/${repository}${ref && `~${ref}`}${relativePath}`;
-const image =
-  frontmatter.image ||
-  config.socialPreview ||
-  `/api/social-preview?owner=${owner}&repository=${repository}&ref=${ref}&path=${relativePath}`;
+
+let image = frontmatter.image || config.socialPreview;
+if (!image) {
+  const params = new URLSearchParams({
+    owner,
+    repository,
+  });
+
+  if (config.name) params.set('name', config.name);
+  if (frontmatter.title) params.set('title', frontmatter.title);
+  if (frontmatter.description || config.description)
+    params.set('description', frontmatter.description || config.description);
+  if (config.logo) params.set('logo', config.logo);
+
+  image = `https://og.docs.page?${params.toString()}`;
+}
 ---
 
 <title>{title}</title>
