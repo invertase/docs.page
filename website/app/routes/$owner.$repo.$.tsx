@@ -20,6 +20,8 @@ import { getSocialImage } from '~/utils';
 import codeHikeStyles from '@code-hike/mdx/dist/index.css';
 import { DocumentationProvider, DomainProvider } from '~/context';
 
+export const handle = { hydrate: true };
+
 //@ts-ignore
 export function headers({ loaderHeaders }) {
   return {

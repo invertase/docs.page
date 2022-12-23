@@ -10,6 +10,8 @@ import extraStyles from '../styles/extra-styles.css';
 import { LandingPage } from '../components/PreviewLandingPage';
 import Documentation from '~/components/Documentation';
 
+export const handle = { hydrate: true };
+
 export function headers(): Record<string, string> {
   return {
     'docs-page-preview': 'true',
