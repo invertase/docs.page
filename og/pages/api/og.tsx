@@ -10,8 +10,9 @@ export default function handler(req: NextRequest) {
     const { searchParams } = new URL(req.url);
 
     if (!searchParams.has('owner') || !searchParams.has('repository')) {
-      return new Response('Missing required query parameters', {
-        status: 400,
+      return new ImageResponse(<>Missing required fields.</>, {
+        width: 1200,
+        height: 630,
       });
     }
 
