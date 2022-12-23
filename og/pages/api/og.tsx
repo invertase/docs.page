@@ -22,12 +22,26 @@ export default function (req: Request) {
   const description = params.get('description');
 
   return new ImageResponse(
-    <div tw="h-full w-full flex flex-col items-center justify-center bg-gray-50">
-      <img src={logo!} tw="w-16 h-16"  />
-      <div>{owner}/{repository}</div>
-      <div>{name}</div>
-      <div>{description}</div>
-    </div>,
+    <div
+        style={{
+          height: '100%',
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: 'white',
+        }}
+      >
+        <div tw="bg-gray-50 flex">
+          <div tw="flex flex-col md:flex-row w-full py-12 px-4 md:items-center justify-between p-8">
+            <h2 tw="flex flex-col text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 text-left">
+              <span>{owner}/{repository}</span>
+              <span tw="text-indigo-600">{description}</span>
+            </h2>
+          </div>
+        </div>
+      </div>,
     {
       width: 1200,
       height: 600,
