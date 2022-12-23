@@ -9,17 +9,17 @@ export default async function (req: Request) {
   try {
     const { searchParams } = new URL(req.url);
 
-    const owner = searchParams.get('owner');
-    const repository = searchParams.get('repository');
+    // const owner = searchParams.get('owner');
+    // const repository = searchParams.get('repository');
 
-    if (!owner || !repository) {
-      return new Response(`Required parameters owner and repository are missing`, {
-        status: 400,
-      });
-    }
+    // if (!owner || !repository) {
+    //   return new Response(`Required parameters owner and repository are missing`, {
+    //     status: 400,
+    //   });
+    // }
 
     console.log('Passed');
-    console.log(owner, repository);
+    // console.log(owner, repository);
 
     return new ImageResponse(
       (
