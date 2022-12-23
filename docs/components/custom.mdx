@@ -1,0 +1,59 @@
+---
+title: Custom Components
+description: Use page level custom components in your documentation
+---
+
+# Custom Components
+
+Those familar with [MDX](https://mdxjs.com/) may be familiar with the concept of custom components.
+With MDX, you can create your own components and use them in your markdown files.
+
+<Warning>
+  Currently, custom components only work per-page. There is no way to share them across multiple
+  page. We're looking into ways to achieve this.
+</Warning>
+
+## Creating a custom component
+
+Somewhere in your MDX file, add an export which returns a JSX component. For example:
+
+```jsx
+export const BoldText = props => {
+  return <span style={{ color: props.color, fontWeight: 'bold' }}>{props.children}</span>;
+};
+```
+
+Now within that page, use the component where you like:
+
+```mdx
+Hello there, this is some <BoldText color="red">bold red text</BoldText>!
+```
+
+## Using components
+
+Components have some advantages and disadvantages you can note below.
+
+- <Icon name="check" /> Component children also supports other components.
+- <Icon name="check" /> You can pass props (including other components) to the component.
+- <Icon name="check" /> You can provide custom CSS styles (in object format).
+
+- <Icon name="xmark" /> You cannot share components across pages.
+- <Icon name="xmark" /> You cannot use custom Tailwind class names (since they are not bundled).
+
+## Applying your Theme
+
+You can apply custom classes to elements to style them with your theme. For example:
+
+```jsx
+export const ThemedText = props => {
+  return <span class="text-docs-theme">{props.children}</span>;
+};
+```
+
+Class names follow the Tailwind naming convention, so you can apply the theme to various properties, such as:
+
+| Property   | Class Name        |
+| ---------- | ----------------- |
+| background | bg-docs-theme     |
+| color      | text-docs-theme   |
+| border     | border-docs-theme |

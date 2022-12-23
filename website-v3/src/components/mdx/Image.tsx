@@ -1,18 +1,23 @@
+import context from 'src/context';
 import { getImagePath } from 'src/utils';
 
 interface ImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
-  // TODO: zoom
   zoom?: boolean;
+  caption?: string;
 }
 
 const Image: React.FC<ImageProps> = props => {
+  const { config } = context.get();
   const src = getImagePath(props.src ?? '');
   const { width, height, ...other } = props;
+
+  const zoom = Boolean(props.zoom) || config.zoomImages;
 
   return (
     <figure>
       <img
         {...other}
+        data-zoom={`${zoom}`}
         src={src}
         loading="lazy"
         className="mx-auto"
@@ -21,6 +26,7 @@ const Image: React.FC<ImageProps> = props => {
           height: height ? parseInt(height.toString()) : 'inherit',
         }}
       />
+      {!!props.caption && <figcaption className="text-center">{props.caption}</figcaption>}
     </figure>
   );
 };

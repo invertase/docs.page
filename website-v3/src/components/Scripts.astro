@@ -1,9 +1,202 @@
 ---
 import context from 'src/context';
 
-const { domain, config } = context.get();
+const ctx = context.get();
+const { config, domain } = ctx;
 ---
 
+<script is:inline define:vars={{ ctx }}>
+  // Load the context into the window, so we can access it from other scripts
+  // without losing access to Astros script hoisting.
+  window.docs_page = { ...ctx };
+</script>
+
+<script>
+  /**
+   * This script looks for any buttons with the `data-copy` attribute, and adds
+   * an event listener to copy the value of the `data-copy-value` attribute to.
+   */
+
+  const copy = document.querySelectorAll('[data-copy]');
+
+  for (const button of copy) {
+    button.addEventListener('click', () => {
+      button.innerHTML = 'Copied';
+      navigator.clipboard.writeText(button.getAttribute('data-copy-value') || '');
+
+      setTimeout(() => {
+        button.innerHTML = 'Copy';
+      }, 1500);
+    });
+  }
+</script>
+
+<script>
+  /**
+   * This script is used to load the Twitter library, and apply it to any tweets
+   * with the `data-tweet="true"` attribute.
+   */
+  declare global {
+    interface Window {
+      twttr: {
+        widgets: {
+          createTweet: (tweetId: string, el: HTMLElement, options?: any) => Promise<void>;
+        };
+      };
+    }
+  }
+
+  import type { Context } from 'src/context';
+  const { theme } = (window as any).docs_page as Context;
+
+  const tweets = document.querySelectorAll('div[data-tweet]');
+
+  if (tweets.length) {
+    const script = document.createElement('script');
+    script.src = 'https://platform.twitter.com/widgets.js';
+
+    script.onload = () => {
+      for (const tweet of tweets) {
+        const id = tweet.getAttribute('data-tweet-id')!;
+        window.twttr.widgets.createTweet(id, tweet as HTMLElement, {
+          dnt: true,
+          cards: tweet.getAttribute('data-tweet-cards') === 'true' ? '' : 'hidden',
+          conversation: tweet.getAttribute('data-tweet-conversation') === 'true' ? '' : 'hidden',
+          theme:
+            theme ||
+            (document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'),
+        });
+      }
+    };
+
+    document.head.appendChild(script);
+  }
+</script>
+
+<script>
+  /**
+   * This script is used to load the Medium Zoom library, and apply it to any images
+   * with the `data-zoom="true"` attribute.
+   */
+
+  // Only download the library if we need it.
+  if (document.querySelectorAll('main img[data-zoom="true"]').length) {
+    const zoom = (await import('medium-zoom')).default;
+    zoom('main img[data-zoom="true"]', {
+      container: document.body,
+      // Theme is applied via CSS in Styles.astro
+      background: 'transparent',
+    });
+  }
+</script>
+
+<script>
+  /**
+   * The script finds any CodeGroup components, and applies some basic JS to handle
+   * changing between different languages.
+   */
+
+  const groups = document.querySelectorAll('div[data-code-group]');
+
+  const getButtons = (el: Element) => el.querySelectorAll('button[data-code-group-button]');
+  const getPanes = (el: Element) => el.querySelectorAll('div[data-code-group-pane]');
+
+  const setButtonState = (button: Element, id: string) => {
+    const active = (button.getAttribute('data-code-group-button-id') === id).toString();
+    button.setAttribute('aria-selected', active);
+  };
+
+  const setPaneState = (pane: Element, id: string) => {
+    pane.setAttribute(
+      'aria-expanded',
+      (pane.getAttribute('data-code-group-pane-id') === id).toString(),
+    );
+  };
+
+  for (const group of groups) {
+    const buttons = getButtons(group);
+    const panes = getPanes(group);
+    const copyButton = group.querySelector('button[data-copy]');
+
+    for (const button of buttons) {
+      const buttonId = button.getAttribute('data-code-group-button-id')!;
+
+      button.addEventListener('click', () => {
+        for (const button of buttons) setButtonState(button, buttonId);
+        for (const pane of panes) {
+          if (pane.getAttribute('data-code-group-pane-id') == buttonId) {
+            copyButton?.setAttribute(
+              'data-copy-value',
+              pane.getAttribute('data-code-group-pane-raw') ?? '',
+            );
+          }
+          setPaneState(pane, buttonId);
+        }
+      });
+    }
+  }
+</script>
+
+<script>
+  /**
+   * This script is used to identify any tab groups on the page, and add event
+   * when a tab button is clicked. It also syncs the state of the tabs with a
+   * group ID across the page, and onto a cookie via the server.
+   */
+
+  import type { Context } from 'src/context';
+  const { owner, repository, ref, domain } = (window as any).docs_page as Context;
+
+  const tabs = document.querySelectorAll('div[data-tab-group]');
+
+  const getButtons = (el: Element) => el.querySelectorAll('button[data-tab-group-button]');
+  const getPanes = (el: Element) => el.querySelectorAll('div[data-tab-group-pane]');
+
+  const setButtonState = (button: Element, id: string) => {
+    const active = (button.getAttribute('data-tab-group-button-id') === id).toString();
+    button.setAttribute('aria-selected', active);
+  };
+
+  const setPaneState = (pane: Element, id: string) => {
+    pane.setAttribute(
+      'aria-expanded',
+      (pane.getAttribute('data-tab-group-pane-id') === id).toString(),
+    );
+  };
+
+  for (const tab of tabs) {
+    const groupId = tab.getAttribute('data-tab-group-id');
+    const groups = groupId ? document.querySelectorAll(`div[data-tab-group-id="${groupId}"]`) : [];
+
+    const buttons = getButtons(tab);
+    const panes = getPanes(tab);
+
+    for (const button of buttons) {
+      const buttonId = button.getAttribute('data-tab-group-button-id')!;
+
+      button.addEventListener('click', () => {
+        if (groupId) {
+          fetch('/api/tabs-sync', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ owner, repository, ref, domain, groupId, buttonId }),
+          });
+        }
+
+        for (const button of buttons) setButtonState(button, buttonId);
+        for (const pane of panes) setPaneState(pane, buttonId);
+
+        for (const group of groups) {
+          const buttons = getButtons(group);
+          const panes = getPanes(group);
+
+          for (const button of buttons) setButtonState(button, buttonId);
+          for (const pane of panes) setPaneState(pane, buttonId);
+        }
+      });
+    }
+  }
+</script>
 {
   config.googleAnalytics && (
     <script async src={`https://www.googletagmanager.com/gtag/js?id=${config.googleAnalytics}`} />

@@ -1,0 +1,66 @@
+---
+title: Images
+description: Add images to your documentation
+---
+
+# Images
+
+Images can be displayed from remote, or local sources using either standard Markdown syntax,
+or the `<Image>` component.
+
+To display images using Markdown syntax, use the following syntax: `![alt text](image url)`
+
+![Orange Car](https://images.unsplash.com/photo-1671483579112-0872cb05978f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1469&q=80)
+
+## Image Sources
+
+When providing an image URL which starts with `http`, the image from that URL will be displayed. However,
+if you provide a relative path, such as `/assets/my-image.png`, docs.page will source the image from your
+GitHub repository (relative from the `/docs` directory).
+
+If you are previewing documentation on a preview (e.g. branch, PR, commit) the image will be sourced from
+that reference.
+
+For example, if your repository contains a file at `/docs/assets/my-image.png`, pass `/assets/my-image.png`
+as the source of the image.
+
+## Image Component
+
+The `<Image>` component can be used to enhance images within your documentation. The component accepts
+all of the standard `HTMLImageElement` attributes:
+
+```jsx
+<Image src="/assets/my-image.png" alt="Pretty picture" width="100" height="100" />
+```
+
+### Zooming
+
+The `<Image>` component also supports zooming of images. To enable zooming, pass the `zoom` prop to the
+image:
+
+```jsx
+<Image zoom src="https://my-cdn.com/bald-eagle.jpg" />
+```
+
+<Info>
+  If your [configuration file](/configuration) has `zoomImages` enabled, all images will zoom by
+  default.
+</Info>
+
+<Image
+  zoom
+  src="https://images.unsplash.com/photo-1671471433724-8de50b3f45f7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1472&q=80"
+/>
+
+## Captions
+
+To add a caption below the image, use the `caption` prop:
+
+```jsx
+<Image caption="An abstract image" src="https://my-cdn.com/abstract.jpg" />
+```
+
+<Image
+  caption="An abstract image"
+  src="https://images.unsplash.com/photo-1671519821564-ced7e41ee7ae?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1364&q=80"
+/>

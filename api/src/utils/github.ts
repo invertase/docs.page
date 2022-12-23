@@ -72,12 +72,15 @@ export type Contents = {
     configYaml?: string;
     configToml?: string;
   };
-  md: string | null;
+  md?: string;
   path: string;
   repositoryFound: boolean;
 };
 
-export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Promise<Contents> {
+export async function getGitHubContents(
+  metadata: MetaData,
+  noDir?: boolean,
+): Promise<Contents | undefined> {
   const base = noDir ? '' : 'docs/';
   const absolutePath = `${base}${metadata.path}`;
   const indexPath = `${base}${metadata.path}/index`;
@@ -87,7 +90,7 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
   const [error, response] = await A2A<PageContentsQuery>(
     getGithubGQLClient()({
       query: `
-      query RepositoryConfig($owner: String!, $repository: String!, $configJson: String!, $configYaml: String!, $configToml: String!, $mdx: String!, $mdxIndex: String!) {
+      query RepositoryConfig($owner: String!, $repository: String!, $configJson: String!, $configYaml: String!, $mdx: String!, $mdxIndex: String!) {
         repository(owner: $owner, name: $repository) {
           baseBranch: defaultBranchRef {
             name
@@ -99,11 +102,6 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
             }
           }
           configYaml: object(expression: $configYaml) {
-            ... on Blob {
-              text
-            }
-          }
-          configToml: object(expression: $configToml) {
             ... on Blob {
               text
             }
@@ -125,7 +123,6 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
       repository: metadata.repository,
       configJson: `${ref}:docs.json`,
       configYaml: `${ref}:docs.yaml`,
-      configToml: `${ref}:docs.toml`,
       mdx: `${ref}:${absolutePath}.mdx`,
       mdxIndex: `${ref}:${indexPath}.mdx`,
     }),
@@ -133,10 +130,7 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
 
   // if an error is thrown then the repo is not found, if the repo is private then response = { repository: null }
   if (error || response?.repository === null) {
-    //@ts-ignore
-    return {
-      repositoryFound: false,
-    };
+    return;
   }
 
   return {
@@ -146,9 +140,8 @@ export async function getGitHubContents(metadata: MetaData, noDir?: boolean): Pr
     config: {
       configJson: response?.repository.configJson?.text,
       configYaml: response?.repository.configYaml?.text,
-      configToml: response?.repository.configToml?.text,
     },
-    md: response?.repository.mdxIndex?.text || response?.repository.mdx?.text || null,
+    md: response?.repository.mdxIndex?.text || response?.repository.mdx?.text,
     path: response?.repository.mdxIndex?.text ? indexPath : absolutePath,
   };
 }

@@ -1,4 +1,6 @@
 ---
+import context from 'src/context';
+
 export interface Props {
   // Sets the <title> tag of the page
   title?: string;
@@ -9,14 +11,10 @@ export interface Props {
 }
 
 const { title = '', description = '', image = '', author = '' } = Astro.props;
-const theme = Astro.cookies.get('theme').value;
+const { theme } = context.get();
 ---
 
-<html
-  class:list={{
-    dark: !!theme && theme === 'dark',
-  }}
->
+<html data-theme={!!theme && theme === 'dark' ? 'dark' : ''}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -56,7 +54,7 @@ const theme = Astro.cookies.get('theme').value;
     <meta name="twitter:image" content={image} />
     <meta name="twitter:creator" content={`@${author}`} />
   </head>
-  <body class="font-inter overflow-x-hidden overflow-y-scroll dark:bg-zinc-900 dark:text-white">
+  <body class="font-inter overflow-x-hidden overflow-y-auto dark:bg-zinc-900 dark:text-white">
     <script is:inline define:vars={{ theme }}>
       // Only check users preference if they haven't already set a theme
       if (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches) {

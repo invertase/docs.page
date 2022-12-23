@@ -8,7 +8,7 @@ interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
 }
 
 const Link: React.FC<LinkProps> = props => {
-  const { owner, repository, ref, domain, relativePath } = context.get();
+  const { owner, repository, ref, domain, relativePath, locale } = context.get();
 
   if (isExternalLink(props.href)) {
     return (
@@ -18,20 +18,19 @@ const Link: React.FC<LinkProps> = props => {
     );
   }
 
-  let to = `/${owner}/${repository}`;
-
-  if (ref && ref !== 'HEAD') {
-    to += `~${encodeURIComponent(ref)}`;
-  }
-
-  // TODO: Preview mode
-
   if (domain && import.meta.env.PROD) {
-    let href = `//${domain}${props.href}`;
+    let href = `//${domain}`;
 
     if (ref && ref !== 'HEAD') {
-      href = `//${domain}/~${encodeURIComponent(ref)}${props.href}`;
+      href = `//${domain}/~${encodeURIComponent(ref)}`;
     }
+
+    // All links with locales should be relative to that locale.
+    if (locale) {
+      href += `/${locale}`;
+    }
+
+    href += props.href;
 
     return (
       <a
@@ -42,6 +41,16 @@ const Link: React.FC<LinkProps> = props => {
         href={href}
       />
     );
+  }
+
+  let to = `/${owner}/${repository}`;
+
+  if (ref && ref !== 'HEAD') {
+    to += `~${encodeURIComponent(ref)}`;
+  }
+
+  if (locale) {
+    to += `/${locale}`;
   }
 
   return (

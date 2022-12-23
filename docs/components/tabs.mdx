@@ -1,0 +1,137 @@
+---
+title: Display content within different tabs
+description: Learn how to display content within different tabs
+---
+
+# Tabs
+
+Tabs are a great way to display content within different tabs. Tabs can be displayed using the `<Tabs>` component,
+providing a label and value.
+
+## Basic Usage
+
+To display tabs, provide the `<Tabs>` component with a list of values:
+
+```jsx
+<Tabs
+  values={[
+    { label: 'First Tab', value: 'first' },
+    { label: 'Second Tab', value: 'second' },
+  ]}
+>
+  <TabItem value="first">👋 This is the content for the first tab.</TabItem>
+  <TabItem value="second">...and this is the content for the second tab!</TabItem>
+</Tabs>
+```
+
+<Tabs
+  values={[
+    { label: 'First Tab', value: 'first' },
+    { label: 'Second Tab', value: 'second' },
+  ]}
+>
+  <TabItem value="first">👋 This is the content for the first tab.</TabItem>
+  <TabItem value="second">...and this is the content for the second tab!</TabItem>
+</Tabs>
+
+## Default Value
+
+By default, the first tab will be displayed. To display the second tab, provide a `defaultValue` prop.
+
+```jsx
+<Tabs
+  defaultValue="second"
+  values={[
+    { label: 'First Tab', value: 'first' },
+    { label: 'Second Tab', value: 'second' },
+  ]}
+>
+  <TabItem value="first">👋 This is the content for the first tab.</TabItem>
+  <TabItem value="second">...and this is the content for the second tab!</TabItem>
+</Tabs>
+```
+
+## Synchronizing Tabs
+
+To synchronize the tabs across documentation, provide a unique `groupId` prop. Any tabs
+displayed across the documentation with this `groupId` will be synchronized. This state
+also persists across page reloads.
+
+This is useful if you display content within tabs in multiple places with the same headings
+(e.g. examples of code snippets in different languages). If the user chooses a language, they
+don't have to keep selecting it everywhere.
+
+```jsx
+<Tabs
+  groupId="language"
+  values={[
+    { label: 'JavaScript Example', value: 'js' },
+    { label: 'Dart Tab', value: 'dart' },
+  ]}
+>
+```
+
+### Example
+
+The below examples shows how to perform a network request to our API.
+
+First, import the package:
+
+<Tabs
+  groupId="language"
+  values={[
+    { label: 'JavaScript', value: 'js' },
+    { label: 'Dart', value: 'dart' },
+  ]}
+>
+  <TabItem value="js">
+    Import the `axios` package:
+
+    ```bash
+    npm i --save axios
+    ```
+
+    Now import it in your code:
+
+    ```js
+    import axios from 'axios';
+    ````
+  </TabItem>
+  <TabItem value="dart">
+    Add the `dio` package:
+
+    ```bash
+    flutter pub add dio
+    ```
+
+    Now import it in your code:
+
+    ```dart
+    import 'package:dio/dio.dart';
+    ```
+  </TabItem>
+</Tabs>
+
+Next, perform a network request to 'https://example.com':
+
+<Tabs
+  groupId="language"
+  values={[
+    { label: 'JavaScript', value: 'js' },
+    { label: 'Dart', value: 'dart' },
+  ]}
+>
+  <TabItem value="js">
+    ```js
+    const response = await axios.get('https://example.com');
+    console.log(response.data);
+    ````
+  </TabItem>
+  <TabItem value="dart">
+    ```dart
+    var dio = Dio();
+    final response = await dio.get('https://example.com');
+    print(response.data);
+    ````
+  </TabItem>
+</Tabs>
