@@ -10,7 +10,8 @@
       [
         ["Overview", "/"],
         ["Getting Started", "/getting-started"],
-        ["Configuration", "/configuration"]
+        ["Configuration", "/configuration"],
+        ["Writing Content", "/writing-content"]
       ]
     ],
     [
