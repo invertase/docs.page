@@ -7,6 +7,12 @@ const getGitHubToken = (() => {
   let index = 0;
   const tokens = process.env.GITHUB_PAT ? process.env.GITHUB_PAT.split(',') : [];
 
+  if (!tokens.length) {
+    throw new Error(
+      'Environment variable GITHUB_PAT is not defined or has no tokens or an invalid token.',
+    );
+  }
+
   return function () {
     if (index >= tokens.length) index = 0;
     return tokens[index++];

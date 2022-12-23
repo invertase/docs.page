@@ -37,7 +37,7 @@ function Heading({ type, id, children, ...props }: HeadingProps) {
     type,
     {
       ...props,
-      className: cx('relative', props.className),
+      className: cx('relative group', props.className),
     },
     type === 'h1' ? (
       children
@@ -46,7 +46,7 @@ function Heading({ type, id, children, ...props }: HeadingProps) {
         <div id={id} className="pointer-events-none absolute -top-16 opacity-0" />
         <a
           href={`#${id}`}
-          className="before:text-docs-theme no-underline before:absolute before:-left-6 before:content-['#']"
+          className="before:text-docs-theme no-underline opacity-0 transition before:absolute before:-left-6 before:w-6 before:content-['#'] group-hover:opacity-100"
         />
         <span>{children}</span>
       </>

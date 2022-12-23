@@ -1,0 +1,46 @@
+---
+import { MagnifyingGlassIcon } from './icons';
+
+type Props = {
+  appId: string;
+  apiKey: string;
+  indexName: string;
+};
+
+const { appId, apiKey, indexName } = Astro.props;
+
+// TODO: improve styling
+---
+
+<div data-docsearch data-appId={appId} data-apiKey={apiKey} data-indexName={indexName}></div>
+<button
+  data-docsearch-override
+  class="w-full bg-gradient-to-b from-gray-100 to-gray-100 dark:from-zinc-800/80 dark:to-zinc-800/40 flex items-center rounded px-4 py-2 border dark:border-zinc-800 hover:border-zinc-700/30 dark:hover:border-zinc-700/50 gap-2 text-sm text-gray-500 dark:text-white/70 dark:hover:text-white/90 transition"
+>
+  <span class="w-4 h-4"><MagnifyingGlassIcon /></span>
+  <span>Search...</span>
+  <span class="flex-1 flex items-center justify-end font-semibold opacity-50">⌘K</span>
+</button>
+<style is:global></style>
+<script>
+  import docsearch from '@docsearch/js';
+
+  const element = document.querySelector('div[data-docsearch]') as HTMLDivElement;
+  const override = document.querySelector('button[data-docsearch-override]') as HTMLButtonElement;
+
+  docsearch({
+    container: element,
+    appId: element.dataset.appid!,
+    indexName: element.dataset.indexname!,
+    apiKey: element.dataset.apikey!,
+  });
+
+  // Once triggered, get the native docsearch button
+  const button = element.querySelector('button.DocSearch') as HTMLButtonElement;
+
+  // Hide it
+  button.style.display = 'none';
+
+  // Then attach our own button to the native one
+  override.addEventListener('click', () => button.click());
+</script>

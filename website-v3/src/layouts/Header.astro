@@ -1,0 +1,49 @@
+---
+import Link from '@components/Link';
+import Search from '@components/Search.astro';
+import ThemeToggle from '@components/ThemeToggle.astro';
+import context from 'src/context';
+import { getImagePath } from 'src/utils';
+
+const { owner, repository, config } = context.get();
+const logoLight = getImagePath(config.logo);
+const logoDark = getImagePath(config.logoDark);
+
+// TODO preview mode
+---
+
+<header class="sticky top-0 border-b dark:border-slate-800/80 bg:white z-10 backdrop-blur">
+  <div class="absolute inset-0 z-0 dark:bg-zinc-900/90 dark:text-white"></div>
+  <div class="max-w-8xl mx-auto relative z-10">
+    <div class="h-16 px-4 lg:px-8 mx-4 lg:mx-0 flex items-center">
+      <div class="flex-1">
+        <Link href="/">
+          {
+            !!logoLight && (
+              <img
+                alt="Logo"
+                class:list={['inline-block h-[30px]', { 'dark:hidden': !!logoDark }]}
+              />
+            )
+          }
+          {!!logoDark && <img alt="Logo" class="hidden h-[30px] dark:inline-block" />}
+          {
+            !logoLight && !logoDark && (
+              <span class="text-2xl font-bold">{config.name || `${owner}/${repository}`}</span>
+            )
+          }
+        </Link>
+      </div>
+      <div
+        class:list={{
+          'lg:w-64 xl:w-80': !!config.docsearch,
+        }}
+      >
+        {!!config.docsearch && <Search {...config.docsearch} />}
+      </div>
+      <div class="flex-1 flex items-center justify-end">
+        <ThemeToggle />
+      </div>
+    </div>
+  </div>
+</header>

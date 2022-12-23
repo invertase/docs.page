@@ -1,0 +1,54 @@
+---
+import context from 'src/context';
+import { MoonIcon, SunIcon } from './icons';
+
+const { owner, repository, domain } = context.get();
+---
+
+<button data-theme-toggle class="relative w-6 h-6">
+  <span data-theme-type="dark" class="hidden"><MoonIcon /></span>
+  <span data-theme-type="light" class="hidden"><SunIcon /></span>
+</button>
+<script is:inline define:vars={{ owner, repository, domain }}>
+  const html = document.documentElement;
+  const isDark = () => html.getAttribute('data-theme') === 'dark';
+
+  const toggle = document.querySelector('button[data-theme-toggle]');
+  const light = toggle.querySelector('span[data-theme-type="light"]');
+  const dark = toggle.querySelector('span[data-theme-type="dark"]');
+
+  function toggleElements() {
+    if (isDark()) {
+      light.style.display = 'none';
+      dark.style.display = 'inline';
+    } else {
+      dark.style.display = 'none';
+      light.style.display = 'inline';
+    }
+  }
+
+  toggle.addEventListener('click', () => {
+    const theme = isDark() ? 'light' : 'dark';
+    // Update the theme attribute on the <html> element
+    theme === 'light'
+      ? html.removeAttribute('data-theme')
+      : html.setAttribute('data-theme', 'dark');
+    // Toggle the icons
+    toggleElements();
+    // Update the theme via server and return a cookie
+    fetch('/api/theme', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        owner,
+        repository,
+        domain,
+        theme,
+      }),
+    });
+  });
+
+  toggleElements();
+</script>

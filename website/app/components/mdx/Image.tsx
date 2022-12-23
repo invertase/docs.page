@@ -60,7 +60,7 @@ function withFigure(child: React.ReactElement, caption?: string) {
 function withZoom(child: React.ReactElement) {
   const [isZoomed, setIsZoomed] = useState(false);
 
-  const handleZoomChange = useCallback(shouldZoom => {
+  const handleZoomChange = useCallback((shouldZoom: boolean) => {
     setIsZoomed(shouldZoom);
   }, []);
   return (

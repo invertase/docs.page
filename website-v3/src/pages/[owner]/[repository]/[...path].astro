@@ -1,0 +1,114 @@
+---
+import Root from '@layouts/Root.astro';
+import Header from '@layouts/Header.astro';
+import Sidebar from '@layouts/Sidebar.astro';
+import Navigation from '@layouts/Navigation.astro';
+
+import Meta from '@components/Meta.astro';
+import Scripts from '@components/Scripts.astro';
+import Links from '@components/Links.astro';
+import Markdown from '@components/Markdown';
+
+import { getBundle } from 'src/bundle';
+import context from 'src/context';
+import type { GetBundleResponse } from 'src/bundle';
+import { isExternalLink, replaceMoustacheVariables, ensureLeadingSlash } from 'src/utils';
+import Theme from '@components/Theme.astro';
+import domains from '../../../../../domains.json';
+
+let { owner, repository, path } = Astro.params;
+let ref: string | undefined;
+
+// TODO keep URL but show 404 page
+if (!owner || !repository) {
+  return Astro.redirect('/404');
+}
+
+// Check if the repo includes a ref (invertase/foo~bar)
+if (repository.includes('~')) {
+  [repository, ref] = repository.split('~');
+}
+
+let status: GetBundleResponse['status'];
+let bundle: GetBundleResponse['bundle'];
+
+try {
+  const response = await getBundle({
+    owner,
+    repository,
+    ref,
+    path,
+  });
+
+  status = response.status;
+  bundle = response.bundle;
+} catch (e) {
+  console.error(e);
+}
+
+// Set the status code for the request
+Astro.response.status = status!;
+
+if ('statusCode' in bundle!) {
+  // TODO handle 404
+  return Astro.redirect('/404');
+}
+
+// Handle a frontmatter redirect
+const redirect = bundle!.frontmatter.redirect;
+if (redirect && isExternalLink(redirect)) {
+  return Astro.redirect(redirect);
+} else if (redirect) {
+  return Astro.redirect(`/${owner}/${repository}${redirect}`);
+}
+
+// Set the theme color
+const config = bundle!.config;
+const domain = domains.find(([, repository]) => repository === `${owner}/${repository}`)?.at(0);
+
+// Set the context store.
+context.set({
+  owner,
+  repository,
+  relativePath: ensureLeadingSlash(path || '/'),
+  ref,
+  config,
+  frontmatter: bundle!.frontmatter,
+  code: replaceMoustacheVariables(config.variables ?? {}, bundle!.code),
+  headings: bundle!.headings,
+  domain,
+  baseBranch: bundle!.baseBranch,
+  source: bundle!.source,
+});
+
+// TODO: Handle status codes
+---
+
+<Root>
+  <Meta slot="head" />
+  <Theme slot="head" fallback="#00bcd4" />
+  <Scripts slot="head" />
+  <Links slot="head" />
+  <Header />
+  <section class="max-w-8xl mx-auto px-4 sm:px-6 md:px-8">
+    <div
+      class="hidden lg:block fixed z-20 top-16 bottom-0 left-[max(0px,calc(50%-46rem))] right-auto w-[19.5rem] pb-10 px-8 overflow-y-auto"
+    >
+      <Sidebar />
+    </div>
+    <div class="lg:pl-[20rem]">
+      <div class="flex flex-row pt-9 gap-12 items-stretch">
+        <div
+          class="relative flex-grow mx-auto xl:-ml-12 overflow-auto xl:pr-1 xl:pl-12 max-w-3xl xl:max-w-[47rem] text-slate-500 dark:text-slate-400"
+        >
+          <Markdown />
+        </div>
+        <div class="hidden xl:flex flex-none z-10 pl-10 w-[19rem]">
+          <nav class="fixed text-sm leading-6 w-[16.5rem] h-[calc(100%-8rem)] overflow-y-auto">
+            <Navigation />
+          </nav>
+        </div>
+      </div>
+    </div>
+  </section>
+</Root>

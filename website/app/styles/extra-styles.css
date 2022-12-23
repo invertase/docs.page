@@ -58,7 +58,6 @@ code {
 }
 
 .twitter-tweet {
-  border: solid gray 1px;
   border-radius: 13px;
   overflow: hidden !important;
 }

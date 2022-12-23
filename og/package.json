@@ -1,0 +1,13 @@
+{
+  "name": "docs-page-og",
+  "version": "1.0.0",
+  "description": "OG Image generation API for docs.page",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Invertase <oss@invertase.io>",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@vercel/og": "^0.0.21"
+  }
+}

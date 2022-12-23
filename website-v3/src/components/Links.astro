@@ -1,0 +1,38 @@
+---
+import context from 'src/context';
+import { getImagePath } from 'src/utils';
+
+const { config } = context.get();
+
+// TODO experimental code hike
+---
+
+<link
+  slot="head"
+  rel="shortcut icon"
+  href={getImagePath(config.favicon || 'https://docs.page/favicon.ico?v=2')}
+/>
+{
+  config.experimentalMath && (
+    <link
+      slot="head"
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/katex@0.15.0/dist/katex.min.css"
+    />
+  )
+}
+<!-- TODO: {config.experimentalCodehike && (
+    <link slot="head" data-testid="codehike-styles" rel="stylesheet" href={codeHikeStyles} />
+  )} -->
+{
+  !!config.docsearch && (
+    <>
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
+      <link
+        rel="preconnect"
+        href={`https://${config.docsearch.appId}-dsn.algolia.net`}
+        crossorigin
+      />
+    </>
+  )
+}

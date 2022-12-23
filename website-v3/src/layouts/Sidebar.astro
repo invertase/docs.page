@@ -1,0 +1,50 @@
+---
+import Link from '@components/Link';
+import context from 'src/context';
+import { isExternalLink } from 'src/utils';
+
+const sidebar = context.get().config.sidebar || [];
+---
+
+<nav class="mt-9 px-4">
+  <ul class="lg:text-sm lg:leading-6">
+    {
+      sidebar.map(([title, urlOrChildren]) => {
+        if (typeof urlOrChildren === 'string') {
+          return (
+            <li>
+              <Link
+                href={urlOrChildren}
+                className="mb-3 block font-medium tracking-wide opacity-75 transition hover:opacity-100"
+                activeClassName="text-docs-theme opacity-100"
+                rel={isExternalLink(urlOrChildren) ? 'noopener noreferrer' : 'prefetch'}
+              >
+                {title}
+              </Link>
+            </li>
+          );
+        }
+
+        return (
+          <li class="my-8">
+            <h5 class="mb-3 block font-semibold tracking-wide">{title}</h5>
+            <ul class="space-y-2 border-l border-slate-700">
+              {urlOrChildren.map(([title, url]) => (
+                <li>
+                  <Link
+                    href={url}
+                    className="hover:border-docs-theme relative -left-px block border-l border-transparent pl-4 opacity-75 transition hover:opacity-100"
+                    activeClassName="border-docs-theme opacity-100 font-semibold tracking-wide text-docs-theme"
+                    rel={isExternalLink(url) ? 'noopener noreferrer' : 'prefetch'}
+                  >
+                    {title}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </li>
+        );
+      })
+    }
+  </ul>
+</nav>

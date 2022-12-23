@@ -23,7 +23,7 @@ function getPlugins(config: OutputConfig) {
   if (config?.experimentalMath) {
     //@ts-ignore
     remarkPlugins.push(remarkMath);
-    rehypePlugins.push(rehypeKatex);
+    // rehypePlugins.push(rehypeKatex);
   }
   return { remarkPlugins, rehypePlugins };
 }

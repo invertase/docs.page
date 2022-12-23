@@ -16,37 +16,29 @@ export function Footer(props: FooterProps): JSX.Element {
   }
 
   const editUrl = previewMode.enabled
-    ? ''
+    ? undefined
     : `https://github.com/${source.owner}/${source.repository}/edit/${
         source.type === 'branch' && source.ref !== 'HEAD' ? source.ref : baseBranch
       }/docs/${path || 'index'}.mdx`;
   return (
-    <footer className="mt-16 border-t border-gray-900/10 py-8 px-4 lg:px-8">
+    <footer className="pb-12">
       <div className="flex text-sm font-medium text-gray-500 dark:text-gray-300">
-        <div className="flex-grow pt-2">
-          Powered by{' '}
-          <a
-            href="https://docs.page"
-            className="transition-colors hover:text-gray-900 dark:hover:text-gray-100"
-          >
-            docs.page
+        <div className="flex-grow">
+          <a href="https://docs.page" className="opacity-75 transition hover:opacity-100">
+            Powered by docs.page
           </a>
         </div>
-        {previewMode.enabled ? (
-          ''
-        ) : (
+        {!!editUrl && (
           <a
             href={editUrl}
             target="_blank"
             rel="noreferrer"
-            className="transition-colors hover:text-gray-900 dark:hover:text-gray-100"
+            className="item-center flex gap-3 opacity-75 transition hover:opacity-100"
           >
-            <div className="flex flex-row rounded border p-2 px-2 text-xs font-medium hover:border-gray-300 focus:outline-none dark:border-gray-700 dark:hover:border-gray-600">
-              <div className="mr-2  flex">
-                <PencilIcon width={14} />
-              </div>
-              <div>Edit this page</div>
-            </div>
+            <span className="relative top-[2px] ">
+              <PencilIcon width={14} />
+            </span>
+            <span>Edit this page</span>
           </a>
         )}
       </div>

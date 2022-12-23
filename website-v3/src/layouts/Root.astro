@@ -1,0 +1,68 @@
+---
+export interface Props {
+  // Sets the <title> tag of the page
+  title?: string;
+  // Sets the <meta name="description" content="..."> tag of the page, and any social tags (e.g. og:description)
+  description?: string;
+  // Adds a social preview image to the page (e.g. twitter:image)
+  image?: string;
+}
+
+const { title = '', description = '', image = '', author = '' } = Astro.props;
+const theme = Astro.cookies.get('theme').value;
+---
+
+<html
+  class:list={{
+    dark: !!theme && theme === 'dark',
+  }}
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- 
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicons/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicons/favicon-16x16.png" />
+    <link rel="manifest" href="/favicons/site.webmanifest" />
+    <link rel="mask-icon" href="/favicons/safari-pinned-tab.svg" color="#333333" /> -->
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&display=block" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500&display=block"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=block"
+    />
+
+    <slot name="head" />
+
+    <meta name="msapplication-TileColor" content="#333333" />
+    <meta name="msapplication-config" content="/favicons/browserconfig.xml" />
+    <meta name="theme-color" content="#333333" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content="https://zapp.run" />
+    <meta property="og:image" content={image} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={image} />
+    <meta name="twitter:creator" content={`@${author}`} />
+  </head>
+  <body class="font-inter overflow-x-hidden overflow-y-scroll dark:bg-zinc-900 dark:text-white">
+    <script is:inline define:vars={{ theme }}>
+      // Only check users preference if they haven't already set a theme
+      if (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    </script>
+    <slot />
+  </body>
+</html>

@@ -2,20 +2,21 @@ import React, { createContext } from 'react';
 import { DocumentationLoader } from './loaders/documentation.server';
 import { ensureLeadingSlash } from './utils';
 import { usePreviewMode } from './utils/preview';
+import domains from '../../domains.json';
 
 const DocumentationContext = createContext<DocumentationLoader>({} as DocumentationLoader);
 
 export type DomainProviderProps = {
-  data: {
-    domain: string | null;
-  };
+  data: DocumentationLoader;
   children: React.ReactNode | React.ReactNode[];
 };
 
 const DomainContext = createContext<{ domain: string | null }>({} as { domain: string | null });
 
 export function DomainProvider({ data, children }: DomainProviderProps) {
-  return <DomainContext.Provider value={data}>{children}</DomainContext.Provider>;
+  const domain =
+    domains.find(([, repository]) => repository === `${data.owner}/${data.repo}`)?.[0] || null;
+  return <DomainContext.Provider value={{ domain }}>{children}</DomainContext.Provider>;
 }
 
 export function useCustomDomain() {
@@ -59,15 +60,13 @@ export function useImagePath(src: string) {
   if (src.startsWith('http')) {
     return src;
   }
-
   const previewMode = usePreviewMode();
 
   if (previewMode?.enabled && previewMode.imageUrls) {
     return previewMode?.imageUrls[src] || '';
   }
 
-  const blob = useRawBlob(src);
-  return blob;
+  return useRawBlob(src);
 }
 
 // Returns a path to a blob in the `docs` directory.

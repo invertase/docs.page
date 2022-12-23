@@ -18,6 +18,7 @@ import Documentation from '~/components/Documentation';
 import { Head } from '~/components/Head';
 import { getSocialImage } from '~/utils';
 import codeHikeStyles from '@code-hike/mdx/dist/index.css';
+import { DocumentationProvider, DomainProvider } from '~/context';
 
 export const handle = { hydrate: true };
 
@@ -78,8 +79,12 @@ export default function Page() {
   const data = useLoaderData<DocumentationLoader>();
   return (
     <>
-      <Head data={data} />
-      <Documentation data={data} />
+      <DomainProvider data={data}>
+        <DocumentationProvider data={data}>
+          <Head data={data} />
+          <Documentation data={data} />
+        </DocumentationProvider>
+      </DomainProvider>
     </>
   );
 }
