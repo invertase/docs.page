@@ -26,7 +26,6 @@ export default function handler(req: NextRequest) {
         <div
           style={{
             backgroundColor: 'black',
-            backgroundSize: '150px 150px',
             height: '100%',
             width: '100%',
             display: 'flex',
@@ -39,17 +38,12 @@ export default function handler(req: NextRequest) {
         >
           <div
             style={{
-              fontSize: 60,
-              fontStyle: 'normal',
-              letterSpacing: '-0.025em',
+              display: 'flex',
               color: 'white',
-              marginTop: 30,
-              padding: '0 120px',
-              lineHeight: 1.4,
-              whiteSpace: 'pre-wrap',
+              fontSize: 70,
             }}
           >
-            <p><span>{owner}</span><span>{'/'}</span><span>{repository}</span></p>
+            {owner}/{repository}
           </div>
         </div>
       ),
