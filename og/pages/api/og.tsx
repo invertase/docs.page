@@ -16,7 +16,7 @@ export default function handler(req: NextRequest) {
     }
 
     const owner = searchParams.get('owner');
-    const repository = searchParams.get('repository');
+    // const repository = searchParams.get('repository');
 
     return new ImageResponse(
       (
@@ -56,7 +56,7 @@ export default function handler(req: NextRequest) {
               whiteSpace: 'pre-wrap',
             }}
           >
-            {owner}/{repository}
+            {owner}
           </div>
         </div>
       ),
