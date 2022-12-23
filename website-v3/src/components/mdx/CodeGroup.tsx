@@ -28,8 +28,8 @@ const CodeGroup: React.FC<CodeGroupProps> = props => {
 
   return (
     <div data-code-group className="group mb-6 rounded-xl">
-      <div className="flex h-12 items-center rounded-t-xl border border-white/10 bg-[#19191d] px-3">
-        <span className="flex-grow">
+      <div className="flex h-12 items-center gap-3 rounded-t-xl border border-white/10 bg-[#19191d] px-3">
+        <span className="flex-grow truncate">
           {!!props.title && (
             <span className="text-xs font-semibold tracking-wide text-white">{props.title}</span>
           )}
