@@ -1,7 +1,6 @@
 {
   "private": true,
   "workspaces": [
-    "website",
     "website-v3",
     "packages/*",
     "api"
