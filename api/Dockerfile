@@ -16,15 +16,13 @@
 FROM node:lts-alpine3.13
 RUN npm install pm2 -g
 
-ARG ROOT_DIR=default_value
 ARG BUILD_SHA=default_value
 ENV __BUILD_SHA=$BUILD_SHA
-ENV __ROOT_DIR=api
 
 WORKDIR /opt/app
 COPY . /opt/app
 RUN cd /opt/app && yarn install
 RUN node node_modules/esbuild/install.js
 
-WORKDIR /opt/app/$__ROOT_DIR
+WORKDIR /opt/app
 CMD ["pm2-runtime","dist/app.js"]
