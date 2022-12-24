@@ -28,7 +28,6 @@
     "mdx-bundler": "^9.0.1",
     "morgan": "^1.10.0",
     "node-fetch": "^3.2.6",
-    "probot": "^12.2.4",
     "rehype-accessible-emojis": "^0.3.2",
     "rehype-katex": "^6.0.2",
     "rehype-slug": "^5.0.1",
