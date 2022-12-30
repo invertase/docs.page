@@ -29,6 +29,7 @@ const $BundleConfig = z.object({
   experimentalMath: z.boolean(),
   automaticallyInferNextPrevious: z.boolean(),
   plausibleAnalytics: z.boolean().optional(),
+  plausibleAnalyticsScript: z.string().optional(),
 });
 
 const $GetBundleRequest = z.object({

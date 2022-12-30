@@ -1,9 +1,9 @@
-import { getBoolean, getNumber, getString, getValue } from './get.js';
 import get from 'lodash.get';
+import { getBoolean, getNumber, getString, getValue } from './get.js';
 
-import yaml from 'js-yaml';
-import toml from '@ltd/j-toml';
 import { OutputConfig } from '@docs.page/server';
+import toml from '@ltd/j-toml';
+import yaml from 'js-yaml';
 
 // Represents how the sidebar should look in the config file.
 export type SidebarItem = [string, Array<[string, string]>] | [string, string];
@@ -82,6 +82,7 @@ export const defaultConfig: OutputConfig = {
   experimentalMath: false,
   automaticallyInferNextPrevious: true,
   plausibleAnalytics: false,
+  plausibleAnalyticsScript: 'https://plausible.io/js/script.js',
 };
 
 // Merges any user config with default values.
@@ -123,6 +124,11 @@ export function mergeConfig(json: Record<string, unknown>): OutputConfig {
       defaultConfig.automaticallyInferNextPrevious,
     ),
     plausibleAnalytics: getBoolean(json, 'plausibleAnalytics', defaultConfig.plausibleAnalytics),
+    plausibleAnalyticsScript: getString(
+      json,
+      'plausibleAnalyticsScript',
+      defaultConfig.plausibleAnalyticsScript,
+    ),
   };
 }
 

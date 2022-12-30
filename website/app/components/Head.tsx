@@ -1,7 +1,7 @@
-import { Helmet } from 'react-helmet';
-import { DocumentationLoader } from '~/loaders/documentation.server';
 import codeHikeStyles from '@code-hike/mdx/dist/index.css';
+import { Helmet } from 'react-helmet';
 import { useCustomDomain, useImagePath } from '~/context';
+import { DocumentationLoader } from '~/loaders/documentation.server';
 
 export const Head = ({ data }: { data: DocumentationLoader }) => {
   const favicon = useImagePath(data.config.favicon || 'https://docs.page/favicon.ico?v=2');
@@ -38,7 +38,7 @@ export const Head = ({ data }: { data: DocumentationLoader }) => {
         </script>
       )}
       {data.config.plausibleAnalytics && domain && (
-        <script defer data-domain={domain} src="https://plausible.io/js/plausible.js"></script>
+        <script defer data-domain={domain} src={data.config.plausibleAnalyticsScript}></script>
       )}
       <link rel="icon" href={favicon} />
       {data.config.experimentalMath && (

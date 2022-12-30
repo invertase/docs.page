@@ -40,6 +40,6 @@ const { domain, config } = context.get();
 }
 {
   config.plausibleAnalytics && domain && (
-    <script slot="head" defer data-domain={domain} src="https://plausible.io/js/plausible.js" />
+    <script slot="head" defer data-domain={domain} src={config.plausibleAnalyticsScript} />
   )
 }

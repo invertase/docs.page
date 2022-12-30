@@ -42,6 +42,8 @@ export interface ConfigWithoutLocales {
   automaticallyInferNextPrevious: boolean;
   // Adds Plausible Analytics to your documentation pages.
   plausibleAnalytics: string;
+  // Specify the Plausible Analytics script to use
+  plausibleAnalyticsScript: string;
 }
 
 export interface ConfigWithLocales {
@@ -89,6 +91,8 @@ export interface ConfigWithLocales {
   automaticallyInferNextPrevious: boolean;
   // Adds Plausible Analytics to your documentation pages.
   plausibleAnalytics: string;
+  // Specify the Plausible Analytics script to use
+  plausibleAnalyticsScript: string;
 }
 export type InputConfig = ConfigWithoutLocales | ConfigWithLocales;
 
@@ -143,6 +147,8 @@ export interface OutputConfig {
   automaticallyInferNextPrevious: boolean;
   // Adds Plausible Analytics to your documentation pages.
   plausibleAnalytics: boolean;
+  // Specify the Plausible Analytics script to use
+  plausibleAnalyticsScript: string;
 }
 
 export const defaultConfig: OutputConfig = {
@@ -165,6 +171,7 @@ export const defaultConfig: OutputConfig = {
   experimentalMath: false,
   automaticallyInferNextPrevious: true,
   plausibleAnalytics: false,
+  plausibleAnalyticsScript: 'https://plausible.io/js/script.js',
 };
 
 export type FetchBundleInput = {
