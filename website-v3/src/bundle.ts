@@ -44,6 +44,7 @@ const $BundleConfig = z.object({
   automaticallyInferNextPrevious: z.boolean(),
   automaticallyDisplayName: z.boolean(),
   plausibleAnalytics: z.boolean(),
+  plausibleAnalyticsScript: z.string(),
 });
 
 const $GetBundleRequest = z.object({

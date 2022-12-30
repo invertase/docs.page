@@ -41,6 +41,7 @@ const $Config = z
     automaticallyDisplayName: z.boolean().catch(true),
     automaticallyInferNextPrevious: z.boolean().catch(true),
     plausibleAnalytics: z.boolean().catch(false),
+    plausibleAnalyticsScript: z.boolean().catch('https://plausible.io/js/script.js'),
     anchors: z
       .array(
         z
