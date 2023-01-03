@@ -4,7 +4,7 @@ import { getImagePath } from 'src/utils';
 
 const { owner, repository, ref, domain, relativePath, frontmatter, config } = context.get();
 
-const title = frontmatter.title || frontmatter.name || `${owner}/${repository}`;
+const title = frontmatter.title || config.name || `${owner}/${repository}`;
 const description = frontmatter.description || config.description || '';
 const url = domain
   ? `https://${domain}${ref && `/~${ref}`}${relativePath}`
