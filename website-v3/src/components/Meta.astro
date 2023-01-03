@@ -15,8 +15,8 @@ if (!image) {
   const params = new URLSearchParams({
     owner,
     repository,
-    title: frontmatter.title || frontmatter.name || '',
-    description: config.description || frontmatter.description || '',
+    title,
+    description,
     logo: config.logo ? getImagePath(config.logo) : '',
   });
 
