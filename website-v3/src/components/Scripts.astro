@@ -12,6 +12,32 @@ const { config, domain } = ctx;
 </script>
 
 <script>
+  const toggle = document.querySelector('button[data-sidebar-toggle]')!;
+  const sidebar = document.querySelector('div[data-sidebar]')!;
+  const mask = document.querySelector('div[data-sidebar-mask]')!;
+
+  // Listen to menu toggle events and toggle the body attribute.
+  toggle.addEventListener('click', () => {
+    document.body.setAttribute(
+      'sidebar-open',
+      (document.body.getAttribute('sidebar-open') !== 'true').toString(),
+    );
+  });
+
+  mask.addEventListener('click', () => {
+    document.body.setAttribute('sidebar-open', 'false');
+  });
+
+  new MutationObserver(() => {
+    const open = document.body.getAttribute('sidebar-open') === 'true';
+    for (const el of [sidebar, mask]) el.setAttribute('data-visible', `${open}`);
+  }).observe(document.body, {
+    attributes: true,
+    attributeFilter: ['sidebar-open'],
+  });
+</script>
+
+<script>
   /**
    * This script looks for any buttons with the `data-copy` attribute, and adds
    * an event listener to copy the value of the `data-copy-value` attribute to.

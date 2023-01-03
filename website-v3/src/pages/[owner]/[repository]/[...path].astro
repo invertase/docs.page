@@ -203,7 +203,13 @@ function codeToTitle(code: GetBundleResponse['code']) {
       <Links slot="head" />
       <Header />
       <section class="max-w-8xl mx-auto px-4 sm:px-6 md:px-8">
-        <div class="fixed top-16 bottom-0 left-[max(0px,calc(50%-46rem))] right-auto z-20 hidden w-[19.5rem] overflow-y-auto px-6 pb-10 sm:px-8 md:px-10 lg:block">
+        <div
+         data-sidebar 
+         data-visible="false"
+         class="fixed top-16 bottom-0 left-[-46rem] lg:left-[max(0px,calc(50%-46rem))] right-auto z-20 w-[19.5rem] overflow-y-auto px-6 pb-10 sm:px-8 md:px-10 lg:block
+          data-[visible=true]:left-0 data-[visible=true]:dark:bg-zinc-900
+         "
+        >
           <Sidebar />
         </div>
         <div class="lg:pl-[20rem]">
@@ -220,6 +226,7 @@ function codeToTitle(code: GetBundleResponse['code']) {
             </div>
           </div>
         </div>
+        <div data-sidebar-mask data-visible="false" class="fixed inset-0 bg-zinc-900/50 backdrop-blur opacity-0 data-[visible=true]:opacity-100 z-10" />
       </section>
     </Root>
   )
