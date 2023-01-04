@@ -19,7 +19,7 @@ class Bundler {
   readonly #owner: string;
   readonly #repository: string;
   readonly #path: string;
-  #warnings: Array<string> = [];
+  #notices: Array<string> = [];
   #ref: string | undefined;
   #source?: Source;
   #config?: Config;
@@ -109,7 +109,9 @@ class Bundler {
         yaml: metadata.config.configYaml,
       });
     } catch {
-      this.#warnings.push('Failed to parse config file. Using default config.');
+      this.#notices.push(
+        'The configuration file is invalid, falling back to the default configuration.',
+      );
       this.#config = defaultConfig;
     }
 
@@ -123,6 +125,7 @@ class Bundler {
         source: this.#source,
         ref: this.#ref,
         baseBranch: metadata.baseBranch,
+        notices: this.#notices,
         path: this.#path,
         config: this.#config,
         markdown: this.#markdown,

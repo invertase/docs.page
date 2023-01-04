@@ -65,6 +65,7 @@ const $GetBundleResponseSuccess = z.object({
   baseBranch: z.string(),
   path: z.string(),
   config: $BundleConfig,
+  notices: z.array(z.string()),
   markdown: z.string(),
   code: z.string(),
   frontmatter: z.record(z.string()),
