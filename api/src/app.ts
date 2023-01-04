@@ -4,6 +4,7 @@ import cors from 'cors';
 import { config } from 'dotenv';
 
 import bundle from './routes/bundle.js';
+import probot from './probot.js';
 import { notFound } from './res.js';
 
 config();
@@ -24,6 +25,8 @@ app.use(
     extended: true,
   }),
 );
+
+app.use(probot);
 
 const router = Router();
 router.get('/status', (_, res) => res.status(200).send('OK'));
