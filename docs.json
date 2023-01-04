@@ -3,7 +3,10 @@
   "logo": "https://static.invertase.io/assets/docs.page/docs-page-logo.png",
   "theme": "#36B9B9",
   "twitter": "invertaseio",
-  "anchors": [{ "title": "Homepage", "icon": "house", "link": "https://docs.page" }],
+  "anchors": [
+    { "title": "Homepage", "icon": "house", "link": "https://docs.page" },
+    { "title": "Discord", "icon": "discord", "link": "https://invertase.link/discord" }
+  ],
   "sidebar": [
     [
       "Getting Started",
