@@ -38,6 +38,32 @@ const { config, domain } = ctx;
 </script>
 
 <script>
+  import type { Context } from 'src/context';
+
+  const { config } = (window as any).docs_page as Context;
+  const element = document.querySelector('div[data-docsearch]');
+
+  if (config.docsearch && element) {
+    const docsearch = (await import('@docsearch/js')).default;
+    const overrides = document.querySelectorAll('button[data-docsearch-override]');
+
+    docsearch({
+      container: element as HTMLElement,
+      ...config.docsearch,
+    });
+
+    // Once triggered, get the native docsearch button and hide it.
+    const button = element.querySelector('button.DocSearch') as HTMLButtonElement;
+    button.style.display = 'none';
+
+    for (const override of overrides) {
+      // Then attach our own button to the native one
+      override.addEventListener('click', () => button.click());
+    }
+  }
+</script>
+
+<script>
   /**
    * This script looks for any buttons with the `data-copy` attribute, and adds
    * an event listener to copy the value of the `data-copy-value` attribute to.

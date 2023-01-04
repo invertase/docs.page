@@ -206,8 +206,8 @@ function codeToTitle(code: GetBundleResponse['code']) {
         <div
          data-sidebar 
          data-visible="false"
-         class="fixed top-16 bottom-0 left-[-46rem] lg:left-[max(0px,calc(50%-46rem))] right-auto z-20 w-[19.5rem] overflow-y-auto px-6 pb-10 sm:px-8 md:px-10 lg:block
-          data-[visible=true]:left-0 data-[visible=true]:dark:bg-zinc-900
+         class="fixed top-16 bottom-0 left-0 translate-x-[-46rem] lg:left-[max(0px,calc(50%-46rem))] lg:translate-x-0 right-auto z-20 w-[19.5rem] overflow-y-auto px-6 pb-10 sm:px-8 md:px-10 lg:block transition-transform
+          data-[visible=true]:translate-x-0 data-[visible=true]:dark:bg-zinc-900 data-[visible=true]:border-t dark:border-slate-800/80 
          "
         >
           <Sidebar />
@@ -226,7 +226,8 @@ function codeToTitle(code: GetBundleResponse['code']) {
             </div>
           </div>
         </div>
-        <div data-sidebar-mask data-visible="false" class="fixed inset-0 bg-zinc-900/50 backdrop-blur opacity-0 data-[visible=true]:opacity-100 z-10" />
+        <div data-docsearch />
+        <div data-sidebar-mask data-visible="false" class="fixed inset-0 bg-zinc-900/50 backdrop-blur opacity-0 data-[visible=true]:opacity-100 z-10 transition-opacity lg:hidden data-[visible=false]:pointer-events-none" />
       </section>
     </Root>
   )

@@ -5,6 +5,7 @@ import { ChevronDownIcon } from '@components/icons';
 import Link from '@components/Link';
 import context from 'src/context';
 import { isExternalLink } from 'src/utils';
+import RefBadge from '@components/RefBadge.astro';
 
 const { owner, repository, config, locale, sidebar } = context.get();
 
@@ -60,6 +61,9 @@ if (config.twitter) {
   }
 </script>
 <nav class="mt-9 overscroll-contain">
+  <div class="mb-6 lg:hidden">
+    <RefBadge />    
+  </div>
   <ul class="mb-6 space-y-3">
     {anchors.map((anchor) => (
       <li>

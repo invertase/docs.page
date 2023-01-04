@@ -1,12 +1,13 @@
 ---
-import cx from 'classnames';
 import Link from '@components/Link';
-import Search from '@components/Search.astro';
+import SearchBar from '@components/SearchBar.astro';
 import ThemeToggle from '@components/ThemeToggle.astro';
+import RefBadge from '@components/RefBadge.astro';
 import context from 'src/context';
 import { getImagePath } from 'src/utils';
+import { BarsIcon, MagnifyingGlassIcon } from '@components/icons';
 
-const { owner, repository, ref, githubRefPath, config, source } = context.get();
+const { owner, repository, config } = context.get();
 
 // TODO preview mode
 ---
@@ -47,31 +48,27 @@ const { owner, repository, ref, githubRefPath, config, source } = context.get();
       </div>
       <div
         class:list={{
-          'lg:w-64 xl:w-80': !!config.docsearch,
+          'hidden lg:block lg:w-64 xl:w-80': !!config.docsearch,
         }}
       >
-        {!!config.docsearch && <Search />}
+        {!!config.docsearch && <SearchBar />}
       </div>
       <div class="flex-1 flex gap-6 items-center justify-end">
         {
-          !!ref && (
-            <Link
-              href={githubRefPath}
-              className={cx('rounded py-1 px-3 text-sm text-white transition', {
-                'bg-green-500 hover:bg-green-400': source.type === 'branch',
-                'bg-blue-500 hover:bg-blue-400': source.type === 'commit',
-                'bg-orange-500 hover:bg-orange-400': source.type === 'PR',
-              })}
-            >
-              {source.type === 'branch' && `${ref}`}
-              {source.type === 'commit' && ref.substring(0, 7)}
-              {source.type === 'PR' && `PR #${ref}`}
-            </Link>
+          !!config.docsearch && (
+            <button class="h-6 w-6 lg:hidden" data-docsearch-override>
+              <MagnifyingGlassIcon />
+            </button>
           )
         }
+        <div class="hidden lg:block">
+          <RefBadge />
+        </div>
         <ThemeToggle />
-        <div class="lg:hidden">
-          <button data-sidebar-toggle>Toggle</button>
+        <div class="lg:hidden flex items-center">
+          <button data-sidebar-toggle class="w-6 h-6 hover:opacity-75 transition-opacity">
+            <BarsIcon />
+          </button>
         </div>
       </div>
     </div>
