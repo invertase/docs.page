@@ -10,7 +10,7 @@ function Vimeo({ id, video }: VimeoProps) {
 
   return (
     <iframe
-      className="aspect-video w-full overflow-hidden rounded"
+      className="aspect-video w-full overflow-hidden"
       src={`https://player.vimeo.com/video/${id || video}`}
       allowFullScreen
       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
