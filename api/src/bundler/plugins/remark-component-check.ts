@@ -1,12 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// @ts-ignore
 import { visit } from 'unist-util-visit';
 import { Node } from 'unist';
 
-const components = ['Heading', 'YouTube', 'Tabs', 'TabItem', 'Image', 'Img'];
+const components = [
+  'Accordion',
+  'CodeGroup',
+  'Icon',
+  'Info',
+  'Warning',
+  'Error',
+  'Success',
+  'Heading',
+  'Tweet',
+  'Tabs',
+  'TabItem',
+  'Image',
+  'YouTube',
+  'Vimeo',
+  'Zapp',
+];
 
 /**
- * Converts undefined react components into plain text nodes
+ * Converts undefined JSX components into plain text nodes
  * @returns
  */
 
@@ -19,11 +34,7 @@ interface UnDeclaredNode extends Node {
   value: any;
 }
 
-export default function remarkComponentCheck({
-  callback,
-}: {
-  callback: (warning: any) => void;
-}): (ast: Node) => void {
+export default function remarkComponentCheck(): (ast: Node) => void {
   const keywords = ['var', 'let', 'const', 'function'];
   const withExport = keywords.map(k => new RegExp(`(export)[ \t]+${k}[ \t]`));
 
@@ -43,27 +54,26 @@ export default function remarkComponentCheck({
     }
   }
 
-  const undeclared: string[] = [];
-
   function visitorForUndeclared(node: UnDeclaredNode) {
+    // HTML elements are not components (e.g. <div>)
+    if (!isUppercase(node.name.charAt(0))) {
+      return;
+    }
+
     if (!declared.includes(node.name) && !components.includes(node.name)) {
-      undeclared.push(node.name);
       node.type = 'text';
       node.data = undefined;
-      node.value = `\{${node.name}\}`;
-
-      callback({
-        warningType: 'undefined component',
-        line: node.position?.start?.line,
-        column: node.position?.start?.column,
-        detail: node.name,
-      });
+      node.value = `\<${node.name}\ />`;
     }
   }
 
   return async (ast: Node): Promise<void> => {
     visit(ast, 'mdxjsEsm', visitorForDeclared);
-
     visit(ast, 'mdxJsxFlowElement', visitorForUndeclared);
+    visit(ast, 'mdxJsxTextElement', visitorForUndeclared);
   };
+}
+
+function isUppercase(str: string) {
+  return str === str.toUpperCase();
 }
