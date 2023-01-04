@@ -20,7 +20,6 @@ const Tabs: React.FC<TabsProps> = props => {
   }
 
   const tabs = React.Children.map(children, child => {
-    console.log('child', child, isValidElement(child));
     if (isValidElement(child)) {
       const el = child as React.ReactElement;
       if (values.find(({ value }) => value === el.props.value)) {
@@ -38,7 +37,7 @@ const Tabs: React.FC<TabsProps> = props => {
   if (!values.find(({ value }) => value === active)) {
     active = values[0].value;
   }
-  console.log(tabs);
+  
   return (
     <div data-tab-group data-tab-group-id={groupId}>
       <div className="flex items-center gap-6 border-b-2 dark:border-slate-600/80">
