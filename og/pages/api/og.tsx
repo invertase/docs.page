@@ -19,19 +19,23 @@ export default async function handler(req: NextRequest) {
 
     const { searchParams } = new URL(req.url);
 
-    const owner = searchParams.get('owner');
-    const repository = searchParams.get('repository');
-
-    if (!owner || !repository) {
-      return new ImageResponse(<>Missing required fields.</>, {
+    if (!searchParams.has('params')) {
+      return new ImageResponse(<>Missing required params field.</>, {
         width: 1200,
         height: 630,
       });
     }
 
-    const title = searchParams.get('title');
-    const description = searchParams.get('description');
-    const logo = searchParams.get('logo');
+    const params = JSON.parse(Buffer.from(searchParams.get('params')!, 'base64').toString());
+
+    if (!params.owner || !params.repository) {
+      return new ImageResponse(<>Missing required owner and/or repository fields.</>, {
+        width: 1200,
+        height: 630,
+      });
+    }
+
+    const { owner, repository, title, description, logo } = params;
 
     return new ImageResponse(
       (

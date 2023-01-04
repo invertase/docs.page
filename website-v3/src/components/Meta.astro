@@ -12,15 +12,17 @@ const url = domain
 
 let image = frontmatter.image || config.socialPreview;
 if (!image) {
-  const params = new URLSearchParams({
-    owner,
-    repository,
-    title,
-    description,
-    logo: config.logo ? getImagePath(config.logo) : '',
-  });
+  const params = Buffer.from(
+    JSON.stringify({
+      owner,
+      repository,
+      title,
+      description,
+      logo: config.logo ? getImagePath(config.logo) : '',
+    }),
+  ).toString('base64');
 
-  image = `https://og.docs.page?${params.toString()}`;
+  image = `https://og.docs.page?params=${params}`;
 }
 ---
 
@@ -37,4 +39,4 @@ if (!image) {
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={url} />
-<meta property="og:image" content={image} />
+<meta property="og:image" charset="utf-8" content={image} />
