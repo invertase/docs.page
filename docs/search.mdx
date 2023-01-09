@@ -17,11 +17,12 @@ documentation and email address.
 
 Once accepted, you will be provided with an API Key and Index Name used to connect to the DocSearch service.
 
-Within your projects `docs.json` configuration file, add these credentials to the `docsearch` object:
+Within your project configuration file, add these credentials to the `docsearch` object:
 
-```json title="docs.json"
+```json
 {
   "docsearch": {
+    "appId": "...",
     "apiKey": "...",
     "indexName": "..."
   }
@@ -29,6 +30,3 @@ Within your projects `docs.json` configuration file, add these credentials to th
 ```
 
 Once committed, a search bar will appear in the header of the documentation with the search connected.
-
-You can also optionally provide your Application ID via the `appId` property to enable pre-connection to help speed up
-the initial search query for users with slower connections.

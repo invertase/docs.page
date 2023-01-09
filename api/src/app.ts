@@ -1,8 +1,11 @@
-import express, { text } from 'express';
-import routes from './routes.js';
+import express, { Router, text } from 'express';
 import morgan from 'morgan';
 import cors from 'cors';
 import { config } from 'dotenv';
+
+import bundle from './routes/bundle';
+import probot from './probot';
+import { notFound } from './res';
 
 config();
 const PORT = process.env.PORT || 8000;
@@ -22,7 +25,15 @@ app.use(
     extended: true,
   }),
 );
-app.use('/', routes);
+
+app.use(probot);
+
+const router = Router();
+router.get('/status', (_, res) => res.status(200).send('OK'));
+router.get('/bundle', bundle);
+router.all('*', (_, res) => notFound(res));
+
+app.use(router);
 
 app.listen(PORT, () => {
   console.log(`docs.page api server is running at http://localhost:${PORT}`);

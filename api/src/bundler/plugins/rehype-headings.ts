@@ -1,6 +1,7 @@
 import { visit } from 'unist-util-visit';
 import { hasProperty } from 'hast-util-has-property';
-import { headingRank, Node as HastNode, Parent as HastParent } from 'hast-util-heading-rank';
+import { headingRank } from 'hast-util-heading-rank';
+import type { Node, Content } from 'hast-util-heading-rank/lib';
 import { toString } from 'mdast-util-to-string';
 import { parseSelector } from 'hast-util-parse-selector';
 import { Data as UnistData, Node as UnistNode } from 'unist';
@@ -54,11 +55,11 @@ export default function rehypeHeadings(
     }
   }
 
-  function newVisitor(node: HastParent) {
+  function newVisitor(node: Node & { children: HastElement[] }) {
     const newChildren = partition<HastContent>(node.children, headingTest).map(part => {
       const id =
         (
-          part.filter((child: HastNode) => headingTest(child))[0] as HastElement
+          part.filter((child: Node) => headingTest(child))[0] as HastElement
         )?.properties?.id?.toString() || '';
 
       return wrapSection(part as HastElement[], id);
@@ -80,7 +81,7 @@ const wrapSection: (children: HastElement[], id: string) => HastElement = (child
   return wrap;
 };
 
-const headingTest: (node: HastNode) => boolean = node =>
+const headingTest: (node: Node) => boolean = node =>
   !!headingRank(node) && hasProperty(node, 'id');
 
 // partition an array based on a test function, e.g [a,b,b,b,a,b,b,a,b] should become [[a,b,b,b],[a,b,b],[a,b]]

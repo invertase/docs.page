@@ -16,11 +16,7 @@ interface UnDeclaredNode extends Node {
   data: any;
 }
 
-export default function remarkUndeclaredVariables({
-  callback,
-}: {
-  callback: (warning: any) => void;
-}): (ast: Node) => void {
+export default function remarkUndeclaredVariables(): (ast: Node) => void {
   const keywords = ['var', 'let', 'const', 'function'];
   const withExport = keywords.map(k => new RegExp(`(export)[ \t]+${k}[ \t]`));
 
@@ -48,17 +44,12 @@ export default function remarkUndeclaredVariables({
       node.type = 'text';
       node.data = undefined;
       node.value = `\{${node.value}\}`;
-      callback({
-        warningType: 'undefined component',
-        line: node.position?.start?.line,
-        column: node.position?.start?.column,
-        detail: node.value,
-      });
     }
   }
 
   return async (ast: Node): Promise<void> => {
     visit(ast, 'mdxjsEsm', visitorForDeclared);
     visit(ast, 'mdxFlowExpression', visitorForUndeclared);
+    visit(ast, 'mdxJsxTextElement', visitorForUndeclared);
   };
 }

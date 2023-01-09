@@ -1,12 +1,93 @@
 ---
+import locales from 'locale-codes';
+import FontAwesome, { FontAwesomeProps } from '@components/FontAwesome';
+import { ChevronDownIcon } from '@components/icons';
 import Link from '@components/Link';
 import context from 'src/context';
 import { isExternalLink } from 'src/utils';
+import RefBadge from '@components/RefBadge.astro';
 
-const sidebar = context.get().config.sidebar || [];
+const { owner, repository, config, locale, sidebar } = context.get();
+
+function getLinkRef(href: string): string | undefined {
+  if (import.meta.env.DEV || isExternalLink(href)) {
+    return;
+  }
+
+  return 'prefetch';
+}
+
+function getLocaleString(locale: string): string {
+  const found = locales.getByTag(locale);
+  return found ? found.name : locale;
+}
+
+const anchors = config.anchors satisfies typeof config.anchors;
+
+anchors.push({
+  icon: 'github',
+  title: 'GitHub',
+  link: `https://github.com/${owner}/${repository}`
+});
+
+if (config.twitter) {
+  anchors.push({
+    icon: 'twitter',
+    title: 'Twitter',
+    link: `https://twitter.com/${config.twitter}`
+  });
+}
 ---
+<script>
+  import type { Context } from 'src/context';
+  const { owner, repository, ref, domain } = (window as any).docs_page as Context;
 
-<nav class="mt-9 px-4">
+  const locale = document.querySelector('select#locale');
+  
+  if (locale) {
+    locale.addEventListener('change', (event) => {
+      const { value } = event.target as HTMLSelectElement;
+
+      if (import.meta.env.PROD && domain) {
+        let href = `https://${domain}`;
+        if (ref) href += `/~${encodeURIComponent(ref)}`;
+        window.location.href = href + `/${value}`;
+      } else {
+        let href = `/${owner}/${repository}`;
+        if (ref) href += `~${encodeURIComponent(ref)}`;
+        window.location.href = href + `/${value}`;
+      }
+    });
+  }
+</script>
+<nav class="mt-9 overscroll-contain">
+  <div class="mb-6 lg:hidden">
+    <RefBadge />    
+  </div>
+  <ul class="mb-6 space-y-3">
+    {anchors.map((anchor) => (
+      <li>
+        <Link href={anchor.link} className="group flex items-center gap-2">
+          <span class="w-6 h-6 rounded border opacity-75 dark:border-zinc-700 group-hover:border-transparent inline-flex items-center justify-center text-[14px] group-hover:bg-docs-theme group-hover:opacity-100 transition group-hover:text-white">
+            <FontAwesome name={anchor.icon} />
+          </span>
+          <span class="text-sm font-medium tracking-wide opacity-75 group-hover:opacity-100 transition">{anchor.title}</span>
+        </Link>
+      </li>
+    ))}
+  </ul>
+  {locale && config.locales.length > 0 && (
+    <ul class="pr-8">
+      <li class="relative">
+        <select id="locale" class="w-full pl-2 pr-8 py-1 appearance-none rounded text-sm bg-transparent border dark:border-zinc-700">
+          {config.locales.map((value) => (
+            <option selected={locale === value} value={value}>{getLocaleString(value)}</option>
+          ))}
+        </select>
+        <div class="absolute top-[7px] right-2 w-4 h-4 pointer-events-none"><ChevronDownIcon /></div>
+      </li>
+    </ul>
+  )}
   <ul class="lg:text-sm lg:leading-6">
     {
       sidebar.map(([title, urlOrChildren]) => {
@@ -15,9 +96,9 @@ const sidebar = context.get().config.sidebar || [];
             <li>
               <Link
                 href={urlOrChildren}
-                className="mb-3 block font-medium tracking-wide opacity-75 transition hover:opacity-100"
+                className="mb-3 block font-medium  opacity-75 transition hover:opacity-100"
                 activeClassName="text-docs-theme opacity-100"
-                rel={isExternalLink(urlOrChildren) ? 'noopener noreferrer' : 'prefetch'}
+                rel={getLinkRef(urlOrChildren)}
               >
                 {title}
               </Link>
@@ -28,14 +109,14 @@ const sidebar = context.get().config.sidebar || [];
         return (
           <li class="my-8">
             <h5 class="mb-3 block font-semibold tracking-wide">{title}</h5>
-            <ul class="space-y-2 border-l border-slate-700">
+            <ul class="space-y-2 border-l dark:border-slate-700">
               {urlOrChildren.map(([title, url]) => (
                 <li>
                   <Link
                     href={url}
                     className="hover:border-docs-theme relative -left-px block border-l border-transparent pl-4 opacity-75 transition hover:opacity-100"
                     activeClassName="border-docs-theme opacity-100 font-semibold tracking-wide text-docs-theme"
-                    rel={isExternalLink(url) ? 'noopener noreferrer' : 'prefetch'}
+                    rel={getLinkRef(url)}
                   >
                     {title}
                   </Link>

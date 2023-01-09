@@ -9,7 +9,7 @@ function YouTube({ id }: YouTubeProps) {
 
   return (
     <iframe
-      className="aspect-video w-full overflow-hidden rounded"
+      className="aspect-video w-full overflow-hidden"
       src={`https://www.youtube.com/embed/${id}`}
       allowFullScreen
       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"

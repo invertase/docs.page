@@ -1,11 +1,19 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// @ts-ignore
 import { visit } from 'unist-util-visit';
-import { Node } from 'hast-util-heading-rank';
+import type { Node } from 'hast-util-heading-rank/lib';
 import { toString } from 'mdast-util-to-string';
 import * as shiki from 'shiki';
 
 let highlighter: shiki.Highlighter;
+
+// Returns an object of supported languages.
+const languages = shiki.BUNDLED_LANGUAGES.reduce(
+  (map, lang) => {
+    const out = { [lang.id]: lang.id };
+    for (const alias of lang.aliases || []) out[alias] = lang.id;
+    return { ...map, ...out };
+  },
+  { '': 'text' } as Record<string, string>,
+);
 
 /**
  * Matches any `pre code` elements and extracts the raw code and titles from the code block and assigns to the parent.
@@ -17,12 +25,15 @@ export default function rehypeCodeBlocks(): (ast: Node) => void {
       return;
     }
 
-    const language = getLanguage(node);
     const raw = toString(node);
+    const language = languages[getLanguage(node) || ''];
 
     // Raw value of the `code` block - used for copy/paste
     parent.properties['raw'] = raw;
-    parent.properties['html'] = highlighter.codeToHtml(raw, language);
+    parent.properties['language'] = language;
+    parent.properties['html'] = highlighter.codeToHtml(raw, {
+      lang: language,
+    });
 
     // Get any metadata from the code block
     const meta = (node.data?.meta as string) ?? '';
@@ -33,7 +44,7 @@ export default function rehypeCodeBlocks(): (ast: Node) => void {
 
   return async (ast: Node): Promise<void> => {
     highlighter = await shiki.getHighlighter({
-      theme: 'github-dark',
+      theme: 'css-variables',
     });
     // @ts-ignore
     visit(ast, 'element', visitor);

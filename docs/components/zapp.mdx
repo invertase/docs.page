@@ -1,0 +1,28 @@
+---
+title: Add Zapp! embeds to your documentation
+description: Learn how to add Zapp! embeds to your documentation.
+---
+
+# Zapp!
+
+[Zapp!](https://zapp.run) is a free online Dart & Flutter sandbox that lets you run Dart code in the browser. It's great for sharing code snippets in your documentation.
+
+## Embedding Zapp!
+
+Use the `<Zapp>` component and pass the ID of the Zapp! you want to embed.
+
+```jsx
+<Zapp id="flutter" />
+```
+
+<Zapp id="flutter" />
+
+## Lazy Loading
+
+To prevent the sandbox from loading until the user interacts, pass the `lazy` prop.
+
+```jsx
+<Zapp lazy id="flutter" />
+```
+
+<Zapp lazy id="flutter" />

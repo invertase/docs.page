@@ -1,0 +1,92 @@
+---
+title: Locales
+description: Add locale support to your documentation
+---
+
+# Locales
+
+Locale support is achived configuring the `sidebar` in your [configuration file](/configuration).
+
+When locale support is enabled, a language switcher will appear in the sidebar.
+
+## Setup
+
+For example, if you wish to provide both English and French versions of your documentation, convert your `sidebar`
+to an object, where the key is the [2-character ISO language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes),
+and the value the usual sidebar configuration.
+
+```json
+{
+  "sidebar": {
+    "en": [
+      ["Getting Started", "/"],
+      ["Installation", "/installation"]
+    ],
+    "fr": [
+      ["Commencer", "/"],
+      ["Installation", "/installation"]
+    ]
+  }
+}
+```
+
+You should now change your documentation directory structure in the repository to match these paths.
+
+```
+/docs
+  /en
+    /index.mdx
+    /installation.mdx
+  /fr
+    /index.mdx
+    /installation.mdx
+```
+
+Now when accessing your documentation, specify the locale key in the URL, e.g.:
+
+```
+https://docs.page/acme/sdk/en
+https://docs.page/acme/sdk/fr
+```
+
+Or when using [custom domains](/custom-domains):
+
+```
+https://sdk.acme.com/en
+https://sdk.acme.com/fr
+```
+
+The sidebar will automatically switch to the correct locale based on the locale in the page. All links on the page are relative to the current locale,
+for example if the URL `/installation` is provided whilst viewing the French version of the documentation, the link will be `/fr/installation`.
+
+## Root Page
+
+The root page of the documentation which does not have a locale can either be used to display content, or redirect to a default locale.
+
+### Redirecting
+
+To redirect the root page to a default locale (e.g. `en`), add a `redirect` property to the root page frontmatter:
+
+```yaml title="docs/index.mdx"
+---
+redirect: /en
+---
+```
+
+### Displaying Content
+
+If you wish instead to display content on the root page, simply write markdown as usual. If you also wish to display a sidebar for the root page,
+you can specify a `default` sidebar in your configuration:
+
+```json
+{
+  "sidebar": {
+    "default": [
+      ["Getting Started", "/en"],
+      ["Installation", "/en/installation"]
+    ],
+    "en": [],
+    "fr": []
+  }
+}
+```

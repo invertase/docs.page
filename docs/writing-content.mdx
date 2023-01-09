@@ -1,0 +1,144 @@
+---
+title: Writing Content
+description: Learn about how to write Markdown content for your site.
+---
+
+# Writing Content
+
+docs.page supports writing Markdown in the [GFM](https://github.github.com/gfm/) (GitHub Flavored Markdown) format. This means you can write your
+content in a familiar format and it will be rendered as HTML.
+
+Alongside this, you may notice the file extension for your content is `.mdx` (instead of `.md`). This is because docs.page supports [MDX](https://mdxjs.com/),
+which allows you to write JSX inside your Markdown files. This means you can write JSX components inside your Markdown files too!
+
+## Markdown
+
+Markdown supports syntax for displaying content in a variety of ways. 
+
+### Headings
+
+Use the `#` symbol to create headings. The more `#` symbols you use, the smaller and less semantic weight the heading will have:
+
+```
+# Heading 1
+## Heading 2
+### Heading 3
+#### Heading 4
+##### Heading 5
+###### Heading 6
+```
+
+### Emphasis
+
+#### Bold
+
+You can use `**` or `__` to emphasize text as **bold**: 
+
+```
+**My bold text**
+```
+
+#### Italic
+
+You can use `*` or `_` to emphasize text as *italic*: 
+
+```
+**My italic text**
+```
+
+## Blockquotes
+
+To create a blockquote, add a > in front of a paragraph.
+
+> Example of a blockquote.
+
+```
+> Example of a blockquote.
+```
+
+## Lists
+
+### Unordered
+
+To create an unordered list, use the `-` symbol:
+
+- Item 1
+- Item 2
+- Item 3
+
+```
+- Item 1
+- Item 2
+- Item 3
+```
+
+### Ordered
+
+To create an ordered list, use a numeric value as a prefix:
+
+1. Item 1
+2. Item 2
+3. Item 3
+
+```
+1. Item 1
+2. Item 2
+3. Item 3
+```
+
+## Code Blocks
+
+To create a code block, use three backticks:
+
+
+```
+echo "Hello World"
+```
+
+````
+```
+echo "Hello World"
+```
+````
+
+You can specify a language to provide automatic syntax highlighting:
+
+```js
+console.log('Hello World');
+```
+
+````
+```js
+console.log('Hello World');
+```
+````
+
+## Horizontal Rules
+
+To create a horizontal rule, use three or more hyphens:
+
+---
+
+```
+---
+```
+
+## Links
+
+To create a link, use the following syntax:
+
+[My Link](https://example.com)
+
+```
+[My Link](https://example.com)
+```
+
+## Images
+
+To create an image, use the following syntax:
+
+![Orange Car](https://images.unsplash.com/photo-1671483579112-0872cb05978f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1469&q=80)
+
+```
+![Orange Car](https://images.unsplash.com/photo-1671483579112-0872cb05978f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1469&q=80)
+```
