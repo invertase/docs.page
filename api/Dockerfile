@@ -21,7 +21,7 @@ ENV __BUILD_SHA=$BUILD_SHA
 
 WORKDIR /opt/app
 COPY . /opt/app
-RUN cd /opt/app && npm install
+RUN cd /opt/app && yarn install
 RUN node node_modules/esbuild/install.js
 
 WORKDIR /opt/app
