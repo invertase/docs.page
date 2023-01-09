@@ -1,6 +1,5 @@
 import { z } from 'zod';
 import yaml from 'js-yaml';
-// import test from './test_config.js';
 
 const $SidebarItem = z.tuple([
   z.coerce.string(),

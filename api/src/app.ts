@@ -3,9 +3,9 @@ import morgan from 'morgan';
 import cors from 'cors';
 import { config } from 'dotenv';
 
-import bundle from './routes/bundle.js';
-import probot from './probot.js';
-import { notFound } from './res.js';
+import bundle from './routes/bundle';
+import probot from './probot';
+import { notFound } from './res';
 
 config();
 const PORT = process.env.PORT || 8000;

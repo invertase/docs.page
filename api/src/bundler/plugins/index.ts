@@ -3,16 +3,16 @@ import type { PluggableList } from '@mdx-js/mdx/lib/core';
 // Remark Plugins
 import remarkGfm from 'remark-gfm';
 import remarkComment from 'remark-comment';
-import remarkComponentCheck from './remark-component-check.js';
-import remarkUndeclaredVariables from './remark-undeclared-variables.js';
+import remarkComponentCheck from './remark-component-check';
+import remarkUndeclaredVariables from './remark-undeclared-variables';
 // import { remarkCodeHike } from '@code-hike/mdx';
-// import { theme as codeHikeTheme } from './codeHikeTheme.js';
+// import { theme as codeHikeTheme } from './codeHikeTheme';
 
 // Rehype Plugins
 import rehypeSlug from 'rehype-slug';
 import { rehypeAccessibleEmojis } from 'rehype-accessible-emojis';
-import rehypeCodeBlocks from './rehype-code-blocks.js';
-import rehypeInlineBadges from './rehype-inline-badges.js';
+import rehypeCodeBlocks from './rehype-code-blocks';
+import rehypeInlineBadges from './rehype-inline-badges';
 
 type PluginOptions = {
   codeHike?: boolean;
