@@ -1,5 +1,5 @@
 import { visit } from 'unist-util-visit';
-import type { Node } from 'hast-util-heading-rank';
+import type { Node } from 'hast-util-heading-rank/lib';
 import { toString } from 'mdast-util-to-string';
 import * as shiki from 'shiki';
 

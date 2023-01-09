@@ -6,7 +6,7 @@
 import { isBadge } from 'is-badge';
 
 import { visit } from 'unist-util-visit';
-import { Node } from 'hast-util-heading-rank';
+import type { Node } from 'hast-util-heading-rank/lib';
 
 /**
  * Provides a list of heading elements in the AST.
