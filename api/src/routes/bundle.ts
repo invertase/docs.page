@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
-import { ok, badRequest, serverError, response } from '../res.js';
-import bundler, { ERROR_CODES } from '../bundler/index.js';
+import { ok, badRequest, serverError, response } from '../res';
+import bundler, { ERROR_CODES } from '../bundler/index';
 
 const $input = z.object({
   owner: z

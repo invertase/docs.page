@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-// @ts-ignore
 import { visit } from 'unist-util-visit';
-import { Node } from 'hast-util-heading-rank';
+import type { Node } from 'hast-util-heading-rank';
 import { toString } from 'mdast-util-to-string';
 import * as shiki from 'shiki';
 

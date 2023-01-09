@@ -1,6 +1,6 @@
-import parseConfig, { Config, defaultConfig } from '../utils/config.js';
-import { getGitHubContents, getPullRequestMetadata } from '../utils/github.js';
-import { bundle } from './mdx.js';
+import parseConfig, { Config, defaultConfig } from '../utils/config';
+import { getGitHubContents, getPullRequestMetadata } from '../utils/github';
+import { bundle } from './mdx';
 
 export const ERROR_CODES = {
   REPO_NOT_FOUND: 'REPO_NOT_FOUND',

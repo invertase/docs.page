@@ -23,6 +23,7 @@
     "express-basic-auth": "^1.2.1",
     "gray-matter": "^4.0.3",
     "hast-util-parse-selector": "^3.1.0",
+    "hast-util-heading-rank": "^2.1.1",
     "is-badge": "^2.1.0",
     "js-yaml": "^4.1.0",
     "mdx-bundler": "^9.0.1",
@@ -35,6 +36,7 @@
     "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
     "remark-parse": "^10.0.1",
+    "probot": "^12.2.8",
     "shiki": "^0.12.1",
     "unist-util-visit": "^4.1.0",
     "zod": "^3.19.1",
@@ -42,9 +44,9 @@
   },
   "scripts": {
     "dev": "nodemon",
-    "build": "tsc",
+    "build": "rollup --config rollup.config.js",
     "start": "node dist/app.js",
-    "postinstall": "tsc"
+    "postinstall": "npm run build"
   },
   "devDependencies": {
     "@octokit/webhooks-types": "^6.2.4",
