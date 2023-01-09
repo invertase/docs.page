@@ -43,14 +43,13 @@
     "zod-validation-error": "^0.2.2"
   },
   "scripts": {
-    "dev": "nodemon",
+    "dev": "ts-node-esm src/app.ts",
     "build": "rollup --config rollup.config.js",
     "start": "node dist/app.js"
   },
   "devDependencies": {
     "@octokit/webhooks-types": "^6.2.4",
     "@types/js-yaml": "^4.0.5",
-    "nodemon": "^2.0.18",
     "rollup": "^3.9.1",
     "rollup-plugin-typescript2": "^0.34.1",
     "ts-node": "^10.8.1",
