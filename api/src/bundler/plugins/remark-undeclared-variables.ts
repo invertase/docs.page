@@ -36,11 +36,8 @@ export default function remarkUndeclaredVariables(): (ast: Node) => void {
     }
   }
 
-  const undeclared: string[] = [];
-
   function visitorForUndeclared(node: UnDeclaredNode) {
-    if (!declared.includes(node.value)) {
-      undeclared.push(node.value);
+    if (node.value && !declared.includes(node.value)) {
       node.type = 'text';
       node.data = undefined;
       node.value = `\{${node.value}\}`;
