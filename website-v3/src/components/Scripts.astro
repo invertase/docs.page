@@ -228,7 +228,7 @@ const { config, domain } = ctx;
 
       button.addEventListener('click', () => {
         if (groupId) {
-          fetch('/api/tabs-sync', {
+          fetch('/api/docs.page/tabs-sync', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ owner, repository, ref, domain, groupId, buttonId }),
