@@ -30,6 +30,7 @@ const Markdown: React.FC = () => {
       dark:prose-a:text-white 
       prose-a:font-bold prose-a:underline-offset-[5px] prose-a:decoration-docs-theme prose-a:decoration-2 hover:prose-a:decoration-4 prose-headings:mb-[1rem] 
       prose-pre:m-0
+      prose-strong:break-words
       prose-pre:rounded-none prose-code:rounded
       prose-code:border prose-code:bg-gray-50/50 prose-code:px-1.5 prose-code:py-1 prose-code:text-xs prose-code:font-thin prose-code:before:content-[''] prose-code:after:content-[''] prose-code:dark:border-zinc-700 prose-code:dark:bg-zinc-800/50 prose-table:w-auto
       max-w-none
