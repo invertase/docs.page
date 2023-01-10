@@ -19,14 +19,14 @@ const CodeBlock: React.FC<CodeBlockProps> = props => {
           <button
             data-copy
             data-copy-value={props.raw}
-            className="absolute top-2 right-2 rounded bg-[#19191d] px-3 py-1 font-mono text-xs text-white opacity-0 transition hover:bg-black/50 group-hover:opacity-100 data-[copied=true]:[&>span]:hidden"
+            className="data-[copied=true]:[&>span]:hidden absolute top-2 right-2 rounded bg-[#19191d] px-3 py-1 font-mono text-xs text-white opacity-0 transition hover:bg-black/50 group-hover:opacity-100"
           >
             Copy
           </button>
           <div
             dangerouslySetInnerHTML={{ __html: props.html }}
             className={cx(
-              'not-prose overflow-hidden border-white/10 text-xs [&>pre>code>.line]:leading-6 [&>pre]:p-3',
+              'not-prose [&>pre]:overflow-x-auto [&>pre>code>.line]:leading-6 [&>pre]:p-3 overflow-hidden border-white/10 text-xs',
               {
                 'rounded-xl border': !props.title,
                 'rounded-b-xl dark:border-b dark:border-r dark:border-l': !!props.title,
