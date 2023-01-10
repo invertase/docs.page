@@ -12,7 +12,7 @@ const languages = shiki.BUNDLED_LANGUAGES.reduce(
     for (const alias of lang.aliases || []) out[alias] = lang.id;
     return { ...map, ...out };
   },
-  { '': 'text' } as Record<string, string>,
+  { '': 'text', gradle: 'groovy' } as Record<string, string>,
 );
 
 /**
