@@ -37,10 +37,10 @@ const Tabs: React.FC<TabsProps> = props => {
   if (!values.find(({ value }) => value === active)) {
     active = values[0].value;
   }
-  
+
   return (
     <div data-tab-group data-tab-group-id={groupId}>
-      <div className="flex items-center gap-6 border-b-2 dark:border-slate-600/80">
+      <div className="flex items-center gap-x-6 overflow-x-auto overflow-y-hidden border-b-2 border-gray-200 dark:border-zinc-800">
         {props.values.map(value => (
           <button
             key={value.value}
@@ -48,10 +48,10 @@ const Tabs: React.FC<TabsProps> = props => {
             data-tab-group-button-id={value.value}
             aria-selected={value.value === active}
             className={
-              'aria-selected:border-docs-theme relative top-[2px] whitespace-nowrap border-b-2 border-transparent py-2 font-semibold tracking-wide opacity-75 transition hover:opacity-100 aria-selected:opacity-100 dark:aria-selected:text-white'
+              'aria-selected:text-docs-theme aria-selected:opacity-100 relative h-12 whitespace-nowrap font-semibold tracking-wide opacity-75 transition hover:opacity-100'
             }
           >
-            {value.label}
+            <span>{value.label}</span>
           </button>
         ))}
       </div>
@@ -64,7 +64,7 @@ const Tabs: React.FC<TabsProps> = props => {
               key={tab.props.value}
               data-tab={tab.props.value}
               aria-expanded={tab.props.value === active}
-              className="hidden pt-6 aria-expanded:block [&>:first-child]:mt-0"
+              className="aria-expanded:block [&>:first-child]:mt-0 hidden pt-6"
             >
               {tab}
             </div>

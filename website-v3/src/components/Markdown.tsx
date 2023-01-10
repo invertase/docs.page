@@ -26,7 +26,7 @@ const Markdown: React.FC = () => {
   return (
     <main
       className="
-      prose prose-slate dark:prose-invert prose-p:leading-loose
+      prose prose-zinc dark:prose-invert prose-p:leading-loose
       dark:prose-a:text-white 
       prose-a:font-bold prose-a:underline-offset-[5px] prose-a:decoration-docs-theme prose-a:decoration-2 hover:prose-a:decoration-4 prose-headings:mb-[1rem] 
       prose-pre:m-0
