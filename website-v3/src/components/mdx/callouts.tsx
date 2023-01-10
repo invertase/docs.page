@@ -16,11 +16,11 @@ const Callout: React.FC<Props> = props => {
   return (
     <div
       className={cx(
-        'mb-3 flex items-center gap-2 overflow-hidden rounded-xl px-5 py-4 text-sm',
+        'mb-3 flex items-center gap-4 overflow-hidden rounded-xl px-5 py-4 text-sm',
         props.className,
       )}
     >
-      <span className="h-6 w-6">{props.icon}</span>
+      <span className="h-6 w-6 flex-shrink-0">{props.icon}</span>
       <span className="[&>p]:m-0">{props.children}</span>
     </div>
   );

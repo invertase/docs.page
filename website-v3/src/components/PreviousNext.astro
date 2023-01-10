@@ -46,7 +46,7 @@ if (automaticallyInferNextPrevious) {
             href={previous[1]}
             className="group inline-flex items-center gap-2 opacity-75 transition hover:opacity-100"
           >
-            <span class="group-hover:text-docs-theme h-4 w-4 transition">
+            <span class="group-hover:text-docs-theme h-4 w-4 flex-shrink-0 transition">
               <ChevronLeftIcon />
             </span>
             <span>{previous[0]}</span>
@@ -57,10 +57,10 @@ if (automaticallyInferNextPrevious) {
         {!!next && (
           <Link
             href={next[1]}
-            className="group inline-flex items-center gap-2 opacity-75 transition hover:opacity-100"
+            className="group inline-flex items-center gap-2 opacity-75 transition hover:opacity-100 text-right"
           >
             <span>{next[0]}</span>
-            <span class="group-hover:text-docs-theme h-4 w-4 transition">
+            <span class="group-hover:text-docs-theme h-4 w-4 flex-shrink-0 transition">
               <ChevronRightIcon />
             </span>
           </Link>
