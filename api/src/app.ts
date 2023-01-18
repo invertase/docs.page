@@ -4,6 +4,7 @@ import cors from 'cors';
 import { config } from 'dotenv';
 
 import bundle from './routes/bundle';
+import mdx from './routes/mdx';
 import probot from './probot';
 import { notFound } from './res';
 
@@ -31,6 +32,7 @@ app.use(probot);
 const router = Router();
 router.get('/status', (_, res) => res.status(200).send('OK'));
 router.get('/bundle', bundle);
+router.post('/mdx', mdx);
 router.all('*', (_, res) => notFound(res));
 
 app.use(router);
