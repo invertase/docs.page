@@ -25,9 +25,15 @@ type Anchor = [string, string];
 let previous: Anchor | undefined;
 let next: Anchor | undefined;
 
+const titleForLink = (link: string) => {
+  return links.find(([_, href]) => href === link)?.at(0) || null;
+};
+
 // If the user has specified a previous or next page, use that.
-if (frontmatter.previous) previous = [frontmatter.previous, frontmatter.previousTitle];
-if (frontmatter.next) next = [frontmatter.next, frontmatter.nextTitle];
+if (frontmatter.previous)
+  previous = [frontmatter.previousTitle || titleForLink(frontmatter.previous) || '', frontmatter.previous];
+if (frontmatter.next)
+  next = [frontmatter.nextTitle || titleForLink(frontmatter.next) || '', frontmatter.next];
 
 // If the user wants auto infered previous/next, find them (if not already set).
 if (automaticallyInferNextPrevious) {
@@ -57,7 +63,7 @@ if (automaticallyInferNextPrevious) {
         {!!next && (
           <Link
             href={next[1]}
-            className="group inline-flex items-center gap-2 opacity-75 transition hover:opacity-100 text-right"
+            className="group inline-flex items-center gap-2 text-right opacity-75 transition hover:opacity-100"
           >
             <span>{next[0]}</span>
             <span class="group-hover:text-docs-theme h-4 w-4 flex-shrink-0 transition">
