@@ -12,6 +12,10 @@
 		"invertase/melos"
 	],
 	[
+		"docs.dartedge.dev",
+		"invertase/dart_edge"
+	],
+	[
 		"extensions.invertase.dev",
 		"invertase/firebase-extensions"
 	],
