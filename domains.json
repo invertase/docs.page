@@ -66,5 +66,9 @@
 	[
 		"docs.sharezone.net",
 		"SharezoneApp/sharezone-app"
+	],
+	[
+		"docs.nahpu.app", 
+		"hhandika/nahpu-docs"
 	]
 ]
