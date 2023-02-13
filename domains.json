@@ -70,5 +70,9 @@
 	[
 		"docs.nahpu.app", 
 		"hhandika/nahpu-docs"
+	],
+	[
+		"docs.custom-lint.dev", 
+		"invertase/dart_custom_lint"
 	]
 ]
