@@ -1,6 +1,32 @@
 ---
-import Preview from "./_Preview";
+import Preview from './_Preview';
+import Root from '@layouts/Root.astro';
+import Header from '@layouts/Header.tsx';
+import Footer from '@layouts/Footer.astro';
+import Sidebar from '@layouts/Sidebar.astro';
+import Navigation from '@layouts/Navigation.astro';
+import ErrorPage from '@layouts/ErrorPage.astro';
 
+import Meta from '@components/Meta.astro';
+import Scripts from '@components/Scripts.astro';
+import Styles from '@components/Styles.astro';
+import Links from '@components/Links.astro';
+import PreviousNext from '@components/PreviousNext.astro';
+import Markdown from '@components/Markdown';
+import Theme from '@components/Theme.astro';
+
+import { getBundle } from 'src/bundle';
+import context from 'src/context';
+import type { GetBundleResponse } from 'src/bundle';
+import { isExternalLink, replaceMoustacheVariables, ensureLeadingSlash } from 'src/utils';
+import { trackPageRequest } from 'src/plausible';
+
+context.set({
+  owner: 'server',
+  config: {},
+});
 ---
 
-<Preview client:only="react" />
+<Preview client:load>
+  <Header client:load />
+</Preview>
