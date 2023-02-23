@@ -74,5 +74,9 @@
 	[
 		"docs.custom-lint.dev", 
 		"invertase/dart_custom_lint"
-	]
+	],
+	[
+		"starknetdart.dev", 
+		"focustree/starknet.dart"
+	]	
 ]
