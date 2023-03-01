@@ -78,5 +78,10 @@
 	[
 		"starknetdart.dev", 
 		"focustree/starknet.dart"
-	]	
+	],
+	[
+		"docs.neorepo.com", 
+		"neorepohq/docs"
+	]
+
 ]
