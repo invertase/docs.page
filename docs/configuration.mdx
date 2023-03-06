@@ -196,14 +196,31 @@ type Anchor = {
 
 For the icons, you can use the name of any standard [Font Awesome Classic Icon](https://fontawesome.com/search?o=r&s=solid)
 or [Brand Icons](https://fontawesome.com/search?o=r&f=brands), for example:
-
-```json
-{
-  "anchors": [
-    { title: "Homepage", icon: "house", link: "https://example.com" }
-  ]
-}
-```
+  
+<Tabs
+  values={[
+    { label: 'JSON', value: 'json' },
+    { label: 'YAML', value: 'yaml' },
+  ]}
+>
+  <TabItem value="json">
+  ```json
+  {
+    "anchors": [
+      { title: "Homepage", icon: "house", link: "https://example.com" }
+    ]
+  }
+  ```
+  </TabItem>
+  <TabItem value="yaml">
+  ```yaml
+  anchors:
+  - title: "Homepage"
+    link: "https://example.com"
+    icon: "house"
+  ```
+  </TabItem>
+</Tabs>
 </Property>
 
 <hr />
