@@ -1,7 +1,5 @@
 import { createNodeMiddleware, Probot } from 'probot';
 
-console.log(process.env.WEBHOOK_SECRET);
-
 // Create a probot instance for the docs.page app
 const probot = new Probot({
   appId: process.env.GITHUB_APP_ID,
