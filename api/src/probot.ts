@@ -1,11 +1,11 @@
-import { createNodeMiddleware, Probot } from 'probot';
+import { createNodeMiddleware, Probot, createProbot } from 'probot';
 
 // Create a probot instance for the docs.page app
-const probot = new Probot({
-  appId: process.env.GITHUB_APP_ID,
-  privateKey: process.env.GITHUB_APP_PRIVATE_KEY,
-  // secret: process.env.GITHUB_APP_WEBHOOK_SECRET,
-  logLevel: 'trace',
+const probot = createProbot({
+  overrides: {
+    appId: process.env.GITHUB_APP_ID,
+    privateKey: process.env.GITHUB_APP_PRIVATE_KEY,
+  },
 });
 
 // Queries a repository and extracts a file
