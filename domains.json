@@ -82,6 +82,11 @@
 	[
 		"docs.neorepo.com", 
 		"neorepohq/docs"
+	],
+	[	
+		"docs.solsend.dev", 
+	 	"Solsend/solsend-web"
 	]
+
 
 ]
