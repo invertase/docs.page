@@ -90,6 +90,10 @@
 	[	
 		"docs.navbar-router.dev", 
 	 	"maheshmnj/navbar_router"
+	],
+	[
+		"boxtransform.hyperdesigned.dev",
+		"hyper-designed/box_transform"
 	]
 
 
