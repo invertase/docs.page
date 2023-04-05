@@ -86,7 +86,9 @@
 	[	
 		"docs.solsend.dev", 
 	 	"Solsend/solsend-web"
+	],
+	[
+		"boxtransform.hyperdesigned.dev",
+		"hyper-designed/box_transform"
 	]
-
-
 ]
