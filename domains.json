@@ -87,14 +87,8 @@
 		"docs.solsend.dev", 
 	 	"Solsend/solsend-web"
 	],
-	[	
-		"docs.navbar-router.dev", 
-	 	"maheshmnj/navbar_router"
-	],
 	[
 		"boxtransform.hyperdesigned.dev",
 		"hyper-designed/box_transform"
 	]
-
-
 ]
