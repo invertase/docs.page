@@ -90,5 +90,9 @@
 	[
 		"boxtransform.hyperdesigned.dev",
 		"hyper-designed/box_transform"
+	],
+	[
+		"docs.pieces.app",
+		"pieces-app/documentation"
 	]
 ]
