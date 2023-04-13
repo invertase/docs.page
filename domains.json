@@ -94,5 +94,9 @@
 	[
 		"docs.pieces.app",
 		"pieces-app/documentation"
+	],
+	[
+		"news.pieces.app",
+		"pieces-app/news"
 	]
 ]
