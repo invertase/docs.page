@@ -98,5 +98,9 @@
 	[
 		"news.pieces.app",
 		"pieces-app/news"
+	],
+	[
+		"releases.pieces.app",
+		"pieces-app/releases"
 	]
 ]
