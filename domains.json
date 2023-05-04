@@ -100,7 +100,7 @@
 		"pieces-app/news"
 	],
 	[
-		"releases.pieces.app",
-		"pieces-app/releases"
+		"code.pieces.app",
+		"pieces-app/phoenix"
 	]
 ]
