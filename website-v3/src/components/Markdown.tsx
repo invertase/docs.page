@@ -5,7 +5,6 @@ import context from 'src/context';
 
 import Link from './Link';
 import FontAwesome from './FontAwesome';
-import { getImagePath } from 'src/utils';
 
 import CodeBlock, { CodeBlockProps } from './mdx/CodeBlock';
 import CodeGroup from './mdx/CodeGroup';
@@ -19,6 +18,7 @@ import Tweet from './mdx/Tweet';
 import Zapp from './mdx/Zapp';
 import * as callouts from './mdx/callouts';
 import Tabs, { TabItem } from './mdx/Tabs';
+import Video from './mdx/Video';
 
 const Markdown: React.FC = () => {
   const code = context.get().code;
@@ -58,10 +58,6 @@ const Markdown: React.FC = () => {
               </section>
             );
           },
-          source: (props: any) => {
-            const src = props.src ? getImagePath(props.src) : undefined;
-            return <source {...props} src={src} />;
-          },
           Accordion,
           CodeGroup,
           Icon: (props: any) => <FontAwesome name={props.name} />,
@@ -76,6 +72,7 @@ const Markdown: React.FC = () => {
           Image,
           YouTube,
           Vimeo,
+          Video,
           Zapp,
         }}
       />
