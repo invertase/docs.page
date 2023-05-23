@@ -5,6 +5,7 @@ import context from 'src/context';
 
 import Link from './Link';
 import FontAwesome from './FontAwesome';
+import { getImagePath } from 'src/utils';
 
 import CodeBlock, { CodeBlockProps } from './mdx/CodeBlock';
 import CodeGroup from './mdx/CodeGroup';
@@ -56,6 +57,10 @@ const Markdown: React.FC = () => {
                 <div {...rest} />
               </section>
             );
+          },
+          source: (props: any) => {
+            const src = props.src ? getImagePath(props.src) : undefined;
+            return <source {...props} src={src} />;
           },
           Accordion,
           CodeGroup,
