@@ -106,5 +106,9 @@
 	[
 		"docs.buildwiththeta.com",
 		"buildwiththeta/buildwiththeta"
+	],
+	[
+		"rika2mqtt.cookiecode.dev",
+		"sebastienvermeille/rika2mqtt"
 	]
 ]
