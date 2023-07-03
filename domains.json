@@ -4,6 +4,10 @@
 		"invertase/docs.page"
 	],
 	[
+		"docs.turing.sh",
+		"TuringAI-Team/turing-ai-api"
+	],
+	[
 		"melos.invertase.dev",
 		"invertase/melos"
 	],
