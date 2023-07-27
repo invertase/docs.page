@@ -114,5 +114,9 @@
 	[
 		"rika2mqtt.cookiecode.dev",
 		"sebastienvermeille/rika2mqtt"
+	],
+	[
+		"docs.densky.apika.me",
+		"Densky-Framework/densky"
 	]
 ]
