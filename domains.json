@@ -104,10 +104,6 @@
 		"pieces-app/news"
 	],
 	[
-		"code.pieces.app",
-		"pieces-app/phoenix"
-	],
-	[
 		"docs.buildwiththeta.com",
 		"buildwiththeta/buildwiththeta"
 	],
