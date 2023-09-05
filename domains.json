@@ -108,6 +108,10 @@
 		"buildwiththeta/buildwiththeta"
 	],
 	[
+		"stepbuilder.cookiecode.dev",
+		"sebastienvermeille/intellij-stepbuilder-codegen-plugin"
+	],
+	[
 		"rika2mqtt.cookiecode.dev",
 		"sebastienvermeille/rika2mqtt"
 	],
