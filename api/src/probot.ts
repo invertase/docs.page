@@ -4,7 +4,7 @@ import { createNodeMiddleware, Probot, createProbot } from 'probot';
 const probot = createProbot({
   overrides: {
     appId: process.env.GITHUB_APP_ID,
-    privateKey: JSON.parse(`"${process.env.GITHUB_APP_PRIVATE_KEY}"`),
+    privateKey: process.env.GITHUB_APP_PRIVATE_KEY,
   },
 });
 
