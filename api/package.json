@@ -45,7 +45,7 @@
   },
   "scripts": {
     "dev": "bun run src/app.ts --hot",
-    "start": "pm2 start --interpreter ~/.bun/bin/bun src/app.ts"
+    "start": "bun run src/app.ts"
   },
   "devDependencies": {
     "@octokit/webhooks-types": "^6.2.4",
