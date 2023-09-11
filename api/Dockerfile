@@ -13,17 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM node:lts-alpine3.13
-RUN npm install pm2 -g
+FROM oven/bun
 
 ARG BUILD_SHA=default_value
 ENV __BUILD_SHA=$BUILD_SHA
 
 WORKDIR /opt/app
 COPY . /opt/app
-RUN cd /opt/app && npm install
-RUN npm run build
-RUN node node_modules/esbuild/install.js
+RUN cd /opt/app && bun install
 
 WORKDIR /opt/app
-CMD ["pm2-runtime","dist/app.js"]
+CMD ["bun","run","start"]

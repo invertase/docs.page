@@ -89,12 +89,12 @@ if (response?.code === 'OK') {
   }
 
   // Set the theme color
-  const theme = Astro.cookies.get('theme').value;
+  const theme = Astro.cookies.get('theme')?.value;
 
   // Get any syncronized tabs
   let tabs = {};
   try {
-    tabs = Astro.cookies.get('tabs').json();
+    tabs = Astro.cookies.get('tabs')?.json() ?? {};
   } catch {}
 
   const domain = domains.find(([, repo]) => repo === `${owner}/${repository}`)?.at(0);
