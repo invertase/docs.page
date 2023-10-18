@@ -223,6 +223,42 @@ or [Brand Icons](https://fontawesome.com/search?o=r&f=brands), for example:
 </Tabs>
 </Property>
 
+<Property name="topBanner" type="object">
+An object containing the configuration for a top banner notification on your interface. This feature allows for the display of information, warnings, or error messages in a prominent banner format. Depending on the type of message you need to convey, the `type` field should be adjusted accordingly. All properties must be defined for the banner to display properly, except for the `type` field, which defaults to 'info' if not specified.
+
+<Tabs
+  values={[
+    { label: 'JSON', value: 'json' },
+    { label: 'YAML', value: 'yaml' },
+  ]}
+>
+  <TabItem value="json">
+  ```json title="Example topBanner config"
+  {
+    "topBanner": {
+      "active": true,
+      "type": "error",
+      "message": "This is a sample error message."
+    }
+  }
+ </TabItem>
+  <TabItem value="yaml">
+  ```yaml title="Example topBanner config"
+  topBanner:
+    active: true
+    type: error
+    message: "This is a sample error message."
+  ```
+  </TabItem>
+</Tabs>
+
+### Properties
+
+1. active: A boolean indicating whether the banner is active or not. When true, the banner will be visible.
+2. type: An enum specifying the type of banner to display. It can be one of the following values: 'error', 'info', 'warning', 'success'. If not provided, it defaults to 'info'.
+3. message: A string representing the message text displayed on the banner. This should be a clear and concise message relating to the information or feedback you want to communicate to the users.
+   </Property>
+
 <hr />
 
 <Property name="docsearch" type="object">

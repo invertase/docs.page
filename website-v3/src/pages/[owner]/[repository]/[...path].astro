@@ -20,6 +20,14 @@ import type { GetBundleResponse } from 'src/bundle';
 import { isExternalLink, replaceMoustacheVariables, ensureLeadingSlash } from 'src/utils';
 import { trackPageRequest } from 'src/plausible';
 import domains from '../../../../../domains.json';
+import {
+  Error as ErrorCallout,
+  Info as InfoCallout,
+  Success as SuccessCallout,
+  Warning as WarningCallout,
+} from '@components/mdx/callouts';
+import type React from 'react';
+import type { ReactNode } from 'react';
 
 let { owner, repository, path } = Astro.params;
 let ref: string | undefined;
@@ -69,8 +77,13 @@ status = statusCodes[code];
 // Set the status code for the request
 Astro.response.status = status;
 
+let TopBannerCallout: React.FC<{ children?: ReactNode }> | null = null;
+let topBannerMessage: string = '';
+
 if (response?.code === 'OK') {
   const { frontmatter, config, source, baseBranch, code, headings } = response!.data;
+
+  topBannerMessage = config.topBanner?.message || '';
 
   // Handle a frontmatter redirect
   const redirect = frontmatter.redirect;
@@ -120,6 +133,21 @@ if (response?.code === 'OK') {
     sidebar = config.sidebar['default'] || [];
   } else {
     sidebar = config.sidebar;
+  }
+
+  if (config.topBanner?.active) {
+    switch (config.topBanner.type) {
+      case 'error':
+        TopBannerCallout = ErrorCallout;
+      case 'info':
+        TopBannerCallout = InfoCallout;
+      case 'success':
+        TopBannerCallout = SuccessCallout;
+      case 'warning':
+        TopBannerCallout = WarningCallout;
+      default:
+        TopBannerCallout = InfoCallout;
+    }
   }
 
   // Set the context store.
@@ -215,6 +243,9 @@ function codeToTitle(code: GetBundleResponse['code']) {
         <div class="lg:pl-[20rem]">
           <div class="flex flex-row items-stretch gap-12 pt-9">
             <div class="relative mx-auto max-w-3xl flex-grow overflow-auto text-slate-500 dark:text-slate-400 xl:-ml-12 xl:max-w-[47rem] xl:pr-1 xl:pl-12">
+              {TopBannerCallout && topBannerMessage ? (
+                <TopBannerCallout>{topBannerMessage}</TopBannerCallout>
+              ) : null}
               <Markdown />
               <PreviousNext />
               <Footer />

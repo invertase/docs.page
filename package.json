@@ -2,7 +2,7 @@
   "private": true,
   "scripts": {
     "dev": "concurrently \"yarn dev:api\" \"yarn dev:website\"",
-    "dev:website": "cd website && yarn dev",
+    "dev:website": "cd website-v3 && yarn dev",
     "dev:api": "cd api && yarn dev",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md,mdx}\"",
     "check:linting": "eslint . --max-warnings=0",

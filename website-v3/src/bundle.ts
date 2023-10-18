@@ -32,6 +32,13 @@ const $BundleConfig = z.object({
       indexName: z.string(),
     })
     .optional(),
+  topBanner: z
+    .object({
+      active: z.boolean(),
+      type: z.enum(['error', 'info', 'warning', 'success']).default('info'),
+      message: z.string(),
+    })
+    .optional(),
   sidebar: z.union([$SidebarArray, $SidebarRecord]),
   locales: z.array(z.string()),
   headerDepth: z.number(),
