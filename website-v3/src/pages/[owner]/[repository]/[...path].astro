@@ -72,12 +72,24 @@ Astro.response.status = status;
 if (response?.code === 'OK') {
   const { frontmatter, config, source, baseBranch, code, headings } = response!.data;
 
+  const domain = domains.find(([, repo]) => repo === `${owner}/${repository}`)?.at(0);
+
   // Handle a frontmatter redirect
   const redirect = frontmatter.redirect;
   if (redirect && isExternalLink(redirect)) {
     return Astro.redirect(redirect);
-  } else if (redirect) {
-    return Astro.redirect(`/${owner}/${repository}${redirect}`);
+  } else if (redirect && domain) {
+    // If there is a domain setup, always redirect to it.
+    let url = `https://${domain}`;
+    if (ref) url += `/~${ref}`;
+    url += redirect;
+    return Astro.redirect(url);
+  } else if (redirect && !domain) {
+    // If no domain, redirect to docs.page.
+    let url = `https://docs.page/${owner}/${repository}`;
+    if (ref) url += `~${ref}`;
+    url += redirect;
+    return Astro.redirect(url);
   }
 
   if (import.meta.env.PROD) {
@@ -96,8 +108,6 @@ if (response?.code === 'OK') {
   try {
     tabs = Astro.cookies.get('tabs')?.json() ?? {};
   } catch {}
-
-  const domain = domains.find(([, repo]) => repo === `${owner}/${repository}`)?.at(0);
   
   let relativePath = ensureLeadingSlash(path || '/');
   let locale: string | undefined;
