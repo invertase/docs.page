@@ -4,6 +4,10 @@
 		"invertase/docs.page"
 	],
 	[
+		"docs.globe.dev",
+		"invertase/globe"
+	],
+	[
 		"docs.turing.sh",
 		"TuringAI-Team/turing-ai-api"
 	],
