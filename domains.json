@@ -150,5 +150,9 @@
 	[
 		"cleanframework.acmesoftware.com",
 		"AcmeSoftwareLLC/clean_framework"
+	],
+	[
+		"docs.yaroo.dev",
+		"codekeyz/yaroo"
 	]
 ]
