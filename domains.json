@@ -76,23 +76,23 @@
 		"SharezoneApp/sharezone-app"
 	],
 	[
-		"docs.nahpu.app", 
+		"docs.nahpu.app",
 		"hhandika/nahpu-docs"
 	],
 	[
-		"docs.custom-lint.dev", 
+		"docs.custom-lint.dev",
 		"invertase/dart_custom_lint"
 	],
 	[
-		"starknetdart.dev", 
+		"starknetdart.dev",
 		"focustree/starknet.dart"
 	],
 	[
-		"docs.neorepo.com", 
+		"docs.neorepo.com",
 		"neorepohq/docs"
 	],
-	[	
-		"docs.solsend.dev", 
+	[
+		"docs.solsend.dev",
 	 	"Solsend/solsend-web"
 	],
 	[
@@ -142,7 +142,7 @@
 	[
 		"docs.sedenion.net",
 		"SedenionCas/Sedenion"
-	], 
+	],
 	[
 		"docs.nizukshya.com",
 		"Nizukshya-Labs/documentations"
@@ -154,5 +154,9 @@
 	[
 		"docs.yaroo.dev",
 		"codekeyz/yaroo"
+	],
+	[
+		"utils.kishormainali.com",
+		"kishormainali/fp_util"
 	]
 ]
