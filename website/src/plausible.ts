@@ -1,6 +1,10 @@
 import { getClientIp } from 'request-ip';
 
-export async function trackPageRequest(request: Request): Promise<void> {
+export async function trackPageRequest(
+  request: Request,
+  owner: string,
+  repository: string,
+): Promise<void> {
   try {
     await fetch(`https://plausible.io/api/event`, {
       method: 'POST',
@@ -14,6 +18,10 @@ export async function trackPageRequest(request: Request): Promise<void> {
         name: 'pageview',
         url: request.url,
         domain: 'docs.page',
+        props: {
+          owner,
+          repository: `${owner}/${repository}`,
+        },
       }),
     });
   } catch (e) {
