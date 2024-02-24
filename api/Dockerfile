@@ -20,7 +20,7 @@ ENV __BUILD_SHA=$BUILD_SHA
 
 WORKDIR /opt/app
 COPY . /opt/app
-RUN cd /opt/app && bun install --frozen-lockfile
+RUN cd /opt/app && bun install --frozen-lockfile --production
 
 WORKDIR /opt/app
 CMD ["bun","run","start"]
