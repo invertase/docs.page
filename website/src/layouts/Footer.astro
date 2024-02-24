@@ -5,15 +5,25 @@ import { PencilIcon } from '@components/icons';
 const { githubPath } = context.get();
 ---
 
-<footer class="border-t dark:border-slate-800/80 py-12 mt-12 text-sm flex items-center">
+<footer class="border-t dark:border-slate-800/80 py-12 mt-12 text-xs flex items-center">
   <div>
+    Docs powered by
+    <a
+      class="opacity-75 hover:opacity-100 transition"
+      href="https://invertase.io?utm_source=docspage"
+      target="_blank"
+      rel="noopener"
+    >
+      invertase
+    </a>
+    /
     <a
       class="opacity-75 hover:opacity-100 transition"
       href="https://docs.page"
       target="_blank"
       rel="noopener"
     >
-      Powered by docs.page
+      docs.page
     </a>
   </div>
   <div class="flex-1 flex justify-end">
@@ -23,7 +33,7 @@ const { githubPath } = context.get();
       target="_blank"
     >
       <span class="w-4 h-4"><PencilIcon /></span>
-      <span>Edit this page</span>
+      <span>Edit page</span>
     </a>
   </div>
 </footer>
