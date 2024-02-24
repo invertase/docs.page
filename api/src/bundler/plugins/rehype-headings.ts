@@ -1,7 +1,7 @@
 import { visit } from 'unist-util-visit';
 import { hasProperty } from 'hast-util-has-property';
 import { headingRank } from 'hast-util-heading-rank';
-import type { Node, Content } from 'hast-util-heading-rank/lib';
+import type { Node } from 'hast-util-heading-rank/lib';
 import { toString } from 'mdast-util-to-string';
 import { parseSelector } from 'hast-util-parse-selector';
 import { Data as UnistData, Node as UnistNode } from 'unist';
@@ -81,8 +81,7 @@ const wrapSection: (children: HastElement[], id: string) => HastElement = (child
   return wrap;
 };
 
-const headingTest: (node: Node) => boolean = node =>
-  !!headingRank(node) && hasProperty(node, 'id');
+const headingTest: (node: Node) => boolean = node => !!headingRank(node) && hasProperty(node, 'id');
 
 // partition an array based on a test function, e.g [a,b,b,b,a,b,b,a,b] should become [[a,b,b,b],[a,b,b],[a,b]]
 function partition<T>(array: T[], test: (input: T) => boolean): T[][] {

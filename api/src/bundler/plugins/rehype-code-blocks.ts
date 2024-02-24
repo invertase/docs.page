@@ -20,6 +20,7 @@ const languages = shiki.BUNDLED_LANGUAGES.reduce(
  * @returns
  */
 export default function rehypeCodeBlocks(): (ast: Node) => void {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   function visitor(node: any, _i: number, parent: any) {
     if (!parent || parent.tagName !== 'pre' || node.tagName !== 'code') {
       return;
@@ -67,6 +68,7 @@ function extractTitle(meta: string): string | null {
 }
 
 // Get the programming language of `node`.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getLanguage(node: any): string | undefined {
   const className = node.properties.className || [];
   let index = -1;

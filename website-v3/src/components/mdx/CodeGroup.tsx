@@ -41,7 +41,7 @@ const CodeGroup: React.FC<CodeGroupProps> = props => {
               data-code-group-button
               data-code-group-button-id={language}
               key={language}
-              className="aria-selected:text-docs-theme opacity-50 transition hover:opacity-100 aria-selected:opacity-100"
+              className="aria-selected:text-docs-theme aria-selected:opacity-100 opacity-50 transition hover:opacity-100"
             >
               {language}
             </button>
@@ -52,7 +52,7 @@ const CodeGroup: React.FC<CodeGroupProps> = props => {
         <button
           data-copy
           data-copy-value={groups.find(g => g.props.language === defaultLanguage)?.props.raw ?? ''}
-          className="absolute top-2 right-2 rounded bg-[#19191d] px-3 py-1 font-mono text-xs text-white opacity-0 transition hover:bg-black/50 group-hover:opacity-100 data-[copied=true]:[&>span]:hidden"
+          className="data-[copied=true]:[&>span]:hidden absolute top-2 right-2 rounded bg-[#19191d] px-3 py-1 font-mono text-xs text-white opacity-0 transition hover:bg-black/50 group-hover:opacity-100"
         >
           Copy
         </button>
@@ -65,7 +65,7 @@ const CodeGroup: React.FC<CodeGroupProps> = props => {
             data-code-group-pane-raw={group.props.raw}
             aria-expanded={defaultLanguage === languages[index]}
             className={cx(
-              'not-prose hidden overflow-hidden border-white/10 text-xs [&>pre>code>.line]:leading-6 [&>pre]:p-3',
+              'not-prose [&>pre>code>.line]:leading-6 [&>pre]:p-3 hidden overflow-hidden border-white/10 text-xs',
               {
                 'aria-expanded:block': true,
                 'rounded-b-xl dark:border-b dark:border-r dark:border-l': true,

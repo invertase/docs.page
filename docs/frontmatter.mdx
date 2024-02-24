@@ -17,7 +17,6 @@ description: Some awesome docs!
 # Welcome!
 ```
 
-
 ## Properties
 
 Below is a list of all available frontmatter properties, their type and default values.
@@ -29,13 +28,14 @@ The title of the page used in metadata (e.g. `<title>` and social cards).
 <hr />
 
 <Property name="description" type="string">
-The description of the page used in metadata.
+  The description of the page used in metadata.
 </Property>
 
 <hr />
 
 <Property name="image" type="string">
-The path (either absolute or relative to the `/docs` directory) to social preview card which will be displayed for this page.
+  The path (either absolute or relative to the `/docs` directory) to social preview card which will
+  be displayed for this page.
 </Property>
 
 <hr />
@@ -49,6 +49,7 @@ redirect: /getting-started
 redirect: https://github.com/acme/awesome-project
 ---
 ```
+
 </Property>
 
 <Property name="previous" type="string">
@@ -61,6 +62,7 @@ previous: /getting-started
 previousTitle: Getting started
 ---
 ```
+
 </Property>
 
 <hr />
@@ -75,20 +77,27 @@ next: /getting-started
 nextTitle: Getting started
 ---
 ```
+
 </Property>
 
 <hr />
 
 <Property name="noindex" type="boolean" default="false">
-If true, the page will be excluded from search engines.
+  If true, the page will be excluded from search engines.
 </Property>
 
-export const Property = (props) => (
+export const Property = props => (
   <div>
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <div style={{ flexGrow: 1 }}>
-        <code className="text-docs-theme" style={{ fontSize: 16 }}>{props.name}</code>
-        {!!props.default && <span style={{ paddingLeft: 8 }}>Default: <code>{props.default}</code></span>}
+        <code className="text-docs-theme" style={{ fontSize: 16 }}>
+          {props.name}
+        </code>
+        {!!props.default && (
+          <span style={{ paddingLeft: 8 }}>
+            Default: <code>{props.default}</code>
+          </span>
+        )}
       </div>
       <div>
         <span className="font-mono">{props.type}</span>

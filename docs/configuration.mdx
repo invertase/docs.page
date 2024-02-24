@@ -48,22 +48,22 @@ a basic configuration might look like:
 Below is a list of all available configuration options, their type and default values.
 
 <Property name="name" type="string">
-The name of your project. This will be displayed in the header of the website. If not provided,
-the GitHub repository name will be used instead.
+  The name of your project. This will be displayed in the header of the website. If not provided,
+  the GitHub repository name will be used instead.
 </Property>
 
 <hr />
 
 <Property name="description" type="string">
-The description of your project. This will be used for website metadata (e.g. social tags) if provided.
-If a page frontmatter description is provided, it will be used instead.
+  The description of your project. This will be used for website metadata (e.g. social tags) if
+  provided. If a page frontmatter description is provided, it will be used instead.
 </Property>
 
 <hr />
 
 <Property name="logo" type="string">
 The path (either absolute or relative to the `/docs` directory) to the logo of your project. This will be
-displayed in the header. 
+displayed in the header.
 
 <Info>Logos have a forced height of 30px.</Info>
 </Property>
@@ -71,21 +71,21 @@ displayed in the header.
 <hr />
 
 <Property name="logoDark" type="string">
-The path (either absolute or relative to the `/docs` directory) to the favicon of your project.
+  The path (either absolute or relative to the `/docs` directory) to the favicon of your project.
 </Property>
 
 <hr />
 
 <Property name="socialPreview" type="string">
-The path (either absolute or relative to the `/docs` directory) to social preview card which will be displayed
-when linked on social media (e.g. Twitter). If page frontmatter provides a social card, it will be used instead.
-If not provided, a card will be automatically generated for you.
+  The path (either absolute or relative to the `/docs` directory) to social preview card which will
+  be displayed when linked on social media (e.g. Twitter). If page frontmatter provides a social
+  card, it will be used instead. If not provided, a card will be automatically generated for you.
 </Property>
 
 <hr />
 
 <Property name="twitter" type="string">
-The Twitter handle of your project. This will be used as a page anchor and social metadata.
+  The Twitter handle of your project. This will be used as a page anchor and social metadata.
 </Property>
 
 <hr />
@@ -100,14 +100,15 @@ meta tag on every page of your project, to prevent it from showing in search eng
 <hr />
 
 <Property name="theme" type="string" default="#00bcd4">
-The theme of your project, applied to active links and other subtle places. This color should be visible on
-both dark and light modes. Can either be a hex color (e.g. `#00bcd4`) or a RGB (e.g. `rgb(0,188,212)`).
+  The theme of your project, applied to active links and other subtle places. This color should be
+  visible on both dark and light modes. Can either be a hex color (e.g. `#00bcd4`) or a RGB (e.g.
+  `rgb(0,188,212)`).
 </Property>
 
 <hr />
 
 <Property name="headerDepth" type="number" default="3">
-The maxium header depths to apply to the navigation menu on each page.
+  The maxium header depths to apply to the navigation menu on each page.
 </Property>
 
 <hr />
@@ -134,26 +135,28 @@ Within the markdown `{{ versions.latest }}` would display `1.0.0`.
 <hr />
 
 <Property name="googleTagManager" type="string">
-If provided, the [GTM](https://tagmanager.google.com/) script with the ID will be added to each documentation webpage.
+  If provided, the [GTM](https://tagmanager.google.com/) script with the ID will be added to each
+  documentation webpage.
 </Property>
 
 <hr />
 
 <Property name="googleAnalytics" type="string">
-If provided, the [Google Analytics](https://analytics.google.com/analytics/web/) script with the ID will be added to each documentation webpage.
+  If provided, the [Google Analytics](https://analytics.google.com/analytics/web/) script with the
+  ID will be added to each documentation webpage.
 </Property>
 
 <hr />
 
 <Property name="zoomImages" type="boolean" default="false">
-If enabled, all images will zoom when clicked by default.
+  If enabled, all images will zoom when clicked by default.
 </Property>
 
 <hr />
 
 <Property name="automaticallyDisplayName" type="boolean" default="true">
-If enabled, the `name` of your project (or repository name) will be automatically displayed in the header,
-next to the logo. Set to `false` to only show a logo.
+  If enabled, the `name` of your project (or repository name) will be automatically displayed in the
+  header, next to the logo. Set to `false` to only show a logo.
 </Property>
 
 <hr />
@@ -162,6 +165,7 @@ next to the logo. Set to `false` to only show a logo.
 If true, the next and previous links will be automatically inferred from the sidebar menu.
 
 If frontmatter next/previous links are provided on a page level, they will be used instead.
+
 </Property>
 
 <hr />
@@ -191,12 +195,12 @@ type Anchor = {
   title: string;
   icon: string;
   link: string;
-}
+};
 ```
 
 For the icons, you can use the name of any standard [Font Awesome Classic Icon](https://fontawesome.com/search?o=r&s=solid)
 or [Brand Icons](https://fontawesome.com/search?o=r&f=brands), for example:
-  
+
 <Tabs
   values={[
     { label: 'JSON', value: 'json' },
@@ -267,10 +271,7 @@ and the value the sidebar links for that locale.
 The sidebar only supports a single level of nesting.
 
 ```ts
-type Sidebar = [
-  string,
-  string | [string, string][]
-][];
+type Sidebar = [string, string | [string, string][]][];
 ```
 
 <Tabs
@@ -306,16 +307,21 @@ type Sidebar = [
   </TabItem>
 </Tabs>
 
-
 <Info>View the [locales](/locales) documentation for more details.</Info>
 </Property>
 
-export const Property = (props) => (
+export const Property = props => (
   <div>
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <div style={{ flexGrow: 1 }}>
-        <code className="text-docs-theme" style={{ fontSize: 16 }}>{props.name}</code>
-        {!!props.default && <span style={{ paddingLeft: 8 }}>Default: <code>{props.default}</code></span>}
+        <code className="text-docs-theme" style={{ fontSize: 16 }}>
+          {props.name}
+        </code>
+        {!!props.default && (
+          <span style={{ paddingLeft: 8 }}>
+            Default: <code>{props.default}</code>
+          </span>
+        )}
       </div>
       <div>
         <span className="font-mono">{props.type}</span>

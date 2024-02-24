@@ -20,20 +20,3 @@ jobs:
         run: yarn run check:linting
       - name: Check Formatting
         run: yarn run check:formatting
-      # TODO: refactor to tsc on individual packages
-      # - name: Check TS Compiles
-      #   run: yarn run check:typescript
-      # - name: Check Spelling & Grammar
-      #   run: yarn run check:spelling
-  # TODO: tests need fixing
-  # test:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: actions/setup-node@v2-beta
-  #       with:
-  #         node-version: '14'
-  #     - name: NPM Install
-  #       run: yarn
-  #     - name: Jest Tests
-  #       run: yarn run test

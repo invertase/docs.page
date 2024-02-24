@@ -2,8 +2,6 @@ public
 .next
 package-lock.json
 yarn.lock
-/public/_docs.page/shiki/themes/
-/public/_docs.page/shiki/languages/
 bundler/dist
 dist
 build
