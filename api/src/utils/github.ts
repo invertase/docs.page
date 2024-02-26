@@ -33,7 +33,7 @@ export function getGithubGQLClient(): typeof graphql {
   });
 }
 
-export type MetaData = {
+type MetaData = {
   owner: string;
   repository: string;
   ref?: string;
@@ -205,78 +205,5 @@ export async function getPullRequestMetadata(
     owner: response?.repository?.pullRequest?.owner?.login,
     repository: response?.repository?.pullRequest?.repository?.name,
     ref: response?.repository?.pullRequest?.ref?.name,
-  };
-}
-
-type Configs = {
-  repositoryFound: boolean;
-  config?: {
-    configJson?: string;
-    configYaml?: string;
-    configToml?: string;
-  };
-};
-
-type ConfigResponse = {
-  repository: {
-    configJson?: {
-      text: string;
-    };
-    configYaml?: {
-      text: string;
-    };
-    configToml?: {
-      text: string;
-    };
-  };
-};
-
-export async function getConfigs(metadata: MetaData): Promise<Configs> {
-  const ref = metadata.ref || 'HEAD';
-
-  const [error, response] = await A2A<ConfigResponse>(
-    getGithubGQLClient()({
-      query: `
-      query RepositoryConfig($owner: String!, $repository: String!, $json: String!, $yaml: String!, $toml: String!) {
-        repository(owner: $owner, name: $repository) {
-          configYaml: object(expression: $yaml) {
-            ... on Blob {
-              text
-            }
-          }
-          configJson: object(expression: $json) {
-            ... on Blob {
-              text
-            }
-          }
-          configToml: object(expression: $toml) {
-            ... on Blob {
-              text
-            }
-          }
-        }
-      }
-    `,
-      owner: metadata.owner,
-      repository: metadata.repository,
-      json: `${ref}:docs.json`,
-      yaml: `${ref}:docs.yaml`,
-      toml: `${ref}:docs.toml`,
-    }),
-  );
-
-  // if an error is thrown then the repo is not found, if the repo is private then response = { repository: null }
-  if (error || response?.repository === null) {
-    return {
-      repositoryFound: false,
-    };
-  }
-  return {
-    repositoryFound: true,
-    config: {
-      configJson: response?.repository.configJson?.text,
-      configYaml: response?.repository.configYaml?.text,
-      configToml: response?.repository.configToml?.text,
-    },
   };
 }

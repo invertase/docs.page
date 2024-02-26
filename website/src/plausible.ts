@@ -19,8 +19,8 @@ export async function trackPageRequest(
         url: request.url,
         domain: 'docs.page',
         props: {
-          owner,
-          repository: `${owner}/${repository}`,
+          owner: owner.toLowerCase(),
+          repository: `${owner}/${repository}`.toLowerCase(),
         },
       }),
     });

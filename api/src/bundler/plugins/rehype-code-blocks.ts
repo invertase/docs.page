@@ -1,7 +1,8 @@
 import { visit } from 'unist-util-visit';
-import type { Node } from 'hast-util-heading-rank/lib';
+import { Node } from 'unist';
 import { toString } from 'mdast-util-to-string';
 import * as shiki from 'shiki';
+import { Element } from 'hast';
 
 let highlighter: shiki.Highlighter;
 
@@ -23,34 +24,26 @@ const cssVariablesTheme = shiki.createCssVariablesTheme({
   fontStyle: true,
 });
 
-/**
- * Matches any `pre code` elements and extracts the raw code and titles from the code block and assigns to the parent.
- * @returns
- */
 export default function rehypeCodeBlocks(): (ast: Node) => void {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  function visitor(node: any, _i: number, parent: any) {
+  function visitor(node: Element, _i: number, parent: Element) {
     if (!parent || parent.tagName !== 'pre' || node.tagName !== 'code') {
       return;
     }
 
     const raw = toString(node);
-    const language: string = languages[getLanguage(node) || ''] || 'text';
-    // Raw value of the `code` block - used for copy/paste
-    parent.properties['raw'] = raw;
-    parent.properties['language'] = language;
+    const blockLanguage = getLanguage(node) || '';
+    const languageActual: string = languages[blockLanguage] || 'text';
+    if (!parent.properties) parent.properties = {};
+    parent.properties['raw'] = raw; // Used to support copy/paste functionality,
+    parent.properties['language'] = languageActual;
     parent.properties['html'] = highlighter.codeToHtml(raw, {
-      lang: language,
+      lang: languageActual,
       theme: 'css-variables',
     });
-
-    // Get any metadata from the code block
     const meta = (node.data?.meta as string) ?? '';
-
     const title = extractTitle(meta);
     if (title) parent.properties['title'] = title;
   }
-
   return async (ast: Node): Promise<void> => {
     if (!highlighter) {
       highlighter = await shiki.getHighlighter({
@@ -58,7 +51,6 @@ export default function rehypeCodeBlocks(): (ast: Node) => void {
         themes: [cssVariablesTheme],
       });
     }
-    // @ts-ignore
     visit(ast, 'element', visitor);
   };
 }
@@ -79,12 +71,10 @@ function extractTitle(meta: string): string | null {
 }
 
 // Get the programming language of `node`.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getLanguage(node: any): string | undefined {
-  const className = node.properties.className || [];
+function getLanguage(node: Element): string | undefined {
+  const className: string[] = (node.properties?.className as string[]) || [];
   let index = -1;
   let value: string;
-
   while (++index < className.length) {
     value = className[index];
 

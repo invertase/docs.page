@@ -147,6 +147,6 @@ type CreateBundlerParams = {
   ref?: string;
 };
 
-export default function bunder(params: CreateBundlerParams) {
+export default function bundler(params: CreateBundlerParams) {
   return new Bundler(params).build();
 }

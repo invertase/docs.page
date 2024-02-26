@@ -75,7 +75,7 @@ const $Config = z
 
 export type Config = z.infer<typeof $Config>;
 
-// The detfault config is used to fill in missing values.
+// The default config is used to fill in missing values.
 export const defaultConfig = $Config.parse({});
 
 // Given a user config, merges the config with the default config.

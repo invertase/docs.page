@@ -9,16 +9,11 @@ import probot from './probot';
 import { notFound } from './res';
 
 config();
+
 const PORT = process.env.PORT || 8080;
-
 const app = express();
-
 app.use(text());
 app.use(cors());
-app.options('/raw', (_req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.end;
-});
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(
@@ -26,7 +21,6 @@ app.use(
     extended: true,
   }),
 );
-
 app.use(probot);
 
 const router = Router();
@@ -34,7 +28,6 @@ router.get('/status', (_, res) => res.status(200).send('OK'));
 router.get('/bundle', bundle);
 router.post('/mdx', mdx);
 router.all('*', (_, res) => notFound(res));
-
 app.use(router);
 
 app.listen(PORT, () => {
