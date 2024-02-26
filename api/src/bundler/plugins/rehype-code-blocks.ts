@@ -5,15 +5,23 @@ import * as shiki from 'shiki';
 
 let highlighter: shiki.Highlighter;
 
-// Returns an object of supported languages.
-const languages = shiki.BUNDLED_LANGUAGES.reduce(
-  (map, lang) => {
-    const out = { [lang.id]: lang.id };
-    for (const alias of lang.aliases || []) out[alias] = lang.id;
-    return { ...map, ...out };
-  },
-  { '': 'text', gradle: 'groovy' } as Record<string, string>,
-);
+const languages: Record<string, string> = {
+  '': 'text',
+  gradle: 'groovy',
+};
+shiki.bundledLanguagesInfo.forEach(lang => {
+  languages[lang.id] = lang.id;
+  for (const alias of lang.aliases || []) {
+    languages[alias] = lang.id;
+  }
+});
+
+const cssVariablesTheme = shiki.createCssVariablesTheme({
+  name: 'css-variables',
+  variablePrefix: '--shiki-',
+  variableDefaults: {},
+  fontStyle: true,
+});
 
 /**
  * Matches any `pre code` elements and extracts the raw code and titles from the code block and assigns to the parent.
@@ -27,13 +35,13 @@ export default function rehypeCodeBlocks(): (ast: Node) => void {
     }
 
     const raw = toString(node);
-    const language = languages[getLanguage(node) || ''];
-
+    const language: string = languages[getLanguage(node) || ''] || 'text';
     // Raw value of the `code` block - used for copy/paste
     parent.properties['raw'] = raw;
     parent.properties['language'] = language;
     parent.properties['html'] = highlighter.codeToHtml(raw, {
       lang: language,
+      theme: 'css-variables',
     });
 
     // Get any metadata from the code block
@@ -44,9 +52,12 @@ export default function rehypeCodeBlocks(): (ast: Node) => void {
   }
 
   return async (ast: Node): Promise<void> => {
-    highlighter = await shiki.getHighlighter({
-      theme: 'css-variables',
-    });
+    if (!highlighter) {
+      highlighter = await shiki.getHighlighter({
+        langs: Array.from(new Set(Object.values(languages))),
+        themes: [cssVariablesTheme],
+      });
+    }
     // @ts-ignore
     visit(ast, 'element', visitor);
   };

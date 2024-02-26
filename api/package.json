@@ -38,7 +38,7 @@
     "remark-gfm": "3.0.1",
     "remark-math": "5.1.1",
     "remark-parse": "10.0.1",
-    "shiki": "0.12.1",
+    "shiki": "1.1.7",
     "unist-util-visit": "4.1.0",
     "zod": "3.22.4",
     "zod-validation-error": "0.2.2"
