@@ -4,11 +4,10 @@ import { bundle } from './mdx';
 
 // write a class to handle error codes
 export class BundlerError extends Error {
-  constructor(public code: number, name: string, message: string, cause?: Error) {
+  constructor(public code: number, name: string, message: string) {
     super(message);
     this.name = name;
     this.message = message;
-    this.cause = cause;
   }
 }
 
@@ -158,9 +157,10 @@ class Bundler {
       throw new BundlerError(
         500,
         ERROR_CODES.BUNDLE_ERROR,
-        `Something went wrong while bundling the file. Are you sure the MDX is valid?`,
-        // @ts-ignore
-        e?.message || '',
+        `Something went wrong while bundling the file. Are you sure the MDX is valid? ${
+          // @ts-ignore
+          e?.message || ''
+        }`,
       );
     }
   };
