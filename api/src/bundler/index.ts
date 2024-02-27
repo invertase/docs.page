@@ -152,7 +152,7 @@ class Bundler {
         code: mdx.code,
       };
     } catch (e) {
-      // console.error(e);
+      console.error(e);
       throw new BundlerError(
         500,
         ERROR_CODES.BUNDLE_ERROR,
