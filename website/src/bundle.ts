@@ -135,7 +135,7 @@ function getEndpoint(options: GetBundleRequest): string {
   const base =
     import.meta.env.BUNDLER_URL || import.meta.env.PROD
       ? import.meta.env.BUNDLER_URL || `https://api.docs.page`
-      : 'http://localhost:8000';
+      : 'http://localhost:8080';
 
   return `${base}/bundle?${params.toString()}`;
 }
