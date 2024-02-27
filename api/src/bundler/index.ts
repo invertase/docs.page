@@ -2,7 +2,6 @@ import parseConfig, { Config, defaultConfig } from '../utils/config';
 import { getGitHubContents, getPullRequestMetadata } from '../utils/github';
 import { bundle } from './mdx';
 
-// write a class to handle error codes
 export class BundlerError extends Error {
   constructor(public code: number, name: string, message: string) {
     super(message);
