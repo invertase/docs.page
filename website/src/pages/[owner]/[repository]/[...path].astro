@@ -183,7 +183,6 @@ function codeToTitle(code: GetBundleResponse['code']) {
         title={codeToTitle(code)}
         description={`(${code})`}
         extraInfo={message}
-        href={code === 'REPO_NOT_FOUND' ? '/' : `/${owner}/${repository}`}
       />
     </Root>
   )
@@ -197,7 +196,6 @@ function codeToTitle(code: GetBundleResponse['code']) {
         title="Something went wrong"
         description={`(${code})`}
         extraInfo={message}
-        href={`/${owner}/${repository}`}
       />
     </Root>
   )
