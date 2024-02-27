@@ -37,6 +37,7 @@ if (repository.includes('~')) {
 let response: GetBundleResponse | undefined;
 let code: GetBundleResponse['code'];
 let message: string = '';
+let errorCause: string = '';
 
 try {
   response = await getBundle({
@@ -47,7 +48,13 @@ try {
   });
   
   code = response.code;
-  if ('error' in response) message = response.error;
+  // error is a stringified JSON object
+  // refer to [api/src/routes/bundle.ts] for more information;
+  if ('error' in response) {
+    const errorData = JSON.parse(response.error);
+    message = errorData.message;
+    errorCause = errorData.cause;
+  };
 } catch (e) {
   console.error(e);
   code = 'BUNDLE_ERROR';
@@ -180,9 +187,9 @@ function codeToTitle(code: GetBundleResponse['code']) {
     <Root>
       <ErrorPage
         code={404}
+        errorName={code}
         title={codeToTitle(code)}
-        description={`(${code})`}
-        extraInfo={message}
+        description={message}
       />
     </Root>
   )
@@ -194,8 +201,9 @@ function codeToTitle(code: GetBundleResponse['code']) {
       <ErrorPage
         code={500}
         title="Something went wrong"
-        description={`(${code})`}
-        extraInfo={message}
+        errorName={code}
+        description={message}
+        errorCause={errorCause}
       />
     </Root>
   )

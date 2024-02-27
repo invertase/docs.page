@@ -1,13 +1,14 @@
 ---
 type Props = {
   code: number;
+  errorName?: string;
   title?: string;
   description?: string;
   href?: string;
-  extraInfo?: string;
+  errorCause?: string;
 };
 
-const { code, title, description, href, extraInfo } = Astro.props;
+const { code, title, description, href, errorCause, errorName } = Astro.props;
 ---
 
 <div class="flex h-[100vh] flex-col pt-16 pb-12">
@@ -21,46 +22,67 @@ const { code, title, description, href, extraInfo } = Astro.props;
     </div>
     <div class="py-16">
       <div class="text-center">
-        <p class="text-sm font-semibold uppercase tracking-wide text-green-400">{code} error</p>
-        <h1
-          class="mt-3 font-open-sans text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl"
-        >
-          {title || 'Something went wrong.'}
-        </h1>
-        <p class="mt-4 text-base text-gray-500 dark:text-gray-300 max-w-xl mx-auto">
-          {description || `Sorry, something went wrong during the request.`}
+        <p class="text-sm font-semibold uppercase tracking-wide text-green-400">
+          {code} error
+          <h1
+            class="mt-3 font-open-sans text-4xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-5xl"
+          >
+            {title || 'Something went wrong.'}
+          </h1>
+
+          <p class="text-base text-gray-500 dark:text-gray-300 max-w-xl mx-auto mt-8">
+            {
+              errorName && (
+                <b class="text-sm font-semibold uppercase tracking-wide text-green-400">
+                  {errorName}
+                </b>
+              )
+            }
+            {
+              description && (
+                <>
+                  <br />
+                  <span
+                    set:html={description || `Sorry, something went wrong during the request.`}
+                  />
+                </>
+              )
+            }
+          </p>
+          <div class="mt-6">
+            {
+              errorCause && (
+                <b>Possible Error:</b><br/>
+                <code class="mx-auto mt-4 max-w-xl text-base text-gray-500 dark:text-gray-300">
+                  {errorCause}
+                </code>
+              )
+            }
+          </div>
+          <div class="mt-6">
+            <a href={href || '/'} class="text-base font-medium text-green-400 hover:text-green-500">
+              Go back <span aria-hidden="true"> &rarr;</span>
+            </a>
+          </div>
         </p>
-        {
-          extraInfo && (
-            <p
-              class="mx-auto mt-4 max-w-xl text-base text-gray-500 dark:text-gray-300"
-              set:html={extraInfo}
-            ></p>
-          )
-        }
-        <div class="mt-6">
-          <a href={href || '/'} class="text-base font-medium text-green-400 hover:text-green-500">
-            Go back <span aria-hidden="true"> &rarr;</span>
-          </a>
-        </div>
       </div>
     </div>
+    <footer class="mx-auto w-full max-w-7xl flex-shrink-0 px-4 sm:px-6 lg:px-8">
+      <nav class="flex justify-center space-x-4">
+        <a
+          href="https://github.com/invertase/docs.page"
+          class="text-sm font-medium text-gray-500 hover:text-gray-600 dark:text-gray-300"
+        >
+          GitHub
+        </a>
+        <span class="inline-block border-l border-gray-300" aria-hidden="true"></span>
+        <a
+          href="https://twitter.com/invertaseio"
+          class="text-sm font-medium text-gray-500 hover:text-gray-600 dark:text-gray-300"
+        >
+          Twitter
+        </a>
+      </nav>
+    </footer>
   </main>
-  <footer class="mx-auto w-full max-w-7xl flex-shrink-0 px-4 sm:px-6 lg:px-8">
-    <nav class="flex justify-center space-x-4">
-      <a
-        href="https://github.com/invertase/docs.page"
-        class="text-sm font-medium text-gray-500 hover:text-gray-600 dark:text-gray-300"
-      >
-        GitHub
-      </a>
-      <span class="inline-block border-l border-gray-300" aria-hidden="true"></span>
-      <a
-        href="https://twitter.com/invertaseio"
-        class="text-sm font-medium text-gray-500 hover:text-gray-600 dark:text-gray-300"
-      >
-        Twitter
-      </a>
-    </nav>
-  </footer>
 </div>

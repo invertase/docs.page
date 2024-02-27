@@ -32,7 +32,12 @@ export default async function bundle(req: Request, res: Response): Promise<Respo
   } catch (e: unknown) {
     if (e instanceof BundlerError) {
       return response(res, e.code, e.name, {
-        error: e.message,
+        // error will return an string with the error message and the cause
+        // in client side we can parse the error and show the message and the cause
+        error: JSON.stringify({
+          message: e.message,
+          cause: e.cause,
+        }),
       });
     }
     return serverError(res, e);

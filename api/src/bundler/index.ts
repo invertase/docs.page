@@ -3,10 +3,11 @@ import { getGitHubContents, getPullRequestMetadata } from '../utils/github';
 import { bundle } from './mdx';
 
 export class BundlerError extends Error {
-  constructor(public code: number, name: string, message: string) {
+  constructor(public code: number, name: string, message: string, cause?: string) {
     super(message);
     this.name = name;
     this.message = message;
+    this.cause = cause;
   }
 }
 
@@ -156,7 +157,14 @@ class Bundler {
       throw new BundlerError(
         500,
         ERROR_CODES.BUNDLE_ERROR,
-        `Something went wrong while bundling the file. Are you sure the MDX is valid? ${
+        `Something went wrong while bundling the file <a href="https://github.com/${
+          this.#source.owner
+        }/${this.#source.repository}/blob/${this.#ref}/${
+          metadata.path
+        }.mdx" rel="noopener noreferrer nofollow" target="_blank" class="text-green-400 hover:text-green-500"> /${
+          metadata.path
+        }.mdx</a>. Are you sure the MDX is valid?`,
+        `${
           // @ts-ignore
           e?.message || ''
         }`,
