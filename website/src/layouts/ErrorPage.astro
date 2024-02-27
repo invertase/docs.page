@@ -4,9 +4,10 @@ type Props = {
   title?: string;
   description?: string;
   href?: string;
+  extraInfo?: string;
 };
 
-const { code, title, description, href } = Astro.props;
+const { code, title, description, href, extraInfo } = Astro.props;
 ---
 
 <div class="flex h-[100vh] flex-col pt-16 pb-12">
@@ -29,6 +30,13 @@ const { code, title, description, href } = Astro.props;
         <p class="mt-4 text-base text-gray-500 dark:text-gray-300 max-w-xl mx-auto">
           {description || `Sorry, something went wrong during the request.`}
         </p>
+        {
+          extraInfo && (
+            <p class="mx-auto mt-4 max-w-xl text-base text-gray-500 dark:text-gray-300">
+              {extraInfo}
+            </p>
+          )
+        }
         <div class="mt-6">
           <a href={href || '/'} class="text-base font-medium text-green-400 hover:text-green-500">
             Go back <span aria-hidden="true"> &rarr;</span>

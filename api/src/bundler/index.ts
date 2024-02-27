@@ -2,6 +2,16 @@ import parseConfig, { Config, defaultConfig } from '../utils/config';
 import { getGitHubContents, getPullRequestMetadata } from '../utils/github';
 import { bundle } from './mdx';
 
+// write a class to handle error codes
+export class BundlerError extends Error {
+  constructor(public code: number, name: string, message: string, cause?: Error) {
+    super(message);
+    this.name = name;
+    this.message = message;
+    this.cause = cause;
+  }
+}
+
 export const ERROR_CODES = {
   REPO_NOT_FOUND: 'REPO_NOT_FOUND',
   FILE_NOT_FOUND: 'FILE_NOT_FOUND',
@@ -87,11 +97,21 @@ class Bundler {
     });
 
     if (!metadata) {
-      throw ERROR_CODES.REPO_NOT_FOUND;
+      throw new BundlerError(
+        404,
+        ERROR_CODES.REPO_NOT_FOUND,
+        `The repository ${this.#source.owner}/${this.#source.repository} was not found.`,
+      );
     }
 
     if (!metadata.md) {
-      throw ERROR_CODES.FILE_NOT_FOUND;
+      throw new BundlerError(
+        404,
+        ERROR_CODES.FILE_NOT_FOUND,
+        `The file "/docs/${this.#path}.mdx" or "/docs/${this.#path}/index.mdx" in repository ${
+          this.#source.owner
+        }/${this.#source.repository} was not found.`,
+      );
     }
 
     this.#markdown = metadata.md;
@@ -134,8 +154,14 @@ class Bundler {
         code: mdx.code,
       };
     } catch (e) {
-      console.error(e);
-      throw ERROR_CODES.BUNDLE_ERROR;
+      // console.error(e);
+      throw new BundlerError(
+        500,
+        ERROR_CODES.BUNDLE_ERROR,
+        `Something went wrong while bundling the file. Are you sure the MDX is valid?`,
+        // @ts-ignore
+        e?.message || '',
+      );
     }
   };
 }

@@ -66,8 +66,6 @@ const statusCodes = {
 // Get & set the status code from the bundle code.
 status = statusCodes[code];
 
-// Set the status code for the request
-Astro.response.status = status;
 
 if (response?.code === 'OK') {
   const { frontmatter, config, source, baseBranch, code, headings } = response!.data;
@@ -183,7 +181,8 @@ function codeToTitle(code: GetBundleResponse['code']) {
       <ErrorPage
         code={404}
         title={codeToTitle(code)}
-        description={message + ` (${code})`}
+        description={`(${code})`}
+        extraInfo={message}
         href={code === 'REPO_NOT_FOUND' ? '/' : `/${owner}/${repository}`}
       />
     </Root>
@@ -196,7 +195,8 @@ function codeToTitle(code: GetBundleResponse['code']) {
       <ErrorPage
         code={500}
         title="Something went wrong"
-        description={message + ` (${code})`}
+        description={`(${code})`}
+        extraInfo={message}
         href={`/${owner}/${repository}`}
       />
     </Root>
