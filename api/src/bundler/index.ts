@@ -1,13 +1,13 @@
 import parseConfig, { Config, defaultConfig } from '../utils/config';
 import { getGitHubContents, getPullRequestMetadata } from '../utils/github';
 import { bundle } from './mdx';
+import { escapeHtml } from '../utils/sanitize';
 
 export class BundlerError extends Error {
-  constructor(public code: number, name: string, message: string, cause?: string) {
+  constructor(public code: number, name: string, message: string) {
     super(message);
     this.name = name;
     this.message = message;
-    this.cause = cause;
   }
 }
 
@@ -154,21 +154,19 @@ class Bundler {
       };
     } catch (e) {
       console.error(e);
-      throw new BundlerError(
-        500,
-        ERROR_CODES.BUNDLE_ERROR,
-        `Something went wrong while bundling the file <a href="https://github.com/${
-          this.#source.owner
-        }/${this.#source.repository}/blob/${this.#ref}/${
-          metadata.path
-        }.mdx" rel="noopener noreferrer nofollow" target="_blank" class="text-green-400 hover:text-green-500"> /${
-          metadata.path
-        }.mdx</a>. Are you sure the MDX is valid?`,
-        `${
-          // @ts-ignore
-          e?.message || ''
-        }`,
-      );
+      // @ts-ignore
+      const message = escapeHtml(e?.message) || '';
+      const generalMessageHtml = `Something went wrong while bundling the file <a href="https://github.com/${
+        this.#source.owner
+      }/${this.#source.repository}/blob/${this.#ref}/${
+        metadata.path
+      }.mdx" rel="noopener noreferrer nofollow" target="_blank" class="text-green-400 hover:text-green-500"> /${
+        metadata.path
+      }.mdx</a>. Are you sure the MDX is valid? 
+        `;
+      const possibleErrorHtml = `<div class="mt-2 overflow-x-auto"><pre><code><b>Possible Error:</b> ${message}</code></pre></div>`;
+      const errorHtml = message ? generalMessageHtml + possibleErrorHtml : generalMessageHtml;
+      throw new BundlerError(500, ERROR_CODES.BUNDLE_ERROR, errorHtml);
     }
   };
 }
