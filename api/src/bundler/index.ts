@@ -107,9 +107,13 @@ class Bundler {
       throw new BundlerError(
         404,
         ERROR_CODES.FILE_NOT_FOUND,
-        `The file "/docs/${this.#path}.mdx" or "/docs/${this.#path}/index.mdx" in repository ${
-          this.#source.owner
-        }/${this.#source.repository} was not found.`,
+        `The file "/docs/${this.#path}.mdx" or "/docs/${
+          this.#path
+        }/index.mdx" in repository <a href="https://github.com/${this.#source.owner}/${
+          this.#source.repository
+        }" rel="noopener noreferrer nofollow" target="_blank" class="text-green-400 hover:text-green-500"> /${
+          this.#source.owner + '/' + this.#source.repository
+        }</a> was not found.`,
       );
     }
 
