@@ -26,14 +26,20 @@ const { githubPath } = context.get();
       docs.page
     </a>
   </div>
-  <div class="flex-1 flex justify-end">
-    <a
-      class="opacity-75 hover:opacity-100 transition inline-flex items-center gap-1"
-      href={githubPath}
-      target="_blank"
-    >
-      <span class="w-4 h-4"><PencilIcon /></span>
-      <span>Edit page</span>
-    </a>
-  </div>
+  {
+    githubPath && (
+      <div class="flex flex-1 justify-end">
+        <a
+          class="inline-flex items-center gap-1 opacity-75 transition hover:opacity-100"
+          href={githubPath}
+          target="_blank"
+        >
+          <span class="h-4 w-4">
+            <PencilIcon />
+          </span>
+          <span>Edit page</span>
+        </a>
+      </div>
+    )
+  }
 </footer>

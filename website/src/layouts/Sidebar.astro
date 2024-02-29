@@ -1,6 +1,6 @@
 ---
 import locales from 'locale-codes';
-import FontAwesome, { FontAwesomeProps } from '@components/FontAwesome';
+import FontAwesome from '@components/FontAwesome';
 import { ChevronDownIcon } from '@components/icons';
 import Link from '@components/Link';
 import context from 'src/context';
@@ -39,8 +39,9 @@ if (config.twitter) {
 }
 ---
 <script>
-  import type { Context } from 'src/context';
-  const { owner, repository, ref, domain } = (window as any).docs_page as Context;
+  import context from 'src/context';
+
+  const { owner, repository, ref, domain } = context.get();
 
   const locale = document.querySelector('select#locale');
   

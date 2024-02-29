@@ -40,7 +40,9 @@ const { owner, repository, config } = context.get();
         }
         {
           !!config.automaticallyDisplayName && (
-            <span class="text-xl font-bold truncate">{config.name || `${owner}/${repository}`}</span>
+            <span class="truncate text-xl font-bold">
+              {config.name || `${owner}/${repository}`}
+            </span>
           )
         }
       </Link>

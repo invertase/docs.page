@@ -12,25 +12,25 @@ const { config, theme, owner, repository, ref, domain } = ctx;
 </script>
 
 <script>
-  const toggle = document.querySelector('button[data-sidebar-toggle]')!;
-  const sidebar = document.querySelector('div[data-sidebar]')!;
-  const mask = document.querySelector('div[data-sidebar-mask]')!;
+  const toggle = document.querySelector('button[data-sidebar-toggle]');
+  const sidebar = document.querySelector('div[data-sidebar]');
+  const mask = document.querySelector('div[data-sidebar-mask]');
 
   // Listen to menu toggle events and toggle the body attribute.
-  toggle.addEventListener('click', () => {
+  toggle?.addEventListener('click', () => {
     document.body.setAttribute(
       'sidebar-open',
       (document.body.getAttribute('sidebar-open') !== 'true').toString(),
     );
   });
 
-  mask.addEventListener('click', () => {
+  mask?.addEventListener('click', () => {
     document.body.setAttribute('sidebar-open', 'false');
   });
 
   new MutationObserver(() => {
     const open = document.body.getAttribute('sidebar-open') === 'true';
-    for (const el of [sidebar, mask]) el.setAttribute('data-visible', `${open}`);
+    for (const el of [sidebar, mask]) el?.setAttribute('data-visible', `${open}`);
   }).observe(document.body, {
     attributes: true,
     attributeFilter: ['sidebar-open'],
@@ -38,12 +38,13 @@ const { config, theme, owner, repository, ref, domain } = ctx;
 </script>
 
 <script>
-  import type { Context } from 'src/context';
+  import context from 'src/context';
 
-  const { config } = (window as any).docs_page as Context;
+  const { config } = context.get();
+
   const element = document.querySelector('div[data-docsearch]');
 
-  if (config.docsearch && element) {
+  if (config?.docsearch && element) {
     const docsearch = (await import('@docsearch/js')).default;
     const overrides = document.querySelectorAll('button[data-docsearch-override]');
 
@@ -98,8 +99,9 @@ const { config, theme, owner, repository, ref, domain } = ctx;
     }
   }
 
-  import type { Context } from 'src/context';
-  const { theme } = (window as any).docs_page as Context;
+  import context from 'src/context';
+
+  const { theme } = context.get();
 
   const tweets = document.querySelectorAll('div[data-tweet]');
 
@@ -196,8 +198,9 @@ const { config, theme, owner, repository, ref, domain } = ctx;
    * group ID across the page, and onto a cookie via the server.
    */
 
-  import type { Context } from 'src/context';
-  const { owner, repository, ref, domain } = (window as any).docs_page as Context;
+  import context from 'src/context';
+
+  const { owner, repository, ref, domain } = context.get();
 
   const tabs = document.querySelectorAll('div[data-tab-group]');
 
