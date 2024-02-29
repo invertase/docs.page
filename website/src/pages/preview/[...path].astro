@@ -1,0 +1,10 @@
+---
+import Root from '@layouts/Root.astro';
+import Preview from './_Preview';
+
+const { path } = Astro.params;
+---
+
+<Root>
+  <Preview client:load previewPath={path} />
+</Root>
