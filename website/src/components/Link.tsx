@@ -43,7 +43,7 @@ const Link: React.FC<LinkProps> = props => {
     );
   }
 
-  let to = `/${owner}/${repository}`;
+  let to = repository ? `/${owner}/${repository}` : `/${owner}`;
 
   if (ref && ref !== 'HEAD') {
     to += `~${encodeURIComponent(ref)}`;

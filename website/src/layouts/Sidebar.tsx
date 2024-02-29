@@ -14,7 +14,7 @@ export default function Sidebar() {
   const [anchors, setAnchors] = useState<BundleConfig['anchors']>(config.anchors || []);
 
   function getLinkRef(href: string): string | undefined {
-    if (import.meta.env.DEV || isExternalLink(href)) {
+    if (isExternalLink(href)) {
       return;
     }
 
@@ -32,7 +32,7 @@ export default function Sidebar() {
       {
         icon: 'github',
         title: 'GitHub',
-        link: `https://github.com/${owner}/${repository}`,
+        link: repository ? `https://github.com/${owner}/${repository}` : 'https://github.com/',
       },
     ]);
 
@@ -51,16 +51,9 @@ export default function Sidebar() {
     if (locale) {
       locale.addEventListener('change', event => {
         const { value } = event.target as HTMLSelectElement;
-
-        if (import.meta.env.PROD && domain) {
-          let href = `https://${domain}`;
-          if (ref) href += `/~${encodeURIComponent(ref)}`;
-          window.location.href = href + `/${value}`;
-        } else {
-          let href = `/${owner}/${repository}`;
-          if (ref) href += `~${encodeURIComponent(ref)}`;
-          window.location.href = href + `/${value}`;
-        }
+        let href = repository ? `/${owner}/${repository}` : `/${owner}`;
+        if (ref) href += `~${encodeURIComponent(ref)}`;
+        window.location.href = href + `/${value}`;
       });
     }
   }, []);

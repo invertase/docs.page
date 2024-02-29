@@ -359,9 +359,6 @@ export default function Preview(props: { previewPath?: string | undefined }) {
             </p>
           )}
         </div>
-        <div className="mx-auto mt-32 max-w-5xl px-4 lg:px-0">
-          <Footer />
-        </div>
       </section>
     </div>
   );
