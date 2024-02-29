@@ -39,7 +39,7 @@ export async function bundle(
   const vfile = await compile(parsed.content, {
     // prevent this error `_jsxDEV is not a function`
     // enable next line
-    development: process.env.NODE_ENV === 'production',
+    // development: process.env.NODE_ENV === 'production',
     format: 'mdx',
     outputFormat: 'function-body',
     remarkPlugins: getRemarkPlugins(),
