@@ -78,6 +78,12 @@ const $GetBundleResponseSuccess = z.object({
   ),
 });
 
+const $GetBundleResponseError = z.object({
+  message: z.string().catch(''),
+  cause: z.string().optional(),
+  links: z.array(z.object({ title: z.string(), url: z.string() })).optional(),
+});
+
 const $GetBundleResponse = z.union([
   z.object({
     code: z.literal('OK'),
@@ -85,13 +91,14 @@ const $GetBundleResponse = z.union([
   }),
   z.object({
     code: z.enum(['NOT_FOUND', 'BAD_REQUEST', 'REPO_NOT_FOUND', 'FILE_NOT_FOUND', 'BUNDLE_ERROR']),
-    error: z.string().catch(''),
+    error: $GetBundleResponseError,
   }),
 ]);
 
 export type GetBundleRequest = z.infer<typeof $GetBundleRequest>;
 export type GetBundleResponse = z.infer<typeof $GetBundleResponse>;
 export type GetBundleResponseSuccess = z.infer<typeof $GetBundleResponseSuccess>;
+export type GetBundleResponseError = z.infer<typeof $GetBundleResponseError>;
 
 export type BundleConfig = z.infer<typeof $BundleConfig>;
 export type SidebarArray = z.infer<typeof $SidebarArray>;
