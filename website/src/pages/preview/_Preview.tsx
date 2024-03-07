@@ -6,7 +6,6 @@ import { openDB } from 'idb';
 import { useEffect } from 'react';
 import { useStore } from '@nanostores/react';
 import DocsView from '@layouts/DocsView';
-import Footer from '@layouts/Footer';
 
 interface FileEntry {
   name: string;
