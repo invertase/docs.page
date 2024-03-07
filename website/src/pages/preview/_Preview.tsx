@@ -180,7 +180,7 @@ export default function Preview(props: { previewPath?: string | undefined }) {
         if (response.code === 'OK') {
           const { code, config, frontmatter, headings } = response.data;
 
-          // Get any syncronized tabs
+          // Get any synchronized tabs
           let tabs = {};
           try {
             tabs = JSON.parse(getCookie('tabs') || '') ?? {};
@@ -240,11 +240,31 @@ export default function Preview(props: { previewPath?: string | undefined }) {
         }
       };
 
+      async function verifyPermission(dirHandle: FileSystemDirectoryHandle, readWrite: boolean) {
+        const options: any = {};
+        if (readWrite) {
+          options.mode = 'readwrite';
+        }
+        // Check if permission was already granted. If so, return true.
+        if ((await dirHandle.queryPermission(options)) === 'granted') {
+          return true;
+        }
+        // Request permission. If the user grants permission, return true.
+        if ((await dirHandle.requestPermission(options)) === 'granted') {
+          return true;
+        }
+        // The user didn't grant permission, so return false.
+        return false;
+      }
+
       const selectDirectoryButtonEl = document.querySelector('#select-directory');
-      const directoryContainerEl = document.querySelector('#directory-container');
       const selectDirectory = async () => {
         try {
           const handle = await (window as any).showDirectoryPicker();
+          console.log('handle', handle);
+          if (!verifyPermission(handle, false)) {
+            return;
+          }
           const content = await loadDirectoryContents(handle);
           if (content) {
             const { config, files } = content;
@@ -328,11 +348,7 @@ export default function Preview(props: { previewPath?: string | undefined }) {
             </div>
           </div>
           <h1 className=" font-anton mt-40 mb-4 bg-gradient-to-br from-gray-900 via-gray-700 to-gray-900 bg-clip-text text-center text-2xl text-transparent dark:from-gray-100 dark:via-gray-300 dark:to-gray-200 lg:text-5xl">
-            Preview from your machine, with{' '}
-            <span className="bg-gradient-to-br from-red-600 to-black bg-clip-text text-transparent dark:from-yellow-200 dark:to-red-400">
-              hot reload.
-            </span>{' '}
-            <span className="bg-gradient-to-br from-red-800 to-violet-500 bg-clip-text text-transparent"></span>
+            Preview from your machine
           </h1>
           {browser?.name === 'chrome' ? (
             <>
@@ -347,10 +363,6 @@ export default function Preview(props: { previewPath?: string | undefined }) {
                 >
                   Select Directory!
                 </button>
-                <div
-                  id="directory-container"
-                  className="flex h-screen flex-col items-center justify-center"
-                ></div>
               </div>
             </>
           ) : (
