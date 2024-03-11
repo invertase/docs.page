@@ -1,5 +1,5 @@
 import context from 'src/context';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useStore } from '@nanostores/react';
 import DocsView from '@layouts/DocsView';
 import {
@@ -47,6 +47,7 @@ export default function Preview(props: { previewPath?: string | undefined }) {
     try {
       const dirHandleOrUndefined = await getFileHandleFromIDB();
       if (!dirHandleOrUndefined) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const handle = await (window as any).showDirectoryPicker();
         saveFileHandleInIDB(handle);
         loadContents(handle, context);

@@ -36,12 +36,12 @@ export const isFileSystemAccessAPIAvailable = () => {
   return 'showDirectoryPicker' in window;
 };
 
-export async function saveToIDb(key: string, value: any): Promise<void> {
+export async function saveToIDb(key: string, value: unknown): Promise<void> {
   const db = await _db;
   await db.put(STORE_NAME, value, key);
 }
 
-export async function getFromIDb(key: string): Promise<any> {
+export async function getFromIDb(key: string): Promise<unknown> {
   const db = await _db;
   return db.get(STORE_NAME, key);
 }
@@ -245,7 +245,7 @@ export const fetchIndex = async (
 };
 
 export async function verifyPermission(dirHandle: FileSystemDirectoryHandle, readWrite: boolean) {
-  const options: any = {};
+  const options: Partial<{ mode: string }> = {};
   if (readWrite) {
     options.mode = 'readwrite';
   }

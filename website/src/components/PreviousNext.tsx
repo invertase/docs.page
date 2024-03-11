@@ -28,6 +28,7 @@ export default function PreviousNext() {
   iterateSidebarArray(sidebar);
 
   const titleForLink = (link: string) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     return links.find(([_, href]) => href === link)?.at(0) || null;
   };
 
@@ -42,6 +43,7 @@ export default function PreviousNext() {
 
   // If the user wants auto infered previous/next, find them (if not already set).
   if (automaticallyInferNextPrevious) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const currentIndex = links.findIndex(([_, href]) => href === relativePath);
     if (currentIndex > -1 && !previous) setPrevious(links[currentIndex - 1]);
     if (currentIndex > -1 && !next) setNext(links[currentIndex + 1]);
