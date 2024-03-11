@@ -100,7 +100,8 @@ export const loadConfigFile = async (
       content = await fileData.text();
       type = filename.endsWith('.json') ? 'json' : 'yaml';
     } catch (error) {
-      // File not found, continue trying other filenames
+      // todo: handle this error and show user a proper error
+      console.error('File not found, continue trying other filenames');
     }
   }
   return {
