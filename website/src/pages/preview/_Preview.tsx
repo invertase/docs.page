@@ -1,57 +1,34 @@
-import { detect } from 'detect-browser';
 import context from 'src/context';
 import { useEffect } from 'react';
 import { useStore } from '@nanostores/react';
 import DocsView from '@layouts/DocsView';
 import {
   loadContextFromDb,
-  loadConfigFromDb,
-  readFileFromDb,
   fetchIndex,
   verifyPermission,
   loadDirectoryContents,
   addFileToDb,
   saveConfigInDb,
   saveContextInIDB,
+  init,
+  isFileSystemAccessAPIAvailable,
 } from './helpers';
 
 export default function Preview(props: { previewPath?: string | undefined }) {
   const { previewPath } = props;
   const { isPreviewReady } = useStore(context);
-  const browser = detect();
+  const isFileSystemAvailable = isFileSystemAccessAPIAvailable();
 
   useEffect(() => {
-    async function init(possibleFileKeys: string[]) {
-      if (possibleFileKeys && possibleFileKeys.length) {
-        const config = await loadConfigFromDb();
-        if (config) {
-          const promises = [];
-          for (const fileKey of possibleFileKeys) {
-            promises.push(await readFileFromDb(fileKey));
-          }
-          const result = await Promise.all(promises);
-          const file = result.find(Boolean);
-          if (file) {
-            const ctx = await fetchIndex(config, file);
-            if (ctx) {
-              context.set(ctx);
-            }
-          }
-        }
-      }
-    }
-
     const possibleFileKeys = previewPath
       ? [`${previewPath}/index.mdx`, `${previewPath}.mdx`]
       : ['index.mdx'];
-
-    console.log('possibleFileKeys', possibleFileKeys);
     loadContextFromDb(possibleFileKeys).then(ctx => {
       if (ctx) {
         console.log('Loaded context from IDB:', possibleFileKeys, ctx);
         context.set(ctx);
       } else {
-        init(possibleFileKeys);
+        init(possibleFileKeys, context);
       }
     });
   }, []);
@@ -113,7 +90,7 @@ export default function Preview(props: { previewPath?: string | undefined }) {
           <h1 className=" font-anton mt-40 mb-4 bg-gradient-to-br from-gray-900 via-gray-700 to-gray-900 bg-clip-text text-center text-2xl text-transparent dark:from-gray-100 dark:via-gray-300 dark:to-gray-200 lg:text-5xl">
             Preview from your machine
           </h1>
-          {browser?.name === 'chrome' ? (
+          {isFileSystemAvailable ? (
             <>
               <p suppressHydrationWarning className="pt-20 text-center">
                 To get started, simply select the local directory containing your docs.json config

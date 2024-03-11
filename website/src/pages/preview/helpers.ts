@@ -1,4 +1,5 @@
 import { openDB } from 'idb';
+import type { MapStore, Store } from 'nanostores';
 import { getPreview, type GetPreviewResponse } from 'src/bundle';
 import type { Context } from 'src/context';
 import { replaceMoustacheVariables } from 'src/utils';
@@ -19,6 +20,9 @@ const _db = openDB(DB_NAME, DB_VERSION, {
     db.createObjectStore(STORE_NAME);
   },
 });
+export const isFileSystemAccessAPIAvailable = () => {
+  return 'showDirectoryPicker' in window;
+};
 
 export async function addFileToDb(file: FileEntry): Promise<void> {
   const db = await _db;
@@ -242,4 +246,24 @@ export async function verifyPermission(dirHandle: FileSystemDirectoryHandle, rea
   }
   // The user didn't grant permission, so return false.
   return false;
+}
+
+export async function init(possibleFileKeys: string[], context: MapStore<Context>) {
+  if (possibleFileKeys && possibleFileKeys.length) {
+    const config = await loadConfigFromDb();
+    if (config) {
+      const promises = [];
+      for (const fileKey of possibleFileKeys) {
+        promises.push(await readFileFromDb(fileKey));
+      }
+      const result = await Promise.all(promises);
+      const file = result.find(Boolean);
+      if (file) {
+        const ctx = await fetchIndex(config, file);
+        if (ctx) {
+          context.set(ctx);
+        }
+      }
+    }
+  }
 }
