@@ -178,6 +178,7 @@ export const fetchIndex = async (
   });
   // Set the theme color
   const theme = getCookie('theme');
+
   // Assuming response structure, adjust as needed
   if (response.code === 'OK') {
     const { code, config, frontmatter, headings } = response.data;

@@ -1,5 +1,5 @@
 import context from 'src/context';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useStore } from '@nanostores/react';
 import DocsView from '@layouts/DocsView';
 import {
@@ -25,7 +25,7 @@ export default function Preview(props: { previewPath?: string | undefined }) {
     loadContextFromDb(possibleFileKeys).then(ctx => {
       // load context from IDB if available
       if (ctx) {
-        console.log('Loaded context from IDB:', possibleFileKeys, ctx);
+        // loading from IDB was successful, set the context
         context.set(ctx);
         return;
       }
@@ -33,7 +33,7 @@ export default function Preview(props: { previewPath?: string | undefined }) {
       // otherwise, initialize the app
       init(possibleFileKeys, context);
     });
-  }, []);
+  }, [isPreviewReady]);
 
   const cleanUpAndSelectDirectory = async () => {
     await cleanUpDatabase();
