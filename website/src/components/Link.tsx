@@ -4,7 +4,7 @@ import { isExternalLink, removeTrailingSlash } from 'src/utils';
 
 interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   href: string;
-  activeClassName?: string;
+  activeClassNames?: string;
 }
 
 const Link: React.FC<LinkProps> = props => {
@@ -36,7 +36,7 @@ const Link: React.FC<LinkProps> = props => {
       <a
         {...props}
         className={cx(props.className, {
-          [props.activeClassName || '']: props.href === relativePath,
+          [props.activeClassNames || '']: props.href === relativePath,
         })}
         href={href}
       />
@@ -57,7 +57,7 @@ const Link: React.FC<LinkProps> = props => {
     <a
       {...props}
       className={cx(props.className, {
-        [props.activeClassName || '']: props.href === relativePath,
+        [props.activeClassNames || '']: props.href === relativePath,
       })}
       href={removeTrailingSlash(`${to}${props.href}`)}
     />

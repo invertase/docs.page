@@ -12,6 +12,10 @@ import {
   saveContextInIDB,
   init,
   isFileSystemAccessAPIAvailable,
+  saveToIDb,
+  saveFileHandleInIDB,
+  getFileHandleFromIDB,
+  loadContents,
 } from './helpers';
 
 export default function Preview(props: { previewPath?: string | undefined }) {
@@ -24,52 +28,34 @@ export default function Preview(props: { previewPath?: string | undefined }) {
       ? [`${previewPath}/index.mdx`, `${previewPath}.mdx`]
       : ['index.mdx'];
     loadContextFromDb(possibleFileKeys).then(ctx => {
+      // load context from IDB if available
       if (ctx) {
         console.log('Loaded context from IDB:', possibleFileKeys, ctx);
         context.set(ctx);
-      } else {
-        init(possibleFileKeys, context);
+        return;
       }
+
+      // otherwise, initialize the app
+      init(possibleFileKeys, context);
     });
   }, []);
 
   const selectDirectory = async () => {
     try {
-      const handle = await (window as any).showDirectoryPicker();
-      console.log('handle', handle);
-      if (!verifyPermission(handle, false)) {
-        return;
-      }
-      const content = await loadDirectoryContents(handle);
-      if (content) {
-        const { config, files } = content;
-
-        for (const file of files) {
-          await addFileToDb(file);
-        }
-        const markdownFiles = files.filter(
-          file => file.name === 'index.mdx' || file.name === 'index.md',
-        );
-        const indexMarkdownFile = markdownFiles[0];
-        if (!indexMarkdownFile) {
-          console.error('No index.mdx or index.md file found in /docs directory');
+      const dirHandleOrUndefined = await getFileHandleFromIDB();
+      if (!dirHandleOrUndefined) {
+        const handle = await (window as any).showDirectoryPicker();
+        saveFileHandleInIDB(handle);
+        loadContents(handle, context);
+      } else {
+        // if we have a handle, verify permission and load contents
+        const hasPermission = await verifyPermission(dirHandleOrUndefined, true);
+        if (!hasPermission) {
+          console.error('Permission denied');
           return;
         }
-        saveConfigInDb(config);
-        const ctx = await fetchIndex(config, indexMarkdownFile.content);
-        if (ctx) {
-          saveContextInIDB(ctx, indexMarkdownFile.name);
-          context.set(ctx);
-        }
-        // directoryContainerEl?.remove();
+        loadContents(dirHandleOrUndefined, context);
       }
-      // if (handle) {
-      //   // Request permission to access this directory in the future
-      //   const permission = await handle.requestPermission({ mode: 'readwrite' });
-      //   if (permission === 'granted') {
-      //     // await saveFileHandle(handle);
-      //   }
-      // }
     } catch (error) {
       console.error('Error selecting directory:', error);
     }

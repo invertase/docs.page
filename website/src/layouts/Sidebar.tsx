@@ -104,7 +104,7 @@ export default function Sidebar() {
                 <Link
                   href={urlOrChildren}
                   className="mb-3 block font-medium  opacity-75 transition hover:opacity-100"
-                  activeClassName="text-docs-theme opacity-100"
+                  activeClassNames={'text-docs-theme opacity-100'}
                   rel={getLinkRef(urlOrChildren)}
                 >
                   {title}
@@ -122,7 +122,9 @@ export default function Sidebar() {
                     <Link
                       href={url}
                       className="hover:border-docs-theme relative -left-px block border-l border-transparent pl-4 opacity-75 transition hover:opacity-100"
-                      activeClassName="border-docs-theme opacity-100 font-semibold tracking-wide text-docs-theme"
+                      activeClassNames={
+                        'border-docs-theme opacity-100 font-semibold tracking-wide text-docs-theme'
+                      }
                       rel={getLinkRef(url)}
                     >
                       {title}

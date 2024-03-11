@@ -12,6 +12,7 @@ export interface FileEntry {
 const DB_NAME = 'docspage-preview-store';
 const STORE_NAME = 'docspage-preview-files';
 const CONTEXT_KEY = 'context';
+const FILE_HANDLE_KEY = 'filehandle';
 const CONFIG_KEY = 'config';
 const DB_VERSION = 1;
 
@@ -24,20 +25,33 @@ export const isFileSystemAccessAPIAvailable = () => {
   return 'showDirectoryPicker' in window;
 };
 
-export async function addFileToDb(file: FileEntry): Promise<void> {
+export async function saveToIDb(key: string, value: any): Promise<void> {
   const db = await _db;
-  await db.put(STORE_NAME, file.content, file.name);
+  await db.put(STORE_NAME, value, key);
+}
+
+export async function getFromIDb(key: string): Promise<any> {
+  const db = await _db;
+  return db.get(STORE_NAME, key);
+}
+
+export async function saveFileHandleInIDB(fileHandle: FileSystemDirectoryHandle): Promise<void> {
+  return saveToIDb(FILE_HANDLE_KEY, fileHandle);
+}
+export async function getFileHandleFromIDB(): Promise<FileSystemDirectoryHandle | undefined> {
+  return getFromIDb(FILE_HANDLE_KEY);
+}
+export async function addFileToDb(file: FileEntry): Promise<void> {
+  await saveToIDb(file.name, file.content);
 }
 export async function saveContextInIDB(ctx: Context, fileName: string): Promise<void> {
-  const db = await _db;
-  db.put(STORE_NAME, JSON.stringify(ctx), CONTEXT_KEY + fileName);
+  await saveToIDb(CONTEXT_KEY + fileName, JSON.stringify(ctx));
 }
 export async function saveConfigInDb(config: {
   type: 'json' | 'yaml';
   content: string;
 }): Promise<void> {
-  const db = await _db;
-  db.put(STORE_NAME, JSON.stringify(config), CONFIG_KEY);
+  await saveToIDb(CONFIG_KEY, JSON.stringify(config));
 }
 
 export async function loadConfigFromDb(): Promise<
@@ -47,16 +61,14 @@ export async function loadConfigFromDb(): Promise<
     }
   | undefined
 > {
-  const db = await _db;
-  const config = await db.get(STORE_NAME, CONFIG_KEY);
+  const config = await getFromIDb(CONFIG_KEY);
   if (config) return JSON.parse(config);
 }
 
 export async function loadContextFromDb(possibleFileKeys: string[]): Promise<Context | undefined> {
-  const db = await _db;
   const promises = [];
   for (const fileKey of possibleFileKeys) {
-    promises.push(await db.get(STORE_NAME, CONTEXT_KEY + fileKey));
+    promises.push(await getFromIDb(CONTEXT_KEY + fileKey));
   }
   const result = await Promise.all(promises);
   const context = result.find(Boolean);
@@ -65,9 +77,8 @@ export async function loadContextFromDb(possibleFileKeys: string[]): Promise<Con
   }
 }
 
-export async function readFileFromDb(fileName: string): Promise<string> {
-  const db = await _db;
-  return db.get(STORE_NAME, fileName);
+export async function readFileFromDb(fileName: string): Promise<string | undefined> {
+  return getFromIDb(fileName);
 }
 
 export const loadConfigFile = async (
@@ -267,3 +278,32 @@ export async function init(possibleFileKeys: string[], context: MapStore<Context
     }
   }
 }
+
+export const loadContents = async (
+  dirHandle: FileSystemDirectoryHandle,
+  context: MapStore<Context>,
+) => {
+  console.log('Loading contents from directory:', dirHandle);
+  const content = await loadDirectoryContents(dirHandle);
+  if (content) {
+    const { config, files } = content;
+
+    for (const file of files) {
+      await addFileToDb(file);
+    }
+    const markdownFiles = files.filter(
+      file => file.name === 'index.mdx' || file.name === 'index.md',
+    );
+    const indexMarkdownFile = markdownFiles[0];
+    if (!indexMarkdownFile) {
+      console.error('No index.mdx or index.md file found in /docs directory');
+      return;
+    }
+    saveConfigInDb(config);
+    const ctx = await fetchIndex(config, indexMarkdownFile.content);
+    if (ctx) {
+      saveContextInIDB(ctx, indexMarkdownFile.name);
+      context.set(ctx);
+    }
+  }
+};
