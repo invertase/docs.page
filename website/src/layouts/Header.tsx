@@ -6,9 +6,10 @@ import ThemeToggle from '@components/ThemeToggle';
 import RefBadge from '@components/RefBadge';
 
 import { getImagePath } from 'src/utils';
-import { BarsIcon, MagnifyingGlassIcon } from '@components/icons';
+import {  MagnifyingGlassIcon } from '@components/icons';
 
 import context from 'src/context';
+import { SideBarToggle } from '@components/SideBarToggle';
 
 export default function Header() {
   const { owner, repository, config } = useStore(context);
@@ -56,9 +57,7 @@ export default function Header() {
             </div>
             <ThemeToggle />
             <div className="flex items-center lg:hidden">
-              <button data-sidebar-toggle className="h-6 w-6 transition-opacity hover:opacity-75">
-                <BarsIcon />
-              </button>
+              <SideBarToggle />
             </div>
           </div>
         </div>
