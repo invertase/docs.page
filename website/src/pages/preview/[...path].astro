@@ -6,5 +6,5 @@ const { path } = Astro.params;
 ---
 
 <Root>
-  <Preview client:load previewPath={path} />
+  <Preview client:only previewPath={path} />
 </Root>
