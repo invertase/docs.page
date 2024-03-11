@@ -6,7 +6,7 @@ import ThemeToggle from '@components/ThemeToggle';
 import RefBadge from '@components/RefBadge';
 
 import { getImagePath } from 'src/utils';
-import {  MagnifyingGlassIcon } from '@components/icons';
+import { MagnifyingGlassIcon } from '@components/icons';
 
 import context from 'src/context';
 import { SideBarToggle } from '@components/SideBarToggle';

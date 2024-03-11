@@ -3,6 +3,7 @@ import { BarsIcon } from './icons';
 
 export function SideBarToggle() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+
   const toggleSideBar = () => {
     setSidebarOpen(!sidebarOpen);
     updateSideBar();
@@ -17,6 +18,7 @@ export function SideBarToggle() {
   };
 
   useEffect(() => {
+    // potentially we need to fall back to ReactWay of getting Refs
     const sidebar = document.querySelector('div[data-sidebar]');
     const mask = document.querySelector('div[data-sidebar-mask]');
 

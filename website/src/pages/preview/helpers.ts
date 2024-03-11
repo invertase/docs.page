@@ -1,11 +1,16 @@
 import { openDB } from 'idb';
-import type { MapStore, Store } from 'nanostores';
+import type { MapStore } from 'nanostores';
 import { getPreview, type GetPreviewResponse } from 'src/bundle';
 import type { Context } from 'src/context';
 import { replaceMoustacheVariables } from 'src/utils';
 
 export interface FileEntry {
   name: string;
+  content: string;
+}
+export type ConfigFileExtension = 'json' | 'yaml';
+export interface ConfigFile {
+  type: ConfigFileExtension;
   content: string;
 }
 
@@ -57,20 +62,11 @@ export async function saveContextInIDB(ctx: Context, fileName: string): Promise<
   await saveToIDb(CONTEXT_KEY + fileName, JSON.stringify(ctx));
 }
 
-export async function saveConfigInDb(config: {
-  type: 'json' | 'yaml';
-  content: string;
-}): Promise<void> {
+export async function saveConfigInDb(config: ConfigFile): Promise<void> {
   await saveToIDb(CONFIG_KEY, JSON.stringify(config));
 }
 
-export async function loadConfigFromDb(): Promise<
-  | {
-      type: 'json' | 'yaml';
-      content: string;
-    }
-  | undefined
-> {
+export async function loadConfigFromDb(): Promise<ConfigFile | undefined> {
   const config = await getFromIDb(CONFIG_KEY);
   if (config) return JSON.parse(config);
 }
@@ -94,12 +90,9 @@ export async function readFileFromDb(fileName: string): Promise<string | undefin
 export const loadConfigFile = async (
   handle: FileSystemDirectoryHandle,
   filenames: string[],
-): Promise<{
-  type: 'json' | 'yaml';
-  content: string;
-}> => {
+): Promise<ConfigFile> => {
   let content = '';
-  let type: 'json' | 'yaml' = 'json';
+  let type: ConfigFileExtension = 'json';
   for (const filename of filenames) {
     try {
       const fileHandle = await handle.getFileHandle(filename, { create: false });
@@ -120,10 +113,7 @@ export const loadDirectoryContents = async (
   directoryHandle: FileSystemDirectoryHandle,
 ): Promise<
   | {
-      config: {
-        type: 'json' | 'yaml';
-        content: string;
-      };
+      config: ConfigFile;
       files: FileEntry[];
     }
   | undefined
@@ -177,7 +167,7 @@ export const getCookie = (key: string) => {
 };
 
 export const fetchIndex = async (
-  config: { type: 'json' | 'yaml'; content: string },
+  config: ConfigFile,
   markdown: string,
 ): Promise<Context | undefined> => {
   const response: GetPreviewResponse = await getPreview({
@@ -258,10 +248,12 @@ export async function verifyPermission(dirHandle: FileSystemDirectoryHandle, rea
     options.mode = 'readwrite';
   }
   // Check if permission was already granted. If so, return true.
+  // @ts-ignore
   if ((await dirHandle.queryPermission(options)) === 'granted') {
     return true;
   }
   // Request permission. If the user grants permission, return true.
+  // @ts-ignore
   if ((await dirHandle.requestPermission(options)) === 'granted') {
     return true;
   }
