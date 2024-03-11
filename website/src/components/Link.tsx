@@ -7,7 +7,7 @@ interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   activeClassNames?: string;
 }
 
-const Link: React.FC<LinkProps> = props => {
+const Link: React.FC<LinkProps> = ({ activeClassNames, ...props }) => {
   const { owner, repository, ref, domain, relativePath, locale } = context.get();
 
   if (isExternalLink(props.href)) {
@@ -36,7 +36,7 @@ const Link: React.FC<LinkProps> = props => {
       <a
         {...props}
         className={cx(props.className, {
-          [props.activeClassNames || '']: props.href === relativePath,
+          [activeClassNames || '']: props.href === relativePath,
         })}
         href={href}
       />
@@ -57,7 +57,7 @@ const Link: React.FC<LinkProps> = props => {
     <a
       {...props}
       className={cx(props.className, {
-        [props.activeClassNames || '']: props.href === relativePath,
+        [activeClassNames || '']: props.href === relativePath,
       })}
       href={removeTrailingSlash(`${to}${props.href}`)}
     />
