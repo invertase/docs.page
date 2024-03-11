@@ -4,18 +4,13 @@ import { useStore } from '@nanostores/react';
 import DocsView from '@layouts/DocsView';
 import {
   loadContextFromDb,
-  fetchIndex,
   verifyPermission,
-  loadDirectoryContents,
-  addFileToDb,
-  saveConfigInDb,
-  saveContextInIDB,
   init,
   isFileSystemAccessAPIAvailable,
-  saveToIDb,
   saveFileHandleInIDB,
   getFileHandleFromIDB,
   loadContents,
+  cleanUpDatabase,
 } from './helpers';
 
 export default function Preview(props: { previewPath?: string | undefined }) {
@@ -39,6 +34,11 @@ export default function Preview(props: { previewPath?: string | undefined }) {
       init(possibleFileKeys, context);
     });
   }, []);
+
+  const cleanUpAndSelectDirectory = async () => {
+    await cleanUpDatabase();
+    selectDirectory();
+  };
 
   const selectDirectory = async () => {
     try {
@@ -64,7 +64,13 @@ export default function Preview(props: { previewPath?: string | undefined }) {
   return isPreviewReady ? (
     <div className="relative">
       <button
-        className="text-s fixed right-5 bottom-5 z-50 cursor-pointer whitespace-nowrap rounded-lg bg-green-600 px-3 py-2 text-white shadow transition-colors hover:bg-green-500"
+        className="text-s fixed bottom-5 right-5 z-50 cursor-pointer whitespace-nowrap rounded-lg bg-yellow-600 px-3 py-2 text-white shadow transition-colors hover:bg-yellow-500"
+        onClick={cleanUpAndSelectDirectory}
+      >
+        Restart!
+      </button>
+      <button
+        className="text-s fixed bottom-16 right-5 z-50 cursor-pointer whitespace-nowrap rounded-lg bg-green-600 px-3 py-2 text-white shadow transition-colors hover:bg-green-500"
         onClick={selectDirectory}
       >
         Reload!

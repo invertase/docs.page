@@ -21,6 +21,12 @@ const _db = openDB(DB_NAME, DB_VERSION, {
     db.createObjectStore(STORE_NAME);
   },
 });
+
+export const cleanUpDatabase = async () => {
+  const db = await _db;
+  await db.clear(STORE_NAME);
+};
+
 export const isFileSystemAccessAPIAvailable = () => {
   return 'showDirectoryPicker' in window;
 };
@@ -38,15 +44,19 @@ export async function getFromIDb(key: string): Promise<any> {
 export async function saveFileHandleInIDB(fileHandle: FileSystemDirectoryHandle): Promise<void> {
   return saveToIDb(FILE_HANDLE_KEY, fileHandle);
 }
+
 export async function getFileHandleFromIDB(): Promise<FileSystemDirectoryHandle | undefined> {
   return getFromIDb(FILE_HANDLE_KEY);
 }
+
 export async function addFileToDb(file: FileEntry): Promise<void> {
   await saveToIDb(file.name, file.content);
 }
+
 export async function saveContextInIDB(ctx: Context, fileName: string): Promise<void> {
   await saveToIDb(CONTEXT_KEY + fileName, JSON.stringify(ctx));
 }
+
 export async function saveConfigInDb(config: {
   type: 'json' | 'yaml';
   content: string;
