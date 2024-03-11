@@ -22,14 +22,14 @@ export default function Header() {
             href="/"
             className="inline-flex flex-1 items-center gap-3 truncate transition-opacity hover:opacity-75"
           >
-            {!!config.logo && (
+            {!!owner && !!repository && !!config.logo && (
               <img
                 alt="Logo"
                 className={`inline-block h-[30px] ${!!config.logoDark ? 'dark:hidden' : ''}`}
                 src={getImagePath(config.logo)}
               />
             )}
-            {!!config.logoDark && (
+            {!!owner && !!repository && !!config.logoDark && (
               <img
                 alt="Logo"
                 className="hidden h-[30px] dark:inline-block"

@@ -49,7 +49,7 @@ export default function Preview(props: { previewPath?: string | undefined }) {
         loadContents(handle, context);
       } else {
         // if we have a handle, verify permission and load contents
-        const hasPermission = await verifyPermission(dirHandleOrUndefined, true);
+        const hasPermission = await verifyPermission(dirHandleOrUndefined, false);
         if (!hasPermission) {
           console.error('Permission denied');
           return;
@@ -62,7 +62,15 @@ export default function Preview(props: { previewPath?: string | undefined }) {
   };
 
   return isPreviewReady ? (
-    <DocsView />
+    <div className="relative">
+      <button
+        className="text-s fixed right-5 bottom-5 z-50 cursor-pointer whitespace-nowrap rounded-lg bg-green-600 px-3 py-2 text-white shadow transition-colors hover:bg-green-500"
+        onClick={selectDirectory}
+      >
+        Reload!
+      </button>
+      <DocsView />
+    </div>
   ) : (
     <div className="dark:text-white">
       <section className="items-center py-16 px-4 text-center lg:py-32 lg:text-left">

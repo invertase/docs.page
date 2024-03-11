@@ -283,7 +283,6 @@ export const loadContents = async (
   dirHandle: FileSystemDirectoryHandle,
   context: MapStore<Context>,
 ) => {
-  console.log('Loading contents from directory:', dirHandle);
   const content = await loadDirectoryContents(dirHandle);
   if (content) {
     const { config, files } = content;
