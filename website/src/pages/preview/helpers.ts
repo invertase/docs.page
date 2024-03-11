@@ -299,6 +299,7 @@ export const loadContents = async (
     );
     const indexMarkdownFile = markdownFiles[0];
     if (!indexMarkdownFile) {
+      // todo: handle this error for user
       console.error('No index.mdx or index.md file found in /docs directory');
       return;
     }

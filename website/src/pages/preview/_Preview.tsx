@@ -22,18 +22,21 @@ export default function Preview(props: { previewPath?: string | undefined }) {
     const possibleFileKeys = previewPath
       ? [`${previewPath}/index.mdx`, `${previewPath}.mdx`]
       : ['index.mdx'];
-    loadContextFromDb(possibleFileKeys).then(ctx => {
-      // load context from IDB if available
-      if (ctx) {
-        // loading from IDB was successful, set the context
-        context.set(ctx);
-        return;
-      }
 
-      // otherwise, initialize the app
-      init(possibleFileKeys, context);
-    });
-  }, [isPreviewReady]);
+    loadContextFromDb(possibleFileKeys)
+      .then(ctx => {
+        // load context from IDB if available
+        if (ctx) {
+          // loading from IDB was successful, set the context
+          context.set(ctx);
+          return;
+        }
+
+        // otherwise, initialize the app
+        init(possibleFileKeys, context);
+      })
+      .catch(console.error);
+  }, []);
 
   const cleanUpAndSelectDirectory = async () => {
     await cleanUpDatabase();
