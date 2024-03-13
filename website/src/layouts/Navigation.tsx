@@ -1,42 +1,45 @@
+import React, { useEffect, useRef, useState } from 'react';
 import { useStore } from '@nanostores/react';
-import { useEffect } from 'react';
 import context from 'src/context';
 
 export default function Navigation() {
   const { headings } = useStore(context);
-  const nav = document.querySelector('ul#navigation')!;
-  const links = nav?.querySelectorAll('a[data-id]');
-  const sections = document.querySelectorAll('main section[data-id]');
+  const navRef = useRef(null);
+  const [activeId, setActiveId] = useState('');
+  const [currentActiveId, setCurrentActiveId] = useState('');
 
   useEffect(() => {
-    if (links && sections) {
-      window.onscroll = () => {
-        let spied: Element | null = null;
+    const handleScroll = () => {
+      const sections = document.querySelectorAll('main section[data-id]');
 
-        for (const link of links) link.classList.remove('text-docs-theme');
-
-        for (const section of sections) {
-          const span = section.querySelector('span:first-child');
-          if (span && span.getBoundingClientRect().y < 1) spied = span;
+      for (const section of sections) {
+        const span = section.querySelector('span:first-child');
+        if (span && span.getBoundingClientRect().y < 1) {
+          setCurrentActiveId(section.getAttribute('data-id') || '');
         }
+      }
 
-        if (spied) {
-          const id = spied.getAttribute('id')!;
-          const link = nav.querySelector(`a[data-id="${id}"]`);
-          link?.classList.add('text-docs-theme');
-        }
-      };
-    }
-  }, []);
+      setActiveId(currentActiveId);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    // Cleanup on component unmount
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []); // Empty dependency array means this effect runs once on mount
 
   return (
-    <ul id="navigation">
-      {headings.map((heading, index) => (
-        <li key={`${heading}-${index}`}>
+    <ul id="navigation" ref={navRef}>
+      {headings.map((heading: any, index: number) => (
+        <li key={`${heading.id}-${index}`}>
           <a
             data-id={heading.id}
             href={`#${heading.id}`}
-            className="block break-words py-1 font-medium opacity-75 transition hover:opacity-100"
+            className={`block break-words py-1 font-medium opacity-75 transition hover:opacity-100 ${
+              activeId === heading.id ? 'text-docs-theme' : ''
+            }`}
             style={{
               paddingLeft: `${(heading.rank || 2) - 1 * 0.2}rem`,
             }}
