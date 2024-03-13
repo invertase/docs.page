@@ -1,10 +1,20 @@
 ---
 import Root from '@layouts/Root.astro';
 import Preview from './_Preview';
+import Links from '@components/Links.astro';
+import Meta from '@components/Meta.astro';
+import Scripts from '@components/Scripts.astro';
+import Styles from '@components/Styles.astro';
+import Theme from '@components/Theme.astro';
 
 const { path } = Astro.params;
 ---
 
 <Root>
+  <Meta slot="head" />
+  <Theme slot="head" fallback="#00bcd4" />
+  <Scripts slot="head" />
+  <Styles slot="head" />
+  <Links slot="head" />
   <Preview client:only previewPath={path} />
 </Root>

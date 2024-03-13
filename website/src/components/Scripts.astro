@@ -5,12 +5,11 @@ const ctx = context.get();
 const { config, theme, owner, repository, ref, domain } = ctx;
 ---
 
-<script is:inline define:vars={{ config, theme, owner, repository, ref, domain }}>
+<!-- <script is:inline define:vars={{ config, theme, owner, repository, ref, domain }}>
   // Load the context into the window, so we can access it from other scripts
   // without losing access to Astros script hoisting.
   window.docs_page = { config, theme, owner, repository, ref, domain };
-</script>
-
+</script> -->
 <script>
   import context from 'src/context';
 
