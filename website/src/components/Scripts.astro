@@ -5,22 +5,23 @@ const ctx = context.get();
 const { config, theme, owner, repository, ref, domain } = ctx;
 ---
 
-<!-- <script is:inline define:vars={{ config, theme, owner, repository, ref, domain }}>
+<script is:inline define:vars={{ config, theme, owner, repository, ref, domain }}>
   // Load the context into the window, so we can access it from other scripts
   // without losing access to Astros script hoisting.
   window.docs_page = { config, theme, owner, repository, ref, domain };
-</script> -->
+</script>
 <script>
-  import context from 'src/context';
-
-  const { config } = context.get();
+  /**
+   * This script is used to load the Algolia DocSearch library, and apply it to
+   * the search input with the `data-docsearch` attribute.
+   */
+  const { config } = (window as any).docs_page;
 
   const element = document.querySelector('div[data-docsearch]');
 
   if (config?.docsearch && element) {
     const docsearch = (await import('@docsearch/js')).default;
     const overrides = document.querySelectorAll('button[data-docsearch-override]');
-
     docsearch({
       container: element as HTMLElement,
       ...config.docsearch,
@@ -35,6 +36,79 @@ const { config, theme, owner, repository, ref, domain } = ctx;
       override.addEventListener('click', () => button.click());
     }
   }
+</script>
+
+<script>
+  import type { Context } from 'src/context';
+  const { owner, repository, domain, ref } = (window as any).docs_page as Context;
+  const html = document.documentElement;
+  const isDark = () => html.getAttribute('data-theme') === 'dark';
+
+  const toggle = document.querySelector('button[data-theme-toggle]')!;
+  const light = toggle.querySelector('span[data-theme-type="light"]') as HTMLSpanElement;
+  const dark = toggle.querySelector('span[data-theme-type="dark"]') as HTMLSpanElement;
+
+  function toggleElements() {
+    if (isDark()) {
+      light.style.display = 'none';
+      dark.style.display = 'inline';
+    } else {
+      dark.style.display = 'none';
+      light.style.display = 'inline';
+    }
+  }
+
+  toggle.addEventListener('click', () => {
+    const theme = isDark() ? 'light' : 'dark';
+    // Update the theme attribute on the <html> element
+    theme === 'light'
+      ? html.removeAttribute('data-theme')
+      : html.setAttribute('data-theme', 'dark');
+    // Toggle the icons
+    toggleElements();
+    // Update the theme via server and return a cookie
+    fetch('/api/docs.page/theme', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        owner,
+        repository,
+        ref,
+        domain,
+        theme,
+      }),
+    });
+  });
+
+  toggleElements();
+</script>
+
+<script>
+  const toggle = document.querySelector('button[data-sidebar-toggle]')!;
+  const sidebar = document.querySelector('div[data-sidebar]')!;
+  const mask = document.querySelector('div[data-sidebar-mask]')!;
+
+  // Listen to menu toggle events and toggle the body attribute.
+  toggle.addEventListener('click', () => {
+    document.body.setAttribute(
+      'sidebar-open',
+      (document.body.getAttribute('sidebar-open') !== 'true').toString(),
+    );
+  });
+
+  mask.addEventListener('click', () => {
+    document.body.setAttribute('sidebar-open', 'false');
+  });
+
+  new MutationObserver(() => {
+    const open = document.body.getAttribute('sidebar-open') === 'true';
+    for (const el of [sidebar, mask]) el.setAttribute('data-visible', `${open}`);
+  }).observe(document.body, {
+    attributes: true,
+    attributeFilter: ['sidebar-open'],
+  });
 </script>
 
 <script>
@@ -72,9 +146,7 @@ const { config, theme, owner, repository, ref, domain } = ctx;
     }
   }
 
-  import context from 'src/context';
-
-  const { theme } = context.get();
+  const { theme } = (window as any).docs_page;
 
   const tweets = document.querySelectorAll('div[data-tweet]');
 
@@ -171,9 +243,7 @@ const { config, theme, owner, repository, ref, domain } = ctx;
    * group ID across the page, and onto a cookie via the server.
    */
 
-  import context from 'src/context';
-
-  const { owner, repository, ref, domain } = context.get();
+  const { owner, repository, ref, domain } = (window as any).docs_page;
 
   const tabs = document.querySelectorAll('div[data-tab-group]');
 
