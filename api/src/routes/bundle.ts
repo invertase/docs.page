@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
 import { ok, badRequest, serverError, response } from '../res';
-import bundler, { ERROR_CODES } from '../bundler/index';
+import bundler, { BundlerError } from '../bundler/index';
 
 const $input = z.object({
   owner: z
@@ -30,24 +30,15 @@ export default async function bundle(req: Request, res: Response): Promise<Respo
   try {
     return ok(res, await bundler(input.data));
   } catch (e: unknown) {
-    if (e === ERROR_CODES.REPO_NOT_FOUND) {
-      return response(res, 404, 'REPO_NOT_FOUND', {
-        error: `The repository ${input.data.owner}/${input.data.repository} was not found.`,
+    if (e instanceof BundlerError) {
+      return response(res, e.code, e.name, {
+        error: {
+          message: e.message,
+          cause: e.cause,
+          links: e.links,
+        },
       });
     }
-
-    if (e === ERROR_CODES.FILE_NOT_FOUND) {
-      return response(res, 404, 'FILE_NOT_FOUND', {
-        error: `The file "/docs/${input.data.path}.mdx" or "/docs/${input.data.path}/index.mdx" in repository ${input.data.owner}/${input.data.repository} was not found.`,
-      });
-    }
-
-    if (e === ERROR_CODES.BUNDLE_ERROR) {
-      return response(res, 500, 'BUNDLE_ERROR', {
-        error: 'Something went wrong while bundling the file. Are you sure the MDX is valid?',
-      });
-    }
-
     return serverError(res, e);
   }
 }

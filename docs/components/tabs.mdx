@@ -96,6 +96,7 @@ First, import the package:
     ```js
     import axios from 'axios';
     ````
+
   </TabItem>
   <TabItem value="dart">
     Add the `dio` package:
@@ -109,6 +110,7 @@ First, import the package:
     ```dart
     import 'package:dio/dio.dart';
     ```
+
   </TabItem>
 </Tabs>
 
@@ -125,13 +127,13 @@ Next, perform a network request to 'https://example.com':
     ```js
     const response = await axios.get('https://example.com');
     console.log(response.data);
-    ````
+    ```
   </TabItem>
   <TabItem value="dart">
     ```dart
     var dio = Dio();
     final response = await dio.get('https://example.com');
     print(response.data);
-    ````
+    ```
   </TabItem>
 </Tabs>

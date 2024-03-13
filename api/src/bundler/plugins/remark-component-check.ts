@@ -17,6 +17,7 @@ const components = [
   'Image',
   'YouTube',
   'Vimeo',
+  'Video',
   'Zapp',
 ];
 

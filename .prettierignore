@@ -2,7 +2,7 @@
 node_modules
 build
 dist
-repositories.json
 domains.json
 spelling.json
 _docs.page
+docs/components/tabs.mdx

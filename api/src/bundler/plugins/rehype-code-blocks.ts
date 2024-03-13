@@ -1,52 +1,56 @@
 import { visit } from 'unist-util-visit';
-import type { Node } from 'hast-util-heading-rank/lib';
+import { Node } from 'unist';
 import { toString } from 'mdast-util-to-string';
 import * as shiki from 'shiki';
+import { Element } from 'hast';
 
 let highlighter: shiki.Highlighter;
 
-// Returns an object of supported languages.
-const languages = shiki.BUNDLED_LANGUAGES.reduce(
-  (map, lang) => {
-    const out = { [lang.id]: lang.id };
-    for (const alias of lang.aliases || []) out[alias] = lang.id;
-    return { ...map, ...out };
-  },
-  { '': 'text', gradle: 'groovy' } as Record<string, string>,
-);
+const languages: Record<string, string> = {
+  '': 'text',
+  gradle: 'groovy',
+};
+shiki.bundledLanguagesInfo.forEach(lang => {
+  languages[lang.id] = lang.id;
+  for (const alias of lang.aliases || []) {
+    languages[alias] = lang.id;
+  }
+});
 
-/**
- * Matches any `pre code` elements and extracts the raw code and titles from the code block and assigns to the parent.
- * @returns
- */
+const cssVariablesTheme = shiki.createCssVariablesTheme({
+  name: 'css-variables',
+  variablePrefix: '--shiki-',
+  variableDefaults: {},
+  fontStyle: true,
+});
+
 export default function rehypeCodeBlocks(): (ast: Node) => void {
-  function visitor(node: any, _i: number, parent: any) {
+  function visitor(node: Element, _i: number, parent: Element) {
     if (!parent || parent.tagName !== 'pre' || node.tagName !== 'code') {
       return;
     }
 
     const raw = toString(node);
-    const language = languages[getLanguage(node) || ''];
-
-    // Raw value of the `code` block - used for copy/paste
-    parent.properties['raw'] = raw;
-    parent.properties['language'] = language;
+    const blockLanguage = getLanguage(node) || '';
+    const languageActual: string = languages[blockLanguage] || 'text';
+    if (!parent.properties) parent.properties = {};
+    parent.properties['raw'] = raw; // Used to support copy/paste functionality,
+    parent.properties['language'] = languageActual;
     parent.properties['html'] = highlighter.codeToHtml(raw, {
-      lang: language,
+      lang: languageActual,
+      theme: 'css-variables',
     });
-
-    // Get any metadata from the code block
     const meta = (node.data?.meta as string) ?? '';
-
     const title = extractTitle(meta);
     if (title) parent.properties['title'] = title;
   }
-
   return async (ast: Node): Promise<void> => {
-    highlighter = await shiki.getHighlighter({
-      theme: 'css-variables',
-    });
-    // @ts-ignore
+    if (!highlighter) {
+      highlighter = await shiki.getHighlighter({
+        langs: Array.from(new Set(Object.values(languages))),
+        themes: [cssVariablesTheme],
+      });
+    }
     visit(ast, 'element', visitor);
   };
 }
@@ -67,11 +71,10 @@ function extractTitle(meta: string): string | null {
 }
 
 // Get the programming language of `node`.
-function getLanguage(node: any): string | undefined {
-  const className = node.properties.className || [];
+function getLanguage(node: Element): string | undefined {
+  const className: string[] = (node.properties?.className as string[]) || [];
   let index = -1;
   let value: string;
-
   while (++index < className.length) {
     value = className[index];
 

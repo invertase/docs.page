@@ -26,3 +26,52 @@ To prevent the sandbox from loading until the user interacts, pass the `lazy` pr
 ```
 
 <Zapp lazy id="flutter" />
+
+## From GitHub
+
+To load a Zapp! from GitHub, set the `id` prop to `github/<path>`.
+
+```jsx
+<Zapp id="github/roaa94/flutter_3d_calculator" />
+```
+
+<Zapp id="github/roaa94/flutter_3d_calculator" />
+
+You can also pass a path relative to the root of the repository.
+
+```jsx
+<Zapp id="github/rrousselGit/riverpod/tree/master/packages/flutter_riverpod/example" />
+```
+
+<Zapp id="github/rrousselGit/riverpod/tree/master/packages/flutter_riverpod/example" />
+
+## From GitHub Gists
+
+To load a Zapp! from a GitHub Gist, set the `id` prop to `gist/<id>`.
+
+Gist:
+https://gist.github.com/flutterdevrelgists/ecabed4a17a3aad8bee7c6327e472fc8
+
+Zapp:
+
+```jsx
+<Zapp id="gist/ecabed4a17a3aad8bee7c6327e472fc8" />
+```
+
+Final product:
+
+<Zapp id="gist/ecabed4a17a3aad8bee7c6327e472fc8" />
+
+## From Pub
+
+To load a Zapp! from a https://pub.dev example, set the `id` prop to `pub/<package>` or `pub/<package>/<version>`.
+
+```jsx
+<Zapp id="pub/http" />
+
+<Zapp id="pub/http/0.13.4" />
+```
+
+<Zapp id="pub/http" />
+
+<Zapp id="pub/http/0.13.4" />

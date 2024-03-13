@@ -4,6 +4,14 @@
 		"invertase/docs.page"
 	],
 	[
+		"docs.globe.dev",
+		"invertase/globe"
+	],
+	[
+		"docs.turing.sh",
+		"TuringAI-Team/turing-ai-api"
+	],
+	[
 		"melos.invertase.dev",
 		"invertase/melos"
 	],
@@ -66,5 +74,89 @@
 	[
 		"docs.sharezone.net",
 		"SharezoneApp/sharezone-app"
+	],
+	[
+		"docs.nahpu.app",
+		"hhandika/nahpu-docs"
+	],
+	[
+		"docs.custom-lint.dev",
+		"invertase/dart_custom_lint"
+	],
+	[
+		"starknetdart.dev",
+		"focustree/starknet.dart"
+	],
+	[
+		"docs.neorepo.com",
+		"neorepohq/docs"
+	],
+	[
+		"docs.solsend.dev",
+	 	"Solsend/solsend-web"
+	],
+	[
+		"boxtransform.hyperdesigned.dev",
+		"hyper-designed/box_transform"
+	],
+	[
+		"docs.pieces.app",
+		"pieces-app/documentation"
+	],
+	[
+		"news.pieces.app",
+		"pieces-app/news"
+	],
+	[
+		"docs.buildwiththeta.com",
+		"buildwiththeta/buildwiththeta"
+	],
+	[
+		"stepbuilder.cookiecode.dev",
+		"sebastienvermeille/intellij-stepbuilder-codegen-plugin"
+	],
+	[
+		"rika2mqtt.cookiecode.dev",
+		"sebastienvermeille/rika2mqtt"
+	],
+ 	[
+		"rearch.gsconrad.com",
+		"GregoryConrad/rearch-docs"
+ 	],
+	[
+		"docs.densky.apika.me",
+		"Densky-Framework/densky"
+	],
+	[
+		"docs.flchart.dev",
+		"imaNNeo/fl_chart"
+	],
+	[
+		"docs.galaxyguard.xyz",
+		"Divine-Hades/GalaxyGuardDocs"
+ 	],
+	[
+		"docs.vectofy.co.uk",
+		"Vectofy/vectofy-user-docs"
+	],
+	[
+		"docs.sedenion.net",
+		"SedenionCas/Sedenion"
+	],
+	[
+		"docs.nizukshya.com",
+		"Nizukshya-Labs/documentations"
+	],
+	[
+		"cleanframework.acmesoftware.com",
+		"AcmeSoftwareLLC/clean_framework"
+	],
+	[
+		"docs.yaroo.dev",
+		"codekeyz/yaroo"
+	],
+	[
+		"utils.kishormainali.com",
+		"kishormainali/fp_util"
 	]
 ]

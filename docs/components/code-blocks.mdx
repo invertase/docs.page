@@ -42,11 +42,11 @@ export async function apiRequest(options) {
 
 The above code block was created with the following snippet:
 
-```text
+````text
 ```javascript
 export async function apiRequest(options) {
   // ...
-```
+````
 
 Syntax highlighting is generated using [Shiki](https://github.com/shikijs/shiki). You can find a list of
 [supported languages here](https://github.com/shikijs/shiki/blob/main/docs/languages.md#all-languages).
@@ -65,15 +65,15 @@ export async function apiRequest(options) {
 
 The above code block was created with the following snippet:
 
-```text
+````text
 ```javascript title="Sending a request"
 export async function apiRequest(options) {
   // ...
-```
+````
 
 ## Code Groups
 
-You can group multiple code blocks together by using the `<CodeGroup>` component.  This is useful for showing
+You can group multiple code blocks together by using the `<CodeGroup>` component. This is useful for showing
 variations of the "same" code in a different language
 
 <CodeGroup title="Logging: Hello World">
@@ -81,15 +81,16 @@ variations of the "same" code in a different language
   console.log("Hello World");
   ```
 
-  ```python
-  print('Hello World!')
-  ```
+```python
+print('Hello World!')
+```
 
-  ```dart
-  void main() {
-    print('Hello World!');
-  }
-  ```
+```dart
+void main() {
+  print('Hello World!');
+}
+```
+
 </CodeGroup>
 
 Specify each of the code blocks and their language as children of the component.
