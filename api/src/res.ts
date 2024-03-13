@@ -15,7 +15,11 @@ export function response<T extends object>(
   code: string,
   other:
     | {
-        error: string;
+        error: {
+          message: string;
+          cause?: string | unknown;
+          links?: { title: string; url: string }[];
+        };
       }
     | {
         data: T;

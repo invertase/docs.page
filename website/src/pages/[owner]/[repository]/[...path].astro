@@ -16,7 +16,7 @@ import Theme from '@components/Theme.astro';
 
 import { getBundle } from 'src/bundle';
 import context from 'src/context';
-import type { GetBundleResponse } from 'src/bundle';
+import type { GetBundleResponse, GetBundleResponseError } from 'src/bundle';
 import { isExternalLink, replaceMoustacheVariables, ensureLeadingSlash } from 'src/utils';
 import { trackPageRequest } from 'src/plausible';
 import domains from '../../../../../domains.json';
@@ -36,7 +36,7 @@ if (repository.includes('~')) {
 
 let response: GetBundleResponse | undefined;
 let code: GetBundleResponse['code'];
-let message: string = '';
+let error: GetBundleResponseError = { message: '' };
 
 try {
   response = await getBundle({
@@ -47,11 +47,12 @@ try {
   });
   
   code = response.code;
-  if ('error' in response) message = response.error;
+  // refer to [api/src/routes/bundle.ts] for more information;
+  if ('error' in response) error = response.error;
 } catch (e) {
   console.error(e);
   code = 'BUNDLE_ERROR';
-  message = 'An error occurred while fetching the bundle.'
+  error.message = 'An error occurred while fetching the bundle.'
 }
 
 const statusCodes = {
@@ -180,10 +181,11 @@ function codeToTitle(code: GetBundleResponse['code']) {
     <Root>
       <ErrorPage
         code={404}
+        errorName={code}
         title={codeToTitle(code)}
-        description={`(${code})`}
-        extraInfo={message}
-        href={code === 'REPO_NOT_FOUND' ? '/' : `/${owner}/${repository}`}
+        description={error.message}
+        cause={error.cause}
+        links={error.links}
       />
     </Root>
   )
@@ -195,9 +197,10 @@ function codeToTitle(code: GetBundleResponse['code']) {
       <ErrorPage
         code={500}
         title="Something went wrong"
-        description={`(${code})`}
-        extraInfo={message}
-        href={`/${owner}/${repository}`}
+        errorName={code}
+        description={error.message}
+        cause={error.cause}
+        links={error.links}
       />
     </Root>
   )
