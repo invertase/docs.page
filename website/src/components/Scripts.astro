@@ -226,12 +226,12 @@ const { config, theme, owner, repository, ref, domain } = ctx;
   }
 </script>
 {
-  config.googleAnalytics && (
+  config?.googleAnalytics && (
     <script async src={`https://www.googletagmanager.com/gtag/js?id=${config.googleAnalytics}`} />
   )
 }
 {
-  config.googleAnalytics && (
+  config?.googleAnalytics && (
     <script
       slot="head"
       type="text/javascript"
@@ -244,7 +244,7 @@ const { config, theme, owner, repository, ref, domain } = ctx;
   )
 }
 {
-  config.googleTagManager && (
+  config?.googleTagManager && (
     <script
       slot="head"
       type="text/javascript"
@@ -260,7 +260,7 @@ const { config, theme, owner, repository, ref, domain } = ctx;
   )
 }
 {
-  config.plausibleAnalytics && domain && (
+  config?.plausibleAnalytics && domain && (
     <script slot="head" defer data-domain={domain} src={config.plausibleAnalyticsScript} />
   )
 }
