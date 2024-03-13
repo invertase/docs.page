@@ -32,7 +32,11 @@ export default async function bundle(req: Request, res: Response): Promise<Respo
   } catch (e: unknown) {
     if (e instanceof BundlerError) {
       return response(res, e.code, e.name, {
-        error: e.message,
+        error: {
+          message: e.message,
+          cause: e.cause,
+          links: e.links,
+        },
       });
     }
     return serverError(res, e);

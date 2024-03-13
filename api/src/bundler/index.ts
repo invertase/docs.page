@@ -1,12 +1,31 @@
 import parseConfig, { Config, defaultConfig } from '../utils/config';
 import { getGitHubContents, getPullRequestMetadata } from '../utils/github';
 import { bundle } from './mdx';
+import { escapeHtml } from '../utils/sanitize';
 
 export class BundlerError extends Error {
-  constructor(public code: number, name: string, message: string) {
+  code: number;
+  links?: { title: string; url: string }[];
+
+  constructor({
+    code,
+    name,
+    message,
+    cause,
+    links,
+  }: {
+    code: number;
+    name: string;
+    message: string;
+    cause?: string;
+    links?: { title: string; url: string }[];
+  }) {
     super(message);
+    this.code = code;
     this.name = name;
     this.message = message;
+    this.cause = cause;
+    this.links = links;
   }
 }
 
@@ -95,21 +114,29 @@ class Bundler {
     });
 
     if (!metadata) {
-      throw new BundlerError(
-        404,
-        ERROR_CODES.REPO_NOT_FOUND,
-        `The repository ${this.#source.owner}/${this.#source.repository} was not found.`,
-      );
+      throw new BundlerError({
+        code: 404,
+        name: ERROR_CODES.REPO_NOT_FOUND,
+        message: `The repository ${this.#source.owner}/${this.#source.repository} was not found.`,
+      });
     }
 
     if (!metadata.md) {
-      throw new BundlerError(
-        404,
-        ERROR_CODES.FILE_NOT_FOUND,
-        `The file "/docs/${this.#path}.mdx" or "/docs/${this.#path}/index.mdx" in repository ${
-          this.#source.owner
-        }/${this.#source.repository} was not found.`,
-      );
+      throw new BundlerError({
+        code: 404,
+        name: ERROR_CODES.FILE_NOT_FOUND,
+        message: `The file "/docs/${this.#path}.mdx" or "/docs/${
+          this.#path
+        }/index.mdx" in repository /${
+          this.#source.owner + '/' + this.#source.repository
+        } was not found.`,
+        links: [
+          {
+            title: 'Repository link',
+            url: `https://github.com/${this.#source.owner}/${this.#source.repository}`,
+          },
+        ],
+      });
     }
 
     this.#markdown = metadata.md;
@@ -153,14 +180,22 @@ class Bundler {
       };
     } catch (e) {
       console.error(e);
-      throw new BundlerError(
-        500,
-        ERROR_CODES.BUNDLE_ERROR,
-        `Something went wrong while bundling the file. Are you sure the MDX is valid? ${
-          // @ts-ignore
-          e?.message || ''
-        }`,
-      );
+      // @ts-ignore
+      const message = escapeHtml(e?.message || '');
+      throw new BundlerError({
+        code: 500,
+        name: ERROR_CODES.BUNDLE_ERROR,
+        message: `Something went wrong while bundling the file /${metadata.path}.mdx. Are you sure the MDX is valid?`,
+        cause: message,
+        links: [
+          {
+            title: `/${metadata.path}.mdx on GitHub`,
+            url: `https://github.com/${this.#source.owner}/${this.#source.repository}/blob/${
+              this.#ref
+            }/${metadata.path}.mdx`,
+          },
+        ],
+      });
     }
   };
 }
