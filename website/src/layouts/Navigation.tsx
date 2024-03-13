@@ -32,7 +32,7 @@ export default function Navigation() {
 
   return (
     <ul id="navigation" ref={navRef}>
-      {headings.map((heading: any, index: number) => (
+      {headings.map((heading, index) => (
         <li key={`${heading.id}-${index}`}>
           <a
             data-id={heading.id}
