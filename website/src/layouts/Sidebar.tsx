@@ -9,7 +9,7 @@ import { useStore } from '@nanostores/react';
 import { type BundleConfig } from 'src/bundle';
 
 export default function Sidebar() {
-  const { owner, repository, ref, config, locale, sidebar } = useStore(context);
+  const { owner, repository, config, locale, sidebar } = useStore(context);
   let anchors: BundleConfig['anchors'] = config.anchors || [];
 
   function getLinkRef(href: string): string | undefined {
