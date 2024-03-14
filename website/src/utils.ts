@@ -68,3 +68,84 @@ export function getBlobPath(src: string) {
     src,
   )}`;
 }
+
+export const sideBarToggleLogic = () => {
+  const toggle = document.querySelector('button[data-sidebar-toggle]')!;
+  const sidebar = document.querySelector('div[data-sidebar]')!;
+  const mask = document.querySelector('div[data-sidebar-mask]')!;
+
+  // Listen to menu toggle events and toggle the body attribute.
+  toggle?.addEventListener('click', () => {
+    document.body.setAttribute(
+      'sidebar-open',
+      (document.body.getAttribute('sidebar-open') !== 'true').toString(),
+    );
+  });
+
+  mask?.addEventListener('click', () => {
+    document.body.setAttribute('sidebar-open', 'false');
+  });
+
+  new MutationObserver(() => {
+    const open = document.body.getAttribute('sidebar-open') === 'true';
+    for (const el of [sidebar, mask]) el.setAttribute('data-visible', `${open}`);
+  }).observe(document.body, {
+    attributes: true,
+    attributeFilter: ['sidebar-open'],
+  });
+};
+
+export const themeToggleLogic = ({
+  owner,
+  repository,
+  domain,
+  ref,
+}: {
+  owner: string;
+  repository: string;
+  domain?: string;
+  ref?: string;
+}) => {
+  const html = document.documentElement;
+  const isDark = () => html.getAttribute('data-theme') === 'dark';
+
+  const toggle = document.querySelector('button[data-theme-toggle]')!;
+  const light = toggle?.querySelector('span[data-theme-type="light"]') as HTMLSpanElement;
+  const dark = toggle?.querySelector('span[data-theme-type="dark"]') as HTMLSpanElement;
+
+  function toggleElements() {
+    if (!toggle || !light || !dark) return;
+    if (isDark()) {
+      light.style.display = 'none';
+      dark.style.display = 'inline';
+    } else {
+      dark.style.display = 'none';
+      light.style.display = 'inline';
+    }
+  }
+
+  toggle?.addEventListener('click', () => {
+    const theme = isDark() ? 'light' : 'dark';
+    // Update the theme attribute on the <html> element
+    theme === 'light'
+      ? html.removeAttribute('data-theme')
+      : html.setAttribute('data-theme', 'dark');
+    // Toggle the icons
+    toggleElements();
+    // Update the theme via server and return a cookie
+    fetch('/api/docs.page/theme', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        owner,
+        repository,
+        ref,
+        domain,
+        theme,
+      }),
+    });
+  });
+  toggleElements();
+};

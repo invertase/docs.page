@@ -84,20 +84,55 @@ const $GetBundleResponseError = z.object({
   links: z.array(z.object({ title: z.string(), url: z.string() })).optional(),
 });
 
+const $ApiError = z.object({
+  code: z.enum(['NOT_FOUND', 'BAD_REQUEST', 'REPO_NOT_FOUND', 'FILE_NOT_FOUND', 'BUNDLE_ERROR']),
+  error: $GetBundleResponseError,
+});
+
 const $GetBundleResponse = z.union([
   z.object({
     code: z.literal('OK'),
     data: $GetBundleResponseSuccess,
   }),
-  z.object({
-    code: z.enum(['NOT_FOUND', 'BAD_REQUEST', 'REPO_NOT_FOUND', 'FILE_NOT_FOUND', 'BUNDLE_ERROR']),
-    error: $GetBundleResponseError,
+  $ApiError,
+]);
+
+const $GetPreviewRequest = z.object({
+  config: z.object({
+    json: z.string().optional(),
+    yaml: z.string().optional(),
   }),
+  markdown: z.string(),
+});
+
+const $GetPreviewResponseSuccess = z.object({
+  config: $BundleConfig,
+  code: z.string(),
+  frontmatter: z.record(z.string()),
+  headings: z.array(
+    z.object({
+      id: z.string(),
+      title: z.string(),
+      rank: z.number().nullable(),
+    }),
+  ),
+});
+
+const $GetPreviewResponse = z.union([
+  z.object({
+    code: z.literal('OK'),
+    data: $GetPreviewResponseSuccess,
+  }),
+  $ApiError,
 ]);
 
 export type GetBundleRequest = z.infer<typeof $GetBundleRequest>;
 export type GetBundleResponse = z.infer<typeof $GetBundleResponse>;
 export type GetBundleResponseSuccess = z.infer<typeof $GetBundleResponseSuccess>;
+
+export type GetPreviewRequest = z.infer<typeof $GetPreviewRequest>;
+export type GetPreviewResponse = z.infer<typeof $GetPreviewResponse>;
+export type GetPreviewResponseSuccess = z.infer<typeof $GetPreviewResponseSuccess>;
 export type GetBundleResponseError = z.infer<typeof $GetBundleResponseError>;
 
 export type BundleConfig = z.infer<typeof $BundleConfig>;
@@ -128,6 +163,42 @@ export async function getBundle(options: GetBundleRequest): Promise<GetBundleRes
   }
 
   return output.data;
+}
+
+export async function getPreview(options: GetPreviewRequest): Promise<GetPreviewResponse> {
+  $GetPreviewRequest.parse(options);
+
+  if (import.meta.env.NODE_ENV == 'production' && !import.meta.env.API_PASSWORD) {
+    throw new Error('Please provide API_PASSWORD env variable');
+  }
+
+  const endpoint = getPreviewEndpoint();
+  const encoder = new TextEncoder();
+  const encodedData = encoder.encode(`admin:${import.meta.env.API_PASSWORD}`);
+  const response = await fetch(`${endpoint}/preview`, {
+    method: 'POST',
+    body: JSON.stringify(options),
+    headers: new Headers({
+      Authorization: 'Bearer ' + encodedData,
+    }),
+  });
+
+  const output = $GetPreviewResponse.safeParse(await response.json());
+
+  if (!output.success) {
+    throw new Error(`Failed to fetch bundle for "${endpoint}". HTTP Status: "${response.status}".`);
+  }
+
+  return output.data;
+}
+
+function getPreviewEndpoint(): string {
+  const base =
+    import.meta.env.BUNDLER_URL || import.meta.env.PROD
+      ? import.meta.env.BUNDLER_URL || `https://api.docs.page`
+      : 'http://localhost:8080';
+
+  return base;
 }
 
 function getEndpoint(options: GetBundleRequest): string {

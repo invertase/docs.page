@@ -8,6 +8,8 @@ export interface Props {
   description?: string;
   // Adds a social preview image to the page (e.g. twitter:image)
   image?: string;
+  // Sets the <meta name="twitter:creator" content="..."> tag of the page
+  author?: string;
 }
 
 const { title = '', description = '', image = '', author = '' } = Astro.props;

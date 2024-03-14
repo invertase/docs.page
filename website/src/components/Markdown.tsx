@@ -6,7 +6,7 @@ import context from 'src/context';
 import Link from './Link';
 import FontAwesome from './FontAwesome';
 
-import CodeBlock, { CodeBlockProps } from './mdx/CodeBlock';
+import CodeBlock, { type CodeBlockProps } from './mdx/CodeBlock';
 import CodeGroup from './mdx/CodeGroup';
 import Accordion from './mdx/Accordion';
 import Image from './mdx/Image';
@@ -44,11 +44,11 @@ const Markdown: React.FC = () => {
           table: (props: any) => <Table {...props} />,
           pre: (props: any) => <CodeBlock {...(props as CodeBlockProps)} />,
           h1: (props: any) => <Heading {...props} type="h1" />,
-          h2: (props: any) => <Heading {...props} type="h2" anchor />,
-          h3: (props: any) => <Heading {...props} type="h3" anchor />,
-          h4: (props: any) => <Heading {...props} type="h4" anchor />,
-          h5: (props: any) => <Heading {...props} type="h5" anchor />,
-          h6: (props: any) => <Heading {...props} type="h6" anchor />,
+          h2: (props: any) => <Heading {...props} type="h2" anchor="true" />,
+          h3: (props: any) => <Heading {...props} type="h3" anchor="true" />,
+          h4: (props: any) => <Heading {...props} type="h4" anchor="true" />,
+          h5: (props: any) => <Heading {...props} type="h5" anchor="true" />,
+          h6: (props: any) => <Heading {...props} type="h6" anchor="true" />,
           section: (props: any) => {
             const { id, ...rest } = props;
             return (
