@@ -32,15 +32,18 @@ export default function PreviousNext() {
   };
 
   // If the user has specified a previous or next page, use that.
-  if (frontmatter.previous)
+  if (frontmatter.previous) {
     previous = [
       frontmatter.previousTitle || titleForLink(frontmatter.previous) || '',
       frontmatter.previous,
     ];
-  if (frontmatter.next)
-    next = [frontmatter.nextTitle || titleForLink(frontmatter.next) || '', frontmatter.next];
+  }
 
-  // If the user wants auto infered previous/next, find them (if not already set).
+  if (frontmatter.next) {
+    next = [frontmatter.nextTitle || titleForLink(frontmatter.next) || '', frontmatter.next];
+  }
+
+  // If the user wants auto inferred previous/next, find them (if not already set).
   if (automaticallyInferNextPrevious) {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const currentIndex = links.findIndex(([_, href]) => href === relativePath);

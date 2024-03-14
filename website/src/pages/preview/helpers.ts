@@ -223,7 +223,7 @@ export const fetchIndex = async (
       repository: '',
       ref: '',
       locale,
-      relativePath: '',
+      relativePath: relativePath,
       githubPath: '',
       githubRefPath: '',
       sidebar,

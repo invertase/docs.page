@@ -31,6 +31,7 @@ export default function Preview(props: { previewPath?: string | undefined }) {
         if (ctx) {
           // loading from IDB was successful, set the context
           context.set(ctx);
+          context.setKey('relativePath', `/${previewPath}`);
           setLoading(false);
           return;
         }
@@ -38,6 +39,7 @@ export default function Preview(props: { previewPath?: string | undefined }) {
         // otherwise, initialize the app
         init(possibleFileKeys, context)
           .then(() => {
+            context.setKey('relativePath', `/${previewPath}`);
             setLoading(false);
           })
           .catch(e => {
