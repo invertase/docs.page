@@ -309,5 +309,6 @@ export const loadContents = async (
       saveContextInIDB(ctx, indexMarkdownFile.name);
       context.set(ctx);
     }
+    location.replace('/preview');
   }
 };
