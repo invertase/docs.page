@@ -39,6 +39,20 @@ const { config, theme, owner, repository, ref, domain } = ctx;
 </script>
 
 <script>
+  const { owner, repository, domain, ref } = (window as any).docs_page;
+  const locale = document.querySelector('select#locale');
+
+  if (locale) {
+    locale?.addEventListener('change', event => {
+      const { value } = event.target as HTMLSelectElement;
+      let href = repository ? `/${owner}/${repository}` : `/${owner}`;
+      if (ref) href += `~${encodeURIComponent(ref)}`;
+      window.location.href = href + `/${value}`;
+    });
+  }
+</script>
+
+<script>
   import type { Context } from 'src/context';
   const { owner, repository, domain, ref } = (window as any).docs_page as Context;
   const html = document.documentElement;

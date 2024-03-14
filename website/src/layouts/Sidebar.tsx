@@ -5,13 +5,12 @@ import Link from '@components/Link';
 import context from 'src/context';
 import { isExternalLink } from 'src/utils';
 import RefBadge from '@components/RefBadge';
-import { useEffect, useState } from 'react';
 import { useStore } from '@nanostores/react';
 import { type BundleConfig } from 'src/bundle';
 
 export default function Sidebar() {
   const { owner, repository, ref, config, locale, sidebar } = useStore(context);
-  const [anchors, setAnchors] = useState<BundleConfig['anchors']>(config.anchors || []);
+  let anchors: BundleConfig['anchors'] = config.anchors || [];
 
   function getLinkRef(href: string): string | undefined {
     if (isExternalLink(href)) {
@@ -26,37 +25,25 @@ export default function Sidebar() {
     return found ? found.name : locale;
   }
 
-  useEffect(() => {
-    setAnchors([
+  anchors = [
+    ...anchors,
+    {
+      icon: 'github',
+      title: 'GitHub',
+      link: repository ? `https://github.com/${owner}/${repository}` : 'https://github.com/',
+    },
+  ];
+
+  if (config.twitter) {
+    anchors = [
       ...anchors,
       {
-        icon: 'github',
-        title: 'GitHub',
-        link: repository ? `https://github.com/${owner}/${repository}` : 'https://github.com/',
+        icon: 'twitter',
+        title: 'Twitter',
+        link: `https://twitter.com/${config.twitter}`,
       },
-    ]);
-
-    if (config.twitter) {
-      setAnchors([
-        ...anchors,
-        {
-          icon: 'twitter',
-          title: 'Twitter',
-          link: `https://twitter.com/${config.twitter}`,
-        },
-      ]);
-    }
-    const locale = document.querySelector('select#locale');
-
-    if (locale) {
-      locale.addEventListener('change', event => {
-        const { value } = event.target as HTMLSelectElement;
-        let href = repository ? `/${owner}/${repository}` : `/${owner}`;
-        if (ref) href += `~${encodeURIComponent(ref)}`;
-        window.location.href = href + `/${value}`;
-      });
-    }
-  }, []);
+    ];
+  }
 
   return (
     <nav className="mt-9 overscroll-contain">
