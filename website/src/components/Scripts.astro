@@ -54,75 +54,17 @@ const { config, theme, owner, repository, ref, domain } = ctx;
 
 <script>
   import type { Context } from 'src/context';
+  import { themeToggleLogic } from 'src/utils';
+
   const { owner, repository, domain, ref } = (window as any).docs_page as Context;
-  const html = document.documentElement;
-  const isDark = () => html.getAttribute('data-theme') === 'dark';
 
-  const toggle = document.querySelector('button[data-theme-toggle]')!;
-  const light = toggle.querySelector('span[data-theme-type="light"]') as HTMLSpanElement;
-  const dark = toggle.querySelector('span[data-theme-type="dark"]') as HTMLSpanElement;
-
-  function toggleElements() {
-    if (isDark()) {
-      light.style.display = 'none';
-      dark.style.display = 'inline';
-    } else {
-      dark.style.display = 'none';
-      light.style.display = 'inline';
-    }
-  }
-
-  toggle.addEventListener('click', () => {
-    const theme = isDark() ? 'light' : 'dark';
-    // Update the theme attribute on the <html> element
-    theme === 'light'
-      ? html.removeAttribute('data-theme')
-      : html.setAttribute('data-theme', 'dark');
-    // Toggle the icons
-    toggleElements();
-    // Update the theme via server and return a cookie
-    fetch('/api/docs.page/theme', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        owner,
-        repository,
-        ref,
-        domain,
-        theme,
-      }),
-    });
-  });
-
-  toggleElements();
+  themeToggleLogic({ owner, repository, domain, ref });
 </script>
 
 <script>
-  const toggle = document.querySelector('button[data-sidebar-toggle]')!;
-  const sidebar = document.querySelector('div[data-sidebar]')!;
-  const mask = document.querySelector('div[data-sidebar-mask]')!;
+  import { sideBarToggleLogic } from 'src/utils';
 
-  // Listen to menu toggle events and toggle the body attribute.
-  toggle.addEventListener('click', () => {
-    document.body.setAttribute(
-      'sidebar-open',
-      (document.body.getAttribute('sidebar-open') !== 'true').toString(),
-    );
-  });
-
-  mask.addEventListener('click', () => {
-    document.body.setAttribute('sidebar-open', 'false');
-  });
-
-  new MutationObserver(() => {
-    const open = document.body.getAttribute('sidebar-open') === 'true';
-    for (const el of [sidebar, mask]) el.setAttribute('data-visible', `${open}`);
-  }).observe(document.body, {
-    attributes: true,
-    attributeFilter: ['sidebar-open'],
-  });
+  sideBarToggleLogic();
 </script>
 
 <script>
