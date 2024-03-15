@@ -100,10 +100,6 @@
 		"hyper-designed/box_transform"
 	],
 	[
-		"docs.pieces.app",
-		"pieces-app/documentation"
-	],
-	[
 		"news.pieces.app",
 		"pieces-app/news"
 	],
