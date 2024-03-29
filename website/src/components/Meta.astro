@@ -4,13 +4,16 @@ import { getImagePath } from 'src/utils';
 
 const { owner, repository, ref, domain, relativePath, frontmatter, config } = context.get();
 
-const title = frontmatter.title || config.name || `${owner}/${repository}`;
-const description = frontmatter.description || config.description || '';
+const title =
+  frontmatter?.title || config?.name || (owner && repository)
+    ? `${owner}/${repository}`
+    : `Preview`;
+const description = frontmatter?.description || config?.description || '';
 const url = domain
   ? `https://${domain}${ref ? `/~${ref}` : ''}${relativePath}`
   : `https://docs.page/${owner}/${repository}${ref ? `~${ref}` : ''}${relativePath}`;
 
-let image = frontmatter.image || config.socialPreview;
+let image = frontmatter?.image || config?.socialPreview;
 if (!image) {
   const params = Buffer.from(
     JSON.stringify({
@@ -18,7 +21,7 @@ if (!image) {
       repository,
       title,
       description,
-      logo: config.logo ? getImagePath(config.logo) : '',
+      logo: config?.logo ? getImagePath(config?.logo) : '',
     }),
   ).toString('base64');
 
@@ -30,8 +33,8 @@ if (!image) {
 {!!description && <meta name="description" content={description} />}
 
 <meta name="twitter:card" content="summary_large_image" />
-{config.twitter && <meta name="twitter:site" content={`@${config.twitter}`} />}
-{(config.noindex || frontmatter.noindex || !!ref) && <meta name="robots" content="noindex" />}
+{config?.twitter && <meta name="twitter:site" content={`@${config?.twitter}`} />}
+{(config?.noindex || frontmatter?.noindex || !!ref) && <meta name="robots" content="noindex" />}
 <meta name="twitter:title" content={title} />
 <meta name="twitter:description" content={description} />
 <meta name="twitter:image" content={image} />

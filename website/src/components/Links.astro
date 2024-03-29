@@ -10,7 +10,7 @@ const { config } = context.get();
 <link
   slot="head"
   rel="shortcut icon"
-  href={getImagePath(config.favicon || 'https://docs.page/favicon.ico?v=2')}
+  href={getImagePath(config?.favicon || 'https://docs.page/favicon.ico?v=2')}
 />
 
 <link href="/_docs.page/fa/fontawesome.min.css" rel="stylesheet" />
@@ -18,7 +18,7 @@ const { config } = context.get();
 <link href="/_docs.page/fa/solid.min.css" rel="stylesheet" />
 
 {
-  config.experimentalMath && (
+  config?.experimentalMath && (
     <link
       slot="head"
       rel="stylesheet"
@@ -26,19 +26,18 @@ const { config } = context.get();
     />
   )
 }
-<!-- TODO: {config.experimentalCodehike && (
+<!-- TODO: {config?.experimentalCodehike && (
     <link slot="head" data-testid="codehike-styles" rel="stylesheet" href={codeHikeStyles} />
   )} -->
 {
-  !!config.docsearch && (
+  !!config?.docsearch && (
     <>
       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3" />
       <link
         rel="preconnect"
-        href={`https://${config.docsearch.appId}-dsn.algolia.net`}
+        href={`https://${config?.docsearch.appId}-dsn.algolia.net`}
         crossorigin
       />
     </>
   )
 }
-  
