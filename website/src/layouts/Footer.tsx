@@ -7,7 +7,7 @@ export default function Footer() {
   return (
     <footer className="mt-12 flex items-center border-t py-12 text-xs dark:border-slate-800/80">
       <div>
-        Docs powered by
+        Docs powered by&nbsp;
         <a
           className="opacity-75 transition hover:opacity-100"
           href="https://invertase.io?utm_source=docspage"
