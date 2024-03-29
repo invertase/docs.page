@@ -2,6 +2,7 @@ import { map } from 'nanostores';
 import type { BundleConfig, GetBundleResponseSuccess, SidebarArray } from './bundle';
 
 export type Context = {
+  isPreviewReady?: boolean;
   // The owner of the repository (e.g. invertase)
   owner: string;
   // The name of the repository (e.g. docs.page)

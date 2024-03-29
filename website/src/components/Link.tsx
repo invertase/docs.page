@@ -4,10 +4,10 @@ import { isExternalLink, removeTrailingSlash } from 'src/utils';
 
 interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   href: string;
-  activeClassName?: string;
+  activeClassNames?: string;
 }
 
-const Link: React.FC<LinkProps> = props => {
+const Link: React.FC<LinkProps> = ({ activeClassNames, ...props }) => {
   const { owner, repository, ref, domain, relativePath, locale } = context.get();
 
   if (isExternalLink(props.href)) {
@@ -36,14 +36,14 @@ const Link: React.FC<LinkProps> = props => {
       <a
         {...props}
         className={cx(props.className, {
-          [props.activeClassName || '']: props.href === relativePath,
+          [activeClassNames || '']: props.href === relativePath,
         })}
         href={href}
       />
     );
   }
 
-  let to = `/${owner}/${repository}`;
+  let to = repository ? `/${owner}/${repository}` : `/${owner}`;
 
   if (ref && ref !== 'HEAD') {
     to += `~${encodeURIComponent(ref)}`;
@@ -57,7 +57,7 @@ const Link: React.FC<LinkProps> = props => {
     <a
       {...props}
       className={cx(props.className, {
-        [props.activeClassName || '']: props.href === relativePath,
+        [activeClassNames || '']: props.href === relativePath,
       })}
       href={removeTrailingSlash(`${to}${props.href}`)}
     />

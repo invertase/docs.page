@@ -1,27 +1,21 @@
 ---
 import Root from '@layouts/Root.astro';
-import Header from '@layouts/Header.astro';
-import Footer from '@layouts/Footer.astro';
-import Sidebar from '@layouts/Sidebar.astro';
-import Navigation from '@layouts/Navigation.astro';
+import DocsView from '@layouts/DocsView.tsx';
 import ErrorPage from '@layouts/ErrorPage.astro';
 
+import { type GetBundleResponse, getBundle, type GetBundleResponseError } from 'src/bundle';
+import { trackPageRequest } from 'src/plausible';
+import context from 'src/context';
+import domains from '../../../../../domains.json';
+import { isExternalLink, replaceMoustacheVariables, ensureLeadingSlash } from 'src/utils';
+import Links from '@components/Links.astro';
 import Meta from '@components/Meta.astro';
 import Scripts from '@components/Scripts.astro';
 import Styles from '@components/Styles.astro';
-import Links from '@components/Links.astro';
-import PreviousNext from '@components/PreviousNext.astro';
-import Markdown from '@components/Markdown';
 import Theme from '@components/Theme.astro';
 
-import { getBundle } from 'src/bundle';
-import context from 'src/context';
-import type { GetBundleResponse, GetBundleResponseError } from 'src/bundle';
-import { isExternalLink, replaceMoustacheVariables, ensureLeadingSlash } from 'src/utils';
-import { trackPageRequest } from 'src/plausible';
-import domains from '../../../../../domains.json';
-
 let { owner, repository, path } = Astro.params;
+
 let ref: string | undefined;
 let status: number = 200;
 
@@ -160,6 +154,7 @@ if (response?.code === 'OK') {
     theme: theme ? (theme === 'dark' ? 'dark' : 'light') : undefined,
     tabs,
   });
+
 }
 
 function codeToTitle(code: GetBundleResponse['code']) {
@@ -214,34 +209,7 @@ function codeToTitle(code: GetBundleResponse['code']) {
       <Scripts slot="head" />
       <Styles slot="head" />
       <Links slot="head" />
-      <Header />
-      <section class="max-w-8xl mx-auto px-4 sm:px-6 md:px-8">
-        <div
-         data-sidebar 
-         data-visible="false"
-         class="fixed top-16 bottom-0 left-0 translate-x-[-46rem] lg:left-[max(0px,calc(50%-46rem))] lg:translate-x-0 right-auto z-20 w-[19.5rem] overflow-y-auto px-6 pb-10 sm:px-8 md:px-10 lg:block transition-transform
-          data-[visible=true]:translate-x-0 data-[visible=true]:bg-white data-[visible=true]:dark:bg-zinc-900 data-[visible=true]:border-t dark:border-slate-800/80 
-         "
-        >
-          <Sidebar />
-        </div>
-        <div class="lg:pl-[20rem]">
-          <div class="flex flex-row items-stretch gap-12 pt-9">
-            <div class="relative mx-auto max-w-3xl flex-grow overflow-auto text-slate-500 dark:text-slate-400 xl:-ml-12 xl:max-w-[47rem] xl:pr-1 xl:pl-12">
-              <Markdown />
-              <PreviousNext />
-              <Footer />
-            </div>
-            <div class="z-10 hidden w-[17rem] flex-none pl-10 xl:flex">
-              <nav class="fixed h-[calc(100%-8rem)] w-[16.5rem] overflow-y-auto text-sm leading-6">
-                <Navigation />
-              </nav>
-            </div>
-          </div>
-        </div>
-        <div data-docsearch />
-        <div data-sidebar-mask data-visible="false" class="fixed inset-0 bg-zinc-900/50 backdrop-blur opacity-0 data-[visible=true]:opacity-100 z-10 transition-opacity lg:hidden data-[visible=false]:pointer-events-none" />
-      </section>
+      <DocsView />
     </Root>
   )
 }
