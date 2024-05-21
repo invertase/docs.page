@@ -41,7 +41,7 @@ npm run dev
 
 ## Structure
 
-Aside from the projects homepage, all requests are sent via the `src/pages/[owner]/[name]/[[...slug]].tsx` file. If production a cached version of the statically generated HTML output will be served,
+Aside from the projects homepage, all requests are sent via the `src/pages/[owner]/[name]/[[...slug]].tsx` file. In production a cached version of the statically generated HTML output will be served,
 or created then cached. In development however, the page is built on each request. Therefore load times might seem a bit slower than expected.
 
 > Learn more about this at [Next.js](https://nextjs.org/docs/basic-features/data-fetching#getstaticprops-static-generation).
