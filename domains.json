@@ -158,5 +158,8 @@
 	[
 		"docs.gazelle-dart.dev",
 		"intales/gazelle"
+	],
+	[	"docs.lamp-ic.fr", 
+		"TeddyVermeulin/lamp-doc"
 	]
 ]
