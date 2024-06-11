@@ -1,8 +1,8 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { z } from 'zod';
 import { ok, badRequest, serverError } from '../res';
 import { bundle } from '../bundler/mdx';
-import parseConfig from '../utils/config';
+import { parseConfig } from '../config';
 
 const $input = z.object({
   markdown: z.string(),
@@ -26,7 +26,7 @@ export default async function preview(req: Request, res: Response): Promise<Resp
     });
 
     const mdx = await bundle(input.data.markdown, {
-      headerDepth: config.headerDepth,
+      headerDepth: config.content?.headerDepth ?? 3,
     });
 
     return ok(res, {

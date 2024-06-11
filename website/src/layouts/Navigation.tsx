@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useStore } from '@nanostores/react';
-import context from 'src/context';
+import { useContext } from 'src/context';
 
 export default function Navigation() {
-  const { headings } = useStore(context);
+  const { bundle } = useContext();
+  const headings = bundle.headings;
   const navRef = useRef(null);
   const [activeId, setActiveId] = useState('');
   const [currentActiveId, setCurrentActiveId] = useState('');

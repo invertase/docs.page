@@ -1,9 +1,10 @@
-import { Request, Response } from 'express';
+import type { Request, Response } from 'express';
 import { z } from 'zod';
 import { ok, badRequest, serverError, response } from '../res';
-import bundler, { BundlerError } from '../bundler/index';
+import bundler, { type BundlerOutput } from '../bundler/index';
+import { BundlerError } from '../bundler/error';
 
-const $input = z.object({
+const QuerySchema = z.object({
   owner: z
     .string({
       required_error: 'Missing owner parameter.',
@@ -20,8 +21,30 @@ const $input = z.object({
   path: z.string().optional().default('index'),
 });
 
+export type BundleResponse =
+  | {
+      code: 'OK';
+      data: BundlerOutput;
+    }
+  | {
+      code:
+        | 'NOT_FOUND'
+        | 'BAD_REQUEST'
+        | 'REPO_NOT_FOUND'
+        | 'FILE_NOT_FOUND'
+        | 'BUNDLE_ERROR'
+        | 'INTERNAL_SERVER_ERROR';
+      error:
+        | string
+        | {
+            message: string;
+            cause?: string | unknown;
+            links?: { title: string; url: string }[];
+          };
+    };
+
 export default async function bundle(req: Request, res: Response): Promise<Response> {
-  const input = $input.safeParse(req.query);
+  const input = QuerySchema.safeParse(req.query);
 
   if (!input.success) {
     return badRequest(res, input.error);

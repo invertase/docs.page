@@ -3,7 +3,7 @@ import Root from '@layouts/Root.astro';
 import DocsView from '@layouts/DocsView.tsx';
 import ErrorPage from '@layouts/ErrorPage.astro';
 
-import { type GetBundleResponse, getBundle, type GetBundleResponseError } from 'src/bundle';
+import { type BundleResponse, type BundlerOutput, getBundle } from 'src/bundle';
 import { trackPageRequest } from 'src/plausible';
 import context from 'src/context';
 import domains from '../../../../../domains.json';
@@ -28,9 +28,9 @@ if (repository.includes('~')) {
   [repository, ref] = repository.split('~');
 }
 
-let response: GetBundleResponse | undefined;
-let code: GetBundleResponse['code'];
-let error: GetBundleResponseError = { message: '' };
+let response: BundleResponse | undefined = undefined;
+let code: BundleResponse['code'];
+let error: BundleResponse['error'] = { message: '', cause: '', links: [] };
 
 try {
   response = await getBundle({
@@ -56,28 +56,29 @@ const statusCodes = {
   FILE_NOT_FOUND: 404,
   REPO_NOT_FOUND: 404,
   BUNDLE_ERROR: 500,
-} satisfies { [key in GetBundleResponse['code']]: number };
+  INTERNAL_SERVER_ERROR: 500,
+} satisfies { [key in BundleResponse['code']]: number };
 
 // Get & set the status code from the bundle code.
 status = statusCodes[code];
 
-
 if (response?.code === 'OK') {
-  const { frontmatter, config, source, baseBranch, code, headings } = response!.data;
+  const bundle = response.data;
 
+  // Find whether this repository has a domain setup.
   const domain = domains.find(([, repo]) => repo === `${owner}/${repository}`)?.at(0);
 
   // Handle a frontmatter redirect
-  const redirect = frontmatter.redirect;
-  if (redirect && isExternalLink(redirect)) {
+  const redirect = bundle.frontmatter.redirect;
+  if (typeof redirect === 'string' && isExternalLink(redirect)) {
     return Astro.redirect(redirect);
-  } else if (redirect && domain) {
+  } else if (typeof redirect === 'string' && domain) {
     // If there is a domain setup, always redirect to it.
     let url = `https://${domain}`;
     if (ref) url += `/~${ref}`;
     url += redirect;
     return Astro.redirect(url);
-  } else if (redirect && !domain) {
+  } else if (typeof redirect === 'string' && !domain) {
     // If no domain, redirect to docs.page.
     let url = `https://docs.page/${owner}/${repository}`;
     if (ref) url += `~${ref}`;
@@ -93,71 +94,19 @@ if (response?.code === 'OK') {
     Astro.response.headers.set('Cache-Control', 's-maxage=1, stale-while-revalidate=59');
   }
 
-  // Set the theme color
-  const theme = Astro.cookies.get('theme')?.value;
-
-  // Get any syncronized tabs
-  let tabs = {};
-  try {
-    tabs = Astro.cookies.get('tabs')?.json() ?? {};
-  } catch {}
-  
-  let relativePath = ensureLeadingSlash(path || '/');
-  let locale: string | undefined;
-
-  // Check whether the request is for a valid locale.
-  if (config.locales.length) {
-    [locale] = relativePath.split('/').filter(Boolean);
-    if (!config.locales.includes(locale)) {
-      locale = undefined;
-    } else {
-      relativePath = relativePath.replace(`/${locale}`, '');
-    }
-  }
-
-  // Figure out the sidebar based on the locale.
-  let sidebar = [];
-  if (locale && !Array.isArray(config.sidebar)) {
-    sidebar = config.sidebar[locale];
-  } else if (!Array.isArray(config.sidebar)) {
-    sidebar = config.sidebar['default'] || [];
-  } else {
-    sidebar = config.sidebar;
-  }
-
   // Set the context store.
   context.set({
+    request: Astro.request,
     owner,
     repository,
-    relativePath,
-    locale,
-    githubPath: `https://github.com/${owner}/${repository}/edit/${
-      source.type === 'branch' && source.ref !== 'HEAD' ? source.ref : baseBranch
-    }/docs/${path || 'index'}.mdx`,
-    githubRefPath: (() => {
-      let base = `https://github.com/${owner}/${repository}`;
-      if (source.ref === 'HEAD') return base;
-      if (source.type === 'branch') return base + `/tree/${ref}`;
-      if (source.type === 'commit') return base + `/commit/${ref}`;
-      if (source.type === 'PR') return base + `/pull/${ref}`;
-      return '';
-    })(),
     ref,
-    sidebar,
-    config,
-    frontmatter,
-    code: replaceMoustacheVariables(config.variables ?? {}, code),
-    headings,
+    bundle,
     domain,
-    baseBranch,
-    source,
-    theme: theme ? (theme === 'dark' ? 'dark' : 'light') : undefined,
-    tabs,
   });
 
 }
 
-function codeToTitle(code: GetBundleResponse['code']) {
+function codeToTitle(code: BundleResponse['code']) {
   switch (code) {
     case 'NOT_FOUND':
     case 'REPO_NOT_FOUND':
@@ -166,6 +115,8 @@ function codeToTitle(code: GetBundleResponse['code']) {
     case 'FILE_NOT_FOUND':
       return 'Page not found.';
     case 'BUNDLE_ERROR':
+    case 'INTERNAL_SERVER_ERROR':
+    default:
       return 'Something went wrong.';
   }
 }

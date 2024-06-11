@@ -1,33 +1,9 @@
-import parseConfig, { Config, defaultConfig } from '../utils/config';
 import { getGitHubContents, getPullRequestMetadata } from '../utils/github';
 import { bundle } from './mdx';
 import { escapeHtml } from '../utils/sanitize';
-
-export class BundlerError extends Error {
-  code: number;
-  links?: { title: string; url: string }[];
-
-  constructor({
-    code,
-    name,
-    message,
-    cause,
-    links,
-  }: {
-    code: number;
-    name: string;
-    message: string;
-    cause?: string;
-    links?: { title: string; url: string }[];
-  }) {
-    super(message);
-    this.code = code;
-    this.name = name;
-    this.message = message;
-    this.cause = cause;
-    this.links = links;
-  }
-}
+import { type Config, defaultConfig, parseConfig } from '../config';
+import { BundlerError } from './error';
+import type { HeadingNode } from './plugins/rehype-headings';
 
 export const ERROR_CODES = {
   REPO_NOT_FOUND: 'REPO_NOT_FOUND',
@@ -40,6 +16,19 @@ type Source = {
   owner: string;
   repository: string;
   ref?: string;
+};
+
+export type BundlerOutput = {
+  source: Source;
+  ref: string;
+  baseBranch: string;
+  notices: string[];
+  path: string;
+  config: Config;
+  markdown: string;
+  headings: HeadingNode[];
+  frontmatter: Record<string, unknown>;
+  code: string;
 };
 
 class Bundler {
@@ -99,7 +88,7 @@ class Bundler {
   /**
    * Builds the payload with the MDX bundle.
    */
-  build = async () => {
+  async build(): Promise<BundlerOutput> {
     // Get the real source of the request
     this.#source = await this.getSource();
 
@@ -163,7 +152,7 @@ class Bundler {
     try {
       // Bundle the markdown file via MDX.
       const mdx = await bundle(this.#markdown, {
-        headerDepth: this.#config.headerDepth,
+        headerDepth: this.#config.content?.headerDepth ?? 3,
       });
 
       return {
@@ -197,7 +186,7 @@ class Bundler {
         ],
       });
     }
-  };
+  }
 }
 
 type CreateBundlerParams = {

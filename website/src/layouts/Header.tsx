@@ -1,5 +1,3 @@
-import { useStore } from '@nanostores/react';
-
 import Link from '@components/Link';
 import SearchBar from '@components/SearchBar';
 import ThemeToggle from '@components/ThemeToggle';
@@ -8,11 +6,12 @@ import RefBadge from '@components/RefBadge';
 import { getImagePath } from 'src/utils';
 import { MagnifyingGlassIcon } from '@components/icons';
 
-import context from 'src/context';
+import { useContext } from 'src/context';
 import { SideBarToggle } from '@components/SideBarToggle';
 
 export default function Header() {
-  const { owner, repository, config } = useStore(context);
+  const { owner, repository, bundle } = useContext();
+  const config = bundle.config;
 
   return (
     <header className="bg:white sticky top-0 z-20 border-b backdrop-blur dark:border-slate-800/80">

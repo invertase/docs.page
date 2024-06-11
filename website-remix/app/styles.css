@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html[data-theme='dark'] {
+  color-scheme: dark;
+}
+
+:root {
+  --shiki-background: #222226;
+  --shiki-foreground: #fff;
+  --shiki-token-constant: #6ee7b7;
+  --shiki-token-string: #6ee7b7;
+  --shiki-token-comment: #71717a;
+  --shiki-token-keyword: #7dd3fc;
+  --shiki-token-parameter: #f9a8d4;
+  --shiki-token-function: #c4b5fd;
+  --shiki-token-string-expression: #6ee7b7;
+  --shiki-token-punctuation: #e4e4e7;
+}

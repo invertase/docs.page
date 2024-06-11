@@ -1,8 +1,8 @@
 import { compile } from '@mdx-js/mdx';
-import { Message } from 'esbuild';
+import type { Message } from 'esbuild';
 import frontmatter from 'gray-matter';
 import { getRehypePlugins, getRemarkPlugins } from './plugins/index';
-import rehypeHeadings, { HeadingNode } from './plugins/rehype-headings';
+import rehypeHeadings, { type HeadingNode } from './plugins/rehype-headings';
 
 type MdxBundlerResponse = {
   code: string;
