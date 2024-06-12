@@ -81,6 +81,7 @@ export const V1ConfigSchema = z
       social: {
         x: v1.twitter,
       },
+      anchors: v1.anchors,
       seo: {
         noindex: v1.noindex,
       },

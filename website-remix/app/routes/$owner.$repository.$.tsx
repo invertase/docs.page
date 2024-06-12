@@ -3,11 +3,8 @@ import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
 import domains from '../../../domains.json';
 import { getBundle } from '../api';
-import { PageContext } from '../context';
-import { Header } from '../components/Header';
-import { Sidebar } from '../components/Sidebar';
-import { Content } from '../components/Content';
-import { ThemeScript } from '../components/Theme';
+import { Context, PageContext } from '../context';
+import { Layout } from '../Layout';
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const owner = args.params.owner;
@@ -64,34 +61,21 @@ export const loader = async (args: LoaderFunctionArgs) => {
   }
 
   return {
-    url: new URL(args.request.url),
+    url: args.request.url,
     owner,
     repository,
     ref,
     domain,
     bundle,
-  };
+  } satisfies Context;
 };
 
 export default function DocsPage() {
-  const data = useLoaderData<typeof loader>();
+  const context = useLoaderData<typeof loader>();
 
   return (
-    <PageContext.Provider value={data}>
-      <ThemeScript />
-      <div className="max-w-8xl relative mx-auto">
-        <section className="fixed inset-x-0 top-0 h-16">
-          <Header />
-        </section>
-        <section className="fixed left-0 top-16 bottom-0 px-4">
-          <Sidebar />
-        </section>
-        <div className="pt-16 pl-52">
-          <section className="px-4">
-            <Content />
-          </section>
-        </div>
-      </div>
+    <PageContext.Provider value={context}>
+      <Layout />
     </PageContext.Provider>
   );
 }

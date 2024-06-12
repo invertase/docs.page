@@ -1,7 +1,7 @@
 import type { Request, Response } from 'express';
 import { z } from 'zod';
 import { ok, badRequest, serverError, response } from '../res';
-import bundler, { type BundlerOutput } from '../bundler/index';
+import { Bundler, type BundlerOutput } from '../bundler/index';
 import { BundlerError } from '../bundler/error';
 
 const QuerySchema = z.object({
@@ -51,7 +51,8 @@ export default async function bundle(req: Request, res: Response): Promise<Respo
   }
 
   try {
-    return ok(res, await bundler(input.data));
+    const bundler = new Bundler(input.data);
+    return ok(res, await bundler.build());
   } catch (e: unknown) {
     if (e instanceof BundlerError) {
       return response(res, e.code, e.name, {

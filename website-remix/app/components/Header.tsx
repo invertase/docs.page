@@ -1,12 +1,10 @@
-import { usePageContext } from '../context';
+import { Logo } from './Logo';
 
 export function Header() {
-  const { owner } = usePageContext();
-
   return (
     <header className="px-4">
       <div className="h-12 flex items-center">
-        {owner}
+        <Logo />
       </div>
     </header>
   );

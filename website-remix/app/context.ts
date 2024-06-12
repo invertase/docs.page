@@ -1,12 +1,13 @@
 import { createContext, useContext } from 'react';
+import { BundlerOutput } from './api';
 
 export type Context = {
-  url: URL;
+  url: string;
   owner: string;
   repository: string;
   ref?: string;
   domain?: string;
-  bundle: any;
+  bundle: BundlerOutput;
 };
 
 export const PageContext = createContext<Context | undefined>(undefined);

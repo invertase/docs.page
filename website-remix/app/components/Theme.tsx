@@ -21,3 +21,22 @@ if (localStorage[key] === 'dark' || (!(key in localStorage) && window.matchMedia
     />
   );
 }
+
+export function ThemeToggle() {
+  const { owner, repository } = usePageContext();
+  const key = getThemeKey(owner, repository);
+
+  function toggleTheme() {
+    const theme = localStorage[key] === 'dark' ? 'light' : 'dark';
+    localStorage[key] = theme;
+    document.documentElement.setAttribute('data-theme', theme);
+  }
+
+  return (
+    <button
+      onClick={toggleTheme}
+    >
+      Toggle Theme
+    </button>
+  );
+}

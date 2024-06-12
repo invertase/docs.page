@@ -48,7 +48,20 @@ export const ConfigSchema = z
       })
       .nullish()
       .catch(null),
-    // The social
+    anchors: z
+      .array(
+        z
+          .object({
+            icon: z.string(),
+            title: z.string(),
+            link: z.string(),
+            locale: z.string().nullish(),
+          })
+          .optional()
+          .catch(undefined),
+      )
+      .transform(items => items.filter(Boolean))
+      .catch([]),
     social: z
       .object({
         preview: z.string().nullish(),
@@ -71,6 +84,17 @@ export const ConfigSchema = z
       .nullish()
       .catch(null),
     variables: z.record(z.any()).catch({}),
+    search: z.object({
+      docsearch: z
+        .object({
+          appId: z.string().catch(''),
+          apiKey: z.string().catch(''),
+          indexName: z.string().catch(''),
+        })
+        .nullish()
+        .catch(null),
+    }).nullish()
+      .catch(null),
     scripts: z
       .object({
         googleTagManager: z.string().nullish(),
@@ -93,6 +117,7 @@ export const ConfigSchema = z
           .object({
             name: z.string(),
             href: z.string(),
+            locale: z.string().nullish(),
           })
           .nullish()
           .catch(null),

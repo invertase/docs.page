@@ -1,5 +1,5 @@
 import { getGitHubContents, getPullRequestMetadata } from '../utils/github';
-import { bundle } from './mdx';
+import { parseMdx } from './mdx';
 import { escapeHtml } from '../utils/sanitize';
 import { type Config, defaultConfig, parseConfig } from '../config';
 import { BundlerError } from './error';
@@ -22,7 +22,6 @@ export type BundlerOutput = {
   source: Source;
   ref: string;
   baseBranch: string;
-  notices: string[];
   path: string;
   config: Config;
   markdown: string;
@@ -31,11 +30,18 @@ export type BundlerOutput = {
   code: string;
 };
 
-class Bundler {
+
+type CreateBundlerParams = {
+  owner: string;
+  repository: string;
+  path: string;
+  ref?: string;
+};
+
+export class Bundler {
   readonly #owner: string;
   readonly #repository: string;
   readonly #path: string;
-  #notices: Array<string> = [];
   #ref: string | undefined;
   #source?: Source;
   #config?: Config;
@@ -143,15 +149,12 @@ class Bundler {
         yaml: metadata.config.configYaml,
       });
     } catch {
-      this.#notices.push(
-        'The configuration file is invalid, falling back to the default configuration.',
-      );
       this.#config = defaultConfig;
     }
 
     try {
       // Bundle the markdown file via MDX.
-      const mdx = await bundle(this.#markdown, {
+      const mdx = await parseMdx(this.#markdown, {
         headerDepth: this.#config.content?.headerDepth ?? 3,
       });
 
@@ -159,7 +162,6 @@ class Bundler {
         source: this.#source,
         ref: this.#ref,
         baseBranch: metadata.baseBranch,
-        notices: this.#notices,
         path: this.#path,
         config: this.#config,
         markdown: this.#markdown,
@@ -187,15 +189,4 @@ class Bundler {
       });
     }
   }
-}
-
-type CreateBundlerParams = {
-  owner: string;
-  repository: string;
-  path: string;
-  ref?: string;
-};
-
-export default function bundler(params: CreateBundlerParams) {
-  return new Bundler(params).build();
 }
