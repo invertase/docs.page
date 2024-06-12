@@ -13,7 +13,6 @@ config();
 const PORT = process.env.PORT || 8080;
 const app = express();
 app.use(text());
-app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(

@@ -2,11 +2,12 @@ import { createContext, useContext } from 'react';
 import { BundlerOutput } from './api';
 
 export type Context = {
-  url: string;
-  owner: string;
-  repository: string;
+  url?: string;
+  owner?: string;
+  repository?: string;
   ref?: string;
   domain?: string;
+  preview?: true;
   bundle: BundlerOutput;
 };
 
