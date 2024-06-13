@@ -43,7 +43,7 @@ export const ConfigSchema = z
       .object({
         // grayScale: z.boolean().catch(false), // TODO?
         primary: z.string().optional().nullish(),
-        primayLight: z.string().optional().nullish(),
+        primaryLight: z.string().optional().nullish(),
         primaryDark: z.string().optional().nullish(),
       })
       .nullish()
@@ -84,16 +84,18 @@ export const ConfigSchema = z
       .nullish()
       .catch(null),
     variables: z.record(z.any()).catch({}),
-    search: z.object({
-      docsearch: z
-        .object({
-          appId: z.string().catch(''),
-          apiKey: z.string().catch(''),
-          indexName: z.string().catch(''),
-        })
-        .nullish()
-        .catch(null),
-    }).nullish()
+    search: z
+      .object({
+        docsearch: z
+          .object({
+            appId: z.string().catch(''),
+            apiKey: z.string().catch(''),
+            indexName: z.string().catch(''),
+          })
+          .nullish()
+          .catch(null),
+      })
+      .nullish()
       .catch(null),
     scripts: z
       .object({

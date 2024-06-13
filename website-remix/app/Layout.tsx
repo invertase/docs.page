@@ -1,12 +1,12 @@
 import { Content } from "./components/Content";
 import { Header } from "./components/Header";
 import { Sidebar } from "./components/Sidebar";
-import { ThemeScript } from "./components/Theme";
+import { ThemeScripts } from "./components/Theme";
 
 export function Layout() {
   return (
     <>
-      <ThemeScript />
+      <ThemeScripts />
       <div className="max-w-8xl relative mx-auto">
         <section className="fixed inset-x-0 top-0 h-16">
           <Header />

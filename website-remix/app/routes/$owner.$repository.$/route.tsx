@@ -13,8 +13,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
   let ref: string | undefined;
 
   if (!owner || !repository) {
-    // TODO Error
-    throw new Error('Invalid repository');
+    throw new Error('Invalid routing scenario.');
   }
 
   // Check if the repo includes a ref (invertase/foo~bar)
@@ -61,7 +60,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
   }
 
   return {
-    url: args.request.url,
+    path,
     owner,
     repository,
     ref,

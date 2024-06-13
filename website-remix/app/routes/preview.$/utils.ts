@@ -1,6 +1,8 @@
-import { useParams } from '@remix-run/react';
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { openDB, type IDBPDatabase, type DBSchema } from 'idb';
+
+const DATABASE = 'docs.page';
+const DATABASE_VERSION = 2;
 
 interface Database extends DBSchema {
   handles: {
@@ -19,7 +21,7 @@ let _db: IDBPDatabase<Database> | undefined;
 
 // Opens a database and creates the necessary object stores.
 async function openDatabase() {
-  return (_db ??= await openDB<Database>('todo', 2, {
+  return (_db ??= await openDB<Database>(DATABASE, DATABASE_VERSION, {
     upgrade(db) {
       db.createObjectStore('handles');
       db.createObjectStore('files');
@@ -47,9 +49,11 @@ export function useDirectoryHandle() {
       // Verify we can access the directory.
       const verified = await verifyPermission(handle);
 
-      // If we can't access the directory, delete the handle and return null.
+      // If we can't access the directory, delete the handle & files and return null.
       if (!verified) {
         await db.delete('handles', 'directory');
+        const files = await db.getAllKeys('files');
+        await Promise.all(files.map(file => db.delete('files', file)));
         return null;
       }
 
@@ -96,10 +100,7 @@ export function useDirectoryHandle() {
 }
 
 // Load the current page content from the database.
-export function usePageContent(directory?: FileSystemDirectoryHandle | null) {
-  const params = useParams();
-  const path = params['*'] ? `/${params['*']}` : '/';
-
+export function usePageContent(path: string, directory?: FileSystemDirectoryHandle | null) {
   return useQuery({
     enabled: !!directory,
     queryKey: ['page-context', directory?.name, path],
@@ -108,12 +109,16 @@ export function usePageContent(directory?: FileSystemDirectoryHandle | null) {
     queryFn: async () => {
       const db = await openDatabase();
 
+      const filePath = `/${path}`;
+
       // First check if we even have a file in the database for this path.
       const [file1, file2] = await Promise.all([
-        db.get('files', path + 'index.mdx'),
-        db.get('files', path + '.mdx'),
+        // Check for an `index.mdx` file first.
+        db.get('files', filePath + '/index.mdx'),
+        // Then check for a `.mdx` file.
+        db.get('files', filePath + '.mdx'),
       ]);
-      
+
       // If neither file exists, return a code...?
       if (!file1 && !file2) {
         throw new Error('File not found');
