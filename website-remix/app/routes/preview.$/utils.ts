@@ -1,4 +1,4 @@
-import { useSearchParams } from '@remix-run/react';
+import { useParams } from '@remix-run/react';
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { openDB, type IDBPDatabase, type DBSchema } from 'idb';
 
@@ -97,8 +97,8 @@ export function useDirectoryHandle() {
 
 // Load the current page content from the database.
 export function usePageContent(directory?: FileSystemDirectoryHandle | null) {
-  const [params] = useSearchParams();
-  const path = params.get('path') ?? '/';
+  const params = useParams();
+  const path = params['*'] ? `/${params['*']}` : '/';
 
   return useQuery({
     enabled: !!directory,

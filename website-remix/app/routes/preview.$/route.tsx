@@ -46,7 +46,7 @@ function Preview() {
   if (directory.error) {
     return <div>Error: {directory.error.message}</div>;
   }
-  
+
   if (content.isFetched && content.error) {
     return <div>Not found...</div>;
   }
@@ -68,13 +68,24 @@ function Preview() {
   }
 
   return (
-    <PageContext.Provider
-      value={{
-        preview: true,
-        bundle: context,
-      }}
-    >
-      <Layout />
-    </PageContext.Provider>
+    <>
+      <PageContext.Provider
+        value={{
+          preview: true,
+          bundle: context,
+        }}
+      >
+        <Layout />
+      </PageContext.Provider>
+      <div
+        className="fixed bottom-4 z-50 bg-black rounded-full px-3 py-1 text-white shadow-lg"
+        style={{
+          left: '50%',
+          transform: 'translateX(-50%)',
+        }}
+      >
+        Toolbar
+      </div>
+    </>
   );
 }
