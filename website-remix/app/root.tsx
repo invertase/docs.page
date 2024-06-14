@@ -29,7 +29,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="antialiased bg-background-light dark:bg-background-dark">
+      <body
+        className="antialiased bg-background-light dark:bg-background-dark"
+        style={{
+          textRendering: 'optimizeLegibility',
+        }}
+      >
         {children}
         <ScrollRestoration />
         <Scripts />

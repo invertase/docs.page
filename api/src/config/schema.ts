@@ -7,7 +7,7 @@ const SidebarPageItemSchema = z.object({
 });
 
 // Represents a group of pages in the sidebar
-type SidebarGroup = {
+export type SidebarGroup = {
   group: string;
   pages: (z.infer<typeof SidebarPageItemSchema> | SidebarGroup)[];
 };

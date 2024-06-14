@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import { BundlerOutput } from './api';
+import type { BundlerOutput, SidebarGroup } from './api';
 
 type BaseContext = {
   // The relative path of the current page, e.g. `/contributing`.
@@ -52,6 +52,7 @@ export function useLocale(): string | undefined {
   return locale && ctx.bundle.config.locales.includes(locale) ? locale : undefined;
 }
 
+// Returns the tabs for the current page and locale.
 export function useTabs() {
   const context = usePageContext();
   const locale = useLocale();
@@ -64,4 +65,21 @@ export function useTabs() {
 
   // Otherwise, return tabs that match the current locale.
   return tabs.filter(tab => tab.locale === locale);
+}
+
+// Returns the sidebar for the current page and locale.
+export function useSidebar(): SidebarGroup[] {
+  const ctx = usePageContext();
+  const locale = useLocale();
+
+  let sidebar: SidebarGroup[] = [];
+  if (locale && !Array.isArray(ctx.bundle.config.sidebar)) {
+    sidebar = ctx.bundle.config.sidebar[locale];
+  } else if (!Array.isArray(ctx.bundle.config.sidebar)) {
+    sidebar = ctx.bundle.config.sidebar['default'] || [];
+  } else {
+    sidebar = ctx.bundle.config.sidebar;
+  }
+
+  return sidebar;
 }

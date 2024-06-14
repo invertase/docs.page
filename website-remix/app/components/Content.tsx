@@ -11,7 +11,7 @@ export function Content() {
   );
 
   return (
-    <div>
+    <div className='pt-5'>
       <MDX
         components={{
           // h1: () => 'lol',

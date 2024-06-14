@@ -45,6 +45,7 @@
     },
     {
       "group": "Components",
+      "matches": "/components/*",
       "pages": [
         {
           "title": "Accordion",
@@ -136,6 +137,7 @@
     }
   ],
   "search": {
+    "enabled": true,
     "docsearch": {
       "apiKey": "9b58d13ee3195094105d528fc6161a01",
       "appId": "BH4D9OD16A",

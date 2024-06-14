@@ -12,13 +12,13 @@ export function Layout() {
   return (
     <>
       <ThemeScripts />
-      <div className="max-w-8xl relative mx-auto px-8">
-        <section className="fixed inset-x-0 top-0">
-          <Header />
-          <Tabs />
-        </section>
+      <section className="fixed inset-x-0 top-0">
+        <Header />
+        <Tabs />
+      </section>
+      <div className="max-w-7xl mx-auto px-5">
         <section
-          className={cn('fixed left-0 top-16 bottom-0 px-4', {
+          className={cn('fixed w-[17rem] bottom-0 overflow-y-auto', {
             'top-16': !hasTabs,
             'top-28': true,
           })}
@@ -26,12 +26,12 @@ export function Layout() {
           <Sidebar />
         </section>
         <div
-          className={cn('pl-52', {
+          className={cn('pl-[17rem]', {
             'pt-16': !hasTabs,
             'pt-28': true,
           })}
         >
-          <section className="pe-4">
+          <section className="ps-16 pe-4">
             <Content />
           </section>
         </div>

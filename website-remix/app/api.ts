@@ -1,6 +1,5 @@
-import type { BundlerOutput } from '../../api/src/types';
-
-export { BundlerOutput };
+import type { BundlerOutput, SidebarGroup } from '../../api/src/types';
+export type { BundlerOutput, SidebarGroup };
 
 type GetBundleArgs = {
   owner: string;
