@@ -25,6 +25,7 @@ export function ThemeScripts() {
     }
   };
 
+  const defaultTheme = theme?.defaultTheme ?? 'system';
   const primary = getColor(theme?.primary ?? fallback);
   const primaryLight = getColor(theme?.primaryLight ?? theme?.primary ?? fallback);
   const primaryDark = getColor(theme?.primaryDark ?? theme?.primary ?? fallback);
@@ -39,11 +40,20 @@ export function ThemeScripts() {
   const scripts = `
     <script>
       (() => {
+        const defaultTheme = '${defaultTheme}';
         const key = '${key}';
-        if (localStorage[key] === 'dark' || (!(key in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-          document.documentElement.setAttribute('data-theme', 'dark');
+        if (key in localStorage) {
+          document.documentElement.setAttribute('data-theme', localStorage[key]);
         } else {
-          document.documentElement.setAttribute('data-theme', 'light');
+          if (defaultTheme === 'system') {
+            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+              document.documentElement.setAttribute('data-theme', 'dark');
+            } else {
+              document.documentElement.setAttribute('data-theme', 'light');
+            }
+          } else {
+            document.documentElement.setAttribute('data-theme', defaultTheme);
+          }
         }
       })();
     </script>
@@ -79,15 +89,9 @@ export function ThemeToggle() {
   const key = getThemeKey(ctx);
   const [enabled, setEnabled] = useState<boolean>();
 
-  useEffect(() => {
-    if (
-      localStorage[key] === 'dark' ||
-      (!(key in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
-    ) {
-      setEnabled(true);
-    } else {
-      setEnabled(false);
-    }
+  useLayoutEffect(() => {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    setEnabled(isDark);
   }, [key]);
 
   useEffect(() => {
