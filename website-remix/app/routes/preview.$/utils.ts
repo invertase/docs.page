@@ -3,6 +3,7 @@ import { openDB, type IDBPDatabase, type DBSchema } from 'idb';
 
 const DATABASE = 'docs.page';
 const DATABASE_VERSION = 2;
+const REFETCH_INTERVAL = 500;
 
 interface Database extends DBSchema {
   handles: {
@@ -34,7 +35,7 @@ async function openDatabase() {
 export function useDirectoryHandle() {
   return useQuery({
     queryKey: ['directory-handle'],
-    refetchInterval: 500,
+    refetchInterval: REFETCH_INTERVAL,
     queryFn: async () => {
       const db = await openDatabase();
 
@@ -99,12 +100,35 @@ export function useDirectoryHandle() {
   });
 }
 
+// Load all the files from the database.
+export function useFiles(enabled = true) {
+  return useQuery({
+    queryKey: ['files'],
+    refetchInterval: REFETCH_INTERVAL,
+    enabled,
+    queryFn: async () => {
+      const db = await openDatabase();
+      const keys = await db.getAllKeys('files');
+
+      const files: Record<string, string | undefined> = {};
+
+      await Promise.all(
+        keys.map(async key => {
+          files[key] = await db.get('files', key);
+        }),
+      );
+
+      return files;
+    },
+  });
+}
+
 // Load the current page content from the database.
 export function usePageContent(path: string, directory?: FileSystemDirectoryHandle | null) {
   return useQuery({
     enabled: !!directory,
     queryKey: ['page-context', directory?.name, path],
-    refetchInterval: 500,
+    refetchInterval: REFETCH_INTERVAL,
     retry: false,
     queryFn: async () => {
       const db = await openDatabase();
@@ -149,6 +173,21 @@ export function useSelectDirectory() {
       const db = await openDatabase();
       const directory = await window.showDirectoryPicker();
       await db.put('handles', directory, 'directory');
+    },
+    onSuccess: () => {
+      // Invalidate the page context query so it will re-fetch.
+      queryClient.invalidateQueries({ queryKey: ['page-context'] });
+    },
+  });
+}
+
+export function useRestart() {
+  return useMutation({
+    mutationFn: async () => {
+      const db = await openDatabase();
+      await db.delete('handles', 'directory');
+      const files = await db.getAllKeys('files');
+      await Promise.all(files.map(file => db.delete('files', file)));
     },
     onSuccess: () => {
       // Invalidate the page context query so it will re-fetch.

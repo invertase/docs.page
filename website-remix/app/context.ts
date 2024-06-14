@@ -28,8 +28,9 @@ type PageContext = BaseContext & {
 
 export type Context = PageContext | PreviewContext;
 
-export const PageContext = createContext<Context |  undefined>(undefined);
+export const PageContext = createContext<Context | undefined>(undefined);
 
+// Returns the current page context.
 export function usePageContext(): Context {
   const context = useContext(PageContext);
 
@@ -38,4 +39,29 @@ export function usePageContext(): Context {
   }
 
   return context;
+}
+
+// Returns the current locale.
+//
+// This is determined by the first segment of the path, e.g. `/fr/getting-started` would return `fr`.
+// For it to be considered a valid locale, it must be included in the `locales` array of the bundle config,
+// which is derived from the sidebar configuration.
+export function useLocale(): string | undefined {
+  const ctx = usePageContext();
+  const locale = ctx.path.split('/').filter(Boolean).at(0);
+  return locale && ctx.bundle.config.locales.includes(locale) ? locale : undefined;
+}
+
+export function useTabs() {
+  const context = usePageContext();
+  const locale = useLocale();
+  const tabs = context.bundle.config.tabs;
+
+  // If no locale is set, return tabs that are not locale-specific.
+  if (!locale) {
+    return tabs.filter(tab => !tab.locale);
+  }
+
+  // Otherwise, return tabs that match the current locale.
+  return tabs.filter(tab => tab.locale === locale);
 }

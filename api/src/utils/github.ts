@@ -42,6 +42,8 @@ type MetaData = {
 
 type PageContentsQuery = {
   repository: {
+    stars: number;
+    forks: number;
     baseBranch: {
       name: string;
     };
@@ -65,6 +67,8 @@ type PageContentsQuery = {
 };
 
 export type Contents = {
+  stars: number;
+  forks: number;
   isFork: boolean;
   baseBranch: string;
   config: {
@@ -92,6 +96,8 @@ export async function getGitHubContents(
       query: `
       query RepositoryConfig($owner: String!, $repository: String!, $configJson: String!, $configYaml: String!, $mdx: String!, $mdxIndex: String!) {
         repository(owner: $owner, name: $repository) {
+          stars: stargazerCount
+          forks: forkCount
           baseBranch: defaultBranchRef {
             name
           }
@@ -134,6 +140,8 @@ export async function getGitHubContents(
   }
 
   return {
+    stars: response?.repository?.stars ?? 0,
+    forks: response?.repository?.forks ?? 0,
     repositoryFound: true,
     isFork: response?.repository?.isFork ?? false,
     baseBranch: response?.repository.baseBranch.name ?? 'main',

@@ -16,7 +16,7 @@ export const links: LinksFunction = () => [
   },
   {
     rel: 'stylesheet',
-    href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@200;400&display=auto',
+    href: 'https://fonts.googleapis.com/css2?family=Poppins:wght@200;400;500&display=auto',
   },
 ];
 
@@ -29,7 +29,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="antialiased bg-background-light dark:bg-background-dark">
         {children}
         <ScrollRestoration />
         <Scripts />

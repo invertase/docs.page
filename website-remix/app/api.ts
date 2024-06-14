@@ -22,7 +22,7 @@ export async function getBundle(args: GetBundleArgs): Promise<BundlerOutput> {
 
   if (args.path) params.append('path', args.path);
   if (args.ref) params.append('ref', args.ref);
-  
+
   const response = await fetch(`${API_URL}/bundle?${params.toString()}`, {
     headers: new Headers({
       Authorization: `Bearer ${API_PASSWORD}`,

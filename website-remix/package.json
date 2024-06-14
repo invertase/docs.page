@@ -11,19 +11,25 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@headlessui/react": "^2.0.4",
     "@mdx-js/mdx": "^3.0.1",
     "@remix-run/node": "^2.9.2",
     "@remix-run/react": "^2.9.2",
     "@remix-run/serve": "^2.9.2",
     "@tanstack/react-query": "^5.45.0",
     "@types/wicg-file-system-access": "^2023.10.5",
+    "classnames": "^2.5.1",
+    "color": "^4.2.3",
     "idb": "^8.0.0",
     "isbot": "^4.1.0",
+    "lucide-react": "^0.394.0",
     "react": "18.3.0-canary-bb0944fe5-20240313",
-    "react-dom": "18.3.0-canary-bb0944fe5-20240313"
+    "react-dom": "18.3.0-canary-bb0944fe5-20240313",
+    "tailwind-merge": "^2.3.0"
   },
   "devDependencies": {
     "@remix-run/dev": "^2.9.2",
+    "@types/color": "^3.0.6",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^6.7.4",

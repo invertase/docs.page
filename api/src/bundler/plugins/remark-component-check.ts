@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { visit } from 'unist-util-visit';
-import { Node } from 'unist';
+import type { Node } from 'unist';
 
 const components = [
   'Accordion',

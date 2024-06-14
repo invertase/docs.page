@@ -6,6 +6,7 @@ import { queryClient, useDirectoryHandle, usePageContent, useSelectDirectory } f
 import { getPreviewBundle } from '../../api';
 import { PageContext } from '../../context';
 import { Layout } from '../../Layout';
+import { Toolbar } from './Toolbar';
 
 export default function PreviewOutlet() {
   return (
@@ -71,25 +72,15 @@ function Preview() {
   }
 
   return (
-    <>
-      <PageContext.Provider
-        value={{
-          path,
-          preview: true,
-          bundle,
-        }}
-      >
-        <Layout />
-      </PageContext.Provider>
-      <div
-        className="fixed bottom-4 z-50 rounded-full bg-black px-3 py-1 text-white shadow-lg"
-        style={{
-          left: '50%',
-          transform: 'translateX(-50%)',
-        }}
-      >
-        Toolbar
-      </div>
-    </>
+    <PageContext.Provider
+      value={{
+        path,
+        preview: true,
+        bundle,
+      }}
+    >
+      <Layout />
+      <Toolbar />
+    </PageContext.Provider>
   );
 }

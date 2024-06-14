@@ -1,111 +1,146 @@
 import { Switch } from '@headlessui/react';
-import { useState } from 'react';
+import { MoonIcon, SunDimIcon } from 'lucide-react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Color from 'color';
 import { type Context, usePageContext } from '~/context';
+import { cn } from '~/utils';
 
 function getThemeKey(context: Context) {
   return context.preview ? 'preview' : `docs.page:theme:${context.owner}/${context.repository}`;
 }
 
 export function ThemeScripts() {
+  const container = useRef<HTMLDivElement>(null);
   const context = usePageContext();
   const key = getThemeKey(context);
   const theme = context.bundle.config.theme;
 
   const fallback = '#00bcd4';
 
-  const getColor = (color?: string | null) => {
+  const getColor = (color: string, fallback?: string) => {
     try {
-      return Color(color ?? fallback);
+      return Color(color);
     } catch {
       return Color(fallback);
     }
   };
 
-  const primary = getColor(theme?.primary);
-  const primaryLight = getColor(theme?.primaryLight ?? theme?.primary);
-  const primaryDark = getColor(theme?.primaryDark ?? theme?.primary);
+  const primary = getColor(theme?.primary ?? fallback);
+  const primaryLight = getColor(theme?.primaryLight ?? theme?.primary ?? fallback);
+  const primaryDark = getColor(theme?.primaryDark ?? theme?.primary ?? fallback);
+  const backgroundLight = getColor(theme?.backgroundLight ?? '#F9FAFB');
+  const backgroundDark = getColor(theme?.backgroundDark ?? '#0B0D0E');
 
-  return (
-    <>
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `const key = '${key}';
-if (localStorage[key] === 'dark' || (!(key in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-  document.documentElement.setAttribute('data-theme', 'dark');
-} else {
-  document.documentElement.setAttribute('data-theme', 'light');
-}
-                  `,
-        }}
-      />
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `const root = document.documentElement;
-root.style.setProperty('--theme-primary', '${primary.hex().toString()}');
-root.style.setProperty('--theme-primary-light', '${primaryLight.hex().toString()}');
-root.style.setProperty('--theme-primary-dark', '${primaryDark.hex().toString()}');
-`,
-        }}
-      ></script>
-    </>
-  );
+  function toHslVariable(color: Color) {
+    const [h, s, l] = color.hsl().array();
+    return `${h} ${s.toFixed(2)}% ${l.toFixed(2)}%`;
+  }
+
+  const scripts = `
+    <script>
+      (() => {
+        const key = '${key}';
+        if (localStorage[key] === 'dark' || (!(key in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        } else {
+          document.documentElement.setAttribute('data-theme', 'light');
+        }
+      })();
+    </script>
+    <script>
+      (() => {
+        const root = document.documentElement;
+        root.style.setProperty('--theme-primary', '${toHslVariable(primary)}');
+        root.style.setProperty('--theme-primary-light', '${toHslVariable(primaryLight)}');
+        root.style.setProperty('--theme-primary-dark', '${toHslVariable(primaryDark)}');
+        root.style.setProperty('--theme-background-light', '${toHslVariable(backgroundLight)}');
+        root.style.setProperty('--theme-background-dark', '${toHslVariable(backgroundDark)}');
+      })();
+    </script>
+  `;
+
+  console.log(scripts);
+
+  useLayoutEffect(() => {
+    if (container.current) {
+      container.current.innerHTML = '';
+      const range = document.createRange();
+      range.selectNode(container.current);
+      const fragment = range.createContextualFragment(scripts);
+      container.current!.appendChild(fragment);
+    }
+  }, [scripts]);
+
+  return <div ref={container} dangerouslySetInnerHTML={{ __html: scripts }} />;
 }
 
 export function ThemeToggle() {
-  const context = usePageContext();
-  const key = getThemeKey(context);
-  const [enabled, setEnabled] = useState(false);
+  const ctx = usePageContext();
+  const key = getThemeKey(ctx);
+  const [enabled, setEnabled] = useState<boolean>();
 
-  function toggleTheme() {
-    const theme = localStorage[key] === 'dark' ? 'light' : 'dark';
-    localStorage[key] = theme;
-    document.documentElement.setAttribute('data-theme', theme);
+  useEffect(() => {
+    if (
+      localStorage[key] === 'dark' ||
+      (!(key in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+    ) {
+      setEnabled(true);
+    } else {
+      setEnabled(false);
+    }
+  }, [key]);
+
+  useEffect(() => {
+    if (enabled !== undefined) {
+      const theme = enabled ? 'dark' : 'light';
+      localStorage[key] = theme;
+      document.documentElement.setAttribute('data-theme', theme);
+    }
+  }, [enabled]);
+
+  if (ctx.bundle.config.header?.showThemeToggle === false) {
+    return null;
+  }
+
+  if (enabled === undefined) {
+    return <div className="h-3 w-7" />;
   }
 
   return (
     <Switch
       checked={enabled}
       onChange={setEnabled}
-      className={classNames(
-        enabled ? 'bg-indigo-600' : 'bg-gray-200',
-        'relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2',
+      className={cn(
+        'relative inline-flex h-3 w-7 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-200/60 transition-colors duration-200 ease-in-out dark:bg-white/10',
       )}
     >
-      <span className="sr-only">Use setting</span>
+      <span className="sr-only">Toggle theme</span>
       <span
-        className={classNames(
-          enabled ? 'translate-x-5' : 'translate-x-0',
-          'pointer-events-none relative inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out',
+        className={cn(
+          'pointer-events-none relative -top-1.5 inline-block h-5 w-5 transform rounded-full border shadow ring-0 transition duration-200 ease-in-out',
+          {
+            'border-primary-dark translate-x-3 bg-black': enabled,
+            '-translate-x-2 bg-white': !enabled,
+          },
         )}
       >
         <span
-          className={classNames(
+          className={cn(
             enabled ? 'opacity-0 duration-100 ease-out' : 'opacity-100 duration-200 ease-in',
             'absolute inset-0 flex h-full w-full items-center justify-center transition-opacity',
           )}
           aria-hidden="true"
         >
-          <svg className="h-3 w-3 text-gray-400" fill="none" viewBox="0 0 12 12">
-            <path
-              d="M4 8l2-2m0 0l2-2M6 6L4 4m2 2l2 2"
-              stroke="currentColor"
-              strokeWidth={2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+          <SunDimIcon className="h-4 w-4 text-yellow-500" />
         </span>
         <span
-          className={classNames(
+          className={cn(
             enabled ? 'opacity-100 duration-200 ease-in' : 'opacity-0 duration-100 ease-out',
             'absolute inset-0 flex h-full w-full items-center justify-center transition-opacity',
           )}
           aria-hidden="true"
         >
-          <svg className="h-3 w-3 text-indigo-600" fill="currentColor" viewBox="0 0 12 12">
-            <path d="M3.707 5.293a1 1 0 00-1.414 1.414l1.414-1.414zM5 8l-.707.707a1 1 0 001.414 0L5 8zm4.707-3.293a1 1 0 00-1.414-1.414l1.414 1.414zm-7.414 2l2 2 1.414-1.414-2-2-1.414 1.414zm3.414 2l4-4-1.414-1.414-4 4 1.414 1.414z" />
-          </svg>
+          <MoonIcon className="text-primary-dark h-3 w-3" />
         </span>
       </span>
     </Switch>

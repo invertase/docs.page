@@ -1,34 +1,37 @@
-import { usePageContext } from "../context";
+import { usePageContext } from '~/context';
+import { getImageSrc } from '~/utils';
 
 export function Logo() {
-  const { owner, repository, bundle } = usePageContext();
-  const logo = bundle.config.logo;
+  const ctx = usePageContext();
+  const logo = ctx.bundle.config.logo;
 
   const hasLightLogo = Boolean(logo?.light);
   const hasDarkLogo = Boolean(logo?.dark);
 
   return (
     <a href={logo?.href || '/'}>
-      <span className="sr-only">
-        {owner}/{repository}
-      </span>
-      {!hasLightLogo && !hasDarkLogo && (
+      {!ctx.preview && (
+        <span className="sr-only">
+          {ctx.owner}/{ctx.repository}
+        </span>
+      )}
+      {!ctx.preview && !hasLightLogo && !hasDarkLogo && (
         <span className="text-2xl font-bold">
-          {owner}/{repository}
+          {ctx.owner}/{ctx.repository}
         </span>
       )}
       {hasLightLogo && (
         <img
-          className={`w-auto h-7 relative block ${hasDarkLogo ? 'dark:hidden' : ''}`}
-          src={logo!.light!}
-          alt={`${owner}/${repository} Light logo`}
+          className={`relative block h-6 w-auto ${hasDarkLogo ? 'dark:hidden' : ''}`}
+          src={getImageSrc(ctx, logo!.light!)}
+          alt={`Light logo`}
         />
       )}
       {hasDarkLogo && (
         <img
-          className={`w-auto h-7 relative ${hasLightLogo ? 'hidden dark:block' : 'block'}`}
-          src={logo!.dark!}
-          alt={`${owner}/${repository} Dark logo`}
+          className={`relative h-6 w-auto ${hasLightLogo ? 'hidden dark:block' : 'block'}`}
+          src={getImageSrc(ctx, logo!.dark!)}
+          alt={`Dark logo`}
         />
       )}
     </a>

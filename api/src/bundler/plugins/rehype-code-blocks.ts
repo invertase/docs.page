@@ -1,8 +1,8 @@
 import { visit } from 'unist-util-visit';
-import { Node } from 'unist';
+import type { Node } from 'unist';
 import { toString } from 'mdast-util-to-string';
 import * as shiki from 'shiki';
-import { Element } from 'hast';
+import type { Element } from 'hast';
 
 let highlighter: shiki.Highlighter;
 

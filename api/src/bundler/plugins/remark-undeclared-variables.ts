@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-// @ts-ignore
 import { visit } from 'unist-util-visit';
-import { Node } from 'unist';
+import type { Node } from 'unist';
 
 /**
  * Converts undeclared variables into plain text nodes

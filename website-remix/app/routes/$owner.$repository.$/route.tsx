@@ -1,10 +1,11 @@
 import type { LoaderFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 import { useLoaderData } from '@remix-run/react';
+import { getBundle } from '~/api';
+import { Context, PageContext } from '~/context';
+import { Layout } from '~/Layout';
+
 import domains from '../../../../domains.json';
-import { getBundle } from '../../api';
-import { Context, PageContext } from '../../context';
-import { Layout } from '../../Layout';
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const owner = args.params.owner;
@@ -66,6 +67,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
     ref,
     domain,
     bundle,
+    preview: false,
   } satisfies Context;
 };
 

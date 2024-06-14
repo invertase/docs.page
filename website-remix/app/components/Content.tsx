@@ -1,6 +1,6 @@
 import * as runtime from 'react/jsx-runtime';
 import { runSync } from '@mdx-js/mdx';
-import { usePageContext } from '../context';
+import { usePageContext } from '~/context';
 
 export function Content() {
   const { bundle } = usePageContext();
@@ -14,9 +14,9 @@ export function Content() {
     <div>
       <MDX
         components={{
-          h1: () => 'lol',
-          h2: () => 'lol',
-          h3: () => 'lol',
+          // h1: () => 'lol',
+          // h2: () => 'lol',
+          // h3: () => 'lol',
         }}
       />
     </div>

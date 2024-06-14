@@ -1,56 +1,148 @@
 {
   "name": "docs.page",
-  "logo": "https://static.invertase.io/assets/docs.page/docs-page-logo.png",
-  "theme": "#36B9B9",
-  "twitter": "invertaseio",
-  "anchors": [
-    { "title": "Homepage", "icon": "house", "link": "https://docs.page" },
-    { "title": "Discord", "icon": "discord", "link": "https://invertase.link/discord" }
-  ],
-  "sidebar": [
-    [
-      "Getting Started",
-      [
-        ["Overview", "/"],
-        ["Getting Started", "/getting-started"],
-        ["Configuration", "/configuration"],
-        ["Writing Content", "/writing-content"]
-      ]
-    ],
-    [
-      "Components",
-      [
-        ["Accordion", "/components/accordion"],
-        ["Code Blocks", "/components/code-blocks"],
-        ["Callouts", "/components/callouts"],
-        ["Headings", "/components/headings"],
-        ["Tweet", "/components/tweet"],
-        ["Tabs", "/components/tabs"],
-        ["Images", "/components/images"],
-        ["YouTube", "/components/youtube"],
-        ["Vimeo", "/components/vimeo"],
-        ["Video", "/components/video"],
-        ["Zapp!", "/components/zapp"],
-        ["Custom Components", "/components/custom"]
-      ]
-    ],
-    [
-      "Advanced",
-      [
-        ["Frontmatter", "/frontmatter"],
-        ["Previews", "/previews"],
-        ["Search", "/search"],
-        ["Custom Domains", "/custom-domains"],
-        ["Locales", "/locales"],
-        ["GitHub Bot", "/github-bot"]
-      ]
-    ],
-    ["Misc.", [["Contributing", "/contributing"]]]
-  ],
-  "docsearch": {
-    "apiKey": "9b58d13ee3195094105d528fc6161a01",
-    "appId": "BH4D9OD16A",
-    "indexName": "use_docs_page"
+  "description": "Zero config GitHub documentation site generator",
+  "logo": {
+    "href": "https://docs.page",
+    "light": "https://static.invertase.io/assets/docs.page/docs-page-logo.png"
   },
-  "googleTagManager": "GTM-W89J6BX"
+  "favicon": "https://static.invertase.io/assets/docs.page/docs-page-logo.png",
+  "theme": {
+    "primary": "#36B9B9",
+    "primaryDark": "#E06BAA"
+  },
+  "header": {
+    "showThemeToggle": true,
+    "showGitHubCard": true,
+    "links": [
+      {
+        "title": "Hello",
+        "href": "https://docs.page"
+      },
+      {
+        "title": "World",
+        "href": "https://docs.page",
+        "cta": true
+      }
+    ]
+  },
+  "anchors": [
+    { "title": "Homepage", "icon": "house", "href": "https://docs.page" },
+    { "title": "Discord", "icon": "discord", "href": "https://invertase.link/discord" }
+  ],
+  "social": {
+    "twitter": "invertaseio",
+    "github": "invertase/docs.page"
+  },
+  "sidebar": [
+    {
+      "group": "Getting Started",
+      "pages": [
+        { "title": "Overview", "href": "/" },
+        { "title": "Getting Started", "href": "/getting-started" },
+        { "title": "Configuration", "href": "/configuration" },
+        { "title": "Writing Content", "href": "/writing-content" }
+      ]
+    },
+    {
+      "group": "Components",
+      "pages": [
+        {
+          "title": "Accordion",
+          "href": "/components/accordion"
+        },
+        {
+          "title": "Code Blocks",
+          "href": "/components/code-blocks"
+        },
+        {
+          "title": "Callouts",
+          "href": "/components/callouts"
+        },
+        {
+          "title": "Headings",
+          "href": "/components/headings"
+        },
+        {
+          "title": "Tweet",
+          "href": "/components/tweet"
+        },
+        {
+          "title": "Tabs",
+          "href": "/components/tabs"
+        },
+        {
+          "title": "Images",
+          "href": "/components/images"
+        },
+        {
+          "title": "YouTube",
+          "href": "/components/youtube"
+        },
+        {
+          "title": "Vimeo",
+          "href": "/components/vimeo"
+        },
+        {
+          "title": "Video",
+          "href": "/components/video"
+        },
+        {
+          "title": "Zapp!",
+          "href": "/components/zapp"
+        },
+        {
+          "title": "Custom Components",
+          "href": "/components/custom"
+        }
+      ]
+    },
+    {
+      "group": "Advanced",
+      "pages": [
+        {
+          "title": "Frontmatter",
+          "href": "/frontmatter"
+        },
+        {
+          "title": "Previews",
+          "href": "/previews"
+        },
+        {
+          "title": "Search",
+          "href": "/search"
+        },
+        {
+          "title": "Custom Domains",
+          "href": "/custom-domains"
+        },
+        {
+          "title": "Locales",
+          "href": "/locales"
+        },
+        {
+          "title": "GitHub Bot",
+          "href": "/github-bot"
+        }
+      ]
+    },
+    {
+      "group": "Misc.",
+      "pages": [
+        {
+          "title": "Contributing",
+          "href": "/contributing"
+        }
+      ]
+    }
+  ],
+  "search": {
+    "docsearch": {
+      "apiKey": "9b58d13ee3195094105d528fc6161a01",
+      "appId": "BH4D9OD16A",
+      "indexName": "use_docs_page"
+    }
+  },
+  "scripts": {
+    "googleTagManager": "GTM-W89J6BX"
+  }
 }

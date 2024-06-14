@@ -39,6 +39,8 @@ export default async function preview(req: Request, res: Response): Promise<Resp
         ref: 'preview',
       },
       ref: 'preview',
+      stars: 0,
+      forks: 0,
       baseBranch: 'preview',
       path: 'preview',
       config,

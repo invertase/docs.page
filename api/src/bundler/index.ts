@@ -21,6 +21,8 @@ type Source = {
 export type BundlerOutput = {
   source: Source;
   ref: string;
+  stars: number;
+  forks: number;
   baseBranch: string;
   path: string;
   config: Config;
@@ -29,7 +31,6 @@ export type BundlerOutput = {
   frontmatter: Record<string, unknown>;
   code: string;
 };
-
 
 type CreateBundlerParams = {
   owner: string;
@@ -161,6 +162,8 @@ export class Bundler {
       return {
         source: this.#source,
         ref: this.#ref,
+        stars: metadata.stars,
+        forks: metadata.forks,
         baseBranch: metadata.baseBranch,
         path: this.#path,
         config: this.#config,

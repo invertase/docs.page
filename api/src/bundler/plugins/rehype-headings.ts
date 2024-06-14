@@ -4,8 +4,8 @@ import { headingRank } from 'hast-util-heading-rank';
 import type { Node } from 'hast-util-heading-rank/lib';
 import { toString } from 'mdast-util-to-string';
 import { parseSelector } from 'hast-util-parse-selector';
-import { Data as UnistData, Node as UnistNode } from 'unist';
-import { Element as HastElement, Content as HastContent } from 'hast';
+import type { Data as UnistData, Node as UnistNode } from 'unist';
+import type { Element as HastElement, Content as HastContent } from 'hast';
 
 export type HeadingNode = {
   id: string;
