@@ -17,7 +17,7 @@ export function Layout() {
         <Header />
         <Tabs />
       </section>
-      <div className="max-w-7xl mx-auto px-5">
+      <div className="max-w-8xl mx-auto px-5">
         <section
           className={cn('fixed w-[17rem] bottom-0 overflow-y-auto', {
             'top-16': !hasTabs,
@@ -29,7 +29,7 @@ export function Layout() {
         <div
           className={cn('pl-[17rem]', {
             'pt-16': !hasTabs,
-            'pt-28': true,
+            'pt-36': true,
           })}
         >
           <section className="ps-16 pe-4">

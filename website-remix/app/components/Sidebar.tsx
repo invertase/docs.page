@@ -25,7 +25,9 @@ export function Sidebar() {
 
 // Displays a top-level group heading
 function GroupHeading(props: { title: string }) {
-  return <h3 className="font-display font-medium mb-2 tracking-wider">{props.title}</h3>;
+  return (
+    <h3 className="font-display font-medium text-[15px] mb-2 tracking-wider">{props.title}</h3>
+  );
 }
 
 // A recursive sidebar navigation component, renders a list of links and groups.
@@ -108,7 +110,7 @@ function SidebarAnchor(props: {
   onClick?: () => void;
 }) {
   const href = useHref(props.href ?? '');
-  const className = cn('relative group flex items-center pr-5 py-[7.5px] text-[13px]');
+  const className = cn('relative group flex items-center pr-5 py-[7.5px] text-[14px]');
 
   const element = props.href ? (
     <NavLink

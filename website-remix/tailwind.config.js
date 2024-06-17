@@ -6,6 +6,9 @@ export default {
   darkMode: ['class', '[data-theme="dark"]'],
   theme: {
     extend: {
+      maxWidth: {
+        '8xl': '90rem',
+      },
       fontFamily: {
         sans: ['"Poppins"', ...defaultTheme.fontFamily.sans],
         display: ['"Cal Sans"', ...defaultTheme.fontFamily.sans],
