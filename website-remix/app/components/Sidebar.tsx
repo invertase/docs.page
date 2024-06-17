@@ -3,6 +3,7 @@ import { ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
 import { ReactElement, cloneElement, useState } from 'react';
 import { useSidebar, useHref, usePageContext } from '~/context';
 import { cn, getHref } from '~/utils';
+import { Anchors } from './Anchors';
 
 type Pages = ReturnType<typeof useSidebar>[number]['pages'];
 
@@ -11,6 +12,9 @@ export function Sidebar() {
 
   return (
     <div className="relative pt-5 text-sm pl-5 pb-5">
+      <div className="mb-6">
+        <Anchors />
+      </div>
       {sidebar.map(({ group, pages }) => {
         return (
           <div key={group} className="mb-6">

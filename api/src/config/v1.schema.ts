@@ -81,7 +81,11 @@ export const V1ConfigSchema = z
       social: {
         x: v1.twitter,
       },
-      anchors: v1.anchors,
+      anchors: v1.anchors.filter(Boolean).map(anchor => ({
+        title: anchor!.title,
+        href: anchor!.link,
+        icon: anchor!.icon,
+      })),
       seo: {
         noindex: v1.noindex,
       },

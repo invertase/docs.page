@@ -87,7 +87,7 @@ export const ConfigSchema = z
           .optional()
           .catch(undefined),
       )
-      .transform(items => items.filter(Boolean))
+      .optional()
       .catch([]),
     social: z
       .object({

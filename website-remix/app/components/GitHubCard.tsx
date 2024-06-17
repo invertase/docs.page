@@ -17,7 +17,7 @@ export function GitHubCard() {
       rel="noopener noreferrer"
       target={ctx.preview ? '_self' : '_blank'}
       href={url}
-      className="group flex items-center gap-2 h-6"
+      className="group flex items-center gap-3 h-6"
     >
       <svg
         role="img"

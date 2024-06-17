@@ -23,7 +23,7 @@ export function Content() {
               const { id, ...rest } = props;
               return (
                 <section className="relative" data-section={id}>
-                  <span id={id} className="pointer-events-none absolute -mt-20 pt-36" />
+                  <span id={id} className="pointer-events-none absolute -mt-36 pt-36" />
                   <div {...rest} />
                 </section>
               );
