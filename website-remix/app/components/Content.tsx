@@ -11,14 +11,16 @@ export function Content() {
   );
 
   return (
-    <div className='pt-5'>
+    <main className="pt-5 prose dark:prose-invert max-w-none">
       <MDX
-        components={{
-          // h1: () => 'lol',
-          // h2: () => 'lol',
-          // h3: () => 'lol',
-        }}
+        components={
+          {
+            // h1: () => 'lol',
+            // h2: () => 'lol',
+            // h3: () => 'lol',
+          }
+        }
       />
-    </div>
+    </main>
   );
 }

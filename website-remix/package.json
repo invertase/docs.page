@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@remix-run/dev": "^2.9.2",
+    "@tailwindcss/typography": "^0.5.13",
     "@types/color": "^3.0.6",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
