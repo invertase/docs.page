@@ -30,7 +30,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body
-        className="antialiased bg-background-light dark:bg-background-dark"
+        className="antialiased bg-background"
         style={{
           textRendering: 'optimizeLegibility',
         }}

@@ -13,7 +13,7 @@ export function Tabs() {
         <li>
           <a
             href="/"
-            className="relative top-px flex items-center h-10 border-b-[1.5px] border-primary-light dark:border-primary-dark"
+            className="relative top-px flex items-center h-10 border-b-[1.5px] border-primary"
           >
             Home
           </a>

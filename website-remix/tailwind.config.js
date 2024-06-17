@@ -11,13 +11,10 @@ export default {
       },
       colors: {
         primary: {
-          DEFAULT: 'hsl(var(--theme-primary) / <alpha-value>)',
-          light: 'hsl(var(--theme-primary-light) / <alpha-value>)',
-          dark: 'hsl(var(--theme-primary-dark) / <alpha-value>)',
+          DEFAULT: 'hsl(var(--primary) / <alpha-value>)',
         },
         background: {
-          light: 'hsl(var(--theme-background-light) / <alpha-value>)',
-          dark: 'hsl(var(--theme-background-dark) / <alpha-value>)',
+          DEFAULT: 'hsl(var(--background) / <alpha-value>)',
         },
       },
     },

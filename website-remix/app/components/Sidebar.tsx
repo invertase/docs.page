@@ -116,7 +116,7 @@ function SidebarAnchor(props: {
       to={href}
       className={({ isActive }) =>
         cn(className, {
-          "before:content-[''] before:absolute before:border-l-2 before:-left-4 before:bottom-0 before:top-px before:border-primary-light before:dark:border-primary-dark":
+          "before:content-[''] before:absolute before:border-l-2 before:-left-4 before:bottom-0 before:top-px before:border-primary":
             isActive && props.depth > 0,
           '[&>span]:text-white [&>span]:font-medium': isActive,
         })

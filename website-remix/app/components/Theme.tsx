@@ -26,7 +26,6 @@ export function ThemeScripts() {
   };
 
   const defaultTheme = theme?.defaultTheme ?? 'system';
-  const primary = getColor(theme?.primary ?? fallback);
   const primaryLight = getColor(theme?.primaryLight ?? theme?.primary ?? fallback);
   const primaryDark = getColor(theme?.primaryDark ?? theme?.primary ?? fallback);
   const backgroundLight = getColor(theme?.backgroundLight ?? '#F9FAFB');
@@ -60,11 +59,10 @@ export function ThemeScripts() {
     <script>
       (() => {
         const root = document.documentElement;
-        root.style.setProperty('--theme-primary', '${toHslVariable(primary)}');
-        root.style.setProperty('--theme-primary-light', '${toHslVariable(primaryLight)}');
-        root.style.setProperty('--theme-primary-dark', '${toHslVariable(primaryDark)}');
-        root.style.setProperty('--theme-background-light', '${toHslVariable(backgroundLight)}');
-        root.style.setProperty('--theme-background-dark', '${toHslVariable(backgroundDark)}');
+        root.style.setProperty('--primary-light', '${toHslVariable(primaryLight)}');
+        root.style.setProperty('--primary-dark', '${toHslVariable(primaryDark)}');
+        root.style.setProperty('--background-light', '${toHslVariable(backgroundLight)}');
+        root.style.setProperty('--background-dark', '${toHslVariable(backgroundDark)}');
       })();
     </script>
   `;
@@ -121,7 +119,7 @@ export function ThemeToggle() {
         className={cn(
           'pointer-events-none relative -top-1.5 inline-block h-5 w-5 transform rounded-full border shadow ring-0 transition duration-200 ease-in-out',
           {
-            'border-primary-dark translate-x-3 bg-black': enabled,
+            'border-primary translate-x-3 bg-black': enabled,
             '-translate-x-2 bg-white': !enabled,
           },
         )}
@@ -142,7 +140,7 @@ export function ThemeToggle() {
           )}
           aria-hidden="true"
         >
-          <MoonIcon className="text-primary-dark h-3 w-3" />
+          <MoonIcon className="text-primary h-3 w-3" />
         </span>
       </span>
     </Switch>
