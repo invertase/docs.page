@@ -161,5 +161,8 @@
 	],
 	[	"docs.lamp-ic.fr", 
 		"TeddyVermeulin/lamp-doc"
+	],
+	[	"thermion.dev", 
+		"nmfisher/thermion"
 	]
 ]
