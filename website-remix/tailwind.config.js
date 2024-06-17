@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        sans: ['"Poppins"', ...defaultTheme.fontFamily.sans],
+        sans: ['"Cal Sans"', ...defaultTheme.fontFamily.sans],
       },
       colors: {
         primary: {

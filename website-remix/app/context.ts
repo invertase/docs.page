@@ -1,5 +1,6 @@
 import { createContext, useContext } from 'react';
 import type { BundlerOutput, SidebarGroup } from './api';
+import { ensureLeadingSlash, getHref, getLocale } from './utils';
 
 type BaseContext = {
   // The relative path of the current page, e.g. `/contributing`.
@@ -48,8 +49,7 @@ export function usePageContext(): Context {
 // which is derived from the sidebar configuration.
 export function useLocale(): string | undefined {
   const ctx = usePageContext();
-  const locale = ctx.path.split('/').filter(Boolean).at(0);
-  return locale && ctx.bundle.config.locales.includes(locale) ? locale : undefined;
+  return getLocale(ctx);
 }
 
 // Returns the tabs for the current page and locale.
@@ -82,4 +82,9 @@ export function useSidebar(): SidebarGroup[] {
   }
 
   return sidebar;
+}
+
+export function useHref(path: string): string {
+  const ctx = usePageContext();
+  return getHref(ctx, path);
 }

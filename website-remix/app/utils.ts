@@ -53,3 +53,58 @@ export function getBlobSrc(ctx: Context, src: string) {
     src,
   )}`;
 }
+
+// Returns the current locale.
+//
+// This is determined by the first segment of the path, e.g. `/fr/getting-started` would return `fr`.
+// For it to be considered a valid locale, it must be included in the `locales` array of the bundle config,
+// which is derived from the sidebar configuration.
+export function getLocale(ctx: Context) {
+  const locale = ctx.path.split('/').filter(Boolean).at(0);
+  return locale && ctx.bundle.config.locales.includes(locale) ? locale : undefined;
+}
+
+export function getHref(ctx: Context, path: string) {
+  const locale = getLocale(ctx);
+  const pathWithLeadingSlash = ensureLeadingSlash(path);
+
+  // If we're in preview mode, the path always starts with `/preview`.
+  if (ctx.preview) {
+    return `/preview${pathWithLeadingSlash}`;
+  }
+
+  // Define whether there is a domain for the current request,
+  // and whether we're in production (domains don't exist in development).
+  const hasDomain = ctx.domain && import.meta.env.PROD;
+
+  // Define the base href for the current request.
+  let href = '';
+
+  // Start with `//` to ensure the URL is protocol-relative and includes the domain.
+  if (hasDomain) {
+    href += `//${ctx.domain}`;
+  }
+  // Prefix the path with the owner and repository, e.g. `/invertase/docs.page`.
+  else {
+    href = `/${ctx.owner}/${ctx.repository}`;
+  }
+
+  // If there is a ref, which is not the HEAD, we need to include it in the path.
+  if (ctx.ref && ctx.ref !== 'HEAD') {
+    // When using a domain, the ref is it's own segment, e.g. `/~foo`.
+    if (hasDomain) {
+      href += '/';
+    }
+
+    // Append the encoded ref to ensure no
+    href += `~${encodeURIComponent(ctx.ref)}`;
+  }
+
+  // If there is a locale, we need to include it in the path, e.g. `/invertase/docs.page/fr`.
+  if (locale) {
+    href += `/${locale}`;
+  }
+
+  // Return the full path with the owner, repository, ref, locale and path.
+  return `${href}${pathWithLeadingSlash}`;
+}

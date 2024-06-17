@@ -12,7 +12,7 @@ export function Layout() {
   return (
     <>
       <ThemeScripts />
-      <section className="fixed inset-x-0 top-0">
+      <section className="fixed z-10 inset-x-0 top-0 bg-background-dark/70 backdrop-blur-md">
         <Header />
         <Tabs />
       </section>

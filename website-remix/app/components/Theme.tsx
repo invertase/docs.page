@@ -69,8 +69,6 @@ export function ThemeScripts() {
     </script>
   `;
 
-  console.log(scripts);
-
   useLayoutEffect(() => {
     if (container.current) {
       container.current.innerHTML = '';

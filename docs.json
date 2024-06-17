@@ -52,8 +52,27 @@
           "href": "/components/accordion"
         },
         {
-          "title": "Code Blocks",
-          "href": "/components/code-blocks"
+          "group": "Nested Page",
+          "pages": [
+            {
+              "title": "Code Block 1",
+              "href": "/contributing"
+            },
+            {
+              "group": "Nested Pages",
+              "href": "/getting-started",
+              "pages": [
+                {
+                  "title": "Code Block 3",
+                  "href": "/components/code-blocks/code-block-1"
+                },
+                {
+                  "title": "Code Block 4",
+                  "href": "/getting-started"
+                }
+              ]
+            }
+          ]
         },
         {
           "title": "Callouts",

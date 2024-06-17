@@ -9,6 +9,7 @@ const SidebarPageItemSchema = z.object({
 // Represents a group of pages in the sidebar
 export type SidebarGroup = {
   group: string;
+  href?: string;
   pages: (z.infer<typeof SidebarPageItemSchema> | SidebarGroup)[];
 };
 
@@ -16,6 +17,7 @@ export type SidebarGroup = {
 const SidebarSchema: z.ZodType<SidebarGroup> = z.lazy(() =>
   z.object({
     group: z.string(),
+    href: z.string().optional(),
     pages: z.array(z.union([SidebarPageItemSchema, SidebarSchema])),
   }),
 );
