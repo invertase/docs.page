@@ -5,12 +5,17 @@ import { ThemeToggle } from './Theme';
 import { usePageContext } from '~/context';
 
 export function Header() {
+  const ctx = usePageContext();
+  const showName = ctx.bundle.config.header?.showName ?? true;
+  const logo = ctx.bundle.config.logo;
+
   return (
     <header className="max-w-7xl mx-auto px-5">
       <div className="px-5 py-5 border-b border-black/5 dark:border-white/5 flex items-center">
-        <div>
+        <a href={logo?.href || '/'} className="inline-flex items-center gap-3">
           <Logo />
-        </div>
+          {showName && <span className="font-display">docs.page</span>}
+        </a>
         <div className="flex-1 flex items-center justify-end pr-4 gap-8">
           <Links />
           <GitHubCard />

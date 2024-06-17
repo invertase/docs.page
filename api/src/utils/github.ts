@@ -48,6 +48,7 @@ type PageContentsQuery = {
       name: string;
     };
     isFork: boolean;
+    isPrivate: boolean;
     configJson?: {
       text: string;
     };
@@ -70,6 +71,7 @@ export type Contents = {
   stars: number;
   forks: number;
   isFork: boolean;
+  isPrivate: boolean;
   baseBranch: string;
   config: {
     configJson?: string;
@@ -102,6 +104,7 @@ export async function getGitHubContents(
             name
           }
           isFork
+          isPrivate
           configJson: object(expression: $configJson) {
             ... on Blob {
               text
@@ -144,6 +147,7 @@ export async function getGitHubContents(
     forks: response?.repository?.forks ?? 0,
     repositoryFound: true,
     isFork: response?.repository?.isFork ?? false,
+    isPrivate: response?.repository?.isPrivate ?? false,
     baseBranch: response?.repository.baseBranch.name ?? 'main',
     config: {
       configJson: response?.repository.configJson?.text,

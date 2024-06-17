@@ -31,12 +31,15 @@ export function Footer() {
   const socials = Object.entries(ctx.bundle.config?.social || {});
 
   return (
-    <footer className="flex items-center">
-      <div className="font-extralight">
-        Powered by <a href="https://invertase.io">invertase</a>/
-        <a href="https://docs.page">docs.page</a>
+    <footer className="flex items-center gap-12 pb-12">
+      <div className="text-sm flex gap-1">
+        <span>Powered by</span>
+        <span>⬡</span>
+        <code>
+          <a href="https://invertase.io">invertase</a>/<a href="https://docs.page">docs.page</a>
+        </code>
       </div>
-      <div className="flex-1 flex items-center justify-end gap-5">
+      <div className="flex-1 flex flex-wrap items-center justify-end gap-5">
         {socials.map(([name, url]) => (
           <div key={name}>
             <a

@@ -23,6 +23,7 @@ export type BundlerOutput = {
   ref: string;
   stars: number;
   forks: number;
+  private: boolean;
   baseBranch: string;
   path: string;
   config: Config;
@@ -164,6 +165,7 @@ export class Bundler {
         ref: this.#ref,
         stars: metadata.stars,
         forks: metadata.forks,
+        private: metadata.isPrivate,
         baseBranch: metadata.baseBranch,
         path: this.#path,
         config: this.#config,

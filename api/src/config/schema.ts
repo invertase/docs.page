@@ -58,6 +58,7 @@ export const ConfigSchema = z
       .catch(undefined),
     header: z
       .object({
+        showName: z.boolean().optional().catch(true),
         showThemeToggle: z.boolean().optional().catch(true),
         showGitHubCard: z.boolean().optional().catch(true),
         links: z

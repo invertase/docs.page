@@ -3,8 +3,9 @@ import { usePageContext } from '~/context';
 
 export function GitHubCard() {
   const ctx = usePageContext();
+  const config = ctx.bundle.config;
 
-  if (ctx.bundle.config.header?.showGitHubCard === false) {
+  if (ctx.bundle.private || config.header?.showGitHubCard === false) {
     return null;
   }
 

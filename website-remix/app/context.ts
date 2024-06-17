@@ -1,6 +1,6 @@
-import { createContext, useContext } from 'react';
 import type { BundlerOutput, SidebarGroup } from './api';
-import { ensureLeadingSlash, getHref, getLocale } from './utils';
+import { createContext, useContext } from 'react';
+import { getHref, getLocale } from './utils';
 
 type BaseContext = {
   // The relative path of the current page, e.g. `/contributing`.

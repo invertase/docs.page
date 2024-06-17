@@ -9,14 +9,9 @@ export function Logo() {
   const hasDarkLogo = Boolean(logo?.dark);
 
   return (
-    <a href={logo?.href || '/'}>
+    <span>
       {!ctx.preview && (
         <span className="sr-only">
-          {ctx.owner}/{ctx.repository}
-        </span>
-      )}
-      {!ctx.preview && !hasLightLogo && !hasDarkLogo && (
-        <span className="text-2xl font-bold">
           {ctx.owner}/{ctx.repository}
         </span>
       )}
@@ -34,6 +29,6 @@ export function Logo() {
           alt={`Dark logo`}
         />
       )}
-    </a>
+    </span>
   );
 }

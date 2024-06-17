@@ -11,6 +11,7 @@
     "primaryDark": "#E06BAA"
   },
   "header": {
+    "showName": true,
     "showThemeToggle": true,
     "showGitHubCard": true,
     "links": [
