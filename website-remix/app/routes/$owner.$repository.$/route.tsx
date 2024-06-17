@@ -1,6 +1,6 @@
 import type { LoaderFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
-import { useLoaderData } from '@remix-run/react';
+import { MetaDescriptor, MetaFunction, useLoaderData } from '@remix-run/react';
 import { getBundle } from '~/api';
 import { Context, PageContext } from '~/context';
 import { Layout } from '~/Layout';
@@ -66,7 +66,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
     owner,
     repository,
     ref,
-    domain,
+    domain: import.meta.env.PROD ? domain : undefined,
     bundle,
     preview: false,
   } satisfies Context;
@@ -82,3 +82,64 @@ export default function DocsPage() {
     </PageContext.Provider>
   );
 }
+
+export const meta: MetaFunction<typeof loader> = ({ data }) => {
+  const descriptors: MetaDescriptor[] = [];
+
+  if (!data) {
+    return descriptors;
+  }
+
+  const title = data.bundle.frontmatter.title || data.bundle.config.name || 'docs.page';
+  const description = data.bundle.frontmatter.description || data.bundle.config.description;
+
+  descriptors.push({
+    title,
+  });
+
+  descriptors.push({
+    name: 'og:title',
+    content: title,
+  });
+
+  descriptors.push({
+    name: 'twitter:title',
+    content: title,
+  });
+
+  descriptors.push({
+    name: 'twitter:card',
+    content: 'summary_large_image',
+  });
+
+  if (description) {
+    descriptors.push({
+      name: 'description',
+      content: description,
+    });
+    descriptors.push({
+      property: 'og:description',
+      content: description,
+    });
+    descriptors.push({
+      property: 'twitter:description',
+      content: description,
+    });
+  }
+
+  if ('domain' in data && data.domain) {
+    descriptors.push({
+      name: 'og:url',
+      content: `https://${data.domain}`,
+    });
+  }
+
+  if (!!data.bundle.config.social?.x) {
+    descriptors.push({
+      name: 'twitter:site',
+      content: `@${data.bundle.config.social.x}`,
+    });
+  }
+
+  return descriptors;
+};
