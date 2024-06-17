@@ -35,6 +35,16 @@
     "github": "invertase/docs.page",
     "discord": "invertase"
   },
+  "tabs": [
+    {
+      "title": "Documentation",
+      "href": "/"
+    },
+    {
+      "title": "Components",
+      "href": "/components"
+    }
+  ],
   "sidebar": [
     {
       "group": "Getting Started",

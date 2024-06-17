@@ -16,7 +16,7 @@ export function Anchors() {
   }
 
   return (
-    <ul className="space-y-2">
+    <ul className="space-y-3">
       {anchors.map(anchor => {
         if (!anchor?.href) return null;
 

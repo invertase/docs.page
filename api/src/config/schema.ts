@@ -147,7 +147,7 @@ export const ConfigSchema = z
     tabs: z
       .array(
         z.object({
-          name: z.string(),
+          title: z.string(),
           href: z.string(),
           locale: z.string().optional().catch(undefined),
         }),
