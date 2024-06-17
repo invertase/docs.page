@@ -4,6 +4,7 @@ import { useLoaderData } from '@remix-run/react';
 import { getBundle } from '~/api';
 import { Context, PageContext } from '~/context';
 import { Layout } from '~/Layout';
+import { Scripts } from '~/components/Scripts';
 
 import domains from '../../../../domains.json';
 
@@ -76,6 +77,7 @@ export default function DocsPage() {
 
   return (
     <PageContext.Provider value={context}>
+      <Scripts />
       <Layout />
     </PageContext.Provider>
   );
