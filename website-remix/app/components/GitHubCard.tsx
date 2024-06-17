@@ -1,7 +1,7 @@
 import { GitForkIcon, StarIcon } from 'lucide-react';
 import { usePageContext } from '~/context';
 
-export function GitHubMeta() {
+export function GitHubCard() {
   const ctx = usePageContext();
 
   if (ctx.bundle.config.header?.showGitHubCard === false) {

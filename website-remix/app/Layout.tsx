@@ -1,4 +1,5 @@
 import { Content } from './components/Content';
+import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { Sidebar } from './components/Sidebar';
 import { Tabs } from './components/Tabs';
@@ -33,6 +34,8 @@ export function Layout() {
         >
           <section className="ps-16 pe-4">
             <Content />
+            <div className="h-px bg-black/5 dark:bg-white/5 my-12"></div>
+            <Footer />
           </section>
         </div>
       </div>

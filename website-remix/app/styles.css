@@ -11,7 +11,7 @@
 :root {
   --primary: var(--primary-light);
   --background: var(--background-light);
-  
+
   --shiki-background: #222226;
   --shiki-foreground: #fff;
   --shiki-token-constant: #6ee7b7;

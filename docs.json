@@ -30,8 +30,9 @@
     { "title": "Discord", "icon": "discord", "href": "https://invertase.link/discord" }
   ],
   "social": {
-    "twitter": "invertaseio",
-    "github": "invertase/docs.page"
+    "x": "invertaseio",
+    "github": "invertase/docs.page",
+    "discord": "invertase"
   },
   "sidebar": [
     {

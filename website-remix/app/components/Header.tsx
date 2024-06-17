@@ -1,5 +1,5 @@
 import { cn } from '~/utils';
-import { GitHubMeta } from './GitHubMeta';
+import { GitHubCard } from './GitHubCard';
 import { Logo } from './Logo';
 import { ThemeToggle } from './Theme';
 import { usePageContext } from '~/context';
@@ -7,13 +7,13 @@ import { usePageContext } from '~/context';
 export function Header() {
   return (
     <header className="max-w-7xl mx-auto px-5">
-      <div className="px-5 py-5 border-b border-gray-200/40 dark:border-white/10 flex items-center">
+      <div className="px-5 py-5 border-b border-black/5 dark:border-white/5 flex items-center">
         <div>
           <Logo />
         </div>
         <div className="flex-1 flex items-center justify-end pr-4 gap-8">
           <Links />
-          <GitHubMeta />
+          <GitHubCard />
           <ThemeToggle />
         </div>
       </div>

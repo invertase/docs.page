@@ -25,7 +25,7 @@ export function Sidebar() {
 
 // Displays a top-level group heading
 function GroupHeading(props: { title: string }) {
-  return <h3 className="font-medium mb-2 tracking-wide">{props.title}</h3>;
+  return <h3 className="font-display font-medium mb-2 tracking-wider">{props.title}</h3>;
 }
 
 // A recursive sidebar navigation component, renders a list of links and groups.

@@ -9,7 +9,7 @@ export function Tabs() {
 
   return (
     <nav className="max-w-7xl mx-auto px-5">
-      <ul className="relative px-5 border-b border-gray-200/40 dark:border-white/10 flex items-center space-x-6 text-sm font-medium tracking-wide">
+      <ul className="font-display relative px-5 border-b border-black/5 dark:border-white/5 flex items-center space-x-6 text-sm font-medium tracking-wide">
         <li>
           <a
             href="/"
