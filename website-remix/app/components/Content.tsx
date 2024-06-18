@@ -10,6 +10,7 @@ import { Link } from './mdx/Link';
 import { Table } from './mdx/Table';
 import { Section } from './mdx/Section';
 import { Image } from './mdx/Image';
+import { Tweet } from './mdx/Tweet';
 
 export function Content() {
   const { bundle } = usePageContext();
@@ -43,6 +44,9 @@ export function Content() {
             /* Custom Components */
             Image,
             Icon,
+            Info: () => <div></div>,
+            Tweet,
+            X: Tweet,
           }}
         />
       </main>

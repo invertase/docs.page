@@ -1,6 +1,7 @@
 import { Content } from './components/Content';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
+import { Scripts } from './components/Scripts';
 import { Sidebar } from './components/Sidebar';
 import { Tabs } from './components/Tabs';
 import { ThemeScripts } from './components/Theme';
@@ -9,11 +10,11 @@ import { cn } from './utils';
 
 export function Layout() {
   const hasTabs = useTabs().length > 0;
-  console.log('hasTabs', hasTabs);
 
   return (
     <>
       <ThemeScripts />
+      <Scripts />
       <section className="fixed z-10 inset-x-0 top-0 bg-background-dark/70 backdrop-blur-md">
         <Header />
         <Tabs />

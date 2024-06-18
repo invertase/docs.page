@@ -120,6 +120,7 @@ function SidebarAnchor(props: {
     <NavLink
       end
       to={href}
+      onClick={props.icon ? props.onClick : undefined}
       className={({ isActive }) =>
         cn(className, {
           "before:content-[''] before:absolute before:border-l-2 before:-left-4 before:bottom-0 before:top-px before:border-primary":
@@ -129,7 +130,7 @@ function SidebarAnchor(props: {
       }
     />
   ) : (
-    <div role="button" className={className} />
+    <div role="button" className={className} onClick={props.onClick} />
   );
 
   return cloneElement(element, {}, [
@@ -139,8 +140,10 @@ function SidebarAnchor(props: {
     >
       {props.title}
     </span>,
-    <div key="toggle" onClick={props.onClick}>
-      {props.icon}
-    </div>,
+    props.icon ? (
+      <div key="toggle" onClick={props.onClick}>
+        {props.icon}
+      </div>
+    ) : null,
   ]);
 }
