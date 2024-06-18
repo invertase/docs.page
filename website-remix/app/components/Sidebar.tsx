@@ -11,7 +11,7 @@ export function Sidebar() {
   const sidebar = useSidebar();
 
   return (
-    <div className="relative pt-5 text-sm pl-5 pb-5">
+    <div className="relative pt-8 text-sm pl-5 pb-5">
       <div className="mb-6">
         <Anchors />
       </div>
@@ -89,7 +89,7 @@ function SidebarGroup(props: { group: Pages[number] } & { depth: number }) {
   return (
     <li
       className={cn('relative', {
-        "before:content-[''] before:absolute before:mt-9 before:border-l-[0.5px] before:inset-0 before:border-gray-700":
+        "before:content-[''] before:absolute before:mt-9 before:border-l-[0.5px] before:inset-0 before:border-black/20 before:dark:border-white/20":
           open,
       })}
     >
@@ -124,7 +124,7 @@ function SidebarAnchor(props: {
         cn(className, {
           "before:content-[''] before:absolute before:border-l-2 before:-left-4 before:bottom-0 before:top-px before:border-primary":
             isActive && props.depth > 0,
-          '[&>span]:text-white [&>span]:font-medium': isActive,
+          '[&>span]:dark:text-white [&>span]:text-gray-950 [&>span]:font-semibold': isActive,
         })
       }
     />
@@ -133,7 +133,10 @@ function SidebarAnchor(props: {
   );
 
   return cloneElement(element, {}, [
-    <span key="title" className="flex-1 text-gray-400 group-hover:text-gray-100">
+    <span
+      key="title"
+      className="flex-1 text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300"
+    >
       {props.title}
     </span>,
     <div key="toggle" onClick={props.onClick}>

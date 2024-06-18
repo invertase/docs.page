@@ -48,7 +48,7 @@ export function TableOfContents() {
               >
                 <a
                   href={`#${heading.id}`}
-                  className={cn('font-light text-[14px] text-gray-100', {
+                  className={cn('font-light text-[14px]', {
                     'text-primary font-bold': activeId === heading.id,
                   })}
                 >

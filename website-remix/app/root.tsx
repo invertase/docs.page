@@ -24,7 +24,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body
-        className="antialiased bg-background"
+        className="antialiased bg-background text-gray-900 dark:text-gray-200"
         style={{
           textRendering: 'optimizeLegibility',
         }}

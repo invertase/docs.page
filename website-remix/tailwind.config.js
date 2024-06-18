@@ -1,4 +1,5 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
+import plugin from 'tailwindcss/plugin';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -23,5 +24,13 @@ export default {
       },
     },
   },
-  plugins: [require('@tailwindcss/typography')],
+  plugins: [
+    require('@tailwindcss/typography'),
+    plugin(function ({ addVariant }) {
+      addVariant(
+        'prose-inline-code',
+        '&.prose :where(:not(pre)>code):not(:where([class~="not-prose"] *))',
+      );
+    }),
+  ],
 };
