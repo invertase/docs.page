@@ -9,6 +9,7 @@ import { cn } from './utils';
 
 export function Layout() {
   const hasTabs = useTabs().length > 0;
+  console.log('hasTabs', hasTabs);
 
   return (
     <>
@@ -21,7 +22,7 @@ export function Layout() {
         <section
           className={cn('fixed w-[17rem] bottom-0 overflow-y-auto', {
             'top-16': !hasTabs,
-            'top-28': true,
+            'top-28': hasTabs,
           })}
         >
           <Sidebar />
@@ -29,10 +30,10 @@ export function Layout() {
         <div
           className={cn('pl-[17rem]', {
             'pt-16': !hasTabs,
-            'pt-36': true,
+            'pt-36': hasTabs,
           })}
         >
-          <section className="ps-16 pe-4">
+          <section className="pt-16 ps-16 pe-4">
             <Content />
             <div className="h-px bg-black/5 dark:bg-white/5 my-12"></div>
             <Footer />

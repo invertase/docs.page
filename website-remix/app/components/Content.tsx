@@ -17,7 +17,7 @@ export function Content() {
   );
 
   return (
-    <div className="pt-5 w-full flex">
+    <div className="w-full flex">
       <main
         className="
         flex-1 max-w-none pr-24 prose dark:prose-invert

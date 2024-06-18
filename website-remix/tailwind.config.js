@@ -26,6 +26,7 @@ export default {
   },
   plugins: [
     require('@tailwindcss/typography'),
+    // Custom tailwind plugin to enable targetting prose inline code.
     plugin(function ({ addVariant }) {
       addVariant(
         'prose-inline-code',
