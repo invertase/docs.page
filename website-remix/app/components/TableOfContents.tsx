@@ -10,7 +10,7 @@ export function TableOfContents() {
 
   useEffect(() => {
     const handleScroll = () => {
-      const sections = document.querySelectorAll('main section[data-section]');
+      const sections = document.querySelectorAll('main div[data-section]');
       let active = '';
 
       for (const section of sections) {

@@ -1,3 +1,4 @@
+import { ComponentProps } from 'react';
 import { cn } from '~/utils';
 
 const brands: Record<string, true> = {
@@ -502,9 +503,9 @@ const brands: Record<string, true> = {
   'steam-symbol': true,
 };
 
-interface IconProps extends React.HTMLAttributes<HTMLElement> {
+type IconProps = ComponentProps<'i'> & {
   name: keyof typeof brands | string;
-}
+};
 
 export function Icon({ className, name, ...other }: IconProps) {
   const base = brands[name] ? 'fa-brands' : 'fa-solid';

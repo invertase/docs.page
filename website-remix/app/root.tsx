@@ -2,8 +2,15 @@ import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/reac
 import { LinksFunction } from '@remix-run/node';
 
 import styles from './styles.css?url';
+import zoom from 'react-medium-image-zoom/dist/styles.css?url';
 
-export const links: LinksFunction = () => [{ rel: 'stylesheet', href: styles }];
+export const links: LinksFunction = () => [
+  { rel: 'stylesheet', href: styles },
+  {
+    rel: 'stylesheet',
+    href: zoom,
+  },
+];
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (

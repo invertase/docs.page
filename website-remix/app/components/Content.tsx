@@ -1,12 +1,15 @@
+import { type ComponentProps } from 'react';
 import * as runtime from 'react/jsx-runtime';
 import { runSync } from '@mdx-js/mdx';
 import { usePageContext } from '~/context';
 import { TableOfContents } from './TableOfContents';
+import { Icon } from './Icon';
 
 import { Heading } from './mdx/Heading';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Props = any;
+import { Link } from './mdx/Link';
+import { Table } from './mdx/Table';
+import { Section } from './mdx/Section';
+import { Image } from './mdx/Image';
 
 export function Content() {
   const { bundle } = usePageContext();
@@ -26,21 +29,20 @@ export function Content() {
       >
         <MDX
           components={{
-            section(props: Props) {
-              const { id, ...rest } = props;
-              return (
-                <section className="relative" data-section={id}>
-                  <span id={id} className="pointer-events-none absolute -mt-36 pt-36" />
-                  <div {...rest} />
-                </section>
-              );
-            },
-            h1: (props: Props) => <Heading {...props} type="h1" />,
-            h2: (props: Props) => <Heading {...props} type="h2" anchor="true" />,
-            h3: (props: Props) => <Heading {...props} type="h3" anchor="true" />,
-            h4: (props: Props) => <Heading {...props} type="h4" anchor="true" />,
-            h5: (props: Props) => <Heading {...props} type="h5" anchor="true" />,
-            h6: (props: Props) => <Heading {...props} type="h6" anchor="true" />,
+            /* HTML Overrides */
+            h1: (props: ComponentProps<'h1'>) => <Heading {...props} type="h1" />,
+            h2: (props: ComponentProps<'h2'>) => <Heading {...props} type="h2" anchor />,
+            h3: (props: ComponentProps<'h3'>) => <Heading {...props} type="h3" anchor />,
+            h4: (props: ComponentProps<'h4'>) => <Heading {...props} type="h4" anchor />,
+            h5: (props: ComponentProps<'h5'>) => <Heading {...props} type="h5" anchor />,
+            h6: (props: ComponentProps<'h6'>) => <Heading {...props} type="h6" anchor />,
+            a: (props: ComponentProps<'a'>) => <Link {...props} />,
+            table: (props: ComponentProps<'table'>) => <Table {...props} />,
+            section: (props: ComponentProps<'section'>) => <Section {...props} />,
+            img: (props: ComponentProps<'img'>) => <Image {...props} />,
+            /* Custom Components */
+            Image,
+            Icon,
           }}
         />
       </main>
