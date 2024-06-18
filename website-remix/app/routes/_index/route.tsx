@@ -1,5 +1,37 @@
+import { LinksFunction } from '@remix-run/node';
 import { Feature } from './Feature';
 import { Heading } from './Heading';
+
+export const links: LinksFunction = () => {
+  return [
+    {
+      rel: 'apple-touch-icon',
+      sizes: '180x180',
+      href: '/_docs.page/favicon/apple-touch-icon.png',
+    },
+    {
+      rel: 'icon',
+      type: 'image/png',
+      sizes: '32x32',
+      href: '/_docs.page/favicon/favicon-32x32.png',
+    },
+    {
+      rel: 'icon',
+      type: 'image/png',
+      sizes: '16x16',
+      href: '/_docs.page/favicon/favicon-16x16.png',
+    },
+    {
+      rel: 'manifest',
+      href: '/_docs.page/favicon/site.webmanifest',
+    },
+    {
+      rel: 'mask-icon',
+      href: '/_docs.page/favicon/safari-pinned-tab.svg',
+      color: '#5bbad5',
+    },
+  ];
+};
 
 export default function Homepage() {
   return (

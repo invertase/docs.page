@@ -18,11 +18,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="theme-color" content="#0B0D0E" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=auto"
+          href="https://fonts.googleapis.com/css2?family=Poppins:wght@300&display=auto"
         />
         <link href="/_docs.page/fa/fontawesome.min.css" rel="stylesheet" />
         <link href="/_docs.page/fa/brands.min.css" rel="stylesheet" />

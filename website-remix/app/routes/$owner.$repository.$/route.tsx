@@ -91,6 +91,12 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     return descriptors;
   }
 
+  descriptors.push({
+    tagName: 'link',
+    rel: 'icon',
+    href: data.bundle.config.favicon || '/favicon.ico',
+  });
+
   const title = data.bundle.frontmatter.title || data.bundle.config.name || 'docs.page';
   const description = data.bundle.frontmatter.description || data.bundle.config.description;
 
@@ -143,7 +149,6 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   }
 
   if (!!data.bundle.config.search?.docsearch) {
-    // Add preconnect for Algolia DocSearch
     // https://docsearch.algolia.com/docs/DocSearch-v3#preconnect
     descriptors.push({
       tagName: 'link',
