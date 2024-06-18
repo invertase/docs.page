@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { type ActionFunctionArgs } from '@remix-run/node';
+import { LinksFunction, MetaFunction, type ActionFunctionArgs } from '@remix-run/node';
 import { useFetcher, useParams } from '@remix-run/react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient, useDirectoryHandle, usePageContent, useSelectDirectory } from './utils';
@@ -7,6 +7,18 @@ import { getPreviewBundle } from '../../api';
 import { PageContext } from '../../context';
 import { Layout } from '../../Layout';
 import { Toolbar } from './Toolbar';
+
+import docsearch from '@docsearch/css/dist/style.css?url';
+
+export const meta: MetaFunction = () => {
+  return [
+    {
+      tagName: 'link',
+      rel: 'stylesheet',
+      href: docsearch,
+    },
+  ];
+};
 
 export default function PreviewOutlet() {
   return (

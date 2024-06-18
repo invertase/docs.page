@@ -6,6 +6,7 @@ import { Context, PageContext } from '~/context';
 import { Layout } from '~/Layout';
 import { Scripts } from '~/components/Scripts';
 
+import docsearch from '@docsearch/css/dist/style.css?url';
 import domains from '../../../../domains.json';
 
 export const loader = async (args: LoaderFunctionArgs) => {
@@ -98,7 +99,7 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   });
 
   descriptors.push({
-    name: 'og:title',
+    property: 'og:title',
     content: title,
   });
 
@@ -122,14 +123,14 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
       content: description,
     });
     descriptors.push({
-      property: 'twitter:description',
+      name: 'twitter:description',
       content: description,
     });
   }
 
   if ('domain' in data && data.domain) {
     descriptors.push({
-      name: 'og:url',
+      property: 'og:url',
       content: `https://${data.domain}`,
     });
   }
@@ -138,6 +139,23 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     descriptors.push({
       name: 'twitter:site',
       content: `@${data.bundle.config.social.x}`,
+    });
+  }
+
+  if (!!data.bundle.config.search?.docsearch) {
+    // Add preconnect for Algolia DocSearch
+    // https://docsearch.algolia.com/docs/DocSearch-v3#preconnect
+    descriptors.push({
+      tagName: 'link',
+      rel: 'preconnect',
+      crossOrigin: 'true',
+      href: `https://${data.bundle.config.search?.docsearch.appId}-dsn.algolia.net`,
+    });
+
+    descriptors.push({
+      tagName: 'link',
+      rel: 'stylesheet',
+      href: docsearch,
     });
   }
 

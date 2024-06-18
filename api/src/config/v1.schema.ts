@@ -89,6 +89,9 @@ export const V1ConfigSchema = z
       seo: {
         noindex: v1.noindex,
       },
+      search: {
+        docsearch: v1.docsearch,
+      },
       variables: v1.variables,
       scripts: {
         googleTagManager: v1.googleTagManager,

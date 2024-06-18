@@ -15,7 +15,7 @@ export function Heading(props: HeadingProps) {
     type,
     {
       ...other,
-      className: cn('group relative flex items-center gap-2 font-display', className),
+      className: cn('group relative flex items-center gap-2 font-display tracking-wide', className),
     },
     <>
       <span>{props.children}</span>

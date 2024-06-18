@@ -11,6 +11,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@docsearch/js": "^3.6.0",
     "@headlessui/react": "^2.0.4",
     "@mdx-js/mdx": "^3.0.1",
     "@remix-run/node": "^2.9.2",
