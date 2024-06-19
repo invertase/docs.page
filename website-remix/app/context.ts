@@ -1,6 +1,6 @@
 import type { BundlerOutput, SidebarGroup } from './api';
-import { createContext, useContext } from 'react';
-import { getHref, getLocale } from './utils';
+import { createContext, useContext, useEffect, useState } from 'react';
+import { getAssetSrc, getHref, getLocale, isExternalLink } from './utils';
 
 type BaseContext = {
   // The relative path of the current page, e.g. `/contributing`.
@@ -12,6 +12,8 @@ type BaseContext = {
 type PreviewContext = BaseContext & {
   // The page is in preview mode.
   preview: true;
+  // Returns a blob URL src for a given path.
+  getFile: (path: string) => Promise<string | undefined>;
 };
 
 type PageContext = BaseContext & {
@@ -40,6 +42,20 @@ export function usePageContext(): Context {
   }
 
   return context;
+}
+
+export function useAssetSrc(path: string) {
+  const ctx = usePageContext();
+  const isPreview = ctx.preview;
+  const isExternal = isExternalLink(path);
+  const [src, setSrc] = useState(isPreview ? '' : getAssetSrc(ctx, path));
+
+  useEffect(() => {
+    if (isExternal || !isPreview) return;
+    ctx.getFile(path).then(src => setSrc(src || ''));
+  }, [isExternal, isPreview, path]);
+
+  return src;
 }
 
 // Returns the current locale.
@@ -84,7 +100,30 @@ export function useSidebar(): SidebarGroup[] {
   return sidebar;
 }
 
+// Resolves a path to a full URL.
 export function useHref(path: string): string {
   const ctx = usePageContext();
   return getHref(ctx, path);
+}
+
+export function useSourceUrl() {
+  const ctx = usePageContext();
+
+  if (ctx.preview) {
+    return '#';
+  }
+
+  const source = ctx.bundle.source;
+
+  return [
+    'https://github.com/',
+    ctx.owner,
+    '/',
+    ctx.repository,
+    '/edit/',
+    source.type === 'branch' && source.ref !== 'HEAD' ? source.ref : ctx.bundle.baseBranch,
+    '/docs/',
+    ctx.path || 'index',
+    '.mdx',
+  ].join('');
 }

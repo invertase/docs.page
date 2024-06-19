@@ -28,7 +28,7 @@ export function Search() {
       <button
         onClick={handleSearchEvent}
         data-search
-        className="group transition-all bg-gradient-to-b shadow-sm dark:from-white/[0.02] border border-black/10 dark:border-white/10 hover:border-black/20 hover:dark:border-white/20 rounded-md flex items-center gap-3 pl-2 pr-3 py-1.5 min-w-[300px]"
+        className="group transition-all bg-background bg-gradient-to-b shadow-sm dark:from-white/[0.02] border border-black/10 dark:border-white/10 hover:border-black/20 hover:dark:border-white/20 rounded-md flex items-center gap-3 pl-2 pr-3 py-1.5 min-w-[300px]"
       >
         <SearchIcon size={18} className="opacity-75" />
         <span className="text-sm opacity-75">Search...</span>

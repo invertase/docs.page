@@ -1,8 +1,10 @@
 import { Content } from './components/Content';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
+import { PreviousNext } from './components/PreviousNext';
 import { Scripts } from './components/Scripts';
 import { Sidebar } from './components/Sidebar';
+import { TableOfContents } from './components/TableOfContents';
 import { Tabs } from './components/Tabs';
 import { ThemeScripts } from './components/Theme';
 import { useTabs } from './context';
@@ -15,7 +17,7 @@ export function Layout() {
     <>
       <ThemeScripts />
       <Scripts />
-      <section className="fixed z-10 inset-x-0 top-0 bg-background-dark/70 backdrop-blur-md">
+      <section className="fixed z-10 inset-x-0 top-0 bg-background-dark/90 backdrop-blur">
         <Header />
         <Tabs />
       </section>
@@ -34,10 +36,16 @@ export function Layout() {
             'pt-36': hasTabs,
           })}
         >
-          <section className="pt-16 ps-16 pe-4">
-            <Content />
-            <div className="h-px bg-black/5 dark:bg-white/5 my-12"></div>
-            <Footer />
+          <section className="pt-16 ps-16 pe-4 flex">
+            <div className="flex-1 pr-24">
+              <Content />
+              <PreviousNext />
+              <div className="h-px bg-black/5 dark:bg-white/5 my-12"></div>
+              <Footer />
+            </div>
+            <div className="hidden xl:block relative w-[17rem]">
+              <TableOfContents />
+            </div>
           </section>
         </div>
       </div>

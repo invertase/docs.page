@@ -25,32 +25,32 @@ export function isExternalLink(href: string) {
 // Returns the correct image path for a given image;
 //  - if remote, returns the path as is
 //  - if local, returns the path with the correct base url
-export function getImageSrc(ctx: Context, src: string) {
-  if (isExternalLink(src)) {
-    return src;
+export function getAssetSrc(ctx: Context, path: string) {
+  if (isExternalLink(path)) {
+    return path;
   }
 
-  return getBlobSrc(ctx, src);
+  return getBlobSrc(ctx, path);
 }
 
 // Returns a raw blob path for a given path.
-export function getBlobSrc(ctx: Context, src: string) {
+export function getBlobSrc(ctx: Context, path: string) {
   const { source, baseBranch } = ctx.bundle;
   const { owner, repository, ref } = source;
 
   if (source.type === 'branch') {
     return `https://raw.githubusercontent.com/${owner}/${repository}/${encodeURIComponent(
       ref ?? baseBranch,
-    )}/docs${ensureLeadingSlash(src)}`;
+    )}/docs${ensureLeadingSlash(path)}`;
   }
   if (source.type === 'PR') {
     return `https://raw.githubusercontent.com/${owner}/${repository}/${encodeURIComponent(
       ref ?? baseBranch,
-    )}/docs${ensureLeadingSlash(src)}`;
+    )}/docs${ensureLeadingSlash(path)}`;
   }
 
-  return `https://raw.githubusercontent.com/${owner}/${repository}/main/docs${ensureLeadingSlash(
-    src,
+  return `https://raw.githubusercontent.com/${owner}/${repository}/HEAD/docs${ensureLeadingSlash(
+    path,
   )}`;
 }
 

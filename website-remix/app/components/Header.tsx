@@ -8,6 +8,8 @@ import { Search } from './Search';
 export function Header() {
   const ctx = usePageContext();
   const showName = ctx.bundle.config.header?.showName ?? true;
+
+  const name = ctx.bundle.config.name;
   const logo = ctx.bundle.config.logo;
 
   return (
@@ -15,7 +17,7 @@ export function Header() {
       <div className="h-16 px-5 py-1 border-b border-black/5 dark:border-white/5 flex items-center">
         <a href={logo?.href || '/'} className="inline-flex items-center gap-3">
           <Logo />
-          {showName && <span className="font-display">docs.page</span>}
+          {showName && !!name && <span className="font-display">{name}</span>}
         </a>
         <div className="flex-1 flex items-center justify-end pr-4 gap-8">
           <Search />

@@ -26,6 +26,7 @@
     "hast-util-parse-selector": "3.1.0",
     "is-badge": "^2.1.0",
     "js-yaml": "4.1.0",
+    "lodash.get": "^4.4.2",
     "mdx-bundler": "9.0.1",
     "morgan": "1.10.0",
     "node-fetch": "3.2.6",
@@ -50,6 +51,7 @@
   "devDependencies": {
     "@octokit/webhooks-types": "^6.2.4",
     "@types/js-yaml": "^4.0.5",
+    "@types/lodash.get": "^4.4.9",
     "rollup": "3.9.1",
     "ts-node": "^10.8.1",
     "typescript": "5.4.5"

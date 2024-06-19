@@ -8,6 +8,7 @@ import { Scripts } from '~/components/Scripts';
 
 import docsearch from '@docsearch/css/dist/style.css?url';
 import domains from '../../../../domains.json';
+import { ensureLeadingSlash } from '~/utils';
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const owner = args.params.owner;
@@ -63,7 +64,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
   }
 
   return {
-    path,
+    path: ensureLeadingSlash(path),
     owner,
     repository,
     ref,
@@ -96,6 +97,16 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     rel: 'icon',
     href: data.bundle.config.favicon || '/favicon.ico',
   });
+
+  // Add noindex meta tag if the frontmatter or config has noindex set to true.
+  if (
+    Boolean(data.bundle.frontmatter.noindex === true || data.bundle.config.seo?.noindex === true)
+  ) {
+    descriptors.push({
+      name: 'robots',
+      content: 'noindex',
+    });
+  }
 
   const title = data.bundle.frontmatter.title || data.bundle.config.name || 'docs.page';
   const description = data.bundle.frontmatter.description || data.bundle.config.description;

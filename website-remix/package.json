@@ -24,6 +24,7 @@
     "idb": "^8.0.0",
     "isbot": "^4.1.0",
     "lucide-react": "^0.394.0",
+    "mime": "^4.0.3",
     "react": "18.3.0-canary-bb0944fe5-20240313",
     "react-dom": "18.3.0-canary-bb0944fe5-20240313",
     "react-medium-image-zoom": "^5.2.4",

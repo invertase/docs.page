@@ -1,7 +1,6 @@
 import { ComponentProps, ReactElement } from 'react';
 import Zoom from 'react-medium-image-zoom';
-import { usePageContext } from '~/context';
-import { getImageSrc } from '~/utils';
+import { usePageContext, useAssetSrc } from '~/context';
 
 type ImageProps = ComponentProps<'img'> & {
   zoom?: boolean;
@@ -11,7 +10,7 @@ type ImageProps = ComponentProps<'img'> & {
 export function Image(props: ImageProps) {
   const ctx = usePageContext();
   const { width, height, ...other } = props;
-  const src = getImageSrc(ctx, props.src ?? '');
+  const src = useAssetSrc(props.src ?? '');
 
   // Get the zoom configuration from the props or the bundle content.
   const zoom = Boolean(props.zoom) || Boolean(ctx.bundle.config.content?.zoomImages);

@@ -139,11 +139,7 @@ export const ConfigSchema = z
         automaticallyInferNextPrevious: z.boolean().catch(true),
       })
       .optional()
-      .catch({
-        headerDepth: 3,
-        zoomImages: false,
-        automaticallyInferNextPrevious: true,
-      }),
+      .catch(undefined),
     tabs: z
       .array(
         z.object({

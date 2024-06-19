@@ -2,13 +2,20 @@ import { useEffect } from 'react';
 import { MetaFunction, type ActionFunctionArgs } from '@remix-run/node';
 import { useFetcher, useParams } from '@remix-run/react';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { queryClient, useDirectoryHandle, usePageContent, useSelectDirectory } from './utils';
+import {
+  getFile,
+  queryClient,
+  useDirectoryHandle,
+  usePageContent,
+  useSelectDirectory,
+} from './utils';
 import { getPreviewBundle } from '../../api';
 import { PageContext } from '../../context';
 import { Layout } from '../../Layout';
 import { Toolbar } from './Toolbar';
 
 import docsearch from '@docsearch/css/dist/style.css?url';
+import { ensureLeadingSlash } from '~/utils';
 
 export const meta: MetaFunction = () => {
   return [
@@ -86,9 +93,10 @@ function Preview() {
   return (
     <PageContext.Provider
       value={{
-        path,
-        preview: true,
+        path: ensureLeadingSlash(path),
         bundle,
+        preview: true,
+        getFile,
       }}
     >
       <Layout />

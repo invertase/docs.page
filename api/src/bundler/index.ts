@@ -4,6 +4,7 @@ import { escapeHtml } from '../utils/sanitize';
 import { type Config, defaultConfig, parseConfig } from '../config';
 import { BundlerError } from './error';
 import type { HeadingNode } from './plugins/rehype-headings';
+import { replaceMoustacheVariables } from '../utils/variables';
 
 export const ERROR_CODES = {
   REPO_NOT_FOUND: 'REPO_NOT_FOUND',
@@ -172,7 +173,7 @@ export class Bundler {
         markdown: this.#markdown,
         headings: mdx.headings,
         frontmatter: mdx.frontmatter,
-        code: mdx.code,
+        code: replaceMoustacheVariables(this.#config.variables ?? {}, mdx.code),
       };
     } catch (e) {
       console.error(e);

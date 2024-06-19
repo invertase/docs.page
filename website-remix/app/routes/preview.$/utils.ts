@@ -1,5 +1,6 @@
 import { QueryClient, useMutation, useQuery } from '@tanstack/react-query';
 import { openDB, type IDBPDatabase, type DBSchema } from 'idb';
+import mime from 'mime';
 import { ensureLeadingSlash } from '~/utils';
 
 const DATABASE = 'docs.page';
@@ -84,7 +85,19 @@ export function useDirectoryHandle() {
         for await (const entry of dir.values()) {
           if (entry.kind === 'file') {
             const file = await entry.getFile();
-            await db.put('files', await file.text(), path + file.name);
+            const key = path + file.name;
+
+            // Store MDX files as plain text
+            if (key.endsWith('mdx')) {
+              await db.put('files', await file.text(), key);
+            }
+            // Store other files as blob URLs
+            else {
+              const type = mime.getType(file.name) ?? undefined;
+              const buffer = await file.arrayBuffer();
+              const blob = new Blob([buffer], { type });
+              await db.put('files', URL.createObjectURL(blob), key);
+            }
           } else {
             await walkDirectory(entry as FileSystemDirectoryHandle, path + entry.name + '/');
           }
@@ -182,6 +195,7 @@ export function useSelectDirectory() {
   });
 }
 
+// Mutation to restart the app by deleting all stored data.
 export function useRestart() {
   return useMutation({
     mutationFn: async () => {
@@ -195,6 +209,12 @@ export function useRestart() {
       queryClient.invalidateQueries({ queryKey: ['page-context'] });
     },
   });
+}
+
+// Returns a file from the database.
+export async function getFile(path: string) {
+  const db = await openDatabase();
+  return db.get('files', path);
 }
 
 // Helper function to verify permission to access a directory, and request it if needed.
