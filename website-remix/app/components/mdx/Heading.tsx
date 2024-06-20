@@ -4,7 +4,7 @@ import { cn } from '~/utils';
 
 interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
   id?: string;
-  anchor?: boolean;
+  anchor?: 'true'; // This is a string because it's translated to an HTML attribute in MDX
   type: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
 }
 

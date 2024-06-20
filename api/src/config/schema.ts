@@ -4,12 +4,15 @@ import { z } from 'zod';
 const SidebarPageItemSchema = z.object({
   title: z.string(),
   href: z.string(),
+  icon: z.string().optional(),
 });
 
 // Represents a group of pages in the sidebar
 export type SidebarGroup = {
   group: string;
+  tab?: string;
   href?: string;
+  icon?: string;
   pages: (z.infer<typeof SidebarPageItemSchema> | SidebarGroup)[];
 };
 
@@ -17,7 +20,9 @@ export type SidebarGroup = {
 const SidebarSchema: z.ZodType<SidebarGroup> = z.lazy(() =>
   z.object({
     group: z.string(),
+    tab: z.string().optional(),
     href: z.string().optional(),
+    icon: z.string().optional(),
     pages: z.array(z.union([SidebarPageItemSchema, SidebarSchema])),
   }),
 );
@@ -83,6 +88,7 @@ export const ConfigSchema = z
             title: z.string(),
             href: z.string(),
             locale: z.string().optional().catch(undefined),
+            tab: z.string().optional().catch(undefined),
           })
           .optional()
           .catch(undefined),
@@ -137,12 +143,15 @@ export const ConfigSchema = z
         headerDepth: z.number().catch(3),
         zoomImages: z.boolean().catch(false),
         automaticallyInferNextPrevious: z.boolean().catch(true),
+        showPageTitle: z.boolean().catch(false),
+        showPageImage: z.boolean().catch(false),
       })
       .optional()
       .catch(undefined),
     tabs: z
       .array(
         z.object({
+          id: z.string(),
           title: z.string(),
           href: z.string(),
           locale: z.string().optional().catch(undefined),

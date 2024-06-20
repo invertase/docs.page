@@ -42,6 +42,7 @@
     "shiki": "1.1.7",
     "unist-util-visit": "4.1.0",
     "zod": "3.22.4",
+    "zod-to-json-schema": "^3.23.1",
     "zod-validation-error": "0.2.2"
   },
   "scripts": {

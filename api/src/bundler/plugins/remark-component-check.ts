@@ -4,6 +4,7 @@ import type { Node } from 'unist';
 
 const components = [
   'Accordion',
+  'AccordionGroup',
   'CodeGroup',
   'Icon',
   'Info',

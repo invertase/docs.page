@@ -4,6 +4,7 @@ import { ReactElement, cloneElement, useState } from 'react';
 import { useSidebar, useHref, usePageContext } from '~/context';
 import { cn, getHref } from '~/utils';
 import { Anchors } from './Anchors';
+import { Icon } from './Icon';
 
 type Pages = ReturnType<typeof useSidebar>[number]['pages'];
 
@@ -11,26 +12,29 @@ export function Sidebar() {
   const sidebar = useSidebar();
 
   return (
-    <div className="relative pt-8 text-sm pl-5 pb-5">
-      <div className="mb-6">
-        <Anchors />
+    <div className="relative pt-8 text-sm pl-5 pb-5 space-y-6">
+      <Anchors />
+      <div>
+        {sidebar.map(({ group, icon, pages }) => {
+          return (
+            <div key={group} className="mb-6">
+              <GroupHeading title={group} icon={icon} />
+              <SidebarLinks pages={pages} open={false} depth={0} />
+            </div>
+          );
+        })}
       </div>
-      {sidebar.map(({ group, pages }) => {
-        return (
-          <div key={group} className="mb-6">
-            <GroupHeading title={group} />
-            <SidebarLinks pages={pages} open={false} depth={0} />
-          </div>
-        );
-      })}
     </div>
   );
 }
 
 // Displays a top-level group heading
-function GroupHeading(props: { title: string }) {
+function GroupHeading(props: { title: string; icon?: string }) {
   return (
-    <h3 className="font-display font-medium text-[15px] mb-2 tracking-wider">{props.title}</h3>
+    <h3 className="font-display font-medium text-[15px] mb-2 tracking-wider flex items-center gap-2">
+      {props.icon ? <Icon name={props.icon} /> : null}
+      <span>{props.title}</span>
+    </h3>
   );
 }
 
@@ -81,7 +85,12 @@ function SidebarGroup(props: { group: Pages[number] } & { depth: number }) {
   if (!('group' in props.group)) {
     return (
       <li>
-        <SidebarAnchor href={props.group.href} title={props.group.title} depth={props.depth} />
+        <SidebarAnchor
+          href={props.group.href}
+          title={props.group.title}
+          depth={props.depth}
+          icon={props.group.icon}
+        />
       </li>
     );
   }
@@ -97,7 +106,8 @@ function SidebarGroup(props: { group: Pages[number] } & { depth: number }) {
         title={props.group.group}
         depth={props.depth}
         href={props.group.href}
-        icon={open ? <ChevronUpIcon size={14} /> : <ChevronDownIcon size={14} />}
+        icon={props.group.icon}
+        collapse={open ? <ChevronUpIcon size={14} /> : <ChevronDownIcon size={14} />}
         onClick={() => setOpen(open => !open)}
       />
       {open ? <SidebarLinks pages={props.group.pages} depth={props.depth + 1} open={open} /> : null}
@@ -110,22 +120,25 @@ function SidebarAnchor(props: {
   title: string;
   depth: number;
   href?: string;
-  icon?: ReactElement;
+  icon?: string;
+  collapse?: ReactElement;
   onClick?: () => void;
 }) {
   const href = useHref(props.href ?? '');
-  const className = cn('relative group flex items-center pr-5 py-[7.5px] text-[14px]');
+  const className = cn(
+    'relative group flex items-center pr-5 py-[7.5px] text-[14.5px] gap-2 text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300',
+  );
 
   const element = props.href ? (
     <NavLink
       end
       to={href}
-      onClick={props.icon ? props.onClick : undefined}
+      onClick={props.collapse ? props.onClick : undefined}
       className={({ isActive }) =>
         cn(className, {
           "before:content-[''] before:absolute before:border-l-2 before:-left-4 before:bottom-0 before:top-px before:border-primary":
             isActive && props.depth > 0,
-          '[&>span]:dark:text-white [&>span]:text-gray-950 [&>span]:font-semibold': isActive,
+          '[&>span]:dark:text-white [&>span]:text-gray-950 [&>span]:font-medium': isActive,
         })
       }
     />
@@ -134,15 +147,17 @@ function SidebarAnchor(props: {
   );
 
   return cloneElement(element, {}, [
-    <span
-      key="title"
-      className="flex-1 text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-300"
-    >
+    props.icon ? (
+      <span key="icon">
+        <Icon key="icon" name={props.icon} />
+      </span>
+    ) : null,
+    <span key="title" className="flex-1">
       {props.title}
     </span>,
-    props.icon ? (
+    props.collapse ? (
       <div key="toggle" onClick={props.onClick}>
-        {props.icon}
+        {props.collapse}
       </div>
     ) : null,
   ]);

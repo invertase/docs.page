@@ -4,6 +4,7 @@ import { Logo } from './Logo';
 import { ThemeToggle } from './Theme';
 import { usePageContext } from '~/context';
 import { Search } from './Search';
+import { Locale } from './Locale';
 
 export function Header() {
   const ctx = usePageContext();
@@ -14,15 +15,18 @@ export function Header() {
 
   return (
     <header className="max-w-8xl mx-auto px-5">
-      <div className="h-16 px-5 py-1 border-b border-black/5 dark:border-white/5 flex items-center">
-        <a href={logo?.href || '/'} className="inline-flex items-center gap-3">
+      <div className="flex-1 h-16 px-5 py-1 border-b border-black/5 dark:border-white/5 flex items-center gap-4">
+        <a href={logo?.href || '/'} className="flex-1 inline-flex items-center gap-3">
           <Logo />
           {showName && !!name && <span className="font-display">{name}</span>}
         </a>
-        <div className="flex-1 flex items-center justify-end pr-4 gap-8">
+        <div className="flex-1">
           <Search />
+        </div>
+        <div className="flex-1 flex items-center justify-end pr-4 gap-8">
           <Links />
           <GitHubCard />
+          <Locale />
           <ThemeToggle />
         </div>
       </div>

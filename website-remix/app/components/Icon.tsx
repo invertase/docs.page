@@ -509,5 +509,15 @@ type IconProps = ComponentProps<'i'> & {
 
 export function Icon({ className, name, ...other }: IconProps) {
   const base = brands[name] ? 'fa-brands' : 'fa-solid';
-  return <i {...other} className={cn('fa-fw', base, `fa-${name}`, className)} />;
+  return (
+    <div>
+      <i
+        {...other}
+        className={cn('fa-fw', base, `fa-${name}`, className)}
+        style={{
+          lineHeight: 'inherit',
+        }}
+      />
+    </div>
+  );
 }

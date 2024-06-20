@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { MetaFunction, type ActionFunctionArgs } from '@remix-run/node';
-import { useFetcher, useParams } from '@remix-run/react';
+import { redirect, useFetcher, useParams } from '@remix-run/react';
 import { QueryClientProvider } from '@tanstack/react-query';
 import {
   getFile,
@@ -15,7 +15,7 @@ import { Layout } from '../../Layout';
 import { Toolbar } from './Toolbar';
 
 import docsearch from '@docsearch/css/dist/style.css?url';
-import { ensureLeadingSlash } from '~/utils';
+import { ensureLeadingSlash, isExternalLink } from '~/utils';
 
 export const meta: MetaFunction = () => {
   return [
@@ -37,9 +37,23 @@ export default function PreviewOutlet() {
 
 export const action = async (args: ActionFunctionArgs) => {
   const json = await args.request.json();
+  const bundle = await getPreviewBundle(json);
+
+  // Check if the user has set a redirect in the frontmatter of this page.
+  const redirectTo =
+    typeof bundle.frontmatter.redirect === 'string' ? bundle.frontmatter.redirect : undefined;
+
+  // Redirect to the specified URL.
+  if (redirectTo && redirectTo.length > 0) {
+    const url = isExternalLink(String(redirectTo))
+      ? String(redirectTo)
+      : `/preview${ensureLeadingSlash(String(redirectTo))}`;
+
+    throw redirect(url);
+  }
 
   return {
-    bundle: await getPreviewBundle(json),
+    bundle,
   };
 };
 

@@ -3,8 +3,6 @@ title: Accordion
 description: Display an accordion component with collapsible content panels.
 ---
 
-# Accordion
-
 An accordion can be used to render collapsible content, useful for information which might not
 be relevant to all users.
 
@@ -31,3 +29,42 @@ Pass the `defaultOpen` prop to have the accordion open by default.
 <Accordion defaultOpen title="Open by default">
   This is collapsible content!
 </Accordion>
+
+### Icons
+
+Use the `icon` prop to specify an icon to display next to the accordion title.
+
+```jsx
+<Accordion icon="info" title="Click me to expand the accordion">
+  This is collapsible content!
+</Accordion>
+```
+
+<Accordion icon="circle-info" title="Click me to expand the accordion">
+  This is collapsible content!
+</Accordion>
+
+## Groups
+
+To group accordions into a single display unit, use the `<AccordionGroup>` component, with each
+`<Accordion>` component as a child.
+
+```jsx
+<AccordionGroup>
+  <Accordion defaultOpen title="Open by default">
+    This is collapsible content!
+  </Accordion>
+  <Accordion title="Click me to expand the accordion">
+    This is collapsible content!
+  </Accordion>
+</AccordionGroup>
+```
+
+<AccordionGroup>
+  <Accordion defaultOpen title="Open by default">
+    This is collapsible content!
+  </Accordion>
+  <Accordion title="Click me to expand the accordion">
+    This is collapsible content!
+  </Accordion>
+</AccordionGroup>

@@ -5,7 +5,7 @@ import { ensureLeadingSlash } from '~/utils';
 
 const DATABASE = 'docs.page';
 const DATABASE_VERSION = 2;
-const REFETCH_INTERVAL = 500;
+const REFETCH_INTERVAL = false;
 
 interface Database extends DBSchema {
   handles: {
@@ -147,12 +147,12 @@ export function usePageContent(path: string, directory?: FileSystemDirectoryHand
     queryFn: async () => {
       const db = await openDatabase();
 
-      const filePath = path === '/' ? '' : ensureLeadingSlash(path);
+      const filePath = path === '' ? '' : ensureLeadingSlash(path);
 
       // First check if we even have a file in the database for this path.
       const [file1, file2] = await Promise.all([
         // Check for an `index.mdx` file first.
-        db.get('files', filePath + 'index.mdx'),
+        db.get('files', filePath + '/index.mdx'),
         // Then check for a `.mdx` file.
         db.get('files', filePath + '.mdx'),
       ]);

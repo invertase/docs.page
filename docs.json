@@ -10,6 +10,10 @@
     "primary": "#36B9B9",
     "primaryDark": "#E06BAA"
   },
+  "content": {
+    "showPageTitle": true,
+    "showPageImage": true
+  },
   "header": {
     "showName": true,
     "showThemeToggle": true,
@@ -37,17 +41,20 @@
   },
   "tabs": [
     {
+      "id": "root",
       "title": "Documentation",
       "href": "/"
     },
     {
+      "id": "components",
       "title": "Components",
-      "href": "https://google.com"
+      "href": "/components"
     }
   ],
   "sidebar": [
     {
       "group": "Getting Started",
+      "tab": "root",
       "pages": [
         { "title": "Overview", "href": "/" },
         { "title": "Getting Started", "href": "/getting-started" },
@@ -57,79 +64,68 @@
     },
     {
       "group": "Components",
-      "matches": "/components/*",
+      "tab": "components",
       "pages": [
         {
           "title": "Accordion",
-          "href": "/components/accordion"
-        },
-        {
-          "group": "Nested Page",
-          "pages": [
-            {
-              "title": "Code Block 1",
-              "href": "/contributing"
-            },
-            {
-              "group": "Nested Pages",
-              "href": "/getting-started",
-              "pages": [
-                {
-                  "title": "Code Block 3",
-                  "href": "/components/code-blocks/code-block-1"
-                },
-                {
-                  "title": "Code Block 4",
-                  "href": "/getting-started"
-                }
-              ]
-            }
-          ]
+          "href": "/components/accordion",
+          "icon": "square-caret-down"
         },
         {
           "title": "Callouts",
-          "href": "/components/callouts"
+          "href": "/components/callouts",
+          "icon": "bullhorn"
         },
         {
           "title": "Headings",
-          "href": "/components/headings"
+          "href": "/components/headings",
+          "icon": "heading"
         },
         {
           "title": "Tweet",
-          "href": "/components/tweet"
+          "href": "/components/tweet",
+          "icon": "twitter"
         },
         {
           "title": "Tabs",
-          "href": "/components/tabs"
+          "href": "/components/tabs",
+          "icon": "table-columns"
         },
         {
           "title": "Images",
-          "href": "/components/images"
+          "href": "/components/images",
+          "icon": "image"
         },
         {
           "title": "YouTube",
-          "href": "/components/youtube"
+          "href": "/components/youtube",
+          "icon": "youtube"
         },
         {
           "title": "Vimeo",
-          "href": "/components/vimeo"
+          "href": "/components/vimeo",
+          "icon": "vimeo"
         },
         {
           "title": "Video",
-          "href": "/components/video"
+          "href": "/components/video",
+          "icon": "video"
         },
         {
           "title": "Zapp!",
-          "href": "/components/zapp"
+          "href": "/components/zapp",
+          "icon": "bolt"
         },
         {
           "title": "Custom Components",
-          "href": "/components/custom"
+          "href": "/components/custom",
+          "icon": "square-pen"
         }
       ]
     },
     {
       "group": "Advanced",
+      "tab": "root",
       "pages": [
         {
           "title": "Frontmatter",
@@ -158,6 +154,7 @@
       ]
     },
     {
+      "tab": "root",
       "group": "Misc.",
       "pages": [
         {
@@ -168,7 +165,6 @@
     }
   ],
   "search": {
-    "enabled": true,
     "docsearch": {
       "apiKey": "9b58d13ee3195094105d528fc6161a01",
       "appId": "BH4D9OD16A",

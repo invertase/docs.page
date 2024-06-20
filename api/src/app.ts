@@ -1,10 +1,10 @@
 import express, { Router, text } from 'express';
 import morgan from 'morgan';
-import cors from 'cors';
 import { config } from 'dotenv';
 
 import bundle from './routes/bundle';
 import preview from './routes/preview';
+import schema from './routes/schema';
 import probot from './probot';
 import { notFound } from './res';
 
@@ -24,6 +24,7 @@ app.use(probot);
 
 const router = Router();
 router.get('/status', (_, res) => res.status(200).send('OK'));
+router.get('/schema.json', schema);
 router.post('/preview', preview);
 router.get('/bundle', bundle);
 router.all('*', (_, res) => notFound(res));

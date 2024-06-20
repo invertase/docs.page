@@ -33,11 +33,11 @@ export function Layout() {
         <div
           className={cn('pl-[17rem]', {
             'pt-16': !hasTabs,
-            'pt-36': hasTabs,
+            'pt-28': hasTabs,
           })}
         >
-          <section className="pt-16 ps-16 pe-4 flex">
-            <div className="flex-1 pr-24">
+          <section className="pt-8 ps-16 pe-4 flex">
+            <div className="min-w-0 flex-1 pr-0 xl:pr-12">
               <Content />
               <PreviousNext />
               <div className="h-px bg-black/5 dark:bg-white/5 my-12"></div>

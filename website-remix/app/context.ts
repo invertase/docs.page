@@ -48,7 +48,8 @@ export function useAssetSrc(path: string) {
   const ctx = usePageContext();
   const isPreview = ctx.preview;
   const isExternal = isExternalLink(path);
-  const [src, setSrc] = useState(isPreview ? '' : getAssetSrc(ctx, path));
+
+  const [src, setSrc] = useState(isExternal || !isPreview ? getAssetSrc(ctx, path) : '');
 
   useEffect(() => {
     if (isExternal || !isPreview) return;
@@ -87,6 +88,7 @@ export function useTabs() {
 export function useSidebar(): SidebarGroup[] {
   const ctx = usePageContext();
   const locale = useLocale();
+  const activeTab = useActiveTab();
 
   let sidebar: SidebarGroup[] = [];
   if (locale && !Array.isArray(ctx.bundle.config.sidebar)) {
@@ -95,6 +97,12 @@ export function useSidebar(): SidebarGroup[] {
     sidebar = ctx.bundle.config.sidebar['default'] || [];
   } else {
     sidebar = ctx.bundle.config.sidebar;
+  }
+
+  if (activeTab !== undefined) {
+    return sidebar.filter(group => {
+      return group.tab === activeTab || !group.tab;
+    });
   }
 
   return sidebar;
@@ -106,6 +114,46 @@ export function useHref(path: string): string {
   return getHref(ctx, path);
 }
 
+export function useActiveTab(): string | undefined {
+  const ctx = usePageContext();
+  const tabs = useTabs();
+
+  if (!tabs.length) {
+    return;
+  }
+
+  let closestTab: string | undefined = undefined;
+  let maxSegments = -1;
+
+  tabs.forEach(tab => {
+    const tabSegments = tab.href.split('/').filter(Boolean);
+    const pathSegments = ctx.path.split('/').filter(Boolean);
+    let matchCount = 0;
+
+    // Count matching segments
+    for (let i = 0; i < tabSegments.length; i++) {
+      if (
+        tabSegments[i] === pathSegments[i] ||
+        tabSegments[i] === '*' ||
+        tabSegments[i].startsWith(':')
+      ) {
+        matchCount++;
+      } else {
+        break;
+      }
+    }
+
+    // Update the closest tab if this tab matches more segments
+    if (matchCount > maxSegments && matchCount === tabSegments.length) {
+      closestTab = tab.id;
+      maxSegments = matchCount;
+    }
+  });
+
+  return closestTab;
+}
+
+// Returns the source URL for the current page.
 export function useSourceUrl() {
   const ctx = usePageContext();
 

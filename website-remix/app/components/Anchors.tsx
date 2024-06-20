@@ -1,15 +1,21 @@
-import { useLocale, usePageContext } from '~/context';
+import { useActiveTab, useLocale, usePageContext } from '~/context';
 import { isExternalLink } from '~/utils';
 import { Icon } from './Icon';
 
 export function Anchors() {
   const ctx = usePageContext();
   const locale = useLocale();
+  const activeTab = useActiveTab();
 
   const anchors =
-    ctx.bundle.config.anchors?.filter(anchor => {
-      return locale ? anchor?.locale === locale : true;
-    }) ?? [];
+    ctx.bundle.config.anchors
+      ?.filter(anchor => {
+        return locale ? anchor?.locale === locale : true;
+      })
+      .filter(anchor => {
+        if (activeTab === undefined) return true;
+        return anchor?.tab === activeTab;
+      }) ?? [];
 
   if (!anchors.length) {
     return null;

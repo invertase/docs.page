@@ -64,6 +64,10 @@ export function getLocale(ctx: Context) {
   return locale && ctx.bundle.config.locales.includes(locale) ? locale : undefined;
 }
 
+// Gets a href for a given path.
+// If the path is external, it is returned as is.
+// If we're in preview mode, the path is prefixed with `/preview`.
+// Otherwise applies the owner, repository, ref and locale to the path.
 export function getHref(ctx: Context, path: string) {
   const locale = getLocale(ctx);
   const pathWithLeadingSlash = ensureLeadingSlash(path);
@@ -75,6 +79,10 @@ export function getHref(ctx: Context, path: string) {
 
   // If we're in preview mode, the path always starts with `/preview`.
   if (ctx.preview) {
+    if (locale) {
+      return `/preview/${locale}${pathWithLeadingSlash}`;
+    }
+
     return `/preview${pathWithLeadingSlash}`;
   }
 
@@ -108,4 +116,20 @@ export function getHref(ctx: Context, path: string) {
 
   // Return the full path with the owner, repository, ref, locale and path.
   return `${href}${pathWithLeadingSlash}`;
+}
+
+// Matches a URL matching a pattern with a given path. Rules are:
+// `/foo/*` matches `/foo`, `/foo/bar`, `/foo/bar/baz/etc`
+// `/foo/:bar` matches `/foo/bar`, `/foo/baz`, etc
+// `/foo/:bar/*` matches `/foo/bar`, `/foo/bar/baz/etc`
+// `/foo/:bar/:baz` matches `/foo/bar/baz`, `/foo/bar/qux`, etc
+// `/foo/*/bar` matches `/foo/bar`, `/foo/etc/bar`, etc
+export function matchPathPattern(pattern: string, path: string) {
+  // Escape regex special characters in the pattern except for * and :
+  const regexPattern = pattern
+    .replace(/([.+?^=!:${}()|\[\]\/\\])/g, '\\$1')
+    .replace(/\*/g, '.*') // Replace * with .*
+    .replace(/\/:([^\/]+)/g, '/([^/]+)'); // Replace /:param with /([^/]+)
+
+  return new RegExp(`^${regexPattern}$`).test(path);
 }
