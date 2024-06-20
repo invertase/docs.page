@@ -1,12 +1,13 @@
 import { ComponentProps } from 'react';
 import { cn } from '~/utils';
 
-type YouTubeProps = ComponentProps<'iframe'> & {
-  id: string;
+type VimeoProps = ComponentProps<'iframe'> & {
+  id?: string;
+  video?: string;
 };
 
-export function YouTube({ id, className, ...props }: YouTubeProps) {
-  if (!id) {
+export function Vimeo({ id, video, className, ...props }: VimeoProps) {
+  if (!id && !video) {
     return <div />;
   }
 
@@ -14,7 +15,7 @@ export function YouTube({ id, className, ...props }: YouTubeProps) {
     <iframe
       {...props}
       className={cn('aspect-video w-full rounded-md overflow-hidden', className)}
-      src={`https://www.youtube.com/embed/${id}`}
+      src={`https://player.vimeo.com/video/${id || video}`}
       allowFullScreen
       allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
     />

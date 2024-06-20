@@ -13,6 +13,9 @@ import { Tweet } from './mdx/Tweet';
 import { Info, Warning, Error, Success } from './mdx/Callout';
 import { YouTube } from './mdx/YouTube';
 import { Accordion, AccordionGroup } from './mdx/Accordion';
+import { Video } from './mdx/Video';
+import { Vimeo } from './mdx/Vimeo';
+import { Zapp } from './mdx/Zapp';
 
 export function Content() {
   const { bundle } = usePageContext();
@@ -85,8 +88,11 @@ export function Content() {
             Error,
             Success,
             Tweet,
+            Vimeo,
+            Video,
             YouTube,
             X: Tweet,
+            Zapp,
           }}
         />
       </div>
