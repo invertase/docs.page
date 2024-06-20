@@ -55,6 +55,6 @@
     "@types/lodash.get": "^4.4.9",
     "rollup": "3.9.1",
     "ts-node": "^10.8.1",
-    "typescript": "5.4.5"
+    "typescript": "5.5.2"
   }
 }
