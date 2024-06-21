@@ -77,6 +77,11 @@
           "icon": "bullhorn"
         },
         {
+          "title": "Code Blocks",
+          "href": "/components/code-blocks",
+          "icon": "code"
+        },
+        {
           "title": "Headings",
           "href": "/components/headings",
           "icon": "heading"

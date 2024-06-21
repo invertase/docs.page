@@ -5,6 +5,7 @@ import { usePageContext } from '~/context';
 import { Icon } from './Icon';
 
 import { Heading } from './mdx/Heading';
+import { CodeBlock } from './mdx/CodeBlock';
 import { Link } from './mdx/Link';
 import { Table } from './mdx/Table';
 import { Section } from './mdx/Section';
@@ -78,9 +79,11 @@ export function Content() {
             table: (props: ComponentProps<'table'>) => <Table {...props} />,
             section: (props: ComponentProps<'section'>) => <Section {...props} />,
             img: (props: ComponentProps<'img'>) => <Image {...props} />,
+            pre: (props: ComponentProps<'pre'>) => <CodeBlock {...props} />,
             /* Custom Components */
             Accordion,
             AccordionGroup,
+            CodeGroup: () => <div></div>,
             Image,
             Icon,
             Info,
