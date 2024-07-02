@@ -23,7 +23,7 @@ export function CodeBlock(props: CodeBlockProps) {
   }
 
   return (
-    <div className="not-prose relative group border border-black/10 dark:border-white/10 rounded-md shadow-sm overflow-hidden">
+    <div className="not-prose relative group border border-black/10 dark:border-white/10 rounded-md shadow-sm overflow-hidden mb-5">
       {!!props.title && (
         <div className="bg-black text-primary text-xs border-b border-white/20 font-display tracking-wider">
           <div className="relative top-px inline-flex items-center px-4 border-b h-10 border-primary">
@@ -44,7 +44,7 @@ export function CodeBlock(props: CodeBlockProps) {
       )}
       <div
         dangerouslySetInnerHTML={{ __html: props.html }}
-        className="[&>pre]:p-4 text-sm leading-6"
+        className="[&>pre]:p-4 [&>pre]:overflow-x-auto text-sm leading-6"
       ></div>
     </div>
   );

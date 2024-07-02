@@ -6,7 +6,9 @@ import { type Context, usePageContext } from '~/context';
 import { cn } from '~/utils';
 
 function getThemeKey(context: Context) {
-  return context.preview ? 'preview' : `docs.page:theme:${context.owner}/${context.repository}`;
+  return context.preview
+    ? 'preview:theme'
+    : `docs.page:theme:${context.owner}/${context.repository}`;
 }
 
 export function ThemeScripts() {

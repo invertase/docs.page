@@ -8,6 +8,7 @@ import { Heading } from './mdx/Heading';
 import { CodeBlock } from './mdx/CodeBlock';
 import { Link } from './mdx/Link';
 import { Table } from './mdx/Table';
+import { Tabs, TabItem, TabsProvider } from './mdx/Tabs';
 import { Section } from './mdx/Section';
 import { Image } from './mdx/Image';
 import { Tweet } from './mdx/Tweet';
@@ -66,38 +67,42 @@ export function Content() {
         className="prose dark:prose-invert
         prose-inline-code:before:content-none prose-inline-code:after:content-none prose-inline-code:border prose-inline-code:rounded prose-inline-code:py-0.5 prose-inline-code:px-1 prose-inline-code:border-black/20 prose-inline-code:dark:border-white/20 prose-inline-code:bg-black/5 prose-inline-code:dark:bg-white/5"
       >
-        <MDX
-          components={{
-            /* HTML Overrides */
-            h1: (props: ComponentProps<'h1'>) => <Heading {...props} type="h1" />,
-            h2: (props: ComponentProps<'h2'>) => <Heading {...props} type="h2" anchor="true" />,
-            h3: (props: ComponentProps<'h3'>) => <Heading {...props} type="h3" anchor="true" />,
-            h4: (props: ComponentProps<'h4'>) => <Heading {...props} type="h4" anchor="true" />,
-            h5: (props: ComponentProps<'h5'>) => <Heading {...props} type="h5" anchor="true" />,
-            h6: (props: ComponentProps<'h6'>) => <Heading {...props} type="h6" anchor="true" />,
-            a: (props: ComponentProps<'a'>) => <Link {...props} />,
-            table: (props: ComponentProps<'table'>) => <Table {...props} />,
-            section: (props: ComponentProps<'section'>) => <Section {...props} />,
-            img: (props: ComponentProps<'img'>) => <Image {...props} />,
-            pre: (props: ComponentProps<'pre'>) => <CodeBlock {...props} />,
-            /* Custom Components */
-            Accordion,
-            AccordionGroup,
-            CodeGroup: () => <div></div>,
-            Image,
-            Icon,
-            Info,
-            Warning,
-            Error,
-            Success,
-            Tweet,
-            Vimeo,
-            Video,
-            YouTube,
-            X: Tweet,
-            Zapp,
-          }}
-        />
+        <TabsProvider>
+          <MDX
+            components={{
+              /* HTML Overrides */
+              h1: (props: ComponentProps<'h1'>) => <Heading {...props} type="h1" />,
+              h2: (props: ComponentProps<'h2'>) => <Heading {...props} type="h2" anchor="true" />,
+              h3: (props: ComponentProps<'h3'>) => <Heading {...props} type="h3" anchor="true" />,
+              h4: (props: ComponentProps<'h4'>) => <Heading {...props} type="h4" anchor="true" />,
+              h5: (props: ComponentProps<'h5'>) => <Heading {...props} type="h5" anchor="true" />,
+              h6: (props: ComponentProps<'h6'>) => <Heading {...props} type="h6" anchor="true" />,
+              a: (props: ComponentProps<'a'>) => <Link {...props} />,
+              table: (props: ComponentProps<'table'>) => <Table {...props} />,
+              section: (props: ComponentProps<'section'>) => <Section {...props} />,
+              img: (props: ComponentProps<'img'>) => <Image {...props} />,
+              pre: (props: ComponentProps<'pre'>) => <CodeBlock {...props} />,
+              /* Custom Components */
+              Accordion,
+              AccordionGroup,
+              CodeGroup: () => <div></div>,
+              Image,
+              Icon,
+              Info,
+              Warning,
+              Error,
+              Success,
+              Tabs,
+              TabItem,
+              Tweet,
+              Vimeo,
+              Video,
+              YouTube,
+              X: Tweet,
+              Zapp,
+            }}
+          />
+        </TabsProvider>
       </div>
     </main>
   );
