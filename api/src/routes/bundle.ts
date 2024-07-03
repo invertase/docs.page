@@ -26,22 +26,24 @@ export type BundleResponse =
       code: 'OK';
       data: BundlerOutput;
     }
-  | {
-      code:
-        | 'NOT_FOUND'
-        | 'BAD_REQUEST'
-        | 'REPO_NOT_FOUND'
-        | 'FILE_NOT_FOUND'
-        | 'BUNDLE_ERROR'
-        | 'INTERNAL_SERVER_ERROR';
-      error:
-        | string
-        | {
-            message: string;
-            cause?: string | unknown;
-            links?: { title: string; url: string }[];
-          };
-    };
+  | BundleErrorResponse;
+
+export type BundleErrorResponse = {
+  code:
+    | 'NOT_FOUND'
+    | 'BAD_REQUEST'
+    | 'REPO_NOT_FOUND'
+    | 'FILE_NOT_FOUND'
+    | 'BUNDLE_ERROR'
+    | 'INTERNAL_SERVER_ERROR';
+  error:
+    | string
+    | {
+        message: string;
+        cause?: string | unknown;
+        links?: { title: string; url: string }[];
+      };
+};
 
 export default async function bundle(req: Request, res: Response): Promise<Response> {
   const input = QuerySchema.safeParse(req.query);

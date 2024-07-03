@@ -1,4 +1,5 @@
 import { Content } from './components/Content';
+import { Edit } from './components/Edit';
 import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { PreviousNext } from './components/PreviousNext';
@@ -39,6 +40,7 @@ export function Layout() {
           <section className="pt-8 ps-16 pe-4 flex">
             <div className="min-w-0 flex-1 pr-0 xl:pr-12">
               <Content />
+              <Edit />
               <PreviousNext />
               <div className="h-px bg-black/5 dark:bg-white/5 my-12"></div>
               <Footer />

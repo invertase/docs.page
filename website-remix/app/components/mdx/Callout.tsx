@@ -10,11 +10,11 @@ function Callout(props: CalloutProps) {
   return (
     <div
       className={cn(
-        'mb-3 flex gap-4 overflow-hidden rounded-xl px-5 py-4 leading-none text-sm',
+        'relative mb-3 flex gap-4 overflow-hidden rounded-xl px-5 py-4',
         props.className,
       )}
     >
-      {props.icon}
+      <span className="relative top-0.5 flex-shrink-0">{props.icon}</span>
       <span className="[&>p]:m-0">{props.children}</span>
     </div>
   );

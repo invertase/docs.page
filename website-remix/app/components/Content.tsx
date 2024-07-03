@@ -46,7 +46,7 @@ export function Content() {
   const showMeta = showPageTitle || showPageImage;
 
   return (
-    <main className="flex-1 max-w-none">
+    <main className="flex-1 max-w-none mb-8">
       {showMeta && (
         <div className="space-y-4 mb-8">
           {!!title && (

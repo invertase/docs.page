@@ -114,6 +114,7 @@ export function useHref(path: string): string {
   return getHref(ctx, path);
 }
 
+// Returns the active tab for the current page.
 export function useActiveTab(): string | undefined {
   const ctx = usePageContext();
   const tabs = useTabs();
@@ -170,8 +171,8 @@ export function useSourceUrl() {
     ctx.repository,
     '/edit/',
     source.type === 'branch' && source.ref !== 'HEAD' ? source.ref : ctx.bundle.baseBranch,
-    '/docs/',
-    ctx.path || 'index',
+    '/docs',
+    ctx.path || '/index',
     '.mdx',
   ].join('');
 }

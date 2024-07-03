@@ -1,6 +1,7 @@
 import cx from 'classnames';
 import { twMerge } from 'tailwind-merge';
 import { Context } from '~/context';
+import { BundleResponse } from './api';
 
 // Helper function to merge Tailwind CSS classes with classnames.
 export function cn(...inputs: cx.ArgumentArray) {
@@ -132,4 +133,46 @@ export function matchPathPattern(pattern: string, path: string) {
     .replace(/\/:([^\/]+)/g, '/([^/]+)'); // Replace /:param with /([^/]+)
 
   return new RegExp(`^${regexPattern}$`).test(path);
+}
+
+// Returns the bundle error response as a JSON response.
+export function bundleErrorResponse(bundle: BundleResponse): Response {
+  if (bundle.code === 'OK') {
+    throw new Error('bundleErrorResponse called with a successful bundle');
+  }
+
+  let json = { code: bundle.code, message: '' };
+  if (typeof bundle.error === 'string') {
+    json.message = bundle.error;
+  } else {
+    json = {
+      code: bundle.code,
+      ...bundle.error,
+    };
+  }
+
+  return Response.json(json, {
+    status: bundleCodeToStatusCode(bundle),
+  });
+}
+
+// Returns the status code for a given bundle response.
+export function bundleCodeToStatusCode(bundle: BundleResponse): number {
+  switch (bundle.code) {
+    default:
+    case 'OK':
+      return 200;
+    case 'NOT_FOUND':
+      return 404;
+    case 'BAD_REQUEST':
+      return 400;
+    case 'REPO_NOT_FOUND':
+      return 404;
+    case 'FILE_NOT_FOUND':
+      return 404;
+    case 'BUNDLE_ERROR':
+      return 500;
+    case 'INTERNAL_SERVER_ERROR':
+      return 500;
+  }
 }

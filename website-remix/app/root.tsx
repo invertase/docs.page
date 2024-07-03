@@ -1,8 +1,19 @@
-import { Links, Meta, Outlet, Scripts, ScrollRestoration } from '@remix-run/react';
+import {
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  isRouteErrorResponse,
+  useRouteError,
+} from '@remix-run/react';
 import { LinksFunction } from '@remix-run/node';
 
 import styles from './styles.css?url';
 import zoom from 'react-medium-image-zoom/dist/styles.css?url';
+import { ErrorLayout } from './ErrorLayout';
+import { BundleErrorResponse } from './api';
+import { ReactElement } from 'react';
 
 export const links: LinksFunction = () => [
   { rel: 'stylesheet', href: styles },
@@ -47,4 +58,40 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return <Outlet />;
+}
+
+export function ErrorBoundary() {
+  const error = useRouteError();
+
+  let title = 'Something went wrong';
+  let description = 'An unexpected error occurred.';
+
+  const body = (children: ReactElement) => (
+    <>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+              if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+              }`,
+        }}
+      />
+      {children}
+    </>
+  );
+
+  if (isRouteErrorResponse(error)) {
+    const isBundleError = error.data !== null && typeof error.data === 'object';
+
+    if (isBundleError) {
+      return body(<ErrorLayout error={error.data as BundleErrorResponse} />);
+    }
+
+    if (error.status === 404) {
+      title = 'Page not found';
+      description = 'The page you were looking for could not be found.';
+    }
+  }
+
+  return body(<ErrorLayout title={title} description={description} />);
 }

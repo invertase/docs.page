@@ -1,5 +1,10 @@
-import type { BundlerOutput, SidebarGroup } from '../../api/src/types';
-export type { BundlerOutput, SidebarGroup };
+import type {
+  BundleResponse,
+  BundleErrorResponse,
+  BundlerOutput,
+  SidebarGroup,
+} from '../../api/src/types';
+export type { BundleResponse, BundleErrorResponse, BundlerOutput, SidebarGroup };
 
 type GetBundleArgs = {
   owner: string;
@@ -30,11 +35,13 @@ export async function getBundle(args: GetBundleArgs): Promise<BundlerOutput> {
 
   const json = await response.json();
 
-  if (response.ok) {
-    return json.data as BundlerOutput;
+  if (!response.ok) {
+    throw Response.json(json, {
+      status: response.status,
+    });
   }
 
-  throw new Error('Failed to fetch bundle');
+  return json.data as BundlerOutput;
 }
 
 type GetPreviewBundleArgs = {
@@ -59,9 +66,11 @@ export async function getPreviewBundle(args: GetPreviewBundleArgs): Promise<Bund
 
   const json = await response.json();
 
-  if (response.ok) {
-    return json.data as BundlerOutput;
+  if (!response.ok) {
+    throw Response.json(json, {
+      status: response.status,
+    });
   }
 
-  throw new Error('Failed to fetch preview bundle');
+  return json.data as BundlerOutput;
 }

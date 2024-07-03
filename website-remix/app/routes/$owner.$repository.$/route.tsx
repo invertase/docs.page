@@ -30,8 +30,9 @@ export const loader = async (args: LoaderFunctionArgs) => {
     repository,
     path,
     ref,
-  }).catch(() => {
-    throw new Error('Failed to fetch bundle');
+  }).catch(response => {
+    args.response = response;
+    throw args.response;
   });
 
   // Check whether the repository has a domain assigned.
@@ -60,7 +61,9 @@ export const loader = async (args: LoaderFunctionArgs) => {
       url += redirectTo;
     }
 
-    throw redirect(url);
+    args.response!.status = 301;
+    args.response!.headers.set('Location', url);
+    throw args.response;
   }
 
   return {
