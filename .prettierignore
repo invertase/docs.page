@@ -1,8 +1,0 @@
-.next
-node_modules
-build
-dist
-domains.json
-spelling.json
-_docs.page
-docs/components/tabs.mdx

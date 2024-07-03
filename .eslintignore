@@ -1,9 +1,0 @@
-public
-.next
-package-lock.json
-yarn.lock
-bundler/dist
-dist
-build
-_docs.page
-og

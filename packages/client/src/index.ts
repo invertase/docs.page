@@ -1,14 +1,19 @@
-import { useMemo, FunctionComponent } from 'react';
-import { getMDXComponent, MDXContentProps } from 'mdx-bundler/client';
+import { type MDXContentProps, getMDXComponent } from "mdx-bundler/client";
+import { type FunctionComponent, useMemo } from "react";
 
 interface UseHydratedProps {
-  code: string;
+	code: string;
 }
 
 function getMDXComp(code: string): FunctionComponent<MDXContentProps> {
-  return getMDXComponent(code);
+	return getMDXComponent(code);
 }
 
-export function useHydratedMdx({ code }: UseHydratedProps): FunctionComponent<MDXContentProps> {
-  return useMemo<FunctionComponent<MDXContentProps>>(() => getMDXComp(code), [code]);
+export function useHydratedMdx({
+	code,
+}: UseHydratedProps): FunctionComponent<MDXContentProps> {
+	return useMemo<FunctionComponent<MDXContentProps>>(
+		() => getMDXComp(code),
+		[code],
+	);
 }

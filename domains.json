@@ -1,165 +1,46 @@
 [
-	[
-		"use.docs.page",
-		"invertase/docs.page"
-	],
-	[
-		"docs.globe.dev",
-		"invertase/globe"
-	],
-	[
-		"docs.turing.sh",
-		"TuringAI-Team/turing-ai-api"
-	],
-	[
-		"melos.invertase.dev",
-		"invertase/melos"
-	],
-	[
-		"melos.invertase.io",
-		"invertase/melos"
-	],
-	[
-		"docs.dartedge.dev",
-		"invertase/dart_edge"
-	],
-	[
-		"extensions.invertase.dev",
-		"invertase/firebase-extensions"
-	],
-	[
-		"react-query-firebase.invertase.dev",
-		"invertase/react-query-firebase"
-	],
-	[
-		"docs.flexcolorscheme.com",
-		"rydmike/flex_color_scheme_docs"
-	],
-	[
-		"docs.lunasea.app",
-		"JagandeepBrar/LunaSea"
-	],
-	[
-		"docs.widgetbook.io",
-		"widgetbook/widgetbook"
-	],
-	[
-		"goconfigenv.ganeshagrawal.com",
-		"iamganeshagrawal/goconfigenv"
-	],
-	[
-		"docs.ayphu.com",
-		"ayphu/docs"
-	],
-	[
-		"docs.zapp.run",
-		"invertase/zapp.run"
-	],
-	[
-		"dokumentacja.otwartaturystyka.pl",
-		"opentouristics/database-tools"
-	],
-	[
-		"patrol.leancode.co",
-		"leancodepl/patrol"
-	],
-	[
-		"patrol.leancode.pl",
-		"leancodepl/patrol"
-	],
-	[
-		"web3sozluk.com",
-		"web3sozluk/bilgikaynagi"
-	],
-	[
-		"docs.sharezone.net",
-		"SharezoneApp/sharezone-app"
-	],
-	[
-		"docs.nahpu.app",
-		"hhandika/nahpu-docs"
-	],
-	[
-		"docs.custom-lint.dev",
-		"invertase/dart_custom_lint"
-	],
-	[
-		"starknetdart.dev",
-		"focustree/starknet.dart"
-	],
-	[
-		"docs.neorepo.com",
-		"neorepohq/docs"
-	],
-	[
-		"docs.solsend.dev",
-	 	"Solsend/solsend-web"
-	],
-	[
-		"boxtransform.hyperdesigned.dev",
-		"hyper-designed/box_transform"
-	],
-	[
-		"news.pieces.app",
-		"pieces-app/news"
-	],
-	[
-		"docs.buildwiththeta.com",
-		"buildwiththeta/buildwiththeta"
-	],
+	["use.docs.page", "invertase/docs.page"],
+	["docs.globe.dev", "invertase/globe"],
+	["docs.turing.sh", "TuringAI-Team/turing-ai-api"],
+	["melos.invertase.dev", "invertase/melos"],
+	["melos.invertase.io", "invertase/melos"],
+	["docs.dartedge.dev", "invertase/dart_edge"],
+	["extensions.invertase.dev", "invertase/firebase-extensions"],
+	["react-query-firebase.invertase.dev", "invertase/react-query-firebase"],
+	["docs.flexcolorscheme.com", "rydmike/flex_color_scheme_docs"],
+	["docs.lunasea.app", "JagandeepBrar/LunaSea"],
+	["docs.widgetbook.io", "widgetbook/widgetbook"],
+	["goconfigenv.ganeshagrawal.com", "iamganeshagrawal/goconfigenv"],
+	["docs.ayphu.com", "ayphu/docs"],
+	["docs.zapp.run", "invertase/zapp.run"],
+	["dokumentacja.otwartaturystyka.pl", "opentouristics/database-tools"],
+	["patrol.leancode.co", "leancodepl/patrol"],
+	["patrol.leancode.pl", "leancodepl/patrol"],
+	["web3sozluk.com", "web3sozluk/bilgikaynagi"],
+	["docs.sharezone.net", "SharezoneApp/sharezone-app"],
+	["docs.nahpu.app", "hhandika/nahpu-docs"],
+	["docs.custom-lint.dev", "invertase/dart_custom_lint"],
+	["starknetdart.dev", "focustree/starknet.dart"],
+	["docs.neorepo.com", "neorepohq/docs"],
+	["docs.solsend.dev", "Solsend/solsend-web"],
+	["boxtransform.hyperdesigned.dev", "hyper-designed/box_transform"],
+	["news.pieces.app", "pieces-app/news"],
+	["docs.buildwiththeta.com", "buildwiththeta/buildwiththeta"],
 	[
 		"stepbuilder.cookiecode.dev",
 		"sebastienvermeille/intellij-stepbuilder-codegen-plugin"
 	],
-	[
-		"rika2mqtt.cookiecode.dev",
-		"sebastienvermeille/rika2mqtt"
-	],
- 	[
-		"rearch.gsconrad.com",
-		"GregoryConrad/rearch-docs"
- 	],
-	[
-		"docs.densky.apika.me",
-		"Densky-Framework/densky"
-	],
-	[
-		"docs.flchart.dev",
-		"imaNNeo/fl_chart"
-	],
-	[
-		"docs.galaxyguard.xyz",
-		"Divine-Hades/GalaxyGuardDocs"
- 	],
-	[
-		"docs.vectofy.co.uk",
-		"Vectofy/vectofy-user-docs"
-	],
-	[
-		"docs.sedenion.net",
-		"SedenionCas/Sedenion"
-	],
-	[
-		"docs.nizukshya.com",
-		"Nizukshya-Labs/documentations"
-	],
-	[
-		"cleanframework.acmesoftware.com",
-		"AcmeSoftwareLLC/clean_framework"
-	],
-	[
-		"docs.yaroo.dev",
-		"codekeyz/yaroo"
-	],
-	[
-		"utils.kishormainali.com",
-		"kishormainali/fp_util"
-	],
-	[
-		"docs.gazelle-dart.dev",
-		"intales/gazelle"
-	],
-	[	"docs.lamp-ic.fr", 
-		"TeddyVermeulin/lamp-doc"
-	]
+	["rika2mqtt.cookiecode.dev", "sebastienvermeille/rika2mqtt"],
+	["rearch.gsconrad.com", "GregoryConrad/rearch-docs"],
+	["docs.densky.apika.me", "Densky-Framework/densky"],
+	["docs.flchart.dev", "imaNNeo/fl_chart"],
+	["docs.galaxyguard.xyz", "Divine-Hades/GalaxyGuardDocs"],
+	["docs.vectofy.co.uk", "Vectofy/vectofy-user-docs"],
+	["docs.sedenion.net", "SedenionCas/Sedenion"],
+	["docs.nizukshya.com", "Nizukshya-Labs/documentations"],
+	["cleanframework.acmesoftware.com", "AcmeSoftwareLLC/clean_framework"],
+	["docs.yaroo.dev", "codekeyz/yaroo"],
+	["utils.kishormainali.com", "kishormainali/fp_util"],
+	["docs.gazelle-dart.dev", "intales/gazelle"],
+	["docs.lamp-ic.fr", "TeddyVermeulin/lamp-doc"]
 ]
