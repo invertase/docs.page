@@ -6,6 +6,7 @@ import { Icon } from './Icon';
 
 import { Heading } from './mdx/Heading';
 import { CodeBlock } from './mdx/CodeBlock';
+import { CodeGroup } from './mdx/CodeGroup';
 import { Link } from './mdx/Link';
 import { Table } from './mdx/Table';
 import { Tabs, TabItem, TabsProvider } from './mdx/Tabs';
@@ -85,7 +86,7 @@ export function Content() {
               /* Custom Components */
               Accordion,
               AccordionGroup,
-              CodeGroup: () => <div></div>,
+              CodeGroup,
               Image,
               Icon,
               Info,

@@ -109,6 +109,8 @@ export const V1ConfigSchema = z
         headerDepth: v1.headerDepth,
         zoomImages: v1.zoomImages,
         automaticallyInferNextPrevious: v1.automaticallyInferNextPrevious,
+        showPageTitle: false,
+        showPageImage: false,
       },
       tabs: [], // V1 doesn't have tabs
       sidebar: [], // This is transformed below

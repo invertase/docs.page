@@ -45,7 +45,7 @@ export function CodeBlock(props: CodeBlockProps) {
       <div
         dangerouslySetInnerHTML={{ __html: props.html }}
         className="[&>pre]:p-4 [&>pre]:overflow-x-auto text-sm leading-6"
-      ></div>
+      />
     </div>
   );
 }
