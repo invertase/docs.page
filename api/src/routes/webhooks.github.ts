@@ -2,6 +2,8 @@ import type { Request, Response } from "express";
 import { Webhooks, type EmitterWebhookEvent } from "@octokit/webhooks";
 import { badRequest, ok } from "../res";
 
+import { app, getDomains } from "../octokit";
+
 export default async function githubWebhook(
   req: Request,
   res: Response
@@ -16,7 +18,7 @@ export default async function githubWebhook(
 
   // Create a new instance of the Webhooks class with the GitHub App secret.
   const webhook = new Webhooks({
-    secret: "", // TODO
+    secret: process.env.GITHUB_APP_WEBHOOK_SECRET!,
   });
 
   // Verify the signature of the request.
@@ -52,4 +54,35 @@ export default async function githubWebhook(
 
 async function onPullRequestOpened(
   event: EmitterWebhookEvent<"pull_request.opened">
-) {}
+) {
+  const pull_request = event.payload.pull_request;
+  const { repository } = event.payload;
+
+  // org/repo
+  const name = repository.full_name.toLowerCase();
+
+  // Fetch the domains file from the main repository
+  const domains = await getDomains();
+
+  // Find a custom domain for the repository, if it exists
+  const domain = domains.find(([, repository]) => repository === name)?.[0];
+
+  // Build a domain URL for the comment
+  const url = domain
+    ? `${domain}/~${pull_request.number}`
+    : `docs.page/${name}~${pull_request.number}`;
+
+  const comment = `To view this pull requests documentation preview, visit the following URL:
+\n\n\
+[${url}](https://${url})
+\n\n\
+Documentation is deployed and generated using [docs.page](https://docs.page).`;
+
+  // Post a comment on the pull request
+  await app.octokit.rest.issues.createComment({
+    owner: repository.owner.login,
+    repo: repository.name,
+    issue_number: pull_request.number,
+    body: comment,
+  });
+}
