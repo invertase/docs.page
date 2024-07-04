@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM oven/bun:1.0.29
+FROM oven/bun:1.1.3
 
 ARG BUILD_SHA=default_value
 ENV __BUILD_SHA=$BUILD_SHA
