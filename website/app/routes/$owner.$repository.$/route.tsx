@@ -11,7 +11,7 @@ import { Scripts } from "~/components/Scripts";
 import { type Context, PageContext } from "~/context";
 
 import docsearch from "@docsearch/css/dist/style.css?url";
-import { ensureLeadingSlash } from "~/utils";
+import { ensureLeadingSlash, getAssetSrc } from "~/utils";
 import domains from "../../../../domains.json";
 import { trackPageRequest } from "~/plausible";
 
@@ -76,7 +76,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
   }
 
   if (import.meta.env.PROD) {
-		// Track the page request.
+    // Track the page request.
     await trackPageRequest(args.request, owner, repository);
 
     // Set the cache headers - see https://vercel.com/docs/concepts/edge-network/caching
@@ -108,23 +108,25 @@ export default function DocsPage() {
   );
 }
 
-export const meta: MetaFunction<typeof loader> = ({ data }) => {
+export const meta: MetaFunction<typeof loader> = ({ data: ctx }) => {
   const descriptors: MetaDescriptor[] = [];
 
-  if (!data) {
+  if (!ctx) {
     return descriptors;
   }
 
   descriptors.push({
     tagName: "link",
     rel: "icon",
-    href: data.bundle.config.favicon || "/favicon.ico",
+    href: ctx.bundle.config.favicon
+      ? getAssetSrc(ctx, ctx.bundle.config.favicon)
+      : "/favicon.ico",
   });
 
   // Add noindex meta tag if the frontmatter or config has noindex set to true.
   if (
-    data.bundle.frontmatter.noindex === true ||
-    data.bundle.config.seo?.noindex === true
+    ctx.bundle.frontmatter.noindex === true ||
+    ctx.bundle.config.seo?.noindex === true
   ) {
     descriptors.push({
       name: "robots",
@@ -133,9 +135,9 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
   }
 
   const title =
-    data.bundle.frontmatter.title || data.bundle.config.name || "docs.page";
+    ctx.bundle.frontmatter.title || ctx.bundle.config.name || "docs.page";
   const description =
-    data.bundle.frontmatter.description || data.bundle.config.description;
+    ctx.bundle.frontmatter.description || ctx.bundle.config.description;
 
   descriptors.push({
     title,
@@ -171,27 +173,27 @@ export const meta: MetaFunction<typeof loader> = ({ data }) => {
     });
   }
 
-  if ("domain" in data && data.domain) {
+  if ("domain" in ctx && ctx.domain) {
     descriptors.push({
       property: "og:url",
-      content: `https://${data.domain}`,
+      content: `https://${ctx.domain}`,
     });
   }
 
-  if (data.bundle.config.social?.x) {
+  if (ctx.bundle.config.social?.x) {
     descriptors.push({
       name: "twitter:site",
-      content: `@${data.bundle.config.social.x}`,
+      content: `@${ctx.bundle.config.social.x}`,
     });
   }
 
-  if (data.bundle.config.search?.docsearch) {
+  if (ctx.bundle.config.search?.docsearch) {
     // https://docsearch.algolia.com/docs/DocSearch-v3#preconnect
     descriptors.push({
       tagName: "link",
       rel: "preconnect",
       crossOrigin: "true",
-      href: `https://${data.bundle.config.search?.docsearch.appId}-dsn.algolia.net`,
+      href: `https://${ctx.bundle.config.search?.docsearch.appId}-dsn.algolia.net`,
     });
 
     descriptors.push({
