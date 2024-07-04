@@ -31,7 +31,7 @@ export function TableOfContents() {
 	}, []);
 
 	return (
-		<div className="sticky top-32">
+		<div className="sticky top-24">
 			<h3 className="flex items-center gap-2 opacity-75 font-display font-medium text-[15px] mb-2 tracking-wider">
 				<ListTreeIcon size={20} />
 				<span>On this page</span>
