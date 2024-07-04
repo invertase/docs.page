@@ -41,6 +41,7 @@ export default async function preview(
 				repository: "repository",
 				ref: "preview",
 			},
+			private: false,
 			ref: "preview",
 			stars: 0,
 			forks: 0,

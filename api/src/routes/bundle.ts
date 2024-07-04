@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { z } from "zod";
 import { BundlerError } from "../bundler/error";
 import { Bundler, type BundlerOutput } from "../bundler/index";
-import { badRequest, ok, response, serverError } from "../res";
+import { badRequest, ok, bundleError, serverError } from "../res";
 
 const QuerySchema = z.object({
 	owner: z
@@ -40,8 +40,7 @@ export type BundleErrorResponse = {
 		| string
 		| {
 				message: string;
-				cause?: string | unknown;
-				links?: { title: string; url: string }[];
+				source?: string;
 		  };
 };
 
@@ -60,13 +59,7 @@ export default async function bundle(
 		return ok(res, await bundler.build());
 	} catch (e: unknown) {
 		if (e instanceof BundlerError) {
-			return response(res, e.code, e.name, {
-				error: {
-					message: e.message,
-					cause: e.cause,
-					links: e.links,
-				},
-			});
+			return bundleError(res, e);
 		}
 		return serverError(res, e);
 	}
