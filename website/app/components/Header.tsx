@@ -5,6 +5,7 @@ import { Locale } from "./Locale";
 import { Logo } from "./Logo";
 import { Search } from "./Search";
 import { ThemeToggle } from "./Theme";
+import { RefBadge } from "./RefBadge";
 
 export function Header() {
 	const ctx = usePageContext();
@@ -28,6 +29,7 @@ export function Header() {
 				</div>
 				<div className="flex-1 flex items-center justify-end pr-4 gap-8">
 					<Links />
+					<RefBadge />
 					<GitHubCard />
 					<Locale />
 					<ThemeToggle />
