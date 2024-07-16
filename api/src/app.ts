@@ -2,7 +2,6 @@ import { config } from "dotenv";
 import express, { Router, text } from "express";
 import morgan from "morgan";
 
-import probot from "./probot";
 import { notFound } from "./res";
 import bundle from "./routes/bundle";
 import preview from "./routes/preview";
@@ -21,7 +20,6 @@ app.use(
 		extended: true,
 	}),
 );
-app.use(probot);
 
 const router = Router();
 router.get("/status", (_, res) => res.status(200).send("OK"));

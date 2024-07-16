@@ -75,7 +75,7 @@ export async function getPreviewBundle(
 	});
 
 	const json = await response.json();
-
+	console.log(json);
 	if (!response.ok) {
 		throw Response.json(json, {
 			status: response.status,
