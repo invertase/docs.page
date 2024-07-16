@@ -5,7 +5,7 @@ import { ensureLeadingSlash } from "~/utils";
 
 const DATABASE = "docs.page";
 const DATABASE_VERSION = 2;
-const REFETCH_INTERVAL = false;
+const REFETCH_INTERVAL = 1000;
 
 interface Database extends DBSchema {
 	handles: {

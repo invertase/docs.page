@@ -15,36 +15,37 @@ import rehypeCodeBlocks from "./rehype-code-blocks";
 import rehypeInlineBadges from "./rehype-inline-badges";
 
 type PluginOptions = {
-	codeHike?: boolean;
-	math?: boolean;
+  components?: Array<string>;
+  codeHike?: boolean;
+  math?: boolean;
 };
 
 export function getRemarkPlugins(options?: PluginOptions): PluggableList {
-	const plugins = [
-		remarkComponentCheck,
-		remarkUndeclaredVariables,
-		remarkGfm,
-		remarkComment,
-	];
+  const plugins = [
+    remarkComponentCheck(options?.components ?? []),
+    remarkUndeclaredVariables,
+    remarkGfm,
+    remarkComment,
+  ];
 
-	if (options?.codeHike) {
-		// plugins.push([remarkCodeHike, { theme: codeHikeTheme, lineNumbers: true }]);
-	}
+  if (options?.codeHike) {
+    // plugins.push([remarkCodeHike, { theme: codeHikeTheme, lineNumbers: true }]);
+  }
 
-	return plugins;
+  return plugins;
 }
 
 export function getRehypePlugins(options?: PluginOptions): PluggableList {
-	const plugins = [
-		rehypeCodeBlocks,
-		rehypeSlug,
-		rehypeInlineBadges,
-		rehypeAccessibleEmojis,
-	];
+  const plugins = [
+    rehypeCodeBlocks,
+    rehypeSlug,
+    rehypeInlineBadges,
+    rehypeAccessibleEmojis,
+  ];
 
-	if (options?.codeHike) {
-		// plugins.push([]);
-	}
+  if (options?.codeHike) {
+    // plugins.push([]);
+  }
 
-	return plugins;
+  return plugins;
 }

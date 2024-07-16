@@ -19,6 +19,7 @@ const QuerySchema = z.object({
 		.min(1),
 	ref: z.string().optional(),
 	path: z.string().optional().default("index"),
+	components: z.array(z.string()).optional(),
 });
 
 export type BundleResponse =
