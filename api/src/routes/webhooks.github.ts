@@ -1,5 +1,5 @@
+import { type EmitterWebhookEvent, Webhooks } from "@octokit/webhooks";
 import type { Request, Response } from "express";
-import { Webhooks, type EmitterWebhookEvent } from "@octokit/webhooks";
 import { badRequest, ok } from "../res";
 
 import { app, getDomains } from "../octokit";

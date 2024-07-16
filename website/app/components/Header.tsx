@@ -3,9 +3,9 @@ import { cn } from "~/utils";
 import { GitHubCard } from "./GitHubCard";
 import { Locale } from "./Locale";
 import { Logo } from "./Logo";
+import { RefBadge } from "./RefBadge";
 import { Search } from "./Search";
 import { ThemeToggle } from "./Theme";
-import { RefBadge } from "./RefBadge";
 
 export function Header() {
 	const ctx = usePageContext();

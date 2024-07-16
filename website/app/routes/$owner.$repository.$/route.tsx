@@ -11,9 +11,9 @@ import { Scripts } from "~/components/Scripts";
 import { type Context, PageContext } from "~/context";
 
 import docsearch from "@docsearch/css/dist/style.css?url";
+import { trackPageRequest } from "~/plausible";
 import { ensureLeadingSlash, getAssetSrc } from "~/utils";
 import domains from "../../../../domains.json";
-import { trackPageRequest } from "~/plausible";
 
 export const loader = async (args: LoaderFunctionArgs) => {
 	const owner = args.params.owner;

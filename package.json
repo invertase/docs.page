@@ -4,8 +4,7 @@
 		"dev": "concurrently \"npm dev:api\" \"yarn npm:website\"",
 		"dev:api": "cd api && bun dev",
 		"dev:website": "cd website && npm run dev",
-		"format": "npx @biomejs/biome format --write",
-		"lint": "npx @biomejs/biome lint --write"
+		"check": "npx @biomejs/biome check --write ."
 	},
 	"dependencies": {
 		"typescript": "^5.5.3"

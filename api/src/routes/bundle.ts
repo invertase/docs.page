@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { z } from "zod";
 import { BundlerError } from "../bundler/error";
 import { Bundler, type BundlerOutput } from "../bundler/index";
-import { badRequest, ok, bundleError, serverError } from "../res";
+import { badRequest, bundleError, ok, serverError } from "../res";
 
 const QuerySchema = z.object({
 	owner: z
