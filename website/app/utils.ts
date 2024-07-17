@@ -94,7 +94,7 @@ export function getHref(ctx: Context, path: string) {
 
 	// Start with `//` to ensure the URL is protocol-relative and includes the domain.
 	if (ctx.domain) {
-		href += `//${ctx.domain}`;
+		href += `https://${ctx.domain}`;
 	}
 	// Prefix the path with the owner and repository, e.g. `/invertase/docs.page`.
 	else {
