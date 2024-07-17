@@ -46,6 +46,7 @@ export function usePageContext(): Context {
 	return context;
 }
 
+// Returns a src url for a given asset path.
 export function useAssetSrc(path: string) {
 	const ctx = usePageContext();
 	const isPreview = ctx.preview;
@@ -183,6 +184,7 @@ export function useSourceUrl() {
 	].join("");
 }
 
+// Returns the GitHub reference URL for the current page.
 export function useRefUrl() {
 	const ctx = usePageContext();
 

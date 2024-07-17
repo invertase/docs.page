@@ -7,16 +7,16 @@ import tsconfigPaths from "vite-tsconfig-paths";
 installGlobals({ nativeFetch: true });
 
 export default defineConfig({
-  plugins: [
-    remix({
-      presets: [vercelPreset()],
-      future: {
-        unstable_singleFetch: true,
-        v3_fetcherPersist: true,
-        v3_relativeSplatPath: true,
-        v3_throwAbortReason: true,
-      },
-    }),
-    tsconfigPaths(),
-  ],
+	plugins: [
+		remix({
+			presets: [vercelPreset()],
+			future: {
+				unstable_singleFetch: true,
+				v3_fetcherPersist: true,
+				v3_relativeSplatPath: true,
+				v3_throwAbortReason: true,
+			},
+		}),
+		tsconfigPaths(),
+	],
 });

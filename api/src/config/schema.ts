@@ -1,173 +1,58 @@
 import { z } from "zod";
 
-// Represents a single page in the sidebar
-const SidebarPageItemSchema = z.object({
-	title: z.string(),
-	href: z.string(),
-	icon: z.string().optional(),
-});
+import anchors from "./models/anchors";
+import content from "./models/content";
+import header from "./models/header";
+import logo from "./models/logo";
+import scripts from "./models/scripts";
+import search from "./models/search";
+import seo from "./models/seo";
+import sidebar from "./models/sidebar";
+import social from "./models/social";
+import tabs from "./models/tabs";
+import theme from "./models/theme";
 
-// Represents a group of pages in the sidebar
-export type SidebarGroup = {
-	group: string;
-	tab?: string;
-	href?: string;
-	icon?: string;
-	pages: (z.infer<typeof SidebarPageItemSchema> | SidebarGroup)[];
-};
-
-// The overall schema for the sidebar
-const SidebarSchema: z.ZodType<SidebarGroup> = z.lazy(() =>
-	z.object({
-		group: z.string(),
-		tab: z.string().optional(),
-		href: z.string().optional(),
-		icon: z.string().optional(),
-		pages: z.array(z.union([SidebarPageItemSchema, SidebarSchema])),
-	}),
-);
-
-export type Sidebar = z.infer<typeof SidebarSchema>;
+export type { Sidebar } from "./models/sidebar";
 
 export const ConfigSchema = z
 	.object({
 		// The name of the project
-		name: z.string().optional().catch(undefined),
+		name: z.string().min(1).optional().catch(undefined),
 		// The description of the project
-		description: z.string().optional().catch(undefined),
-		// The logo of the project, used in the header
-		logo: z
-			.object({
-				href: z.string().optional(),
-				light: z.string().optional(),
-				dark: z.string().optional(),
-			})
-			.optional()
-			.catch(undefined),
+		description: z.string().min(1).optional().catch(undefined),
 		// The favicon of the project
-		favicon: z.string().optional().catch(undefined),
-		theme: z
-			.object({
-				defaultTheme: z
-					.union([z.literal("light"), z.literal("dark")])
-					.optional()
-					.catch(undefined),
-				// grayScale: z.boolean().catch(false), // TODO?
-				primary: z.string().optional().catch(undefined),
-				primaryLight: z.string().optional().catch(undefined),
-				primaryDark: z.string().optional().catch(undefined),
-				backgroundLight: z.string().optional().catch(undefined),
-				backgroundDark: z.string().optional().catch(undefined),
-			})
-			.optional()
-			.catch(undefined),
-		header: z
-			.object({
-				showName: z.boolean().optional().catch(true),
-				showThemeToggle: z.boolean().optional().catch(true),
-				showGitHubCard: z.boolean().optional().catch(true),
-				links: z
-					.array(
-						z.object({
-							title: z.string(),
-							href: z.string(),
-							cta: z.boolean().optional().catch(false),
-							locale: z.string().optional().catch(undefined),
-						}),
-					)
-					.optional()
-					.catch([]),
-			})
-			.optional()
-			.catch(undefined),
-		anchors: z
-			.array(
-				z
-					.object({
-						icon: z.string(),
-						title: z.string(),
-						href: z.string(),
-						locale: z.string().optional().catch(undefined),
-						tab: z.string().optional().catch(undefined),
-					})
-					.optional()
-					.catch(undefined),
-			)
-			.optional()
-			.catch([]),
-		social: z
-			.object({
-				preview: z.string().optional().catch(undefined),
-				website: z.string().optional().catch(undefined),
-				x: z.string().optional().catch(undefined),
-				youtube: z.string().optional().catch(undefined),
-				facebook: z.string().optional().catch(undefined),
-				instagram: z.string().optional().catch(undefined),
-				linkedin: z.string().optional().catch(undefined),
-				github: z.string().optional().catch(undefined),
-				slack: z.string().optional().catch(undefined),
-				discord: z.string().optional().catch(undefined),
-			})
-			.optional()
-			.catch(undefined),
-		seo: z
-			.object({
-				noindex: z.boolean().catch(false),
-			})
-			.optional()
-			.catch(undefined),
+		favicon: z.string().min(1).optional().catch(undefined),
+		// The preview image used in social media
+		socialPreview: z.string().min(1).optional().catch(undefined),
+		// The logo of the project, used in the header
+		logo,
+		// Theme settings
+		theme,
+		// Configuration for the header
+		header,
+		// Anchors to display in the sidebar
+		anchors,
+		// Social links to display in the footer
+		social,
+		// SEO settings
+		seo,
+		// Variables to override in mustache templates
 		variables: z.record(z.any()).catch({}),
-		search: z
-			.object({
-				docsearch: z
-					.object({
-						appId: z.string().catch(""),
-						apiKey: z.string().catch(""),
-						indexName: z.string().catch(""),
-					})
-					.optional()
-					.catch(undefined),
-			})
-			.optional()
-			.catch(undefined),
-		scripts: z
-			.object({
-				googleTagManager: z.string().optional().catch(undefined),
-				googleAnalytics: z.string().optional().catch(undefined),
-				plausible: z
-					.union([z.string(), z.boolean()])
-					.optional()
-					.catch(undefined),
-			})
-			.optional()
-			.catch(undefined),
-		content: z
-			.object({
-				headerDepth: z.number().catch(3),
-				zoomImages: z.boolean().catch(false),
-				automaticallyInferNextPrevious: z.boolean().catch(true),
-				showPageTitle: z.boolean().catch(false),
-				showPageImage: z.boolean().catch(false),
-			})
-			.optional()
-			.catch(undefined),
-		tabs: z
-			.array(
-				z.object({
-					id: z.string(),
-					title: z.string(),
-					href: z.string(),
-					locale: z.string().optional().catch(undefined),
-				}),
-			)
-			.catch([]),
-		sidebar: z
-			.union([z.record(z.array(SidebarSchema)), z.array(SidebarSchema)])
-			.catch({}),
+		// Search settings
+		search,
+		// Scripts to include in the documentation
+		scripts,
+		// Settings to control content rendering
+		content,
+		// Tabs to display in the header
+		tabs,
+		// Sidebar configuration
+		sidebar,
 	})
 	.transform((config) => {
 		return {
 			...config,
+			// Extract locales from the sidebar configuration
 			locales: Array.isArray(config.sidebar)
 				? []
 				: Object.keys(config.sidebar).filter((key) => key !== "default"),

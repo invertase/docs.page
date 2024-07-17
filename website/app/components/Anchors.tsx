@@ -10,11 +10,11 @@ export function Anchors() {
 	const anchors =
 		ctx.bundle.config.anchors
 			?.filter((anchor) => {
-				return locale ? anchor?.locale === locale : true;
+				return locale ? anchor.locale === locale : true;
 			})
 			.filter((anchor) => {
 				if (activeTab === undefined) return true;
-				return anchor?.tab === activeTab;
+				return anchor.tab === activeTab;
 			}) ?? [];
 
 	if (!anchors.length) {
