@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const fs = require('fs');
+const fs = require("node:fs");
 
 const configString = `{
     "name": "docs.page",
@@ -12,18 +12,18 @@ const configString = `{
   }`;
 
 try {
-  fs.mkdir(`./docs`, { recursive: true }, (err: Error) => {
-    if (err) throw err;
-    fs.writeFile(`./docs/index.mdx`, '# Example Docs!', (err: Error) => {
-      if (err) throw err;
-    });
-    fs.writeFile(`./docs/another-page.mdx`, '# Another Page', (err: Error) => {
-      if (err) throw err;
-    });
-  });
-  fs.writeFile(`./docs.json`, configString, (err: Error) => {
-    if (err) throw err;
-  });
+	fs.mkdir("./docs", { recursive: true }, (err: Error) => {
+		if (err) throw err;
+		fs.writeFile("./docs/index.mdx", "# Example Docs!", (err: Error) => {
+			if (err) throw err;
+		});
+		fs.writeFile("./docs/another-page.mdx", "# Another Page", (err: Error) => {
+			if (err) throw err;
+		});
+	});
+	fs.writeFile("./docs.json", configString, (err: Error) => {
+		if (err) throw err;
+	});
 } catch (err) {
-  console.log('Error', err);
+	console.log("Error", err);
 }

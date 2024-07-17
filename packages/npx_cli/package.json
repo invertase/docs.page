@@ -1,20 +1,19 @@
 {
-  "name": "@docs.page/init",
-  "version": "1.0.5",
-  "description": "npx cli for docs.page initialization",
-  "main": "index.js",
-  "author": "Invertase <oss@invertase.io> (http://invertase.io)",
-  "license": "Apache-2.0",
-  "dependencies": {
-    "typescript": "^4.5.4"
-  },
-  "scripts": {
-    "build": "tsc"
-  },
-  "bin": "./dist/index.js",
-  "files": [
-    "dist",
-    "LICENSE",
-    "README.md"
-  ]
+	"name": "@docs.page/init",
+	"version": "1.0.5",
+	"description": "npx cli for docs.page initialization",
+	"main": "index.js",
+	"author": "Invertase <oss@invertase.io> (http://invertase.io)",
+	"license": "Apache-2.0",
+	"dependencies": {
+		"typescript": "^4.5.4"
+	},
+	"scripts": {
+		"build": "tsc"
+	},
+	"bin": "./dist/index.js",
+	"files": ["dist", "LICENSE", "README.md"],
+	"devDependencies": {
+		"@types/node": "^20.14.9"
+	}
 }

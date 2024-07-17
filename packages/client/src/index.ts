@@ -1,14 +1,17 @@
-import { useMemo, FunctionComponent } from 'react';
-import { getMDXComponent, MDXContentProps } from 'mdx-bundler/client';
+type CheckArgs = {
+	// An object of relative file paths (to /docs) and their contents.
+	files: Record<string, string>;
+};
 
-interface UseHydratedProps {
-  code: string;
-}
+type CheckResult = {
+	errors: unknown;
+	warnings: unknown;
+};
 
-function getMDXComp(code: string): FunctionComponent<MDXContentProps> {
-  return getMDXComponent(code);
-}
-
-export function useHydratedMdx({ code }: UseHydratedProps): FunctionComponent<MDXContentProps> {
-  return useMemo<FunctionComponent<MDXContentProps>>(() => getMDXComp(code), [code]);
+export function check(args: CheckArgs): CheckResult {
+	// TODO
+	return {
+		errors: [],
+		warnings: [],
+	};
 }
