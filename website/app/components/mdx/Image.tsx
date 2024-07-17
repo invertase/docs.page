@@ -21,7 +21,7 @@ export function Image(props: ImageProps) {
 
 	// Wrap the image in a zoom container if zoom is enabled.
 	const container = (child: ReactElement) => {
-		return zoom ? <Zoom>{child}</Zoom> : child;
+		return zoom ? <Zoom classDialog="!bg-background">{child}</Zoom> : child;
 	};
 
 	return (

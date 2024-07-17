@@ -43,6 +43,11 @@ html[data-theme='dark'] {
   --shiki-token-punctuation: #e4e4e7;
 }
 
+/* Override the zoom image overlay to be transparent, allowing the component background colour to apply */
+[data-rmiz-modal-overlay="visible"] {
+  background-color: transparent !important;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
