@@ -1,11 +1,11 @@
 @font-face {
-  font-family: 'Cal Sans';
+  font-family: "Cal Sans";
   font-style: normal;
   font-weight: normal;
-  src:
-    url('/_docs.page/webfonts/cal-sans/CalSans-SemiBold.woff2') format('woff2'),
-    url('/_docs.page/webfonts/cal-sans/CalSans-SemiBold.woff') format('woff'),
-    url('/_docs.page/webfonts/cal-sans/CalSans-SemiBold.ttf') format('truetype');
+  src: url("/_docs.page/webfonts/cal-sans/CalSans-SemiBold.woff2")
+      format("woff2"),
+    url("/_docs.page/webfonts/cal-sans/CalSans-SemiBold.woff") format("woff"),
+    url("/_docs.page/webfonts/cal-sans/CalSans-SemiBold.ttf") format("truetype");
 }
 
 :root {
@@ -13,7 +13,7 @@
   --background: var(--background-light);
 }
 
-html[data-theme='dark'] {
+html[data-theme="dark"] {
   color-scheme: dark;
   --primary: var(--primary-dark);
   --background: var(--background-dark);
@@ -46,6 +46,14 @@ html[data-theme='dark'] {
 /* Override the zoom image overlay to be transparent, allowing the component background colour to apply */
 [data-rmiz-modal-overlay="visible"] {
   background-color: transparent !important;
+}
+
+/* Override the default NProgress styles */
+#nprogress .bar {
+  background: hsl(var(--primary)) !important;
+}
+#nprogress .peg {
+  box-shadow: 0 0 10px hsl(var(--primary)), 0 0 5px hsl(var(--primary)) !important;
 }
 
 @tailwind base;
