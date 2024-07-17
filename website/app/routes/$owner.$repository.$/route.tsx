@@ -16,6 +16,7 @@ import { ensureLeadingSlash, getAssetSrc, getEnvironment } from "~/utils";
 import domains from "../../../../domains.json";
 
 export const loader = async (args: LoaderFunctionArgs) => {
+	const requestUrl = new URL(args.request.url);
 	const owner = args.params.owner;
 	const path = args.params["*"] || "";
 	let repository = args.params.repository;
@@ -67,7 +68,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
 			url += redirectTo;
 		} else {
 			// If no domain, redirect to docs.page.
-			url = `https://docs.page/${owner}/${repository}`;
+			url = `${requestUrl.origin}/${owner}/${repository}`;
 			if (ref) url += `~${ref}`;
 			url += redirectTo;
 		}
