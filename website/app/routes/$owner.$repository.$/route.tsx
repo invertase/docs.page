@@ -12,7 +12,7 @@ import { type Context, PageContext } from "~/context";
 
 import docsearch from "@docsearch/css/dist/style.css?url";
 import { trackPageRequest } from "~/plausible";
-import { ensureLeadingSlash, getAssetSrc } from "~/utils";
+import { ensureLeadingSlash, getAssetSrc, getEnvironment } from "~/utils";
 import domains from "../../../../domains.json";
 
 export const loader = async (args: LoaderFunctionArgs) => {
@@ -94,6 +94,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
 		domain: import.meta.env.PROD ? domain : undefined,
 		bundle,
 		preview: false,
+		environment: getEnvironment(),
 	} satisfies Context;
 };
 

@@ -7,6 +7,11 @@ type BaseContext = {
 	path: string;
 	// The bundle output for the current page.
 	bundle: BundlerOutput;
+	// The current environment:
+	// - `production` is the live production environment (on Vercel).
+	// - `preview` is the preview environment (on Vercel), e.g. a branch deployment.
+	// - `development` is the local development environment.
+	environment: "production" | "preview" | "development";
 };
 
 type PreviewContext = BaseContext & {

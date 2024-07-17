@@ -3,6 +3,14 @@ import { twMerge } from "tailwind-merge";
 import type { Context } from "~/context";
 import type { BundleResponse } from "./api";
 
+export function getEnvironment() {
+	return process.env.VERCEL
+		? process.env.VERCEL_ENV === "production"
+			? "production"
+			: "preview"
+		: "development";
+}
+
 // Helper function to merge Tailwind CSS classes with classnames.
 export function cn(...inputs: cx.ArgumentArray) {
 	return twMerge(cx(inputs));
@@ -93,7 +101,7 @@ export function getHref(ctx: Context, path: string) {
 	let href = "";
 
 	// Start with `//` to ensure the URL is protocol-relative and includes the domain.
-	if (ctx.domain) {
+	if (ctx.domain && ctx.environment === "production") {
 		href += `https://${ctx.domain}`;
 	}
 	// Prefix the path with the owner and repository, e.g. `/invertase/docs.page`.
