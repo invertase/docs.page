@@ -141,6 +141,42 @@ export const meta: MetaFunction<typeof loader> = ({ data: ctx }) => {
 	const description =
 		ctx.bundle.frontmatter.description || ctx.bundle.config.description;
 
+	let image = ctx.bundle.frontmatter.image
+		? String(ctx.bundle.frontmatter.image)
+		: ctx.bundle.config.socialPreview;
+
+	// If there is no image, generate one.
+	if (image === undefined) {
+		const params = Buffer.from(
+			JSON.stringify({
+				owner: ctx.owner,
+				repository: ctx.repository,
+				title,
+				description,
+				// Use the light logo, and fallback to the dark logo
+				logo:
+					ctx.bundle.config.logo.light || ctx.bundle.config.logo.dark
+						? getAssetSrc(
+								ctx,
+								ctx.bundle.config.logo.light ||
+									ctx.bundle.config.logo.dark ||
+									"",
+							)
+						: undefined,
+			}),
+		).toString("base64");
+
+		image = `https://og.docs.page?params=${params}`;
+	}
+	// If it has been set to false, disable the image.
+	else if (image === false) {
+		image = undefined;
+	}
+	// Otherwise the image is a path, so we need to resolve it.
+	else {
+		image = getAssetSrc(ctx, image);
+	}
+
 	descriptors.push({
 		title,
 	});
@@ -155,10 +191,22 @@ export const meta: MetaFunction<typeof loader> = ({ data: ctx }) => {
 		content: title,
 	});
 
-	descriptors.push({
-		name: "twitter:card",
-		content: "summary_large_image",
-	});
+	if (image) {
+		descriptors.push({
+			name: "twitter:card",
+			content: "summary_large_image",
+		});
+
+		descriptors.push({
+			name: "twitter:image",
+			content: image,
+		});
+
+		descriptors.push({
+			property: "og:image",
+			content: image,
+		});
+	}
 
 	if (description) {
 		descriptors.push({

@@ -22,8 +22,11 @@ export const ConfigSchema = z
 		description: z.string().min(1).optional().catch(undefined),
 		// The favicon of the project
 		favicon: z.string().min(1).optional().catch(undefined),
-		// The preview image used in social media
-		socialPreview: z.string().min(1).optional().catch(undefined),
+		// The preview image used in social media - either a path or a URL, or false to disable
+		socialPreview: z
+			.union([z.string().min(1), z.literal(false)])
+			.optional()
+			.catch(undefined),
 		// The logo of the project, used in the header
 		logo,
 		// Theme settings
