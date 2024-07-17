@@ -16,7 +16,7 @@ import {
 } from "./utils";
 
 import docsearch from "@docsearch/css/dist/style.css?url";
-import { ensureLeadingSlash, getEnvironment, isExternalLink } from "~/utils";
+import { ensureLeadingSlash, isExternalLink } from "~/utils";
 
 export const meta: MetaFunction = () => {
 	return [
@@ -123,7 +123,6 @@ function Preview() {
 				bundle,
 				preview: true,
 				getFile,
-				environment: getEnvironment(),
 			}}
 		>
 			<Layout />

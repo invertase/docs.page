@@ -25,6 +25,8 @@ export const loader = async (args: LoaderFunctionArgs) => {
 		throw new Error("Invalid routing scenario.");
 	}
 
+	const environment = getEnvironment();
+
 	// Check if the repo includes a ref (invertase/foo~bar)
 	if (repository.includes("~")) {
 		[repository, ref] = repository.split("~");
@@ -58,7 +60,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
 		}
 
 		let url = "";
-		if (domain) {
+		if (domain && environment === "production") {
 			// If there is a domain setup, always redirect to it.
 			url = `https://${domain}`;
 			if (ref) url += `/~${ref}`;
@@ -91,10 +93,9 @@ export const loader = async (args: LoaderFunctionArgs) => {
 		owner,
 		repository,
 		ref,
-		domain: import.meta.env.PROD ? domain : undefined,
+		domain: domain && environment === "production" ? domain : undefined,
 		bundle,
 		preview: false,
-		environment: getEnvironment(),
 	} satisfies Context;
 };
 
