@@ -147,26 +147,27 @@ export const meta: MetaFunction<typeof loader> = ({ data: ctx }) => {
 
 	// If there is no image, generate one.
 	if (image === undefined) {
-		const params = Buffer.from(
-			JSON.stringify({
-				owner: ctx.owner,
-				repository: ctx.repository,
-				title,
-				description,
-				// Use the light logo, and fallback to the dark logo
-				logo:
-					ctx.bundle.config.logo.light || ctx.bundle.config.logo.dark
-						? getAssetSrc(
-								ctx,
-								ctx.bundle.config.logo.light ||
-									ctx.bundle.config.logo.dark ||
-									"",
-							)
-						: undefined,
-			}),
-		).toString("base64");
+		const params = JSON.stringify({
+			owner: ctx.owner,
+			repository: ctx.repository,
+			title,
+			description,
+			// Use the light logo, and fallback to the dark logo
+			logo:
+				ctx.bundle.config.logo.light || ctx.bundle.config.logo.dark
+					? getAssetSrc(
+							ctx,
+							ctx.bundle.config.logo.light || ctx.bundle.config.logo.dark || "",
+						)
+					: undefined,
+		});
 
-		image = `https://og.docs.page?params=${params}`;
+		const base64String =
+			typeof window !== "undefined"
+				? window.btoa(params)
+				: Buffer.from(params).toString("base64");
+
+		image = `https://og.docs.page?params=${base64String}`;
 	}
 	// If it has been set to false, disable the image.
 	else if (image === false) {
