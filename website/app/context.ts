@@ -168,7 +168,7 @@ export function useSourceUrl() {
   }
 
   const source = ctx.bundle.source;
-  console.log(ctx);
+
   return [
     "https://github.com/",
     ctx.owner,

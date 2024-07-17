@@ -53,7 +53,6 @@ export default function remarkComponentCheck(
 			}
 
 			if (!declared.includes(node.name) && !components.includes(node.name)) {
-				console.log(components);
 				// Override all props of the component with our own.
 				node.attributes = [
 					{
