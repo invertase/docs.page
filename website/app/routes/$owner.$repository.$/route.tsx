@@ -1,10 +1,10 @@
-import type { LoaderFunctionArgs } from "@remix-run/node";
-import { redirect, unstable_defineLoader } from "@remix-run/node";
 import {
 	type MetaDescriptor,
 	type MetaFunction,
 	useLoaderData,
 } from "@remix-run/react";
+import type { LoaderFunctionArgs } from "@vercel/remix";
+import { redirect } from "@vercel/remix";
 import { Layout } from "~/Layout";
 import { getBundle } from "~/api";
 import { Scripts } from "~/components/Scripts";

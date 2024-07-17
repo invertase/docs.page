@@ -1,4 +1,4 @@
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction } from "@vercel/remix";
 import { Feature } from "./Feature";
 import { Heading } from "./Heading";
 

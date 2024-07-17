@@ -1,6 +1,6 @@
-import type { ActionFunctionArgs, MetaFunction } from "@remix-run/node";
 import { redirect, useFetcher, useParams } from "@remix-run/react";
 import { QueryClientProvider } from "@tanstack/react-query";
+import type { ActionFunctionArgs, MetaFunction } from "@vercel/remix";
 import { useEffect } from "react";
 import { Layout } from "../../Layout";
 import { getPreviewBundle } from "../../api";
