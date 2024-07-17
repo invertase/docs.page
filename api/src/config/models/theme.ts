@@ -12,14 +12,16 @@ const hexColor = z
 		return undefined;
 	});
 
-export default z.object({
-	defaultTheme: z
-		.union([z.literal("light"), z.literal("dark")])
-		.optional()
-		.catch(undefined),
-	primary: hexColor,
-	primaryLight: hexColor,
-	primaryDark: hexColor,
-	backgroundLight: hexColor,
-	backgroundDark: hexColor,
-});
+export default z
+	.object({
+		defaultTheme: z
+			.union([z.literal("light"), z.literal("dark")])
+			.optional()
+			.catch(undefined),
+		primary: hexColor,
+		primaryLight: hexColor,
+		primaryDark: hexColor,
+		backgroundLight: hexColor,
+		backgroundDark: hexColor,
+	})
+	.catch({});

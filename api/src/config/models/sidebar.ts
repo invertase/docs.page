@@ -29,7 +29,11 @@ const SidebarSchema: z.ZodType<SidebarGroup> = z.lazy(() =>
 			.min(1)
 			.optional()
 			.transform((val) => val || undefined),
-		href: z.string().min(1),
+		href: z
+			.string()
+			.min(1)
+			.optional()
+			.transform((val) => val || undefined),
 		icon: z
 			.string()
 			.min(1)
@@ -43,4 +47,4 @@ export type Sidebar = z.infer<typeof SidebarSchema>;
 
 export default z
 	.union([z.record(z.array(SidebarSchema)), z.array(SidebarSchema)])
-	.transform((val) => val || {});
+	.catch({});
