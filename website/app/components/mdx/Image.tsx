@@ -33,7 +33,9 @@ export function Image(props: ImageProps) {
 					alt={alt ?? ""}
 					src={src}
 					loading="lazy"
-					className={cn("mx-auto rounded-md", className)}
+					className={cn("mx-auto rounded-md", className, {
+						"mb-1": props.caption,
+					})}
 					style={{
 						width: width ? Number.parseInt(width.toString()) : "inherit",
 						height: height ? Number.parseInt(height.toString()) : "inherit",
