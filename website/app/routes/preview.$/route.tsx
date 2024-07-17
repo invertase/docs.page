@@ -7,6 +7,7 @@ import { getPreviewBundle } from "../../api";
 import { PageContext } from "../../context";
 import { Toolbar } from "./Toolbar";
 import {
+  FileNotFoundError,
   getFile,
   queryClient,
   useDirectoryHandle,
@@ -91,7 +92,11 @@ function Preview() {
   }
 
   if (content.isFetched && content.error) {
-    return <div>Not found...</div>;
+    if (content.error instanceof FileNotFoundError) {
+      return <div>File not found...</div>;
+    }
+
+    return <div>Something went wrong...</div>;
   }
 
   if (directory.data === null) {
@@ -108,7 +113,7 @@ function Preview() {
   }
 
   if (!bundle) {
-    return <div>Not got yet...</div>;
+    return <div>Loading...</div>;
   }
 
   return (
