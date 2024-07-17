@@ -22,12 +22,10 @@ type GetBundleArgs = {
 };
 
 const PRODUCTION = process.env.NODE_ENV === "production";
+
 const API_URL =
 	process.env.API_URL ||
 	(PRODUCTION ? "https://api.docs.page" : "http://localhost:8080");
-const API_PASSWORD = Buffer.from(`admin:${process.env.API_PASSWORD}`).toString(
-	"base64",
-);
 
 export async function getBundle(args: GetBundleArgs): Promise<BundlerOutput> {
 	const params = new URLSearchParams({
@@ -42,11 +40,7 @@ export async function getBundle(args: GetBundleArgs): Promise<BundlerOutput> {
 		params.append("components", component);
 	}
 
-	const response = await fetch(`${API_URL}/bundle?${params.toString()}`, {
-		headers: new Headers({
-			Authorization: `Bearer ${API_PASSWORD}`,
-		}),
-	});
+	const response = await fetch(`${API_URL}/bundle?${params.toString()}`);
 
 	const json = await response.json();
 
@@ -72,9 +66,6 @@ export async function getPreviewBundle(
 ): Promise<BundlerOutput> {
 	const response = await fetch(`${API_URL}/preview`, {
 		method: "POST",
-		headers: new Headers({
-			Authorization: `Bearer ${API_PASSWORD}`,
-		}),
 		body: JSON.stringify({
 			markdown: args.markdown,
 			config: args.config,
