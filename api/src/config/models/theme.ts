@@ -4,12 +4,11 @@ const hexColor = z
 	.string()
 	.optional()
 	.transform((val) => {
-		// Check if the value is a valid hex color
-		if (!val || /^#?[0-9A-Fa-f]{6}$/.test(val)) {
-			return val;
+		if (!val || !(/^#?[0-9A-Fa-f]{6}$/.test(val))) {
+			return undefined;
 		}
 
-		return undefined;
+		return val;
 	});
 
 export default z
