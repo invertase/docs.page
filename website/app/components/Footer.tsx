@@ -30,6 +30,10 @@ export function Footer() {
 
 	const socials = Object.entries(ctx.bundle.config?.social || {});
 
+	// Sorting here ensures that the socials are always displayed in the same order,
+	// on client and server side.
+	const sorted = socials.sort(([a], [b]) => a.localeCompare(b));
+
 	return (
 		<footer className="flex items-center gap-12 pb-12">
 			<div className="text-sm flex gap-1">
@@ -41,7 +45,7 @@ export function Footer() {
 				</code>
 			</div>
 			<div className="flex-1 flex flex-wrap items-center justify-end gap-5">
-				{socials.map(([name, url]) => (
+				{sorted.map(([name, url]) => (
 					<div key={name}>
 						<a
 							className="opacity-25 dark:opacity-50 hover:opacity-75 hover:dark:opacity-75 transition-opacity"
