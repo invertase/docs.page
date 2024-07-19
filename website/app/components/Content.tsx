@@ -68,7 +68,7 @@ export function Content() {
 	const image = bundle.frontmatter.image;
 
 	const showMeta = showPageTitle || showPageImage;
-	console.log("PARENT");
+
 	return (
 		<main className="flex-1 max-w-none mb-8">
 			{showMeta && (

@@ -7,6 +7,7 @@ import {
 	ScrollRestoration,
 	isRouteErrorResponse,
 	useFetchers,
+	useLoaderData,
 	useNavigation,
 	useRouteError,
 } from "@remix-run/react";
@@ -18,6 +19,7 @@ import zoomStyles from "react-medium-image-zoom/dist/styles.css?url";
 import { ErrorLayout } from "./ErrorLayout";
 import type { BundleErrorResponse } from "./api";
 import styles from "./styles.css?url";
+import type { SharedEnvironmentVariables } from "./utils";
 
 NProgress.configure({ showSpinner: false });
 
@@ -33,7 +35,19 @@ export const links: LinksFunction = () => [
 	},
 ];
 
+export const loader = () => {
+	return {
+		ENV: {
+			VERCEL: process.env.VERCEL,
+			VERCEL_ENV: process.env.VERCEL_ENV,
+			VERCEL_GIT_COMMIT_SHA: process.env.VERCEL_GIT_COMMIT_SHA,
+		} satisfies SharedEnvironmentVariables,
+	};
+};
+
 export function Layout({ children }: { children: React.ReactNode }) {
+	const data = useLoaderData<typeof loader>();
+
 	return (
 		<html lang="en" suppressHydrationWarning>
 			<head>
@@ -62,6 +76,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
 					textRendering: "optimizeLegibility",
 				}}
 			>
+				<script
+					dangerouslySetInnerHTML={{
+						__html: `window.ENV = ${JSON.stringify(data.ENV)}`,
+					}}
+				/>
 				{children}
 				<ScrollRestoration />
 				<Scripts />

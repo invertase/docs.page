@@ -3,9 +3,31 @@ import { twMerge } from "tailwind-merge";
 import type { Context } from "~/context";
 import type { BundleResponse } from "./api";
 
+export type SharedEnvironmentVariables = {
+	VERCEL?: string;
+	VERCEL_ENV?: string;
+	VERCEL_GIT_COMMIT_SHA?: string;
+};
+
+declare global {
+	interface Window {
+		ENV: SharedEnvironmentVariables;
+	}
+}
+
+// Returns the shared environment variables, from either the server or the client.
+export function getSharedEnvironmentVariables(): SharedEnvironmentVariables {
+	return typeof window === "undefined"
+		? (process.env as SharedEnvironmentVariables)
+		: window.ENV;
+}
+
+// Returns the current environment, either `production`, `preview` or `development`.
 export function getEnvironment() {
-	return process.env.VERCEL
-		? process.env.VERCEL_ENV === "production"
+	const ENV = getSharedEnvironmentVariables();
+
+	return ENV.VERCEL
+		? ENV.VERCEL_ENV === "production"
 			? "production"
 			: "preview"
 		: "development";
