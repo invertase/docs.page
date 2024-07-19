@@ -34,7 +34,7 @@ export function GitHubCard() {
 				/>
 			</svg>
 			<div className="space-y-0.5">
-				<div className="text-xs font-medium font-mono opacity-75 group-hover:opacity-100 transition-opacity duration-200 ease-in-out">
+				<div className="text-xs font-medium font-mono opacity-75 group-hover:opacity-100 transition-opacity duration-200 ease-in-out max-w-[200px] truncate">
 					{repository}
 				</div>
 				<div className="flex items-center gap-2 opacity-50 group-hover:opacity-100 transition-opacity duration-200 ease-in-out">

@@ -19,7 +19,7 @@ export function RefBadge() {
 			rel="noopener noreferrer"
 			href={url}
 			className={cn(
-				"font-display border rounded-full py-1 px-3 text-sm text-white transition",
+				"font-display border rounded-full py-1 px-3 text-sm text-white transition whitespace-nowrap",
 				{
 					"bg-green-500/80 dark:bg-green-500 border-green-500/70 hover:bg-green-500":
 						source.type === "branch",
