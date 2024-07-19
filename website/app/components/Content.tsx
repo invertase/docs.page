@@ -13,6 +13,7 @@ import { Image } from "./mdx/Image";
 import { InvalidComponent } from "./mdx/InvalidComponent";
 import { Link } from "./mdx/Link";
 import { Section } from "./mdx/Section";
+import { Steps, Step } from "./mdx/Steps";
 import { Table } from "./mdx/Table";
 import { TabItem, Tabs, TabsProvider } from "./mdx/Tabs";
 import { Tweet } from "./mdx/Tweet";
@@ -31,6 +32,8 @@ export const COMPONENTS = {
 	Warning,
 	Error,
 	Success,
+	Steps,
+	Step,
 	Tabs,
 	TabItem,
 	Tweet,

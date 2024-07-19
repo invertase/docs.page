@@ -1,0 +1,73 @@
+---
+title: Steps
+description: Steps allow users to navigate through a series of steps in a sequenced order.
+---
+
+Use steps to display data in a sequential order to your users, useful for onboarding or guiding users through a process.
+
+## Basic Usage
+
+To display tabs, provide the `<Steps>` and `<Step>` components:
+
+````jsx
+<Steps>
+  <Step title="Install via NPM">
+    Install via npm:
+
+    ```js
+    npm install newpackage
+    ```
+
+    The `newpackage` executable will be available in your terminal.
+  </Step>
+  <Step title="Configure" icon="gear">
+    Configure the package
+
+    ```js
+    newpackage configure --init
+    ```
+  </Step>
+  <Step>
+    Start your development server.
+
+    ```js
+    newpackage dev
+    ```
+  </Step>
+</Steps>
+````
+
+This example will render the following:
+
+<Steps>
+  <Step title="Install via NPM">
+    Install via npm:
+
+    ```js
+    npm install newpackage
+    ```
+
+    The `newpackage` executable will be available in your terminal.
+  </Step>
+  <Step title="Configure" icon="gear">
+    Configure the package
+
+    ```js
+    newpackage configure --init
+    ```
+  </Step>
+  <Step title="Local Development">
+    Start your development server.
+
+    ```js
+    newpackage dev --port 3000
+    ```
+  </Step>
+</Steps>
+
+## Props
+
+Each `<Step>` component accepts the following props:
+
+- `title`: The title of the step.
+- `icon`: An optional [Font Awesome Icon](/components/icons) to display instead of the current step index.
