@@ -505,9 +505,10 @@ const brands: Record<string, true> = {
 
 type IconProps = ComponentProps<"i"> & {
 	name: keyof typeof brands | string;
+	size?: number;
 };
 
-export function Icon({ className, name, ...other }: IconProps) {
+export function Icon({ className, name, size, style, ...other }: IconProps) {
 	const base = brands[name] ? "fa-brands" : "fa-solid";
 	return (
 		<div>
@@ -516,6 +517,8 @@ export function Icon({ className, name, ...other }: IconProps) {
 				className={cn("fa-fw", base, `fa-${name}`, className)}
 				style={{
 					lineHeight: "inherit",
+					fontSize: size ? `${size}px` : undefined,
+					...style,
 				}}
 			/>
 		</div>

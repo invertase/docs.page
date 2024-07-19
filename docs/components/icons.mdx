@@ -1,0 +1,23 @@
+---
+title: Icons
+description: Display icons from Font Awesome.
+---
+
+You can use icons from [Font Awesome](https://fontawesome.com/icons) using the `<Icon />` component.
+
+The component takes a `name` property which represents the name of the icon on the Font Awesome website.
+
+## Example
+
+```jsx
+<Icon name="user" size={40} style={{ color: 'red' }} />
+```
+
+<Icon name="user" size={40} style={{ color: 'red' }} />
+
+## Props
+
+- `name` (string): The name of the icon on the Font Awesome website.
+- `size` (number): The optional size of the icon in pixels. Defaults to the parent's font size.
+
+The other props are passed to the underlying `<i>` element.

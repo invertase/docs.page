@@ -101,6 +101,11 @@
 					"icon": "table-columns"
 				},
 				{
+					"title": "Icons",
+					"href": "/components/icons",
+					"icon": "icons"
+				},
+				{
 					"title": "Images",
 					"href": "/components/images",
 					"icon": "image"
