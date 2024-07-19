@@ -3,6 +3,7 @@ import {
 	type ComponentProps,
 	createContext,
 	isValidElement,
+	useCallback,
 	useContext,
 	useEffect,
 	useState,
@@ -29,12 +30,12 @@ const TabsContext = createContext<
 export function TabsProvider(props: ComponentProps<"div">) {
 	const [groups, setGroups] = useState<Record<string, string>>({});
 
-	const onChange = (groupId: string, value: string) => {
+	const onChange = useCallback((groupId: string, value: string) => {
 		setGroups((groups) => ({
 			...groups,
 			[groupId]: value,
 		}));
-	};
+	}, []);
 
 	return (
 		<TabsContext.Provider value={{ groups, onChange }}>
@@ -84,7 +85,7 @@ export function Tabs(props: TabsProps) {
 			setSelected(value);
 			tabs.onChange(groupId, value);
 		}
-	}, [tabs, ctx, groupId]);
+	}, [tabs.onChange, ctx, groupId]);
 
 	// Get the synchronized selected tab if groupId is provided.
 	const synchronized = groupId ? tabs.groups[groupId] : undefined;

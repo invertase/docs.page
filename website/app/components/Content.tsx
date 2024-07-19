@@ -13,7 +13,7 @@ import { Image } from "./mdx/Image";
 import { InvalidComponent } from "./mdx/InvalidComponent";
 import { Link } from "./mdx/Link";
 import { Section } from "./mdx/Section";
-import { Steps, Step } from "./mdx/Steps";
+import { Step, Steps } from "./mdx/Steps";
 import { Table } from "./mdx/Table";
 import { TabItem, Tabs, TabsProvider } from "./mdx/Tabs";
 import { Tweet } from "./mdx/Tweet";
@@ -68,7 +68,7 @@ export function Content() {
 	const image = bundle.frontmatter.image;
 
 	const showMeta = showPageTitle || showPageImage;
-
+	console.log("PARENT");
 	return (
 		<main className="flex-1 max-w-none mb-8">
 			{showMeta && (
