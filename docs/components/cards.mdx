@@ -1,0 +1,67 @@
+---
+title: Cards
+description: Display important content in a card, with an optional link.
+---
+
+To display a card, use the `Card` component. You can also use the `CardGroup` component to display multiple cards in a row.
+
+````jsx
+<Card title="Installation" icon="cog">
+  Install this package using npm or yarn.
+
+  ```bash
+  npm install @myorg/my-package
+  ```
+</Card>
+````
+
+<Card title="Installation" icon="cog">
+  Install this package using npm or yarn.
+
+  ```bash
+  npm install @myorg/my-package
+  ```
+</Card>
+
+Optionally, add a `href` prop to the `Card` component to make the card clickable.
+
+````jsx
+<Card title="Learn more" icon="school" href="/">
+  Click here to learn more about this package.
+</Card>
+````
+
+<Card title="Learn more" icon="school" href="/">
+  Click here to learn more about this package.
+</Card>
+
+## Groups
+
+To group cards into columns, use the `CardGroup` component.
+
+````jsx
+<CardGroup>
+  <Card title="Installation" icon="cog">
+    Install this package using npm or yarn.
+
+    ```bash
+    npm install @myorg/my-package
+    ```
+  </Card>
+  <Card title="Learn more" icon="school" href="/">
+    Click here to learn more about this package.
+  </Card>
+</CardGroup>
+````
+
+<CardGroup>
+  <Card title="Installation" icon="1">
+    Install this package using npm or yarn.
+  </Card>
+  <Card title="Documentation" icon="2">
+    Read the documentation.
+  </Card>
+</CardGroup>
+
+You can customize the number of columns by setting the `cols` prop.
+

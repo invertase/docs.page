@@ -89,6 +89,11 @@
 					"icon": "bullhorn"
 				},
 				{
+					"title": "Cards",
+					"href": "/components/cards",
+					"icon": "square-full"
+				},
+				{
 					"title": "Code Blocks",
 					"href": "/components/code-blocks",
 					"icon": "code"

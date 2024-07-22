@@ -6,6 +6,7 @@ import { Icon } from "./Icon";
 
 import { Accordion, AccordionGroup } from "./mdx/Accordion";
 import { Error, Info, Success, Warning } from "./mdx/Callout";
+import { Card, CardGroup } from "./mdx/Card";
 import { CodeBlock } from "./mdx/CodeBlock";
 import { CodeGroup } from "./mdx/CodeGroup";
 import { Heading } from "./mdx/Heading";
@@ -26,6 +27,8 @@ export const COMPONENTS = {
 	Accordion,
 	AccordionGroup,
 	CodeGroup,
+	Card,
+	CardGroup,
 	Image,
 	Icon,
 	Info,
