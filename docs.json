@@ -63,7 +63,15 @@
 				{ "title": "Overview", "href": "/" },
 				{ "title": "Getting Started", "href": "/getting-started" },
 				{ "title": "Configuration", "href": "/configuration" },
-				{ "title": "Writing Content", "href": "/writing-content" }
+				{ "title": "Writing Content", "href": "/writing-content" },
+				{
+					"group": "Deploying",
+					"pages": [
+						{ "title": "Vercel", "href": "/deploying/vercel" },
+						{ "title": "Netlify", "href": "/deploying/netlify" },
+						{ "title": "GitHub Pages", "href": "/deploying/github-pages" }
+					]
+				}
 			]
 		},
 		{

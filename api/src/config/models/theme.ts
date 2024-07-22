@@ -4,7 +4,7 @@ const hexColor = z
 	.string()
 	.optional()
 	.transform((val) => {
-		if (!val || !(/^#?[0-9A-Fa-f]{6}$/.test(val))) {
+		if (!val || !/^#?[0-9A-Fa-f]{6}$/.test(val)) {
 			return undefined;
 		}
 

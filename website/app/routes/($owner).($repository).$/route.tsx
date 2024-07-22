@@ -12,26 +12,18 @@ import { type Context, PageContext } from "~/context";
 
 import docsearch from "@docsearch/css/dist/style.css?url";
 import { trackPageRequest } from "~/plausible";
-import { ensureLeadingSlash, getAssetSrc, getEnvironment } from "~/utils";
+import {
+	ensureLeadingSlash,
+	getAssetSrc,
+	getEnvironment,
+	getRequestParams,
+} from "~/utils";
 import domains from "../../../../domains.json";
 
 export const loader = async (args: LoaderFunctionArgs) => {
 	const requestUrl = new URL(args.request.url);
-	const owner = args.params.owner;
-	const path = args.params["*"] || "";
-	let repository = args.params.repository;
-	let ref: string | undefined;
-
-	if (!owner || !repository) {
-		throw new Error("Invalid routing scenario.");
-	}
-
+	const { owner, repository, ref, path } = getRequestParams(args);
 	const environment = getEnvironment();
-
-	// Check if the repo includes a ref (invertase/foo~bar)
-	if (repository.includes("~")) {
-		[repository, ref] = repository.split("~");
-	}
 
 	const bundle = await getBundle({
 		owner,
