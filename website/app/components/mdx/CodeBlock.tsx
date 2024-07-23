@@ -25,7 +25,7 @@ export function CodeBlock(props: CodeBlockProps) {
 	return (
 		<div className="not-prose relative group border border-black/10 dark:border-white/10 rounded-md shadow-sm overflow-hidden mb-5">
 			{!!props.title && (
-				<div className="bg-black text-primary text-xs border-b border-white/20 font-display tracking-wider">
+				<div className="bg-black text-primary text-xs border-b border-white/20 font-bold">
 					<div className="relative top-px inline-flex items-center px-4 border-b h-10 border-primary">
 						{props.title}
 					</div>

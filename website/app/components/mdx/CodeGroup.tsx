@@ -52,7 +52,7 @@ export function CodeGroup(props: CodeGroupProps) {
 
 	return (
 		<div className="not-prose relative group border border-black/10 dark:border-white/10 rounded-md shadow-sm overflow-hidden mb-5">
-			<div className="h-10 flex items-center bg-black text-xs border-b border-white/20 font-display tracking-wider">
+			<div className="h-10 flex items-center bg-black text-xs border-b border-white/20 font-bold">
 				{!!props.title && (
 					<div className="grow">
 						<div className="relative h-10 text-primary top-px inline-flex items-center px-4 border-b border-primary">

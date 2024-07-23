@@ -63,7 +63,9 @@ function View(props: ViewProps) {
 			}}
 		>
 			<div className="text-center space-y-5 max-w-2xl">
-				<h1 className="font-display text-4xl md:text-5xl">{props.title}</h1>
+				<h1 className="font-bold tracking-normal text-4xl md:text-5xl">
+					{props.title}
+				</h1>
 				<p>{props.description}</p>
 				{props.source ? (
 					<a href={props.source} className="inline-block hover:underline">

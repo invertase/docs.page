@@ -22,7 +22,7 @@ export function Header() {
 					className="flex-1 inline-flex items-center gap-3"
 				>
 					<Logo />
-					{showName && !!name && <span className="font-display">{name}</span>}
+					{showName && !!name && <span className="font-bold">{name}</span>}
 				</a>
 				<div className="flex-1">
 					<Search />

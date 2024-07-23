@@ -15,13 +15,10 @@ export function Heading(props: HeadingProps) {
 		type,
 		{
 			...other,
-			className: cn(
-				"group relative flex items-center gap-2 font-display tracking-wide",
-				className,
-			),
+			className: cn("group relative flex items-center gap-2", className),
 		},
 		<>
-			<span>{props.children}</span>
+			<span className="font-bold tracking-normal">{props.children}</span>
 			{!!props.anchor && !!id && <Anchor id={id} />}
 		</>,
 	);

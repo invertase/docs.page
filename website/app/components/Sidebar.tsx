@@ -36,7 +36,7 @@ export function Sidebar() {
 // Displays a top-level group heading
 function GroupHeading(props: { title: string; icon?: string }) {
 	return (
-		<h3 className="font-display font-medium text-[15px] mb-2 tracking-wider flex items-center gap-2 text-black dark:text-white">
+		<h3 className="font-bold tracking-normal text-[15px] mb-2 flex items-center gap-2 text-black dark:text-white">
 			{props.icon ? <Icon name={props.icon} /> : null}
 			<span>{props.title}</span>
 		</h3>

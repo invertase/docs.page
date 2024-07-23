@@ -40,7 +40,7 @@ export function Anchors() {
 									className="text-xs opacity-75 group-hover:opacity-100"
 								/>
 							</div>
-							<span className="font-display tracking-wide">{anchor.title}</span>
+							<span className="font-bold">{anchor.title}</span>
 						</a>
 					</li>
 				);

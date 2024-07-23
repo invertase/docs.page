@@ -63,8 +63,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 					crossOrigin="anonymous"
 				/>
 				<link
+					href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=auto"
 					rel="stylesheet"
-					href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500&display=auto"
+				/>
+				<link
+					href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap"
+					rel="stylesheet"
 				/>
 				<link href="/_docs.page/fa/fontawesome.min.css" rel="stylesheet" />
 				<link href="/_docs.page/fa/brands.min.css" rel="stylesheet" />

@@ -11,8 +11,8 @@ export default {
 				"8xl": "90rem",
 			},
 			fontFamily: {
-				sans: ['"Poppins"', ...defaultTheme.fontFamily.sans],
-				display: ['"Cal Sans"', ...defaultTheme.fontFamily.sans],
+				sans: ['"Open Sans"', ...defaultTheme.fontFamily.sans],
+				mono: ['"JetBrains Mono"', ...defaultTheme.fontFamily.mono],
 			},
 			colors: {
 				primary: {

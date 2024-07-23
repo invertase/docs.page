@@ -13,7 +13,7 @@ export function Tabs() {
 
 	return (
 		<nav className="max-w-8xl mx-auto px-5">
-			<ul className="font-display relative px-5 border-b border-black/5 dark:border-white/5 flex items-center space-x-6 text-sm font-medium tracking-wide">
+			<ul className="font-bold relative px-5 border-b border-black/5 dark:border-white/5 flex items-center space-x-6 text-sm">
 				{tabs.map((tab) => {
 					const isActive = tab.id === activeTab;
 					const href = getHref(ctx, tab.href);

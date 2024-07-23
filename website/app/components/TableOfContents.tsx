@@ -38,7 +38,7 @@ export function TableOfContents() {
 				"top-32": hasTabs,
 			})}
 		>
-			<h3 className="flex items-center gap-2 opacity-75 font-display font-medium text-[15px] mb-2 tracking-wider">
+			<h3 className="flex items-center gap-2 opacity-75 font-bold text-[15px] mb-2">
 				<ListTreeIcon size={20} />
 				<span>On this page</span>
 			</h3>
@@ -53,8 +53,8 @@ export function TableOfContents() {
 						>
 							<a
 								href={`#${heading.id}`}
-								className={cn("font-light text-[14px]", {
-									"text-primary font-bold": activeId === heading.id,
+								className={cn("text-[14px]", {
+									"text-primary": activeId === heading.id,
 								})}
 							>
 								{heading.title}

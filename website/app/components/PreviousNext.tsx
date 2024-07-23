@@ -25,7 +25,7 @@ export function PreviousNext() {
 	function flattenGroup(group: SidebarGroup) {
 		// If the group has an href, add it to the flattened list
 		if ("href" in group && group.href) {
-			flattened.push({ href: group.href, title: group.group });
+			flattened.push({ href: group.href, title: group.group! });
 		}
 
 		// Recursively flatten the pages
@@ -86,7 +86,7 @@ export function PreviousNext() {
 	if (!previous && !next) return null;
 
 	return (
-		<div className="flex items-center gap-3 font-display py-6">
+		<div className="flex items-center gap-3 font-bold py-6">
 			{previous ? (
 				<div className="flex-1">
 					<Anchor {...previous} type="previous" />
