@@ -71,6 +71,7 @@ export async function getPreviewBundle(
 ): Promise<BundlerOutput> {
 	const response = await fetch(`${API_URL}/preview`, {
 		method: "POST",
+		duplex: 'half',
 		headers: new Headers({
 			"docs-page-preview": "true", // Disables caching on preview requests
 		}),
