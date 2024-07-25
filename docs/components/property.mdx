@@ -1,0 +1,46 @@
+---
+title: Property
+description: Display the signature of a property.
+---
+
+Use the `<Property />` component to display the signature of a property, such as the name, type and description.
+
+```jsx
+<Property name="color" type="string" required>
+  The theme colour of your brand.
+</Property>
+```
+
+<Property name="color" type="string" required>
+  The theme colour of your brand.
+</Property>
+
+## Props
+
+<Property name="name" type="string" required>
+  The name of the property
+</Property>
+
+---
+
+<Property name="type" type="string" optional>
+  The type of the property, such as `string`, `boolean` etc.
+</Property>
+
+---
+
+<Property name="required" type="boolean" optional>
+  Whether to mark this property as required.
+</Property>
+
+---
+
+<Property name="optioinal" type="boolean" optional>
+  Whether to mark this property as optional.
+</Property>
+
+---
+
+<Property name="children" optional>
+  The children to render as the properties description.
+</Property>

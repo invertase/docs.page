@@ -124,6 +124,11 @@
 					"icon": "image"
 				},
 				{
+					"title": "Property",
+					"href": "/components/property",
+					"icon": "signature"
+				},
+				{
 					"title": "Steps",
 					"href": "/components/steps",
 					"icon": "list-ol"

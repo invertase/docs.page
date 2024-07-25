@@ -13,6 +13,7 @@ import { Heading } from "./mdx/Heading";
 import { Image } from "./mdx/Image";
 import { InvalidComponent } from "./mdx/InvalidComponent";
 import { Link } from "./mdx/Link";
+import { Property } from "./mdx/Property";
 import { Section } from "./mdx/Section";
 import { Step, Steps } from "./mdx/Steps";
 import { Table } from "./mdx/Table";
@@ -30,6 +31,7 @@ export const COMPONENTS = {
 	Card,
 	CardGroup,
 	Image,
+	Property,
 	Icon,
 	Info,
 	Warning,
@@ -79,6 +81,12 @@ export function Content() {
 						),
 						h6: (props: ComponentProps<"h6">) => (
 							<Heading {...props} type="h6" anchor="true" />
+						),
+						hr: (props: ComponentProps<"hr">) => (
+							<div
+								{...props}
+								className="h-px dark:bg-white/10 bg-black/10 my-6"
+							/>
 						),
 						a: (props: ComponentProps<"a">) => <Link {...props} />,
 						table: (props: ComponentProps<"table">) => <Table {...props} />,
