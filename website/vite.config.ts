@@ -4,7 +4,7 @@ import { vercelPreset } from "@vercel/remix/vite";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-installGlobals({ nativeFetch: true });
+installGlobals();
 
 export default defineConfig({
 	plugins: [
