@@ -7,10 +7,13 @@ import { parseMdx } from "./mdx";
 import type { HeadingNode } from "./plugins/rehype-headings";
 
 export const ERROR_CODES = {
+	CONFIG_NOT_FOUND: "CONFIG_NOT_FOUND",
 	REPO_NOT_FOUND: "REPO_NOT_FOUND",
 	FILE_NOT_FOUND: "FILE_NOT_FOUND",
 	BUNDLE_ERROR: "BUNDLE_ERROR",
 } as const;
+
+export type ErrorCodes = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];
 
 type Source = {
 	type: "PR" | "commit" | "branch";
@@ -130,6 +133,18 @@ export class Bundler {
 				message: `The repository ${this.#source.owner}/${
 					this.#source.repository
 				} was not found.`,
+			});
+		}
+
+		if (!metadata.config.configJson && !metadata.config.configYaml) {
+			throw new BundlerError({
+				code: 404,
+				name: ERROR_CODES.CONFIG_NOT_FOUND,
+				message:
+					"No configuration file was found in the repository. To get started, create a <code>docs.json</code> file at the root of your repository.",
+				source: `https://github.com/${this.#source.owner}/${
+					this.#source.repository
+				}`,
 			});
 		}
 

@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { z } from "zod";
 import { BundlerError } from "../bundler/error";
-import { Bundler, type BundlerOutput } from "../bundler/index";
+import { Bundler, type BundlerOutput, type ErrorCodes } from "../bundler/index";
 import { badRequest, bundleError, ok, serverError } from "../res";
 
 const QuerySchema = z.object({
@@ -30,13 +30,7 @@ export type BundleResponse =
 	| BundleErrorResponse;
 
 export type BundleErrorResponse = {
-	code:
-		| "NOT_FOUND"
-		| "BAD_REQUEST"
-		| "REPO_NOT_FOUND"
-		| "FILE_NOT_FOUND"
-		| "BUNDLE_ERROR"
-		| "INTERNAL_SERVER_ERROR";
+	code: ErrorCodes | "NOT_FOUND" | "BAD_REQUEST" | "INTERNAL_SERVER_ERROR";
 	error:
 		| string
 		| {

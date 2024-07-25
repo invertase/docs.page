@@ -4,6 +4,7 @@ import type { BundleErrorResponse } from "./api";
 const CODE_MAP: Record<BundleErrorResponse["code"], string> = {
 	NOT_FOUND: "Page not found",
 	BAD_REQUEST: "Something went wrong",
+	CONFIG_NOT_FOUND: "Configuration file not found",
 	REPO_NOT_FOUND: "Repository not found",
 	FILE_NOT_FOUND: "File not found",
 	BUNDLE_ERROR: "Something went wrong",
