@@ -202,6 +202,16 @@ export function usePageContent(
 		queryFn: async () => {
 			const db = await openDatabase();
 
+			// Next get the config file(s) from the database.
+			const [yamlConfig, jsonConfig] = await Promise.all([
+				db.get("files", "docs.yaml"),
+				db.get("files", "docs.json"),
+			]);
+
+			if (!yamlConfig && !jsonConfig) {
+				throw new ConfigurationFileNotFoundError();
+			}
+
 			const filePath = path === "" ? "" : ensureLeadingSlash(path);
 
 			// First check if we even have a file in the database for this path.
@@ -216,12 +226,6 @@ export function usePageContent(
 			if (!file1 && !file2) {
 				throw new FileNotFoundError(filePath);
 			}
-
-			// Next get the config file(s) from the database.
-			const [yamlConfig, jsonConfig] = await Promise.all([
-				db.get("files", "docs.yaml"),
-				db.get("files", "docs.json"),
-			]);
 
 			return {
 				config: {
@@ -288,5 +292,11 @@ async function verifyPermission(directory: FileSystemDirectoryHandle) {
 export class FileNotFoundError extends Error {
 	constructor(path: string) {
 		super(`File not found: ${path}`);
+	}
+}
+
+export class ConfigurationFileNotFoundError extends Error {
+	constructor() {
+		super("Configuration file not found");
 	}
 }

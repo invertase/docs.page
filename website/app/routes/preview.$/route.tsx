@@ -7,6 +7,7 @@ import { getPreviewBundle } from "../../api";
 import { PageContext } from "../../context";
 import { Toolbar } from "./Toolbar";
 import {
+	ConfigurationFileNotFoundError,
 	FileNotFoundError,
 	getFile,
 	queryClient,
@@ -91,6 +92,10 @@ function Preview() {
 	}
 
 	if (content.isFetched && content.error) {
+		if (content.error instanceof ConfigurationFileNotFoundError) {
+			return <div>Config file not found...</div>;
+		}
+
 		if (content.error instanceof FileNotFoundError) {
 			return <div>File not found...</div>;
 		}
