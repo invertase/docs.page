@@ -47,7 +47,7 @@ export async function getBundle(args: GetBundleArgs): Promise<BundlerOutput> {
 	const json = await response.json();
 
 	if (!response.ok) {
-		throw new Response(json, {
+		throw new Response(JSON.stringify(json), {
 			headers: {
 				"Content-Type": "application/json",
 			},
@@ -71,7 +71,7 @@ export async function getPreviewBundle(
 ): Promise<BundlerOutput> {
 	const response = await fetch(`${API_URL}/preview`, {
 		method: "POST",
-		duplex: 'half',
+		duplex: "half",
 		headers: new Headers({
 			"docs-page-preview": "true", // Disables caching on preview requests
 		}),
@@ -86,7 +86,7 @@ export async function getPreviewBundle(
 	const json = await response.json();
 
 	if (!response.ok) {
-		throw new Response(json, {
+		throw new Response(JSON.stringify(json), {
 			headers: {
 				"Content-Type": "application/json",
 			},

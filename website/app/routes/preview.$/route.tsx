@@ -39,8 +39,7 @@ export default function PreviewOutlet() {
 export const action = async (args: ActionFunctionArgs) => {
 	const json = await args.request.json();
 	const bundle = await getPreviewBundle(json).catch((response) => {
-		args.response = response;
-		throw args.response;
+		throw response;
 	});
 
 	// Check if the user has set a redirect in the frontmatter of this page.

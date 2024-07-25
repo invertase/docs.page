@@ -3,7 +3,7 @@ import {
 	type MetaFunction,
 	useLoaderData,
 } from "@remix-run/react";
-import type { LoaderFunctionArgs } from "@vercel/remix";
+import type { HeadersFunction, LoaderFunctionArgs } from "@vercel/remix";
 import { redirect } from "@vercel/remix";
 import { Layout } from "~/Layout";
 import { getBundle } from "~/api";
@@ -31,8 +31,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
 		path,
 		ref,
 	}).catch((response) => {
-		args.response = response;
-		throw args.response;
+		throw response;
 	});
 
 	// Check whether the repository has a domain assigned.
@@ -65,19 +64,12 @@ export const loader = async (args: LoaderFunctionArgs) => {
 			url += redirectTo;
 		}
 
-		args.response!.status = 301;
-		args.response!.headers.set("Location", url);
-		throw args.response;
+		throw redirect(url);
 	}
 
 	if (import.meta.env.PROD) {
 		// Track the page request.
 		await trackPageRequest(args.request, owner, repository);
-
-		args.response!.headers.set(
-			"Cache-Control",
-			"s-maxage=1, stale-while-revalidate=59",
-		);
 	}
 
 	return {
@@ -101,6 +93,10 @@ export default function DocsPage() {
 		</PageContext.Provider>
 	);
 }
+
+export const headers: HeadersFunction = () => ({
+	"Cache-Control": "s-maxage=1, stale-while-revalidate=59",
+});
 
 export const meta: MetaFunction<typeof loader> = ({ data: ctx }) => {
 	const descriptors: MetaDescriptor[] = [];

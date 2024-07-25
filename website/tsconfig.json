@@ -12,8 +12,8 @@
 		"types": [
 			"@remix-run/node",
 			"vite/client",
-			"@types/wicg-file-system-access",
-			"@remix-run/react/future/single-fetch.d.ts"
+			"@types/wicg-file-system-access"
+			// "@remix-run/react/future/single-fetch.d.ts"
 		],
 		"isolatedModules": true,
 		"esModuleInterop": true,

@@ -11,7 +11,7 @@ export default defineConfig({
 		remix({
 			presets: [vercelPreset()],
 			future: {
-				unstable_singleFetch: true,
+				unstable_singleFetch: false, // Not working on Vercel
 				v3_fetcherPersist: true,
 				v3_relativeSplatPath: true,
 				v3_throwAbortReason: true,
