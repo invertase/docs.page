@@ -6,14 +6,21 @@
 	"main": "dist/bundle.cjs.js",
 	"module": "dist/bundle.ems.js",
 	"types": "dist/index.d.ts",
+	"bin": {
+		"docs-page": "dist/cli.cjs.js"
+	},
 	"scripts": {
 		"build": "rimraf dist && rollup -c",
 		"postinstall": "npm run build"
 	},
 	"dependencies": {
+		"commander": "^12.1.0",
 		"rimraf": "^6.0.1",
 		"rollup": "^4.18.1",
 		"rollup-plugin-typescript2": "^0.36.0"
 	},
-	"files": ["dist", "LICENSE", "README.md", "rollup.config.js"]
+	"files": ["dist", "LICENSE", "README.md", "rollup.config.js"],
+	"devDependencies": {
+		"@types/node": "^22.0.0"
+	}
 }
