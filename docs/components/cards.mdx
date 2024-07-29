@@ -3,7 +3,17 @@ title: Cards
 description: Display important content in a card, with an optional link.
 ---
 
-To display a card, use the `Card` component. You can also use the `CardGroup` component to display multiple cards in a row.
+Use the `<Card />` component to display data within a card. You can also use the `CardGroup` component to display multiple cards in a row.
+
+## Example
+
+<Card title="Installation" icon="cog">
+  Install this package using npm or yarn.
+
+  ```bash
+  npm install @myorg/my-package
+  ```
+</Card>
 
 ````jsx
 <Card title="Installation" icon="cog">
@@ -14,30 +24,51 @@ To display a card, use the `Card` component. You can also use the `CardGroup` co
   ```
 </Card>
 ````
-
-<Card title="Installation" icon="cog">
-  Install this package using npm or yarn.
-
-  ```bash
-  npm install @myorg/my-package
-  ```
-</Card>
 
 Optionally, add a `href` prop to the `Card` component to make the card clickable.
 
+<Card title="Learn more" icon="school" href="/">
+  Click here to learn more about this package.
+</Card>
+
 ````jsx
 <Card title="Learn more" icon="school" href="/">
   Click here to learn more about this package.
 </Card>
 ````
 
-<Card title="Learn more" icon="school" href="/">
-  Click here to learn more about this package.
-</Card>
+## Props
 
-## Groups
+<Property name="title" type="string" optional>
+  The title of the card.
+</Property>
 
-To group cards into columns, use the `CardGroup` component.
+---
+
+<Property name="href" type="string" optional>
+  Whether this card should be clickable, and where it should link to.
+</Property>
+
+---
+
+<Property name="icon" type="string" optional>
+  The icon to display next to the card title.
+</Property>
+
+
+## Card Groups
+
+To group cards into columns, use the `<CardGroup />` component.
+
+<CardGroup>
+  <Card title="Installation" icon="1">
+    Install this package using npm or yarn.
+  </Card>
+  <Card title="Documentation" icon="2">
+    Read the documentation.
+  </Card>
+</CardGroup>
+
 
 ````jsx
 <CardGroup>
@@ -54,14 +85,10 @@ To group cards into columns, use the `CardGroup` component.
 </CardGroup>
 ````
 
-<CardGroup>
-  <Card title="Installation" icon="1">
-    Install this package using npm or yarn.
-  </Card>
-  <Card title="Documentation" icon="2">
-    Read the documentation.
-  </Card>
-</CardGroup>
+### Props
 
-You can customize the number of columns by setting the `cols` prop.
+<Property name="cols" type="number" optional>
+  The number of columns to display the cards in. Defaults to `2`.
+</Property>
+
 

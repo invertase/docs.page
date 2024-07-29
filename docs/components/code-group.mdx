@@ -1,0 +1,54 @@
+---
+title: Code Groups
+description: Display groups of code blocks with syntax highlighting.
+---
+
+Use the `<CodeGroup />` component to display multiple code blocks together, useful for showing variations of the "same" code in a different language.
+
+## Example
+
+<CodeGroup title="Logging: Hello World">
+  ```javascript
+  console.log("Hello World");
+  ```
+
+  ```python
+  print('Hello World!')
+  ```
+
+  ```dart
+  void main() {
+    print('Hello World!');
+  }
+  ```
+</CodeGroup>
+
+````jsx
+<CodeGroup title="Logging: Hello World">
+  ```javascript
+  console.log("Hello World");
+  ```
+
+  ```python
+  print('Hello World!')
+  ```
+
+  ```dart
+  void main() {
+    print('Hello World!');
+  }
+  ```
+</CodeGroup>
+````
+
+## Props
+
+<Property name="title" type="string" optional>
+  The title of the code block.
+</Property>
+
+---
+
+<Property name="defaultLanguage" type="string" optional>
+  The default language to display code blocks in. Defaults to the first language in the group.
+</Property>

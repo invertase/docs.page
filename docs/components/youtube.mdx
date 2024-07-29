@@ -3,14 +3,18 @@ title: Add YouTube videos to your documentation
 description: Learn how to add YouTube embeds to your documentation.
 ---
 
-[YouTube](https://youtube.com/) is a service for hosting videos.
+Use the `<YouTube />` component to embed [YouTube](https://youtube.com/) videos in your documentation.
 
-## Embedding
+## Example
 
-Use the `<YouTube>` component and pass the ID of the video you want to embed.
+<YouTube id="X8ipUgXH6jw" />
 
 ```jsx
 <YouTube id="X8ipUgXH6jw" />
 ```
 
-<YouTube id="X8ipUgXH6jw" />
+## Props
+
+<Property name="id" type="string" required>
+  The ID of the YouTube video to display.
+</Property>

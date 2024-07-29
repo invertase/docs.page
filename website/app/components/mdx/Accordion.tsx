@@ -9,17 +9,13 @@ import { cn } from "~/utils";
 import { Icon } from "../Icon";
 
 type AccordionProps = ComponentProps<"div"> & {
-	title: string;
+	title?: string;
 	icon?: string;
 	defaultOpen?: boolean;
 };
 
 export function Accordion(props: AccordionProps) {
 	const { title, icon, defaultOpen, className, ...rest } = props;
-
-	if (!title) {
-		return null;
-	}
 
 	return (
 		<Disclosure
@@ -30,7 +26,7 @@ export function Accordion(props: AccordionProps) {
 			<DisclosureButton className="group group-data-[open]:rounded-t-md group-data-[closed]:rounded-md flex w-full items-center gap-1.5 px-4 py-3 hover:bg-black/5 hover:dark:bg-white/5">
 				<ChevronRightIcon size={18} className="group-data-[open]:rotate-90" />
 				{icon ? <Icon name={icon} className="w-6 h-6" /> : null}
-				<span>{title}</span>
+				{!!title && <span>{title}</span>}
 			</DisclosureButton>
 			<DisclosurePanel className="p-5">
 				<div

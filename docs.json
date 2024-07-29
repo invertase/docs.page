@@ -99,6 +99,11 @@
 					"icon": "code"
 				},
 				{
+					"title": "Code Group",
+					"href": "/components/code-group",
+					"icon": "laptop-code"
+				},
+				{
 					"title": "Headings",
 					"href": "/components/headings",
 					"icon": "heading"

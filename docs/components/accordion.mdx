@@ -3,51 +3,48 @@ title: Accordion
 description: Display an accordion component with collapsible content panels.
 ---
 
-An accordion can be used to render collapsible content, useful for information which might not
+Use the `<Accordion />` component to collapsible content, useful for information which might not
 be relevant to all users.
 
-## Usage
+## Example
 
-Use the `<Accordion>` component to render an accordion, providing a `title` property.
+<Accordion title="Click me to expand the accordion">This is collapsible content!</Accordion>
 
 ```jsx
 <Accordion title="Click me to expand the accordion">This is collapsible content!</Accordion>
 ```
 
-<Accordion title="Click me to expand the accordion">This is collapsible content!</Accordion>
+## Props
 
-### Default value
+<Property name="title" type="string" optional>
+  The title of the accordion.
+</Property>
 
-Pass the `defaultOpen` prop to have the accordion open by default.
+---
 
-```jsx
-<Accordion defaultOpen title="Open by default">
-  This is collapsible content!
-</Accordion>
-```
+<Property name="defaultOpen" type="boolean" optional>
+  Whether or not the accordion should be open by default. Defaults to `false`.
+</Property>
 
-<Accordion defaultOpen title="Open by default">
-  This is collapsible content!
-</Accordion>
+---
 
-### Icons
+<Property name="icon" type="string" optional>
+  The icon to display next to the accordion title.
+</Property>
 
-Use the `icon` prop to specify an icon to display next to the accordion title.
-
-```jsx
-<Accordion icon="info" title="Click me to expand the accordion">
-  This is collapsible content!
-</Accordion>
-```
-
-<Accordion icon="circle-info" title="Click me to expand the accordion">
-  This is collapsible content!
-</Accordion>
-
-## Groups
+## Accordion Groups
 
 To group accordions into a single display unit, use the `<AccordionGroup>` component, with each
-`<Accordion>` component as a child.
+`<Accordion>` component as a child:
+
+<AccordionGroup>
+  <Accordion defaultOpen title="Open by default">
+    This is collapsible content!
+  </Accordion>
+  <Accordion title="Click me to expand the accordion">
+    This is collapsible content!
+  </Accordion>
+</AccordionGroup>
 
 ```jsx
 <AccordionGroup>
@@ -59,12 +56,3 @@ To group accordions into a single display unit, use the `<AccordionGroup>` compo
   </Accordion>
 </AccordionGroup>
 ```
-
-<AccordionGroup>
-  <Accordion defaultOpen title="Open by default">
-    This is collapsible content!
-  </Accordion>
-  <Accordion title="Click me to expand the accordion">
-    This is collapsible content!
-  </Accordion>
-</AccordionGroup>

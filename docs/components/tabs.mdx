@@ -3,10 +3,19 @@ title: Tabs
 description: Learn how to display content within different tabs
 ---
 
-Tabs are a great way to display content within different tabs. Tabs can be displayed using the `<Tabs>` component,
-providing a label and value.
+Use the `<Tabs />` component to display content within different tabs.
 
-## Basic Usage
+## Example
+
+<Tabs
+  values={[
+    { label: 'First Tab', value: 'first' },
+    { label: 'Second Tab', value: 'second' },
+  ]}
+>
+  <TabItem value="first">👋 This is the content for the first tab.</TabItem>
+  <TabItem value="second">...and this is the content for the second tab!</TabItem>
+</Tabs>
 
 To display tabs, provide the `<Tabs>` component with a list of values:
 
@@ -22,32 +31,29 @@ To display tabs, provide the `<Tabs>` component with a list of values:
 </Tabs>
 ```
 
-<Tabs
-  values={[
-    { label: 'First Tab', value: 'first' },
-    { label: 'Second Tab', value: 'second' },
-  ]}
->
-  <TabItem value="first">👋 This is the content for the first tab.</TabItem>
-  <TabItem value="second">...and this is the content for the second tab!</TabItem>
-</Tabs>
+## Props
 
-## Default Value
+<Property name="values" type="object" required>
+  The list of tabs to display. Each tab should have a `label` and `value` property.
 
-By default, the first tab will be displayed. To display the second tab, provide a `defaultValue` prop.
+  <Accordion defaultOpen>
+    <Property name="label" type="string" required>
+      The label to display for the tab.
+    </Property>
 
-```jsx
-<Tabs
-  defaultValue="second"
-  values={[
-    { label: 'First Tab', value: 'first' },
-    { label: 'Second Tab', value: 'second' },
-  ]}
->
-  <TabItem value="first">👋 This is the content for the first tab.</TabItem>
-  <TabItem value="second">...and this is the content for the second tab!</TabItem>
-</Tabs>
-```
+    ---
+
+    <Property name="value" type="string" required>
+      The value of the tab. Use this to identify the tab for the `defaultValue` property.
+    </Property>
+  </Accordion>
+</Property>
+
+---
+
+<Property name="defaultValue" type="string" optional>
+  The default tab to display. Defaults to the first tab.
+</Property>
 
 ## Synchronizing Tabs
 
