@@ -164,5 +164,9 @@
 	],
 	[	"thermion.dev", 
 		"nmfisher/thermion"
+	],
+	[
+		"docs.thabit.ai",
+		"thabit.ai/thabit"
 	]
 ]
