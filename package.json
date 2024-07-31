@@ -1,7 +1,7 @@
 {
 	"private": true,
 	"scripts": {
-		"dev": "concurrently \"npm dev:api\" \"yarn npm:website\"",
+		"dev": "concurrently \"npm run dev:api\" \"npm run dev:website\"",
 		"dev:api": "cd api && bun dev",
 		"dev:website": "cd website && npm run dev",
 		"check": "npx @biomejs/biome check --write ."
@@ -12,5 +12,11 @@
 	"devDependencies": {
 		"@biomejs/biome": "1.8.3",
 		"concurrently": "^7.0.0"
-	}
+	},
+	"workspaces": [
+		"api",
+		"website",
+		"og",
+		"packages/*"
+	]
 }
