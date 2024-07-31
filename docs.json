@@ -52,11 +52,23 @@
 			"tab": "root",
 			"pages": [
 				{ "title": "Overview", "href": "/", "icon": "book" },
-				{ "title": "Getting Started", "href": "/getting-started", "icon": "rocket" },
+				{
+					"title": "Getting Started",
+					"href": "/getting-started",
+					"icon": "rocket"
+				},
 				{ "title": "Configuration", "href": "/configuration", "icon": "gear" },
 				{ "title": "Navigation", "href": "/navigation", "icon": "map" },
-				{ "title": "Writing Content", "href": "/writing-content", "icon": "pencil" },
-				{ "title": "Local Previewing", "href": "/local-previewing", "icon": "eye" }
+				{
+					"title": "Writing Content",
+					"href": "/writing-content",
+					"icon": "pencil"
+				},
+				{
+					"title": "Local Previewing",
+					"href": "/local-previewing",
+					"icon": "eye"
+				}
 			]
 		},
 		{
@@ -169,7 +181,7 @@
 					"href": "/search",
 					"icon": "magnifying-glass"
 				},
-				
+
 				{
 					"title": "Locales",
 					"href": "/locales",

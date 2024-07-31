@@ -1,62 +1,66 @@
-import type { Command } from "commander";
-import path from "node:path";
 import fs from "node:fs";
+import path from "node:path";
 import chalk from "chalk";
+import type { Command } from "commander";
 
 export function registerInitCommand(program: Command) {
-  program
-    .command("init")
-    .description("Initializes new docs.page files")
-    .argument("[path]", "Path to the relative directory to initilize in.")
-    .action(async (input: unknown, o) => {
-      const relativePath = String(input || ".");
-      const absolutePath = path.resolve(relativePath);
+	program
+		.command("init")
+		.description("Initializes new docs.page files")
+		.argument("[path]", "Path to the relative directory to initilize in.")
+		.action(async (input: unknown, o) => {
+			const relativePath = String(input || ".");
+			const absolutePath = path.resolve(relativePath);
 
-      if (!fs.existsSync(absolutePath)) {
-        console.log(chalk.red(`Directory "${chalk.yellow(absolutePath)}" does not exist.`));
-        process.exit(1);
-      }
+			if (!fs.existsSync(absolutePath)) {
+				console.log(
+					chalk.red(
+						`Directory "${chalk.yellow(absolutePath)}" does not exist.`,
+					),
+				);
+				process.exit(1);
+			}
 
-      const configurationFilePath = path.join(absolutePath, "docs.json");
-      const documentationPath = path.join(absolutePath, "docs");
+			const configurationFilePath = path.join(absolutePath, "docs.json");
+			const documentationPath = path.join(absolutePath, "docs");
 
-      if (fs.existsSync(configurationFilePath)) {
-        console.log(
-          chalk.red("Configuration file 'docs.json' already exists.")
-        );
-        process.exit(1);
-      }
+			if (fs.existsSync(configurationFilePath)) {
+				console.log(
+					chalk.red("Configuration file 'docs.json' already exists."),
+				);
+				process.exit(1);
+			}
 
-      const docsDirectoryExists = fs.existsSync(documentationPath);
+			const docsDirectoryExists = fs.existsSync(documentationPath);
 
-      if (docsDirectoryExists) {
-        console.log(
-          chalk.yellow(
-            "A 'docs/' directory already exists, this command will not overwrite existing files."
-          )
-        );
-        process.exit(1);
-      } else {
-        fs.mkdirSync(documentationPath, { recursive: true });
-      }
+			if (docsDirectoryExists) {
+				console.log(
+					chalk.yellow(
+						"A 'docs/' directory already exists, this command will not overwrite existing files.",
+					),
+				);
+				process.exit(1);
+			} else {
+				fs.mkdirSync(documentationPath, { recursive: true });
+			}
 
-      // Write the configuration file
-      fs.writeFileSync(
-        configurationFilePath,
-        jsonConfiguration({
-          sidebar: docsDirectoryExists,
-        })
-      );
+			// Write the configuration file
+			fs.writeFileSync(
+				configurationFilePath,
+				jsonConfiguration({
+					sidebar: docsDirectoryExists,
+				}),
+			);
 
-      if (!docsDirectoryExists) {
-        fs.writeFileSync(path.join(documentationPath, "index.mdx"), indexPage);
+			if (!docsDirectoryExists) {
+				fs.writeFileSync(path.join(documentationPath, "index.mdx"), indexPage);
 
-        fs.writeFileSync(
-          path.join(documentationPath, "next-steps.mdx"),
-          nextStepsPage
-        );
-      }
-    });
+				fs.writeFileSync(
+					path.join(documentationPath, "next-steps.mdx"),
+					nextStepsPage,
+				);
+			}
+		});
 }
 
 const jsonConfigurationSidebar = `[
@@ -76,7 +80,7 @@ const jsonConfigurationSidebar = `[
 ]`;
 
 function jsonConfiguration({ sidebar }: { sidebar: boolean }) {
-  return `{
+	return `{
   name: 'My Docs',
   description: 'My documentation site',
   sidebar: ${sidebar ? jsonConfigurationSidebar : "[]"}
