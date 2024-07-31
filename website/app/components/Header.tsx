@@ -54,7 +54,7 @@ function Links() {
 					<a
 						href={link.href}
 						className={cn("font-medium transition-all tracking-wide", {
-							"px-4 py-1 rounded-full bg-primary hover:bg-primary/90 text-white dark:bg-primary/10 border-[0.5px] dark:text-primary border-transparent dark:border-primary/60 hover:dark:border-primary":
+							"text-sm px-3 py-1 rounded-full bg-primary hover:bg-primary/90 text-white dark:bg-primary/10 border-[0.5px] dark:text-primary border-transparent dark:border-primary/60 hover:dark:border-primary":
 								link.cta,
 							"hover:text-primary": !link.cta,
 						})}
