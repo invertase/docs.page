@@ -1,6 +1,6 @@
 {
-	"name": "@docs.page/client",
-	"version": "2.0.0",
+	"name": "@docs.page/cli",
+	"version": "1.0.0",
 	"author": "Invertase <oss@invertase.io> (http://invertase.io)",
 	"license": "Apache-2.0",
 	"main": "dist/bundle.cjs.js",
