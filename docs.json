@@ -7,8 +7,7 @@
 	},
 	"favicon": "https://static.invertase.io/assets/docs.page/docs-page-logo.png",
 	"theme": {
-		"primary": "#36B9B9",
-		"primaryDark": "#E06BAA"
+		"primary": "#0d8693"
 	},
 	"content": {
 		"showPageTitle": true,
@@ -30,14 +29,6 @@
 			}
 		]
 	},
-	"anchors": [
-		{ "title": "Homepage", "icon": "house", "href": "https://docs.page" },
-		{
-			"title": "Discord",
-			"icon": "discord",
-			"href": "https://invertase.link/discord"
-		}
-	],
 	"social": {
 		"x": "invertaseio",
 		"github": "invertase/docs.page",
@@ -60,18 +51,12 @@
 			"group": "Getting Started",
 			"tab": "root",
 			"pages": [
-				{ "title": "Overview", "href": "/" },
-				{ "title": "Getting Started", "href": "/getting-started" },
-				{ "title": "Configuration", "href": "/configuration" },
-				{ "title": "Writing Content", "href": "/writing-content" },
-				{
-					"group": "Deploying",
-					"pages": [
-						{ "title": "Vercel", "href": "/deploying/vercel" },
-						{ "title": "Netlify", "href": "/deploying/netlify" },
-						{ "title": "GitHub Pages", "href": "/deploying/github-pages" }
-					]
-				}
+				{ "title": "Overview", "href": "/", "icon": "book" },
+				{ "title": "Getting Started", "href": "/getting-started", "icon": "rocket" },
+				{ "title": "Configuration", "href": "/configuration", "icon": "gear" },
+				{ "title": "Navigation", "href": "/navigation", "icon": "map" },
+				{ "title": "Writing Content", "href": "/writing-content", "icon": "pencil" },
+				{ "title": "Local Previewing", "href": "/local-previewing", "icon": "eye" }
 			]
 		},
 		{
@@ -170,28 +155,30 @@
 			"tab": "root",
 			"pages": [
 				{
-					"title": "Frontmatter",
-					"href": "/frontmatter"
-				},
-				{
-					"title": "Previews",
-					"href": "/previews"
-				},
-				{
-					"title": "Search",
-					"href": "/search"
+					"title": "Components",
+					"href": "/components",
+					"icon": "shapes"
 				},
 				{
 					"title": "Custom Domains",
-					"href": "/custom-domains"
+					"href": "/custom-domains",
+					"icon": "globe"
 				},
 				{
+					"title": "Search",
+					"href": "/search",
+					"icon": "magnifying-glass"
+				},
+				
+				{
 					"title": "Locales",
-					"href": "/locales"
+					"href": "/locales",
+					"icon": "language"
 				},
 				{
 					"title": "GitHub Bot",
-					"href": "/github-bot"
+					"href": "/github-bot",
+					"icon": "github"
 				}
 			]
 		},
@@ -201,7 +188,8 @@
 			"pages": [
 				{
 					"title": "Contributing",
-					"href": "/contributing"
+					"href": "/contributing",
+					"icon": "heart"
 				}
 			]
 		}

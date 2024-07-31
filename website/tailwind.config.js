@@ -17,6 +17,7 @@ export default {
 			colors: {
 				primary: {
 					DEFAULT: "hsl(var(--primary) / <alpha-value>)",
+					light: "hsl(var(--primary-lighter) / <alpha-value>)",
 				},
 				background: {
 					DEFAULT: "hsl(var(--background) / <alpha-value>)",

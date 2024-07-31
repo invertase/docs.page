@@ -38,8 +38,8 @@ export function TableOfContents() {
 				"top-32": hasTabs,
 			})}
 		>
-			<h3 className="flex items-center gap-2 opacity-75 font-bold text-[15px] mb-2">
-				<ListTreeIcon size={20} />
+			<h3 className="flex items-center gap-2 opacity-75 font-semibold text-sm mb-2">
+				<ListTreeIcon size={16} />
 				<span>On this page</span>
 			</h3>
 			<ul className="mt-4 space-y-2">

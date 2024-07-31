@@ -1,11 +1,13 @@
 :root {
   --primary: var(--primary-light);
+  --primary-lighter: var(--primary-light-lighter);
   --background: var(--background-light);
 }
 
 html[data-theme="dark"] {
   color-scheme: dark;
   --primary: var(--primary-dark);
+  --primary-lighter: var(--primary-dark-lighter);
   --background: var(--background-dark);
 }
 
