@@ -158,7 +158,14 @@ export function getLocale(ctx: Context) {
 // Otherwise applies the owner, repository, ref and locale to the path.
 export function getHref(ctx: Context, path: string) {
 	const locale = getLocale(ctx);
-	const pathWithLeadingSlash = ensureLeadingSlash(path);
+
+	// Ensures a path, e.g. foo/bar becomes /foo/bar
+	let normalizedPath = ensureLeadingSlash(path);
+
+	// Remove any trailing slash from the path.
+	if (normalizedPath === "/") {
+		normalizedPath = "";
+	}
 
 	// All external links should be returned as is.
 	if (isExternalLink(path)) {
@@ -168,10 +175,10 @@ export function getHref(ctx: Context, path: string) {
 	// If we're in preview mode, the path always starts with `/preview`.
 	if (ctx.preview) {
 		if (locale) {
-			return `/preview/${locale}${pathWithLeadingSlash}`;
+			return `/preview/${locale}${normalizedPath}`;
 		}
 
-		return `/preview${pathWithLeadingSlash}`;
+		return `/preview${normalizedPath}`;
 	}
 
 	// Define the base href for the current request.
@@ -203,7 +210,7 @@ export function getHref(ctx: Context, path: string) {
 	}
 
 	// Return the full path with the owner, repository, ref, locale and path.
-	return `${href}${pathWithLeadingSlash}`;
+	return `${href}${normalizedPath}`;
 }
 
 // Matches a URL matching a pattern with a given path. Rules are:
