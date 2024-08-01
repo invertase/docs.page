@@ -1,0 +1,58 @@
+---
+title: Live Previews
+description: View previews of upcoming changes to your documentation.
+---
+
+As your project evolves, you'll want to preview changes before they go live, whether those changes are from your team or an external contributor. 
+
+Each reference on your GitHub repository, whether that be a branch, commit or pull-request can be live previewed.
+
+<Info>
+  Consider installing our [GitHub App](/github-app) on your project to get comments on your Pull Requests with the unique live preview URL.
+</Info>
+
+## Unique URLs
+
+To preview a reference, append it to the end of the base `docs.page` URL for your repository. For example, assuming there's a branch called `next`, we can
+immidiately preview it by visiting `https://docs.page/:owner/:repository~next`.
+
+This method works for branches, commits and pull-requests:
+
+```
+# Branch (next)
+https://docs.page/:owner/:repository~next
+
+# Commit (f3e0074efe4a131edf75e8960123d221b6f40949)
+https://docs.page/:owner/:repository~f3e0074efe4a131edf75e8960123d221b6f40949
+
+# Pull Request (13)
+https://docs.page/:owner/:repository~13
+```
+
+## Custom Domains
+
+If you have configured a [Custom Domain](/custom-domains) for your documentation, The first part of the URL will be your custom domain:
+
+
+```
+# Branch (next)
+https://docs.example.com/~next
+
+# Commit (f3e0074efe4a131edf75e8960123d221b6f40949)
+https://docs.example.com/~f3e0074efe4a131edf75e8960123d221b6f40949
+
+# Pull Request (13)
+https://docs.example.com/~13
+```
+
+## Encoding
+
+If a reference (such as a branch) contains a special character (such as a forward slash), the reference should be URL encoded
+to ensure the reference doesn't conflict with the URL. For example with a branch named "@team/next":
+
+```txt
+https://docs.page/invertase/melos~%40team%2Fnext
+
+# Custom domain
+https://melos.invertase.dev/~%40team%2Fnext
+```

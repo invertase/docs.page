@@ -13,22 +13,6 @@
 		"showPageTitle": true,
 		"showPageImage": true
 	},
-	"header": {
-		"showName": true,
-		"showThemeToggle": true,
-		"showGitHubCard": true,
-		"links": [
-			{
-				"title": "Hello",
-				"href": "https://docs.page"
-			},
-			{
-				"title": "World",
-				"href": "https://docs.page",
-				"cta": true
-			}
-		]
-	},
 	"social": {
 		"x": "invertaseio",
 		"github": "invertase/docs.page",
@@ -65,9 +49,19 @@
 					"icon": "pencil"
 				},
 				{
+					"title": "Frontmatter",
+					"href": "/frontmatter",
+					"icon": "circle-info"
+				},
+				{
 					"title": "Local Previewing",
 					"href": "/local-previewing",
 					"icon": "eye"
+				},
+				{
+					"title": "Live Previews",
+					"href": "/live-previews",
+					"icon": "code-branch"
 				}
 			]
 		},
@@ -166,6 +160,11 @@
 			"group": "Advanced",
 			"tab": "root",
 			"pages": [
+				{
+					"title": "Assets",
+					"href": "/assets",
+					"icon": "image"
+				},
 				{
 					"title": "Components",
 					"href": "/components",

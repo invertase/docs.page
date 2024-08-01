@@ -15,40 +15,53 @@ description: Some awesome docs!
 # Welcome!
 ```
 
+Frontmatter overrides any default properties set in the [project configuration file](/configuration). This allows you to customize each page with unique metadata.
+
 ## Properties
 
 Below is a list of all available frontmatter properties, their type and default values.
 
 <Property name="title" type="string">
-The title of the page used in metadata (e.g. `<title>` and social cards).
+  The title of the page used in metadata, and social cards and as a page heading title.
 </Property>
 
-<hr />
+---
 
 <Property name="description" type="string">
   The description of the page used in metadata.
 </Property>
 
-<hr />
+---
 
 <Property name="image" type="string">
-  The path (either absolute or relative to the `/docs` directory) to social preview card which will
-  be displayed for this page.
+  An [Asset URL](/assets) to an image used in social cards and shown at the top of the page if `showPageImage` is `true`.
 </Property>
 
-<hr />
+---
 
 <Property name="redirect" type="string">
-A URL to redirect (301) the user to when they request this page. This has presedence over all other frontmatter.
-
-```text
----
-redirect: /getting-started
-redirect: https://github.com/acme/awesome-project
----
-```
-
+  A URL to redirect to when the page is visited. Setting this value overrides the page content.
 </Property>
+
+---
+
+<Property name="showPageTitle" type="boolean">
+  Whether to show the `title` as a heading title at the top of the page. 
+</Property>
+
+---
+
+<Property name="showPageImage" type="boolean">
+  Whether to show the `image` at the top of the page. 
+</Property>
+
+---
+
+<Property name="noindex" type="boolean">
+  If true, the page will be excluded from search engines.
+</Property>
+
+---
 
 <Property name="previous" type="string">
 A path which if set, will show a link to the previous page at the bottom of the page.
@@ -63,7 +76,7 @@ previousTitle: Getting started
 
 </Property>
 
-<hr />
+---
 
 <Property name="next" type="string">
 A path which if set, will show a link to the next page at the bottom of the page.
@@ -78,29 +91,3 @@ nextTitle: Getting started
 
 </Property>
 
-<hr />
-
-<Property name="noindex" type="boolean" default="false">
-  If true, the page will be excluded from search engines.
-</Property>
-
-export const Property = props => (
-  <div>
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      <div style={{ flexGrow: 1 }}>
-        <code className="text-docs-theme" style={{ fontSize: 16 }}>
-          {props.name}
-        </code>
-        {!!props.default && (
-          <span style={{ paddingLeft: 8 }}>
-            Default: <code>{props.default}</code>
-          </span>
-        )}
-      </div>
-      <div>
-        <span className="font-mono">{props.type}</span>
-      </div>
-    </div>
-    <div>{props.children}</div>
-  </div>
-);
