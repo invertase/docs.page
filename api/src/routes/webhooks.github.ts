@@ -13,7 +13,7 @@ export default async function githubWebhook(
 		return badRequest(res, "Invalid method.");
 	}
 
-	// Get the body of the request.
+	// Get the body of the request (stringify since express converts it to JSON).
 	const body = req.body;
 
 	// Create a new instance of the Webhooks class with the GitHub App secret.
@@ -23,7 +23,7 @@ export default async function githubWebhook(
 
 	// Verify the signature of the request.
 	const verified = await webhook.verify(
-		body,
+		JSON.stringify(body),
 		String(req.headers["x-hub-signature-256"]),
 	);
 
