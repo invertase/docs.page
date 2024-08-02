@@ -37,12 +37,11 @@ export default async function githubWebhook(
 		const id = req.headers["x-github-hook-id"] as string;
 		// biome-ignore lint/suspicious/noExplicitAny: This will be a valid event name from GitHub.
 		const name = req.headers["x-github-event"] as any;
-		const payload = JSON.parse(body);
 
 		await webhook.receive({
 			id,
 			name,
-			payload,
+			payload: body,
 		});
 
 		return ok(res, { message: "OK" });
