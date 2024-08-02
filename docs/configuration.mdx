@@ -22,7 +22,7 @@ Below is a list of all available configuration options, which can be used to mod
 
 ---
 
-<Property name="description" type="string">
+<Property name="favicon" type="string">
   The favicon URL for your project.
 
   See [Asset URLs](/assets) for more information on how to add assets to your documentation.
@@ -113,7 +113,7 @@ Below is a list of all available configuration options, which can be used to mod
 <Property name="header" type="Header">
   Configures the header of your documentation.
 
-  <Accordion title="Theme">
+  <Accordion title="Header">
     <Property name="showName" type="boolean">
       Whether to show the documentation `name` next to the logo in the header. Defaults to `true`.
     </Property>
@@ -167,7 +167,7 @@ Below is a list of all available configuration options, which can be used to mod
 <Property name="anchors" type="Anchor[]">
   Configures the anchor links of your documentation.
 
-  <Accordion title="Anchors">
+  <Accordion title="Anchor">
     <Property name="title" type="string" required>
       The title of the anchor link.
     </Property>
@@ -297,7 +297,7 @@ Below is a list of all available configuration options, which can be used to mod
     <Property name="docsearch" type="DocSearch">
       Whether to enable search via Algolia DocSearch in your documentation. See [Search](/search) for more information on how to configure DocSearch.
 
-      <Accordion title="Search">
+      <Accordion title="DocSearch">
         <Property name="appId" type="string" required>
           The DocSearch application ID for your documentation.
         </Property>
