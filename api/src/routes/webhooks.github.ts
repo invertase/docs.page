@@ -1,5 +1,4 @@
 import { type EmitterWebhookEvent, Webhooks } from "@octokit/webhooks";
-import Bun from "bun";
 import type { Request, Response } from "express";
 import { badRequest, ok } from "../res";
 
@@ -101,7 +100,7 @@ Documentation is deployed and generated using [docs.page](https://docs.page).`;
   	}
 	`,
 		{
-			subjectId: pull_request.id,
+			subjectId: pull_request.node_id,
 			body: comment,
 		},
 	);
