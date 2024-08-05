@@ -1,4 +1,5 @@
 import { type EmitterWebhookEvent, Webhooks } from "@octokit/webhooks";
+import Bun from "bun";
 import type { Request, Response } from "express";
 import { badRequest, ok } from "../res";
 
@@ -34,9 +35,10 @@ export default async function githubWebhook(
 	webhook.on("pull_request.opened", onPullRequestOpened);
 
 	try {
-		const id = req.headers["x-github-hook-id"] as string;
+		const id = String(req.headers["x-github-hook-id"]);
+
 		// biome-ignore lint/suspicious/noExplicitAny: This will be a valid event name from GitHub.
-		const name = req.headers["x-github-event"] as any;
+		const name = String(req.headers["x-github-event"]) as any;
 
 		await webhook.receive({
 			id,
@@ -57,11 +59,19 @@ async function onPullRequestOpened(
 	const pull_request = event.payload.pull_request;
 	const { repository } = event.payload;
 
+	if (!event.payload.installation) {
+		throw new Error("Installation not found.");
+	}
+
+	const octokit = await app.getInstallationOctokit(
+		event.payload.installation.id,
+	);
+
 	// org/repo
 	const name = repository.full_name.toLowerCase();
 
 	// Fetch the domains file from the main repository
-	const domains = await getDomains();
+	const domains = await getDomains(octokit);
 
 	// Find a custom domain for the repository, if it exists
 	const domain = domains.find(([, repository]) => repository === name)?.[0];
@@ -77,11 +87,22 @@ async function onPullRequestOpened(
 \n\n\
 Documentation is deployed and generated using [docs.page](https://docs.page).`;
 
-	// Post a comment on the pull request
-	await app.octokit.rest.issues.createComment({
-		owner: repository.owner.login,
-		repo: repository.name,
-		issue_number: pull_request.number,
-		body: comment,
-	});
+	await octokit.graphql(
+		`
+		mutation($subjectId: ID!, $body: String!) {
+			addComment(input: {subjectId: $subjectId, body: $body}) {
+				commentEdge {
+					node {
+						id
+						body
+					}
+				}
+			}
+  	}
+	`,
+		{
+			subjectId: pull_request.id,
+			body: comment,
+		},
+	);
 }

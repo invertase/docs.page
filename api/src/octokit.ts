@@ -1,4 +1,4 @@
-import { App } from "octokit";
+import { App, type Octokit } from "octokit";
 
 export const app = new App({
 	appId: process.env.GITHUB_APP_ID!,
@@ -15,8 +15,10 @@ type GetFileResponse = {
 };
 
 // Queries a repository and extracts a file
-export async function getDomains(): Promise<Array<[string, string]>> {
-	const response = await app.octokit.graphql<GetFileResponse>(
+export async function getDomains(
+	octokit: Octokit,
+): Promise<Array<[string, string]>> {
+	const response = await octokit.graphql<GetFileResponse>(
 		`
     query GetDomains($owner: String!, $repo: String!, $file: String!) {
       repository(owner: $owner, name: $repo) {
