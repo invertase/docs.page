@@ -19,7 +19,7 @@ export default [
 				format: "cjs",
 			},
 			{
-				file: "dist/bundle.es.js",
+				file: "dist/bundle.js",
 				format: "es",
 			},
 		],
