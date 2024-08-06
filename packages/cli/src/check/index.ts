@@ -1,5 +1,3 @@
-import fs from "node:fs";
-import path from "node:path";
 import { checkConfiguration } from "./configuration";
 import { checkRelativeLinks } from "./relative-links";
 import type { CheckResult, Route } from "./types";

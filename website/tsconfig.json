@@ -28,6 +28,7 @@
 		"forceConsistentCasingInFileNames": true,
 		"baseUrl": ".",
 		"paths": {
+			"@docs.page/cli": ["../packages/cli/src/index.ts"],
 			"~/*": ["./app/*"]
 		},
 

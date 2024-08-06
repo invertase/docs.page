@@ -11,6 +11,7 @@
 		"typecheck": "tsc"
 	},
 	"dependencies": {
+		"@docs.page/cli": "workspace:*",
 		"@docsearch/js": "^3.6.0",
 		"@headlessui/react": "^2.0.4",
 		"@mdx-js/mdx": "^3.0.1",
