@@ -15,13 +15,8 @@ There are two core principles to keep in mind when working with docs.page:
 
 To get started, either use the CLI tool or manually create the required files.
 
-<Tabs
-  values={[
-    { label: 'CLI', value: 'cli' },
-    { label: 'Manual', value: 'manual' },
-  ]}
->
-  <TabItem value="cli">
+<Tabs>
+  <TabItem label="CLI" value="cli">
     Using `npx`, run the following command at the root of your project:
 
     ```bash
@@ -34,7 +29,7 @@ To get started, either use the CLI tool or manually create the required files.
     - `docs/index.mdx`
     - `docs/usage.mdx`
   </TabItem>
-  <TabItem value="manual">
+  <TabItem label="Manual" value="manual">
     At the root of your project, create a new `docs.json` file with the following content:
 
     ```json title="docs.json"

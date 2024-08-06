@@ -162,7 +162,7 @@ export function Tabs(props: TabsProps) {
             <div
               {...rest}
               key={child.props.value}
-              className={cn("py-5", {
+              className={cn("py-5 [&>:first-child]:mt-0 [&>:last-child]:mb-0", {
                 hidden: value !== selected,
               })}
             />
