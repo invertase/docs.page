@@ -71,8 +71,6 @@ function Preview() {
 	const fetcher = useFetcher<typeof action>({ key: "bundle" });
 	const directory = useDirectoryHandle();
 	const selectDirectory = useSelectDirectory();
-	const checks = useCheckResult();
-	console.log(checks.data);
 	const content = usePageContent(path, directory.data);
 	const bundle = fetcher.data?.bundle;
 

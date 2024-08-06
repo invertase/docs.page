@@ -57,7 +57,7 @@ export function useDirectoryHandle() {
       }
 
       // Verify we can access the directory.
-      const verified = await verifyPermission(handle);
+      const verified = await verifyPermission(handle).catch(() => false);
 
       // Get all the files stored in the database.
       const files = await db.getAllKeys("files");
