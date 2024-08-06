@@ -1,63 +1,170 @@
 ---
 title: Getting Started
-description: Get started with docs.page on your repository.
+description: Learn how to start publishing documentation with docs.page.
 ---
 
-The docs.page project reads files directly from your GitHub repository. To get started:
+docs.page reads files directly from your GitHub repository and uses them to generate a documentation website.
+This guide will walk you through the steps to get started with docs.page.
 
-1. Create a `docs` directory to any **public** GitHub repository.
-2. Create an `index.mdx` file.
-3. Add some Markdown content.
-4. View your documentation.
+There are two core principles to keep in mind when working with docs.page:
 
-The documentation is available by providing the repositories owner and name after the domain:
+- Every project requires a `docs.json` file at the root of the project.
+- All documentation files are stored in a `docs` directory as `.mdx` files.
 
-```txt
-// https://github.com/acme/awesome-project
-https://docs.page/acme/awesome-project
-```
+## Quick Start
 
-## Using our CLI tool
+To get started, either use the CLI tool or manually create the required files.
 
-To make setting up docs.page with your project as smooth and as seemless as possible, we've added a small CLI tool, `@docs.page/init` .
+<Tabs
+  values={[
+    { label: 'CLI', value: 'cli' },
+    { label: 'Manual', value: 'manual' },
+  ]}
+>
+  <TabItem value="cli">
+    Using `npx`, run the following command at the root of your project:
 
-If you have `node` and `npm` installed locally you can `cd` to the root of your project and run the command
+    ```bash
+    npx @docs.page/cli init
+    ```
 
-```
-npx @docs.page/init
-```
+    The CLI will create a few files in your current working directory:
 
-This will add a `docs.json`, a `docs` directory, and a couple of `mdx` files to get you started.
+    - `docs.json`
+    - `docs/index.mdx`
+    - `docs/usage.mdx`
+  </TabItem>
+  <TabItem value="manual">
+    At the root of your project, create a new `docs.json` file with the following content:
 
-From there you can preview your documentation by visiting `docs.page/preview`, and selecting your root directory for preview.
+    ```json title="docs.json"
+    {
+      "name": "My Project",
+      "description": "My awesome documentation."
+    }
+    ```
 
-Once you're happy with your documentation you can push changes to your Github repository and your documentation site will be ready to visit!
+    Next, create a `docs` directory and add an `index.mdx` file with the following content:
 
-## Working with Markdown
+    ```mdx title="docs/index.mdx"
+    ---
+    title: Hello docs.page
+    ---
 
-The project supports rendering all [GitHub-flavored Markdown](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
+    # Welcome to docs.page
+    ```
+  </TabItem>
+</Tabs>
 
-Under the hood, [MDX](https://github.com/mdx-js/mdx) is enabled which allows the use of [Custom Components](/components/accordion). Each Markdown
-page also supports [Frontmatter](/frontmatter), allowing you to customize the metadata of each specific page.
+## Previewing your documentation
 
-## Configuring your documentation
+Now your project has the requires `docs.json` configuration file and a sample `docs/index.mdx` page, we can now preview our documentation.
 
-By default, docs.page will render a single page with default configuration options. Although there is nothing wrong with this, you can
-further enhance the functionality of the generated documentation by creating a `docs.json` file at the root of your repository:
+Head on over to `https://docs.page/preview` and select your project directory when prompted. This will generate a preview of your documentation:
 
-```json title=docs.json
+TODO: Image
+
+You can made modifications to your configuration and documentation in realtime and see the changes reflected in the preview. For more information on local preview mode,
+view the [Local Preview](/local-previewing) documentation.
+
+## Updating your configuration
+
+At present your documentation doesn't look too great, isn't very informative and probably doesn't feel like it belongs to your product or service. Let's fix that.
+
+The `docs.json` file which has been created in your project root contains a number of configuration options which can be used to customize your documentation. The 
+[Configuration](/configuration) documentation contains a full list of available configuration options. For example, let's change the theme color of our documentation
+via the `theme` property:
+
+```json title="docs.json"
 {
-  "name": "Awesome Project",
-  "theme": "#ab47bc",
-  "favicon": "/assets/favicon.ico",
-  "logo": "https://mycdn.com/awesome-logo.png",
-  "docsearch": {
-    "appId": "...",
-    "apiKey": "...",
-    "indexName": "..."
+  "theme": {
+    "primary": "#ab47bc"
   }
 }
 ```
 
-Once committed, docs.page will first read the configuration and update the website. To learn more about the
-available configuration options, view the [documentation](/configuration).
+We can also add a logo to our documentation by setting the `logo` property:
+
+```json title="docs.json"
+{
+  "logo": {
+    "light": "https://mycdn.com/awesome-logo.png",
+    "dark": "https://mycdn.com/awesome-logo-dark.png"
+  }
+}
+```
+
+## Adding more documentation pages
+
+Each `.mdx` file created inside of the `docs/` directory represents a new page in your documentation. You can create as many pages as you like, and even nest them inside of
+subdirectories. For example, let's create a new `docs/usage.mdx` file:
+
+```mdx title="docs/usage.mdx"
+---
+title: Usage
+---
+
+# How to use my project
+```
+
+When users vist the `/usage` page on your documentation site, they will see the content of this file. To create a nested page, you can create a subdirectory inside of the `docs/` directory, 
+for example `docs/platforms/windows/index.mdx`:
+
+```mdx title="docs/platforms/windows/index.mdx"
+---
+title: Windows Usage
+---
+
+# How to use my project on Windows
+```
+
+When users visit the `/platforms/windows` page on your documentation site, they will see the content of this file.
+
+## Writing content
+
+All of your documentation pages are written in [markdown](https://www.markdownguide.org/), with the added ability to include useful visual components. 
+
+Markdown is a simple markup syntax, which allows you to write plain text which is transformed into usable HTML elements, such as headings, images, links and lists. For example, to create a heading in markdown, you can use the `#` symbol:
+
+```md
+### This is a level 3 heading
+
+This is some paragraph text which will be shown below the heading.
+```
+
+Additionally, docs.page exposes [components](/components) to allow you to include more complex elements in your documentation. For example, to add an accordion to your documentation, you can use the `Accordion` component:
+
+```mdx
+<Accordion>
+  This is the content of the accordion which will be shown when the accordion is expanded.
+</Accordion>
+```
+
+To learn more about writing your markdown content, view the [documentation](/writing-content).
+
+## Publishing your documentation
+
+Publishing documentation using docs.page is the same as publishing code via version control on GitHub. 
+
+Documentation is accessible using the owner and repository name of your GitHub repository. For example, if your repository is available at `https://github.com/acme/my-project`,
+your documentation will be available at `https://docs.page/acme/my-project`.
+
+The 'default' branch of your repository (typically `main` or `master`) is used as the production branch for your documentation. When you push changes to this branch, your documentation will be updated automatically.
+
+### Live Previews
+
+Whenever you make changes to your repository, either code and/or documentation, the GitHub reference for the change (for example a branch or commit sha) can be used to view the documentation at that point in time.
+
+For example, to view the documentation at a specific commit, you can use the following URL:
+
+```
+https://docs.page/acme/my-project~COMMIT_SHA
+```
+
+To view the documentation for a specific branch, you can use the following URL:
+
+```
+https://docs.page/acme/my-project~BRANCH_NAME
+```
+
+To learn more about documentation previews, view the [Live Previews](/live-previews) documentation.
