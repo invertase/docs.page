@@ -5,6 +5,12 @@ export const app = new App({
 	privateKey: process.env.GITHUB_APP_PRIVATE_KEY!,
 });
 
+export async function getOctokitForInstallation(installationId: number) {
+	return await app.getInstallationOctokit(installationId);
+}
+
+export type OctokitInstallation = Awaited<ReturnType<typeof getOctokitForInstallation>>;
+
 // Type for a getFile response - assumes the repository is available
 type GetFileResponse = {
 	repository: {
