@@ -1,242 +1,242 @@
 {
-  "name": "docs.page",
-  "description": "Zero config GitHub documentation site generator",
-  "logo": {
-    "href": "https://docs.page",
-    "light": "https://static.invertase.io/assets/docs.page/docs-page-logo.png"
-  },
-  "favicon": "https://static.invertase.io/assets/docs.page/docs-page-logo.png",
-  "theme": {
-    "primary": "#0d8693"
-  },
-  "content": {
-    "showPageTitle": true,
-    "showPageImage": true
-  },
-  "social": {
-    "x": "invertaseio",
-    "github": "invertase/docs.page",
-    "discord": "invertase"
-  },
-  "tabs": [
-    {
-      "id": "root",
-      "title": "Documentation",
-      "href": "/"
-    },
-    {
-      "id": "components",
-      "title": "Components",
-      "href": "/components"
-    },
-    {
-      "id": "cli",
-      "title": "CLI",
-      "href": "/cli"
-    }
-  ],
-  "sidebar": [
-    {
-      "group": "Getting Started",
-      "tab": "root",
-      "pages": [
-        { "title": "Overview", "href": "/", "icon": "book" },
-        {
-          "title": "Getting Started",
-          "href": "/getting-started",
-          "icon": "rocket"
-        },
-        { "title": "Configuration", "href": "/configuration", "icon": "gear" },
-        { "title": "Navigation", "href": "/navigation", "icon": "map" },
-        {
-          "title": "Writing Content",
-          "href": "/writing-content",
-          "icon": "pencil"
-        },
-        {
-          "title": "Frontmatter",
-          "href": "/frontmatter",
-          "icon": "circle-info"
-        },
-        {
-          "title": "Local Previewing",
-          "href": "/local-previewing",
-          "icon": "eye"
-        },
-        {
-          "title": "Live Previews",
-          "href": "/live-previews",
-          "icon": "code-branch"
-        }
-      ]
-    },
-    {
-      "group": "Components",
-      "tab": "components",
-      "pages": [
-        {
-          "title": "Accordion",
-          "href": "/components/accordion",
-          "icon": "square-caret-down"
-        },
-        {
-          "title": "Callouts",
-          "href": "/components/callouts",
-          "icon": "bullhorn"
-        },
-        {
-          "title": "Cards",
-          "href": "/components/cards",
-          "icon": "square-full"
-        },
-        {
-          "title": "Code Blocks",
-          "href": "/components/code-blocks",
-          "icon": "code"
-        },
-        {
-          "title": "Code Group",
-          "href": "/components/code-group",
-          "icon": "laptop-code"
-        },
-        {
-          "title": "Headings",
-          "href": "/components/headings",
-          "icon": "heading"
-        },
-        {
-          "title": "Tweet",
-          "href": "/components/tweet",
-          "icon": "twitter"
-        },
-        {
-          "title": "Tabs",
-          "href": "/components/tabs",
-          "icon": "table-columns"
-        },
-        {
-          "title": "Icons",
-          "href": "/components/icons",
-          "icon": "icons"
-        },
-        {
-          "title": "Images",
-          "href": "/components/images",
-          "icon": "image"
-        },
-        {
-          "title": "Property",
-          "href": "/components/property",
-          "icon": "signature"
-        },
-        {
-          "title": "Steps",
-          "href": "/components/steps",
-          "icon": "list-ol"
-        },
-        {
-          "title": "YouTube",
-          "href": "/components/youtube",
-          "icon": "youtube"
-        },
-        {
-          "title": "Vimeo",
-          "href": "/components/vimeo",
-          "icon": "vimeo"
-        },
-        {
-          "title": "Video",
-          "href": "/components/video",
-          "icon": "video"
-        },
-        {
-          "title": "Zapp!",
-          "href": "/components/zapp",
-          "icon": "bolt"
-        },
-        {
-          "title": "Custom Components",
-          "href": "/components/custom",
-          "icon": "square-pen"
-        }
-      ]
-    },
-    {
-      "group": "Advanced",
-      "tab": "root",
-      "pages": [
-        {
-          "title": "Assets",
-          "href": "/assets",
-          "icon": "image"
-        },
-        {
-          "title": "Components",
-          "href": "/components",
-          "icon": "shapes"
-        },
-        {
-          "title": "Custom Domains",
-          "href": "/custom-domains",
-          "icon": "globe"
-        },
-        {
-          "title": "Search",
-          "href": "/search",
-          "icon": "magnifying-glass"
-        },
+	"name": "docs.page",
+	"description": "Zero config GitHub documentation site generator",
+	"logo": {
+		"href": "https://docs.page",
+		"light": "https://static.invertase.io/assets/docs.page/docs-page-logo.png"
+	},
+	"favicon": "https://static.invertase.io/assets/docs.page/docs-page-logo.png",
+	"theme": {
+		"primary": "#0d8693"
+	},
+	"content": {
+		"showPageTitle": true,
+		"showPageImage": true
+	},
+	"social": {
+		"x": "invertaseio",
+		"github": "invertase/docs.page",
+		"discord": "invertase"
+	},
+	"tabs": [
+		{
+			"id": "root",
+			"title": "Documentation",
+			"href": "/"
+		},
+		{
+			"id": "components",
+			"title": "Components",
+			"href": "/components"
+		},
+		{
+			"id": "cli",
+			"title": "CLI",
+			"href": "/cli"
+		}
+	],
+	"sidebar": [
+		{
+			"group": "Getting Started",
+			"tab": "root",
+			"pages": [
+				{ "title": "Overview", "href": "/", "icon": "book" },
+				{
+					"title": "Getting Started",
+					"href": "/getting-started",
+					"icon": "rocket"
+				},
+				{ "title": "Configuration", "href": "/configuration", "icon": "gear" },
+				{ "title": "Navigation", "href": "/navigation", "icon": "map" },
+				{
+					"title": "Writing Content",
+					"href": "/writing-content",
+					"icon": "pencil"
+				},
+				{
+					"title": "Frontmatter",
+					"href": "/frontmatter",
+					"icon": "circle-info"
+				},
+				{
+					"title": "Local Previewing",
+					"href": "/local-previewing",
+					"icon": "eye"
+				},
+				{
+					"title": "Live Previews",
+					"href": "/live-previews",
+					"icon": "code-branch"
+				}
+			]
+		},
+		{
+			"group": "Components",
+			"tab": "components",
+			"pages": [
+				{
+					"title": "Accordion",
+					"href": "/components/accordion",
+					"icon": "square-caret-down"
+				},
+				{
+					"title": "Callouts",
+					"href": "/components/callouts",
+					"icon": "bullhorn"
+				},
+				{
+					"title": "Cards",
+					"href": "/components/cards",
+					"icon": "square-full"
+				},
+				{
+					"title": "Code Blocks",
+					"href": "/components/code-blocks",
+					"icon": "code"
+				},
+				{
+					"title": "Code Group",
+					"href": "/components/code-group",
+					"icon": "laptop-code"
+				},
+				{
+					"title": "Headings",
+					"href": "/components/headings",
+					"icon": "heading"
+				},
+				{
+					"title": "Tweet",
+					"href": "/components/tweet",
+					"icon": "twitter"
+				},
+				{
+					"title": "Tabs",
+					"href": "/components/tabs",
+					"icon": "table-columns"
+				},
+				{
+					"title": "Icons",
+					"href": "/components/icons",
+					"icon": "icons"
+				},
+				{
+					"title": "Images",
+					"href": "/components/images",
+					"icon": "image"
+				},
+				{
+					"title": "Property",
+					"href": "/components/property",
+					"icon": "signature"
+				},
+				{
+					"title": "Steps",
+					"href": "/components/steps",
+					"icon": "list-ol"
+				},
+				{
+					"title": "YouTube",
+					"href": "/components/youtube",
+					"icon": "youtube"
+				},
+				{
+					"title": "Vimeo",
+					"href": "/components/vimeo",
+					"icon": "vimeo"
+				},
+				{
+					"title": "Video",
+					"href": "/components/video",
+					"icon": "video"
+				},
+				{
+					"title": "Zapp!",
+					"href": "/components/zapp",
+					"icon": "bolt"
+				},
+				{
+					"title": "Custom Components",
+					"href": "/components/custom",
+					"icon": "square-pen"
+				}
+			]
+		},
+		{
+			"group": "Advanced",
+			"tab": "root",
+			"pages": [
+				{
+					"title": "Assets",
+					"href": "/assets",
+					"icon": "image"
+				},
+				{
+					"title": "Components",
+					"href": "/components",
+					"icon": "shapes"
+				},
+				{
+					"title": "Custom Domains",
+					"href": "/custom-domains",
+					"icon": "globe"
+				},
+				{
+					"title": "Search",
+					"href": "/search",
+					"icon": "magnifying-glass"
+				},
 
-        {
-          "title": "Locales",
-          "href": "/locales",
-          "icon": "language"
-        },
-        {
-          "title": "GitHub Bot",
-          "href": "/github-bot",
-          "icon": "github"
-        },
+				{
+					"title": "Locales",
+					"href": "/locales",
+					"icon": "language"
+				},
+				{
+					"title": "GitHub Bot",
+					"href": "/github-bot",
+					"icon": "github"
+				},
 				{
 					"title": "Command Line Interface",
 					"href": "/cli",
 					"icon": "terminal"
 				}
-      ]
-    },
-    {
-      "tab": "cli",
-      "group": "CLI",
-      "pages": [
-        { "title": "Overview", "href": "/cli" },
-        {
-          "group": "Commands",
-          "pages": [
-            { "title": "init", "href": "/cli/init" },
-            { "title": "check", "href": "/cli/check" }
-          ]
-        }
-      ]
-    },
-    {
-      "tab": "root",
-      "group": "Misc.",
-      "pages": [
-        {
-          "title": "Contributing",
-          "href": "/contributing",
-          "icon": "heart"
-        }
-      ]
-    }
-  ],
-  "search": {
-    "docsearch": {
-      "apiKey": "9b58d13ee3195094105d528fc6161a01",
-      "appId": "BH4D9OD16A",
-      "indexName": "use_docs_page"
-    }
-  },
-  "scripts": {
-    "googleTagManager": "GTM-W89J6BX"
-  }
+			]
+		},
+		{
+			"tab": "cli",
+			"group": "CLI",
+			"pages": [
+				{ "title": "Overview", "href": "/cli" },
+				{
+					"group": "Commands",
+					"pages": [
+						{ "title": "init", "href": "/cli/init" },
+						{ "title": "check", "href": "/cli/check" }
+					]
+				}
+			]
+		},
+		{
+			"tab": "root",
+			"group": "Misc.",
+			"pages": [
+				{
+					"title": "Contributing",
+					"href": "/contributing",
+					"icon": "heart"
+				}
+			]
+		}
+	],
+	"search": {
+		"docsearch": {
+			"apiKey": "9b58d13ee3195094105d528fc6161a01",
+			"appId": "BH4D9OD16A",
+			"indexName": "use_docs_page"
+		}
+	},
+	"scripts": {
+		"googleTagManager": "GTM-W89J6BX"
+	}
 }

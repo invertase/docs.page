@@ -3,8 +3,8 @@ import Color from "color";
 import { MoonIcon, SunDimIcon } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { type Context, usePageContext } from "~/context";
-import { cn } from "~/utils";
 import { useInlineScript } from "~/hooks";
+import { cn } from "~/utils";
 
 function getThemeKey(context: Context) {
 	return context.preview

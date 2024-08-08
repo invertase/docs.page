@@ -9,7 +9,9 @@ export async function getOctokitForInstallation(installationId: number) {
 	return await app.getInstallationOctokit(installationId);
 }
 
-export type OctokitInstallation = Awaited<ReturnType<typeof getOctokitForInstallation>>;
+export type OctokitInstallation = Awaited<
+	ReturnType<typeof getOctokitForInstallation>
+>;
 
 // Type for a getFile response - assumes the repository is available
 type GetFileResponse = {
