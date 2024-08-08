@@ -1,263 +1,266 @@
 import type { LinksFunction } from "@vercel/remix";
-import { Feature } from "./Feature";
-import { Heading } from "./Heading";
+import {
+  BookTextIcon,
+  ChevronRightIcon,
+  Grid2X2Icon,
+  HandshakeIcon,
+  HeartIcon,
+  ShieldCheckIcon,
+} from "lucide-react";
+import { useInlineScript } from "~/hooks";
+import { InfoCard } from "./InfoCard";
+import { FeatureCard } from "./FeatureCard";
 
 export const links: LinksFunction = () => {
-	return [
-		{
-			rel: "apple-touch-icon",
-			sizes: "180x180",
-			href: "/_docs.page/favicon/apple-touch-icon.png",
-		},
-		{
-			rel: "icon",
-			type: "image/png",
-			sizes: "32x32",
-			href: "/_docs.page/favicon/favicon-32x32.png",
-		},
-		{
-			rel: "icon",
-			type: "image/png",
-			sizes: "16x16",
-			href: "/_docs.page/favicon/favicon-16x16.png",
-		},
-		{
-			rel: "manifest",
-			href: "/_docs.page/favicon/site.webmanifest",
-		},
-		{
-			rel: "mask-icon",
-			href: "/_docs.page/favicon/safari-pinned-tab.svg",
-			color: "#5bbad5",
-		},
-	];
+  return [
+    {
+      rel: "apple-touch-icon",
+      sizes: "180x180",
+      href: "/_docs.page/favicon/apple-touch-icon.png",
+    },
+    {
+      rel: "icon",
+      type: "image/png",
+      sizes: "32x32",
+      href: "/_docs.page/favicon/favicon-32x32.png",
+    },
+    {
+      rel: "icon",
+      type: "image/png",
+      sizes: "16x16",
+      href: "/_docs.page/favicon/favicon-16x16.png",
+    },
+    {
+      rel: "manifest",
+      href: "/_docs.page/favicon/site.webmanifest",
+    },
+    {
+      rel: "mask-icon",
+      href: "/_docs.page/favicon/safari-pinned-tab.svg",
+      color: "#5bbad5",
+    },
+  ];
 };
 
 export default function Homepage() {
-	return (
-		<>
-			<section className="py-16 px-4 text-center lg:py-32 lg:text-left">
-				<div className="mx-auto max-w-6xl tracking-wider">
-					<div className="mb-4 flex items-center justify-center space-x-4 lg:justify-start">
-						<h3 className="font-anton text-4xl">docs.page</h3>
-						<a
-							href="https://github.com/invertase/docs.page"
-							className="text-gray-700 transition-colors duration-100 hover:text-black dark:text-gray-300 dark:hover:text-white"
-						>
-							<svg
-								className="h-10 w-10 "
-								fill="currentColor"
-								viewBox="0 0 24 24"
-							>
-								<title>Logo</title>
-								<path
-									fillRule="evenodd"
-									d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
-									clipRule="evenodd"
-								/>
-							</svg>
-						</a>
-					</div>
-					<h1 className="font-anton mb-4 bg-gradient-to-br from-gray-900 via-gray-700 to-gray-900 bg-clip-text text-6xl text-transparent dark:from-gray-100 dark:via-gray-300 dark:to-gray-200 lg:text-8xl">
-						Instant{" "}
-						<span className="bg-gradient-to-br from-green-400 to-blue-500 bg-clip-text text-transparent">
-							Open Source
-						</span>{" "}
-						docs <br /> with zero configuration.
-					</h1>
-				</div>
-			</section>
-			<div className="mx-auto max-w-5xl px-4 lg:px-0">
-				<Heading step={1} from="from-purple-400" to="to-red-500">
-					<span>
-						Add a{" "}
-						<span className="bg-gradient-to-br from-purple-400 via-pink-500 to-red-500 bg-clip-text text-transparent">
-							docs
-						</span>{" "}
-						directory to your GitHub repository.
-					</span>
-				</Heading>
-				<div className="mt-16 items-center lg:ml-20 lg:flex">
-					<div className="flex-1">
-						<p className="px-3 text-lg">
-							docs.page sources content directly from any Open Source GitHub
-							repository.
-						</p>
-						<p className="mt-4 px-3 text-lg">
-							To get started, create an empty{" "}
-							<code className="text-red-400">docs</code> directory and a config{" "}
-							<code className="text-red-400">docs.json</code> file, both at the
-							root of your repository.
-						</p>
-					</div>
-					<div className="flex-1">
-						<div className="mt-10 lg:mt-0 lg:pl-8">
-							<div>
-								<div className="mx-6 rounded-tr rounded-tl border-t border-l border-r border-gray-700 py-3" />
-								<div className="flex items-center rounded border border-gray-700 py-3 px-3 font-mono text-sm shadow-xl">
-									<svg
-										height="16"
-										viewBox="0 0 16 16"
-										version="1.1"
-										width="16"
-										className="mr-3 text-white"
-									>
-										<title>Edit</title>
-										<path
-											fill="currentColor"
-											fillRule="evenodd"
-											d="M1.75 1A1.75 1.75 0 000 2.75v10.5C0 14.216.784 15 1.75 15h12.5A1.75 1.75 0 0016 13.25v-8.5A1.75 1.75 0 0014.25 3h-6.5a.25.25 0 01-.2-.1l-.9-1.2c-.33-.44-.85-.7-1.4-.7h-3.5z"
-										/>
-									</svg>
-									<div className="flex-col pr-8">
-										<span className="flex">docs</span>
-										<span className="flex">docs.json</span>
-									</div>
-									<span className="text-gray-600">A few seconds ago</span>
-								</div>
-								<div className="mx-6 rounded-br rounded-bl border-b border-l border-r border-gray-700 py-3" />
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div className="mx-auto mt-32 max-w-5xl px-4 lg:px-0">
-				<Heading step={2} from="from-green-400" to="to-blue-500">
-					<span>
-						Create an{" "}
-						<span className="bg-gradient-to-br from-green-400 to-blue-500 bg-clip-text text-transparent">
-							index.mdx
-						</span>{" "}
-						file.
-					</span>
-				</Heading>
-				<div className="mt-16 flex flex-col-reverse items-center lg:ml-20 lg:flex-row">
-					<div className="w-full flex-1">
-						<div className="mt-10 pr-5 lg:mt-0">
-							<div>
-								<div className="rounded-tr rounded-tl border border-gray-700 px-3 py-2">
-									<code className="text-sm">docs/index.mdx</code>
-								</div>
-								<div className="flex">
-									<div className="flex-1 border-r border-l border-gray-700 p-3 font-mono">
-										<div># Installation</div>
-										<br />
-										<div>```bash</div>
-										<div>npm install myawesomelib</div>
-										```
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div className="flex-1">
-						<p className="px-3 text-lg">
-							Create an <code className="text-blue-500">index.mdx</code> file at
-							the root of your <code className="text-blue-500">/docs</code>{" "}
-							directory. docs.page supports nested pages based on your directory
-							structure of the directory.
-						</p>
-						<p className="mt-4 px-3 text-lg">
-							Start by writing some{" "}
-							<a href="https://www.markdownguide.org/">Markdown</a> content.
-							Installation pages are always a great place to start!
-						</p>
-					</div>
-				</div>
-			</div>
-			<div className="mx-auto mt-32 max-w-5xl px-4 lg:px-0">
-				<Heading step={3} from="from-yellow-400" to="to-yellow-500">
-					<span>Checkout your new documentation!</span>
-				</Heading>
-				<div className="mt-10 lg:ml-20 lg:flex" />
-			</div>
-			<div className="mx-auto mt-32 max-w-5xl px-4 lg:px-0">
-				<Heading step={4} from="from-green-400" to="to-green-500">
-					<span>Learn more...</span>
-				</Heading>
-				<div className="mt-10 grid gap-16 text-center lg:ml-20 lg:grid-cols-2">
-					<Feature href="https://use.docs.page/configuration">
-						<span slot="title" className="text-blue-500">
-							Configure
-						</span>
-						<span slot="text">
-							Add a <code className="text-blue-400">docs.json</code> file to the
-							root of the repository to configure your project by adding a
-							theme, search, navigation, analytics and more.
-						</span>
-						<span slot="icon" />
-					</Feature>
-					<Feature href="https://use.docs.page/previews">
-						<span slot="title" className="text-pink-400">
-							Previews
-						</span>
-						<span slot="text">
-							Previewing docs locally with our new Local Preview Mode.
-							Previewing changes on branches and pull requests works out of the
-							box with zero configuration. Install our GitHub bot for preview
-							assistance.
-						</span>
-						<span slot="icon" />
-					</Feature>
-					<Feature href="https://use.docs.page/components/accordion">
-						<span slot="title" className="text-yellow-400">
-							Components
-						</span>
-						<span slot="text">
-							By using MDX we provide custom React components to help you build
-							better documentation.
-						</span>
-						<span slot="icon" />
-					</Feature>
-					<Feature href="https://use.docs.page/custom-domains">
-						<span slot="title" className="text-green-400">
-							Domains
-						</span>
-						<span slot="text">
-							Using a custom domain name? Simply create a pull request & point
-							your domain to our servers. We&apos;ll take care of the rest.
-						</span>
-						<span slot="icon" />
-					</Feature>
-					<Feature href="https://use.docs.page/github-bot">
-						<span slot="title" className="text-purple-500">
-							GitHub Bot
-						</span>
-						<span slot="text">
-							Install our GitHub bot on repositories using docs.page. Any new
-							Pull Requests will automatically display a publicly available
-							deployment preview URL for your documentation.
-						</span>
-						<span slot="icon">
-							{/* <!-- <AnnotationIcon width={80} /> --> */}
-						</span>
-					</Feature>
-					<Feature href="https://use.docs.page/search">
-						<span slot="title" className="text-red-500">
-							Search
-						</span>
-						<span slot="text">
-							Add your DocSearch application ID to your configuration file and
-							instantly get full blown documentation search for free, powered by
-							Algolia.
-						</span>
-						<span slot="icon">
-							{/* <!-- <SearchCircleIcon width={80} /> --> */}
-						</span>
-					</Feature>
-				</div>
-				<footer className="mt-20 mb-5 flex p-4 font-mono text-sm opacity-50 transition-opacity hover:opacity-100">
-					<div className="flex-grow dark:text-white ">
-						<div>
-							<span>© {new Date().getFullYear()}</span>
-							<a href="https://invertase.io" className="hover:underline">
-								Invertase
-							</a>
-							<span>| docs.page</span>
-						</div>
-					</div>
-				</footer>
-			</div>
-		</>
-	);
+  const scripts = useInlineScript(`<script>(() => {
+		document.documentElement.setAttribute('data-theme', 'dark');
+        const root = document.documentElement;
+			root.style.setProperty('--background-dark', '153 54% 3%');		
+	})()</script>`);
+
+  return (
+    <>
+      {scripts}
+      <header className="max-w-5xl mx-auto py-5 px-3 flex items-center">
+        <div>Logo</div>
+        <div className="grow flex justify-end gap-3">
+          <ul>
+            <li>Docs</li>
+          </ul>
+          <div>Made by Invertase</div>
+        </div>
+      </header>
+      <section className="max-w-3xl mx-auto pt-20 px-3 space-y-6">
+        <h1 className="text-center text-6xl font-bold leading-[70px] text-brand-50">
+          Ship documentation,
+          <br />
+          like you ship code
+        </h1>
+        <h2 className="text-center text-brand-100">
+          Meet the docs as code playform made for open-source developers.
+        </h2>
+        <p className="text-center text-brand-100 font-light">
+          Publish beautiful online documentation instantly, from your code
+          editor using markdown and a public GitHub repository.
+        </p>
+        <div className="flex justify-center gap-6">
+          <a
+            href="/"
+            className="inline-flex items-center gap-3 bg-brand-400/5 outline outline-brand-400/5 outline-offset-4 outline-1 rounded-full px-8 py-3"
+          >
+            <span>Get Started</span>
+            <ChevronRightIcon size={18} />
+          </a>
+          <a
+            href="/"
+            className="inline-flex items-center gap-3 rounded-full px-8 py-3"
+          >
+            <span>Documentation</span>
+            <ChevronRightIcon size={18} />
+          </a>
+        </div>
+      </section>
+      <section className="max-w-5xl mx-auto pt-32">
+        <div className="h-[560px] outline outline-[12px] outline-brand-400/10 rounded-md" />
+      </section>
+      <section className="max-w-5xl mx-auto py-16 space-y-6 text-center">
+        <p className="flex justify-center gap-3 items-center">
+          <HeartIcon size={18} />
+          <span>Loved by the Dart & Flutter Community!</span>
+        </p>
+        <p className="font-light">
+          Trusted by more than 75,000 open-source developers
+        </p>
+        <div className="flex items-center justify-center gap-6">
+          <div>Logo</div>
+          <div>Logo</div>
+          <div>Logo</div>
+          <div>Logo</div>
+        </div>
+      </section>
+      <section className="max-w-5xl mx-auto py-32 space-y-6">
+        <p className="flex items-center justify-center gap-3 text-brand-100">
+          <BookTextIcon size={18} />
+          <span>The documentation platform for open-source developers</span>
+        </p>
+        <h3 className="text-brand-100 text-5xl text-center leading-[3.5rem]">
+          Documentation, made simple
+        </h3>
+        <p className="text-brand-100 font-light text-center">
+          The easiest way to maintain open-source documentation
+        </p>
+        <div>
+          <div className="grid grid-cols-3 gap-3">
+            <InfoCard
+              title="Manage Docs as Code"
+              description="Manage docs like your codebase, with branching, version
+                  control, reviews, and testing."
+            />
+            <InfoCard
+              title="Publish Instantly"
+              description="Create fully managed documentation sites in seconds, without complex setup."
+            />
+            <InfoCard
+              title="Collaborate with Live Preview"
+              description="Write in Markdown and see your changes in real-time. Share previews easily for feedback."
+            />
+          </div>
+          <div className="grid grid-cols-6 justify-around gap-3 mt-3">
+            <div className="col-start-2 col-end-4">
+              <InfoCard
+                title="Beautiful by Design"
+                description="Publish visually stunning, responsive documentation sites straight out of the box."
+              />
+            </div>
+            <div className="col-start-4 col-end-6">
+              <InfoCard
+                title="Customise and Theme"
+                description="Add rich, interactive components, use custom domains, and tailor to match your brand."
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+      <section className="max-w-5xl mx-auto py-32 space-y-6">
+        <p className="flex items-center gap-3 justify-center">
+          <Grid2X2Icon size={18} />
+          <span>Features</span>
+        </p>
+        <h3 className="text-brand-100 text-5xl text-center leading-[3.5rem]">
+          Everything needed to
+          <br />
+          publish great documentation
+        </h3>
+        <p className="font-light text-brand-50 text-center">
+          Built to improve developer experience
+        </p>
+        <div className="grid grid-cols-3 border-white/5 border-t border-l border-b">
+          <FeatureCard
+            icon={<div />}
+            title="Seamless GitHub Integration"
+            description="Source your docs directly from your GitHub repositories for easy updates."
+            className="border-b"
+          />
+          <FeatureCard
+            icon={<div />}
+            title="Editing"
+            description="Editing workflow built into where you work."
+            className="border-b"
+          />
+          <FeatureCard
+            icon={<div />}
+            title="Local Preview & Hot Reload"
+            description="See your changes instantly as you type, streamlining your workflow."
+            className="border-b"
+          />
+          <FeatureCard
+            icon={<div />}
+            title="Markdown-Powered"
+            description="Write your documentation in the simple and intuitive Markdown format."
+            className="border-b"
+          />
+          <FeatureCard
+            icon={<div />}
+            title="Pre-Built Components"
+            description="Add code blocks, alerts, tabs, videos, and more with ease."
+            className="border-b"
+          />
+          <FeatureCard
+            icon={<div />}
+            title="Preview Deployments"
+            description="Review and share your changes before they go live."
+            className="border-b"
+          />
+          <FeatureCard
+            icon={<div />}
+            title="Custom Domains & Themes"
+            description="Make your docs truly your own with a personalised domain, look and feel."
+            className="border-b"
+          />
+          <FeatureCard
+            icon={<div />}
+            title="Custom Domains & Themes"
+            description="Make your docs truly your own with a personalised domain, look and feel."
+            className="border-b"
+          />
+          <FeatureCard
+            icon={<div />}
+            title="Powerful Search"
+            description="Help users find information quickly with configurable search functionality."
+            className="border-b"
+          />
+          <FeatureCard
+            icon={<div />}
+            title="Documentation Analytics"
+            description="Understand what users are viewing using Google Analytics or Plausible."
+            className="border-b"
+          />
+          <div className="border-r border-white/5" />
+          <div className="border-r border-white/5" />
+        </div>
+      </section>
+      <section className="max-w-5xl mx-auto py-16 space-y-6">
+        <p className="flex items-center gap-3 justify-center">
+          <ShieldCheckIcon size={18} />
+          <span>Trusted by developers</span>
+        </p>
+        <h3 className="text-brand-100 text-5xl text-center leading-[3.5rem]">
+          See why developers use docs.page
+        </h3>
+        <p className="font-light text-brand-50 text-center">
+          Built for the open-source community
+        </p>
+        <div>TODO Testimonial grid</div>
+      </section>
+      <section className="max-w-5xl mx-auto py-16 space-y-6">
+        <p className="flex items-center gap-3 justify-center">
+          <HandshakeIcon size={18} />
+          <span>Free to use</span>
+        </p>
+        <h3 className="text-brand-100 text-5xl text-center leading-[3.5rem]">
+          What are you waiting for?
+        </h3>
+        <p className="text-brand-10 text-center">
+          Begin publishing great documentation today.
+        </p>
+      </section>
+      <footer className="max-w-3xl mx-auto grid grid-cols-2 py-12">
+        <div className="flex justify-end border-r border-white/10 pr-12">
+          docs.page
+        </div>
+        <div className="pl-12">Copyright</div>
+      </footer>
+    </>
+  );
 }

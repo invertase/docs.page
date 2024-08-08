@@ -4,6 +4,7 @@ import { MoonIcon, SunDimIcon } from "lucide-react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { type Context, usePageContext } from "~/context";
 import { cn } from "~/utils";
+import { useInlineScript } from "~/hooks";
 
 function getThemeKey(context: Context) {
 	return context.preview
@@ -12,7 +13,6 @@ function getThemeKey(context: Context) {
 }
 
 export function ThemeScripts() {
-	const container = useRef<HTMLDivElement>(null);
 	const context = usePageContext();
 	const key = getThemeKey(context);
 	const theme = context.bundle.config.theme;
@@ -85,17 +85,9 @@ export function ThemeScripts() {
     </script>
   `;
 
-	useLayoutEffect(() => {
-		if (container.current) {
-			container.current.innerHTML = "";
-			const range = document.createRange();
-			range.selectNode(container.current);
-			const fragment = range.createContextualFragment(scripts);
-			container.current!.appendChild(fragment);
-		}
-	}, [scripts]);
+	const el = useInlineScript(scripts);
 
-	return <div ref={container} dangerouslySetInnerHTML={{ __html: scripts }} />;
+	return el;
 }
 
 export function ThemeToggle() {
