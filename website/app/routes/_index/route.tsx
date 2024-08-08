@@ -79,8 +79,9 @@ export default function Homepage() {
           Meet the docs as code playform made for open-source developers.
         </h2>
         <p className="text-center text-brand-100 font-light">
-          Publish beautiful online documentation instantly, from your code
-          editor using markdown and a public GitHub repository.
+          Publish beautiful online documentation instantly,
+          <br /> from your code editor using markdown and a public GitHub
+          repository.
         </p>
         <div className="flex justify-center gap-6">
           <a
@@ -147,7 +148,7 @@ export default function Homepage() {
               viewBox="0 0 50 26"
               fill="none"
             >
-							<title>Flutter String Logo</title>
+              <title>Flutter String Logo</title>
               <path
                 d="M11.1779 2.34694L11.7665 1.68571C12.0853 1.29388 12.4041 1 12.4531 1C12.5022 1 12.5267 1.02449 12.5267 1.04898C12.5267 1.09796 12.2324 1.39184 11.1779 2.34694Z"
                 fill="#E6E8E7"
