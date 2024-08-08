@@ -44,11 +44,10 @@ export async function onPullRequestOpened(
     body: comment,
   });
 
-  // TODO when a PR is opened, does it send a sync event straight after? If so we dont need this here.
-  await createGitHubCheckRun(
-    octokit,
-    repository.owner.login,
-    repository.name,
-    pull_request.head.sha
-  );
+  // await createGitHubCheckRun(
+  //   octokit,
+  //   repository.owner.login,
+  //   repository.name,
+  //   pull_request.head.sha
+  // );
 }

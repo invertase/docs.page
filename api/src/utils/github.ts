@@ -271,6 +271,7 @@ export async function createGitHubCheckRun(
 
   let hasErrors = false;
 
+  const ms = new Date().getTime();
   for await (const result of check(new Set(Object.keys(files)), getFileFn)) {
     if (result.type === "error") {
       hasErrors = true;
@@ -278,6 +279,24 @@ export async function createGitHubCheckRun(
 
     results.push(result);
   }
+  const timer = new Date().getTime() - ms;
+
+  const errors = results.map((result) => {
+    const tag = result.type === "error" ? "[ERROR]" : "[WARN]";
+    const path = result.filePath
+      ? ` - ${result.filePath}:${result.line}:${result.column}`
+      : "";
+
+    return ` - ${tag}: ${path ? `${path} ` : ""} ${result.message}`;
+  });
+
+  let text = "## Results\n\n";
+  text += errors.join("\n\n");
+  text += `\n\n<details><summary>View raw output</summary>\n\n\`\`\`json\n${JSON.stringify(
+    results,
+    null,
+    2
+  )}\n\`\`\`\n\n</details>`;
 
   await octokit.rest.checks.update({
     owner,
@@ -287,21 +306,20 @@ export async function createGitHubCheckRun(
     conclusion: hasErrors ? "failure" : "success",
     output: {
       title: "Check Run Results",
-      summary: "Check run results",
-      text: "TODO",
-      annotations: [
-        {
-          path: "docs.json",
-          annotation_level: "warning",
-          message: "This is a warning message",
-          start_line: 1,
-          end_line: 1,
-          start_column: 1,
-          end_column: 1,
-          title: "Warning in file1.js",
-          raw_details: "Detailed information about the warning.",
-        },
-      ],
+      summary: `Checked ${results.length} files in ${timer}ms`,
+      text,
+      annotations: results
+        .filter((result) => !!result.filePath)
+        .map((result) => ({
+          path: result.filePath!,
+          annotation_level: result.type === "warning" ? "warning" : "failure",
+          message: result.message,
+          start_line: result.line || 0,
+          end_line: result.line || 0,
+          start_column: result.column || 0,
+          end_column: result.column || 0,
+          title: result.message,
+        })),
     },
   });
 }

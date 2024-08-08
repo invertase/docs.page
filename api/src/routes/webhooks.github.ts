@@ -4,6 +4,7 @@ import { badRequest, ok } from "../res";
 
 import { onInstallation } from "../events/installation";
 import { onPullRequestOpened } from "../events/pull_request.opened";
+// import { onPullRequestSynchronize } from "../events/pull_request.synchronize";
 
 export default async function githubWebhook(
   req: Request,
@@ -34,6 +35,7 @@ export default async function githubWebhook(
 
   webhook.on("installation", onInstallation);
   webhook.on("pull_request.opened", onPullRequestOpened);
+  // webhook.on("pull_request.synchronize", onPullRequestSynchronize);
 
   try {
     const id = String(req.headers["x-github-hook-id"]);
