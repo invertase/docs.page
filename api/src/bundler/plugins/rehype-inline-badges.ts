@@ -14,19 +14,19 @@ import { visit } from "unist-util-visit";
  * @returns
  */
 export default function rehypeInlineBadges(): (ast: Node) => void {
-	//@ts-ignore
-	function visitor(node: NodeWithChildren) {
-		node.visited === "true";
-		node.children[0].properties.style = "display: inline;";
-	}
-	return (ast: Node): void => {
-		//@ts-ignore
-		visit(ast, containsBadge, visitor);
-	};
+  //@ts-ignore
+  function visitor(node: NodeWithChildren) {
+    node.visited === "true";
+    node.children[0].properties.style = "display: inline;";
+  }
+  return (ast: Node): void => {
+    //@ts-ignore
+    visit(ast, containsBadge, visitor);
+  };
 }
 //@ts-ignore
 const containsBadge = (node) =>
-	node.tagName === "a" &&
-	node.children[0].tagName === "img" &&
-	isBadge(node?.children[0]?.properties.src) &&
-	node.visited !== "true";
+  node.tagName === "a" &&
+  node.children[0].tagName === "img" &&
+  isBadge(node?.children[0]?.properties.src) &&
+  node.visited !== "true";

@@ -36,17 +36,17 @@ export default {
           950: "#05150F",
         },
         // brand: {
-				// 	'50': '#fdfaed',
-				// 	'100': '#f9f1cc',
-				// 	'200': '#f3e294',
-				// 	'300': '#eccf5d',
-				// 	'400': '#e8bb37',
-				// 	'500': '#e09d1f',
-				// 	'600': '#c67a19',
-				// 	'700': '#a55818',
-				// 	'800': '#86461a',
-				// 	'900': '#6f3a18',
-				// 	'950': '#3f1d09',
+        // 	'50': '#fdfaed',
+        // 	'100': '#f9f1cc',
+        // 	'200': '#f3e294',
+        // 	'300': '#eccf5d',
+        // 	'400': '#e8bb37',
+        // 	'500': '#e09d1f',
+        // 	'600': '#c67a19',
+        // 	'700': '#a55818',
+        // 	'800': '#86461a',
+        // 	'900': '#6f3a18',
+        // 	'950': '#3f1d09',
         // },
       },
     },
@@ -57,7 +57,7 @@ export default {
     plugin(({ addVariant }) => {
       addVariant(
         "prose-inline-code",
-        '&.prose :where(:not(pre)>code):not(:where([class~="not-prose"] *))'
+        '&.prose :where(:not(pre)>code):not(:where([class~="not-prose"] *))',
       );
     }),
   ],

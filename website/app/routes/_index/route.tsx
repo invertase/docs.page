@@ -1,15 +1,15 @@
 import type { LinksFunction } from "@vercel/remix";
 import { useInlineScript } from "~/hooks";
-import { HeroGradient } from "./HeroGradient";
+import { Affiliation } from "./Afilliation";
+import { CallToAction } from "./CallToAction";
+import { Demo } from "./Demo";
+import { Features } from "./Features";
+import { Footer } from "./Footer";
 import { Header } from "./Header";
 import { Hero } from "./Hero";
-import { Demo } from "./Demo";
-import { Affiliation } from "./Afilliation";
+import { HeroGradient } from "./HeroGradient";
 import { Platform } from "./Platform";
-import { Features } from "./Features";
 import { Testimonials } from "./Testimonials";
-import { CallToAction } from "./CallToAction";
-import { Footer } from "./Footer";
 
 export const links: LinksFunction = () => {
   return [

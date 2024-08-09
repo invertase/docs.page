@@ -1,5 +1,5 @@
-import type { ComponentProps } from "react";
 import { Grid2X2Icon } from "lucide-react";
+import type { ComponentProps } from "react";
 import { cn } from "~/utils";
 
 export function Features() {

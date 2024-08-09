@@ -16,9 +16,9 @@ app.use(text());
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(
-	express.urlencoded({
-		extended: true,
-	}),
+  express.urlencoded({
+    extended: true,
+  }),
 );
 
 const router = Router();
@@ -31,5 +31,5 @@ router.all("*", (_, res) => notFound(res));
 app.use(router);
 
 app.listen(PORT, () => {
-	console.log(`docs.page api server is running at http://localhost:${PORT}`);
+  console.log(`docs.page api server is running at http://localhost:${PORT}`);
 });

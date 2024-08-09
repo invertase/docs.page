@@ -8,29 +8,29 @@ import type { Data as UnistData, Node as UnistNode } from "unist";
 import { visit } from "unist-util-visit";
 
 export type HeadingNode = {
-	id: string;
-	title: string;
-	rank: number | null;
+  id: string;
+  title: string;
+  rank: number | null;
 };
 
 type RehypeHeadingsOptions = {
-	headings: string[];
-	callback: (nodes: HeadingNode[]) => void;
+  headings: string[];
+  callback: (nodes: HeadingNode[]) => void;
 };
 
 const defaultOptions: RehypeHeadingsOptions = {
-	headings: ["h2", "h3", "h4", "h5", "h6"],
-	callback: () => {
-		return;
-	},
+  headings: ["h2", "h3", "h4", "h5", "h6"],
+  callback: () => {
+    return;
+  },
 };
 
 interface MyData extends UnistData {
-	children: UnistNode[];
-	tagName: string;
-	properties: {
-		id: string | number | boolean | (string | number)[];
-	};
+  children: UnistNode[];
+  tagName: string;
+  properties: {
+    id: string | number | boolean | (string | number)[];
+  };
 }
 
 /**
@@ -39,67 +39,67 @@ interface MyData extends UnistData {
  * @returns
  */
 export default function rehypeHeadings(
-	options: RehypeHeadingsOptions = defaultOptions,
+  options: RehypeHeadingsOptions = defaultOptions,
 ): (ast: UnistNode<MyData>) => void {
-	const nodes: HeadingNode[] = [];
+  const nodes: HeadingNode[] = [];
 
-	function visitor(node: HastElement): void {
-		if (headingRank(node) && hasProperty(node, "id")) {
-			if (options.headings.includes(node.tagName as string)) {
-				nodes.push({
-					id: (node.properties as Record<string, string>).id,
-					title: toString(node),
-					rank: headingRank(node),
-				});
-			}
-		}
-	}
+  function visitor(node: HastElement): void {
+    if (headingRank(node) && hasProperty(node, "id")) {
+      if (options.headings.includes(node.tagName as string)) {
+        nodes.push({
+          id: (node.properties as Record<string, string>).id,
+          title: toString(node),
+          rank: headingRank(node),
+        });
+      }
+    }
+  }
 
-	function newVisitor(node: Node & { children: HastElement[] }) {
-		const newChildren = partition<HastContent>(node.children, headingTest).map(
-			(part) => {
-				const id =
-					(
-						part.filter((child: Node) => headingTest(child))[0] as HastElement
-					)?.properties?.id?.toString() || "";
+  function newVisitor(node: Node & { children: HastElement[] }) {
+    const newChildren = partition<HastContent>(node.children, headingTest).map(
+      (part) => {
+        const id =
+          (
+            part.filter((child: Node) => headingTest(child))[0] as HastElement
+          )?.properties?.id?.toString() || "";
 
-				return wrapSection(part as HastElement[], id);
-			},
-		);
+        return wrapSection(part as HastElement[], id);
+      },
+    );
 
-		node.children = newChildren;
-	}
+    node.children = newChildren;
+  }
 
-	return (ast: UnistNode<MyData>): void => {
-		visit(ast, "element", visitor);
-		visit(ast, "root", newVisitor);
-		options.callback(nodes);
-	};
+  return (ast: UnistNode<MyData>): void => {
+    visit(ast, "element", visitor);
+    visit(ast, "root", newVisitor);
+    options.callback(nodes);
+  };
 }
 
 const wrapSection: (children: HastElement[], id: string) => HastElement = (
-	children,
-	id,
+  children,
+  id,
 ) => {
-	const wrap = parseSelector(`section${id ? `#${id}` : ""}`);
-	wrap.children = children;
-	return wrap;
+  const wrap = parseSelector(`section${id ? `#${id}` : ""}`);
+  wrap.children = children;
+  return wrap;
 };
 
 const headingTest: (node: Node) => boolean = (node) =>
-	!!headingRank(node) && hasProperty(node, "id");
+  !!headingRank(node) && hasProperty(node, "id");
 
 // partition an array based on a test function, e.g [a,b,b,b,a,b,b,a,b] should become [[a,b,b,b],[a,b,b],[a,b]]
 function partition<T>(array: T[], test: (input: T) => boolean): T[][] {
-	return array.reduce<T[][]>((prev, current) => {
-		if (prev.length === 0) {
-			return [[current]];
-		}
-		if (test(current)) {
-			// biome-ignore lint/performance/noAccumulatingSpread: TODO: Fix this lint
-			return [...prev, [current]];
-		}
+  return array.reduce<T[][]>((prev, current) => {
+    if (prev.length === 0) {
+      return [[current]];
+    }
+    if (test(current)) {
+      // biome-ignore lint/performance/noAccumulatingSpread: TODO: Fix this lint
+      return [...prev, [current]];
+    }
 
-		return [...prev.slice(0, -1), [...prev[prev.length - 1], current]];
-	}, []);
+    return [...prev.slice(0, -1), [...prev[prev.length - 1], current]];
+  }, []);
 }

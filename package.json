@@ -1,17 +1,17 @@
 {
-	"private": true,
-	"scripts": {
-		"dev": "concurrently \"npm run dev:api\" \"npm run dev:website\"",
-		"dev:api": "cd api && bun dev",
-		"dev:website": "cd website && npm run dev",
-		"check": "npx @biomejs/biome check --write ."
-	},
-	"dependencies": {
-		"typescript": "^5.5.3"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "1.8.3",
-		"concurrently": "^7.0.0"
-	},
-	"workspaces": ["api", "website", "og", "packages/*"]
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:api\" \"npm run dev:website\"",
+    "dev:api": "cd api && bun dev",
+    "dev:website": "cd website && npm run dev",
+    "check": "npx @biomejs/biome check --write ."
+  },
+  "dependencies": {
+    "typescript": "^5.5.3"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.8.3",
+    "concurrently": "^7.0.0"
+  },
+  "workspaces": ["api", "website", "og", "packages/*"]
 }

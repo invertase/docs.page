@@ -1,19 +1,19 @@
 {
-	"compilerOptions": {
-		"resolveJsonModule": true,
-		"target": "ESNEXT",
-		"module": "ESNext",
-		"outDir": "./dist",
-		"strict": true,
-		"moduleResolution": "node",
-		"esModuleInterop": true,
-		"skipLibCheck": true,
-		"forceConsistentCasingInFileNames": true,
-		"typeRoots": ["node_modules/@types"],
-		"verbatimModuleSyntax": true,
-		"baseUrl": ".",
-		"paths": {
-			"@docs.page/cli": ["../packages/cli/src/index.ts"]
-		}
-	}
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "target": "ESNEXT",
+    "module": "ESNext",
+    "outDir": "./dist",
+    "strict": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": ["node_modules/@types"],
+    "verbatimModuleSyntax": true,
+    "baseUrl": ".",
+    "paths": {
+      "@docs.page/cli": ["../packages/cli/src/index.ts"]
+    }
+  }
 }
