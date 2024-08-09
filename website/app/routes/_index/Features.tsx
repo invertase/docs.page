@@ -1,4 +1,4 @@
-import { Grid2X2Icon } from "lucide-react";
+import { BarChart2Icon, ComponentIcon, EyeIcon, GithubIcon, Grid2X2Icon, Heading1Icon, PencilIcon, RefreshCcwDot, RefreshCcwDotIcon, SearchIcon, SwatchBookIcon } from "lucide-react";
 import type { ComponentProps } from "react";
 import { cn } from "~/utils";
 
@@ -17,63 +17,57 @@ export function Features() {
       <p className="font-light text-brand-50 text-center">
         Built to improve developer experience
       </p>
-      <div className="grid grid-cols-3 border-white/5 border-t border-l border-b">
+      <div className="grid grid-cols-3 border-white/5 border-t border-l border-b rounded-md bg-gradient-to-b from-brand-500/[.02]">
         <FeatureCard
-          icon={<div />}
+          icon={<GithubIcon size={26} />}
           title="Seamless GitHub Integration"
           description="Source your docs directly from your GitHub repositories for easy updates."
           className="border-b"
         />
         <FeatureCard
-          icon={<div />}
+          icon={<PencilIcon size={26} />}
           title="Editing"
           description="Editing workflow built into where you work."
           className="border-b"
         />
         <FeatureCard
-          icon={<div />}
+          icon={<RefreshCcwDotIcon size={26} />}
           title="Local Preview & Hot Reload"
           description="See your changes instantly as you type, streamlining your workflow."
           className="border-b"
         />
         <FeatureCard
-          icon={<div />}
+          icon={<Heading1Icon size={26} />}
           title="Markdown-Powered"
           description="Write your documentation in the simple and intuitive Markdown format."
           className="border-b"
         />
         <FeatureCard
-          icon={<div />}
+          icon={<ComponentIcon size={26} />}
           title="Pre-Built Components"
           description="Add code blocks, alerts, tabs, videos, and more with ease."
           className="border-b"
         />
         <FeatureCard
-          icon={<div />}
+          icon={<EyeIcon size={26} />}
           title="Preview Deployments"
           description="Review and share your changes before they go live."
           className="border-b"
         />
         <FeatureCard
-          icon={<div />}
+          icon={<SwatchBookIcon size={26} />}
           title="Custom Domains & Themes"
           description="Make your docs truly your own with a personalised domain, look and feel."
           className="border-b"
         />
         <FeatureCard
-          icon={<div />}
-          title="Custom Domains & Themes"
-          description="Make your docs truly your own with a personalised domain, look and feel."
-          className="border-b"
-        />
-        <FeatureCard
-          icon={<div />}
+          icon={<SearchIcon size={26} />}
           title="Powerful Search"
           description="Help users find information quickly with configurable search functionality."
           className="border-b"
         />
         <FeatureCard
-          icon={<div />}
+          icon={<BarChart2Icon />}
           title="Documentation Analytics"
           description="Understand what users are viewing using Google Analytics or Plausible."
           className="border-b"
@@ -103,7 +97,7 @@ function FeatureCard({
       {...other}
       className={cn("p-6 space-y-3 border-r border-white/5", className)}
     >
-      <div className="size-[30px] bg-white/10">{icon}</div>
+      <div className="size-[30px] text-brand-100">{icon}</div>
       <h4 className="">{title}</h4>
       <p className="font-light">{description}</p>
     </div>

@@ -14,32 +14,37 @@ export function registerInitCommand(program: Command) {
 
       if (!fs.existsSync(absolutePath)) {
         console.log(
-          chalk.red(
-            `Directory "${chalk.yellow(absolutePath)}" does not exist.`,
-          ),
+          chalk.red(`Directory "${chalk.yellow(absolutePath)}" does not exist.`)
         );
         process.exit(1);
       }
+
+      console.log(chalk.green("Initializing docs.page files..."));
 
       const configurationFilePath = path.join(absolutePath, "docs.json");
       const documentationPath = path.join(absolutePath, "docs");
 
       if (fs.existsSync(configurationFilePath)) {
         console.log(
-          chalk.red("Configuration file 'docs.json' already exists."),
+          chalk.red("Configuration file 'docs.json' already exists.")
         );
         process.exit(1);
       }
+
+      const createdFiles = [
+        ` - ${chalk.green(
+          "docs.json"
+        )}: Configuration file for your documentation site`,
+      ];
 
       const docsDirectoryExists = fs.existsSync(documentationPath);
 
       if (docsDirectoryExists) {
         console.log(
           chalk.yellow(
-            "A 'docs/' directory already exists, this command will not overwrite existing files.",
-          ),
+            "A 'docs/' directory already exists, this command will not overwrite existing files."
+          )
         );
-        process.exit(1);
       } else {
         fs.mkdirSync(documentationPath, { recursive: true });
       }
@@ -48,18 +53,39 @@ export function registerInitCommand(program: Command) {
       fs.writeFileSync(
         configurationFilePath,
         jsonConfiguration({
-          sidebar: docsDirectoryExists,
-        }),
+          sidebar: !docsDirectoryExists,
+        })
       );
 
       if (!docsDirectoryExists) {
         fs.writeFileSync(path.join(documentationPath, "index.mdx"), indexPage);
+        createdFiles.push(
+          ` - ${chalk.green(
+            "docs/index.mdx"
+          )}: The home page of your documentation site`
+        );
 
         fs.writeFileSync(
           path.join(documentationPath, "next-steps.mdx"),
-          nextStepsPage,
+          nextStepsPage
+        );
+
+        createdFiles.push(
+          ` - ${chalk.green(
+            "docs/next-steps.mdx"
+          )}: A page to help you get started with docs.page`
         );
       }
+
+      console.log(chalk.green("Files created:"));
+      console.log(createdFiles.join("\n"));
+      console.log('\n');
+
+      console.log(
+        chalk.green(
+          "Initialization complete. To preview your documentation site, vist https://docs.page/preview in your browser."
+        )
+      );
     });
 }
 
@@ -69,11 +95,13 @@ const jsonConfigurationSidebar = `[
     "pages": [
       {
         "title": "Getting to know docs.page",
-        "href": "/"
+        "href": "/",
+        "icon": "rocket"
       },
       {
         "title": "Next Steps",
-        "href": "/next-steps"
+        "href": "/next-steps",
+        "icon": "arrow-right"
       }
     ]
   }
@@ -81,9 +109,9 @@ const jsonConfigurationSidebar = `[
 
 function jsonConfiguration({ sidebar }: { sidebar: boolean }) {
   return `{
-  name: 'My Docs',
-  description: 'My documentation site',
-  sidebar: ${sidebar ? jsonConfigurationSidebar : "[]"}
+  "name": "My Docs",
+  "description": "My documentation site",
+  "sidebar": ${sidebar ? jsonConfigurationSidebar : "[]"}
 }`;
 }
 
