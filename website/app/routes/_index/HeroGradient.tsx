@@ -4,7 +4,7 @@ export function HeroGradient() {
       viewBox="0 0 1500 1676"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="absolute left-0 right-0 top-0 z-[-1]"
+      className="absolute left-0 right-0 top-0 lg:top-[-30px] xl:top-[-80px] 2xl:top-[-180px] z-[-1]"
     >
       <title>Foo</title>
       <g clip-path="url(#clip0_42_1872)">
