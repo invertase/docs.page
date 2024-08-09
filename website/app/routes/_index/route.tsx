@@ -46,7 +46,7 @@ export default function Homepage() {
   const scripts = useInlineScript(`<script>(() => {
 		document.documentElement.setAttribute('data-theme', 'dark');
         const root = document.documentElement;
-			root.style.setProperty('--background-dark', '153 54% 3%');		
+			root.style.setProperty('--background-dark', '224, 71%, 4%');		
 	})()</script>`);
 
   return (
