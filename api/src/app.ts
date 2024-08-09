@@ -1,4 +1,3 @@
-import { config } from "dotenv";
 import express, { Router, text } from "express";
 import morgan from "morgan";
 
@@ -8,9 +7,9 @@ import preview from "./routes/preview";
 import schema from "./routes/schema";
 import githubWebhook from "./routes/webhooks.github";
 
-config();
+import { ENV } from './env';
 
-const PORT = process.env.PORT || 8080;
+const PORT = ENV.PORT || 8080;
 const app = express();
 app.use(text());
 app.use(morgan("dev"));

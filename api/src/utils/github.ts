@@ -1,20 +1,17 @@
 import { type CheckResult, check } from "@docs.page/cli";
 import { graphql } from "@octokit/graphql";
 import A2A from "a2a";
-import dotenv from "dotenv";
 import JSZip from "jszip";
 import type { OctokitInstallation } from "../octokit";
-dotenv.config();
+import { ENV } from "../env";
 
 const getGitHubToken = (() => {
   let index = 0;
-  const tokens = process.env.GITHUB_PAT
-    ? process.env.GITHUB_PAT.split(",")
-    : [];
+  const tokens = ENV.GITHUB_PAT ? ENV.GITHUB_PAT.split(",") : [];
 
   if (!tokens.length) {
     throw new Error(
-      "Environment variable GITHUB_PAT is not defined or has no tokens or an invalid token.",
+      "Environment variable GITHUB_PAT is not defined or has no tokens or an invalid token."
     );
   }
 
@@ -28,7 +25,7 @@ export function getGithubGQLClient(): typeof graphql {
   const token = getGitHubToken();
   if (!token) {
     throw new Error(
-      "Environment variable GITHUB_PAT is not defined or has no tokens or an invalid token.",
+      "Environment variable GITHUB_PAT is not defined or has no tokens or an invalid token."
     );
   }
   return graphql.defaults({
@@ -90,7 +87,7 @@ export type Contents = {
 
 export async function getGitHubContents(
   metadata: MetaData,
-  noDir?: boolean,
+  noDir?: boolean
 ): Promise<Contents | undefined> {
   const base = noDir ? "" : "docs/";
   const absolutePath = `${base}${metadata.path}`;
@@ -139,7 +136,7 @@ export async function getGitHubContents(
       configYaml: `${ref}:docs.yaml`,
       mdx: `${ref}:${absolutePath}.mdx`,
       mdxIndex: `${ref}:${indexPath}.mdx`,
-    }),
+    })
   );
 
   // if an error is thrown then the repo is not found, if the repo is private then response = { repository: null }
@@ -188,7 +185,7 @@ type PullRequestQuery = {
 export async function getPullRequestMetadata(
   owner: string,
   repository: string,
-  pullRequest: string,
+  pullRequest: string
 ): Promise<PullRequestMetadata | null> {
   const [error, response] = await A2A<PullRequestQuery>(
     getGithubGQLClient()({
@@ -212,7 +209,7 @@ export async function getPullRequestMetadata(
       owner: owner,
       repository: repository,
       pullRequest: Number.parseInt(pullRequest),
-    }),
+    })
   );
   if (error || !response) {
     return null;
@@ -229,7 +226,7 @@ export async function createGitHubCheckRun(
   octokit: OctokitInstallation,
   owner: string,
   repository: string,
-  sha: string,
+  sha: string
 ) {
   const checkRunResult = await octokit.rest.checks.create({
     owner,
@@ -258,7 +255,7 @@ export async function createGitHubCheckRun(
       acc[path.split("/").slice(1).join("/")] = path;
       return acc;
     },
-    {},
+    {}
   );
 
   // Function to get a file from the zip by relative path.
@@ -295,7 +292,7 @@ export async function createGitHubCheckRun(
   text += `\n\n<details><summary>View raw output</summary>\n\n\`\`\`json\n${JSON.stringify(
     results,
     null,
-    2,
+    2
   )}\n\`\`\`\n\n</details>`;
 
   await octokit.rest.checks.update({
