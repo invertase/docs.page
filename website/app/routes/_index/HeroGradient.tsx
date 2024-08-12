@@ -1,46 +1,64 @@
+import { useEffect, useState } from "react";
+import { cn } from "~/utils";
+
 export function HeroGradient() {
+  const [ready, setReady] = useState(false);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setReady(true);
+    }, 850);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, []);
+
   return (
     <svg
-      viewBox="0 0 1500 1676"
+      viewBox="0 0 1499 1676"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="absolute left-0 right-0 top-0 lg:top-[-30px] xl:top-[-80px] 2xl:top-[-180px] z-[-1]"
+      className={cn(
+        "absolute left-0 right-0 top-0 lg:top-[-30px] xl:top-[-80px] 2xl:top-[-180px] z-[-1] transition-opacity duration-1000",
+        {
+          "opacity-50": !ready,
+          "opacity-100": ready,
+        }
+      )}
     >
-      <title>Foo</title>
-      <g clip-path="url(#clip0_42_1872)">
+      <title>Background Gradient</title>
+      <g clip-path="url(#clip0_209_493)">
         <mask
-          id="mask0_42_1872"
+          id="mask0_209_493"
           maskUnits="userSpaceOnUse"
           x="0"
           y="0"
-          width="100%"
+          width="1499"
           height="1676"
-          style={{
-            maskType: "alpha",
-          }}
         >
           <path
-            d="M1466.48 0H33.5196C15.0072 0 0 15.0072 0 33.5196V1642.46C0 1660.97 15.0072 1675.98 33.5196 1675.98H1466.48C1484.99 1675.98 1500 1660.97 1500 1642.46V33.5196C1500 15.0072 1484.99 0 1466.48 0Z"
-            fill="url(#paint0_linear_42_1872)"
+            d="M1465.5 0H33.4972C14.9972 0 0 15.0074 0 33.52V1642.48C0 1660.99 14.9972 1676 33.4972 1676H1465.5C1484 1676 1499 1660.99 1499 1642.48V33.52C1499 15.0074 1484 0 1465.5 0Z"
+            fill="url(#paint0_linear_209_493)"
           />
         </mask>
-        <g mask="url(#mask0_42_1872)">
+        <g mask="url(#mask0_209_493)">
           <path
-            d="M1466.48 0H33.5196C15.0072 0 0 15.0072 0 33.5196V1642.46C0 1660.97 15.0072 1675.98 33.5196 1675.98H1466.48C1484.99 1675.98 1500 1660.97 1500 1642.46V33.5196C1500 15.0072 1484.99 0 1466.48 0Z"
-            fill="#A6D8DD"
+            d="M1465.5 0H33.4972C14.9972 0 0 15.0074 0 33.52V1642.48C0 1660.99 14.9972 1676 33.4972 1676H1465.5C1484 1676 1499 1660.99 1499 1642.48V33.52C1499 15.0074 1484 0 1465.5 0Z"
+            fill="#F7E9A3"
             fill-opacity="0.02"
           />
-          <g filter="url(#filter0_f_42_1872)">
+          <g filter="url(#filter0_f_209_493)">
             <path
-              d="M1330.31 292.249H169.692C151.18 292.249 136.173 307.256 136.173 325.768V1293.65C136.173 1312.16 151.18 1327.16 169.692 1327.16H1330.31C1348.82 1327.16 1363.83 1312.16 1363.83 1293.65V325.768C1363.83 307.256 1348.82 292.249 1330.31 292.249Z"
-              fill="url(#paint1_linear_42_1872)"
+              d="M1329.42 292.253H169.579C151.079 292.253 136.082 307.26 136.082 325.773V1293.66C136.082 1312.18 151.079 1327.18 169.579 1327.18H1329.42C1347.92 1327.18 1362.92 1312.18 1362.92 1293.66V325.773C1362.92 307.26 1347.92 292.253 1329.42 292.253Z"
+              fill="url(#paint1_linear_209_493)"
               fill-opacity="0.24"
             />
           </g>
-          <g filter="url(#filter1_f_42_1872)">
+          <g filter="url(#filter1_f_209_493)">
             <path
-              d="M389.593 644.286C373.169 622.169 388.956 590.782 416.504 590.782H1084.48C1111.84 590.782 1127.68 621.798 1111.63 643.961L852.216 1002.2C845.911 1010.91 835.815 1016.06 825.066 1016.06H682.537C671.93 1016.06 661.95 1011.04 655.626 1002.53L389.593 644.286Z"
-              fill="url(#paint2_linear_42_1872)"
+              d="M389.332 644.294C372.92 622.177 388.696 590.79 416.225 590.79H1083.76C1111.1 590.79 1126.93 621.807 1110.89 643.97L851.647 1002.21C845.347 1010.92 835.258 1016.08 824.516 1016.08H682.081C671.481 1016.08 661.508 1011.06 655.188 1002.54L389.332 644.294Z"
+              fill="url(#paint2_linear_209_493)"
               fill-opacity="0.72"
             />
           </g>
@@ -48,11 +66,11 @@ export function HeroGradient() {
       </g>
       <defs>
         <filter
-          id="filter0_f_42_1872"
-          x="-136.174"
-          y="19.9022"
-          width="1772.35"
-          height="1579.61"
+          id="filter0_f_209_493"
+          x="-136.264"
+          y="19.9061"
+          width="1771.53"
+          height="1579.62"
           filterUnits="userSpaceOnUse"
           color-interpolation-filters="sRGB"
         >
@@ -65,15 +83,15 @@ export function HeroGradient() {
           />
           <feGaussianBlur
             stdDeviation="136.173"
-            result="effect1_foregroundBlur_42_1872"
+            result="effect1_foregroundBlur_209_493"
           />
         </filter>
         <filter
-          id="filter1_f_42_1872"
-          x="131.527"
-          y="339.386"
-          width="1237.93"
-          height="928.073"
+          id="filter1_f_209_493"
+          x="131.271"
+          y="339.393"
+          width="1237.44"
+          height="928.078"
           filterUnits="userSpaceOnUse"
           color-interpolation-filters="sRGB"
         >
@@ -86,46 +104,46 @@ export function HeroGradient() {
           />
           <feGaussianBlur
             stdDeviation="125.698"
-            result="effect1_foregroundBlur_42_1872"
+            result="effect1_foregroundBlur_209_493"
           />
         </filter>
         <linearGradient
-          id="paint0_linear_42_1872"
-          x1="750"
+          id="paint0_linear_209_493"
+          x1="749.5"
           y1="0"
-          x2="750"
-          y2="1675.98"
+          x2="749.5"
+          y2="1676"
           gradientUnits="userSpaceOnUse"
         >
           <stop stop-color="#D9D9D9" />
           <stop offset="1" stop-color="#D9D9D9" stop-opacity="0" />
         </linearGradient>
         <linearGradient
-          id="paint1_linear_42_1872"
-          x1="136.173"
-          y1="292.249"
-          x2="1363.83"
-          y2="292.249"
+          id="paint1_linear_209_493"
+          x1="136.082"
+          y1="292.253"
+          x2="1362.92"
+          y2="292.253"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#8DC5E4" />
-          <stop offset="0.5" stop-color="#8DDED2" />
-          <stop offset="1" stop-color="#84DDAE" />
+          <stop stop-color="#ECB418" />
+          <stop offset="0.5" stop-color="#F9EFBA" />
+          <stop offset="1" stop-color="#ECC918" />
         </linearGradient>
         <linearGradient
-          id="paint2_linear_42_1872"
-          x1="349.86"
-          y1="590.782"
-          x2="1150.14"
-          y2="590.782"
+          id="paint2_linear_209_493"
+          x1="349.627"
+          y1="590.79"
+          x2="1149.37"
+          y2="590.79"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#8DC5E4" />
-          <stop offset="0.5" stop-color="#8DDED2" />
-          <stop offset="1" stop-color="#84DDAE" />
+          <stop stop-color="#ECC918" />
+          <stop offset="0.5" stop-color="#F9EFBA" />
+          <stop offset="1" stop-color="#ECB418" />
         </linearGradient>
-        <clipPath id="clip0_42_1872">
-          <rect width="1500" height="1675.98" fill="white" />
+        <clipPath id="clip0_209_493">
+          <rect width="1499" height="1676" fill="white" />
         </clipPath>
       </defs>
     </svg>
