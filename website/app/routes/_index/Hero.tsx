@@ -1,4 +1,5 @@
 import { ChevronRightIcon } from "lucide-react";
+import { Button } from "./Button";
 
 export function Hero() {
   return (
@@ -16,24 +17,9 @@ export function Hero() {
         repository.
       </p>
       <div className="flex justify-center gap-6">
-        <a
-          href="/"
-          className="inline-block p-px bg-gradient-to-b from-brand-700/60 to-brand-100/10 rounded-full hover:-translate-y-[2px] transition-all"
-        >
-          <div className="inline-flex px-6 py-3 items-center gap-2 bg-gradient-to-br from-brand-900 to-brand-950 rounded-full shadow-md shadow-brand-800/60 font-medium transition-all">
-            <span>Get Started</span>
-            <ChevronRightIcon size={18} />
-          </div>
-        </a>
-        <a
-          href="/"
-          className="inline-block p-px rounded-full hover:-translate-y-[2px] transition-all"
-        >
-          <div className="inline-flex px-6 py-3 items-center gap-2 rounded-full font-medium transition-all">
-            <span>Documentation</span>
-            <ChevronRightIcon size={18} />
-          </div>
-        </a>
+        <Button cta href="https://use.docs.page/getting-started">
+          Start Publishing
+        </Button>
       </div>
     </section>
   );

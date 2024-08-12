@@ -72,7 +72,7 @@ export default function Homepage() {
       <Affiliation />
       <Platform />
       <Features />
-      <Testimonials />
+      {/* <Testimonials /> */}
       <CallToAction />
       <Footer />
     </>
