@@ -18,17 +18,21 @@ export function Hero() {
       <div className="flex justify-center gap-6">
         <a
           href="/"
-          className="inline-flex items-center gap-3 bg-brand-400/5 outline outline-brand-400/5 outline-offset-4 outline-1 rounded-full px-8 py-3 transition-all hover:outline-brand-400/20 hover:bg-brand-400/10"
+          className="inline-block p-px bg-gradient-to-b from-brand-700/60 to-brand-100/10 rounded-full hover:-translate-y-[2px] transition-all"
         >
-          <span>Get Started</span>
-          <ChevronRightIcon size={18} />
+          <div className="inline-flex px-6 py-3 items-center gap-2 bg-gradient-to-br from-brand-900 to-brand-950 rounded-full shadow-md shadow-brand-800/60 font-medium transition-all">
+            <span>Get Started</span>
+            <ChevronRightIcon size={18} />
+          </div>
         </a>
         <a
           href="/"
-          className="inline-flex items-center gap-3 rounded-full px-8 py-3"
+          className="inline-block p-px rounded-full hover:-translate-y-[2px] transition-all"
         >
-          <span>Documentation</span>
-          <ChevronRightIcon size={18} />
+          <div className="inline-flex px-6 py-3 items-center gap-2 rounded-full font-medium transition-all">
+            <span>Documentation</span>
+            <ChevronRightIcon size={18} />
+          </div>
         </a>
       </div>
     </section>
