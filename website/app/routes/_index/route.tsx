@@ -1,4 +1,4 @@
-import type { LinksFunction } from "@vercel/remix";
+import type { LinksFunction, MetaFunction } from "@vercel/remix";
 import { useInlineScript } from "~/hooks";
 import { Affiliation } from "./Afilliation";
 import { CallToAction } from "./CallToAction";
@@ -38,6 +38,19 @@ export const links: LinksFunction = () => {
       rel: "mask-icon",
       href: "/_docs.page/favicon/safari-pinned-tab.svg",
       color: "#5bbad5",
+    },
+  ];
+};
+
+export const meta: MetaFunction = () => {
+  return [
+    {
+      title: "docs.page | Ship documentation, like you ship code",
+    },
+    {
+      name: "description",
+      content:
+        "Publish beautiful online documentation instantly,from your code editor using markdown and a public GitHub repository.",
     },
   ];
 };

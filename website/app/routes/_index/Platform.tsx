@@ -7,7 +7,7 @@ export function Platform() {
         <BookTextIcon size={18} />
         <span>The documentation platform for open-source developers</span>
       </p>
-      <h3 className="text-brand-100 text-5xl text-center leading-[3.5rem]">
+      <h3 className="text-brand-100 text-4xl md:text-5xl !leading-[3.5rem] text-center">
         Documentation, made simple
       </h3>
       <p className="text-brand-100 font-light text-center">

@@ -21,7 +21,7 @@ export function Features() {
         <Grid2X2Icon size={18} />
         <span>Features</span>
       </p>
-      <h3 className="text-brand-100 text-5xl text-center leading-[3.5rem]">
+      <h3 className="text-brand-100 text-4xl md:text-5xl text-center !leading-[3.5rem]">
         Everything needed to
         <br />
         publish great documentation

@@ -7,7 +7,7 @@ export function CallToAction() {
         <HandshakeIcon size={18} />
         <span>Free to use</span>
       </p>
-      <h3 className="text-brand-100 text-5xl text-center leading-[3.5rem]">
+      <h3 className="text-brand-100 text-4xl md:text-5xl !leading-[3.5rem] text-center">
         What are you waiting for?
       </h3>
       <p className="text-brand-10 text-center">

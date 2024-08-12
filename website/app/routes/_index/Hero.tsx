@@ -2,11 +2,10 @@ import { ChevronRightIcon } from "lucide-react";
 
 export function Hero() {
   return (
-    <section className="max-w-3xl mx-auto pt-20 px-3 space-y-6">
-      <h1 className="text-center text-6xl font-bold leading-[70px] text-brand-50 drop-shadow-md">
+    <section className="max-w-xl md:max-w-3xl mx-auto pt-20 px-8 space-y-6">
+      <h1 className="text-center text-4xl md:text-5xl lg:text-6xl !leading-[45px] md:!leading-[65px] lg:!leading-[80px] font-bold  text-brand-50 drop-shadow-md">
         Ship documentation,
-        <br />
-        like you ship code
+        <br /> like you ship code
       </h1>
       <h2 className="text-center text-brand-100">
         Meet the docs as code platform made for open-source developers.
