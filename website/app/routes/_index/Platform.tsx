@@ -13,8 +13,8 @@ export function Platform() {
       <p className="text-brand-100 font-light text-center">
         The easiest way to maintain open-source documentation
       </p>
-      <div>
-        <div className="grid grid-cols-3 gap-3">
+      <div className="px-3">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
           <PlatformCard
             title="Manage Docs as Code"
             description="Manage docs like your codebase, with branching, version
@@ -28,15 +28,21 @@ export function Platform() {
             title="Collaborate with Live Preview"
             description="Write in Markdown and see your changes in real-time. Share previews easily for feedback."
           />
-        </div>
-        <div className="grid grid-cols-6 justify-around gap-3 mt-3">
-          <div className="col-start-2 col-end-4">
+          <div className="lg:hidden">
             <PlatformCard
               title="Beautiful by Design"
               description="Publish visually stunning, responsive documentation sites straight out of the box."
             />
           </div>
-          <div className="col-start-4 col-end-6">
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-6 justify-around gap-3 mt-3">
+          <div className="hidden lg:block col-start-2 col-end-4">
+            <PlatformCard
+              title="Beautiful by Design"
+              description="Publish visually stunning, responsive documentation sites straight out of the box."
+            />
+          </div>
+          <div className="col-start-1 col-end-4 lg:col-start-4 lg:col-end-6">
             <PlatformCard
               title="Customise and Theme"
               description="Add rich, interactive components, use custom domains, and tailor to match your brand."

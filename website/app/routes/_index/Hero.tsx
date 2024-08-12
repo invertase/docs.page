@@ -9,7 +9,7 @@ export function Hero() {
         like you ship code
       </h1>
       <h2 className="text-center text-brand-100">
-        Meet the docs as code playform made for open-source developers.
+        Meet the docs as code platform made for open-source developers.
       </h2>
       <p className="text-center text-brand-100 font-light">
         Publish beautiful online documentation instantly,
