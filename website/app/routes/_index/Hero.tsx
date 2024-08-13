@@ -1,5 +1,5 @@
 import { ChevronRightIcon } from "lucide-react";
-import { Button } from "./Button";
+import { Button } from "../../components/Button";
 
 export function Hero() {
   return (
@@ -17,7 +17,7 @@ export function Hero() {
         repository.
       </p>
       <div className="flex justify-center gap-6">
-        <Button cta href="https://use.docs.page/getting-started">
+        <Button as="a" cta href="https://use.docs.page/getting-started">
           Start Publishing
         </Button>
       </div>

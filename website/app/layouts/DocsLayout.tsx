@@ -1,18 +1,18 @@
 import { useState } from "react";
-import { Content } from "./components/Content";
-import { Edit } from "./components/Edit";
-import { Footer } from "./components/Footer";
-import { Header } from "./components/Header";
-import { PreviousNext } from "./components/PreviousNext";
-import { Scripts } from "./components/Scripts";
-import { Sidebar } from "./components/Sidebar";
-import { TableOfContents } from "./components/TableOfContents";
-import { Tabs } from "./components/Tabs";
-import { ThemeScripts } from "./components/Theme";
-import { useTabs } from "./context";
-import { cn } from "./utils";
+import { Content } from "~/components/Content";
+import { Edit } from "~/components/Edit";
+import { Footer } from "~/components/Footer";
+import { Header } from "~/components/Header";
+import { PreviousNext } from "~/components/PreviousNext";
+import { Scripts } from "~/components/Scripts";
+import { Sidebar } from "~/components/Sidebar";
+import { TableOfContents } from "~/components/TableOfContents";
+import { Tabs } from "~/components/Tabs";
+import { ThemeScripts } from "~/components/Theme";
+import { useTabs } from "~/context";
+import { cn } from "~/utils";
 
-export function Layout() {
+export function DocsLayout() {
   const hasTabs = useTabs().length > 0;
   const [sidebar, setSidebar] = useState(false);
 
@@ -41,13 +41,13 @@ export function Layout() {
       <div className="max-w-8xl mx-auto px-5">
         <section
           className={cn(
-            "fixed w-[17rem] bottom-0 overflow-y-auto translate-x-[-19rem] lg:translate-x-0 transition-transform",
+            "fixed z-10 w-[17rem] bottom-0 overflow-y-auto translate-x-[-19rem] lg:translate-x-0 transition-transform",
             {
-              "top-16": !hasTabs,
-              "top-28": hasTabs,
+              "top-16": !hasTabs && !sidebar,
+              "top-28": hasTabs && !sidebar,
               "translate-x-0 top-0 z-20 bg-background border-r border-black/10 dark:border-white/10":
                 sidebar,
-            },
+            }
           )}
         >
           <Sidebar onMenuToggle={toggleSidebar} />
@@ -65,7 +65,7 @@ export function Layout() {
               {
                 "pointer-events-none opacity-0": !sidebar,
                 "pointer-events-auto opacity-100": sidebar,
-              },
+              }
             )}
             onClick={() => toggleSidebar()}
             onKeyDown={() => toggleSidebar()}

@@ -18,7 +18,7 @@ import NProgress from "nprogress";
 import nProgressStyles from "nprogress/nprogress.css?url";
 import { type ReactElement, useEffect, useMemo } from "react";
 import zoomStyles from "react-medium-image-zoom/dist/styles.css?url";
-import { ErrorLayout } from "./ErrorLayout";
+import { ErrorLayout } from "~/layouts/ErrorLayout";
 import type { BundleErrorResponse } from "./api";
 import styles from "./styles.css?url";
 import type { SharedEnvironmentVariables } from "./utils";
@@ -115,7 +115,7 @@ export default function App() {
       if (states.every((state) => state === "idle")) return "idle";
       return "loading";
     },
-    [navigation.state, fetchers],
+    [navigation.state, fetchers]
   );
 
   useEffect(() => {

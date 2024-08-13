@@ -5,7 +5,7 @@ import {
 } from "@remix-run/react";
 import type { HeadersFunction, LoaderFunctionArgs } from "@vercel/remix";
 import { redirect } from "@vercel/remix";
-import { Layout } from "~/Layout";
+import { DocsLayout } from "~/layouts/DocsLayout";
 import { getBundle } from "~/api";
 import { Scripts } from "~/components/Scripts";
 import { type Context, PageContext } from "~/context";
@@ -89,7 +89,7 @@ export default function DocsPage() {
   return (
     <PageContext.Provider value={context}>
       <Scripts />
-      <Layout />
+      <DocsLayout />
     </PageContext.Provider>
   );
 }

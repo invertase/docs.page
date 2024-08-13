@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { BundleErrorResponse } from "./api";
+import type { BundleErrorResponse } from "~/api";
 
 const CODE_MAP: Record<BundleErrorResponse["code"], string> = {
   NOT_FOUND: "Page not found",

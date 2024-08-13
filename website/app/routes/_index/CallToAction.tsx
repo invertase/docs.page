@@ -1,5 +1,5 @@
 import { HandshakeIcon } from "lucide-react";
-import { Button } from "./Button";
+import { Button } from "../../components/Button";
 
 export function CallToAction() {
   return (
@@ -15,7 +15,7 @@ export function CallToAction() {
         Begin publishing great documentation today.
       </p>
       <div className="flex justify-center gap-6 pt-6">
-        <Button cta href="https://use.docs.page/getting-started">
+        <Button as="a" cta href="https://use.docs.page/getting-started">
           Start Publishing
         </Button>
       </div>

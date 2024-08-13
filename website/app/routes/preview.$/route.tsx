@@ -1,24 +1,23 @@
 import { redirect, useFetcher, useParams } from "@remix-run/react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import type { ActionFunctionArgs, MetaFunction } from "@vercel/remix";
-import { useEffect } from "react";
-import { Layout } from "../../Layout";
+import { useEffect, useState } from "react";
+import { PreviewLayout } from "./PreviewLayout";
 import { getPreviewBundle } from "../../api";
-import { PageContext } from "../../context";
-import { Toolbar } from "./Toolbar";
 import {
-  ConfigurationFileNotFoundError,
-  FileNotFoundError,
   getFile,
   queryClient,
-  useCheckResult,
   useDirectoryHandle,
   usePageContent,
-  useSelectDirectory,
 } from "./utils";
 
 import docsearch from "@docsearch/css/dist/style.css?url";
 import { ensureLeadingSlash, isExternalLink } from "~/utils";
+import { Header } from "~/layouts/Header";
+import { useInlineScript } from "~/hooks";
+import { DocsLayout } from "~/layouts/DocsLayout";
+import { Toolbar } from "./Toolbar";
+import { PageContext } from "~/context";
 
 export const meta: MetaFunction = () => {
   return [
@@ -65,14 +64,24 @@ export const action = async (args: ActionFunctionArgs) => {
 };
 
 function Preview() {
+  const [client, setClient] = useState(false);
   const params = useParams();
   const path = params["*"] || "";
 
   const fetcher = useFetcher<typeof action>({ key: "bundle" });
   const directory = useDirectoryHandle();
-  const selectDirectory = useSelectDirectory();
   const content = usePageContent(path, directory.data);
   const bundle = fetcher.data?.bundle;
+
+  const scripts = useInlineScript(`<script>(() => {
+		document.documentElement.setAttribute('data-theme', 'dark');
+    const root = document.documentElement;
+		root.style.setProperty('--background-dark', '224, 71%, 4%');		
+	})()</script>`);
+
+  useEffect(() => {
+    setClient(true);
+  }, []);
 
   useEffect(() => {
     if (content.data) {
@@ -84,54 +93,42 @@ function Preview() {
     }
   }, [fetcher.submit, content.data]);
 
-  if (directory.isLoading) {
-    return <div>Loading...</div>;
-  }
-
-  if (directory.error) {
-    return <div>Error: {directory.error.message}</div>;
-  }
-
-  if (content.isFetched && content.error) {
-    if (content.error instanceof ConfigurationFileNotFoundError) {
-      return <div>Config file not found...</div>;
-    }
-
-    if (content.error instanceof FileNotFoundError) {
-      return <div>File not found...</div>;
-    }
-
-    return <div>Something went wrong...</div>;
-  }
-
-  if (directory.data === null) {
+  if (bundle && directory.data) {
     return (
-      <button
-        type="button"
-        onClick={() => {
-          selectDirectory.mutate();
+      <PageContext.Provider
+        value={{
+          path: ensureLeadingSlash(path),
+          bundle,
+          preview: true,
+          getFile,
         }}
       >
-        {selectDirectory.isPending ? "Loading..." : "Select Directory"}
-      </button>
+        <DocsLayout />
+        <Toolbar />
+      </PageContext.Provider>
     );
   }
 
-  if (!bundle) {
-    return <div>Loading...</div>;
-  }
-
   return (
-    <PageContext.Provider
-      value={{
-        path: ensureLeadingSlash(path),
-        bundle,
-        preview: true,
-        getFile,
-      }}
-    >
-      <Layout />
-      <Toolbar />
-    </PageContext.Provider>
+    <>
+      {scripts}
+      <Header />
+      <section className="max-w-3xl mx-auto pt-20 px-8 space-y-6">
+        <h1 className="text-center text-4xl md:text-5xl lg:text-6xl !leading-[45px] md:!leading-[65px] lg:!leading-[80px] font-bold  text-brand-50 drop-shadow-md">
+          Live preview your <br /> docs in realtime.
+        </h1>
+        <h2 className="text-center text-brand-100">
+          Develop your documentation without leaving the browser.
+        </h2>
+        <p className="text-center text-brand-100 font-light">
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque quis
+          laoreet tortor. Donec placerat dolor pellentesque eleifend ultricies.
+          Proin faucibus quis est nec interdum. Quisque ut sapien dolor.
+        </p>
+        <div className="flex justify-center gap-6">
+          {client ? <PreviewLayout /> : null}
+        </div>
+      </section>
+    </>
   );
 }

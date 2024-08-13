@@ -5,11 +5,10 @@ import { CallToAction } from "./CallToAction";
 import { Demo } from "./Demo";
 import { Features } from "./Features";
 import { Footer } from "./Footer";
-import { Header } from "./Header";
+import { Header } from "~/layouts/Header";
 import { Hero } from "./Hero";
 import { HeroGradient } from "./HeroGradient";
 import { Platform } from "./Platform";
-import { Testimonials } from "./Testimonials";
 
 export const links: LinksFunction = () => {
   return [
@@ -58,8 +57,8 @@ export const meta: MetaFunction = () => {
 export default function Homepage() {
   const scripts = useInlineScript(`<script>(() => {
 		document.documentElement.setAttribute('data-theme', 'dark');
-        const root = document.documentElement;
-			root.style.setProperty('--background-dark', '224, 71%, 4%');		
+    const root = document.documentElement;
+		root.style.setProperty('--background-dark', '224, 71%, 4%');		
 	})()</script>`);
 
   return (

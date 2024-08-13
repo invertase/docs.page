@@ -19,7 +19,13 @@ interface Database extends DBSchema {
   };
 }
 
-export const queryClient = new QueryClient();
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+  },
+});
 
 let _db: IDBPDatabase<Database> | undefined;
 
@@ -39,12 +45,44 @@ async function openDatabase() {
   return _db;
 }
 
+export function useHasFileSystemFeature() {
+  return typeof window !== "undefined" && "showDirectoryPicker" in window;
+}
+
+export function useRequestPermissions() {
+  return useMutation({
+    mutationFn: async () => {
+      const db = await openDatabase();
+      const handle = await db.get("handles", "directory");
+
+      if (!handle) {
+        throw new Error("No directory available to grant permissions.");
+      }
+
+      const verified = await verifyPermission(handle).catch((e) => {
+        console.error(e);
+        throw new DirectoryPermissionsRequiredError();
+      });
+
+      return verified;
+    },
+    onSuccess: () => {
+      // Invalidate the page context query so it will re-fetch.
+      queryClient.invalidateQueries({ queryKey: ["directory-handle"] });
+    },
+  });
+}
+
 // Load the directory handle from the database.
 // Stores all the important entities in the directory in the database.
 export function useDirectoryHandle() {
   return useQuery({
     queryKey: ["directory-handle"],
-    refetchInterval: REFETCH_INTERVAL,
+    retry: false,
+    refetchInterval: (ctx) => {
+      // If there's an error, don't refetch files.
+      return ctx.state.error ? false : REFETCH_INTERVAL;
+    },
     queryFn: async () => {
       const db = await openDatabase();
 
@@ -57,7 +95,10 @@ export function useDirectoryHandle() {
       }
 
       // Verify we can access the directory.
-      const verified = await verifyPermission(handle).catch(() => false);
+      const verified = await verifyPermission(handle).catch((e) => {
+        console.error(e);
+        throw new DirectoryPermissionsRequiredError(handle.name);
+      });
 
       // Get all the files stored in the database.
       const files = await db.getAllKeys("files");
@@ -67,8 +108,6 @@ export function useDirectoryHandle() {
 
       // If we can't access the directory, delete the handle & files and return null.
       if (!verified) {
-        await db.delete("handles", "directory");
-        await Promise.all(files.map((file) => db.delete("files", file)));
         return null;
       }
 
@@ -96,7 +135,7 @@ export function useDirectoryHandle() {
         await db.put(
           "files",
           await getFileContent(yamlConfigHandle),
-          "docs.yaml",
+          "docs.yaml"
         );
 
         discoveredFiles.push("docs.yaml");
@@ -106,7 +145,7 @@ export function useDirectoryHandle() {
         await db.put(
           "files",
           await getFileContent(jsonConfigHandle),
-          "docs.json",
+          "docs.json"
         );
 
         discoveredFiles.push("docs.json");
@@ -115,7 +154,7 @@ export function useDirectoryHandle() {
       // Recursively walk the docs directory and get the contents of each file.
       async function walkDirectory(
         dir: FileSystemDirectoryHandle,
-        path: string,
+        path: string
       ) {
         for await (const entry of dir.values()) {
           if (entry.kind === "file") {
@@ -139,7 +178,7 @@ export function useDirectoryHandle() {
           } else {
             await walkDirectory(
               entry as FileSystemDirectoryHandle,
-              `${path + entry.name}/`,
+              `${path + entry.name}/`
             );
           }
         }
@@ -155,7 +194,7 @@ export function useDirectoryHandle() {
             if (!discoveredFiles.includes(file)) {
               await db.delete("files", file);
             }
-          }),
+          })
         );
       } else {
         // If the `docs` directory doesn't exist, delete all files.
@@ -182,7 +221,7 @@ export function useFiles(enabled = true) {
       await Promise.all(
         keys.map(async (key) => {
           files[key] = await db.get("files", key);
-        }),
+        })
       );
 
       return files;
@@ -193,7 +232,7 @@ export function useFiles(enabled = true) {
 // Load the current page content from the database.
 export function usePageContent(
   path: string,
-  directory?: FileSystemDirectoryHandle | null,
+  directory?: FileSystemDirectoryHandle | null
 ) {
   return useQuery({
     enabled: !!directory,
@@ -255,7 +294,7 @@ export function useCheckResult() {
       const fileSet = new Set(
         files.map((key) => {
           return key.startsWith("/") ? `docs${key}` : key;
-        }),
+        })
       );
 
       // This is the function that will be called by the CLI to get the content of a file.
@@ -302,6 +341,7 @@ export function useRestart() {
     },
     onSuccess: () => {
       // Invalidate the page context query so it will re-fetch.
+      queryClient.invalidateQueries({ queryKey: ["directory-handle"] });
       queryClient.invalidateQueries({ queryKey: ["page-context"] });
     },
   });
@@ -325,6 +365,8 @@ async function verifyPermission(directory: FileSystemDirectoryHandle) {
 
   return false;
 }
+
+export class DirectoryPermissionsRequiredError extends Error {}
 
 export class FileNotFoundError extends Error {
   constructor(path: string) {
