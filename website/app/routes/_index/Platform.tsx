@@ -42,7 +42,12 @@ export function Platform() {
             <PlatformCard
               title="Beautiful by Design"
               description="Publish visually stunning, responsive documentation sites straight out of the box."
-            />
+            >
+              <div className="relative border border-brand-300/20 rounded-md">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40"></div>
+                <img src="/image-2.png" alt="Platform" className="rounded-md" />
+              </div>
+            </PlatformCard>
           </div>
           <div className="col-start-1 col-end-4 lg:col-start-4 lg:col-end-6">
             <PlatformCard
