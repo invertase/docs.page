@@ -35,11 +35,12 @@ export function CodeBlock(props: CodeBlockProps) {
         <button
           type="button"
           className={cn(
-            "size-5 absolute right-4 z-10 text-white opacity-50 hover:opacity-75",
+            "size-5 absolute right-4 z-10 text-white opacity-0 group-hover:opacity-75",
             {
+              "opacity-75": copied,
               "top-2.5": !!props.title,
               "top-4": !props.title,
-            },
+            }
           )}
           onClick={onCopy}
         >

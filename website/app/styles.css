@@ -48,6 +48,62 @@ html[data-theme="dark"] {
   box-shadow: 0 0 10px hsl(var(--primary)), 0 0 5px hsl(var(--primary)) !important;
 }
 
+pre.shiki code .diff {
+  transition: background-color 0.5s;
+  margin: 0 -17px;
+  padding: 0 17px;
+  width: calc(100% + 33px);
+  display: inline-block;
+}
+
+pre.shiki code .diff:before {
+  position: absolute;
+  left: 3px;
+}
+
+pre.shiki code .diff.add:before {
+  content: "+";
+  color: #6ee7b7;
+}
+
+pre.shiki code .diff.remove:before {
+  content: "-";
+  color: #f9a8d4;
+}
+
+pre.shiki span.line.diff.add {
+  background-color: #2c3a2c;
+}
+
+pre.shiki code .diff.remove {
+  background-color: #421e27;
+}
+
+pre.shiki code .highlighted {
+  background-color: #363941;
+  transition: background-color .5s;
+  margin: 0 -17px;
+  padding: 0 17px;
+  width: calc(100% + 33px);
+  display: inline-block;
+}
+
+pre.shiki.has-focused .line:not(.focused) {
+  filter: blur(.095rem);
+  opacity: .4;
+  transition: filter .35s, opacity .35s;
+}
+
+pre.shiki.has-focused .line:not(.focused) {
+  opacity: .7;
+  transition: filter .35s, opacity .35s;
+}
+
+pre.shiki.has-focused:hover .line {
+  filter: blur(0);
+  opacity: 1;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

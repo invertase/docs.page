@@ -39,3 +39,69 @@ export async function apiRequest(options) {
   ```
   ````
 </Property>
+
+## Advanced
+
+Code Blocks also support a number of other useful features, such as diffing, line highlighting and more.
+
+### Diffing
+
+Diffing codeblocks enables you to visually compare the difference between code in a single code block. For example:
+
+```ts
+console.log('hewwo') // [!code --]
+console.log('hello') // [!code ++]
+console.log('goodbye')
+```
+
+To enable diffing, add the `// [!code --]` and `// [!code ++]` annotations to the end of each line:
+
+````
+```ts
+console.log('hewwo') // [\!code --]
+console.log('hello') // [\!code ++]
+console.log('goodbye')
+```
+````
+
+### Line Highlighting
+
+You can highlight specific lines in a code block, useful for calling out important lines of code. For example:
+
+```ts
+console.log('hello') // [!code highlight]
+console.log('world')
+```
+
+To highlight a line, add the `// [!code highlight]` annotation to the end of the line:
+
+````
+```ts
+console.log('hello') // [\!code highlight]
+console.log('world')
+```
+````
+
+### Focused Lines
+
+You can focus on specific lines in a code block, blurring out the rest of the code. For example:
+
+```ts
+console.log('Not focused');
+console.log('Focused') // [!code focus]
+console.log('Not focused');
+```
+
+
+To focus on a line, add the `// [!code focus]` annotation to the end of the line:
+
+````
+```ts
+console.log('Not focused');
+console.log('Focused') // [\!code focus]
+console.log('Not focused');
+```
+````
+
+
+

@@ -3,6 +3,13 @@ import { toString } from "mdast-util-to-string";
 import * as shiki from "shiki";
 import type { Node } from "unist";
 import { visit } from "unist-util-visit";
+import {
+  transformerNotationDiff,
+  transformerNotationHighlight,
+  transformerRemoveNotationEscape,
+  transformerNotationFocus,
+  transformerMetaHighlight,
+} from "@shikijs/transformers";
 
 let highlighter: shiki.Highlighter;
 
@@ -37,10 +44,19 @@ export default function rehypeCodeBlocks(): (ast: Node) => void {
     if (!parent.properties) parent.properties = {};
     parent.properties.raw = raw; // Used to support copy/paste functionality,
     parent.properties.language = languageActual;
+
     parent.properties.html = highlighter.codeToHtml(raw, {
       lang: languageActual,
       theme: "css-variables",
+      transformers: [
+        transformerNotationDiff(),
+        transformerNotationHighlight(),
+        transformerRemoveNotationEscape(),
+        transformerNotationFocus(),
+        transformerMetaHighlight(),
+      ],
     });
+
     const meta = (node.data?.meta as string) ?? "";
     const title = extractTitle(meta);
     if (title) parent.properties.title = title;
@@ -60,7 +76,7 @@ function extractTitle(meta: string): string | null {
   // https://regex101.com/r/4JngU0/1
   const match =
     /(?:title="(?<title1>.*)"|title='(?<title2>.*)'|title=(?<title3>.*?)\s|title=(?<title4>.*?)$)/gm.exec(
-      meta,
+      meta
     );
 
   if (!match) {
@@ -68,7 +84,7 @@ function extractTitle(meta: string): string | null {
   }
 
   const title = Object.values(match.groups ?? []).find(
-    (value) => value !== undefined,
+    (value) => value !== undefined
   );
   return title || null;
 }
