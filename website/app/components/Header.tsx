@@ -1,22 +1,35 @@
-import { usePageContext } from "~/context";
+import { SearchIcon } from "lucide-react";
+import { usePageContext, useTabs } from "~/context";
 import { cn } from "~/utils";
 import { GitHubCard } from "./GitHubCard";
 import { Locale } from "./Locale";
 import { Logo } from "./Logo";
+import { MenuToggle } from "./MenuToggle";
 import { RefBadge } from "./RefBadge";
 import { Search } from "./Search";
 import { ThemeToggle } from "./Theme";
 
-export function Header() {
+type Props = {
+  onMenuToggle: () => void;
+};
+
+export function Header(props: Props) {
   const ctx = usePageContext();
+  const hasTabs = useTabs().length > 0;
   const showName = ctx.bundle.config.header?.showName ?? true;
 
   const name = ctx.bundle.config.name;
   const logo = ctx.bundle.config.logo;
 
   return (
-    <header className="max-w-8xl mx-auto px-5">
-      <div className="flex-1 h-16 px-5 py-1 border-b border-black/5 dark:border-white/5 flex items-center gap-4">
+    <header className="max-w-8xl mx-auto px-8 lg:px-10">
+      <div className="flex-1 h-16 py-1 border-b border-black/5 dark:border-white/5 flex items-center gap-4">
+        {!hasTabs && (
+          <div className="lg:hidden">
+            <MenuToggle onClick={props.onMenuToggle} />
+          </div>
+        )}
+
         <a
           href={logo?.href || "/"}
           className="flex-1 inline-flex items-center gap-3"
@@ -24,13 +37,28 @@ export function Header() {
           <Logo />
           {showName && !!name && <span className="font-bold">{name}</span>}
         </a>
-        <div className="flex-1">
+        <div className="hidden lg:block flex-1">
           <Search />
         </div>
         <div className="flex-1 flex items-center justify-end pr-4 gap-8">
           <Links />
           <RefBadge />
-          <GitHubCard />
+          <div className="hidden lg:block">
+            <GitHubCard />
+          </div>
+          <Search>
+            {(toggle) => (
+              <div className="lg:hidden">
+                <button
+                  type="button"
+                  onClick={toggle}
+                  className="size-8 hover:bg-black/10 dark:hover:bg-white/10 rounded-full flex items-center justify-center"
+                >
+                  <SearchIcon size={20} />
+                </button>
+              </div>
+            )}
+          </Search>
           <Locale />
           <ThemeToggle />
         </div>

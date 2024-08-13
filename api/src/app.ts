@@ -7,7 +7,7 @@ import preview from "./routes/preview";
 import schema from "./routes/schema";
 import githubWebhook from "./routes/webhooks.github";
 
-import { ENV } from './env';
+import { ENV } from "./env";
 
 const PORT = ENV.PORT || 8080;
 const app = express();

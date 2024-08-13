@@ -44,7 +44,7 @@ export function Platform() {
               description="Publish visually stunning, responsive documentation sites straight out of the box."
             >
               <div className="relative border border-brand-300/20 rounded-md">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40" />
                 <img src="/image-2.png" alt="Platform" className="rounded-md" />
               </div>
             </PlatformCard>

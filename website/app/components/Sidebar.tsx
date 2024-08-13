@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from "@remix-run/react";
-import { ChevronDownIcon, ChevronUpIcon } from "lucide-react";
+import { ChevronDownIcon, ChevronUpIcon, XIcon } from "lucide-react";
 import { type ReactElement, cloneElement, useState } from "react";
 import { useHref, usePageContext, useSidebar } from "~/context";
 import { cn, getHref } from "~/utils";
@@ -8,11 +8,22 @@ import { Icon } from "./Icon";
 
 type Pages = ReturnType<typeof useSidebar>[number]["pages"];
 
-export function Sidebar() {
+type Props = {
+  onMenuToggle: () => void;
+};
+
+export function Sidebar(props: Props) {
   const sidebar = useSidebar();
 
   return (
     <div className="relative pt-8 text-sm pl-2 pb-5 space-y-6">
+      <button
+        type="button"
+        className="absolute top-3 right-3 lg:hidden"
+        onClick={props.onMenuToggle}
+      >
+        <XIcon size={20} />
+      </button>
       <Anchors />
       <div>
         {sidebar.map(({ group, icon, pages }) => {

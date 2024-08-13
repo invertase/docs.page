@@ -15,7 +15,7 @@ export function Button(props: Props) {
         "inline-block p-px rounded-full hover:-translate-y-[2px] transition-all",
         {
           "bg-gradient-to-b from-brand-700/60 to-brand-100/10": props.cta,
-        }
+        },
       )}
     >
       <div

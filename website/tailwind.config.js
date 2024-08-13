@@ -48,7 +48,7 @@ export default {
     plugin(({ addVariant }) => {
       addVariant(
         "prose-inline-code",
-        '&.prose :where(:not(pre)>code):not(:where([class~="not-prose"] *))'
+        '&.prose :where(:not(pre)>code):not(:where([class~="not-prose"] *))',
       );
     }),
   ],

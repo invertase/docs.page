@@ -1,15 +1,15 @@
+import {
+  transformerMetaHighlight,
+  transformerNotationDiff,
+  transformerNotationFocus,
+  transformerNotationHighlight,
+  transformerRemoveNotationEscape,
+} from "@shikijs/transformers";
 import type { Element } from "hast";
 import { toString } from "mdast-util-to-string";
 import * as shiki from "shiki";
 import type { Node } from "unist";
 import { visit } from "unist-util-visit";
-import {
-  transformerNotationDiff,
-  transformerNotationHighlight,
-  transformerRemoveNotationEscape,
-  transformerNotationFocus,
-  transformerMetaHighlight,
-} from "@shikijs/transformers";
 
 let highlighter: shiki.Highlighter;
 
@@ -76,7 +76,7 @@ function extractTitle(meta: string): string | null {
   // https://regex101.com/r/4JngU0/1
   const match =
     /(?:title="(?<title1>.*)"|title='(?<title2>.*)'|title=(?<title3>.*?)\s|title=(?<title4>.*?)$)/gm.exec(
-      meta
+      meta,
     );
 
   if (!match) {
@@ -84,7 +84,7 @@ function extractTitle(meta: string): string | null {
   }
 
   const title = Object.values(match.groups ?? []).find(
-    (value) => value !== undefined
+    (value) => value !== undefined,
   );
   return title || null;
 }

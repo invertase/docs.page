@@ -5,7 +5,12 @@ import { usePageContext } from "~/context";
 import type { DocSearchHandle } from "./DocSearch";
 const DocSearch = lazy(() => import("./DocSearch"));
 
-export function Search() {
+type Props = {
+  // If children are provided, will render as the child.
+  children?: (toggle: () => void) => React.ReactNode;
+};
+
+export function Search(props: Props) {
   const docsearchRef = useRef<DocSearchHandle>(null);
   const ctx = usePageContext();
 
@@ -21,6 +26,15 @@ export function Search() {
 
   if (!hasSearch) {
     return null;
+  }
+
+  if (props.children) {
+    return (
+      <>
+        {props.children(handleSearchEvent)}
+        {!!docsearch && <DocSearch ref={docsearchRef} {...docsearch} />}
+      </>
+    );
   }
 
   return (

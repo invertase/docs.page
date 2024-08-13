@@ -129,7 +129,10 @@ export function Content() {
         <div className="space-y-4 mb-8">
           {!!title && (
             <>
-              <Heading type="h1" className="dark:text-white text-5xl">
+              <Heading
+                type="h1"
+                className="dark:text-white text-4xl lg:text-5xl"
+              >
                 {String(title)}
               </Heading>
               {!!description && (
@@ -143,7 +146,7 @@ export function Content() {
         </div>
       )}
       <div
-        className="prose dark:prose-invert
+        className="max-w-none prose dark:prose-invert
         prose-inline-code:before:content-none prose-inline-code:after:content-none prose-inline-code:border prose-inline-code:rounded prose-inline-code:py-0.5 prose-inline-code:px-1 prose-inline-code:border-black/20 prose-inline-code:dark:border-white/20 prose-inline-code:bg-black/5 prose-inline-code:dark:bg-white/5"
       >
         <CodeGroupProvider>

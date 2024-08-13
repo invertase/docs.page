@@ -40,7 +40,7 @@ export function CodeBlock(props: CodeBlockProps) {
               "opacity-75": copied,
               "top-2.5": !!props.title,
               "top-4": !props.title,
-            }
+            },
           )}
           onClick={onCopy}
         >

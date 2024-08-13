@@ -27,19 +27,34 @@ export function Footer() {
       </div>
       <div className="pl-12 mx-auto md:mx-0">
         <div className="flex items-center gap-4 text-2xl mb-3">
-          <a href="https://x.com/invertaseio" className="opacity-50 hover:opacity-75 transition-all">
+          <a
+            href="https://x.com/invertaseio"
+            className="opacity-50 hover:opacity-75 transition-all"
+          >
             <Icon name="twitter" />
           </a>
-          <a href="https://github.com/invertase" className="opacity-50 hover:opacity-75 transition-all">
+          <a
+            href="https://github.com/invertase"
+            className="opacity-50 hover:opacity-75 transition-all"
+          >
             <Icon name="github" />
           </a>
-          <a href="https://www.youtube.com/@Invertase" className="opacity-50 hover:opacity-75 transition-all">
+          <a
+            href="https://www.youtube.com/@Invertase"
+            className="opacity-50 hover:opacity-75 transition-all"
+          >
             <Icon name="youtube" />
           </a>
-          <a href="https://invertase.link/discord" className="opacity-50 hover:opacity-75 transition-all">
+          <a
+            href="https://invertase.link/discord"
+            className="opacity-50 hover:opacity-75 transition-all"
+          >
             <Icon name="discord" />
           </a>
-          <a href="https://www.linkedin.com/company/invertase" className="opacity-50 hover:opacity-75 transition-all">
+          <a
+            href="https://www.linkedin.com/company/invertase"
+            className="opacity-50 hover:opacity-75 transition-all"
+          >
             <Icon name="linkedin" />
           </a>
         </div>

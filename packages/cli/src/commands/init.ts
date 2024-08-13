@@ -14,7 +14,9 @@ export function registerInitCommand(program: Command) {
 
       if (!fs.existsSync(absolutePath)) {
         console.log(
-          chalk.red(`Directory "${chalk.yellow(absolutePath)}" does not exist.`)
+          chalk.red(
+            `Directory "${chalk.yellow(absolutePath)}" does not exist.`,
+          ),
         );
         process.exit(1);
       }
@@ -26,14 +28,14 @@ export function registerInitCommand(program: Command) {
 
       if (fs.existsSync(configurationFilePath)) {
         console.log(
-          chalk.red("Configuration file 'docs.json' already exists.")
+          chalk.red("Configuration file 'docs.json' already exists."),
         );
         process.exit(1);
       }
 
       const createdFiles = [
         ` - ${chalk.green(
-          "docs.json"
+          "docs.json",
         )}: Configuration file for your documentation site`,
       ];
 
@@ -42,8 +44,8 @@ export function registerInitCommand(program: Command) {
       if (docsDirectoryExists) {
         console.log(
           chalk.yellow(
-            "A 'docs/' directory already exists, this command will not overwrite existing files."
-          )
+            "A 'docs/' directory already exists, this command will not overwrite existing files.",
+          ),
         );
       } else {
         fs.mkdirSync(documentationPath, { recursive: true });
@@ -54,37 +56,37 @@ export function registerInitCommand(program: Command) {
         configurationFilePath,
         jsonConfiguration({
           sidebar: !docsDirectoryExists,
-        })
+        }),
       );
 
       if (!docsDirectoryExists) {
         fs.writeFileSync(path.join(documentationPath, "index.mdx"), indexPage);
         createdFiles.push(
           ` - ${chalk.green(
-            "docs/index.mdx"
-          )}: The home page of your documentation site`
+            "docs/index.mdx",
+          )}: The home page of your documentation site`,
         );
 
         fs.writeFileSync(
           path.join(documentationPath, "next-steps.mdx"),
-          nextStepsPage
+          nextStepsPage,
         );
 
         createdFiles.push(
           ` - ${chalk.green(
-            "docs/next-steps.mdx"
-          )}: A page to help you get started with docs.page`
+            "docs/next-steps.mdx",
+          )}: A page to help you get started with docs.page`,
         );
       }
 
       console.log(chalk.green("Files created:"));
       console.log(createdFiles.join("\n"));
-      console.log('\n');
+      console.log("\n");
 
       console.log(
         chalk.green(
-          "Initialization complete. To preview your documentation site, vist https://docs.page/preview in your browser."
-        )
+          "Initialization complete. To preview your documentation site, vist https://docs.page/preview in your browser.",
+        ),
       );
     });
 }
