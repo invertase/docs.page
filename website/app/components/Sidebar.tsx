@@ -16,7 +16,7 @@ export function Sidebar(props: Props) {
   const sidebar = useSidebar();
 
   return (
-    <div className="relative pt-8 text-sm pl-2 pb-5 space-y-6">
+    <div className="relative pt-8 text-sm pl-2 pb-5">
       <button
         type="button"
         className="absolute top-3 right-3 lg:hidden"
@@ -25,7 +25,7 @@ export function Sidebar(props: Props) {
         <XIcon size={20} />
       </button>
       <Anchors />
-      <div>
+      <div className="space-y-6">
         {sidebar.map(({ group, icon, pages }) => {
           return (
             <div
@@ -56,7 +56,7 @@ function GroupHeading(props: { title: string; icon?: string }) {
 
 // A recursive sidebar navigation component, renders a list of links and groups.
 function SidebarLinks(
-  props: { pages: Pages } & { open: boolean; depth: number },
+  props: { pages: Pages } & { open: boolean; depth: number }
 ) {
   return (
     <ul aria-expanded={props.open}>
