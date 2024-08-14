@@ -2,6 +2,8 @@
 
 The docs.page CLI provides useful commands for managing your documentation via [https://docs.page](https://docs.page).
 
+To learn more, view the [documentation](https://use.docs.page/cli).
+
 ## Commands
 
 ### `init`
