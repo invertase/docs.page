@@ -19,8 +19,8 @@ ARG BUILD_SHA=default_value
 ENV __BUILD_SHA=$BUILD_SHA
 
 WORKDIR /opt/app
-COPY . /opt/app
-RUN cd /opt/app && bun install --frozen-lockfile --production
+COPY . .
+RUN bun install --frozen-lockfile --production
 
 WORKDIR /opt/app/api
 
