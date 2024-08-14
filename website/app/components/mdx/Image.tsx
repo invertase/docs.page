@@ -6,6 +6,7 @@ import { cn } from "~/utils";
 type ImageProps = ComponentProps<"img"> & {
   zoom?: boolean;
   caption?: string;
+  theme?: "light" | "dark";
 };
 
 export function Image(props: ImageProps) {
@@ -25,7 +26,12 @@ export function Image(props: ImageProps) {
   };
 
   return (
-    <figure>
+    <figure
+      className={cn({
+        "hidden dark:block": props.theme === "dark",
+        "dark:hidden": props.theme === "light",
+      })}
+    >
       {container(
         <img
           {...other}
@@ -40,7 +46,7 @@ export function Image(props: ImageProps) {
             width: width ? Number.parseInt(width.toString()) : "inherit",
             height: height ? Number.parseInt(height.toString()) : "inherit",
           }}
-        />,
+        />
       )}
       {!!props.caption && (
         <figcaption className="text-center">{props.caption}</figcaption>

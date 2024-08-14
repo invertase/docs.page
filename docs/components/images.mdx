@@ -64,3 +64,14 @@ To add a caption below the image, use the `caption` prop:
   caption="An abstract image"
   src="https://images.unsplash.com/photo-1671519821564-ced7e41ee7ae?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1364&q=80"
 />
+
+## Theme
+
+By default, images will be displayed on both the light and dark theme. To display an image only a specific
+theme, use the `theme` with either `light` or `dark`:
+
+```jsx
+<Image caption="A light only image" theme="light" src="https://my-cdn.com/abstract-light.jpg" />
+
+<Image caption="A dark only image" theme="dark" src="https://my-cdn.com/abstract-dark.jpg" />
+```
