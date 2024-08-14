@@ -5,6 +5,7 @@ import {
   transformerNotationHighlight,
   transformerRemoveNotationEscape,
 } from "@shikijs/transformers";
+import { transformerTwoslash } from "@shikijs/twoslash";
 import type { Element } from "hast";
 import { toString } from "mdast-util-to-string";
 import * as shiki from "shiki";
@@ -45,16 +46,22 @@ export default function rehypeCodeBlocks(): (ast: Node) => void {
     parent.properties.raw = raw; // Used to support copy/paste functionality,
     parent.properties.language = languageActual;
 
+    const transformers = [
+      transformerNotationDiff(),
+      transformerNotationHighlight(),
+      transformerRemoveNotationEscape(),
+      transformerNotationFocus(),
+      transformerMetaHighlight(),
+    ];
+
+    if (languageActual === "typescript") {
+      transformers.push(transformerTwoslash());
+    }
+
     parent.properties.html = highlighter.codeToHtml(raw, {
       lang: languageActual,
       theme: "css-variables",
-      transformers: [
-        transformerNotationDiff(),
-        transformerNotationHighlight(),
-        transformerRemoveNotationEscape(),
-        transformerNotationFocus(),
-        transformerMetaHighlight(),
-      ],
+      transformers,
     });
 
     const meta = (node.data?.meta as string) ?? "";
@@ -76,7 +83,7 @@ function extractTitle(meta: string): string | null {
   // https://regex101.com/r/4JngU0/1
   const match =
     /(?:title="(?<title1>.*)"|title='(?<title2>.*)'|title=(?<title3>.*?)\s|title=(?<title4>.*?)$)/gm.exec(
-      meta,
+      meta
     );
 
   if (!match) {
@@ -84,7 +91,7 @@ function extractTitle(meta: string): string | null {
   }
 
   const title = Object.values(match.groups ?? []).find(
-    (value) => value !== undefined,
+    (value) => value !== undefined
   );
   return title || null;
 }

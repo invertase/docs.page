@@ -48,7 +48,7 @@ Code Blocks also support a number of other useful features, such as diffing, lin
 
 Diffing codeblocks enables you to visually compare the difference between code in a single code block. For example:
 
-```ts
+```js
 console.log('hewwo') // [!code --]
 console.log('hello') // [!code ++]
 console.log('goodbye')
@@ -57,7 +57,7 @@ console.log('goodbye')
 To enable diffing, add the `// [!code --]` and `// [!code ++]` annotations to the end of each line:
 
 ````
-```ts
+```js
 console.log('hewwo') // [\!code --]
 console.log('hello') // [\!code ++]
 console.log('goodbye')
@@ -68,7 +68,7 @@ console.log('goodbye')
 
 You can highlight specific lines in a code block, useful for calling out important lines of code. For example:
 
-```ts
+```js
 console.log('hello') // [!code highlight]
 console.log('world')
 ```
@@ -86,7 +86,7 @@ console.log('world')
 
 You can focus on specific lines in a code block, blurring out the rest of the code. For example:
 
-```ts
+```js
 console.log('Not focused');
 console.log('Focused') // [!code focus]
 console.log('Not focused');
@@ -96,12 +96,44 @@ console.log('Not focused');
 To focus on a line, add the `// [!code focus]` annotation to the end of the line:
 
 ````
-```ts
+```js
 console.log('Not focused');
 console.log('Focused') // [\!code focus]
 console.log('Not focused');
 ```
 ````
 
+### Typescript Support
 
+Out of the box, all code blocks will automatically be enhanced with rich type information when the code area is hovered.
+
+```ts
+type APIResponse<T> = {
+  data: T;
+  status: number;
+};
+
+export async function apiRequest(options: { url: string }) {
+  const response = await fetch(options.url);
+  const data = await response.json() as APIResponse<{ hello: 'world' }>;
+  return data;
+}
+```
+
+To enable this, ensure that the code block is tagged with the `typescript` (or `ts`) language:
+
+````
+```ts
+type APIResponse<T> = {
+  data: T;
+  status: number;
+};
+
+export async function apiRequest(options: { url: string }) {
+  const response = await fetch(options.url);
+  const data = await response.json() as APIResponse<{ hello: 'world' }>;
+  return data;
+}
+```
+````
 
