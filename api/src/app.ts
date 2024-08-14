@@ -9,7 +9,7 @@ import githubWebhook from "./routes/webhooks.github";
 
 import { ENV } from "./env";
 
-const PORT = ENV.PORT || 8080;
+const PORT = ENV.PORT ;
 const app = express();
 app.use(text());
 app.use(morgan("dev"));
