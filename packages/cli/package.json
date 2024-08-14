@@ -1,6 +1,6 @@
 {
   "name": "@docs.page/cli",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "author": "Invertase <oss@invertase.io> (http://invertase.io)",
   "license": "Apache-2.0",
   "type": "module",
@@ -21,7 +21,7 @@
   "scripts": {
     "build": "rimraf dist && npx tsup src/index.ts src/cli.ts --format esm --dts",
     "watch": "npx tsup src/index.ts src/cli.ts --format esm --dts --watch",
-    "postinstall": "npm run build"
+    "prepublishOnly": "npm run build"
   },
   "files": [
     "dist",
