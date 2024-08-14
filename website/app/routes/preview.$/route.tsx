@@ -18,6 +18,7 @@ import { useInlineScript } from "~/hooks";
 import { DocsLayout } from "~/layouts/DocsLayout";
 import { Toolbar } from "./Toolbar";
 import { PageContext } from "~/context";
+import { HeroGradient } from "~/layouts/HeroGradient";
 
 export const meta: MetaFunction = () => {
   return [
@@ -113,20 +114,34 @@ function Preview() {
     <>
       {scripts}
       <Header />
-      <section className="max-w-3xl mx-auto pt-20 px-8 space-y-6">
-        <h1 className="text-center text-4xl md:text-5xl lg:text-6xl !leading-[45px] md:!leading-[65px] lg:!leading-[80px] font-bold  text-brand-50 drop-shadow-md">
-          Live preview your <br /> docs in realtime.
-        </h1>
-        <h2 className="text-center text-brand-100">
-          Develop your documentation without leaving the browser.
-        </h2>
-        <p className="text-center text-brand-100 font-light">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque quis
-          laoreet tortor. Donec placerat dolor pellentesque eleifend ultricies.
-          Proin faucibus quis est nec interdum. Quisque ut sapien dolor.
-        </p>
-        <div className="flex justify-center gap-6">
-          {client ? <PreviewLayout /> : null}
+      <div className="fixed inset-0">
+        <HeroGradient />
+      </div>
+      <section className="max-w-5xl w-full mx-auto pt-20 px-8 grid grid-cols-2 fixed top-[30%] left-[50%] translate-x-[-50%] translate-y-[-30%]">
+        <div className="pr-12 space-y-6">
+          <h1 className="text-2xl font-bold  text-brand-50 drop-shadow-md">
+            Live preview your <br /> docs in realtime.
+          </h1>
+          <h2 className="text-brand-100">
+            Develop your documentation without leaving the browser.
+          </h2>
+          <p className="text-brand-100 font-light">
+            <ul className="list-disc pl-5 space-y-1">
+              <li>Foo bar baz</li>
+              <li>Foo bar baz</li>
+              <li>Foo bar baz</li>
+              <li>Foo bar baz</li>
+              <li>Foo bar baz</li>
+            </ul>
+          </p>
+          <div className="flex gap-6">
+            {client ? <PreviewLayout /> : null}
+          </div>
+        </div>
+        <div className="border-l border-black/10 dark:border-white/10 pl-12">
+          <div className="bg-black/40 h-[300px] rounded-md">
+
+          </div>
         </div>
       </section>
     </>

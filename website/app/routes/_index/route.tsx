@@ -7,7 +7,7 @@ import { Features } from "./Features";
 import { Footer } from "./Footer";
 import { Header } from "~/layouts/Header";
 import { Hero } from "./Hero";
-import { HeroGradient } from "./HeroGradient";
+import { HeroGradient } from "../../layouts/HeroGradient";
 import { Platform } from "./Platform";
 
 export const links: LinksFunction = () => {

@@ -15,7 +15,7 @@ export function PreviewLayout() {
 
   if (!hasFeature) {
     return (
-      <div className="text-center space-y-6">
+      <div className="space-y-6">
         <p className="text-red-500">
           Your browser does not support the required features to preview
           directories. Please check the{" "}
@@ -51,7 +51,7 @@ export function PreviewLayout() {
     directory.error instanceof DirectoryPermissionsRequiredError
   ) {
     return (
-      <div className="text-center space-y-6">
+      <div className="space-y-6">
         <p className="text-red-500">
           Please grant read access to the local "{directory.error.message}"
           directory to continue.
