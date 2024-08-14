@@ -1,6 +1,6 @@
 {
   "name": "@docs.page/cli",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "author": "Invertase <oss@invertase.io> (http://invertase.io)",
   "license": "Apache-2.0",
   "type": "module",
@@ -29,6 +29,7 @@
     "README.md"
   ],
   "dependencies": {
+    "@inquirer/prompts": "^5.3.8",
     "chalk": "^5.3.0",
     "commander": "^12.1.0",
     "rimraf": "^6.0.1"
