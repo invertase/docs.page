@@ -22,5 +22,6 @@ WORKDIR /opt/app
 COPY . /opt/app
 RUN cd /opt/app && bun install --frozen-lockfile --production
 
-WORKDIR /opt/app
+WORKDIR /opt/app/api
+
 CMD ["bun","run","start"]
