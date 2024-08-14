@@ -1,10 +1,10 @@
 {
   "name": "@docs.page/cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "Invertase <oss@invertase.io> (http://invertase.io)",
   "license": "Apache-2.0",
   "bin": {
-    "docs-page": "dist/cli.js"
+    "@docs.page/cli": "dist/cli.js"
   },
   "keywords": [
     "docs.page",
