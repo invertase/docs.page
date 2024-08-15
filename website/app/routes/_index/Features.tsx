@@ -17,7 +17,7 @@ import { cn } from "~/utils";
 export function Features() {
   return (
     <section className="max-w-5xl mx-auto py-32 space-y-6">
-      <p className="flex items-center gap-3 justify-center">
+      <p className="flex items-center gap-3 justify-center text-brand-50">
         <Grid2X2Icon size={18} />
         <span>Features</span>
       </p>

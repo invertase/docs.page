@@ -3,7 +3,7 @@ import { BookTextIcon, LockIcon } from "lucide-react";
 export function Platform() {
   return (
     <section className="max-w-5xl mx-auto py-32 space-y-6">
-      <p className="flex items-center justify-center gap-3 text-brand-100">
+      <p className="flex items-center justify-center gap-3 text-brand-50">
         <BookTextIcon size={18} />
         <span>The documentation platform for open-source developers</span>
       </p>
@@ -14,12 +14,14 @@ export function Platform() {
         The easiest way to maintain open-source documentation
       </p>
       <div className="px-3">
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
           <PlatformCard
             title="Manage Docs as Code"
             description="Manage docs like your codebase, with branching, version
             control, reviews, and testing."
-          />
+          >
+            <img src="/manage.png" alt="" className="mx-auto" />
+          </PlatformCard>
           <PlatformCard
             title="Publish Instantly"
             description="Create fully managed documentation sites in seconds, without complex setup."
@@ -71,7 +73,7 @@ type PlatformCardProps = {
 
 function PlatformCard(props: PlatformCardProps) {
   return (
-    <div className="bg-gradient-to-b from-brand-100/5 rounded-xl border border-white/5">
+    <div className="bg-gradient-to-b from-brand-100/5 rounded-xl border border-white/5 max-w-[400px] mx-auto md:mx-auto">
       <div className="h-[200px] p-3">{props.children}</div>
       <div className="text-center px-3 py-6 space-y-3">
         <h4>{props.title}</h4>
@@ -159,46 +161,48 @@ function Preview() {
 
 function Customize() {
   return (
-    <pre className="select-none bg-black p-3 rounded-md text-sm border border-brand-300/20">
-      <code>
-        <div>{"{"}</div>
-        <div>
-          {"  "}
-          <span className="text-brand-400">"name"</span>
-          <span>{": "}</span>
-          <span>"API Docs",</span>
-        </div>
-        <div>
-          {"  "}
-          <span className="text-brand-400">"theme"</span>
-          <span>{": {"}</span>
-        </div>
-        <div>
-          {"    "}
-          <span className="text-brand-400">"defaultTheme"</span>
-          <span>{": "}</span>
-          <span>"dark",</span>
-        </div>
-        <div>
-          {"    "}
-          <span className="text-brand-400">"primary"</span>
-          <span>{": "}</span>
-          <span>{'"'}</span>
-          <span className="bg-[#FF5722]">#FF5722</span>
-          <span>{'"'}</span>
-          <span>{","}</span>
-        </div>
-        <div>
-          {"    "}
-          <span className="text-brand-400">"primaryDark"</span>
-          <span>{": "}</span>
-          <span>{'"'}</span>
-          <span className="bg-[#E64A19]">#E64A19</span>
-          <span>{'"'}</span>
-        </div>
-        <div>{"  }"}</div>
-        <div>{"}"}</div>
-      </code>
-    </pre>
+    <div>
+      <pre className="select-none bg-gradient-to-b from-black/70 p-3 rounded-md text-sm border-t border-brand-300/20">
+        <code>
+          <div>{"{"}</div>
+          <div>
+            {"  "}
+            <span className="text-brand-400">"name"</span>
+            <span>{": "}</span>
+            <span>"API Docs",</span>
+          </div>
+          <div>
+            {"  "}
+            <span className="text-brand-400">"theme"</span>
+            <span>{": {"}</span>
+          </div>
+          <div>
+            {"    "}
+            <span className="text-brand-400">"defaultTheme"</span>
+            <span>{": "}</span>
+            <span>"dark",</span>
+          </div>
+          <div>
+            {"    "}
+            <span className="text-brand-400">"primary"</span>
+            <span>{": "}</span>
+            <span>{'"'}</span>
+            <span className="bg-[#FF5722]">#FF5722</span>
+            <span>{'"'}</span>
+            <span>{","}</span>
+          </div>
+          <div>
+            {"    "}
+            <span className="text-brand-400">"primaryDark"</span>
+            <span>{": "}</span>
+            <span>{'"'}</span>
+            <span className="bg-[#E64A19]">#E64A19</span>
+            <span>{'"'}</span>
+          </div>
+          <div>{"  }"}</div>
+          <div>{"}"}</div>
+        </code>
+      </pre>
+    </div>
   );
 }

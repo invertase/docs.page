@@ -114,33 +114,21 @@ function Preview() {
     <>
       {scripts}
       <Header />
-      <div className="fixed inset-0">
+      <div className="absolute inset-0 z-[-1]">
         <HeroGradient />
       </div>
-      <section className="max-w-5xl w-full mx-auto pt-20 px-8 grid grid-cols-2 fixed top-[30%] left-[50%] translate-x-[-50%] translate-y-[-30%]">
-        <div className="pr-12 space-y-6">
-          <h1 className="text-2xl font-bold  text-brand-50 drop-shadow-md">
-            Live preview your <br /> docs in realtime.
-          </h1>
-          <h2 className="text-brand-100">
-            Develop your documentation without leaving the browser.
-          </h2>
-          <p className="text-brand-100 font-light">
-            <ul className="list-disc pl-5 space-y-1">
-              <li>Foo bar baz</li>
-              <li>Foo bar baz</li>
-              <li>Foo bar baz</li>
-              <li>Foo bar baz</li>
-              <li>Foo bar baz</li>
-            </ul>
-          </p>
-          <div className="flex gap-6">
-            {client ? <PreviewLayout /> : null}
+      <section className="max-w-5xl w-full mx-auto pt-20 px-6">
+        <div className="flex items-center">
+          <div>
+            <h1 className="text-4xl !leading-[45px] md:!leading-[65px] lg:!leading-[80px] font-bold  text-brand-50 drop-shadow-md">
+              Live Preview
+            </h1>
+            <h2 className="text-brand-100">
+              Live preview your local documentation in real-time.
+            </h2>
           </div>
-        </div>
-        <div className="border-l border-black/10 dark:border-white/10 pl-12">
-          <div className="bg-black/40 h-[300px] rounded-md">
-
+          <div className="grow flex items-end justify-end w-12">
+            {client ? <PreviewLayout /> : null}
           </div>
         </div>
       </section>
