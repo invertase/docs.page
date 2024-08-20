@@ -9,6 +9,7 @@ import { Header } from "~/layouts/Header";
 import { Hero } from "./Hero";
 import { HeroGradient } from "../../layouts/HeroGradient";
 import { Platform } from "./Platform";
+import { getMetadata } from "~/meta";
 
 export const links: LinksFunction = () => {
   return [
@@ -41,18 +42,7 @@ export const links: LinksFunction = () => {
   ];
 };
 
-export const meta: MetaFunction = () => {
-  return [
-    {
-      title: "docs.page | Ship documentation, like you ship code",
-    },
-    {
-      name: "description",
-      content:
-        "Publish beautiful online documentation instantly,from your code editor using markdown and a public GitHub repository.",
-    },
-  ];
-};
+export const meta: MetaFunction = getMetadata;
 
 export default function Homepage() {
   const scripts = useInlineScript(`<script>(() => {

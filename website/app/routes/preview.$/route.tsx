@@ -19,9 +19,11 @@ import { DocsLayout } from "~/layouts/DocsLayout";
 import { Toolbar } from "./Toolbar";
 import { PageContext } from "~/context";
 import { HeroGradient } from "~/layouts/HeroGradient";
+import { getMetadata } from "~/meta";
 
 export const meta: MetaFunction = () => {
   return [
+    ...getMetadata(),
     {
       tagName: "link",
       rel: "stylesheet",
