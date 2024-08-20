@@ -47,7 +47,7 @@ export function DocsLayout() {
               "top-28": hasTabs && !sidebar,
               "translate-x-0 top-0 z-20 bg-background border-r border-black/10 dark:border-white/10":
                 sidebar,
-            }
+            },
           )}
         >
           <Sidebar onMenuToggle={toggleSidebar} />
@@ -65,7 +65,7 @@ export function DocsLayout() {
               {
                 "pointer-events-none opacity-0": !sidebar,
                 "pointer-events-auto opacity-100": sidebar,
-              }
+              },
             )}
             onClick={() => toggleSidebar()}
             onKeyDown={() => toggleSidebar()}

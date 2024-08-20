@@ -30,7 +30,7 @@ export function HeroGradient(props: Props) {
         {
           "opacity-50": !ready,
           "opacity-100": ready,
-        }
+        },
       )}
     >
       <title>Background Gradient</title>

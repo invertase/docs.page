@@ -83,7 +83,7 @@ function extractTitle(meta: string): string | null {
   // https://regex101.com/r/4JngU0/1
   const match =
     /(?:title="(?<title1>.*)"|title='(?<title2>.*)'|title=(?<title3>.*?)\s|title=(?<title4>.*?)$)/gm.exec(
-      meta
+      meta,
     );
 
   if (!match) {
@@ -91,7 +91,7 @@ function extractTitle(meta: string): string | null {
   }
 
   const title = Object.values(match.groups ?? []).find(
-    (value) => value !== undefined
+    (value) => value !== undefined,
   );
   return title || null;
 }

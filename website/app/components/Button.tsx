@@ -1,5 +1,5 @@
-import { cloneElement, createElement, type ComponentProps } from "react";
 import { ChevronRightIcon } from "lucide-react";
+import { type ComponentProps, cloneElement, createElement } from "react";
 import { cn } from "~/utils";
 
 type Props =
@@ -32,7 +32,7 @@ export function Button({ className, cta, ...props }: Props) {
           "bg-gradient-to-br from-brand-900 to-brand-950 rounded-full font-medium transition-all":
             cta,
         },
-        className
+        className,
       )}
     >
       <span>{props.children}</span>
@@ -47,9 +47,9 @@ export function Button({ className, cta, ...props }: Props) {
         "inline-block p-px rounded-full hover:-translate-y-[2px] transition-all",
         {
           "bg-gradient-to-b from-brand-700/60 to-brand-100/10": cta,
-        }
+        },
       ),
     },
-    child
+    child,
   );
 }

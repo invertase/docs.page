@@ -7,11 +7,7 @@
   "bin": {
     "@docs.page/cli": "dist/cli.js"
   },
-  "keywords": [
-    "docs.page",
-    "documentation",
-    "docs"
-  ],
+  "keywords": ["docs.page", "documentation", "docs"],
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -23,11 +19,7 @@
     "watch": "npx tsup src/index.ts src/cli.ts --format esm --dts --watch",
     "prepublishOnly": "npm run build"
   },
-  "files": [
-    "dist",
-    "LICENSE",
-    "README.md"
-  ],
+  "files": ["dist", "LICENSE", "README.md"],
   "dependencies": {
     "@inquirer/prompts": "^5.3.8",
     "chalk": "^5.3.0",

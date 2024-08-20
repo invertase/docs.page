@@ -109,7 +109,10 @@ function FeatureCard({
   return (
     <div
       {...other}
-      className={cn("p-6 space-y-3 border-r border-white/5 text-center md:text-left", className)}
+      className={cn(
+        "p-6 space-y-3 border-r border-white/5 text-center md:text-left",
+        className,
+      )}
     >
       <div className="size-[30px] text-brand-100 mx-auto md:mx-0">{icon}</div>
       <h4 className="">{title}</h4>

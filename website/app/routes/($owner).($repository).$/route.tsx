@@ -5,10 +5,10 @@ import {
 } from "@remix-run/react";
 import type { HeadersFunction, LoaderFunctionArgs } from "@vercel/remix";
 import { redirect } from "@vercel/remix";
-import { DocsLayout } from "~/layouts/DocsLayout";
 import { getBundle } from "~/api";
 import { Scripts } from "~/components/Scripts";
 import { type Context, PageContext } from "~/context";
+import { DocsLayout } from "~/layouts/DocsLayout";
 
 import docsearch from "@docsearch/css/dist/style.css?url";
 import { trackPageRequest } from "~/plausible";

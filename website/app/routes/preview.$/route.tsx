@@ -2,8 +2,8 @@ import { redirect, useFetcher, useParams } from "@remix-run/react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import type { ActionFunctionArgs, MetaFunction } from "@vercel/remix";
 import { useEffect, useState } from "react";
-import { PreviewLayout } from "./PreviewLayout";
 import { getPreviewBundle } from "../../api";
+import { PreviewLayout } from "./PreviewLayout";
 import {
   getFile,
   queryClient,
@@ -12,14 +12,14 @@ import {
 } from "./utils";
 
 import docsearch from "@docsearch/css/dist/style.css?url";
-import { ensureLeadingSlash, isExternalLink } from "~/utils";
-import { Header } from "~/layouts/Header";
+import { PageContext } from "~/context";
 import { useInlineScript } from "~/hooks";
 import { DocsLayout } from "~/layouts/DocsLayout";
-import { Toolbar } from "./Toolbar";
-import { PageContext } from "~/context";
+import { Header } from "~/layouts/Header";
 import { HeroGradient } from "~/layouts/HeroGradient";
 import { getMetadata } from "~/meta";
+import { ensureLeadingSlash, isExternalLink } from "~/utils";
+import { Toolbar } from "./Toolbar";
 
 export const meta: MetaFunction = () => {
   return [

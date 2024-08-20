@@ -115,7 +115,7 @@ export default function App() {
       if (states.every((state) => state === "idle")) return "idle";
       return "loading";
     },
-    [navigation.state, fetchers]
+    [navigation.state, fetchers],
   );
 
   useEffect(() => {

@@ -46,7 +46,7 @@ export function Image(props: ImageProps) {
             width: width ? Number.parseInt(width.toString()) : "inherit",
             height: height ? Number.parseInt(height.toString()) : "inherit",
           }}
-        />
+        />,
       )}
       {!!props.caption && (
         <figcaption className="text-center">{props.caption}</figcaption>
