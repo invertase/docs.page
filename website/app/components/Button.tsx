@@ -15,7 +15,7 @@ type Props =
       cta?: boolean;
     } & ComponentProps<"button">);
 
-export function Button({ className, ...props }: Props) {
+export function Button({ className, cta, ...props }: Props) {
   let el: React.ReactNode;
 
   if (props.as === "button") {
@@ -30,7 +30,7 @@ export function Button({ className, ...props }: Props) {
         "inline-flex px-6 py-3 items-center gap-2",
         {
           "bg-gradient-to-br from-brand-900 to-brand-950 rounded-full font-medium transition-all":
-            props.cta,
+            cta,
         },
         className
       )}
@@ -46,7 +46,7 @@ export function Button({ className, ...props }: Props) {
       className: cn(
         "inline-block p-px rounded-full hover:-translate-y-[2px] transition-all",
         {
-          "bg-gradient-to-b from-brand-700/60 to-brand-100/10": props.cta,
+          "bg-gradient-to-b from-brand-700/60 to-brand-100/10": cta,
         }
       ),
     },

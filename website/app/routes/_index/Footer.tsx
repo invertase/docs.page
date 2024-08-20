@@ -25,7 +25,7 @@ export function Footer() {
           </svg>
         </div>
       </div>
-      <div className="pl-12 mx-auto md:mx-0">
+      <div className="pl-12 mx-auto mt-6 md:m-0">
         <div className="flex items-center gap-4 text-2xl mb-3">
           <a
             href="https://x.com/invertaseio"

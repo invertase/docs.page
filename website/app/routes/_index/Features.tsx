@@ -17,8 +17,8 @@ import { cn } from "~/utils";
 export function Features() {
   return (
     <section className="max-w-5xl mx-auto py-32 space-y-6">
-      <p className="flex items-center gap-3 justify-center text-brand-50">
-        <Grid2X2Icon size={18} />
+      <p className="md:flex text-center items-center justify-center gap-3 text-brand-50">
+        <Grid2X2Icon size={18} className="mb-3 mx-auto md:m-0" />
         <span>Features</span>
       </p>
       <h3 className="text-brand-100 text-4xl md:text-5xl text-center !leading-[3.5rem]">
@@ -109,9 +109,9 @@ function FeatureCard({
   return (
     <div
       {...other}
-      className={cn("p-6 space-y-3 border-r border-white/5", className)}
+      className={cn("p-6 space-y-3 border-r border-white/5 text-center md:text-left", className)}
     >
-      <div className="size-[30px] text-brand-100">{icon}</div>
+      <div className="size-[30px] text-brand-100 mx-auto md:mx-0">{icon}</div>
       <h4 className="">{title}</h4>
       <p className="font-light">{description}</p>
     </div>

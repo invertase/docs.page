@@ -1,5 +1,6 @@
 import { Link } from "@remix-run/react";
 import { ChevronRightIcon } from "lucide-react";
+import { Icon } from "~/components/Icon";
 
 export function Header() {
   return (
@@ -25,16 +26,19 @@ export function Header() {
         </svg>
       </Link>
       <div className="grow flex justify-end gap-3">
-        <ul className="flex items-center gap-6 text-sm font-medium tracking-wide">
+        <ul className="flex items-center gap-3 md:gap-6 text-sm font-medium tracking-wide">
           <li>
             <a
               target="_blank"
               rel="noreferrer"
               href="https://github.com/invertase/docs.page"
-              className="flex items-center gap-1 hover:opacity-75 transition-opacity"
+              className="hover:opacity-75 transition-opacity"
             >
-              <span>GitHub</span>
-              <ChevronRightIcon size={16} className="inline" />
+              <span className="hidden md:flex items-center gap-1">
+                <span>GitHub</span>
+                <ChevronRightIcon size={16} className="inline" />
+              </span>
+              <Icon name="book" className="md:hidden text-2xl" />
             </a>
           </li>
           <li>
@@ -44,8 +48,11 @@ export function Header() {
               href="https://use.docs.page"
               className="flex items-center gap-1 hover:opacity-75 transition-opacity"
             >
-              <span>Documentation</span>
-              <ChevronRightIcon size={16} className="inline" />
+              <span className="hidden md:flex items-center gap-1">
+                <span>Documentation</span>
+                <ChevronRightIcon size={16} className="inline" />
+              </span>
+              <Icon name="github" className="md:hidden text-2xl" />
             </a>
           </li>
         </ul>

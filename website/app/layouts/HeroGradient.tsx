@@ -1,18 +1,24 @@
 import { useEffect, useState } from "react";
 import { cn } from "~/utils";
 
-export function HeroGradient() {
+type Props = {
+  fadeInMs?: number;
+};
+
+export function HeroGradient(props: Props) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      setReady(true);
-    }, 850);
+    if (props.fadeInMs) {
+      const timeout = setTimeout(() => {
+        setReady(true);
+      }, props.fadeInMs);
 
-    return () => {
-      clearTimeout(timeout);
-    };
-  }, []);
+      return () => {
+        clearTimeout(timeout);
+      };
+    }
+  }, [props.fadeInMs]);
 
   return (
     <svg
@@ -24,7 +30,7 @@ export function HeroGradient() {
         {
           "opacity-50": !ready,
           "opacity-100": ready,
-        },
+        }
       )}
     >
       <title>Background Gradient</title>
@@ -115,8 +121,8 @@ export function HeroGradient() {
           y2="1676"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#D9D9D9" />
-          <stop offset="1" stop-color="#D9D9D9" stop-opacity="0" />
+          <stop stopColor="#D9D9D9" />
+          <stop offset="1" stopColor="#D9D9D9" stop-opacity="0" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_209_493"
@@ -126,9 +132,9 @@ export function HeroGradient() {
           y2="292.253"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#ECB418" />
-          <stop offset="0.5" stop-color="#F9EFBA" />
-          <stop offset="1" stop-color="#ECC918" />
+          <stop stopColor="#ECB418" />
+          <stop offset="0.5" stopColor="#F9EFBA" />
+          <stop offset="1" stopColor="#ECC918" />
         </linearGradient>
         <linearGradient
           id="paint2_linear_209_493"
@@ -138,9 +144,9 @@ export function HeroGradient() {
           y2="590.79"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#ECC918" />
-          <stop offset="0.5" stop-color="#F9EFBA" />
-          <stop offset="1" stop-color="#ECB418" />
+          <stop stopColor="#ECC918" />
+          <stop offset="0.5" stopColor="#F9EFBA" />
+          <stop offset="1" stopColor="#ECB418" />
         </linearGradient>
         <clipPath id="clip0_209_493">
           <rect width="1499" height="1676" fill="white" />

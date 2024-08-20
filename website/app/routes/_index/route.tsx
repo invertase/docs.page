@@ -54,7 +54,7 @@ export default function Homepage() {
   return (
     <>
       {scripts}
-      <HeroGradient />
+      <HeroGradient fadeInMs={850} />
       <Header />
       <Hero />
       <Demo />
