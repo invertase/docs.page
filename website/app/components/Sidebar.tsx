@@ -24,21 +24,23 @@ export function Sidebar(props: Props) {
       >
         <XIcon size={20} />
       </button>
-      <Anchors />
       <div className="space-y-6">
-        {sidebar.map(({ group, icon, pages }) => {
-          return (
-            <div
-              key={group}
-              className={cn({
-                "mt-6 first:mt-0 pr-3": group,
-              })}
-            >
-              {group ? <GroupHeading title={group} icon={icon} /> : null}
-              <SidebarLinks pages={pages} open={false} depth={0} />
-            </div>
-          );
-        })}
+        <Anchors />
+        <div>
+          {sidebar.map(({ group, icon, pages }) => {
+            return (
+              <div
+                key={group}
+                className={cn({
+                  "mt-6 first:mt-0 pr-3": group,
+                })}
+              >
+                {group ? <GroupHeading title={group} icon={icon} /> : null}
+                <SidebarLinks pages={pages} open={false} depth={0} />
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
@@ -56,7 +58,7 @@ function GroupHeading(props: { title: string; icon?: string }) {
 
 // A recursive sidebar navigation component, renders a list of links and groups.
 function SidebarLinks(
-  props: { pages: Pages } & { open: boolean; depth: number },
+  props: { pages: Pages } & { open: boolean; depth: number }
 ) {
   return (
     <ul aria-expanded={props.open}>

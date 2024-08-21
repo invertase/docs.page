@@ -31,6 +31,10 @@ export function TableOfContents() {
     };
   }, []);
 
+  if (headings.length === 0) {
+    return null;
+  }
+
   return (
     <div
       className={cn("sticky", {
