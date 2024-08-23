@@ -15,7 +15,7 @@ export function CallToAction() {
         Begin publishing great documentation today.
       </p>
       <div className="flex justify-center gap-6 pt-6">
-        <Button as="a" cta href="https://use.docs.page/getting-started">
+        <Button as="a" cta href="/get-started">
           Start Publishing
         </Button>
       </div>

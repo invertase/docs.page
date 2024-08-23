@@ -2,12 +2,12 @@ import type { LinksFunction, MetaFunction } from "@vercel/remix";
 import { useInlineScript } from "~/hooks";
 import { Header } from "~/layouts/Header";
 import { getMetadata } from "~/meta";
+import { Footer } from "../../layouts/Footer";
 import { HeroGradient } from "../../layouts/HeroGradient";
 import { Affiliation } from "./Afilliation";
 import { CallToAction } from "./CallToAction";
 import { Demo } from "./Demo";
 import { Features } from "./Features";
-import { Footer } from "./Footer";
 import { Hero } from "./Hero";
 import { Platform } from "./Platform";
 

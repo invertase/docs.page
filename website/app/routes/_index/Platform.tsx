@@ -2,7 +2,7 @@ import { BookTextIcon, LockIcon } from "lucide-react";
 
 export function Platform() {
   return (
-    <section className="max-w-5xl mx-auto py-32 space-y-6">
+    <section className="max-w-5xl mx-auto py-20 space-y-6">
       <p className="md:flex text-center items-center justify-center gap-3 text-brand-50">
         <BookTextIcon size={18} className="mb-3 mx-auto md:m-0" />
         <span>The documentation platform for open-source developers</span>
@@ -109,9 +109,11 @@ function Preview() {
 function Customize() {
   return (
     <div
-      style={{
-        // background: "radial-gradient(#201B03, transparent)",
-      }}
+      style={
+        {
+          // background: "radial-gradient(#201B03, transparent)",
+        }
+      }
     >
       <pre className="select-none p-6 rounded-md text-xs">
         <code>

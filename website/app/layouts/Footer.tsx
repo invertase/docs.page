@@ -3,7 +3,7 @@ import { Icon } from "~/components/Icon";
 export function Footer() {
   return (
     <footer className="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 py-12">
-      <div className="mx-auto md:flex justify-end md:border-r border-white/10 md:pr-12">
+      <div className="w-full mx-auto md:flex justify-end md:border-r border-white/10 md:pr-12">
         <div className="flex items-center gap-3">
           <img src="/logo.png" alt="Logo" className="h-6" />
           <svg

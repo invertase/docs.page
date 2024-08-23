@@ -16,7 +16,7 @@ import { cn } from "~/utils";
 
 export function Features() {
   return (
-    <section className="max-w-5xl mx-auto py-32 space-y-6">
+    <section className="max-w-5xl mx-auto py-20 space-y-6">
       <p className="md:flex text-center items-center justify-center gap-3 text-brand-50">
         <Grid2X2Icon size={18} className="mb-3 mx-auto md:m-0" />
         <span>Features</span>

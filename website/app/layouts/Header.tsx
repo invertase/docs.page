@@ -1,4 +1,4 @@
-import { Link } from "@remix-run/react";
+import { Link, NavLink } from "@remix-run/react";
 import { ChevronRightIcon } from "lucide-react";
 import { Icon } from "~/components/Icon";
 
@@ -54,6 +54,17 @@ export function Header() {
               </span>
               <Icon name="github" className="md:hidden text-2xl" />
             </a>
+          </li>
+          <li>
+            <NavLink
+              to="/preview"
+              className="flex items-center gap-1 hover:opacity-75 transition-opacity border border-brand-50/90 px-4 py-1.5 rounded-full"
+            >
+              <span className="flex items-center gap-1">
+                <span>Local Preview</span>
+                <ChevronRightIcon size={16} className="inline" />
+              </span>
+            </NavLink>
           </li>
         </ul>
         {/* <div className="border rounded-md py-3 px-2">

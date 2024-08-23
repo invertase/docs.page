@@ -1,4 +1,3 @@
-import { ChevronRightIcon } from "lucide-react";
 import { Button } from "../../components/Button";
 
 export function Hero() {
@@ -16,9 +15,12 @@ export function Hero() {
         <br /> from your code editor using markdown and a public GitHub
         repository.
       </p>
-      <div className="flex justify-center gap-6">
-        <Button as="a" cta href="https://use.docs.page/getting-started">
+      <div className="flex justify-center gap-3">
+        <Button as="a" cta href="/get-started">
           Start Publishing
+        </Button>
+        <Button as="a" href="https://use.docs.page">
+          Documentation
         </Button>
       </div>
     </section>

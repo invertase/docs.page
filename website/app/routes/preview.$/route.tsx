@@ -1,7 +1,7 @@
-import { redirect, useFetcher, useNavigate, useParams } from "@remix-run/react";
+import { NavLink, redirect, useFetcher, useParams } from "@remix-run/react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import type { ActionFunctionArgs, MetaFunction } from "@vercel/remix";
-import { type ComponentProps, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getPreviewBundle } from "../../api";
 import { useTrigger } from "./trigger";
 import {
@@ -15,16 +15,15 @@ import {
 } from "./utils";
 
 import docsearch from "@docsearch/css/dist/style.css?url";
+import { Button } from "~/components/Button";
 import { PageContext } from "~/context";
 import { useInlineScript } from "~/hooks";
 import { DocsLayout } from "~/layouts/DocsLayout";
+import { Footer } from "~/layouts/Footer";
 import { Header } from "~/layouts/Header";
-import { HeroGradient } from "~/layouts/HeroGradient";
 import { getMetadata } from "~/meta";
 import { cn, ensureLeadingSlash, isExternalLink } from "~/utils";
 import { Toolbar } from "./Toolbar";
-import { BookIcon, CheckIcon, ClipboardIcon } from "lucide-react";
-import { Button } from "~/components/Button";
 
 export const meta: MetaFunction = () => {
   return [
@@ -136,19 +135,16 @@ function Preview() {
             </div>
           </div>
         </div>
-        <div className="mt-12">
-          <h2 className="text-center text-3xl font-semibold leading-[55px] bg-clip-text text-transparent bg-gradient-to-b from-brand-50 to-brand-100">
-            Publish docs in 4 steps
-          </h2>
-          <div className="relative max-w-[800px] space-y-6 mx-auto mt-12">
-            <div className="hidden lg:block absolute w-px bg-gradient-to-b top-10 from-brand-100/50 via-brand-100/50 to-black bottom-0 h-full -left-8" />
-            <GetStarted />
-            <AddContent />
-            <PreviewDocs />
-            <PublishChanges />
-          </div>
+        <div className="text-center mt-12 opacity-75">
+          Need to get started with docs.page?
+          <br />
+          <NavLink to="/get-started" className="underline">
+            Check out the getting started guide
+          </NavLink>
+          .
         </div>
       </section>
+      <Footer />
     </>
   );
 }
@@ -230,149 +226,5 @@ function Trigger() {
     >
       Select Directory
     </Button>
-  );
-}
-
-function GetStarted() {
-  const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    if (copied) {
-      const timeout = setTimeout(() => {
-        setCopied(false);
-      }, 2000);
-
-      return () => clearTimeout(timeout);
-    }
-  }, [copied]);
-
-  return (
-    <Card
-      step={1}
-      title="Get Started"
-      description="Add docs.page to your project"
-      asset={<img src="/assets/preview/terminal.png" alt="Terminal Command" />}
-    >
-      <ActionButton
-        onClick={() => {
-          navigator.clipboard.writeText("npx @docs.page/cli init");
-          setCopied(true);
-        }}
-      >
-        {copied ? (
-          <>
-            <CheckIcon size={16} className="text-green-500" />
-            <span>Copied!</span>
-          </>
-        ) : (
-          <>
-            <ClipboardIcon size={16} />
-            <span>Copy Command</span>
-          </>
-        )}
-      </ActionButton>
-    </Card>
-  );
-}
-
-function AddContent() {
-  return (
-    <Card
-      step={2}
-      title="Add Content"
-      description="Add markdown to a page"
-      asset={<img src="/assets/preview/add-content.png" alt="Markdown" />}
-    >
-      <ActionButton
-        onClick={() => {
-          window.location.href = "https://use.docs.page/writing-content";
-        }}
-      >
-        <BookIcon size={16} />
-        <span>Read Guide</span>
-      </ActionButton>
-    </Card>
-  );
-}
-
-function PreviewDocs() {
-  return (
-    <Card
-      step={3}
-      title="Preview Docs"
-      description="Preview your docs.page site"
-      asset={<img src="/assets/preview/add-content.png" alt="Markdown" />}
-    >
-      <ActionButton
-        onClick={() => {
-          window.location.href = "https://use.docs.page/writing-content";
-        }}
-      >
-        <BookIcon size={16} />
-        <span>Read Guide</span>
-      </ActionButton>
-    </Card>
-  );
-}
-
-function PublishChanges() {
-  return (
-    <Card
-      step={4}
-      title="Publish Changes"
-      description="Make your changes public"
-      asset={<img src="/assets/preview/add-content.png" alt="Markdown" />}
-    >
-      <ActionButton
-        onClick={() => {
-          window.location.href = "https://use.docs.page/writing-content";
-        }}
-      >
-        <BookIcon size={16} />
-        <span>Vist Site</span>
-      </ActionButton>
-    </Card>
-  );
-}
-
-type Props = {
-  step: number;
-  title: string;
-  description: string;
-  asset: React.ReactNode;
-  children: React.ReactNode;
-};
-
-function Card(props: Props) {
-  return (
-    <div className="relative">
-      <div className="hidden lg:flex absolute -left-[60px] top-4 bg-gradient-to-br from-brand-900/90 to-black border border-brand-100/20 text-brand-50 rounded-full size-14 text-2xl items-center justify-center font-bold">
-        {props.step}
-      </div>
-      <div className="bg-black rounded-xl p-6 lg:ml-8 grid grid-cols-2 gap-6">
-        <div className="flex flex-col">
-          <h2 className="font-semibold text-2xl text-brand-50">
-            <span className="lg:hidden">{props.step}. </span>
-            <span>{props.title}</span>
-          </h2>
-          <p className="mt-1 mb-6 opacity-75">{props.description}</p>
-          <div className="lg:hidden">{props.asset}</div>
-          <div className="mt-10">{props.children}</div>
-        </div>
-        <div className="hidden lg:flex items-center justify-center">
-          <div>{props.asset}</div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ActionButton(props: ComponentProps<"button">) {
-  return (
-    <button
-      {...props}
-      type="button"
-      className="inline-flex items-center gap-2 bg-white text-black px-3 py-2 font-medium rounded-md"
-    />
   );
 }
