@@ -14,6 +14,8 @@ export function getRequestParams(args: LoaderFunctionArgs) {
   let path = args.params["*"] || "";
 
   const url = new URL(args.request.url);
+  console.log(url);
+  console.log(args.params);
 
   // If the request URL is via say /invertase/docs.page,
   // we can extract the owner and repository from the URL.

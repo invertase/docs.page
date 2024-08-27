@@ -84,10 +84,20 @@ export const loader = async (args: LoaderFunctionArgs) => {
 };
 
 export default function DocsPage() {
-  const context = useLoaderData<typeof loader>();
+  const ctx = useLoaderData<typeof loader>();
+
+  const windowContext = {
+    owner: ctx.owner,
+    repository: ctx.repository,
+  };
 
   return (
-    <PageContext.Provider value={context}>
+    <PageContext.Provider value={ctx}>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `window.__docsPage = ${JSON.stringify(windowContext)}`,
+        }}
+      />
       <Scripts />
       <DocsLayout />
     </PageContext.Provider>
