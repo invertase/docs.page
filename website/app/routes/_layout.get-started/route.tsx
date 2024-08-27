@@ -1,4 +1,3 @@
-import type { MetaFunction } from "@vercel/remix";
 import { type ComponentProps, useEffect, useState } from "react";
 
 import docsearch from "@docsearch/css/dist/style.css?url";
@@ -12,21 +11,13 @@ import {
 import { useInlineScript } from "~/hooks";
 import { Footer } from "~/layouts/Footer";
 import { Header } from "~/layouts/Header";
-import { getMetadata } from "~/meta";
+import { getLinkDescriptors, getMetadata } from "~/meta";
 import { cn } from "~/utils";
 import { Card } from "./Card";
 import { NavLink } from "@remix-run/react";
 
-export const meta: MetaFunction = () => {
-  return [
-    ...getMetadata(),
-    {
-      tagName: "link",
-      rel: "stylesheet",
-      href: docsearch,
-    },
-  ];
-};
+export const links = getLinkDescriptors;
+export const meta = getMetadata;
 
 export default function GetStartedRoute() {
   const scripts = useInlineScript(`<script>(() => {

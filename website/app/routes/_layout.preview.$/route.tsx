@@ -17,13 +17,14 @@ import {
 import docsearch from "@docsearch/css/dist/style.css?url";
 import { Button } from "~/components/Button";
 import { PageContext } from "~/context";
-import { useInlineScript } from "~/hooks";
 import { DocsLayout } from "~/layouts/DocsLayout";
 import { Footer } from "~/layouts/Footer";
 import { Header } from "~/layouts/Header";
-import { getMetadata } from "~/meta";
+import { getLinkDescriptors, getMetadata } from "~/meta";
 import { cn, ensureLeadingSlash, isExternalLink } from "~/utils";
 import { Toolbar } from "./Toolbar";
+
+export const links = getLinkDescriptors;
 
 export const meta: MetaFunction = () => {
   return [
@@ -80,12 +81,6 @@ function Preview() {
   const content = usePageContent(path, directory.data);
   const bundle = fetcher.data?.bundle;
 
-  const scripts = useInlineScript(`<script>(() => {
-		document.documentElement.setAttribute('data-theme', 'dark');
-    const root = document.documentElement;
-		root.style.setProperty('--background-dark', '224, 71%, 4%');		
-	})()</script>`);
-
   useEffect(() => {
     setClient(true);
   }, []);
@@ -118,7 +113,6 @@ function Preview() {
 
   return (
     <>
-      {scripts}
       <Header />
       <section className="max-w-5xl w-full mx-auto py-20 px-6">
         <div>
