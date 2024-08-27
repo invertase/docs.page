@@ -15,6 +15,7 @@ import { Header } from "~/layouts/Header";
 import { getMetadata } from "~/meta";
 import { cn } from "~/utils";
 import { Card } from "./Card";
+import { NavLink } from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -44,7 +45,7 @@ export default function GetStartedRoute() {
             Publish docs in 4 steps
           </h1>
           <div className="relative max-w-[800px] space-y-6 mx-auto mt-12">
-            <div className="hidden lg:block absolute w-px bg-gradient-to-b top-10 from-brand-100/50 via-brand-100/50 to-black bottom-0 h-full -left-8" />
+            <div className="hidden lg:block absolute w-px bg-gradient-to-b top-10 from-brand-100/50 via-brand-100/50 bottom-0 h-full -left-8" />
             <Install />
             <AddContent />
             <PreviewDocs />
@@ -75,7 +76,25 @@ function Install() {
       step={1}
       title="Install"
       description="Add docs.page to your project"
-      asset={<img src="/assets/preview/terminal.png" alt="Terminal Command" />}
+      asset={
+        <img
+          src="/assets/preview/terminal.png"
+          alt="Terminal Command"
+          className=""
+        />
+      }
+      meta={
+        <p>
+          Run the{" "}
+          <a
+            href="https://use.docs.page/cli/commands/init"
+            className="underline"
+          >
+            CLI init
+          </a>{" "}
+          command in your project to add docs.page to your project.
+        </p>
+      }
     >
       <ActionButton
         onClick={() => {
@@ -105,7 +124,21 @@ function AddContent() {
       step={2}
       title="Add Content"
       description="Add markdown to a page"
-      asset={<img src="/assets/preview/add-content.png" alt="Markdown" />}
+      asset={
+        <img
+          src="/assets/preview/add-content.png"
+          alt="Markdown"
+          className="w-full"
+        />
+      }
+      meta={
+        <p>
+          <a href="https://use.docs.page/writing-content" className="underline">
+            Write your documentation
+          </a>{" "}
+          using Markdown, adding new pages to your `docs` directory.
+        </p>
+      }
     >
       <ActionButton
         onClick={() => {
@@ -125,7 +158,22 @@ function PreviewDocs() {
       step={3}
       title="Preview Docs"
       description="Preview your docs.page site"
-      asset={<img src="/assets/preview/add-content.png" alt="Markdown" />}
+      asset={
+        <img
+          src="/assets/preview/add-content.png"
+          alt="Markdown"
+          className="w-full"
+        />
+      }
+      meta={
+        <p>
+          View your documentation locally before publishing it to the web using{" "}
+          <NavLink to="/preview" className="underline">
+            Local Preview
+          </NavLink>{" "}
+          mode.
+        </p>
+      }
     >
       <ActionButton
         onClick={() => {
@@ -133,7 +181,7 @@ function PreviewDocs() {
         }}
       >
         <EyeIcon size={16} />
-        <span>Preview</span>
+        <span>Local Preview</span>
       </ActionButton>
     </Card>
   );
@@ -151,29 +199,63 @@ function PublishChanges() {
       step={4}
       title="Publish Changes"
       description="Make your changes public"
-      asset={<img src="/assets/preview/add-content.png" alt="Markdown" />}
-    >
-      <div>
-        <input
-          className="border border-white rounded-full px-3 py-1"
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
+      asset={
+        <img
+          src="/assets/preview/add-content.png"
+          alt="Markdown"
+          className="w-full"
         />
-        <div>{isInvalid ? "Invalid URL" : null}</div>
-      </div>
+      }
+      meta={
+        <div className="space-y-3">
+          <p>
+            Push your changes to your GitHub repository to publish your
+            docs.page website to the public web.
+          </p>
+          <p>
+            Enter your GitHub repository URL below to visit your docs.page
+            website.
+          </p>
+          <div className="flex items-start gap-2">
+            <div className="grow">
+              <input
+                className="w-full border border-white/10 rounded-md px-3 py-2 bg-gradient-to-br from-brand-900/90 to-black text-white"
+                type="text"
+                value={input}
+                placeholder="https://github.com/org/repo"
+                onChange={(e) => setInput(e.target.value)}
+              />
+              <div className="text-xs mt-1 text-red-500">
+                {isInvalid ? "Enter a valid GitHub repository URL" : null}
+              </div>
+            </div>
+            <button
+              type="button"
+              className={cn(
+                "bg-white hover:bg-white/90 size-9 rounded flex items-center justify-center text-black",
+                {
+                  "opacity-50 cursor-not-allowed": !input || isInvalid,
+                }
+              )}
+              onClick={() => {
+                if (!input || isInvalid) {
+                  return;
+                }
 
+                window.location.href = `https://docs.page/${match![1]}/${
+                  match![2]
+                }`;
+              }}
+            >
+              <ExternalLinkIcon size={16} />
+            </button>
+          </div>
+        </div>
+      }
+    >
       <ActionButton
-        disabled={!input || isInvalid}
-        className={cn({
-          "opacity-50": !input || isInvalid,
-        })}
         onClick={() => {
-          if (!input || isInvalid) {
-            return;
-          }
-
-          window.location.href = `https://docs.page/${match![1]}/${match![2]}`;
+          window.location.href = "https://use.docs.page/publishing";
         }}
       >
         <ExternalLinkIcon size={16} />
@@ -189,8 +271,8 @@ function ActionButton({ className, ...props }: ComponentProps<"button">) {
       {...props}
       type="button"
       className={cn(
-        "inline-flex items-center gap-2 bg-white text-black px-3 py-2 font-medium rounded-md",
-        className,
+        "inline-flex items-center gap-2 bg-white hover:bg-white/90 transition-all text-black px-3 py-2 font-medium rounded-md",
+        className
       )}
     />
   );

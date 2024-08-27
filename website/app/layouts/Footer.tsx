@@ -4,7 +4,7 @@ export function Footer() {
   return (
     <footer className="max-w-3xl mx-auto grid grid-cols-1 md:grid-cols-2 py-12">
       <div className="w-full mx-auto md:flex justify-end md:border-r border-white/10 md:pr-12">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 justify-center">
           <img src="/logo.png" alt="Logo" className="h-6" />
           <svg
             xmlns="http://www.w3.org/2000/svg"
