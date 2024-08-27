@@ -84,7 +84,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
       >
         <script
           dangerouslySetInnerHTML={{
-            __html: `window.ENV = ${JSON.stringify(data!.ENV)}`,
+            __html: `window.ENV = ${
+              data?.ENV ? JSON.stringify(data.ENV) : "{}"
+            }`,
           }}
         />
         {children}
@@ -115,7 +117,7 @@ export default function App() {
       if (states.every((state) => state === "idle")) return "idle";
       return "loading";
     },
-    [navigation.state, fetchers],
+    [navigation.state, fetchers]
   );
 
   useEffect(() => {

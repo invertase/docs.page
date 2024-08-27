@@ -10,7 +10,7 @@ type Props = {
 export function Card(props: Props) {
   return (
     <div className="relative">
-      <div className="hidden lg:flex absolute -left-[60px] top-4 bg-gradient-to-br from-brand-900/90 to-black border border-brand-100/20 text-brand-50 rounded-full size-14 text-2xl items-center justify-center font-bold">
+      <div className="hidden lg:flex absolute -left-[60px] top-4 bg-gradient-to-br from-brand-900/90 to-black border border-brand-100/20 text-brand-100 rounded-full size-14 text-2xl items-center justify-center font-bold">
         {props.step}
       </div>
       <div className="bg-black rounded-xl p-6 lg:ml-8 lg:grid grid-cols-12 gap-12">

@@ -261,7 +261,7 @@ function ActionButton({ className, ...props }: ComponentProps<"button">) {
       {...props}
       type="button"
       className={cn(
-        "inline-flex items-center gap-2 bg-white hover:bg-white/90 transition-all text-black px-3 py-2 font-medium rounded-md",
+        "inline-flex items-center gap-2 bg-brand-50 hover:bg-brand-50/90 transition-all text-black px-3 py-2 font-medium rounded-md",
         className,
       )}
     />
