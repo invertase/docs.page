@@ -1,6 +1,6 @@
 import { type ComponentProps, useEffect, useState } from "react";
 
-import docsearch from "@docsearch/css/dist/style.css?url";
+import { NavLink } from "@remix-run/react";
 import {
   BookIcon,
   CheckIcon,
@@ -14,7 +14,6 @@ import { Header } from "~/layouts/Header";
 import { getLinkDescriptors, getMetadata } from "~/meta";
 import { cn } from "~/utils";
 import { Card } from "./Card";
-import { NavLink } from "@remix-run/react";
 
 export const links = getLinkDescriptors;
 export const meta = getMetadata;
@@ -226,7 +225,7 @@ function PublishChanges() {
                 "bg-white hover:bg-white/90 size-9 rounded flex items-center justify-center text-black",
                 {
                   "opacity-50 cursor-not-allowed": !input || isInvalid,
-                }
+                },
               )}
               onClick={() => {
                 if (!input || isInvalid) {
@@ -263,7 +262,7 @@ function ActionButton({ className, ...props }: ComponentProps<"button">) {
       type="button"
       className={cn(
         "inline-flex items-center gap-2 bg-white hover:bg-white/90 transition-all text-black px-3 py-2 font-medium rounded-md",
-        className
+        className,
       )}
     />
   );
