@@ -4,7 +4,7 @@ import { Icon } from "~/components/Icon";
 
 export function Header() {
   return (
-    <header className="max-w-5xl mx-auto py-8 px-3 flex items-center">
+    <header className="max-w-5xl mx-auto py-8 px-3 flex flex-col sm:flex-row gap-6 items-center">
       <Link to="/" className="group flex items-center gap-3">
         <img src="/logo.png" alt="docs.page logo" className="h-6" />
         <svg
