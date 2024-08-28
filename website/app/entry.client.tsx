@@ -26,7 +26,7 @@ if (import.meta.env.PROD && window.__docsPage) {
 
   // A vanity domain is a rewrite request.
   if (isVanityDomain) {
-    const basename = `/${owner}/${repository}`;
+    const basename = `/${owner}`;
 
     window.__remixContext.basename = basename;
 
