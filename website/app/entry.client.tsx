@@ -17,8 +17,8 @@ if (import.meta.env.PROD) {
 
   if (hostname === "invertase.docs.page") {
     console.log('TESTING', window.__remixContext);
-    window.__remixContext.basename = "/invertase/supabase-js~docs-test";
-    window.__remixContext.url = "/memes";
+    window.__remixContext.basename = "/";
+    window.__remixContext.url = "/supabase-js~docs-test/memes";
     console.log('TESTING DONE', window.__remixContext);
   }
 
