@@ -187,6 +187,11 @@
           "icon": "globe"
         },
         {
+          "title": "Vanity Domains",
+          "href": "/vanity-domains",
+          "icon": "wand-magic-sparkles"
+        },
+        {
           "title": "Search",
           "href": "/search",
           "icon": "magnifying-glass"
