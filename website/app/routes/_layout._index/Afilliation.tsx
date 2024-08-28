@@ -3,11 +3,11 @@ import { HeartIcon } from "lucide-react";
 export function Affiliation() {
   return (
     <section className="max-w-5xl mx-auto py-16 space-y-6 text-center">
-      <p className="flex justify-center gap-3 items-center">
+      <p className="flex justify-center gap-3 items-center text-brand-50">
         <HeartIcon size={18} />
         <span>Loved by the Dart & Flutter Community!</span>
       </p>
-      <p className="font-light">
+      <p className="font-light text-brand-50">
         Trusted by more than 75,000 open-source developers
       </p>
       <div className="grid grid-cols-2 lg:grid-cols-4 max-w-xl mx-auto flex-wrap gap-16 opacity-75 pt-4">

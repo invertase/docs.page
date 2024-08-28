@@ -23,7 +23,7 @@ export function Platform() {
             <img
               src="/assets/manage-docs-as-code.png"
               alt="Manage Docs as Code"
-              className="absolute inset-x-0 top-[-40px]"
+              className="absolute inset-x-0 top-[10px]"
             />
           </PlatformCard>
           <PlatformCard
@@ -82,7 +82,7 @@ type PlatformCardProps = {
 
 function PlatformCard(props: PlatformCardProps) {
   return (
-    <div className="relative overflow-hidden bg-gradient-to-b from-brand-100/5 rounded-xl border border-white/5 max-w-[400px] mx-auto md:mx-auto">
+    <div className="relative overflow-hidden bg-gradient-to-b from-brand-1000 to-brand-1000/50 rounded-xl border border-white/5 max-w-[400px] mx-auto md:mx-auto">
       <div className="h-[200px]">{props.children}</div>
       <div className="text-center px-3 py-6 space-y-3">
         <h4>{props.title}</h4>
@@ -97,77 +97,26 @@ function BeautifulByDesign() {
     <img
       src="/assets/beautiful-by-design.png"
       alt="Publish Instantly"
-      className="absolute inset-x-0 top-0 opacity-g0"
+      className="absolute inset-x-0 top-2"
     />
   );
 }
 
 function Preview() {
-  return <div />;
+  return (
+    <img
+      src="/assets/collaborate-with-live-preview.png"
+      alt="Publish Instantly"
+      className="absolute inset-0 top-2 scale-95"
+    />
+  );
 }
 
 function Customize() {
   return (
-    <div
-      style={
-        {
-          // background: "radial-gradient(#201B03, transparent)",
-        }
-      }
-    >
-      <pre className="select-none p-6 rounded-md text-xs">
-        <code>
-          <div>{"{"}</div>
-          <div>
-            {"  "}
-            <span className="text-brand-400">"logo"</span>
-            <span>{": {"}</span>
-          </div>
-          <div>
-            {"    "}
-            <span className="text-brand-400">"light"</span>
-            <span>{": "}</span>
-            <span>"/assets/logo.png",</span>
-          </div>
-          <div>
-            {"    "}
-            <span className="text-brand-400">"dark"</span>
-            <span>{": "}</span>
-            <span>"/assets/logo-dark.png"</span>
-          </div>
-          <div>{"  },"}</div>
-          <div>
-            {"  "}
-            <span className="text-brand-400">"theme"</span>
-            <span>{": {"}</span>
-          </div>
-          <div>
-            {"    "}
-            <span className="text-brand-400">"defaultTheme"</span>
-            <span>{": "}</span>
-            <span>"dark",</span>
-          </div>
-          <div>
-            {"    "}
-            <span className="text-brand-400">"primary"</span>
-            <span>{": "}</span>
-            <span>{'"'}</span>
-            <span className="bg-[#FF5722]">#FF5722</span>
-            <span>{'"'}</span>
-            <span>{","}</span>
-          </div>
-          <div>
-            {"    "}
-            <span className="text-brand-400">"primaryDark"</span>
-            <span>{": "}</span>
-            <span>{'"'}</span>
-            <span className="bg-[#E64A19]">#E64A19</span>
-            <span>{'"'}</span>
-          </div>
-          <div>{"  }"}</div>
-          <div>{"}"}</div>
-        </code>
-      </pre>
-    </div>
+    <img
+      src="/assets/customise-and-theme.png"
+      alt="Publish Instantly"
+    />
   );
 }
