@@ -20,21 +20,13 @@ export function Platform() {
             description="Manage docs like your codebase, with branching, version
             control, reviews, and testing."
           >
-            <img
-              src="/assets/manage-docs-as-code.png"
-              alt="Manage Docs as Code"
-              className="absolute inset-x-0 top-[10px]"
-            />
+            <Manage />
           </PlatformCard>
           <PlatformCard
             title="Publish Instantly"
             description="Create fully managed documentation sites in seconds, without complex setup."
           >
-            <img
-              src="/assets/publish-instantly.png"
-              alt="Publish Instantly"
-              className="absolute inset-x-0 top-[-50px] scale-[1.15]"
-            />
+            <Publish />
           </PlatformCard>
           <PlatformCard
             title="Collaborate with Live Preview"
@@ -92,10 +84,20 @@ function PlatformCard(props: PlatformCardProps) {
   );
 }
 
+function Manage() {
+  return (
+    <img
+      src="/assets/manage-docs-as-code.png?v=1"
+      alt="Manage Docs as Code"
+      className="absolute inset-x-0 top-[10px]"
+    />
+  );
+}
+
 function BeautifulByDesign() {
   return (
     <img
-      src="/assets/beautiful-by-design.png"
+      src="/assets/beautiful-by-design.png?v=1"
       alt="Publish Instantly"
       className="absolute inset-x-0 top-2"
     />
@@ -105,18 +107,25 @@ function BeautifulByDesign() {
 function Preview() {
   return (
     <img
-      src="/assets/collaborate-with-live-preview.png"
+      src="/assets/collaborate-with-live-preview.png?v=1"
       alt="Publish Instantly"
       className="absolute inset-0 top-2 scale-95"
     />
   );
 }
 
-function Customize() {
+function Publish() {
   return (
     <img
-      src="/assets/customise-and-theme.png"
+      src="/assets/publish-instantly.png?v=1"
       alt="Publish Instantly"
+      className="absolute inset-x-0 top-[-50px] scale-[1.15]"
     />
+  );
+}
+
+function Customize() {
+  return (
+    <img src="/assets/customise-and-theme.png?v=1" alt="Publish Instantly" />
   );
 }
