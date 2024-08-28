@@ -26,7 +26,10 @@ if (import.meta.env.PROD && window.__docsPage) {
 
   // A vanity domain is a rewrite request.
   if (isVanityDomain) {
-    window.__remixContext.basename = "/";
+    const basename = `/${owner}/${repository}`;
+
+    window.__remixContext.basename = basename;
+
     // Remove the owner from the URL (since it's now part of the hostname).
     window.__remixContext.url = window.__remixContext.url.replace(
       `/${owner}`,
