@@ -194,7 +194,7 @@ function Preview() {
         <div>
           <div className="max-w-3xl mx-auto">
             <h1 className="text-4xl !leading-[45px] lg:!leading-[65px] font-bold text-center text-brand-50 drop-shadow-md">
-              Live Preview
+              Local Preview
             </h1>
             <h2 className="text-brand-100 text-center">
               Live preview your local documentation in real-time directly in the

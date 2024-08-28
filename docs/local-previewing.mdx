@@ -3,4 +3,29 @@ title: Local Previews
 description: Preview your documentation changes locally before they go live.
 ---
 
-TODO
+Developing your documentation in Markdown is a great way to quickly iterate on your content without leaving the code editor or dealing with a
+complex CMS. However, it can be difficult to visualize how your content will look once it's live on your site. That's where local previews come in.
+
+## Preview Mode
+
+[Local Preview Mode](https://docs.page/preview) takes advantage of the new [File System API](https://developer.mozilla.org/en-US/docs/Web/API/File_System_API) available
+on modern browsers which enables docs.page to read files from your local file system. Using this API, docs.page can display your documentation as if it were live on your site,
+without needing to push your changes to a live site, with some limitations such as automatic content reloading.
+
+<Steps>
+  <Step title="Select your directory">
+    On the [preview](https://docs.page/preview) page, click the select directory button:
+
+    ![Select Directory](/assets/local-preview/step-1.png)
+
+    When prompted, select the directory where your documentation files are stored. This should be the root directory with a `docs.json` configuration file.
+  </Step>
+  <Step title="Modify your content">
+    Once selected, your documentation will be displayed in the browser. Make modifications to your content in your code editor and save the changes. The changes will be automatically reflected in the preview.
+  </Step>
+  <Step title="Grant permissions">
+    In some scenarios, such as closing the browser or refreshing the page, you may need to grant permissions to access the directory again for security reasons. Click the "Grant Read Permission" button to allow access to the directory again:
+
+    ![Grant Permission](/assets/local-preview/step-3.png)
+  </Step>
+</Steps>
