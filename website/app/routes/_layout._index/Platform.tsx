@@ -1,5 +1,7 @@
 import { BookTextIcon, LockIcon } from "lucide-react";
 
+const ASSET_VERSION = 2;
+
 export function Platform() {
   return (
     <section className="max-w-5xl mx-auto py-20 space-y-6">
@@ -87,7 +89,7 @@ function PlatformCard(props: PlatformCardProps) {
 function Manage() {
   return (
     <img
-      src="/assets/manage-docs-as-code.png?v=1"
+      src={`/assets/manage-docs-as-code.png?v=${ASSET_VERSION}`}
       alt="Manage Docs as Code"
       className="absolute inset-x-0 top-[10px]"
     />
@@ -97,7 +99,7 @@ function Manage() {
 function BeautifulByDesign() {
   return (
     <img
-      src="/assets/beautiful-by-design.png?v=1"
+      src={`/assets/beautiful-by-design.png?v=${ASSET_VERSION}`}
       alt="Publish Instantly"
       className="absolute inset-x-0 top-2"
     />
@@ -107,7 +109,7 @@ function BeautifulByDesign() {
 function Preview() {
   return (
     <img
-      src="/assets/collaborate-with-live-preview.png?v=1"
+      src={`/assets/collaborate-with-live-preview.png?v=${ASSET_VERSION}`}
       alt="Publish Instantly"
       className="absolute inset-0 top-2 scale-95"
     />
@@ -117,7 +119,7 @@ function Preview() {
 function Publish() {
   return (
     <img
-      src="/assets/publish-instantly.png?v=1"
+      src={`/assets/publish-instantly.png?v=${ASSET_VERSION}`}
       alt="Publish Instantly"
       className="absolute inset-x-0 top-[-50px] scale-[1.15]"
     />
@@ -126,6 +128,9 @@ function Publish() {
 
 function Customize() {
   return (
-    <img src="/assets/customise-and-theme.png?v=1" alt="Publish Instantly" />
+    <img
+      src={`/assets/customise-and-theme.png?v=${ASSET_VERSION}`}
+      alt="Publish Instantly"
+    />
   );
 }
