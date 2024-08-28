@@ -79,7 +79,7 @@ function PlatformCard(props: PlatformCardProps) {
     <div className="relative overflow-hidden bg-gradient-to-b from-brand-1000 to-brand-1000/50 rounded-xl border border-white/5 max-w-[400px] mx-auto md:mx-auto">
       <div className="h-[200px]">{props.children}</div>
       <div className="text-center px-3 py-6 space-y-3">
-        <h4>{props.title}</h4>
+        <h4 className="text-brand-50">{props.title}</h4>
         <p className="text-brand-50 text-sm">{props.description}</p>
       </div>
     </div>
@@ -121,7 +121,7 @@ function Publish() {
     <img
       src={`/assets/publish-instantly.png?v=${ASSET_VERSION}`}
       alt="Publish Instantly"
-      className="absolute inset-x-0 top-[-50px] scale-[1.15]"
+      className="absolute inset-x-0 top-2"
     />
   );
 }
