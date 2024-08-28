@@ -24,6 +24,8 @@ if (import.meta.env.PROD) {
     const { owner, repository } = window.__docsPage;
     const basename = `/${owner}/${repository}`;
 
+    console.log('Remix Context', window.__remixContext);
+
     // Set the base name to the owner and repository (e.g. `/invertase/docs.page`).
     window.__remixContext.basename = basename;
 
