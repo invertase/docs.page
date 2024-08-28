@@ -44,7 +44,7 @@ export function Step(props: StepProps) {
           <span className="before:content-[counter(line-number)] text-xl font-bold" />
         )}
       </div>
-      <div className="grow pb-6">
+      <div className="w-full min-w-0 pb-6">
         {!!props.title && (
           <Heading type="h3" className="m-0">
             {props.title}
