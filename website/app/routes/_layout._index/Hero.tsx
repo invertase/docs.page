@@ -15,13 +15,17 @@ export function Hero() {
         <br /> from your code editor using markdown and a public GitHub
         repository.
       </p>
-      <div className="flex justify-center gap-3">
-        <Button as="a" cta href="/get-started">
-          Start Publishing
-        </Button>
-        <Button as="a" href="https://use.docs.page">
-          Documentation
-        </Button>
+      <div className="flex flex-col sm:flex-row justify-center gap-3">
+        <div className="flex justify-center">
+          <Button as="a" cta href="/get-started">
+            Start Publishing
+          </Button>
+        </div>
+        <div className="flex justify-center">
+          <Button as="a" href="https://use.docs.page">
+            Documentation
+          </Button>
+        </div>
       </div>
     </section>
   );

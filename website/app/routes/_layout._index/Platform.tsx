@@ -101,7 +101,7 @@ function BeautifulByDesign() {
     <img
       src={`/assets/beautiful-by-design.png?v=${ASSET_VERSION}`}
       alt="Publish Instantly"
-      className="absolute inset-x-0 top-2"
+      className="absolute inset-x-0 top-0 lg:top-2 scale-75 lg:scale-100"
     />
   );
 }
