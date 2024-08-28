@@ -34,7 +34,7 @@ export function HeroGradient(props: Props) {
       )}
     >
       <title>Background Gradient</title>
-      <g clip-path="url(#clip0_209_493)">
+      <g clipPath="url(#clip0_209_493)">
         <mask
           id="mask0_209_493"
           maskUnits="userSpaceOnUse"
@@ -52,20 +52,20 @@ export function HeroGradient(props: Props) {
           <path
             d="M1465.5 0H33.4972C14.9972 0 0 15.0074 0 33.52V1642.48C0 1660.99 14.9972 1676 33.4972 1676H1465.5C1484 1676 1499 1660.99 1499 1642.48V33.52C1499 15.0074 1484 0 1465.5 0Z"
             fill="#F7E9A3"
-            fill-opacity="0.02"
+            fillOpacity="0.02"
           />
           <g filter="url(#filter0_f_209_493)">
             <path
               d="M1329.42 292.253H169.579C151.079 292.253 136.082 307.26 136.082 325.773V1293.66C136.082 1312.18 151.079 1327.18 169.579 1327.18H1329.42C1347.92 1327.18 1362.92 1312.18 1362.92 1293.66V325.773C1362.92 307.26 1347.92 292.253 1329.42 292.253Z"
               fill="url(#paint1_linear_209_493)"
-              fill-opacity="0.24"
+              fillOpacity="0.24"
             />
           </g>
           <g filter="url(#filter1_f_209_493)">
             <path
               d="M389.332 644.294C372.92 622.177 388.696 590.79 416.225 590.79H1083.76C1111.1 590.79 1126.93 621.807 1110.89 643.97L851.647 1002.21C845.347 1010.92 835.258 1016.08 824.516 1016.08H682.081C671.481 1016.08 661.508 1011.06 655.188 1002.54L389.332 644.294Z"
               fill="url(#paint2_linear_209_493)"
-              fill-opacity="0.72"
+              fillOpacity="0.72"
             />
           </g>
         </g>
@@ -78,9 +78,9 @@ export function HeroGradient(props: Props) {
           width="1771.53"
           height="1579.62"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feBlend
             mode="normal"
             in="SourceGraphic"
@@ -99,9 +99,9 @@ export function HeroGradient(props: Props) {
           width="1237.44"
           height="928.078"
           filterUnits="userSpaceOnUse"
-          color-interpolation-filters="sRGB"
+          colorInterpolationFilters="sRGB"
         >
-          <feFlood flood-opacity="0" result="BackgroundImageFix" />
+          <feFlood floodOpacity="0" result="BackgroundImageFix" />
           <feBlend
             mode="normal"
             in="SourceGraphic"
@@ -122,7 +122,7 @@ export function HeroGradient(props: Props) {
           gradientUnits="userSpaceOnUse"
         >
           <stop stopColor="#D9D9D9" />
-          <stop offset="1" stopColor="#D9D9D9" stop-opacity="0" />
+          <stop offset="1" stopColor="#D9D9D9" stopOpacity="0" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_209_493"

@@ -16,7 +16,7 @@ type PreviewContext = BaseContext & {
   getFile: (path: string) => Promise<string | undefined>;
 };
 
-type PageContext = BaseContext & {
+export type DocsPageContext = BaseContext & {
   // The owner of the repository, e.g. `invertase`.
   owner: string;
   // The repository name, e.g. `docs.page`.
@@ -29,7 +29,7 @@ type PageContext = BaseContext & {
   preview: false;
 };
 
-export type Context = PageContext | PreviewContext;
+export type Context = DocsPageContext | PreviewContext;
 
 export const PageContext = createContext<Context | undefined>(undefined);
 

@@ -1,6 +1,6 @@
 {
   "name": "docs.page",
-  "description": "Zero config GitHub documentation site generator",
+  "description": "Ship documentation, like you ship code",
   "logo": {
     "href": "https://docs.page",
     "light": "https://static.invertase.io/assets/docs.page/docs-page-logo.png"

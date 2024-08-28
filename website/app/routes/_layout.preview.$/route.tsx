@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { getPreviewBundle } from "../../api";
 import { useTrigger } from "./trigger";
 import {
+  ConfigurationFileNotFoundError,
+  FileNotFoundError,
   getFile,
   queryClient,
   useDirectoryHandle,
@@ -95,6 +97,80 @@ function Preview() {
     }
   }, [fetcher.submit, content.data]);
 
+  if (
+    content.isFetched &&
+    content.error &&
+    content.error instanceof ConfigurationFileNotFoundError
+  ) {
+    return (
+      <>
+        <Header />
+        <div className="p-6 text-center max-w-2xl w-full mx-auto my-24">
+          <h1 className="text-4xl font-bold text-brand-50 mb-3">
+            No Configuration File Found
+          </h1>
+          <div className="text-brand-100 space-y-3">
+            <p>
+              The selected directory does not contain a docs.json configuration
+              file.
+            </p>
+            <p>
+              To get started, create a docs.json file at the root of your
+              project. Read the{" "}
+              <a
+                href="https://use.docs.page/configuration"
+                target="_blank"
+                rel="noreferrer"
+                className="underline"
+              >
+                documentation
+              </a>{" "}
+              for more information on how to create a configuration file.
+            </p>
+          </div>
+        </div>
+        <Footer />
+        <Toolbar />
+      </>
+    );
+  }
+
+  if (
+    content.isFetched &&
+    content.error &&
+    content.error instanceof FileNotFoundError
+  ) {
+    return (
+      <>
+        <Header />
+        <div className="p-6 text-center max-w-5xl w-full mx-auto my-24">
+          <h1 className="text-4xl font-bold text-brand-50 mb-3">
+            File Not Found
+          </h1>
+          <div className="text-brand-100 space-y-3">
+            <p>The file you are trying to preview could not be found.</p>
+            <p>
+              To get started, please add a new MDX file to one of the following
+              paths:
+            </p>
+            <ul className="border border-white/10 rounded max-w-lg mx-auto">
+              {content.error.filePaths.map((path) => (
+                <li
+                  key={path}
+                  className="border-b border-white/10 last:border-none"
+                >
+                  /docs{path}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <Footer />
+        <Toolbar />
+      </>
+    );
+  }
+
   if (bundle && directory.data) {
     return (
       <PageContext.Provider
@@ -148,6 +224,8 @@ function Trigger() {
   const selectDirectory = useSelectDirectory();
   const requestPermissions = useRequestPermissions();
   const restart = useRestart();
+
+  console.log(state, error);
 
   if (state === "UNSUPPORTED") {
     return (
