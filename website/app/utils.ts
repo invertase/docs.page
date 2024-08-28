@@ -54,7 +54,8 @@ export function getRequestParams(args: LoaderFunctionArgs) {
   }
   
   if (!owner || !repository) {
-    throw new Error(`Invalid routing scenario for request ${url.toString()}`);
+    console.error('Invalid routing scenario for request', url.toString());
+    throw new Response('Invalid routing scenario for request', { status: 404 });
   }
 
   // Check if the repo includes a ref (invertase/foo~bar)
