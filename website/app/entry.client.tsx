@@ -12,14 +12,29 @@ declare global {
 // A list of base domains which can run this app in production.
 const DOMAINS = ["docs.page", "staging.docs.page"];
 
-if (import.meta.env.PROD) {
+if (import.meta.env.PROD && window.__docsPage) {
   const hostname = window.location.hostname;
 
+  // // Check if the current hostname is a vanity domain (e.g. `:org.docs.page`).
+  // const isVanityDomain = hostname.includes(".docs.page") && !DOMAINS.includes(hostname);
+
+  // // It's a custom domain if it's not a vanity domain and it's not one of the base domains.
+  // const isCustomDomain = !isVanityDomain && !DOMAINS.includes(hostname);
+
+  // const { owner, repository } = window.__docsPage;
+
+  // if (isVanityDomain) {
+  //   console.log("Vanity domain detected: ", hostname);
+  //   window.__remixContext.basename = "/";
+  //   let url = `/${repository}`;
+
+  // }
+
   if (hostname === "invertase.docs.page") {
-    console.log('TESTING', window.__remixContext);
-    window.__remixContext.basename = "/";
-    window.__remixContext.url = "/supabase-js~docs-test/memes";
-    console.log('TESTING DONE', window.__remixContext);
+    console.log('VANITY DOMAIN', window.__remixContext);
+    // window.__remixContext.basename = "/";
+    // window.__remixContext.url = "/supabase-js~docs-test/memes";
+    // console.log('TESTING DONE', window.__remixContext);
   }
 
   // If we're not on one of the domains above, then we need to modify remix context so
