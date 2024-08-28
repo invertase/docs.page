@@ -33,7 +33,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
   }).catch((response) => {
     throw response;
   });
-
+  
   // Check whether the repository has a domain assigned.
   const domain = domains
     .find(([, repo]) => repo === `${owner}/${repository}`)

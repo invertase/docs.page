@@ -15,26 +15,44 @@ export function getRequestParams(args: LoaderFunctionArgs) {
 
   const url = new URL(args.request.url);
 
-  // If the request URL is via say /invertase/docs.page,
-  // we can extract the owner and repository from the URL.
-  if (args.params.owner && args.params.repository) {
-    owner = args.params.owner;
-    repository = args.params.repository;
+  if (url.hostname === "docs-page.local") {
+    owner = "invertase";
+    repository = "docs.page";
+    ref = 'next';
   }
-  // Otherwise, it might be a client request from say `use.docs.page/getting-started`
-  // In this case, we want to match the host against a domain and extract the owner and repository.
+
+  // If it's a request to docs.page or staging.docs.page, we can extract the owner and repository from the URL
+  // e.g. https://docs.page/invertase/melos/getting-started
+  else if (
+    url.hostname === "docs.page" ||
+    url.hostname === "staging.docs.page"
+  ) {
+    const chunks = path.split("/");
+    owner = chunks.at(0)!;
+    repository = chunks.at(1)!;
+    path = chunks.slice(2).join("/");
+  }
+  // If it's a vanity domain, we can extract the owner and repository from the URL
+  // e.g. https://invertase.docs.page/melos/getting-started
+  else if (url.hostname.endsWith(".docs.page")) {
+    const chunks = url.hostname.split(".");
+    owner = chunks.at(0)!;
+    repository = path.split("/").at(0)!;
+    path = path.split("/").slice(1).join("/");
+  }
+  // Else it's a custom domain, e.g. https://melos.invertase.dev/getting-started
   else {
     const domain = domains.find(([host]) => host === url.host)?.at(0);
 
     if (!domain) {
       throw new Error(
-        `Client host request "${url.host}" does not match a domain.`,
+        `Client host request "${url.host}" does not match a domain.`
       );
     }
 
     [owner, repository] = domain.split("/");
   }
-
+  
   if (!owner || !repository) {
     throw new Error(`Invalid routing scenario for request ${url.toString()}`);
   }
@@ -126,17 +144,17 @@ export function getBlobSrc(ctx: Context, path: string) {
 
   if (source.type === "branch") {
     return `https://raw.githubusercontent.com/${owner}/${repository}/${encodeURIComponent(
-      ref ?? baseBranch,
+      ref ?? baseBranch
     )}/docs${ensureLeadingSlash(path)}`;
   }
   if (source.type === "PR") {
     return `https://raw.githubusercontent.com/${owner}/${repository}/${encodeURIComponent(
-      ref ?? baseBranch,
+      ref ?? baseBranch
     )}/docs${ensureLeadingSlash(path)}`;
   }
 
   return `https://raw.githubusercontent.com/${owner}/${repository}/HEAD/docs${ensureLeadingSlash(
-    path,
+    path
   )}`;
 }
 

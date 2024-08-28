@@ -12,7 +12,7 @@ declare global {
 // A list of base domains which can run this app in production.
 const DOMAINS = ["docs.page", "staging.docs.page"];
 
-if (import.meta.env.PROD && window.__docsPage) {
+if (window.__docsPage) {
   const hostname = window.location.hostname;
 
   // Check if the current hostname is a vanity domain (e.g. `:org.docs.page`).
@@ -43,14 +43,15 @@ if (import.meta.env.PROD && window.__docsPage) {
   }
   // A custom domain is a proxy request.
   else if (isCustomDomain) {
+    console.log("Custom domain detected: ", { hostname, owner, repository });
     const basename = `/${owner}/${repository}`;
 
     // Set the base name to the owner and repository (e.g. `/invertase/docs.page`).
-    window.__remixContext.basename = basename;
+    window.__remixContext.basename = '';
 
     // Replace the URL which includes the repository with the correct URL.
     // For example: `/invertase/docs.page/configuration` -> `/configuration`.
-    window.__remixContext.url = window.__remixContext.url.replace(basename, "");
+    window.__remixContext.url = '/invertase/docs.page/configuration';
 
     console.log("Rewriting context for custom domain: ", {
       basename: window.__remixContext.basename,

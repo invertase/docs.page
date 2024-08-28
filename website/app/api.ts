@@ -24,9 +24,10 @@ type GetBundleArgs = {
 
 const PRODUCTION = process.env.NODE_ENV === "production";
 
-const API_URL =
-  process.env.API_URL ||
-  (PRODUCTION ? "https://api.docs.page" : "http://localhost:8080");
+// const API_URL =
+//   process.env.API_URL ||
+//   (PRODUCTION ? "https://api.docs.page" : "http://localhost:8080");
+const API_URL = "https://staging-api.docs.page";
 
 export async function getBundle(args: GetBundleArgs): Promise<BundlerOutput> {
   const params = new URLSearchParams({
