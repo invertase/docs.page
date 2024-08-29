@@ -12,9 +12,12 @@ export function getRequestParams(args: LoaderFunctionArgs) {
   let repository: string;
   let ref: string | undefined;
   let path = args.params["*"] || "";
-  let vanity = false;
-
+  
   const url = new URL(args.request.url);
+
+  // A rewritten request comes through with a header containing `x-docs-page-domain`,
+  // which is the domain the request was rewritten from so we treat it as a vanity domain.
+  let vanity = args.request.headers.get("x-docs-page-domain") !== null;
 
   // If it's a request to localhost, docs.page or staging.docs.page, we can extract
   // the owner and repository from the URL e.g. https://docs.page/invertase/melos/getting-started
@@ -28,7 +31,7 @@ export function getRequestParams(args: LoaderFunctionArgs) {
     repository = chunks.at(1)!;
     path = chunks.slice(2).join("/");
   }
-  // If it's a vanity domain, we can extract the owner and repository from the URL
+  // If it's a vanity domain request (from the client), we can extract the owner and repository from the URL
   // e.g. https://invertase.docs.page/melos/getting-started
   else if (url.hostname.endsWith(".docs.page")) {
     const chunks = url.hostname.split(".");
