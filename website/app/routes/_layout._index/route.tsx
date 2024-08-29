@@ -9,24 +9,8 @@ import { Features } from "./Features";
 import { Hero } from "./Hero";
 import { Platform } from "./Platform";
 
-import { loader as docsRouteLoader } from "~/routes/$/route";
-import { LoaderFunctionArgs } from "@vercel/remix";
-
 export const links = getLinkDescriptors;
 export const meta = getMetadata;
-
-export const loader = async (args: LoaderFunctionArgs) => {
-  const url = new URL(args.request.url);
-
-  console.log('URL HOSTNAME', url.hostname);
-
-  // If url hostname is not docs.page or staging.docs.page, we need to return the docsRouteLoader
-  if (!["docs.page", "staging.docs.page"].includes(url.hostname)) {
-    return docsRouteLoader(args);
-  }
-
-  return {};
-};
 
 export default function Homepage() {
   return (

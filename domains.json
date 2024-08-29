@@ -1,5 +1,4 @@
 [
-  ["test.docs.page", "invertase/docs.page"],	
   ["use.docs.page", "invertase/docs.page"],
   ["docs.globe.dev", "invertase/globe"],
   ["docs.turing.sh", "TuringAI-Team/turing-ai-api"],
