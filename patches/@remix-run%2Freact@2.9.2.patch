@@ -1,0 +1,26 @@
+diff --git a/dist/browser.js b/dist/browser.js
+index 0a3af6ef046f0def02e8b262042328e4e117e3c3..b0b77b94983b9288d7d8451270c5105a844bb19d 100644
+--- a/dist/browser.js
++++ b/dist/browser.js
+@@ -83,7 +83,7 @@ function RemixBrowser(_props) {
+     if (initialPathname !== hydratedPathname && !window.__remixContext.isSpaMode) {
+       let errorMsg = `Initial URL (${initialPathname}) does not match URL at time of hydration ` + `(${hydratedPathname}), reloading page...`;
+       console.error(errorMsg);
+-      window.location.reload();
++      // window.location.reload();
+       // Get out of here so the reload can happen - don't create the router
+       // since it'll then kick off unnecessary route.lazy() loads
+       return /*#__PURE__*/React__namespace.createElement(React__namespace.Fragment, null);
+diff --git a/dist/esm/browser.js b/dist/esm/browser.js
+index 76196947af506a323934dbcacb8685d8a883f247..5b8c2975c6cb65745bf3daffd662c6e12bc19b12 100644
+--- a/dist/esm/browser.js
++++ b/dist/esm/browser.js
+@@ -123,7 +123,7 @@ function RemixBrowser(_props) {
+     if (initialPathname !== hydratedPathname && !window.__remixContext.isSpaMode) {
+       let errorMsg = `Initial URL (${initialPathname}) does not match URL at time of hydration ` + `(${hydratedPathname}), reloading page...`;
+       console.error(errorMsg);
+-      window.location.reload();
++      // window.location.reload();
+       // Get out of here so the reload can happen - don't create the router
+       // since it'll then kick off unnecessary route.lazy() loads
+       return /*#__PURE__*/React.createElement(React.Fragment, null);
