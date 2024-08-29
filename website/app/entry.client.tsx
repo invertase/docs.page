@@ -23,6 +23,7 @@ if (window.__docsPage) {
   const isCustomDomain = !isVanityDomain && !DOMAINS.includes(hostname);
 
   if (isVanityDomain || isCustomDomain) {
+    window.__remixContext.basename = "/invertase/docs.page";
     window.__remixContext.url = window.location.pathname;
   }
 
