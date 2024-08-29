@@ -9,7 +9,7 @@ export function Demo() {
       <div className="outline outline-[6px] md:outline-[12px] outline-white/5 rounded-md bg-black">
         {/* biome-ignore lint/a11y/useMediaCaption: <explanation> */}
         <video ref={video} controls preload="metadata" className="w-full rounded-xl">
-          <source src="/docs-page-install-2.mp4#t=5" type="video/mp4" />
+          <source src="/docs-page-hero-video.webm#t=1" type="video/webm" />
         </video>
       </div>
     </section>
