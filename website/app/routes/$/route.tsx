@@ -22,7 +22,7 @@ import domains from "../../../../domains.json";
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const requestUrl = new URL(args.request.url);
-  const { owner, repository, ref, path } = getRequestParams(args);
+  const { owner, repository, ref, path, vanity } = getRequestParams(args);
   const environment = getEnvironment();
 
   const bundle = await getBundle({
@@ -78,6 +78,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
     repository,
     ref,
     domain: domain && environment === "production" ? domain : undefined,
+    vanity,
     bundle,
     preview: false,
   } satisfies Context;

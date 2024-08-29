@@ -12,18 +12,14 @@ export function getRequestParams(args: LoaderFunctionArgs) {
   let repository: string;
   let ref: string | undefined;
   let path = args.params["*"] || "";
+  let vanity = false;
 
   const url = new URL(args.request.url);
 
-  if (url.hostname === "docs-page.local") {
-    owner = "invertase";
-    repository = "docs.page";
-    ref = 'next';
-  }
-
-  // If it's a request to docs.page or staging.docs.page, we can extract the owner and repository from the URL
-  // e.g. https://docs.page/invertase/melos/getting-started
-  else if (
+  // If it's a request to localhost, docs.page or staging.docs.page, we can extract
+  // the owner and repository from the URL e.g. https://docs.page/invertase/melos/getting-started
+  if (
+    url.hostname === "localhost" ||
     url.hostname === "docs.page" ||
     url.hostname === "staging.docs.page"
   ) {
@@ -37,8 +33,9 @@ export function getRequestParams(args: LoaderFunctionArgs) {
   else if (url.hostname.endsWith(".docs.page")) {
     const chunks = url.hostname.split(".");
     owner = chunks.at(0)!;
-    repository = path.split("/").at(0)!;
+    repository = path.split("/").at(0)!; // Also includes the ref if it's present
     path = path.split("/").slice(1).join("/");
+    vanity = true;
   }
   // Else it's a custom domain, e.g. https://melos.invertase.dev/getting-started
   else {
@@ -52,10 +49,10 @@ export function getRequestParams(args: LoaderFunctionArgs) {
 
     [owner, repository] = domain.split("/");
   }
-  
+
   if (!owner || !repository) {
-    console.error('Invalid routing scenario for request', url.toString());
-    throw new Response('Invalid routing scenario for request', { status: 404 });
+    console.error("Invalid routing scenario for request", url.toString());
+    throw new Response("Invalid routing scenario for request", { status: 404 });
   }
 
   // Check if the repo includes a ref (invertase/foo~bar)
@@ -69,7 +66,7 @@ export function getRequestParams(args: LoaderFunctionArgs) {
     path = path.split("/").slice(1).join("/");
   }
 
-  return { owner, repository, ref, path };
+  return { owner, repository, ref, path, vanity };
 }
 
 export type SharedEnvironmentVariables = {
@@ -203,9 +200,13 @@ export function getHref(ctx: Context, path: string) {
   // Define the base href for the current request.
   let href = "";
 
-  // Start with `//` to ensure the URL is protocol-relative and includes the domain.
+  // Ensure all links start with the custom domain if it's set.
   if (ctx.domain) {
     href += `https://${ctx.domain}`;
+  } 
+  // If it's a vanity domain, we need to prefix the path with the owner and repository.
+  else if (ctx.vanity) {
+    href += `https://${ctx.owner}.docs.page/${ctx.repository}`;
   }
   // Prefix the path with the owner and repository, e.g. `/invertase/docs.page`.
   else {
@@ -219,7 +220,7 @@ export function getHref(ctx: Context, path: string) {
       href += "/";
     }
 
-    // Append the encoded ref to ensure no
+    // Append the encoded ref to ensure no special characters are present.
     href += `~${encodeURIComponent(ctx.ref)}`;
   }
 

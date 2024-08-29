@@ -25,6 +25,8 @@ export type DocsPageContext = BaseContext & {
   ref?: string;
   // The domain assigned to the repository, e.g. `use.docs.page`.
   domain?: string;
+  // Whether the page is using a vanity domain, e.g. `:org.docs.page/repo`
+  vanity?: boolean;
   // The page is not in preview mode.
   preview: false;
 };

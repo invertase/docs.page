@@ -22,39 +22,43 @@ if (window.__docsPage) {
   // It's a custom domain if it's not a vanity domain and it's not one of the base domains.
   const isCustomDomain = !isVanityDomain && !DOMAINS.includes(hostname);
 
-  // const { owner, repository } = window.__docsPage;
-
-  // A vanity domain is a rewrite request.
-  if (isVanityDomain) {
-    // const basename = `/${owner}`;
-
-    // window.__remixContext.basename = basename;
-
-    // Remove the owner from the URL (since it's now part of the hostname).
+  if (isVanityDomain || isCustomDomain) {
     window.__remixContext.url = window.location.pathname;
-
-    console.log("Rewriting context for vanity domain: ", {
-      basename: window.__remixContext.basename,
-      url: window.__remixContext.url,
-    });
   }
-  // A custom domain is a proxy request.
-  else if (isCustomDomain) {
-    // console.log("Custom domain detected: ", { hostname, owner, repository });
-    // const basename = `/${owner}/${repository}`;
 
-    // // Set the base name to the owner and repository (e.g. `/invertase/docs.page`).
-    // // window.__remixContext.basename = '';
+  // // const { owner, repository } = window.__docsPage;
 
-    // // // Replace the URL which includes the repository with the correct URL.
-    // // // For example: `/invertase/docs.page/configuration` -> `/configuration`.
-    // // window.__remixContext.url = '/invertase/docs.page/configuration';
+  // // A vanity domain is a rewrite request.
+  // if (isVanityDomain) {
+  //   // const basename = `/${owner}`;
 
-    // console.log("Rewriting context for custom domain: ", {
-    //   basename: window.__remixContext.basename,
-    //   url: window.__remixContext.url,
-    // });
-  }
+  //   // window.__remixContext.basename = basename;
+
+  //   // Remove the owner from the URL (since it's now part of the hostname).
+  //   window.__remixContext.url = window.location.pathname;
+
+  //   console.log("Rewriting context for vanity domain: ", {
+  //     basename: window.__remixContext.basename,
+  //     url: window.__remixContext.url,
+  //   });
+  // }
+  // // A custom domain is a proxy request.
+  // else if (isCustomDomain) {
+  //   // console.log("Custom domain detected: ", { hostname, owner, repository });
+  //   // const basename = `/${owner}/${repository}`;
+
+  //   // // Set the base name to the owner and repository (e.g. `/invertase/docs.page`).
+  //   // // window.__remixContext.basename = '';
+
+  //   // // // Replace the URL which includes the repository with the correct URL.
+  //   // // // For example: `/invertase/docs.page/configuration` -> `/configuration`.
+  //   // // window.__remixContext.url = '/invertase/docs.page/configuration';
+
+  //   // console.log("Rewriting context for custom domain: ", {
+  //   //   basename: window.__remixContext.basename,
+  //   //   url: window.__remixContext.url,
+  //   // });
+  // }
 }
 
 startTransition(() => {
