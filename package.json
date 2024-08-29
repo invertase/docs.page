@@ -18,5 +18,8 @@
     "website",
     "og",
     "packages/*"
-  ]
+  ],
+  "patchedDependencies": {
+    "@remix-run/react@2.9.2": "patches/@remix-run%2Freact@2.9.2.patch"
+  }
 }
