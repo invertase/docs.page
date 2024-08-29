@@ -37,8 +37,8 @@ export default function GetStartedRoute() {
           <div className="relative max-w-[800px] space-y-6 mx-auto mt-12">
             <div className="hidden lg:block absolute w-px bg-gradient-to-b top-10 from-brand-100/50 via-brand-100/50 bottom-0 h-full -left-8" />
             <Install />
-            <AddContent />
             <PreviewDocs />
+            <AddContent />
             <PublishChanges />
           </div>
         </div>
@@ -68,7 +68,7 @@ function Install() {
       description="Add docs.page to your project"
       asset={
         <img
-          src="/assets/preview/terminal.png"
+          src="/assets/get-started/terminal.png"
           alt="Terminal Command"
           className=""
         />
@@ -111,19 +111,19 @@ function Install() {
 function AddContent() {
   return (
     <Card
-      step={2}
+      step={3}
       title="Add Content"
       description="Add markdown to a page"
       asset={
         <img
-          src="/assets/preview/add-content.png"
+          src="/assets/get-started/add-content-editor.png"
           alt="Markdown"
           className="w-full"
         />
       }
       meta={
         <p>
-          <a href="https://use.docs.page/writing-content" className="underline">
+          <a href="https://use.docs.page/writing-content" className="  underline">
             Write your documentation
           </a>{" "}
           using Markdown, adding new pages to your `docs` directory.
@@ -145,12 +145,12 @@ function AddContent() {
 function PreviewDocs() {
   return (
     <Card
-      step={3}
+      step={2}
       title="Preview Docs"
       description="Preview your docs.page site"
       asset={
         <img
-          src="/assets/preview/add-content.png"
+          src="/assets/get-started/preview.png"
           alt="Markdown"
           className="w-full"
         />
@@ -191,7 +191,7 @@ function PublishChanges() {
       description="Make your changes public"
       asset={
         <img
-          src="/assets/preview/add-content.png"
+          src="/assets/get-started/publish.png"
           alt="Markdown"
           className="w-full"
         />
