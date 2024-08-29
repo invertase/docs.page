@@ -1,52 +1,60 @@
-import parseConfig, { Config, defaultConfig } from '../utils/config';
-import { getGitHubContents, getPullRequestMetadata } from '../utils/github';
-import { bundle } from './mdx';
-import { escapeHtml } from '../utils/sanitize';
-
-export class BundlerError extends Error {
-  code: number;
-  links?: { title: string; url: string }[];
-
-  constructor({
-    code,
-    name,
-    message,
-    cause,
-    links,
-  }: {
-    code: number;
-    name: string;
-    message: string;
-    cause?: string;
-    links?: { title: string; url: string }[];
-  }) {
-    super(message);
-    this.code = code;
-    this.name = name;
-    this.message = message;
-    this.cause = cause;
-    this.links = links;
-  }
-}
+import { type Config, defaultConfig, parseConfig } from "../config";
+import { getGitHubContents, getPullRequestMetadata } from "../utils/github";
+import { escapeHtml } from "../utils/sanitize";
+import { replaceMoustacheVariables } from "../utils/variables";
+import { BundlerError } from "./error";
+import { parseMdx } from "./mdx";
+import type { HeadingNode } from "./plugins/rehype-headings";
 
 export const ERROR_CODES = {
-  REPO_NOT_FOUND: 'REPO_NOT_FOUND',
-  FILE_NOT_FOUND: 'FILE_NOT_FOUND',
-  BUNDLE_ERROR: 'BUNDLE_ERROR',
+  CONFIG_NOT_FOUND: "CONFIG_NOT_FOUND",
+  REPO_NOT_FOUND: "REPO_NOT_FOUND",
+  FILE_NOT_FOUND: "FILE_NOT_FOUND",
+  BUNDLE_ERROR: "BUNDLE_ERROR",
 } as const;
 
+export type ErrorCodes = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];
+
 type Source = {
-  type: 'PR' | 'commit' | 'branch';
+  type: "PR" | "commit" | "branch";
   owner: string;
   repository: string;
   ref?: string;
 };
 
-class Bundler {
+export type BundlerOutput = {
+  source: Source;
+  ref: string;
+  stars: number;
+  forks: number;
+  private: boolean;
+  baseBranch: string;
+  path: string;
+  config: Config;
+  markdown: string;
+  headings: HeadingNode[];
+  frontmatter: Record<string, unknown>;
+  code: string;
+};
+
+type CreateBundlerParams = {
+  // The owner of the repository to bundle.
+  owner: string;
+  // The repository to bundle.
+  repository: string;
+  // The path to file in the repository to bundle.
+  path: string;
+  // An optional ref to use for the content.
+  ref?: string;
+  // A list of components which are supported for bundling.
+  components?: Array<string>;
+};
+
+export class Bundler {
   readonly #owner: string;
   readonly #repository: string;
   readonly #path: string;
-  #notices: Array<string> = [];
+  readonly #components: Array<string>;
   #ref: string | undefined;
   #source?: Source;
   #config?: Config;
@@ -57,6 +65,7 @@ class Bundler {
     this.#repository = params.repository;
     this.#path = params.path;
     this.#ref = params.ref;
+    this.#components = params.components || [];
   }
 
   /**
@@ -68,10 +77,14 @@ class Bundler {
     if (this.#ref) {
       // If the ref is a PR
       if (/^[0-9]*$/.test(this.#ref)) {
-        const pullRequest = await getPullRequestMetadata(this.#owner, this.#repository, this.#ref);
+        const pullRequest = await getPullRequestMetadata(
+          this.#owner,
+          this.#repository,
+          this.#ref,
+        );
         if (pullRequest) {
           return {
-            type: 'PR',
+            type: "PR",
             ...pullRequest,
           };
         }
@@ -80,7 +93,7 @@ class Bundler {
       // If the ref is a commit hash
       if (/^[a-fA-F0-9]{40}$/.test(this.#ref)) {
         return {
-          type: 'commit',
+          type: "commit",
           owner: this.#owner,
           repository: this.#repository,
           ref: this.#ref,
@@ -89,7 +102,7 @@ class Bundler {
     }
 
     return {
-      type: 'branch',
+      type: "branch",
       owner: this.#owner,
       repository: this.#repository,
       ref: this.#ref,
@@ -99,7 +112,7 @@ class Bundler {
   /**
    * Builds the payload with the MDX bundle.
    */
-  build = async () => {
+  async build(): Promise<BundlerOutput> {
     // Get the real source of the request
     this.#source = await this.getSource();
 
@@ -117,7 +130,21 @@ class Bundler {
       throw new BundlerError({
         code: 404,
         name: ERROR_CODES.REPO_NOT_FOUND,
-        message: `The repository ${this.#source.owner}/${this.#source.repository} was not found.`,
+        message: `The repository ${this.#source.owner}/${
+          this.#source.repository
+        } was not found.`,
+      });
+    }
+
+    if (!metadata.config.configJson && !metadata.config.configYaml) {
+      throw new BundlerError({
+        code: 404,
+        name: ERROR_CODES.CONFIG_NOT_FOUND,
+        message:
+          "No configuration file was found in the repository. To get started, create a <code>docs.json</code> file at the root of your repository.",
+        source: `https://github.com/${this.#source.owner}/${
+          this.#source.repository
+        }`,
       });
     }
 
@@ -125,17 +152,12 @@ class Bundler {
       throw new BundlerError({
         code: 404,
         name: ERROR_CODES.FILE_NOT_FOUND,
-        message: `The file "/docs/${this.#path}.mdx" or "/docs/${
+        message: `No file was found in the repository matching this path. Ensure a file exists at <code>/docs/${
           this.#path
-        }/index.mdx" in repository /${
-          this.#source.owner + '/' + this.#source.repository
-        } was not found.`,
-        links: [
-          {
-            title: 'Repository link',
-            url: `https://github.com/${this.#source.owner}/${this.#source.repository}`,
-          },
-        ],
+        }.mdx<code> or <code>/docs/${this.#path}/index.mdx<code>.`,
+        source: `https://github.com/${this.#source.owner}/${
+          this.#source.repository
+        }`,
       });
     }
 
@@ -154,59 +176,41 @@ class Bundler {
         yaml: metadata.config.configYaml,
       });
     } catch {
-      this.#notices.push(
-        'The configuration file is invalid, falling back to the default configuration.',
-      );
       this.#config = defaultConfig;
     }
 
     try {
       // Bundle the markdown file via MDX.
-      const mdx = await bundle(this.#markdown, {
-        headerDepth: this.#config.headerDepth,
+      const mdx = await parseMdx(this.#markdown, {
+        headerDepth: this.#config.content?.headerDepth ?? 3,
+        components: this.#components,
       });
 
       return {
         source: this.#source,
         ref: this.#ref,
+        stars: metadata.stars,
+        forks: metadata.forks,
+        private: metadata.isPrivate,
         baseBranch: metadata.baseBranch,
-        notices: this.#notices,
         path: this.#path,
         config: this.#config,
         markdown: this.#markdown,
         headings: mdx.headings,
         frontmatter: mdx.frontmatter,
-        code: mdx.code,
+        code: replaceMoustacheVariables(this.#config.variables ?? {}, mdx.code),
       };
     } catch (e) {
       console.error(e);
       // @ts-ignore
-      const message = escapeHtml(e?.message || '');
       throw new BundlerError({
         code: 500,
         name: ERROR_CODES.BUNDLE_ERROR,
         message: `Something went wrong while bundling the file /${metadata.path}.mdx. Are you sure the MDX is valid?`,
-        cause: message,
-        links: [
-          {
-            title: `/${metadata.path}.mdx on GitHub`,
-            url: `https://github.com/${this.#source.owner}/${this.#source.repository}/blob/${
-              this.#ref
-            }/${metadata.path}.mdx`,
-          },
-        ],
+        source: `https://github.com/${this.#source.owner}/${
+          this.#source.repository
+        }`,
       });
     }
-  };
-}
-
-type CreateBundlerParams = {
-  owner: string;
-  repository: string;
-  path: string;
-  ref?: string;
-};
-
-export default function bundler(params: CreateBundlerParams) {
-  return new Bundler(params).build();
+  }
 }

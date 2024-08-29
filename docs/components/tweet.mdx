@@ -1,19 +1,19 @@
 ---
-title: Embed Tweets
+title: Tweets
 description: Embed Tweets in your documentation.
 ---
 
-# Tweets
+Use the `<Tweet />` component to embed tweets in your documentation, using the Tweet ID.
 
-To imbed a tweet into the documentation, use the `<Tweet>` component and provide the ID of the tweet.
+## Example
+
+<Tweet id="1513662173796605958" />
 
 ```jsx
 <Tweet id="1513662173796605958" />
 ```
 
-<Tweet id="1513662173796605958" />
-
-## Cards
+### Cards
 
 To display tweet preview cards alongside the tweet, provide the `cards` prop.
 
@@ -23,7 +23,7 @@ To display tweet preview cards alongside the tweet, provide the `cards` prop.
 
 <Tweet id="1513662173796605958" cards />
 
-## Conversation
+### Conversation
 
 To display conversation information about the tweet, provide the `conversation` prop.
 
@@ -33,7 +33,7 @@ To display conversation information about the tweet, provide the `conversation` 
 
 <Tweet id="1513662173796605958" conversation />
 
-## Cards & Conversation
+### Cards & Conversation
 
 Both card and conversational data can be displayed simultaneously.
 
@@ -42,3 +42,21 @@ Both card and conversational data can be displayed simultaneously.
 ```
 
 <Tweet id="1513662173796605958" cards conversation />
+
+## Props
+
+<Property name="id" type="string" required>
+  The ID of the tweet to display.
+</Property>
+
+---
+
+<Property name="cards" type="boolean" optional>
+  Whether or not to display tweet preview cards. Defaults to `false`.
+</Property>
+
+---
+
+<Property name="conversation" type="boolean" optional>
+  Whether or not to display conversation information. Defaults to `false`.
+</Property>

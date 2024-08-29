@@ -1,0 +1,94 @@
+---
+title: Property
+description: Display the signature details of a property.
+---
+
+Use the `<Property />` component to display the signature of a property, such as the name, type and description.
+
+The description can be provided as children to the component, allowing for rich formatting using Markdown syntax.
+
+## Example
+
+<Property name="theme" type="Theme" required>
+  Defines the theming properties for your application.
+
+  ```json
+  {
+    "color": "#ff0000",
+    "font": "Arial"
+  }
+  ```
+
+  The `Theme` object should contain the following properties:
+
+  <Accordion title="Theme" defaultOpen>
+    <Property name="color" type="string" required>
+      The theme colour of your brand.
+    </Property>
+
+    ---
+
+    <Property name="font" type="string" optional>
+      The font family to use for your application. Defaults to `Comic Sans`.
+    </Property>
+  </Accordion>
+</Property>
+
+## Usage
+
+````jsx
+<Property name="theme" type="Theme" required>
+  Defines the theming properties for your application.
+
+  ```json
+  {
+    "color": "#ff0000",
+    "font": "Arial"
+  }
+  ```
+
+  The `Theme` object should contain the following properties:
+
+  <Accordion title="Theme" defaultOpen>
+    <Property name="color" type="string" required>
+      The theme colour of your brand.
+    </Property>
+
+    ---
+
+    <Property name="font" type="string" optional>
+      The font family to use for your application. Defaults to `Comic Sans`.
+    </Property>
+  </Accordion>
+</Property>
+````
+
+## Props
+
+<Property name="name" type="string" required>
+  The name of the property
+</Property>
+
+---
+
+<Property name="type" type="string" optional>
+  The type of the property, such as `string`, `boolean` etc.
+</Property>
+
+---
+
+<Property name="required" type="boolean" optional>
+  Whether to mark this property as required.
+</Property>
+
+---
+
+<Property name="optional" type="boolean" optional>
+  Whether to mark this property as optional.
+</Property>
+
+---
+
+<Property name="children" optional>
+  The children to render as the properties description.
+</Property>

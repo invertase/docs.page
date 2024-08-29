@@ -1,18 +1,20 @@
 ---
-title: Add Vimeo videos to your documentation
+title: Vimeo
 description: Learn how to add Vimeo embeds to your documentation.
 ---
 
-# Vimeo
+Use the `<Vimeo />` component to embed Vimeo videos in your documentation.
 
-[Vimeo](https://vimeo.com/) is a service for hosting videos.
+## Example
 
-## Embedding
-
-Use the `<Vimeo>` component and pass the ID of the video you want to embed.
+<Vimeo id="253989945" />
 
 ```jsx
 <Vimeo id="253989945" />
 ```
 
-<Vimeo id="253989945" />
+## Props
+
+<Property name="id" type="string" required>
+  The ID of the Vimeo video to display.
+</Property>

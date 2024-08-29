@@ -3,15 +3,13 @@ title: Locales
 description: Add locale support to your documentation
 ---
 
-# Locales
-
 Locale support is achived configuring the `sidebar` in your [configuration file](/configuration).
 
-When locale support is enabled, a language switcher will appear in the sidebar.
+When locale support is enabled, a language switcher will automatically appear in your documentation site.
 
-## Setup
+## Example
 
-For example, if you wish to provide both English and French versions of your documentation, convert your `sidebar`
+If you wish to provide both English and French versions of your documentation, convert your `sidebar`
 to an object, where the key is the [2-character ISO language code](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes),
 and the value the usual sidebar configuration.
 
@@ -19,12 +17,22 @@ and the value the usual sidebar configuration.
 {
   "sidebar": {
     "en": [
-      ["Getting Started", "/"],
-      ["Installation", "/installation"]
+      {
+        "group": "Getting Started",
+        "pages": [
+          ["Get Started", "/"],
+          ["Installation", "/installation"]
+        ]
+      }
     ],
     "fr": [
-      ["Commencer", "/"],
-      ["Installation", "/installation"]
+      {
+        "group": "Commencer",
+        "pages": [
+          ["Commencer", "/"],
+          ["Installation", "/installation"]
+        ]
+      }
     ]
   }
 }
@@ -45,11 +53,11 @@ You should now change your documentation directory structure in the repository t
 Now when accessing your documentation, specify the locale key in the URL, e.g.:
 
 ```
-https://docs.page/acme/sdk/en
-https://docs.page/acme/sdk/fr
+https://docs.page/:owner/:repository/en
+https://docs.page/:owner/:repository/fr
 ```
 
-Or when using [custom domains](/custom-domains):
+Or when using [Custom Domains](/custom-domains):
 
 ```
 https://sdk.acme.com/en
@@ -82,8 +90,13 @@ you can specify a `default` sidebar in your configuration:
 {
   "sidebar": {
     "default": [
-      ["Getting Started", "/en"],
-      ["Installation", "/en/installation"]
+      {
+        "group": "Getting Started",
+        "pages": [
+          ["Get Started", "/"],
+          ["Installation", "/installation"]
+        ]
+      }
     ],
     "en": [],
     "fr": []

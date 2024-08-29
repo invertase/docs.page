@@ -1,0 +1,27 @@
+---
+title: check
+description: The `check` command scans the current project for errors and warnings which need fixing.
+---
+
+## Usage
+
+```bash
+@docs.page/cli check [path]
+```
+
+The command current performs the following checks:
+
+- Broken Links: Checks markdown content for any broken relative links.
+- Missing Assets: Checks markdown content for any local [assets](/assets) that are missing.
+
+## Arguments
+
+<Property name="path" type="string" optional>
+  The path to the directory to check for issues. This should be the path to the root of the project.
+
+  Defaults to the current directory.
+
+  ```
+  @docs.page/cli check my-project
+  ```
+</Property>

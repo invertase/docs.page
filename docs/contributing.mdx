@@ -3,54 +3,39 @@ title: Contributing
 description: Learn how to run docs.page locally and help contribute to the project.
 ---
 
-# Contributing
+To contribute to docs.page, you'll need to set up your local environment.
 
-Learn how to run docs.page locally and help contribute to the project.
+## Clone the repository
 
-## Running locally
-
-Firstly, fork the [https://github.com/invertase/docs.page](https://github.com/invertase/docs.page) repository.
-Once forked, clone the repository locally:
+First, clone the repository to your local machine:
 
 ```bash
-git clone git@github.com:invertase/docs.page.git
+git clone https://github.com/invertase/docs.page.git
 ```
 
-Within the directory, install the projects dependencies with NPM/Yarn:
+## Dependencies
+
+This repository uses [Bun](https://bun.sh/) for workspace and dependency management. To get started, run the following commands:
 
 ```bash
-npm install
-# or
-yarn
+bun install
 ```
 
-Before running, you must add a GitHub personal access token as an environment variable. This token allows API calls
-to be made via GitHub. Create a `.env` file at the root of the project:
+The repository is structured as follows:
 
-```txt title=.env
-GITHUB_PAT=ABC...
-```
+- `api`: The API server which is served via `https://api.docs.page`. This is an express application which handles tasks such as fetching content from GitHub and markdown parsing.
+- `og`: A Next.js application which serves the Open Graph images for documentation pages.
+- `website`: A Remix application which serves the main `https://docs.page` website, and the documentation rendering for each repository.
+- `packages/cli`: A CLI for running various commands and scripts for initialization, checking etc. Used locally and on CI environments.
 
-> You can create a new token on your [GitHub settings](https://github.com/settings/tokens).
+## Running docs.page
 
-Now run the project:
+Generally, you'll want to interface with the website and api. To run these concurrently, you can use the following command:
 
 ```bash
-npm run dev
+bun dev
 ```
 
-## Structure
+This will start the website on `http://localhost:5173` and the api on `http://localhost:8080`.
 
-Aside from the projects homepage, all requests are sent via the `src/pages/[owner]/[name]/[[...slug]].tsx` file. In production a cached version of the statically generated HTML output will be served,
-or created then cached. In development however, the page is built on each request. Therefore load times might seem a bit slower than expected.
-
-> Learn more about this at [Next.js](https://nextjs.org/docs/basic-features/data-fetching#getstaticprops-static-generation).
-
-Each request is sent via the `getStaticProps` function, which performs a number of tasks:
-
-- Extracting the expected GitHub repository from the request.
-- Extracting, or fetching the GitHub reference for the request.
-- Identifying whether the reference is a reference (pull request, branch, commit).
-- Fetching the contents of the page via the GitHub API.
-- Transforming the page content into MDX.
-- Handling errors, such as render problems or 404 requests.
+> The API requires a `GITHUB_APP_ID` and `GITHUB_APP_PRIVATE_KEY` to be set in your environment. These are used to authenticate with the GitHub API. You can create a GitHub App in your GitHub account settings.

@@ -1,0 +1,172 @@
+---
+title: Navigation
+description: Organize your documentation with navigation.
+---
+
+Great documentation is organized and easy to navigate. You can organize your documentation by configuring your configuration file to support various forms of navigation.
+
+## Sidebar Navigation
+
+Sidebar navigation is the most common form of navigation. It is a list of links that appear on the side of your documentation. You can configure your sidebar navigation by editing your configuration file under the
+[`sidebar`](/configuration#sidebar) key.
+
+Each sidebar item typically consists of a nested array of `pages`, which are displayed below an optional group heading, for example:
+
+```json title="docs.json"
+{
+  "sidebar": [
+    {
+      "group": "Getting Started",
+      "pages": [
+        {
+          "title": "Installation",
+          "href": "/"
+        },
+        {
+          "title": "Usage",
+          "href": "/usage"
+        }
+      ]
+    },
+    {
+      "group": "Guides",
+      "pages": [
+        {
+          "title": "Customization",
+          "href": "/guides/customization"
+        }
+      ]
+    }
+  ]
+}
+```
+
+Further more, you can add an [`icon`](/components/icons) key to a group or page to display an icon next to the sidebar link for added visual impact.
+
+### Nested Items
+
+Another common pattern for sidebar navigation is to support expandable nested links, used to group common documentation concepts.
+This can be achived by ensuring a nested `page` item contains a `group` key:
+
+```json title="docs.json"
+{
+  "sidebar": [
+    {
+      "group": "Getting Started",
+      "pages": [
+        {
+          "title": "Installation",
+          "href": "/"
+        },
+        {
+          "group": "Advanced",
+          "pages": [
+            {
+              "title": "Customization",
+              "href": "/guides/customization"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+This will create a expandable group section in the sidebar, allowing users to navigate to the nested page.
+Optionally, a nested group can also contain a `href`, which will treat the group as a link to the specified page.
+
+Nested navigation supports many levels of nesting, allowing you to create complex navigation structures. However, 
+it is recommended to keep your navigation simple and easy to understand.
+
+See [Configuration](/configuration#sidebar) for more information.
+
+## Tab Navigation
+
+Tab navigation is another form of navigation that allows you to organize your documentation into tabs. You can configure your tab navigation by editing your configuration file under the
+[`tabs`](/configuration#tabs) key.
+
+Each tab typically consists of a `title` and a `href`, for example:
+
+```json title="docs.json"
+{
+  "tabs": [
+    {
+      "id": "root",
+      "title": "Documentation",
+      "href": "/"
+    },
+    {
+      "id": "components",
+      "title": "Components",
+      "href": "/components"
+    }
+  ]
+}
+```
+
+It is possible to only display certain sidebar groups when a specific tab is active. Set the `tab` key in a top-level sidebar
+group to match with the `id` of your tab:
+
+```json title="docs.json"
+{
+  "sidebar": [
+    {
+      "group": "Getting Started",
+      "tab": "root",
+      "pages": [
+        {
+          "title": "Installation",
+          "href": "/"
+        }
+      ]
+    }
+  ]
+}
+```
+
+See [Configuration](/configuration#tabs) for more information.
+
+## Anchor Links
+
+Anchor links are displayed above the sidebar, useful for custom links or navigation that doesn't fit into the sidebar. You can configure your anchor links by editing your configuration file under the
+[`anchors`](/configuration#anchors) key.
+
+Each anchor link typically consists of a `title` and a `href`, for example:
+
+```json title="docs.json"
+{
+  "anchors": [
+    {
+      "title": "GitHub",
+      "icon": "github",
+      "href": "https://github.com/invertase/docs.page"
+    }
+  ]
+}
+```
+
+Each anchor link can also include a `tab` key to only display when a specific tab is active.
+
+See [Configuration](/configuration#anchors) for more information.
+
+## Header links
+
+Header links are displayed in the top right corner of the documentation, useful for custom links or navigation that doesn't fit into the sidebar. You can configure your header links by editing your configuration file under the
+[`header`](/configuration#header) key.
+
+Each header link typically consists of a `title` and a `href`, for example:
+
+```json title="docs.json"
+{
+  "header": {
+    "links": [
+      {
+        "title": "Sign Up",
+        "href": "https://myapp.com/signup",
+        "cta": true
+      }
+    ]
+  }
+}
+```

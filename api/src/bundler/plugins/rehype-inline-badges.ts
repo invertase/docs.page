@@ -3,10 +3,10 @@
  * @typedef {import('mdast').Content} Content
  */
 
-import { isBadge } from 'is-badge';
+import { isBadge } from "is-badge";
 
-import { visit } from 'unist-util-visit';
-import type { Node } from 'hast-util-heading-rank/lib';
+import type { Node } from "hast-util-heading-rank/lib";
+import { visit } from "unist-util-visit";
 
 /**
  * Provides a list of heading elements in the AST.
@@ -16,8 +16,8 @@ import type { Node } from 'hast-util-heading-rank/lib';
 export default function rehypeInlineBadges(): (ast: Node) => void {
   //@ts-ignore
   function visitor(node: NodeWithChildren) {
-    node.visited === 'true';
-    node.children[0].properties.style = 'display: inline;';
+    node.visited === "true";
+    node.children[0].properties.style = "display: inline;";
   }
   return (ast: Node): void => {
     //@ts-ignore
@@ -25,8 +25,8 @@ export default function rehypeInlineBadges(): (ast: Node) => void {
   };
 }
 //@ts-ignore
-const containsBadge = node =>
-  node.tagName === 'a' &&
-  node.children[0].tagName === 'img' &&
+const containsBadge = (node) =>
+  node.tagName === "a" &&
+  node.children[0].tagName === "img" &&
   isBadge(node?.children[0]?.properties.src) &&
-  node.visited !== 'true';
+  node.visited !== "true";

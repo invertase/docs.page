@@ -1,10 +1,10 @@
-import { compile } from '@mdx-js/mdx';
-import { Message } from 'esbuild';
-import frontmatter from 'gray-matter';
-import { getRehypePlugins, getRemarkPlugins } from './plugins/index';
-import rehypeHeadings, { HeadingNode } from './plugins/rehype-headings';
+import { compile } from "@mdx-js/mdx";
+import type { Message } from "esbuild";
+import frontmatter from "gray-matter";
+import { getRehypePlugins, getRemarkPlugins } from "./plugins/index";
+import rehypeHeadings, { type HeadingNode } from "./plugins/rehype-headings";
 
-type MdxBundlerResponse = {
+type MdxResponse = {
   code: string;
   frontmatter: Record<string, unknown>;
   errors: Message[];
@@ -22,12 +22,13 @@ export function headerDepthToHeaderList(depth: number): string[] {
   return list;
 }
 
-export async function bundle(
+export async function parseMdx(
   rawText: string,
   options: {
     headerDepth: number;
+    components: Array<string>;
   },
-): Promise<MdxBundlerResponse> {
+): Promise<MdxResponse> {
   const output = {
     headings: [] as HeadingNode[],
     frontmatter: {} as { [key: string]: string },
@@ -40,9 +41,11 @@ export async function bundle(
     // prevent this error `_jsxDEV is not a function`
     // enable next line
     // development: process.env.NODE_ENV === 'production',
-    format: 'mdx',
-    outputFormat: 'function-body',
-    remarkPlugins: getRemarkPlugins(),
+    format: "mdx",
+    outputFormat: "function-body",
+    remarkPlugins: getRemarkPlugins({
+      components: options.components,
+    }),
     rehypePlugins: [
       ...getRehypePlugins(),
       [

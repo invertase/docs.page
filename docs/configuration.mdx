@@ -3,330 +3,467 @@ title: Configuration
 description: Configure your documentation with a docs.json file.
 ---
 
-# Configuration
+Add a `docs.json` file to the root of your GitHub repository to configure your documentation.
+Below is a list of all available configuration options, which can be used to modify the logos, theme, analytics and more.
 
-You can heavily customize your documentation by providing a configuration file at the root of your
-GitHub repository. The configuration file syntax supports JSON or YAML.
+## Properties
 
-If no configuration file is provided, or one of the properties is invalid a default value will be provided
-instead (see below for details).
-
-## Getting Started
-
-Add a `docs.json` or `docs.yaml` file to the root of your repository. Below is a list of all
-available configuration options, which can be used to modify the logos, theme, analytics and more. For example
-a basic configuration might look like:
-
-<Tabs
-  values={[
-    { label: 'JSON', value: 'json' },
-    { label: 'YAML', value: 'yaml' },
-  ]}
->
-  <TabItem value="json">
-  ```json title="docs.json"
-  {
-    "name": "My Project",
-    "description": "My Project is a project that does awesome things.",
-    "logo": "/assets/logo.png",
-    "logoDark": "/assets/logo-dark.png"
-  }
-  ```
-  </TabItem>
-  <TabItem value="yaml">
-  ```yaml title="docs.yaml"
-  name: My Project
-  description: My Project is a project that does awesome things.
-  logo: "/assets/logo.png"
-  logoDark: "/assets/logo-dark.png"
-  ```
-  </TabItem>
-</Tabs>
-
-## Configuration Options
-
-Below is a list of all available configuration options, their type and default values.
+### Top-level properties
 
 <Property name="name" type="string">
-  The name of your project. This will be displayed in the header of the website. If not provided,
-  the GitHub repository name will be used instead.
+  The name of your project. This will be displayed in the header of your documentation and used for other aspects such as automatic social preview images.
 </Property>
 
-<hr />
+---
 
 <Property name="description" type="string">
-  The description of your project. This will be used for website metadata (e.g. social tags) if
-  provided. If a page frontmatter description is provided, it will be used instead.
+  A short description of your project. This will be used in meta tags and social preview images.
 </Property>
 
-<hr />
+---
 
-<Property name="logo" type="string">
-The path (either absolute or relative to the `/docs` directory) to the logo of your project. This will be
-displayed in the header.
+<Property name="favicon" type="string">
+  The favicon URL for your project.
 
-<Info>Logos have a forced height of 30px.</Info>
+  See [Asset URLs](/assets) for more information on how to add assets to your documentation.
 </Property>
 
-<hr />
-
-<Property name="logoDark" type="string">
-  The path (either absolute or relative to the `/docs` directory) to the favicon of your project.
-</Property>
-
-<hr />
+---
 
 <Property name="socialPreview" type="string">
-  The path (either absolute or relative to the `/docs` directory) to social preview card which will
-  be displayed when linked on social media (e.g. Twitter). If page frontmatter provides a social
-  card, it will be used instead. If not provided, a card will be automatically generated for you.
+  An asset URL to use as the default social preview image for your documentation.
+
+  If not provided, a social preview image will be automatically generated. Individual pages can override this social preview URL by specifying a [`socialPreview` property](/writing-content#frontmatter) in their frontmatter.
+
+  See [Asset URLs](/assets) for more information on how to add assets to your documentation.
 </Property>
 
-<hr />
+---
 
-<Property name="twitter" type="string">
-  The Twitter handle of your project. This will be used as a page anchor and social metadata.
+### Logo
+
+<Property name="logo" type="Logo">
+  Configures the logo of your documentation, which will be displayed in the header and used for social preview images.
+
+  The minimum height of the logo should be 24px.
+
+  See [Asset URLs](/assets) for more information on how to add assets to your documentation.
+
+  <Accordion title="Logo">
+    <Property name="href" type="string">
+      If provided, the logo will be a link to this URL. By default, the logo will link to the root of your documentation.
+    </Property>
+
+    ---
+
+    <Property name="light" type="string">
+      The Asset URL of your logo to display when the documentation is in light mode.
+    </Property>
+
+    ---
+
+    <Property name="dark" type="string">
+      The Asset URL of your logo to display when the documentation is in dark mode.
+    </Property>
+  </Accordion>
 </Property>
 
-<hr />
+### Theme
 
-<Property name="noindex" type="string">
-Whether to apply a [`noindex`](https://developers.google.com/search/docs/crawling-indexing/block-indexing) 
-meta tag on every page of your project, to prevent it from showing in search engines.
+<Property name="theme" type="Theme">
+  Configures the theme of your documentation. If not provided, a default theme will be used.
 
-<Info>When viewing a [preview](/previews), noindex will be applied by default.</Info>
+  <Accordion title="Theme">
+    <Property name="defaultTheme" type="light | dark">
+      The default theme of your documentation. This will be used when the user has not manually selected a theme.
+    </Property>
+
+    ---
+
+    <Property name="primary" type="string">
+      A hex color code to use as the primary color of your documentation. This color will be used for links, buttons, and other interactive elements.
+    </Property>
+
+    ---
+
+    <Property name="primaryLight" type="string">
+      A hex color code to use as the primary color of your documentation in light mode. If not specified, the `primary` color will be used.
+    </Property>
+
+    ---
+
+    <Property name="primaryDark" type="string">
+      A hex color code to use as the primary color of your documentation in dark mode. If not specified, the `primary` color will be used.
+    </Property>
+
+    ---
+
+    <Property name="backgroundLight" type="string">
+      A hex color code to use as the background color of your documentation in light mode.
+    </Property>
+
+    ---
+
+    <Property name="backgroundDark" type="string">
+      A hex color code to use as the background color of your documentation in dark mode.
+    </Property>
+  </Accordion>
 </Property>
 
-<hr />
+### Header
 
-<Property name="theme" type="string" default="#00bcd4">
-  The theme of your project, applied to active links and other subtle places. This color should be
-  visible on both dark and light modes. Can either be a hex color (e.g. `#00bcd4`) or a RGB (e.g.
-  `rgb(0,188,212)`).
+<Property name="header" type="Header">
+  Configures the header of your documentation.
+
+  <Accordion title="Header">
+    <Property name="showName" type="boolean">
+      Whether to show the documentation `name` next to the logo in the header. Defaults to `true`.
+    </Property>
+
+    ---
+
+    <Property name="showThemeToggle" type="boolean">
+      Whether to show the theme toggle button in the header. Defaults to `true`.
+    </Property>
+
+    ---
+
+    <Property name="showGitHubCard" type="boolean">
+      Whether to show the GitHub card in the header. Defaults to `true`.
+    </Property>
+
+    ---
+
+    <Property name="links" type="Link[]">
+      An array of `Link` objects to display in the header of your documentation.
+
+      <Accordion title="Link">
+        <Property name="href" type="string" required>
+          The URL to link to.
+        </Property>
+
+        ---
+
+        <Property name="title" type="string" required>
+          The text to display for the link.
+        </Property>
+
+        ---
+
+        <Property name="cta" type="boolean">
+          Whether to display the link as a call-to-action button. Defaults to `false`.
+        </Property>
+
+        ---
+
+        <Property name="locale" type="string">
+          If provided, only show this link when viewing the documentation for a specific [locale](/locales).
+        </Property>
+      </Accordion>
+    </Property>
+  </Accordion>
 </Property>
 
-<hr />
-
-<Property name="headerDepth" type="number" default="3">
-  The maxium header depths to apply to the navigation menu on each page.
-</Property>
-
-<hr />
-
-<Property name="variables" type="object">
-Any variables to apply to the markdown pages. When providing a variable within mustache syntax (e.g. `{{ variable }}`),
-it will be replaced with the value provided here. For example:
-
-```json
-{
-  "variables": {
-    "versions": {
-      "latest": "1.0.0",
-      "next": "1.1.0"
-    }
-  }
-}
-```
-
-Within the markdown `{{ versions.latest }}` would display `1.0.0`.
-
-</Property>
-
-<hr />
-
-<Property name="googleTagManager" type="string">
-  If provided, the [GTM](https://tagmanager.google.com/) script with the ID will be added to each
-  documentation webpage.
-</Property>
-
-<hr />
-
-<Property name="googleAnalytics" type="string">
-  If provided, the [Google Analytics](https://analytics.google.com/analytics/web/) script with the
-  ID will be added to each documentation webpage.
-</Property>
-
-<hr />
-
-<Property name="zoomImages" type="boolean" default="false">
-  If enabled, all images will zoom when clicked by default.
-</Property>
-
-<hr />
-
-<Property name="automaticallyDisplayName" type="boolean" default="true">
-  If enabled, the `name` of your project (or repository name) will be automatically displayed in the
-  header, next to the logo. Set to `false` to only show a logo.
-</Property>
-
-<hr />
-
-<Property name="automaticallyInferNextPrevious" type="boolean" default="true">
-If true, the next and previous links will be automatically inferred from the sidebar menu.
-
-If frontmatter next/previous links are provided on a page level, they will be used instead.
-
-</Property>
-
-<hr />
-
-<Property name="plausibleAnalytics" type="boolean" default="false">
-If set to true, the [Plausible](https://plausible.io/) analytics script will be added to each documentation webpage.
-
-<Warning>This property will only take effect when using a [custom domain](/custom-domains).</Warning>
-</Property>
-
-<hr />
-
-<Property name="plausibleAnalyticsScript" type="string" default="https://plausible.io/js/script.js">
-If set, the self-hosted [Plausible](https://plausible.io/) analytics script will be used.
-
-<Warning>This property will only take effect when `plausibleAnalytics` is set to `true`.</Warning>
-</Property>
-
-<hr />
+### Anchors
 
 <Property name="anchors" type="Anchor[]">
-When provided, the anchors will be displayed above the sidebar menu. These are useful for important links
-which persist across your documentation (e.g. homepage, CTA buttons etc).
+  Configures the anchor links of your documentation.
 
-```ts
-type Anchor = {
-  title: string;
-  icon: string;
-  link: string;
-};
-```
+  <Accordion title="Anchor">
+    <Property name="title" type="string" required>
+      The title of the anchor link.
+    </Property>
 
-For the icons, you can use the name of any standard [Font Awesome Classic Icon](https://fontawesome.com/search?o=r&s=solid)
-or [Brand Icons](https://fontawesome.com/search?o=r&f=brands), for example:
+    ---
 
-<Tabs
-  values={[
-    { label: 'JSON', value: 'json' },
-    { label: 'YAML', value: 'yaml' },
-  ]}
->
-  <TabItem value="json">
-  ```json
-  {
-    "anchors": [
-      { title: "Homepage", icon: "house", link: "https://example.com" }
-    ]
-  }
-  ```
-  </TabItem>
-  <TabItem value="yaml">
-  ```yaml
-  anchors:
-  - title: "Homepage"
-    link: "https://example.com"
-    icon: "house"
-  ```
-  </TabItem>
-</Tabs>
+    <Property name="href" type="string" required>
+      The URL to link to.
+    </Property>
+
+    ---
+
+    <Property name="icon" type="string" required>
+      The [icon](/components/icons) to display next to the anchor link.
+    </Property>
+
+    ---
+
+    <Property name="locale" type="string">
+      If provided, only show this anchor when viewing the documentation for a specific [locale](/locales).
+    </Property>
+
+    ---
+
+    <Property name="tab" type="string">
+      If provided, only show this anchor when viewing a specific [tab](/navigation#tabs).
+    </Property>
+  </Accordion>
 </Property>
 
-<hr />
+### Social Links
 
-<Property name="docsearch" type="object">
-An object containing the details of your [DocSearch](https://docsearch.algolia.com/) account. This will enable
-a search bar at the top of the page. Note, all properies must be provided.
+<Property name="socialLinks" type="SocialLink[]">
+  An array of `SocialLink` objects to display in the footer of your documentation.
 
-<Tabs
-  values={[
-    { label: 'JSON', value: 'json' },
-    { label: 'YAML', value: 'yaml' },
-  ]}
->
-  <TabItem value="json">
-  ```json title="Example DocSearch config"
+  <Accordion title="SocialLink">
+    <Property name="website" type="string">
+      A generic website URL to link to, such as your homepage or product.
+    </Property>
+
+    ---
+
+    <Property name="x" type="string">
+      The name of your X/Twitter account, e.g. `@invertaseio`.
+    </Property>
+
+    ---
+
+    <Property name="youtube" type="string">
+      The name of your YouTube account.
+    </Property>
+
+    ---
+
+    <Property name="facebook" type="string">
+      The name of your Facebook account.
+    </Property>
+
+    ---
+
+    <Property name="instagram" type="string">
+      The name of your Instagram account.
+    </Property>
+
+    ---
+
+    <Property name="linkedin" type="string">
+      The name of your LinkedIn account.
+    </Property>
+
+    ---
+
+    <Property name="github" type="string">
+      The name of your GitHub account.
+    </Property>
+
+    ---
+
+    <Property name="slack" type="string">
+      The subdomain of your Slack organization.
+    </Property>
+
+    ---
+
+    <Property name="discord" type="string">
+      The name of your Discord organization.
+    </Property>
+  </Accordion>
+</Property>
+
+### SEO
+
+<Property name="seo" type="SEO">
+  Configures the SEO settings of your documentation.
+
+  <Accordion title="SEO">
+    <Property name="noindex" type="boolean">
+      Whether to instruct search engines not to index your documentation. Defaults to `false`.
+    </Property>
+  </Accordion>
+</Property>
+
+### Variables
+
+<Property name="variables" type="object">
+  An object of common variables which can be replaced in your documentation content using the `{{ variableName }}` syntax. For example, the following:
+
+  ```json
   {
-    "docsearch": {
-      "appId": "R2IYF7ETH7",
-      "apiKey": "599cec31baffa4868cae4e79f180729b",
-      "indexName": "docsearch"
+    "variables": {
+      "versions": {
+        "default": "1.0.0",
+      }
     }
   }
   ```
-  </TabItem>
-  <TabItem value="yaml">
-  ```yaml title="Example DocSearch config"
-  docsearch:
-    appId: R2IYF7ETH7
-    apiKey: 599cec31baffa4868cae4e79f180729b
-    indexName: docsearch
-  ```
-  </TabItem>
-</Tabs>
+
+  Can be replaced via the `{{ versions.default }}` syntax in your documentation content.
 </Property>
 
-<hr />
+### Search
 
-<Property name="sidebar" type="Array<Sidebar> | Record<string, Sidebar>">
-This property allows you to render sidebar links to navigate around your documentation.
-It can either be an array/list of links, or an object where the key is a locale identifier
-and the value the sidebar links for that locale.
+<Property name="search" type="Search">
+  Configures the search settings of your documentation.
 
-The sidebar only supports a single level of nesting.
+  <Accordion title="Search">
+    <Property name="docsearch" type="DocSearch">
+      Whether to enable search via Algolia DocSearch in your documentation. See [Search](/search) for more information on how to configure DocSearch.
 
-```ts
-type Sidebar = [string, string | [string, string][]][];
-```
+      <Accordion title="DocSearch">
+        <Property name="appId" type="string" required>
+          The DocSearch application ID for your documentation.
+        </Property>
 
-<Tabs
-  values={[
-    { label: 'JSON', value: 'json' },
-    { label: 'YAML', value: 'yaml' },
-  ]}
->
-  <TabItem value="json">
-  ```json
-  {
-    "sidebar": [
-      ["Getting Started", "/"],
-      ["Advanced", [
-        ["Reference API", "/reference"],
-        ["FAQs", "/faqs"]
-      ]]
-    ]
-  }
-  ```
-  </TabItem>
-  <TabItem value="yaml">
-  ```yaml
-  sidebar:
-  - - Getting Started
-    - "/"
-  - - Advanced
-    - - - Reference API
-        - "/reference"
-      - - FAQs
-        - "/faqs"
-  ```
-  </TabItem>
-</Tabs>
+        ---
 
-<Info>View the [locales](/locales) documentation for more details.</Info>
+        <Property name="apiKey" type="string" required>
+          The DocSearch API key for your documentation.
+        </Property>
+
+        ---
+
+        <Property name="indexName" type="string" required>
+          The DocSearch index name for your documentation.
+        </Property>
+      </Accordion>
+    </Property>
+  </Accordion>
 </Property>
 
-export const Property = props => (
-  <div>
-    <div style={{ display: 'flex', alignItems: 'center' }}>
-      <div style={{ flexGrow: 1 }}>
-        <code className="text-docs-theme" style={{ fontSize: 16 }}>
-          {props.name}
-        </code>
-        {!!props.default && (
-          <span style={{ paddingLeft: 8 }}>
-            Default: <code>{props.default}</code>
-          </span>
-        )}
-      </div>
-      <div>
-        <span className="font-mono">{props.type}</span>
-      </div>
-    </div>
-    <div>{props.children}</div>
-  </div>
-);
+### Scripts
+
+<Property name="scripts" type="Scripts">
+  Configures the scripts to include in your documentation.
+
+  <Accordion title="Scripts">
+    <Property name="googleTagManager" type="string">
+      The Google Tag Manager ID to include in your documentation.
+    </Property>
+
+    ---
+
+    <Property name="googleAnalytics" type="string">
+      The Google Analytics ID to include in your documentation.
+    </Property>
+
+    ---
+
+    <Property name="plausible" type="string | boolean">
+      If provided and your documentation uses a [Custom Domain](/custom-domains), the [Plausible Analytics](https://plausible.io/) domain to include in your documentation.
+
+      If set to `true`, the default Plausible Analytics script (`https://plausible.io/js/plausible.js`) will be used. Provide a string to use a custom self hosted Plausible Analytics script.
+    </Property>
+  </Accordion>
+</Property>
+
+### Content
+
+<Property name="content" type="Content">
+  Configures how the content of your documentation is displayed.
+
+  <Accordion title="Content">
+    <Property name="headerDepth" type="number">
+      The maximum heading depth to display in the table of contents. Defaults to `3`.
+    </Property>
+
+    ---
+
+    <Property name="zoomImages" type="boolean">
+      Whether to enable image zooming by default for all images in your documentation. Defaults to `false`.
+
+      See the [`<Image />`](/components/images) component for more information on how to enable image zooming for specific images.
+    </Property>
+
+    ---
+
+    <Property name="automaticallyInferNextPrevious" type="boolean">
+      Whether to automatically infer the next and previous page links based on your sidebar navigation. Defaults to `true`.
+    </Property>
+
+    ---
+
+    <Property name="showPageTitle" type="boolean">
+      Whether to automatically show the page title from frontmatter at the top of each page. Defaults to `true`.
+    </Property>
+
+    ---
+
+    <Property name="showPageImage" type="boolean">
+      Whether to automatically show the page social image from frontmatter at the top of each page. Defaults to `true`.
+    </Property>
+  </Accordion>
+</Property>
+
+### Tabs
+
+<Property name="tabs" type="Tab[]">
+  An array of `Tab` objects to display at the top of your documentation. See [Navigation](/navigation#tabs) for more information on how to configure tabs.
+
+  <Accordion title="Tab">
+    <Property name="id" type="string" required>
+      The unique ID of the tab.
+    </Property>
+
+    ---
+
+    <Property name="title" type="string" required>
+      The title of the tab to display.
+    </Property>
+
+    ---
+
+    <Property name="href" type="string" required>
+      The URL to link to when the tab is clicked.
+    </Property>
+    
+    ---
+
+    <Property name="locale" type="string">
+      If provided, only show this tab when viewing the documentation for a specific [locale](/locales).
+    </Property>
+  </Accordion>
+</Property>
+
+### Sidebar
+
+<Property name="sidebar" type="Sidebar[] | Record<string, Sidebar>">
+  An array or object of `Sidebar` objects to display in the sidebar of your documentation. See [Navigation](/navigation#sidebar) for more information on how to configure the sidebar.
+
+  <Accordion title="Sidebar">
+    <Property name="pages" type="Page[]">
+      The page links to display in the sidebar.
+
+      <Accordion title="Page" defaultOpen>
+        <Property name="title" type="string" required>
+          The title of the sidebar item.
+        </Property>
+
+        ---
+
+        <Property name="href" type="string" required>
+          The URL to link to when the sidebar item is clicked.
+        </Property>
+
+        ---
+
+        <Property name="icon" type="string">
+          The [icon](/components/icons) to display next to the sidebar item.
+        </Property>
+      </Accordion>
+    </Property>
+
+    ---
+
+    <Property name="group" type="string">
+      The group title to display the sidebar item in. If not provided, the sidebar item will be displayed at the top level.
+    </Property>
+
+    ---
+
+    <Property name="href" type="string">
+      The URL to link to when the sidebar item is clicked.
+    </Property>
+
+    ---
+
+    <Property name="icon" type="string">
+      The [icon](/components/icons) to display next to the sidebar item.
+    </Property>
+    
+    ---
+
+    <Property name="tab" type="string">
+      If provided, only show this sidebar item when viewing a specific [tab](/navigation#tabs).
+    </Property>
+  </Accordion>
+</Property>

@@ -1,0 +1,85 @@
+---
+title: Code Groups
+description: Display groups of code blocks with syntax highlighting.
+---
+
+Use the `<CodeGroup />` component to display multiple code blocks together, useful for showing variations of the "same" code in a different language.
+
+## Example
+
+<CodeGroup title="Logging: Hello World">
+  ```javascript
+  console.log("Hello World");
+  ```
+
+  ```python
+  print('Hello World!')
+  ```
+
+  ```dart
+  void main() {
+    print('Hello World!');
+  }
+  ```
+</CodeGroup>
+
+````jsx
+<CodeGroup title="Logging: Hello World">
+  ```javascript
+  console.log("Hello World");
+  ```
+
+  ```python
+  print('Hello World!')
+  ```
+
+  ```dart
+  void main() {
+    print('Hello World!');
+  }
+  ```
+</CodeGroup>
+````
+
+## Synchronizing languages
+
+In some scenarios, you may wish to synchronize the language selection across multiple code groups. You can do this by setting the `synchronize` prop on each `<CodeGroup />` component. For example,
+the following code groups will synchronize their language selection:
+
+<CodeGroup title="Logging" synchronize>
+  ```javascript
+  console.log("Hello World");
+  ```
+
+  ```dart
+  print('Hello World!');
+  ```
+</CodeGroup>
+
+<CodeGroup title="Exiting an application" synchronize>
+  ```javascript
+  process.exit(0);
+  ```
+
+  ```dart
+  exit(0);
+  ```
+</CodeGroup>
+
+## Props
+
+<Property name="title" type="string" optional>
+  The title of the code block.
+</Property>
+
+---
+
+<Property name="defaultLanguage" type="string" optional>
+  The default language to display code blocks in. Defaults to the first language in the group.
+</Property>
+
+---
+
+<Property name="synchronize" type="boolean" optional>
+  If `true`, synchronizes the language selection across multiple code groups with the same language defined.
+</Property>

@@ -13,14 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM oven/bun:1.0.29
+FROM oven/bun:1.1.22
 
 ARG BUILD_SHA=default_value
 ENV __BUILD_SHA=$BUILD_SHA
 
 WORKDIR /opt/app
-COPY . /opt/app
-RUN cd /opt/app && bun install --frozen-lockfile --production
+COPY . .
+RUN bun install --frozen-lockfile --production
 
-WORKDIR /opt/app
+WORKDIR /opt/app/api
+
 CMD ["bun","run","start"]

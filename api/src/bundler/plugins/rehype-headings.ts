@@ -1,11 +1,11 @@
-import { visit } from 'unist-util-visit';
-import { hasProperty } from 'hast-util-has-property';
-import { headingRank } from 'hast-util-heading-rank';
-import type { Node } from 'hast-util-heading-rank/lib';
-import { toString } from 'mdast-util-to-string';
-import { parseSelector } from 'hast-util-parse-selector';
-import { Data as UnistData, Node as UnistNode } from 'unist';
-import { Element as HastElement, Content as HastContent } from 'hast';
+import type { Content as HastContent, Element as HastElement } from "hast";
+import { hasProperty } from "hast-util-has-property";
+import { headingRank } from "hast-util-heading-rank";
+import type { Node } from "hast-util-heading-rank/lib";
+import { parseSelector } from "hast-util-parse-selector";
+import { toString } from "mdast-util-to-string";
+import type { Data as UnistData, Node as UnistNode } from "unist";
+import { visit } from "unist-util-visit";
 
 export type HeadingNode = {
   id: string;
@@ -19,7 +19,7 @@ type RehypeHeadingsOptions = {
 };
 
 const defaultOptions: RehypeHeadingsOptions = {
-  headings: ['h2', 'h3', 'h4', 'h5', 'h6'],
+  headings: ["h2", "h3", "h4", "h5", "h6"],
   callback: () => {
     return;
   },
@@ -44,7 +44,7 @@ export default function rehypeHeadings(
   const nodes: HeadingNode[] = [];
 
   function visitor(node: HastElement): void {
-    if (headingRank(node) && hasProperty(node, 'id')) {
+    if (headingRank(node) && hasProperty(node, "id")) {
       if (options.headings.includes(node.tagName as string)) {
         nodes.push({
           id: (node.properties as Record<string, string>).id,
@@ -56,32 +56,38 @@ export default function rehypeHeadings(
   }
 
   function newVisitor(node: Node & { children: HastElement[] }) {
-    const newChildren = partition<HastContent>(node.children, headingTest).map(part => {
-      const id =
-        (
-          part.filter((child: Node) => headingTest(child))[0] as HastElement
-        )?.properties?.id?.toString() || '';
+    const newChildren = partition<HastContent>(node.children, headingTest).map(
+      (part) => {
+        const id =
+          (
+            part.filter((child: Node) => headingTest(child))[0] as HastElement
+          )?.properties?.id?.toString() || "";
 
-      return wrapSection(part as HastElement[], id);
-    });
+        return wrapSection(part as HastElement[], id);
+      },
+    );
 
     node.children = newChildren;
   }
 
   return (ast: UnistNode<MyData>): void => {
-    visit(ast, 'element', visitor);
-    visit(ast, 'root', newVisitor);
+    visit(ast, "element", visitor);
+    visit(ast, "root", newVisitor);
     options.callback(nodes);
   };
 }
 
-const wrapSection: (children: HastElement[], id: string) => HastElement = (children, id) => {
-  const wrap = parseSelector(`section${id ? `#${id}` : ''}`);
+const wrapSection: (children: HastElement[], id: string) => HastElement = (
+  children,
+  id,
+) => {
+  const wrap = parseSelector(`section${id ? `#${id}` : ""}`);
   wrap.children = children;
   return wrap;
 };
 
-const headingTest: (node: Node) => boolean = node => !!headingRank(node) && hasProperty(node, 'id');
+const headingTest: (node: Node) => boolean = (node) =>
+  !!headingRank(node) && hasProperty(node, "id");
 
 // partition an array based on a test function, e.g [a,b,b,b,a,b,b,a,b] should become [[a,b,b,b],[a,b,b],[a,b]]
 function partition<T>(array: T[], test: (input: T) => boolean): T[][] {
@@ -90,6 +96,7 @@ function partition<T>(array: T[], test: (input: T) => boolean): T[][] {
       return [[current]];
     }
     if (test(current)) {
+      // biome-ignore lint/performance/noAccumulatingSpread: TODO: Fix this lint
       return [...prev, [current]];
     }
 

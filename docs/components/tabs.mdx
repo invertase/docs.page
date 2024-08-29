@@ -1,55 +1,45 @@
 ---
-title: Display content within different tabs
+title: Tabs
 description: Learn how to display content within different tabs
 ---
 
-# Tabs
+Use the `<Tabs />` component to display content within different tabs.
 
-Tabs are a great way to display content within different tabs. Tabs can be displayed using the `<Tabs>` component,
-providing a label and value.
+## Example
 
-## Basic Usage
+<Tabs>
+  <TabItem label="First Tab" value="first">👋 This is the content for the first tab.</TabItem>
+  <TabItem label="Second Tab" value="second">...and this is the content for the second tab!</TabItem>
+</Tabs>
 
-To display tabs, provide the `<Tabs>` component with a list of values:
+To display tabs, provide the `<Tabs>` component with child `<TabItem />` components:
 
 ```jsx
-<Tabs
-  values={[
-    { label: 'First Tab', value: 'first' },
-    { label: 'Second Tab', value: 'second' },
-  ]}
->
-  <TabItem value="first">👋 This is the content for the first tab.</TabItem>
-  <TabItem value="second">...and this is the content for the second tab!</TabItem>
+<Tabs>
+  <TabItem label="First Tab" value="first">👋 This is the content for the first tab.</TabItem>
+  <TabItem label="Second Tab" value="second">...and this is the content for the second tab!</TabItem>
 </Tabs>
 ```
 
-<Tabs
-  values={[
-    { label: 'First Tab', value: 'first' },
-    { label: 'Second Tab', value: 'second' },
-  ]}
->
-  <TabItem value="first">👋 This is the content for the first tab.</TabItem>
-  <TabItem value="second">...and this is the content for the second tab!</TabItem>
-</Tabs>
+## `Tabs` Props
 
-## Default Value
+<Property name="defaultValue" type="string" optional>
+  The default tab to display. Needs to match a `TabItem`'s `value` prop.
+  
+  Defaults to the first tab.
+</Property>
 
-By default, the first tab will be displayed. To display the second tab, provide a `defaultValue` prop.
+## `TabItem` Props
 
-```jsx
-<Tabs
-  defaultValue="second"
-  values={[
-    { label: 'First Tab', value: 'first' },
-    { label: 'Second Tab', value: 'second' },
-  ]}
->
-  <TabItem value="first">👋 This is the content for the first tab.</TabItem>
-  <TabItem value="second">...and this is the content for the second tab!</TabItem>
-</Tabs>
-```
+<Property name="label" type="string" required>
+  The label to display for the tab.
+</Property>
+
+---
+
+<Property name="value" type="string" required>
+  The value of the tab. Use this to identify the tab for the `defaultValue` property.
+</Property>
 
 ## Synchronizing Tabs
 
@@ -64,10 +54,6 @@ don't have to keep selecting it everywhere.
 ```jsx
 <Tabs
   groupId="language"
-  values={[
-    { label: 'JavaScript Example', value: 'js' },
-    { label: 'Dart Tab', value: 'dart' },
-  ]}
 >
 ```
 
@@ -77,14 +63,8 @@ The below examples shows how to perform a network request to our API.
 
 First, import the package:
 
-<Tabs
-  groupId="language"
-  values={[
-    { label: 'JavaScript', value: 'js' },
-    { label: 'Dart', value: 'dart' },
-  ]}
->
-  <TabItem value="js">
+<Tabs groupId="language">
+  <TabItem label="JavaScript" value="js">
     Import the `axios` package:
 
     ```bash
@@ -98,7 +78,7 @@ First, import the package:
     ````
 
   </TabItem>
-  <TabItem value="dart">
+  <TabItem label="Dart" value="dart">
     Add the `dio` package:
 
     ```bash
@@ -116,20 +96,14 @@ First, import the package:
 
 Next, perform a network request to 'https://example.com':
 
-<Tabs
-  groupId="language"
-  values={[
-    { label: 'JavaScript', value: 'js' },
-    { label: 'Dart', value: 'dart' },
-  ]}
->
-  <TabItem value="js">
+<Tabs groupId="language">
+  <TabItem label="JavaScript" value="js">
     ```js
     const response = await axios.get('https://example.com');
     console.log(response.data);
     ```
   </TabItem>
-  <TabItem value="dart">
+  <TabItem label="Dart" value="dart">
     ```dart
     var dio = Dio();
     final response = await dio.get('https://example.com');

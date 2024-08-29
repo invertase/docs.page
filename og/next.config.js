@@ -4,8 +4,8 @@ const nextConfig = {
   rewrites() {
     return [
       {
-        source: '/',
-        destination: '/api/og',
+        source: "/",
+        destination: "/api/og",
       },
     ];
   },

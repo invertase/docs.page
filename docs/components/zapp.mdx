@@ -1,23 +1,21 @@
 ---
-title: Add Zapp! embeds to your documentation
+title: Zapp!
 description: Learn how to add Zapp! embeds to your documentation.
 ---
 
-# Zapp!
+Use the `<Zapp />` component to embed Zapp! sandboxes in your documentation.
 
 [Zapp!](https://zapp.run) is a free online Dart & Flutter sandbox that lets you run Dart code in the browser. It's great for sharing code snippets in your documentation.
 
-## Embedding Zapp!
+## Example
 
-Use the `<Zapp>` component and pass the ID of the Zapp! you want to embed.
+<Zapp id="flutter" />
 
 ```jsx
 <Zapp id="flutter" />
 ```
 
-<Zapp id="flutter" />
-
-## Lazy Loading
+### Lazy Loading
 
 To prevent the sandbox from loading until the user interacts, pass the `lazy` prop.
 
@@ -27,7 +25,7 @@ To prevent the sandbox from loading until the user interacts, pass the `lazy` pr
 
 <Zapp lazy id="flutter" />
 
-## From GitHub
+### From GitHub
 
 To load a Zapp! from GitHub, set the `id` prop to `github/<path>`.
 
@@ -45,7 +43,7 @@ You can also pass a path relative to the root of the repository.
 
 <Zapp id="github/rrousselGit/riverpod/tree/master/packages/flutter_riverpod/example" />
 
-## From GitHub Gists
+### From GitHub Gists
 
 To load a Zapp! from a GitHub Gist, set the `id` prop to `gist/<id>`.
 
@@ -62,7 +60,7 @@ Final product:
 
 <Zapp id="gist/ecabed4a17a3aad8bee7c6327e472fc8" />
 
-## From Pub
+### From Pub
 
 To load a Zapp! from a https://pub.dev example, set the `id` prop to `pub/<package>` or `pub/<package>/<version>`.
 
@@ -75,3 +73,22 @@ To load a Zapp! from a https://pub.dev example, set the `id` prop to `pub/<packa
 <Zapp id="pub/http" />
 
 <Zapp id="pub/http/0.13.4" />
+
+## Props
+
+
+<Property name="id" type="string" required>
+  The ID of the Zapp to embed.
+</Property>
+
+---
+
+<Property name="lazy" type="boolean" optional>
+  Whether or not to lazy load the Zapp. Defaults to `false`.
+</Property>
+
+---
+
+<Property name="theme" type="light | dark" optional>
+  The theme of the Zapp. Defaults to the users browser preference.
+</Property>

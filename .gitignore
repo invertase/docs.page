@@ -1,5 +1,9 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
+# We ignore this since we're using Bun for workspace management, and some environments
+# will detect this file and use npm instead of bun.
+package-lock.json
+
 # dependencies
 node_modules
 /.pnp
