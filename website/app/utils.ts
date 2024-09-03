@@ -205,7 +205,7 @@ export function getHref(ctx: Context, path: string) {
 
   // If it's a vanity domain, we need to prefix the path with the owner and repository.
   if (ctx.vanity) {
-    href += `https://${ctx.owner}.docs.page/${ctx.repository}`;
+    href += `/${ctx.repository}`;
   }
   // Ensure all links start with the custom domain if it's set.
   else if (ctx.domain) {
