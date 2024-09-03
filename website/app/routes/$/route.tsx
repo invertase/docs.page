@@ -51,8 +51,6 @@ export const loader = async (args: LoaderFunctionArgs) => {
       throw redirect(redirectTo);
     }
 
-    console.log('Handling redirect', redirectTo, { owner, repository, ref, vanity, domain, environment });
-
     let url = "";
     if (vanity) {
       url = `https://${owner}.docs.page/${repository}`;
@@ -69,6 +67,8 @@ export const loader = async (args: LoaderFunctionArgs) => {
       if (ref) url += `~${ref}`;
       url += redirectTo;
     }
+
+    console.log('Handling redirect', redirectTo, { owner, repository, ref, vanity, domain, environment }, url);
 
     throw redirect(url);
   }
