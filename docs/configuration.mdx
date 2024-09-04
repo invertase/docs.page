@@ -45,17 +45,11 @@ Below is a list of all available configuration options, which can be used to mod
 <Property name="logo" type="Logo">
   Configures the logo of your documentation, which will be displayed in the header and used for social preview images.
 
-  The minimum height of the logo should be 24px.
+  The minimum height of the logo should be 24px. Note that if only a light or dark logo is provided, it will be used for both light and dark modes.
 
   See [Asset URLs](/assets) for more information on how to add assets to your documentation.
 
   <Accordion title="Logo">
-    <Property name="href" type="string">
-      If provided, the logo will be a link to this URL. By default, the logo will link to the root of your documentation.
-    </Property>
-
-    ---
-
     <Property name="light" type="string">
       The Asset URL of your logo to display when the documentation is in light mode.
     </Property>

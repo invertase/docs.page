@@ -1,8 +1,8 @@
 {
+  "$schema": "https://docs.page/schema.json",
   "name": "docs.page",
   "description": "Ship documentation, like you ship code",
   "logo": {
-    "href": "https://docs.page",
     "light": "https://static.invertase.io/assets/docs.page/docs-page-logo.png"
   },
   "favicon": "https://static.invertase.io/assets/docs.page/docs-page-logo.png",

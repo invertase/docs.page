@@ -1,5 +1,5 @@
 import { SearchIcon } from "lucide-react";
-import { usePageContext, useTabs } from "~/context";
+import { useHref, usePageContext, useTabs } from "~/context";
 import { cn } from "~/utils";
 import { GitHubCard } from "./GitHubCard";
 import { Locale } from "./Locale";
@@ -19,7 +19,7 @@ export function Header(props: Props) {
   const showName = ctx.bundle.config.header?.showName ?? true;
 
   const name = ctx.bundle.config.name;
-  const logo = ctx.bundle.config.logo;
+  const logoHref = useHref("/");
 
   return (
     <header className="max-w-8xl mx-auto px-8 lg:px-10">
@@ -31,7 +31,7 @@ export function Header(props: Props) {
         )}
 
         <a
-          href={logo?.href || "/"}
+          href={logoHref}
           className="flex-1 inline-flex items-center gap-3"
         >
           <Logo />
