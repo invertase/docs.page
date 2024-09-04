@@ -33,7 +33,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
   }).catch((response) => {
     throw response;
   });
-  
+
   // Check whether the repository has a domain assigned.
   const domain = domains
     .find(([, repo]) => repo === `${owner}/${repository}`)
@@ -52,7 +52,11 @@ export const loader = async (args: LoaderFunctionArgs) => {
     }
 
     let url = "";
-    if (domain && environment === "production") {
+    if (vanity) {
+      url = `https://${owner}.docs.page/${repository}`;
+      if (ref) url += `~${ref}`;
+      url += redirectTo;
+    } else if (domain && environment === "production") {
       // If there is a domain setup, always redirect to it.
       url = `https://${domain}`;
       if (ref) url += `/~${ref}`;
@@ -63,6 +67,8 @@ export const loader = async (args: LoaderFunctionArgs) => {
       if (ref) url += `~${ref}`;
       url += redirectTo;
     }
+
+    console.log('Handling redirect', redirectTo, { owner, repository, ref, vanity, domain, environment }, url);
 
     throw redirect(url);
   }
@@ -151,7 +157,7 @@ export const meta: MetaFunction<typeof loader> = ({ data: ctx }) => {
         ctx.bundle.config.logo.light || ctx.bundle.config.logo.dark
           ? getAssetSrc(
               ctx,
-              ctx.bundle.config.logo.light || ctx.bundle.config.logo.dark || "",
+              ctx.bundle.config.logo.light || ctx.bundle.config.logo.dark || ""
             )
           : undefined,
     });

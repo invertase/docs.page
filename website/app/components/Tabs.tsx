@@ -31,7 +31,6 @@ export function Tabs(props: Props) {
                 <li key={href}>
                   <NavLink
                     to={href}
-                    target={isExternalLink(href) ? "_blank" : undefined}
                     className={cn(
                       "relative top-px flex items-center h-12 border-b-[1.5px] border-transparent",
                       {
