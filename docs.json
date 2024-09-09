@@ -81,6 +81,10 @@
       "tab": "components",
       "pages": [
         {
+          "title": "Getting Started",
+          "href": "/components"
+        },
+        {
           "title": "Accordion",
           "href": "/components/accordion",
           "icon": "square-caret-down"

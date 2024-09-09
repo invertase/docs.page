@@ -1,3 +1,38 @@
 ---
-redirect: /components/accordion
+title: Components
+description: Enhance your documentation with components powered by MDX.
 ---
+
+Alongside regular Markdown, docs.page supports [MDX](https://mdxjs.com/), a format that allows you to use JSX components within your documentation.
+
+Components enable you to enhance your documentation, providing a more interactive and engaging experience for your readers over what is possible with standard Markdown.
+
+## Using Components
+
+To use components in your documentation, you can either use standard Markdown syntax, or the `<Component>` syntax. For example, the `<Info>` component can be used to display an informational message more visible to users:
+
+<Info>This draws attention to useful page information.</Info>
+
+```jsx
+<Info>This draws attention to useful page information.</Info>
+```
+
+Components also take "props", which are attributes that can be passed to the component to customize its behavior, for example:
+
+```jsx
+<Tweet id="1513662173796605958" />
+```
+
+## HTML Overrides
+
+Typical markdown syntax supports both markdown tags and also HTML tags. In some scenarios, docs.page will override the HTML tags to render the component instead. For example image markup in markdown (e.g. `![alt text](image.png)`) will be overridden to render the `<Image>` component instead.
+
+Please note that rendering HTML directly in your markdown will not be overridden, and will be rendered as standard HTML. For example an `<img>` tag will not be overridden to render the `<Image>` component.
+
+## Invalid Components
+
+If you attempt to use a component that does not exist, or has a required property which is missing, docs.page will render a red block with a message informing you to take action.
+For example:
+
+<ComponentWhichDoesNotExist />
+
