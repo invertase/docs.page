@@ -218,10 +218,19 @@ If your IDE supports JSON Schemas, you can add a `$schema` property to your `doc
 
 ### Social Links
 
-<Property name="socialLinks" type="SocialLink[]">
-  An array of `SocialLink` objects to display in the footer of your documentation.
+<Property name="social" type="object">
+  An object of key value pairs where the key is the social platform and the value is the username/ID to link to:
 
-  <Accordion title="SocialLink">
+  ```
+  {
+    "social": {
+      "x": "@invertaseio",
+      "github": "invertase"
+    }
+  }
+  ```
+
+  <Accordion title="object">
     <Property name="website" type="string">
       A generic website URL to link to, such as your homepage or product.
     </Property>
