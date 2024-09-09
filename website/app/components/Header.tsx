@@ -30,17 +30,14 @@ export function Header(props: Props) {
           </div>
         )}
 
-        <a
-          href={logoHref}
-          className="flex-1 inline-flex items-center gap-3"
-        >
+        <a href={logoHref} className="flex-1 inline-flex items-center gap-3">
           <Logo />
           {showName && !!name && <span className="font-bold">{name}</span>}
         </a>
         <div className="hidden lg:block flex-1">
           <Search />
         </div>
-        <div className="flex-1 flex items-center justify-end pr-4 gap-8">
+        <div className="flex-1 flex items-center justify-end pr-4 gap-3 lg:gap-6">
           <Links />
           <RefBadge />
           <div className="hidden lg:block">
@@ -76,16 +73,19 @@ function Links() {
   }
 
   return (
-    <ul className="flex flex-row-reverse items-center gap-6">
+    <ul className="flex flex-row-reverse items-center gap-3 lg:gap-6">
       {links.map((link, index) => (
         <li key={index}>
           <a
             href={link.href}
-            className={cn("font-medium transition-all tracking-wide", {
-              "text-sm px-3 py-1 rounded-full bg-primary hover:bg-primary/90 text-white dark:bg-primary/10 border-[0.5px] dark:text-primary border-transparent dark:border-primary/60 hover:dark:border-primary":
-                link.cta,
-              "hover:text-primary": !link.cta,
-            })}
+            className={cn(
+              "font-medium transition-all tracking-wide whitespace-nowrap",
+              {
+                "text-sm px-3 py-1 rounded-full bg-primary hover:bg-primary/90 text-white dark:bg-primary/10 border-[0.5px] dark:text-primary border-transparent dark:border-primary/60 hover:dark:border-primary":
+                  link.cta,
+                "hover:text-primary": !link.cta,
+              },
+            )}
           >
             <span className="text-sm tracking-wide">{link.title}</span>
           </a>
