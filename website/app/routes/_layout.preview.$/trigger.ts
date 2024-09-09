@@ -26,7 +26,7 @@ export function useTrigger(): {
   if (directory.isLoading) {
     return { state: "LOADING" };
   }
-  
+
   if (
     directory.isError &&
     directory.error instanceof DirectoryPermissionsRequiredError

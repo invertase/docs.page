@@ -12,7 +12,7 @@ export function getRequestParams(args: LoaderFunctionArgs) {
   let repository: string;
   let ref: string | undefined;
   let path = args.params["*"] || "";
-  
+
   const url = new URL(args.request.url);
 
   // A rewritten request comes through with a header containing `x-docs-page-domain`,
@@ -46,7 +46,7 @@ export function getRequestParams(args: LoaderFunctionArgs) {
 
     if (!domain) {
       throw new Error(
-        `Client host request "${url.host}" does not match a domain.`
+        `Client host request "${url.host}" does not match a domain.`,
       );
     }
 
@@ -145,17 +145,17 @@ export function getBlobSrc(ctx: Context, path: string) {
 
   if (source.type === "branch") {
     return `https://raw.githubusercontent.com/${owner}/${repository}/${encodeURIComponent(
-      ref ?? baseBranch
+      ref ?? baseBranch,
     )}/docs${ensureLeadingSlash(path)}`;
   }
   if (source.type === "PR") {
     return `https://raw.githubusercontent.com/${owner}/${repository}/${encodeURIComponent(
-      ref ?? baseBranch
+      ref ?? baseBranch,
     )}/docs${ensureLeadingSlash(path)}`;
   }
 
   return `https://raw.githubusercontent.com/${owner}/${repository}/HEAD/docs${ensureLeadingSlash(
-    path
+    path,
   )}`;
 }
 

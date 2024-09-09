@@ -127,6 +127,7 @@ const jsonConfigurationSidebar = `[
 
 function jsonConfiguration({ sidebar }: { sidebar: boolean }) {
   return `{
+  "$schema": "https://docs.page/schema.json",
   "name": "My Docs",
   "description": "My documentation site",
   "sidebar": ${sidebar ? jsonConfigurationSidebar : "[]"}

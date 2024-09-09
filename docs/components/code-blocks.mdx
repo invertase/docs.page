@@ -102,38 +102,3 @@ console.log('Focused') // [\!code focus]
 console.log('Not focused');
 ```
 ````
-
-### Typescript Support
-
-Out of the box, all code blocks will automatically be enhanced with rich type information when the code area is hovered.
-
-```ts
-type APIResponse<T> = {
-  data: T;
-  status: number;
-};
-
-export async function apiRequest(options: { url: string }) {
-  const response = await fetch(options.url);
-  const data = await response.json() as APIResponse<{ hello: 'world' }>;
-  return data;
-}
-```
-
-To enable this, ensure that the code block is tagged with the `typescript` (or `ts`) language:
-
-````
-```ts
-type APIResponse<T> = {
-  data: T;
-  status: number;
-};
-
-export async function apiRequest(options: { url: string }) {
-  const response = await fetch(options.url);
-  const data = await response.json() as APIResponse<{ hello: 'world' }>;
-  return data;
-}
-```
-````
-

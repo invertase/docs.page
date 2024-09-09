@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import anchors from "./models/anchors";
 import content from "./models/content";
+import favicon from "./models/favicon";
 import header from "./models/header";
 import logo from "./models/logo";
 import scripts from "./models/scripts";
@@ -20,13 +21,13 @@ export const ConfigSchema = z
     name: z.string().min(1).optional().catch(undefined),
     // The description of the project
     description: z.string().min(1).optional().catch(undefined),
-    // The favicon of the project
-    favicon: z.string().min(1).optional().catch(undefined),
     // The preview image used in social media - either a path or a URL, or false to disable
     socialPreview: z
       .union([z.string().min(1), z.literal(false)])
       .optional()
       .catch(undefined),
+    // The favicon of the project
+    favicon,
     // The logo of the project, used in the header
     logo,
     // Theme settings

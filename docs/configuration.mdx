@@ -6,6 +6,14 @@ description: Configure your documentation with a docs.json file.
 Add a `docs.json` file to the root of your GitHub repository to configure your documentation.
 Below is a list of all available configuration options, which can be used to modify the logos, theme, analytics and more.
 
+If your IDE supports JSON Schemas, you can add a `$schema` property to your `docs.json` file to enable autocompletion and validation:
+
+```json title="docs.json"
+{
+  "$schema": "https://docs.page/schema.json"
+}
+```
+
 ## Properties
 
 ### Top-level properties
@@ -22,10 +30,24 @@ Below is a list of all available configuration options, which can be used to mod
 
 ---
 
-<Property name="favicon" type="string">
-  The favicon URL for your project.
+<Property name="favicon" type="string | Favicon">
+  Defines the favicon to show in the browser tab.
 
   See [Asset URLs](/assets) for more information on how to add assets to your documentation.
+
+  The favicon can either be a `string` value which will be used for both light and dark modes, or a `Favicon` object to define separate favicons for light and dark modes.
+
+  <Accordion title="Favicon">
+    <Property name="light" type="string">
+      The Asset URL of your favicon to display when the documentation is in light mode.
+    </Property>
+
+    ---
+
+    <Property name="dark" type="string">
+      The Asset URL of your favicon to display when the documentation is in dark mode.
+    </Property>
+  </Accordion>
 </Property>
 
 ---
@@ -45,17 +67,11 @@ Below is a list of all available configuration options, which can be used to mod
 <Property name="logo" type="Logo">
   Configures the logo of your documentation, which will be displayed in the header and used for social preview images.
 
-  The minimum height of the logo should be 24px.
+  The minimum height of the logo should be 24px. Note that if only a light or dark logo is provided, it will be used for both light and dark modes.
 
   See [Asset URLs](/assets) for more information on how to add assets to your documentation.
 
   <Accordion title="Logo">
-    <Property name="href" type="string">
-      If provided, the logo will be a link to this URL. By default, the logo will link to the root of your documentation.
-    </Property>
-
-    ---
-
     <Property name="light" type="string">
       The Asset URL of your logo to display when the documentation is in light mode.
     </Property>
@@ -202,10 +218,19 @@ Below is a list of all available configuration options, which can be used to mod
 
 ### Social Links
 
-<Property name="socialLinks" type="SocialLink[]">
-  An array of `SocialLink` objects to display in the footer of your documentation.
+<Property name="social" type="object">
+  An object of key value pairs where the key is the social platform and the value is the username/ID to link to:
 
-  <Accordion title="SocialLink">
+  ```
+  {
+    "social": {
+      "x": "@invertaseio",
+      "github": "invertase"
+    }
+  }
+  ```
+
+  <Accordion title="object">
     <Property name="website" type="string">
       A generic website URL to link to, such as your homepage or product.
     </Property>

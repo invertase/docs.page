@@ -135,7 +135,7 @@ export function useDirectoryHandle() {
         await db.put(
           "files",
           await getFileContent(yamlConfigHandle),
-          "docs.yaml"
+          "docs.yaml",
         );
 
         discoveredFiles.push("docs.yaml");
@@ -145,7 +145,7 @@ export function useDirectoryHandle() {
         await db.put(
           "files",
           await getFileContent(jsonConfigHandle),
-          "docs.json"
+          "docs.json",
         );
 
         discoveredFiles.push("docs.json");
@@ -154,7 +154,7 @@ export function useDirectoryHandle() {
       // Recursively walk the docs directory and get the contents of each file.
       async function walkDirectory(
         dir: FileSystemDirectoryHandle,
-        path: string
+        path: string,
       ) {
         for await (const entry of dir.values()) {
           if (entry.kind === "file") {
@@ -178,7 +178,7 @@ export function useDirectoryHandle() {
           } else {
             await walkDirectory(
               entry as FileSystemDirectoryHandle,
-              `${path + entry.name}/`
+              `${path + entry.name}/`,
             );
           }
         }
@@ -194,7 +194,7 @@ export function useDirectoryHandle() {
             if (!discoveredFiles.includes(file)) {
               await db.delete("files", file);
             }
-          })
+          }),
         );
       } else {
         // If the `docs` directory doesn't exist, delete all files.
@@ -221,7 +221,7 @@ export function useFiles(enabled = true) {
       await Promise.all(
         keys.map(async (key) => {
           files[key] = await db.get("files", key);
-        })
+        }),
       );
 
       return files;
@@ -232,7 +232,7 @@ export function useFiles(enabled = true) {
 // Load the current page content from the database.
 export function usePageContent(
   path: string,
-  directory?: FileSystemDirectoryHandle | null
+  directory?: FileSystemDirectoryHandle | null,
 ) {
   return useQuery({
     enabled: !!directory,
@@ -261,7 +261,7 @@ export function usePageContent(
 
       // First check if we even have a file in the database for this path.
       const [file1, file2] = await Promise.all(
-        filePaths.map((filePath) => db.get("files", filePath))
+        filePaths.map((filePath) => db.get("files", filePath)),
       );
 
       // If neither file exists, return a code...?
@@ -296,7 +296,7 @@ export function useCheckResult() {
       const fileSet = new Set(
         files.map((key) => {
           return key.startsWith("/") ? `docs${key}` : key;
-        })
+        }),
       );
 
       // This is the function that will be called by the CLI to get the content of a file.
@@ -371,7 +371,10 @@ async function verifyPermission(directory: FileSystemDirectoryHandle) {
 export class DirectoryPermissionsRequiredError extends Error {}
 
 export class FileNotFoundError extends Error {
-  constructor(path: string, public filePaths: string[]) {
+  constructor(
+    path: string,
+    public filePaths: string[],
+  ) {
     super(`File not found: ${path}`);
   }
 }
