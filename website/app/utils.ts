@@ -210,7 +210,7 @@ export function getHref(ctx: Context, path: string) {
   // Ensure all links start with the custom domain if it's set.
   else if (ctx.domain) {
     href += `https://${ctx.domain}`;
-  }
+  } 
   // Prefix the path with the owner and repository, e.g. `/invertase/docs.page`.
   else {
     href = `/${ctx.owner}/${ctx.repository}`;
