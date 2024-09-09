@@ -123,7 +123,10 @@ function AddContent() {
       }
       meta={
         <p>
-          <a href="https://use.docs.page/writing-content" className="  underline">
+          <a
+            href="https://use.docs.page/writing-content"
+            className="  underline"
+          >
             Write your documentation
           </a>{" "}
           using Markdown, adding new pages to your `docs` directory.

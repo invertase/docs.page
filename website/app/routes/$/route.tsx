@@ -72,7 +72,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
       "Handling redirect",
       redirectTo,
       { owner, repository, ref, vanity, domain, environment },
-      url
+      url,
     );
 
     throw redirect(url);
@@ -178,7 +178,7 @@ export const meta: MetaFunction<typeof loader> = ({ data: ctx }) => {
         ctx.bundle.config.logo.light || ctx.bundle.config.logo.dark
           ? getAssetSrc(
               ctx,
-              ctx.bundle.config.logo.light || ctx.bundle.config.logo.dark || ""
+              ctx.bundle.config.logo.light || ctx.bundle.config.logo.dark || "",
             )
           : undefined,
     });

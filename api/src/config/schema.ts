@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import anchors from "./models/anchors";
 import content from "./models/content";
+import favicon from "./models/favicon";
 import header from "./models/header";
 import logo from "./models/logo";
 import scripts from "./models/scripts";
@@ -11,7 +12,6 @@ import sidebar from "./models/sidebar";
 import social from "./models/social";
 import tabs from "./models/tabs";
 import theme from "./models/theme";
-import favicon from "./models/favicon";
 
 export type { Sidebar } from "./models/sidebar";
 

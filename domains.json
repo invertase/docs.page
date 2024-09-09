@@ -43,9 +43,6 @@
   ["utils.kishormainali.com", "kishormainali/fp_util"],
   ["docs.gazelle-dart.dev", "intales/gazelle"],
   ["docs.lamp-ic.fr", "TeddyVermeulin/lamp-doc"],
-  [	"thermion.dev", "nmfisher/thermion"],
-	[
-		"docs.thabit.ai",
-		"thabit-ai/thabit"
-	]
+  ["thermion.dev", "nmfisher/thermion"],
+  ["docs.thabit.ai", "thabit-ai/thabit"]
 ]

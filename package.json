@@ -13,12 +13,7 @@
     "@biomejs/biome": "1.8.3",
     "concurrently": "^7.0.0"
   },
-  "workspaces": [
-    "api",
-    "website",
-    "og",
-    "packages/*"
-  ],
+  "workspaces": ["api", "website", "og", "packages/*"],
   "patchedDependencies": {
     "@remix-run/react@2.9.2": "patches/@remix-run%2Freact@2.9.2.patch"
   }
