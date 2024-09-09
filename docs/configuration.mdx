@@ -6,6 +6,14 @@ description: Configure your documentation with a docs.json file.
 Add a `docs.json` file to the root of your GitHub repository to configure your documentation.
 Below is a list of all available configuration options, which can be used to modify the logos, theme, analytics and more.
 
+If your IDE supports JSON Schemas, you can add a `$schema` property to your `docs.json` file to enable autocompletion and validation:
+
+```json title="docs.json"
+{
+  "$schema": "https://docs.page/schema.json"
+}
+```
+
 ## Properties
 
 ### Top-level properties
