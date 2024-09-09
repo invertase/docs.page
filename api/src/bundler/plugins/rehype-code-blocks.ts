@@ -5,7 +5,6 @@ import {
   transformerNotationHighlight,
   transformerRemoveNotationEscape,
 } from "@shikijs/transformers";
-import { transformerTwoslash } from "@shikijs/twoslash";
 import type { Element } from "hast";
 import { toString } from "mdast-util-to-string";
 import * as shiki from "shiki";
@@ -53,10 +52,6 @@ export default function rehypeCodeBlocks(): (ast: Node) => void {
       transformerNotationFocus(),
       transformerMetaHighlight(),
     ];
-
-    if (languageActual === "typescript") {
-      transformers.push(transformerTwoslash());
-    }
 
     parent.properties.html = highlighter.codeToHtml(raw, {
       lang: languageActual,
