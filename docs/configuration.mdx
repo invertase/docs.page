@@ -30,10 +30,24 @@ If your IDE supports JSON Schemas, you can add a `$schema` property to your `doc
 
 ---
 
-<Property name="favicon" type="string">
-  The favicon URL for your project.
+<Property name="favicon" type="string | Favicon">
+  Defines the favicon to show in the browser tab.
 
   See [Asset URLs](/assets) for more information on how to add assets to your documentation.
+
+  The favicon can either be a `string` value which will be used for both light and dark modes, or a `Favicon` object to define separate favicons for light and dark modes.
+
+  <Accordion title="Favicon">
+    <Property name="light" type="string">
+      The Asset URL of your favicon to display when the documentation is in light mode.
+    </Property>
+
+    ---
+
+    <Property name="dark" type="string">
+      The Asset URL of your favicon to display when the documentation is in dark mode.
+    </Property>
+  </Accordion>
 </Property>
 
 ---

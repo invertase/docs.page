@@ -225,8 +225,6 @@ function Trigger() {
   const requestPermissions = useRequestPermissions();
   const restart = useRestart();
 
-  console.log(state, error);
-
   if (state === "UNSUPPORTED") {
     return (
       <p className="text-red-500 text-center">

@@ -68,7 +68,12 @@ export const loader = async (args: LoaderFunctionArgs) => {
       url += redirectTo;
     }
 
-    console.log('Handling redirect', redirectTo, { owner, repository, ref, vanity, domain, environment }, url);
+    console.log(
+      "Handling redirect",
+      redirectTo,
+      { owner, repository, ref, vanity, domain, environment },
+      url
+    );
 
     throw redirect(url);
   }
@@ -117,13 +122,29 @@ export const meta: MetaFunction<typeof loader> = ({ data: ctx }) => {
     return descriptors;
   }
 
-  descriptors.push({
-    tagName: "link",
-    rel: "icon",
-    href: ctx.bundle.config.favicon
-      ? getAssetSrc(ctx, ctx.bundle.config.favicon)
-      : "/favicon.ico",
-  });
+  if (ctx.bundle.config.favicon?.light) {
+    descriptors.push({
+      tagName: "link",
+      rel: "icon",
+      media: ctx.bundle.config.favicon?.dark
+        ? // If there is a dark favicon, add a media query to prefer light mode only.
+          "(prefers-color-scheme: light)"
+        : undefined,
+      href: getAssetSrc(ctx, ctx.bundle.config.favicon.light),
+    });
+  }
+
+  if (ctx.bundle.config.favicon?.dark) {
+    descriptors.push({
+      tagName: "link",
+      rel: "icon",
+      media: ctx.bundle.config.favicon?.light
+        ? // If there is a light favicon, add a media query to prefer dark mode only.
+          "(prefers-color-scheme: dark)"
+        : undefined,
+      href: getAssetSrc(ctx, ctx.bundle.config.favicon.dark),
+    });
+  }
 
   // Add noindex meta tag if the frontmatter or config has noindex set to true.
   if (
