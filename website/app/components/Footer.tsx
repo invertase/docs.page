@@ -35,8 +35,8 @@ export function Footer() {
   const sorted = socials.sort(([a], [b]) => a.localeCompare(b));
 
   return (
-    <footer className="flex items-center gap-12 pb-12">
-      <div className="text-sm flex gap-1">
+    <footer className="md:flex items-center gap-12 pb-12 space-y-3 md:space-y-0">
+      <div className="text-sm flex items-center justify-center md:justify-start gap-1">
         <span>Powered by</span>
         <span>⬡</span>
         <code>
@@ -44,7 +44,7 @@ export function Footer() {
           <a href="https://docs.page">docs.page</a>
         </code>
       </div>
-      <div className="flex-1 flex flex-wrap items-center justify-end gap-5">
+      <div className="flex-1 flex flex-wrap items-center justify-center md:justify-end gap-5">
         {sorted.map(([name, url]) => (
           <div key={name}>
             <a

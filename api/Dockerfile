@@ -20,7 +20,7 @@ ENV __BUILD_SHA=$BUILD_SHA
 
 WORKDIR /opt/app
 COPY . .
-RUN bun install --frozen-lockfile --production
+RUN bun install --frozen-lockfile
 
 WORKDIR /opt/app/api
 
