@@ -46,6 +46,7 @@ export function Locale() {
                 <MenuItem key={locale}>
                   <Link
                     href={`/${locale}`}
+                    ignoreLocale
                     className="flex w-full rounded-lg hover:bg-black/5 hover:dark:bg-white/5 px-3 py-1.5 text-sm"
                   >
                     {iso639LanguageCodes[locale]}

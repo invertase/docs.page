@@ -3,10 +3,12 @@ import type { ComponentProps } from "react";
 import { useHref } from "~/context";
 import { isExternalLink } from "~/utils";
 
-type LinkProps = ComponentProps<"a">;
+type LinkProps = {
+  ignoreLocale?: boolean;
+} & ComponentProps<"a">;
 
 export function Link(props: LinkProps) {
-  const href = useHref(props.href ?? "");
+  const href = useHref(props.href ?? "", props.ignoreLocale);
 
   if (isExternalLink(props.href ?? "")) {
     return (
