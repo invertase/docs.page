@@ -175,8 +175,8 @@ export function getLocale(ctx: Context) {
 // If the path is external, it is returned as is.
 // If we're in preview mode, the path is prefixed with `/preview`.
 // Otherwise applies the owner, repository, ref and locale to the path.
-export function getHref(ctx: Context, path: string) {
-  const locale = getLocale(ctx);
+export function getHref(ctx: Context, path: string, ignoreLocale: boolean = false) {
+  const locale = ignoreLocale ? undefined : getLocale(ctx);
 
   // Ensures a path, e.g. foo/bar becomes /foo/bar
   let normalizedPath = ensureLeadingSlash(path);

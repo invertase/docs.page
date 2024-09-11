@@ -116,9 +116,9 @@ export function useSidebar(): SidebarGroup[] {
 }
 
 // Resolves a path to a full URL.
-export function useHref(path: string): string {
+export function useHref(path: string, ignoreLocale: boolean = false): string {
   const ctx = usePageContext();
-  return getHref(ctx, path);
+  return getHref(ctx, path, ignoreLocale);
 }
 
 // Returns the active tab for the current page.
