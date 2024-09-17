@@ -5,7 +5,7 @@ export function getMetadata(): MetaDescriptor[] {
   const title = "docs.page | Ship documentation, like you ship code";
   const description =
     "Publish beautiful online documentation instantly, from your code editor using markdown and a public GitHub repository.";
-  const image = "https://docs.page/social-preview.png";
+  const image = "https://docs.page/_docs.page/social-preview.png";
 
   return [
     {

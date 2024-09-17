@@ -14,7 +14,7 @@ export function Demo() {
           preload="metadata"
           className="w-full rounded-xl"
         >
-          <source src="/docs-page-hero-video.webm#t=1" type="video/webm" />
+          <source src="/_docs.page/docs-page-hero-video.webm#t=1" type="video/webm" />
         </video>
       </div>
     </section>
