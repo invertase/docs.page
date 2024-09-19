@@ -15,6 +15,10 @@ export function getRequestParams(args: LoaderFunctionArgs) {
 
   const url = new URL(args.request.url);
 
+  console.log('getRequestParams', url, {
+    hostname: url.hostname,
+  });
+
   // A rewritten request comes through with a header containing `x-docs-page-domain`,
   // which is the domain the request was rewritten from so we treat it as a vanity domain.
   let vanity = args.request.headers.get("x-docs-page-domain") !== null;
