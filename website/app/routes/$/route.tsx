@@ -4,111 +4,22 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 import type { HeadersFunction, LoaderFunctionArgs } from "@vercel/remix";
-import { redirect } from "@vercel/remix";
-import { getBundle } from "~/api";
 import { Scripts } from "~/components/Scripts";
 import { type Context, PageContext } from "~/context";
 import { DocsLayout } from "~/layouts/DocsLayout";
 
 import docsearch from "@docsearch/css/dist/style.css?url";
-import { trackPageRequest } from "~/plausible";
-import {
-  ensureLeadingSlash,
-  getAssetSrc,
-  getEnvironment,
-  getRequestParams,
-} from "~/utils";
-import domains from "../../../../domains.json";
+import { getAssetSrc, getRequestContext, getRequestParams } from "~/utils";
+import { DocsPage } from "~/layouts/DocsPage";
 
 export const loader = async (args: LoaderFunctionArgs) => {
-  const requestUrl = new URL(args.request.url);
-  const { owner, repository, ref, path, vanity } = getRequestParams(args);
-  const environment = getEnvironment();
-
-  const bundle = await getBundle({
-    owner,
-    repository,
-    path,
-    ref,
-  }).catch((response) => {
-    throw response;
-  });
-
-  // Check whether the repository has a domain assigned.
-  const domain = domains
-    .find(([, repo]) => repo === `${owner}/${repository}`)
-    ?.at(0);
-
-  // Check if the user has set a redirect in the frontmatter of this page.
-  const redirectTo =
-    typeof bundle.frontmatter.redirect === "string"
-      ? bundle.frontmatter.redirect
-      : undefined;
-
-  // Redirect to the specified URL.
-  if (redirectTo && redirectTo.length > 0) {
-    if (redirectTo.startsWith("http://") || redirectTo.startsWith("https://")) {
-      throw redirect(redirectTo);
-    }
-
-    let url = "";
-    if (vanity) {
-      url = `https://${owner}.docs.page/${repository}`;
-      if (ref) url += `~${ref}`;
-      url += redirectTo;
-    } else if (domain && environment === "production") {
-      // If there is a domain setup, always redirect to it.
-      url = `https://${domain}`;
-      if (ref) url += `/~${ref}`;
-      url += redirectTo;
-    } else {
-      // If no domain, redirect to docs.page.
-      url = `${requestUrl.origin}/${owner}/${repository}`;
-      if (ref) url += `~${ref}`;
-      url += redirectTo;
-    }
-
-    console.log(
-      "Handling redirect",
-      redirectTo,
-      { owner, repository, ref, vanity, domain, environment },
-      url
-    );
-
-    throw redirect(url);
-  }
-
-  if (import.meta.env.PROD) {
-    // Track the page request.
-    await trackPageRequest(args.request, owner, repository);
-  }
-
-  return {
-    path: ensureLeadingSlash(path),
-    owner,
-    repository,
-    ref,
-    domain: domain && environment === "production" ? domain : undefined,
-    vanity,
-    bundle,
-    preview: false,
-  } satisfies Context;
+  const params = getRequestParams(args);
+  return await getRequestContext(args, params);
 };
 
-export default function DocsPage() {
+export default function DocsPageRoute() {
   const ctx = useLoaderData<typeof loader>();
-
-  return (
-    <PageContext.Provider value={ctx}>
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `window.__docsPage = ${JSON.stringify(ctx)}`,
-        }}
-      />
-      <Scripts />
-      <DocsLayout />
-    </PageContext.Provider>
-  );
+  return <DocsPage ctx={ctx} />;
 }
 
 export const headers: HeadersFunction = () => ({

@@ -3,7 +3,9 @@ import cx from "classnames";
 import { twMerge } from "tailwind-merge";
 import type { Context } from "~/context";
 import domains from "../../domains.json";
-import type { BundleResponse } from "./api";
+import { getBundle, type BundleResponse } from "./api";
+import { redirect } from "@vercel/remix";
+import { trackPageRequest } from "./plausible";
 
 // Gets the request params from the incoming request, which could be a client
 // request using a domain, or a server request using a path.
@@ -15,13 +17,17 @@ export function getRequestParams(args: LoaderFunctionArgs) {
 
   const url = new URL(args.request.url);
 
-  console.log('getRequestParams', url, {
+  console.log("getRequestParams", url, {
     hostname: url.hostname,
   });
 
+  // Check whether we have a header containing `x-docs-page-custom-domain`,
+  // which is sent from the custom domain worker.
+  const domain = args.request.headers.get("x-docs-page-custom-domain") !== null;
+
   // A rewritten request comes through with a header containing `x-docs-page-domain`,
   // which is the domain the request was rewritten from so we treat it as a vanity domain.
-  let vanity = args.request.headers.get("x-docs-page-domain") !== null;
+  const vanity = args.request.headers.get("x-docs-page-domain") !== null;
 
   // If it's a request to localhost, docs.page or staging.docs.page, we can extract
   // the owner and repository from the URL e.g. https://docs.page/invertase/melos/getting-started
@@ -34,30 +40,7 @@ export function getRequestParams(args: LoaderFunctionArgs) {
     owner = chunks.at(0)!;
     repository = chunks.at(1)!;
     path = chunks.slice(2).join("/");
-  }
-  // If it's a vanity domain request (from the client), we can extract the owner and repository from the URL
-  // e.g. https://invertase.docs.page/melos/getting-started
-  else if (url.hostname.endsWith(".docs.page")) {
-    const chunks = url.hostname.split(".");
-    owner = chunks.at(0)!;
-    repository = path.split("/").at(0)!; // Also includes the ref if it's present
-    path = path.split("/").slice(1).join("/");
-    vanity = true;
-  }
-  // Else it's a custom domain, e.g. https://melos.invertase.dev/getting-started
-  else {
-    const domain = domains.find(([host]) => host === url.host)?.at(0);
-
-    if (!domain) {
-      throw new Error(
-        `Client host request "${url.host}" does not match a domain.`,
-      );
-    }
-
-    [owner, repository] = domain.split("/");
-  }
-
-  if (!owner || !repository) {
+  } else {
     console.error("Invalid routing scenario for request", url.toString());
     throw new Response("Invalid routing scenario for request", { status: 404 });
   }
@@ -74,6 +57,93 @@ export function getRequestParams(args: LoaderFunctionArgs) {
   }
 
   return { owner, repository, ref, path, vanity };
+}
+
+export async function getRequestContext(
+  args: LoaderFunctionArgs,
+  opts: {
+    owner: string;
+    repository: string;
+    path: string;
+    ref: string | undefined;
+    vanity: boolean;
+  }
+) {
+  const { owner, repository, ref, path, vanity } = opts;
+
+  const bundle = await getBundle({
+    owner,
+    repository,
+    path,
+    ref,
+  }).catch((response) => {
+    // Explict throw here to make it obvious that a response is being thrown.
+    throw response;
+  });
+
+  // Get the current environment.
+  const environment = getEnvironment();
+
+  // Check whether the repository has a domain assigned.
+  const domain = domains
+    .find(([, repo]) => repo === `${owner}/${repository}`)
+    ?.at(0);
+
+  // Check if the user has set a redirect in the frontmatter of this page.
+  const redirectTo =
+    typeof bundle.frontmatter.redirect === "string"
+      ? bundle.frontmatter.redirect
+      : undefined;
+
+  // Redirect to the specified URL.
+  if (redirectTo && redirectTo.length > 0) {
+    if (redirectTo.startsWith("http://") || redirectTo.startsWith("https://")) {
+      throw redirect(redirectTo);
+    }
+
+    let url = "";
+    if (vanity) {
+      url = `https://${owner}.docs.page/${repository}`;
+      if (ref) url += `~${ref}`;
+      url += redirectTo;
+    } else if (domain && environment === "production") {
+      // If there is a domain setup, always redirect to it.
+      url = `https://${domain}`;
+      if (ref) url += `/~${ref}`;
+      url += redirectTo;
+    } else {
+      const requestUrl = new URL(args.request.url);
+      // If no domain, redirect to docs.page.
+      url = `${requestUrl.origin}/${owner}/${repository}`;
+      if (ref) url += `~${ref}`;
+      url += redirectTo;
+    }
+
+    console.log(
+      "Handling redirect",
+      redirectTo,
+      { owner, repository, ref, vanity, domain, environment },
+      url
+    );
+
+    throw redirect(url);
+  }
+
+  if (import.meta.env.PROD) {
+    // Track the page request.
+    await trackPageRequest(args.request, owner, repository);
+  }
+
+  return {
+    path: ensureLeadingSlash(path),
+    owner,
+    repository,
+    ref,
+    domain: domain && environment === "production" ? domain : undefined,
+    vanity,
+    bundle,
+    preview: false,
+  } satisfies Context;
 }
 
 export type SharedEnvironmentVariables = {
@@ -149,17 +219,17 @@ export function getBlobSrc(ctx: Context, path: string) {
 
   if (source.type === "branch") {
     return `https://raw.githubusercontent.com/${owner}/${repository}/${encodeURIComponent(
-      ref ?? baseBranch,
+      ref ?? baseBranch
     )}/docs${ensureLeadingSlash(path)}`;
   }
   if (source.type === "PR") {
     return `https://raw.githubusercontent.com/${owner}/${repository}/${encodeURIComponent(
-      ref ?? baseBranch,
+      ref ?? baseBranch
     )}/docs${ensureLeadingSlash(path)}`;
   }
 
   return `https://raw.githubusercontent.com/${owner}/${repository}/HEAD/docs${ensureLeadingSlash(
-    path,
+    path
   )}`;
 }
 
@@ -214,7 +284,7 @@ export function getHref(ctx: Context, path: string) {
   // Ensure all links start with the custom domain if it's set.
   else if (ctx.domain) {
     href += `https://${ctx.domain}`;
-  } 
+  }
   // Prefix the path with the owner and repository, e.g. `/invertase/docs.page`.
   else {
     href = `/${ctx.owner}/${ctx.repository}`;
