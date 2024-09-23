@@ -78,10 +78,12 @@ export const V1ConfigSchema = z
     const config: Config = {
       name: v1.name,
       description: v1.description,
-      favicon: v1.favicon,
+      favicon: {
+        light: v1.favicon,
+        dark: v1.favicon,
+      },
       socialPreview: v1.socialPreview,
       logo: {
-        href: "/",
         light: v1.logo,
         dark: v1.logoDark,
       },
