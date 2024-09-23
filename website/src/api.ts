@@ -7,9 +7,6 @@ import type {
 import { COMPONENTS } from "./components/Content";
 import { getBuildHash } from "./env";
 
-// import { COMPONENTS } from "./components/Content";
-// import { getBuildHash } from "./utils";
-
 export type {
   BundleResponse,
   BundleErrorResponse,
@@ -24,13 +21,7 @@ type GetBundleArgs = {
   path?: string;
 };
 
-const PRODUCTION = process.env.NODE_ENV === "production";
-
-// const API_URL =
-//   process.env.API_URL ||
-//   (PRODUCTION ? "https://api.docs.page" : "http://localhost:8080");
-// const API_URL = "https://staging-api.docs.page";
-const API_URL = "http://localhost:8080";
+const API_URL = process.env.API_URL || "http://localhost:8080";
 
 export async function getBundle(args: GetBundleArgs): Promise<BundlerOutput> {
   const params = new URLSearchParams({
@@ -71,7 +62,7 @@ type GetPreviewBundleArgs = {
 };
 
 export async function getPreviewBundle(
-  args: GetPreviewBundleArgs,
+  args: GetPreviewBundleArgs
 ): Promise<BundlerOutput> {
   const response = await fetch(`${API_URL}/preview`, {
     method: "POST",

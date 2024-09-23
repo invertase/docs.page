@@ -17,29 +17,12 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Button } from "~/components/Button";
 import { PageContext } from "~/context";
-// import { Button } from "~/components/Button";
-// import { PageContext } from "~/context";
-// import { DocsLayout } from "~/layouts/DocsLayout";
 import { Footer } from "~/layouts/Footer";
 import { Header } from "~/layouts/Header";
 import { cn, ensureLeadingSlash } from "~/utils";
 import { DocumentationLayout } from "../Documentation";
 import { Site } from "../Site";
-// import { cn, ensureLeadingSlash, isExternalLink } from "~/utils";
 import { Toolbar } from "./Toolbar";
-
-// export const links = getLinkDescriptors;
-
-// export const meta: MetaFunction = () => {
-//   return [
-//     ...getMetadata(),
-//     {
-//       tagName: "link",
-//       rel: "stylesheet",
-//       href: docsearch,
-//     },
-//   ];
-// };
 
 export default function PreviewOutlet() {
   return (
@@ -49,38 +32,11 @@ export default function PreviewOutlet() {
   );
 }
 
-// export const action = async (args: ActionFunctionArgs) => {
-//   const json = await args.request.json();
-//   const bundle = await getPreviewBundle(json).catch((response) => {
-//     throw response;
-//   });
-
-//   // Check if the user has set a redirect in the frontmatter of this page.
-//   const redirectTo =
-//     typeof bundle.frontmatter.redirect === "string"
-//       ? bundle.frontmatter.redirect
-//       : undefined;
-
-//   // Redirect to the specified URL.
-//   if (redirectTo && redirectTo.length > 0) {
-//     const url = isExternalLink(String(redirectTo))
-//       ? String(redirectTo)
-//       : `/preview${ensureLeadingSlash(String(redirectTo))}`;
-
-//     throw redirect(url);
-//   }
-
-//   return {
-//     bundle,
-//   };
-// };
-
 function Preview() {
   const [client, setClient] = useState(false);
   const router = useRouter();
   const path = router.asPath.replace("/preview", "");
 
-  // const fetcher = useFetcher<typeof action>({ key: "bundle" });
   const directory = useDirectoryHandle();
   const content = usePageContent(path, directory.data);
 

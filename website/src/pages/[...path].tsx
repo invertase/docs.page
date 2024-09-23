@@ -6,7 +6,6 @@ import type { SharedEnvironmentVariables } from "~/env";
 import { Documentation } from "~/layouts/Documentation";
 import { Error } from "~/layouts/Error";
 import { Site } from "~/layouts/Site";
-import { Homepage } from "~/layouts/homepage";
 import { Redirect, bundleCodeToStatusCode } from "~/utils";
 
 export const getServerSideProps = (async ({ params, req, res }) => {
@@ -18,15 +17,6 @@ export const getServerSideProps = (async ({ params, req, res }) => {
 
   const param = params?.path ? params.path : [];
   const chunks = Array.isArray(param) ? param : [param];
-
-  if (param.at(0) === "_next") {
-    return { notFound: true };
-  }
-
-  // No chunks is the homepage.
-  if (chunks.length === 0) {
-    return { props: { env, ctx: null } };
-  }
 
   // Any paths with only one chunk are invalid, and should be handled
   // by other page routes.
@@ -84,14 +74,14 @@ export const getServerSideProps = (async ({ params, req, res }) => {
   // Cache the response for 1 second, and revalidate in the background.
   res.setHeader(
     "Cache-Control",
-    "public, s-maxage=1, stale-while-revalidate=59",
+    "public, s-maxage=1, stale-while-revalidate=59"
   );
 
   return { props: { env, ctx } };
 }) satisfies GetServerSideProps<
   | {
       env: SharedEnvironmentVariables;
-      ctx: Context | null;
+      ctx: Context;
     }
   | {
       error: BundleErrorResponse;
@@ -119,7 +109,7 @@ export default function Route({
           __html: `window.ENV = ${env ? JSON.stringify(env) : "{}"}`,
         }}
       />
-      {ctx ? <Documentation ctx={ctx} /> : <Homepage />}
+      <Documentation ctx={ctx} />
     </>
   );
 }
