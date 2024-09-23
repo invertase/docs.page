@@ -20,15 +20,21 @@ export function Scripts() {
         />
       )}
       {!!scripts?.googleAnalytics && (
-        <Script
-          async
-          dangerouslySetInnerHTML={{
-            __html: `
+        <>
+          <Script
+            async
+            src={`https://www.googletagmanager.com/gtag/js?id=${scripts.googleAnalytics}`}
+          />
+          <Script
+            async
+            dangerouslySetInnerHTML={{
+              __html: `
             window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments)}
             gtag('js', new Date()); gtag('config', '${scripts.googleAnalytics}');
           `,
-          }}
-        />
+            }}
+          />
+        </>
       )}
       {"domain" in ctx && !!ctx.domain && !!scripts?.plausible && (
         <Script
