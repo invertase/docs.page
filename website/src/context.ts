@@ -55,7 +55,7 @@ export async function getRequestContext(
 ) {
   const { owner, repository, ref, path } = opts;
 
-  const vanity = request.headers["x-docs-page-domain"] !== undefined;
+  const vanity = request.headers["x-docs-page-vanity-domain"] !== undefined;
 
   const bundle = await getBundle({
     owner,
