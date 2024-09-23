@@ -7,7 +7,7 @@ export function Scripts() {
   const scripts = usePageContext().bundle.config.scripts;
 
   // We don't want to load the scripts in preview mode or in preview environments.
-  if (ctx.preview || getEnvironment() !== "production") {
+  if (ctx.preview) {
     return null;
   }
 
