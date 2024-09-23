@@ -5,6 +5,8 @@ let timer: Timer;
 let state: string;
 const delay = 250;
 
+NProgress.configure({ showSpinner: false });
+
 function load() {
   if (state === "loading") {
     return;
