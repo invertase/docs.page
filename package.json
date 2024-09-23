@@ -4,7 +4,7 @@
     "dev": "concurrently \"npm run dev:api\" \"npm run dev:website\"",
     "dev:api": "cd api && bun dev",
     "dev:website": "cd website && npm run dev",
-    "check": "npx @biomejs/biome check --write ."
+    "check": "bunx @biomejs/biome check --write ."
   },
   "dependencies": {
     "typescript": "^5.5.3"
@@ -13,12 +13,7 @@
     "@biomejs/biome": "1.8.3",
     "concurrently": "^7.0.0"
   },
-  "workspaces": [
-    "api",
-    "website",
-    "og",
-    "packages/*"
-  ],
+  "workspaces": ["api", "website", "og", "packages/*"],
   "patchedDependencies": {
     "@remix-run/react@2.9.2": "patches/@remix-run%2Freact@2.9.2.patch"
   }
