@@ -55,7 +55,13 @@ export async function getRequestContext(
 ) {
   const { owner, repository, ref, path } = opts;
 
-  const vanity = request.headers["x-docs-page-vanity-domain"] !== undefined;
+  // Checks if the incoming request is from the vanity domain proxy.
+  const isVanityDomainRequest =
+    request.headers["x-docs-page-vanity-domain"] !== undefined;
+
+  // Checks if the incoming request is from a custom domain.
+  const isCustomDomainRequest =
+    request.headers["x-docs-page-custom-domain"] !== undefined;
 
   const bundle = await getBundle({
     owner,
@@ -68,6 +74,8 @@ export async function getRequestContext(
   const environment = getEnvironment();
 
   // Check whether the repository has a domain assigned.
+  // We still do this here since we need to know if internal links
+  // should be prefixed with the domain if one is set.
   const domain = domains
     .find(([, repo]) => repo === `${owner}/${repository}`)
     ?.at(0);
@@ -85,7 +93,7 @@ export async function getRequestContext(
     }
 
     let url = "";
-    if (vanity) {
+    if (isVanityDomainRequest) {
       url = `https://${owner}.docs.page/${repository}`;
       if (ref) url += `~${ref}`;
       url += redirectTo;
@@ -115,8 +123,13 @@ export async function getRequestContext(
     owner,
     repository,
     ref: ref || null,
-    domain: domain && environment === "production" ? domain : null,
-    vanity,
+    domain:
+      isCustomDomainRequest && environment === "development"
+        ? "localhost:8787"
+        : domain && environment === "production"
+        ? domain
+        : null,
+    vanity: isVanityDomainRequest,
     bundle,
     preview: false,
   } satisfies Context;
