@@ -59,7 +59,7 @@ function GroupHeading(props: { title: string; icon?: string }) {
 
 // A recursive sidebar navigation component, renders a list of links and groups.
 function SidebarLinks(
-  props: { pages: Pages } & { open: boolean; depth: number },
+  props: { pages: Pages } & { open: boolean; depth: number }
 ) {
   return (
     <ul aria-expanded={props.open}>

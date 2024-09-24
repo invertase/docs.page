@@ -5,6 +5,7 @@ import type { SharedEnvironmentVariables } from "~/env";
 
 import { Documentation } from "~/layouts/Documentation";
 import { Error } from "~/layouts/Error";
+import { Homepage } from "~/layouts/homepage";
 import { Site } from "~/layouts/Site";
 import { Redirect, bundleCodeToStatusCode } from "~/utils";
 
@@ -17,6 +18,11 @@ export const getServerSideProps = (async ({ params, req, res }) => {
 
   const param = params?.path ? params.path : [];
   const chunks = Array.isArray(param) ? param : [param];
+
+  // If there are no chunks, render the homepage.
+  if (chunks.length === 0) {
+    return { props: { env, ctx: null } };
+  }
 
   // Any paths with only one chunk are invalid, and should be handled
   // by other page routes.
@@ -81,7 +87,7 @@ export const getServerSideProps = (async ({ params, req, res }) => {
 }) satisfies GetServerSideProps<
   | {
       env: SharedEnvironmentVariables;
-      ctx: Context;
+      ctx: Context | null;
     }
   | {
       error: BundleErrorResponse;
@@ -100,6 +106,10 @@ export default function Route({
         <Error error={error} />
       </Site>
     );
+  }
+
+  if (!ctx) {
+    return <Homepage />;
   }
 
   return (
