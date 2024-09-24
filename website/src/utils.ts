@@ -2,6 +2,7 @@ import cx from "classnames";
 import { twMerge } from "tailwind-merge";
 import type { BundleResponse } from "./api";
 import type { Context } from "./context";
+import { getEnvironment } from "./env";
 
 export class Redirect extends Error {
   url: string;
@@ -114,7 +115,8 @@ export function getHref(ctx: Context, path: string) {
   }
   // Ensure all links start with the custom domain if it's set.
   else if (ctx.domain) {
-    href += `https://${ctx.domain}`;
+    const protocol = getEnvironment() === 'development' ? 'http' : 'https';
+    href += `${protocol}://${ctx.domain}`;
   }
   // Prefix the path with the owner and repository, e.g. `/invertase/docs.page`.
   else {

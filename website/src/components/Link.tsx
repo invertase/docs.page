@@ -14,5 +14,5 @@ export function Link(props: LinkProps) {
     );
   }
 
-  return <InternalLink {...props} href={"/getting-started"} />;
+  return <InternalLink {...props} href={href} />;
 }
