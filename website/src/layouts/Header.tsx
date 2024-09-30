@@ -5,7 +5,7 @@ import { Icon } from "~/components/Icon";
 export function Header() {
   return (
     <header className="max-w-5xl mx-auto py-8 px-3 flex flex-col sm:flex-row gap-6 items-center">
-      <Link href="/" className="group flex items-center gap-3">
+      <a href="/" className="group flex items-center gap-3">
         <img src="/_docs.page/logo.png" alt="docs.page logo" className="h-6" />
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -24,7 +24,7 @@ export function Header() {
             d="M41.233 14.234c-.936 0-1.62-.72-1.62-1.584 0-.846.684-1.566 1.62-1.566s1.602.72 1.602 1.566c0 .864-.666 1.584-1.602 1.584Z"
           />
         </svg>
-      </Link>
+      </a>
       <div className="grow flex justify-end gap-3">
         <ul className="flex items-center gap-3 md:gap-6 text-sm font-medium tracking-wide">
           <li>
