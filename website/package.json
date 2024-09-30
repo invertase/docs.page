@@ -14,6 +14,7 @@
     "@headlessui/react": "^2.1.8",
     "@mdx-js/mdx": "^3.0.1",
     "@tanstack/react-query": "^5.56.2",
+    "@vercel/functions": "^1.4.1",
     "classnames": "^2.5.1",
     "color": "^4.2.3",
     "idb": "^8.0.0",
@@ -25,7 +26,6 @@
     "react": "18.3.1",
     "react-dom": "18.3.1",
     "react-medium-image-zoom": "^5.2.10",
-    "request-ip": "^3.3.0",
     "tailwind-merge": "^2.5.2"
   },
   "devDependencies": {

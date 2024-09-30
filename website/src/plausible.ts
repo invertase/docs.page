@@ -1,22 +1,17 @@
-import type { GetServerSidePropsContext } from "next";
-import { getClientIp } from "request-ip";
+import type { NextRequest } from "next/server";
 
 export async function trackPageRequest(
-  request: GetServerSidePropsContext["req"],
+  request: NextRequest,
   owner: string,
-  repository: string,
+  repository: string
 ): Promise<void> {
-  const userAgent = request.headers["User-Agent"];
-
   try {
     await fetch("https://plausible.io/api/event", {
       method: "POST",
       headers: new Headers({
         "Content-Type": "application/json",
-        "User-Agent": Array.isArray(userAgent)
-          ? userAgent.join(" ")
-          : userAgent || "",
-        "X-Forwarded-For": getClientIp(request) ?? "",
+        "User-Agent": request.headers.get("User-Agent") ?? "",
+        "X-Forwarded-For": request.headers.get("X-Forwarded-For") ?? "",
       }),
       body: JSON.stringify({
         name: "pageview",

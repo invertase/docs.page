@@ -113,11 +113,6 @@ export async function getRequestContext(
     throw new Redirect(url);
   }
 
-  if (process.env.NODE_ENV === "production") {
-    // Track the page request.
-    await trackPageRequest(request, owner, repository);
-  }
-
   return {
     path: ensureLeadingSlash(path),
     owner,
