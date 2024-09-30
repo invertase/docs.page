@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "target": "ES2018",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -18,6 +19,6 @@
       "~/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "fsa.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["src", "next-env.d.ts"],
   "exclude": ["node_modules"]
 }

@@ -26,7 +26,6 @@ export function Locale() {
       <Menu>
         <MenuButton className="flex items-center gap-1.5 bg-gray-200/60 hover:bg-gray-200/80 dark:bg-white/10 hover:dark:bg-white/20 transition-all rounded-full pl-4 pr-3 py-1.5 text-xs font-bold">
           <span>{iso639LanguageCodes[locale]}</span>
-          {/* @ts-expect-error: Weird issue with icons */}
           <ChevronDownIcon size={12} />
         </MenuButton>
         <Transition

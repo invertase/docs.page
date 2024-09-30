@@ -37,7 +37,6 @@ export function Button({ className, cta, ...props }: Props) {
       )}
     >
       <span>{props.children}</span>
-      {/* @ts-expect-error: Weird issue with icons */}
       <ChevronRightIcon size={18} />
     </div>
   );

@@ -39,14 +39,12 @@ export function GitHubCard() {
         </div>
         <div className="flex items-center gap-2 opacity-50 group-hover:opacity-100 transition-opacity duration-200 ease-in-out">
           <div className="flex items-center gap-1">
-            {/* @ts-expect-error: Weird issue with icons */}
             <StarIcon size={12} />
             <code className="text-[10px]">
               {ctx.bundle.stars.toLocaleString()}
             </code>
           </div>
           <div className="flex items-center gap-1">
-            {/* @ts-expect-error: Weird issue with icons */}
             <GitForkIcon size={12} />
             <code className="text-[10px]">
               {ctx.bundle.forks.toLocaleString()}
