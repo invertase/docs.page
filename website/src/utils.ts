@@ -33,6 +33,25 @@ export function isExternalLink(href: string) {
   return href.startsWith("http://") || href.startsWith("https://");
 }
 
+// Gets a custom domain for a given owner and repository.
+export async function getCustomDomain(owner: string, repository: string): Promise<string | null> {
+  const response = await fetch(
+    `https://custom-domain.invertase.workers.dev/?owner=${owner}&repo=${repository}`
+  );
+
+  if (!response.ok) {
+    return null;
+  }
+
+  const json = await response.json();
+
+  if ("domin" in json && typeof json.domain === "string") {
+    return json.domain;
+  }
+
+  return null;
+}
+
 // Returns the correct image path for a given image;
 //  - if remote, returns the path as is
 //  - if local, returns the path with the correct base url
@@ -51,17 +70,17 @@ export function getBlobSrc(ctx: Context, path: string) {
 
   if (source.type === "branch") {
     return `https://raw.githubusercontent.com/${owner}/${repository}/${encodeURIComponent(
-      ref ?? baseBranch,
+      ref ?? baseBranch
     )}/docs${ensureLeadingSlash(path)}`;
   }
   if (source.type === "PR") {
     return `https://raw.githubusercontent.com/${owner}/${repository}/${encodeURIComponent(
-      ref ?? baseBranch,
+      ref ?? baseBranch
     )}/docs${ensureLeadingSlash(path)}`;
   }
 
   return `https://raw.githubusercontent.com/${owner}/${repository}/HEAD/docs${ensureLeadingSlash(
-    path,
+    path
   )}`;
 }
 
@@ -115,7 +134,7 @@ export function getHref(ctx: Context, path: string) {
   }
   // Ensure all links start with the custom domain if it's set.
   else if (ctx.domain) {
-    const protocol = getEnvironment() === 'development' ? 'http' : 'https';
+    const protocol = getEnvironment() === "development" ? "http" : "https";
     href += `${protocol}://${ctx.domain}`;
   }
   // Prefix the path with the owner and repository, e.g. `/invertase/docs.page`.

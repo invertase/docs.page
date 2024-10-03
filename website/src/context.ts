@@ -1,13 +1,12 @@
 import type { GetServerSidePropsContext } from "next/types";
 import { createContext, useContext, useEffect, useState } from "react";
-import domains from "../../domains.json";
 import { type BundlerOutput, type SidebarGroup, getBundle } from "./api";
 import { getEnvironment } from "./env";
-import { trackPageRequest } from "./plausible";
 import {
   Redirect,
   ensureLeadingSlash,
   getAssetSrc,
+  getCustomDomain,
   getHref,
   getLocale,
   isExternalLink,
@@ -76,9 +75,7 @@ export async function getRequestContext(
   // Check whether the repository has a domain assigned.
   // We still do this here since we need to know if internal links
   // should be prefixed with the domain if one is set.
-  const domain = domains
-    .find(([, repo]) => repo === `${owner}/${repository}`)
-    ?.at(0);
+  const domain = await getCustomDomain(owner, repository);
 
   // Check if the user has set a redirect in the frontmatter of this page.
   const redirectTo =
