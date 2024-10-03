@@ -45,7 +45,7 @@ export async function getCustomDomain(owner: string, repository: string): Promis
 
   const json = await response.json();
 
-  if ("domin" in json && typeof json.domain === "string") {
+  if ("domain" in json && typeof json.domain === "string") {
     return json.domain;
   }
 
