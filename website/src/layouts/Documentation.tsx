@@ -13,7 +13,7 @@ import { TableOfContents } from "~/components/TableOfContents";
 import { Tabs } from "~/components/Tabs";
 import { ThemeScripts } from "~/components/Theme";
 import { type Context, PageContext, useTabs } from "~/context";
-import { cn, getAssetSrc } from "~/utils";
+import { cn, getAssetSrc, toBase64 } from "~/utils";
 
 import "nprogress/nprogress.css";
 
@@ -52,12 +52,7 @@ export function Documentation({ ctx }: { ctx: Context }) {
           : undefined,
     });
 
-    const base64String =
-      typeof window !== "undefined"
-        ? window.btoa(params)
-        : Buffer.from(params).toString("base64");
-
-    image = `https://og.docs.page?params=${base64String}`;
+    image = `https://og.docs.page?params=${toBase64(params)}`;
   }
   // If it has been set to false, disable the image.
   else if (image === false) {

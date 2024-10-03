@@ -34,7 +34,10 @@ export function isExternalLink(href: string) {
 }
 
 // Gets a custom domain for a given owner and repository.
-export async function getCustomDomain(owner: string, repository: string): Promise<string | null> {
+export async function getCustomDomain(
+  owner: string,
+  repository: string
+): Promise<string | null> {
   const response = await fetch(
     `https://custom-domain.invertase.workers.dev/?owner=${owner}&repo=${repository}`
   );
@@ -201,4 +204,17 @@ export function bundleCodeToStatusCode(bundle: BundleResponse): number {
     default:
       return 200;
   }
+}
+
+export function toBase64(str: string): string {
+  const encoded = encodeURIComponent(str).replace(
+    /%([0-9A-F]{2})/g,
+    (_, p1) => {
+      return String.fromCharCode(Number.parseInt(p1, 16));
+    }
+  );
+
+  return typeof window !== "undefined"
+    ? window.btoa(encoded)
+    : Buffer.from(encoded).toString("base64");
 }
