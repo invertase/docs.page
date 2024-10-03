@@ -4,9 +4,20 @@ import { waitUntil } from "@vercel/functions";
 import { trackPageRequest } from "./plausible";
 import { getEnvironment } from "./env";
 
+// https://regex101.com/r/RMw0Ib/1
+const BLOCK_LIST_REGEX =
+  /^(\/(wp-admin|wp-login\.php|wp-logout\.php|xmlrpc\.php|wp-content|wp-includes|wp-json|cgi-bin|\.env|administrator|admin|magento|downloader|artisan|shell\.php|upload\.php|test\.php|phpinfo\.php|config\.php|configuration\.php|database\.sql|backup\.sql|db_backup|\.git|\.svn|\.hg|\.bzr|\.DS_Store|\.htaccess|\.htpasswd)(\/|$)|\/index\.php\?(.*)|\/.*(UNION\s+SELECT|SELECT\s+FROM|DROP\s+TABLE).*)$|\.(php|bak|old|backup|swp|orig|inc|sql|zip|tar|gz|env)$/i;
+
 // This function can be marked `async` if using `await` inside
 export function middleware(request: NextRequest) {
   const url = new URL(request.url);
+
+  if (BLOCK_LIST_REGEX.test(url.pathname)) {
+    return new Response(
+      "This request has been blocked due to security reasons. Please create an issue at https://github.com/invertase/docs.page if you think is incorrect.",
+      { status: 403 }
+    );
+  }
 
   if (
     url.pathname.startsWith("/_next") ||
@@ -23,7 +34,6 @@ export function middleware(request: NextRequest) {
   }
 
   return NextResponse.next();
-  // return NextResponse.redirect(new URL("/home", request.url));
 }
 
 // See "Matching Paths" below to learn more
