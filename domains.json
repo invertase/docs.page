@@ -44,5 +44,6 @@
   ["docs.gazelle-dart.dev", "intales/gazelle"],
   ["docs.lamp-ic.fr", "TeddyVermeulin/lamp-doc"],
   ["thermion.dev", "nmfisher/thermion"],
-  ["docs.thabit.ai", "thabit-ai/thabit"]
+  ["docs.thabit.ai", "thabit-ai/thabit"],
+  ["docs.goyappa.com", "goyappa/docs"]
 ]
