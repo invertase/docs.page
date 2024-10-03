@@ -110,6 +110,14 @@ export async function getRequestContext(
     throw new Redirect(url);
   }
 
+  console.log('Incoming request', {
+    domain,
+    owner,
+    repository,
+    isCustomDomainRequest,
+    environment,
+  })
+
   return {
     path: ensureLeadingSlash(path),
     owner,
