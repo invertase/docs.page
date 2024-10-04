@@ -1,5 +1,4 @@
 import { ChevronRightIcon } from "lucide-react";
-import Link from "next/link";
 import { Icon } from "~/components/Icon";
 
 export function Header() {
@@ -56,7 +55,7 @@ export function Header() {
             </a>
           </li>
           <li>
-            <Link
+            <a
               href="/preview"
               className="flex items-center gap-1 hover:opacity-75 transition-opacity border border-brand-50/90 px-4 py-1.5 rounded-full"
             >
@@ -64,7 +63,7 @@ export function Header() {
                 <span>Local Preview</span>
                 <ChevronRightIcon size={16} className="inline" />
               </span>
-            </Link>
+            </a>
           </li>
         </ul>
         {/* <div className="border rounded-md py-3 px-2">

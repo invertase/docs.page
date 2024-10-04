@@ -241,7 +241,7 @@ function PublishChanges() {
         }}
       >
         <ExternalLinkIcon size={16} />
-        <span>Vist Docs</span>
+        <span>Visit Docs</span>
       </ActionButton>
     </Card>
   );
