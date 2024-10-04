@@ -52,7 +52,7 @@ export function Documentation({ ctx }: { ctx: Context }) {
           : undefined,
     });
 
-    image = `https://og.docs.page?params=${toBase64(params)}`;
+    image = `https://docs.page/api/og?params=${toBase64(params)}`;
   }
   // If it has been set to false, disable the image.
   else if (image === false) {
