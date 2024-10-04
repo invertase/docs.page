@@ -3,51 +3,7 @@ title: Custom Domains
 description: Learn how to set up a custom domain for your project.
 ---
 
-Custom domain support allows you to serve your documentation content through any domain (or subdomain)
-you own rather than via the `https://docs.page` domain.
+Custom domains for new docs.page projects are currently disabled whilst we implement a more robust
+and sustainable solution.
 
-You can see a custom domain in action by viewing the [Melos repository documentation](https://melos.invertase.dev), using
-the `melos.invertase.dev` subdomain.
-
-## Setup
-
-A couple of manual steps are required before you can serve docs via your custom domain.
-
-### 1. Domain DNS
-
-The first step is to point your domain at our domains service via a `CNAME` record. Using your domain provider,
-create a DNS record:
-
-| invertase.dev | record type |       value       |
-| :-----------: | :---------: | :---------------: |
-|       @       |    CNAME    | domains.docs.page |
-
-Subdomains are also supported:
-
-| invertase.dev | record type |       value       |
-| :-----------: | :---------: | :---------------: |
-|     melos     |    CNAME    | domains.docs.page |
-
-If you are using a proxy service (e.g., Cloudflare), ensure you disable the proxy to allow the `docs.page`
-proxy service to provide SSL for you.
-
-### 2. Add domain
-
-Create a [Pull Request](https://github.com/invertase/docs.page/edit/main/domains.json) to modify the [`domains.json`](https://github.com/invertase/docs.page/blob/master/domains.json)
-file at the root of the `docs.page` repository.
-
-Create a new array entry, adding your domain followed by the GitHub organization and repository, for example:
-
-```json
-[["melos.invertase.dev", "invertase/melos"]]
-```
-
-Once your Pull Request is approved and DNS has been propagated, you are ready to start using your custom domain.
-
-## Existing documentation
-
-If your users have already been visiting your documentation via the `docs.page` domain, (e.g. https://docs.page/invertase/melos) and
-you add a custom domain at a later date, visitors will still be able to view the documentation, however all internal page links
-will point towards the new domain.
-
-This ensures adding a domain has no impact on users visiting saved URLs.
+Existing projects with custom domains will continue to work as normal.
