@@ -130,15 +130,15 @@ export function getHref(ctx: Context, path: string) {
 
   // Define the base href for the current request.
   let href = "";
-
-  // If it's a vanity domain, we need to prefix the path with the owner and repository.
-  if (ctx.vanity) {
-    href += `/${ctx.repository}`;
-  }
+  
   // Ensure all links start with the custom domain if it's set.
-  else if (ctx.domain) {
+  if (ctx.domain) {
     const protocol = getEnvironment() === "development" ? "http" : "https";
     href += `${protocol}://${ctx.domain}`;
+  }
+  // If it's a vanity domain, we need to prefix the path with the repository only.
+  else if (ctx.vanity) {
+    href += `/${ctx.repository}`;
   }
   // Prefix the path with the owner and repository, e.g. `/invertase/docs.page`.
   else {
