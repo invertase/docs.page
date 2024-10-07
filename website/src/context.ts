@@ -100,9 +100,15 @@ export async function getRequestContext(
       if (ref) url += `/~${ref}`;
       url += redirectTo;
     } else {
-      const requestUrl = new URL(request.url!);
+      const base =
+        environment === "production"
+          ? "https://docs.page"
+          : environment === "preview"
+          ? "https://staging.docs.page"
+          : "http://localhost:3000";
+
       // If no domain, redirect to docs.page.
-      url = `${requestUrl.origin}/${owner}/${repository}`;
+      url = `${base}/${owner}/${repository}`;
       if (ref) url += `~${ref}`;
       url += redirectTo;
     }
