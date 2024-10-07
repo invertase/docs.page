@@ -154,6 +154,8 @@ function SidebarAnchor(props: {
   const href = useHref(props.href ?? "");
   const className = cn("relative group flex items-center pr-5 gap-2 py-2 pl-3");
 
+  console.log('!', router.asPath, href);
+
   const element = props.href ? (
     <Link
       href={href}
