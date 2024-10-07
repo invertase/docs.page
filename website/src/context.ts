@@ -8,9 +8,11 @@ import {
   getAssetSrc,
   getCustomDomain,
   getHref,
+  getHrefIsActive,
   getLocale,
   isExternalLink,
 } from "./utils";
+import { useRouter } from "next/router";
 
 type BaseContext = {
   // The relative path of the current page, e.g. `/contributing`.
@@ -213,6 +215,16 @@ export function useSidebar(): SidebarGroup[] {
   }
 
   return sidebar;
+}
+
+// Returns the href, with additional metadata.
+export function useHrefMeta(path: string) {
+  const ctx = usePageContext();
+  const router = useRouter();
+  return {
+    isActive: getHrefIsActive(ctx, router.asPath, path),
+    href: getHref(ctx, path),
+  };
 }
 
 // Resolves a path to a full URL.

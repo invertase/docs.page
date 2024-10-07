@@ -2,8 +2,8 @@ import { ChevronDownIcon, ChevronUpIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { type ReactElement, cloneElement, useState } from "react";
-import { useHref, usePageContext, useSidebar } from "~/context";
-import { cn, getHref } from "~/utils";
+import { useHrefMeta, usePageContext, useSidebar } from "~/context";
+import { cn, getHrefIsActive } from "~/utils";
 import { Anchors } from "./Anchors";
 import { Icon } from "./Icon";
 
@@ -78,7 +78,7 @@ function SidebarLinks(
 
 // Renders a group of sidebar links, either as a link or a group of links.
 function SidebarGroup(props: { group: Pages[number] } & { depth: number }) {
-  const location = useRouter();
+  const router = useRouter();
   const ctx = usePageContext();
 
   // A recursive function to determine if this group
@@ -90,10 +90,7 @@ function SidebarGroup(props: { group: Pages[number] } & { depth: number }) {
           return true;
         }
       } else if (page.href) {
-        const href = getHref(ctx, page.href);
-        if (location.asPath === href) {
-          return true;
-        }
+        return getHrefIsActive(ctx, router.asPath, page.href);
       }
     }
     return false;
@@ -150,18 +147,15 @@ function SidebarAnchor(props: {
   collapse?: ReactElement;
   onClick?: () => void;
 }) {
-  const router = useRouter();
-  const href = useHref(props.href ?? "");
+  const { href, isActive } = useHrefMeta(props.href ?? "");
   const className = cn("relative group flex items-center pr-5 gap-2 py-2 pl-3");
-
-  console.log('!', router.asPath, href);
 
   const element = props.href ? (
     <Link
       href={href}
       onClick={props.collapse ? props.onClick : undefined}
       className={cn(className, {
-        "nav-link-active": router.asPath === href,
+        "nav-link-active": isActive,
       })}
     />
   ) : (

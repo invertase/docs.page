@@ -99,6 +99,32 @@ export function getLocale(ctx: Context) {
     : undefined;
 }
 
+// Returns whether the provided path is active or not.
+export function getHrefIsActive(ctx: Context, currentPath: string, path: string) {
+  const href = getHref(ctx, path);
+
+  // If it's a preview request, we can just check if the current path is equal to the href.
+  if (ctx.preview) {
+    return currentPath === href;
+  }
+
+  // If the request is a vanity request (e.g. https://invertase.docs.page/melos), but there's a domain
+  // set for the repo, the `href` will be the full domain path, so we need to check if the current path
+  // which contains the repo is equal to the fully qualified domain path.
+  if (ctx.domain && ctx.vanity) {
+    const [_repo, ...path] = currentPath.split("/").filter(Boolean);
+    return `https://${ctx.domain}${path.join("/")}` === href;
+  }
+
+  // If it's just a domain request, we need to check if the current path is equal to the fully qualified domain path.
+  if (ctx.domain) {
+    return `https://${ctx.domain}${currentPath}` === href;
+  }
+
+  // Otherwise, we can just check if the current path is equal to the href.
+  return currentPath === href;
+}
+
 // Gets a href for a given path.
 // If the path is external, it is returned as is.
 // If we're in preview mode, the path is prefixed with `/preview`.
