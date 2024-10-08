@@ -173,7 +173,7 @@ function SidebarAnchor(props: {
         <Icon key="icon" name={props.icon} />
       </span>
     ) : null,
-    <span key="title" className="flex-1">
+    <span key="title" className="flex-1 text-ellipsis overflow-hidden">
       {props.title}
     </span>,
     props.collapse ? (
