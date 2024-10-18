@@ -84,16 +84,18 @@ function SidebarGroup(props: { group: Pages[number] } & { depth: number }) {
   // A recursive function to determine if this group
   // has an active child link. If so, it is open.
   function hasActiveChild(pages: Pages): boolean {
+    let isActive = false;
     for (const page of pages) {
       if ("group" in page) {
         if (hasActiveChild(page.pages)) {
-          return true;
+          isActive = true;
         }
       } else if (page.href) {
-        return getHrefIsActive(ctx, router.asPath, page.href);
+        isActive = getHrefIsActive(ctx, router.asPath, page.href);
       }
     }
-    return false;
+
+    return isActive;
   }
 
   // Determine if this group has an active child link.
@@ -122,6 +124,7 @@ function SidebarGroup(props: { group: Pages[number] } & { depth: number }) {
         depth={props.depth}
         href={props.group.href}
         icon={props.group.icon}
+        isOpen={open}
         collapse={
           open ? <ChevronUpIcon size={14} /> : <ChevronDownIcon size={14} />
         }
@@ -142,26 +145,32 @@ function SidebarGroup(props: { group: Pages[number] } & { depth: number }) {
 function SidebarAnchor(props: {
   title: string;
   depth: number;
+  isOpen?: boolean;
   href?: string;
   icon?: string;
   collapse?: ReactElement;
   onClick?: () => void;
 }) {
   const { href, isActive } = useHrefMeta(props.href ?? "");
-  const className = cn("relative group flex items-center pr-5 gap-2 py-2 pl-3");
+  const className = cn("py-2 inline-flex gap-2 grow");
+  const style = {
+    paddingLeft: `${(props.depth + 1) * 12}px`,
+  };
 
   const element = props.href ? (
     <Link
       href={href}
-      onClick={props.collapse ? props.onClick : undefined}
+      onClick={props.collapse && !props.isOpen ? props.onClick : undefined}
       className={cn(className, {
         "nav-link-active": isActive,
       })}
+      style={style}
     />
   ) : (
     <div
       role="button"
       className={className}
+      style={style}
       onKeyDown={props.onClick}
       onClick={props.onClick}
     />
@@ -173,26 +182,30 @@ function SidebarAnchor(props: {
         <Icon key="icon" name={props.icon} />
       </span>
     ) : null,
-    <span key="title" className="flex-1">
+    <span key="title" className="flex-1 text-ellipsis overflow-hidden">
       {props.title}
     </span>,
-    props.collapse ? (
-      <div key="toggle" onKeyDown={props.onClick} onClick={props.onClick}>
-        {props.collapse}
-      </div>
-    ) : null,
   ]);
 
   return (
-    <div className="opacity-75 has-[.nav-link-active]:opacity-100 hover:opacity-100 mb-px relative rounded-md hover:bg-black/5 dark:hover:bg-white/5 has-[.nav-link-active]:bg-primary-light/10 dark:has-[.nav-link-active]:bg-primary-light/10 dark:hover:has-[.nav-link-active]:bg-primary-light/10 transition-all">
-      <div
-        className="has-[.nav-link-active]:font-bold has-[.nav-link-active]:text-primary-light dark:has-[.nav-link-active]:text-primary-light"
-        style={{
-          paddingLeft: `${props.depth * 12}px`,
-        }}
-      >
-        {anchor}
-      </div>
+    <div
+      className={cn(
+        "flex opacity-75 hover:opacity-100 mb-px relative rounded-md hover:bg-black/5 dark:hover:bg-white/5  transition-all has-[.nav-link-active]:font-bold",
+        "has-[.nav-link-active]:opacity-100 has-[.nav-link-active]:bg-primary-light/10 dark:has-[.nav-link-active]:bg-primary-light/10  dark:hover:has-[.nav-link-active]:bg-primary-light/10  has-[.nav-link-active]:text-primary-light dark:has-[.nav-link-active]:text-primary-light"
+      )}
+    >
+      {anchor}
+      {props.collapse ? (
+        <button
+          key="toggle"
+          type="button"
+          onKeyDown={props.onClick}
+          onClick={props.onClick}
+          className="px-3"
+        >
+          {props.collapse}
+        </button>
+      ) : null}
     </div>
   );
 }

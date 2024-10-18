@@ -57,7 +57,7 @@ export function Content() {
       const { default: MDX } = runSync(
         bundle.code,
         // @ts-expect-error - seems to be a bug in the types
-        { ...runtime },
+        { ...runtime }
       );
 
       return (
@@ -108,14 +108,18 @@ export function Content() {
 
   // Show the page title if the frontmatter or config has it enabled
   const showPageTitle =
-    Boolean(bundle.frontmatter.showPageTitle) ||
-    Boolean(bundle.config.content?.showPageTitle) ||
-    false;
+    bundle.frontmatter.showPageTitle === false
+      ? false
+      : Boolean(bundle.frontmatter.showPageTitle) ||
+        Boolean(bundle.config.content?.showPageTitle) ||
+        false;
 
   const showPageImage =
-    Boolean(bundle.frontmatter.showPageImage) ||
-    Boolean(bundle.config.content?.showPageImage) ||
-    false;
+    bundle.frontmatter.showPageImage === false
+      ? false
+      : Boolean(bundle.frontmatter.showPageImage) ||
+        Boolean(bundle.config.content?.showPageImage) ||
+        false;
 
   const title = bundle.frontmatter.title;
   const description = bundle.frontmatter.description;
