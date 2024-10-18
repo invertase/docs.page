@@ -17,6 +17,8 @@ export type { Sidebar } from "./models/sidebar";
 
 export const ConfigSchema = z
   .object({
+    // The URL of the schema file
+    $schema: z.string().url().optional().catch(undefined),
     // The name of the project
     name: z.string().min(1).optional().catch(undefined),
     // The description of the project
@@ -54,6 +56,7 @@ export const ConfigSchema = z
     sidebar,
   })
   .transform((config) => {
+    if (config.$schema) delete config.$schema;
     return {
       ...config,
       // Extract locales from the sidebar configuration
