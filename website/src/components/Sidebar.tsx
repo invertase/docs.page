@@ -182,7 +182,7 @@ function SidebarAnchor(props: {
         <Icon key="icon" name={props.icon} />
       </span>
     ) : null,
-    <span key="title" className="flex-1 text-ellipsis overflow-hidden">
+    <span key="title" className="flex-1">
       {props.title}
     </span>,
   ]);
@@ -190,7 +190,7 @@ function SidebarAnchor(props: {
   return (
     <div
       className={cn(
-        "flex opacity-75 hover:opacity-100 mb-px relative rounded-md hover:bg-black/5 dark:hover:bg-white/5  transition-all has-[.nav-link-active]:font-bold",
+        "flex opacity-75 hover:opacity-100 mb-px relative rounded-md hover:bg-black/5 dark:hover:bg-white/5 transition-all has-[.nav-link-active]:font-bold overflow-hidden truncate",
         "has-[.nav-link-active]:opacity-100 has-[.nav-link-active]:bg-primary-light/10 dark:has-[.nav-link-active]:bg-primary-light/10  dark:hover:has-[.nav-link-active]:bg-primary-light/10  has-[.nav-link-active]:text-primary-light dark:has-[.nav-link-active]:text-primary-light"
       )}
     >
