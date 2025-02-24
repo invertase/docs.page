@@ -22,7 +22,7 @@ export function Header(props: Props) {
   const logoHref = useHref("/");
 
   return (
-    <header className="max-w-8xl mx-auto px-8 lg:px-10">
+    <header className="max-w-8xl mx-auto px-4 md:px-10">
       <div className="flex-1 h-16 py-1 border-b border-black/5 dark:border-white/5 flex items-center gap-4">
         {!hasTabs && (
           <div className="lg:hidden">

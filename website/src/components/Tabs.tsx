@@ -17,10 +17,10 @@ export function Tabs(props: Props) {
   }
 
   return (
-    <nav className="relative max-w-8xl mx-auto px-8 lg:px-3">
+    <nav className="relative max-w-8xl mx-auto px-3 md:px-8 lg:px-3">
       <div className="flex items-center gap-6 border-b border-black/5 dark:border-white/5 h-12">
         <MenuToggle onClick={props.onMenuToggle} />
-        <div className="absolute inset-0 left-20 lg:left-10 overflow-y-hidden overflow-x-auto h-14">
+        <div className="absolute inset-0 left-16 md:left-20 lg:left-10 overflow-y-hidden overflow-x-auto h-14">
           <ul className="shrink-0 font-semibold relative flex items-center space-x-6 text-sm pr-6">
             {tabs.map((tab) => {
               const isActive = tab.id === activeTab;
@@ -31,7 +31,7 @@ export function Tabs(props: Props) {
                   <Link
                     href={href}
                     className={cn(
-                      "relative top-px flex items-center h-12 border-b-[1.5px] border-transparent",
+                      "relative top-px flex items-center h-12 border-b-[1.5px] border-transparent whitespace-nowrap",
                       {
                         "hover:border-black/20 dark:hover:border-white/20 opacity-75 hover:opacity-100 transition-all":
                           !isActive,

@@ -135,7 +135,7 @@ export function Content() {
             <>
               <Heading
                 type="h1"
-                className="dark:text-white text-4xl lg:text-5xl truncate"
+                className="dark:text-white text-3xl"
               >
                 {String(title)}
               </Heading>

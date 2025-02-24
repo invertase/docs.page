@@ -156,7 +156,7 @@ export function DocumentationLayout() {
         <Header onMenuToggle={toggleSidebar} />
         <Tabs onMenuToggle={toggleSidebar} />
       </section>
-      <div className="max-w-8xl mx-auto px-5">
+      <div className="max-w-8xl mx-auto px-0 md:px-5">
         <section
           className={cn(
             "fixed z-10 w-[17rem] bottom-0 overflow-y-auto translate-x-[-19rem] lg:translate-x-0 transition-transform",
