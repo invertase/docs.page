@@ -31,7 +31,7 @@ export function Anchors() {
           <li key={anchor.href}>
             <a
               rel="noopener noreferrer"
-              target={isExternalLink(anchor.href) ? "_blank" : undefined}
+              target={isExternalLink(anchor.href) ? "_blank" : ""}
               href={anchor.href}
               className="group flex items-center gap-2"
             >
