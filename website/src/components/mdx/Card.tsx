@@ -54,7 +54,7 @@ export function Card({ href, icon, title, children, ...props }: CardProps) {
       className="group block no-underline"
       href={_href}
       rel="noopener noreferrer"
-      target={isExternalLink(_href) ? "_blank" : undefined}
+      target={isExternalLink(_href) ? "_blank" : ""}
     >
       {card}
     </a>
