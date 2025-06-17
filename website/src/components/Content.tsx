@@ -146,7 +146,7 @@ export function Content() {
               )}
             </>
           )}
-          {!!image && <Image zoom={false} src={String(image)} />}
+          {!!image && showPageImage && <Image zoom={false} src={String(image)} />}
         </div>
       )}
       <div
