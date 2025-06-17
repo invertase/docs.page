@@ -156,12 +156,19 @@ export function useAssetSrc(path: string) {
   const isPreview = ctx.preview;
   const isExternal = isExternalLink(path);
 
-  const [src, setSrc] = useState(
+  const [src, setSrc] = useState(() => 
     isExternal || !isPreview ? getAssetSrc(ctx, path) : ""
   );
 
   useEffect(() => {
-    if (isExternal || !isPreview) return;
+    if (isExternal) {
+      setSrc(getAssetSrc(ctx, path));
+      return;
+    }
+    if (!isPreview) {
+      setSrc(getAssetSrc(ctx, path));
+      return;
+    }
     ctx.getFile(path).then((src) => setSrc(src || ""));
   }, [ctx, isExternal, isPreview, path]);
 

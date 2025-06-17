@@ -28,10 +28,10 @@ export function Sidebar(props: Props) {
       <div className="space-y-6">
         <Anchors />
         <div>
-          {sidebar.map(({ group, icon, pages }) => {
+          {sidebar.map(({ group, icon, pages }, i) => {
             return (
               <div
-                key={group}
+                key={`${group}-${i}`}
                 className={cn({
                   "mt-6 first:mt-0 pr-3": group,
                 })}

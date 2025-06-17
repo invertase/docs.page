@@ -5,10 +5,12 @@ import remarkComment from "remark-comment";
 import remarkGfm from "remark-gfm";
 import remarkComponentCheck from "./remark-component-check";
 import remarkUndeclaredVariables from "./remark-undeclared-variables";
+import remarkFixClassname from "./remark-class-names";
 // import { remarkCodeHike } from '@code-hike/mdx';
 // import { theme as codeHikeTheme } from './codeHikeTheme';
 
 import { rehypeAccessibleEmojis } from "rehype-accessible-emojis";
+import rehypeUnwrapImages from "rehype-unwrap-images";
 // Rehype Plugins
 import rehypeSlug from "rehype-slug";
 import rehypeCodeBlocks from "./rehype-code-blocks";
@@ -26,6 +28,7 @@ export function getRemarkPlugins(options?: PluginOptions): PluggableList {
     remarkUndeclaredVariables,
     remarkGfm,
     remarkComment,
+    remarkFixClassname,
   ];
 
   if (options?.codeHike) {
@@ -37,6 +40,7 @@ export function getRemarkPlugins(options?: PluginOptions): PluggableList {
 
 export function getRehypePlugins(options?: PluginOptions): PluggableList {
   const plugins = [
+    rehypeUnwrapImages,
     rehypeCodeBlocks,
     rehypeSlug,
     rehypeInlineBadges,

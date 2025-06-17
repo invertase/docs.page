@@ -13,18 +13,18 @@ type ImageProps = ComponentProps<"img"> & {
 
 export function Image(props: ImageProps) {
   const ctx = usePageContext();
-  const { width, height, className, alt, ...other } = props;
+  const { width, height, className, alt, zoom, ...other } = props;
   const src = useAssetSrc(props.src ?? "");
 
   // Get the zoom configuration from the props or the bundle content.
-  const zoom =
+  const shouldZoom =
     props.zoom === false
       ? false
-      : Boolean(props.zoom) || Boolean(ctx.bundle.config.content?.zoomImages);
+      : Boolean(zoom) || Boolean(ctx.bundle.config.content?.zoomImages);
 
   // Wrap the image in a zoom container if zoom is enabled.
   const container = (child: ReactElement) => {
-    return zoom ? <Zoom classDialog="!bg-background">{child}</Zoom> : child;
+    return shouldZoom ? <Zoom classDialog="!bg-background">{child}</Zoom> : child;
   };
 
   return (
@@ -37,7 +37,7 @@ export function Image(props: ImageProps) {
       {container(
         <img
           {...other}
-          data-zoom={`${zoom}`}
+          data-zoom={`${shouldZoom}`}
           alt={alt ?? ""}
           src={src}
           loading="lazy"
