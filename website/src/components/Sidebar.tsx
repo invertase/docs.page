@@ -3,7 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { type ReactElement, cloneElement, useState } from "react";
 import { useHrefMeta, usePageContext, useSidebar } from "~/context";
-import { cn, getHrefIsActive } from "~/utils";
+import { cn, getHrefIsActive, isExternalLink } from "~/utils";
 import { Anchors } from "./Anchors";
 import { Icon } from "./Icon";
 
@@ -178,9 +178,13 @@ function SidebarAnchor(props: {
 
   const anchor = cloneElement(element, {}, [
     props.icon ? (
-      <span key="icon">
-        <Icon key="icon" name={props.icon} />
-      </span>
+      isExternalLink(props.icon!) ? (
+        <img key="icon" src={props.icon} alt={props.title} className="fa-fw" />
+      ) : (
+        <span key="icon">
+          <Icon key="icon" name={props.icon} />
+        </span>
+      )
     ) : null,
     <span key="title" className="flex-1">
       {props.title}

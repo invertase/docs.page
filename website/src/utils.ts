@@ -30,7 +30,11 @@ export function removeTrailingSlash(value: string) {
 
 // Returns whether the link is external or not
 export function isExternalLink(href: string) {
-  return href.startsWith("http://") || href.startsWith("https://");
+  return (
+    href.startsWith("http://") ||
+    href.startsWith("https://") ||
+    href.startsWith("//")
+  );
 }
 
 // Gets a custom domain for a given owner and repository.
@@ -100,7 +104,11 @@ export function getLocale(ctx: Context) {
 }
 
 // Returns whether the provided path is active or not.
-export function getHrefIsActive(ctx: Context, currentPath: string, path: string) {
+export function getHrefIsActive(
+  ctx: Context,
+  currentPath: string,
+  path: string
+) {
   const href = getHref(ctx, path);
 
   // If it's a preview request, we can just check if the current path is equal to the href.
@@ -156,7 +164,7 @@ export function getHref(ctx: Context, path: string) {
 
   // Define the base href for the current request.
   let href = "";
-  
+
   // Ensure all links start with the custom domain if it's set.
   if (ctx.domain) {
     const protocol = getEnvironment() === "development" ? "http" : "https";
