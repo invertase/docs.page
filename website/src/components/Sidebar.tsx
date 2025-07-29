@@ -51,7 +51,18 @@ export function Sidebar(props: Props) {
 function GroupHeading(props: { title: string; icon?: string }) {
   return (
     <h3 className="pl-3 font-semibold text-[14px] mb-4 flex items-center gap-2 text-black dark:text-white">
-      {props.icon ? <Icon name={props.icon} /> : null}
+      {props.icon ? (
+        isExternalLink(props.icon!) ? (
+          <img
+            key="icon"
+            src={props.icon}
+            alt={props.title}
+            className="fa-fw"
+          />
+        ) : (
+          <Icon key="icon" name={props.icon} />
+        )
+      ) : null}
       <span>{props.title}</span>
     </h3>
   );
