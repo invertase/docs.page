@@ -102,7 +102,7 @@ export function registerInitCommand(program: Command) {
 
       console.log(
         chalk.green("Initialization complete."),
-        "To preview your documentation site, vist https://docs.page/preview in your browser.",
+        "To preview your documentation site, visit https://docs.page/preview in your browser.",
       );
     });
 }
