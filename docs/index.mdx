@@ -1,45 +1,160 @@
----
-title: Overview
-description: Instant Open Source docs with zero configuration.
----
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Arslan Sports — USA Best Sellers</title>
+  <style>
+    :root{
+      --brand:#0f766e;--accent:#f59e0b;--ok:#22c55e;--text:#111827;--muted:#475569;--bg:#f5f7fb;--card:#ffffff;
+      --radius:16px;--shadow:0 10px 25px rgba(16,24,40,.08)
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+    .container{max-width:1200px;margin:0 auto;padding:20px}
+    header.hero{background:var(--brand);color:#fff;padding:28px 16px;text-align:center}
+    .hero h1{margin:0 0 .25rem;font-size:28px}
+    .hero p{margin:.25rem 0 1rem;opacity:.95}
+    .btn{display:inline-block;padding:10px 14px;border-radius:10px;text-decoration:none}
+    .btn.whatsapp{background:var(--ok);color:#fff}
+    .notice{background:#fff8e1;border:1px solid #f4d06f;padding:10px 14px;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.05);margin:16px 0}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0}
+    .input,.select{background:#fff;border:1px solid #e5e7eb;border-radius:10px;padding:10px 12px;min-width:160px;box-shadow:0 4px 12px rgba(0,0,0,.04)}
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
+    .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;display:flex;flex-direction:column;text-align:center}
+    .card img{width:100%;height:180px;object-fit:cover;border-radius:12px}
+    .card h3{margin:10px 0 6px;font-size:18px}
+    .desc{font-size:13px;color:var(--muted);margin:0 0 10px;min-height:34px}
+    .price{font-weight:800;color:#065f46;margin:6px 0 12px}
+    .btn.order{background:var(--accent);color:#fff}
+    footer{padding:22px;text-align:center;color:var(--muted)}
+    .badge{display:inline-block;background:#ecfeff;color:#0e7490;border:1px solid #a5f3fc;padding:4px 8px;border-radius:999px;font-size:12px;margin-left:8px}
+  </style>
+</head>
+<body>
 
-<Image
-  src="https://static.invertase.io/assets/docs.page/docs-page-logo.png"
-  alt="docs.page"
-  height="100"
-/>
+<header class="hero">
+  <h1 id="storeName">Arslan Sports <span class="badge">USA Best Sellers</span></h1>
+  <p>Premium sportswear — global shipping</p>
+  <a id="whBtn" class="btn whatsapp" target="_blank">💬 WhatsApp +92 307 9490721</a>
+</header>
 
-docs.page is a free Open Source project, allowing you to create instant, fast, beautiful documentation with zero configuration.
+<main class="container">
+  <section class="notice"><strong>Best Value:</strong> Hand-picked USA top sellers at budget-friendly prices.</section>
 
-Documentation is an important aspect for many projects, however creating a custom documentation website
-for each project is time consuming. Many common solutions to problems have to be duplicated, along with
-dealing with overheads such as website maintenance & hosting.
+  <!-- Controls -->
+  <div class="controls">
+    <input id="search" class="input" type="search" placeholder="Search products (e.g., shoes, jersey)…">
+    <select id="sort" class="select">
+      <option value="featured">Sort: Featured</option>
+      <option value="priceAsc">Price: Low → High</option>
+      <option value="priceDesc">Price: High → Low</option>
+      <option value="nameAsc">Name: A → Z</option>
+    </select>
+    <select id="category" class="select">
+      <option value="all">All categories</option>
+      <option value="apparel">Apparel</option>
+      <option value="shoes">Shoes</option>
+      <option value="gear">Gear & Accessories</option>
+    </select>
+  </div>
 
-Solutions such as [Jekyll](https://jekyllrb.com/docs/github-pages/), [Docusaurus](https://docusaurus.io/),
-[docsify](https://docsify.js.org/#/) and many others are great projects, however still require custom setup for each project
-and regular maintenance.
+  <!-- Products -->
+  <section id="grid" class="grid"></section>
+</main>
 
-docs.page is designed to deliver instant documentation websites, with the content sourced directly from any public
-GitHub repository. Features include:
+<footer>
+  © <span id="year"></span> <span id="storeNameFoot">Arslan Sports</span> — All rights reserved.
+</footer>
 
-- [Configurable](/configuration): Add your own logo, theme, analytics, navigation and more with a config file.
-- [Previewing](/previews): View the documentation of any branch, pull request or specific commit,.
-- [GitHub Bot](/github-bot): Install our [GitHub bot](https://github.com/apps/docs-page) to automatically get a URL to pull request documentation previews.
-- [Components](/components/accordion): Powered by [MDX](https://github.com/mdx-js/mdx), use React components such as Tabs (useful for projects with multiple languages) directly in your docs.
-- [Search](/search): Easily add full search support powered by [DocSearch](https://docsearch.algolia.com/).
-- [Custom Domains](/custom-domains): Serve your documentation using your own domain.
+<script>
+  // ======= SETTINGS (edit here later if needed) =======
+  const CONFIG = {
+    storeName: "Arslan Sports",
+    whatsappNumber: "923079490721", // digits only
+    currency: "USD",
+    products: [
+      // category: apparel | shoes | gear
+      {name:"Athletic T-Shirt (Dry-Fit)",   price:15, image:"https://via.placeholder.com/900x650?text=Athletic+T-Shirt",  desc:"Breathable, quick-dry tee for training.", category:"apparel"},
+      {name:"Running Shoes",                price:59, image:"https://via.placeholder.com/900x650?text=Running+Shoes",     desc:"Lightweight cushioning for everyday runs.", category:"shoes"},
+      {name:"Sports Cap (UV)",              price:12, image:"https://via.placeholder.com/900x650?text=Sports+Cap",        desc:"UV-protection cap with adjustable strap.", category:"apparel"},
+      {name:"Compression Leggings",         price:24, image:"https://via.placeholder.com/900x650?text=Compression+Leggings", desc:"4-way stretch for performance & recovery.", category:"apparel"},
+      {name:"Training Shorts",              price:18, image:"https://via.placeholder.com/900x650?text=Training+Shorts",   desc:"Moisture-wicking with zip pocket.", category:"apparel"},
+      {name:"Hoodie (Fleece)",              price:35, image:"https://via.placeholder.com/900x650?text=Hoodie+Fleece",     desc:"Warm & soft fleece for cool weather.", category:"apparel"},
+      {name:"Gym Gloves",                   price:14, image:"https://via.placeholder.com/900x650?text=Gym+Gloves",        desc:"Grip-enhanced with breathable mesh.", category:"gear"},
+      {name:"Duffel Bag",                   price:32, image:"https://via.placeholder.com/900x650?text=Duffel+Bag",        desc:"Spacious gym bag with shoe pocket.", category:"gear"},
+      {name:"Soccer Jersey",                price:22, image:"https://via.placeholder.com/900x650?text=Soccer+Jersey",     desc:"Lightweight, breathable match jersey.", category:"apparel"},
+      {name:"Basketball Shorts",            price:19, image:"https://via.placeholder.com/900x650?text=Basketball+Shorts", desc:"Mesh fabric, loose fit for airflow.", category:"apparel"},
+      {name:"Tennis Racket (Beginner)",     price:45, image:"https://via.placeholder.com/900x650?text=Tennis+Racket",     desc:"Balanced control for learners.", category:"gear"},
+      {name:"Yoga Mat (6mm)",               price:16, image:"https://via.placeholder.com/900x650?text=Yoga+Mat",          desc:"Non-slip surface, easy to clean.", category:"gear"},
+      {name:"Fitness Tracker Band",         price:28, image:"https://via.placeholder.com/900x650?text=Fitness+Tracker",   desc:"Steps, sleep & calorie tracking.", category:"gear"},
+      {name:"Baseball Cap Pro",             price:15, image:"https://via.placeholder.com/900x650?text=Baseball+Cap+Pro",  desc:"Structured crown, curved brim.", category:"apparel"},
+      {name:"Cycling Jersey",               price:27, image:"https://via.placeholder.com/900x650?text=Cycling+Jersey",    desc:"Quick-dry fabric with back pockets.", category:"apparel"},
+      {name:"Goalkeeper Gloves",            price:26, image:"https://via.placeholder.com/900x650?text=Goalkeeper+Gloves", desc:"Sticky latex palm, snug fit.", category:"gear"},
+      {name:"Tracksuit (Set)",              price:42, image:"https://via.placeholder.com/900x650?text=Tracksuit+Set",     desc:"Comfort fit, zipped jacket + pants.", category:"apparel"},
+      {name:"Sports Socks (3-Pack)",        price: nineTeen(), image:"https://via.placeholder.com/900x650?text=Sports+Socks", desc:"Cushioned heel & arch support.", category:"apparel"},
+      {name:"Insulated Water Bottle 1L",    price:17, image:"https://via.placeholder.com/900x650?text=Insulated+Bottle",  desc:"Keeps drinks cold for 24h.", category:"gear"},
+      {name:"Sports Sunglasses",            price:21, image:"https://via.placeholder.com/900x650?text=Sports+Sunglasses", desc:"UV400 lenses, anti-glare.", category:"gear"}
+    ]
+  };
 
-Other useful features include:
+  // helper for price (write 19 neatly without quotes)
+  function nineTeen(){ return 19; }
 
-- Global variable injection (for managing common variables across the project).
-- Displaying assets using GitHub.
-- Dark/Light mode.
-- Responsive.
-- Code block highlighting and content copying.
-- Page redirects.
-- Per-page metadata support via Frontmatter.
+  // ======= RENDER =======
+  const $ = s=>document.querySelector(s);
+  const $$ = s=>document.querySelectorAll(s);
 
-## Should I use docs.page?
+  const yearEl = $("#year"), nameTop=$("#storeName"), nameFoot=$("#storeNameFoot"), grid=$("#grid");
+  yearEl.textContent = new Date().getFullYear();
+  nameTop.textContent = CONFIG.storeName;
+  nameFoot.textContent = CONFIG.storeName;
 
-docs.page is a simple way to generate a documentation website with zero effort. It generally works for documentation websites with a lot of Markdown based content.
-If you require features which are more specific to your own project a custom solution might work better.
+  const wa = ("https://wa.me/"+CONFIG.whatsappNumber.replace(/\D/g,""))+
+             "?text="+encodeURIComponent("Hello "+CONFIG.storeName+", I want to order:");
+  const whBtn = $("#whBtn"); whBtn.href = wa;
+
+  let view = [...CONFIG.products];
+
+  function render(){
+    grid.innerHTML = "";
+    view.forEach(p=>{
+      const card = document.createElement("article");
+      card.className = "card";
+      card.innerHTML = `
+        <img alt="${escapeHtml(p.name)}" loading="lazy" src="${p.image||'https://via.placeholder.com/900x650?text=Product'}"/>
+        <h3>${escapeHtml(p.name)}</h3>
+        <p class="desc">${escapeHtml(p.desc||'High quality sports item.')}</p>
+        <div class="price">USD $${Number(p.price).toFixed(2)}</div>
+        <a class="btn order" target="_blank"
+           href="${wa}%0a${encodeURIComponent(p.name+' — $'+p.price)}">Order Now</a>`;
+      grid.appendChild(card);
+    });
+  }
+
+  function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;" }[m]))}
+
+  // Search / Sort / Category
+  const search=$("#search"), sort=$("#sort"), cat=$("#category");
+  function applyFilters(){
+    const q=(search.value||"").trim().toLowerCase();
+    const c=cat.value;
+    view = CONFIG.products.filter(p=>{
+      const okCat = c==="all" || p.category===c;
+      const okQ = !q || [p.name,p.desc,p.category].join(" ").toLowerCase().includes(q);
+      return okCat && okQ;
+    });
+    const s=sort.value;
+    if(s==="priceAsc") view.sort((a,b)=>a.price-b.price);
+    if(s==="priceDesc") view.sort((a,b)=>b.price-a.price);
+    if(s==="nameAsc") view.sort((a,b)=>a.name.localeCompare(b.name));
+    render();
+  }
+  search.addEventListener("input", applyFilters);
+  sort.addEventListener("change", applyFilters);
+  cat.addEventListener("change", applyFilters);
+
+  applyFilters(); // initial
+</script>
+</body>
+</html> might work better.
