@@ -8,6 +8,9 @@ import { getGitHubFileSourcesBatch } from "@/server/github/contents";
 import { listGitHubDocFiles } from "@/server/github/tree";
 import type { GitHubDocFileList } from "@/server/github/tree";
 
+/** Pinned-commit index: long TTL so unused SHAs can fall out of the Data Cache over time. */
+const PINNED_FLEXSEARCH_REVALIDATE_SECONDS = 7 * 24 * 60 * 60;
+
 export const DOCS_FLEXSEARCH_INDEX_OPTIONS: IndexOptions = {
   tokenize: "forward",
   encoder: "Normalize",
@@ -150,7 +153,7 @@ const getCachedDocsFlexSearchIndexPinned = unstable_cache(
   buildFlexSearchIndexForResolvedSha,
   ["docs-flexsearch-export", "pinned-sha"],
   {
-    revalidate: false,
+    revalidate: PINNED_FLEXSEARCH_REVALIDATE_SECONDS,
   },
 );
 
