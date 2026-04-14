@@ -1,5 +1,3 @@
-import "server-only";
-
 import { getGitHubGraphQLClient } from "./client";
 
 type MetaData = {

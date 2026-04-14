@@ -1,10 +1,7 @@
 import { randomUUID } from "node:crypto";
 
+import type { NextApiHandler } from "next";
 import { z } from "zod";
-import { encryptAgentPayload } from "@/server/agent/encryption";
-import { getAgentStore } from "@/server/agent/storage";
-
-export const runtime = "nodejs";
 
 const CreateAgentSchema = z.object({
   repo: z.string().trim().min(1),
@@ -14,26 +11,26 @@ const CreateAgentSchema = z.object({
   force: z.boolean().optional().default(false),
 });
 
-export async function POST(request: Request) {
+const handler: NextApiHandler = async (req, res) => {
+  if (req.method !== "POST") {
+    res.setHeader("Allow", "POST");
+    return res.status(405).json({ error: "Method not allowed." });
+  }
+
   try {
-    const body = await request.json();
-    const parsed = CreateAgentSchema.safeParse(body);
+    const parsed = CreateAgentSchema.safeParse(req.body);
 
     if (!parsed.success) {
-      return Response.json(
-        { error: "Invalid request body." },
-        { status: 400 },
-      );
+      return res.status(400).json({ error: "Invalid request body." });
     }
 
     const { repo, model, apikey, githubToken, force } = parsed.data;
     const repoParts = parseRepo(repo);
 
     if (!repoParts) {
-      return Response.json(
-        { error: "`repo` must be in the form `org/name`." },
-        { status: 400 },
-      );
+      return res
+        .status(400)
+        .json({ error: "`repo` must be in the form `org/name`." });
     }
 
     const adminCheck = await checkAdminAccess({
@@ -43,20 +40,21 @@ export async function POST(request: Request) {
     });
 
     if (!adminCheck.ok) {
-      return Response.json({ error: adminCheck.error }, { status: adminCheck.status });
+      return res.status(adminCheck.status).json({ error: adminCheck.error });
     }
 
+    const [{ encryptAgentPayload }, { getAgentStore }] = await Promise.all([
+      import("@/server/agent/encryption"),
+      import("@/server/agent/storage"),
+    ]);
     const store = getAgentStore();
     const existingRecord = await store.getByRepo(repo);
 
     if (existingRecord && !force) {
-      return Response.json(
-        {
-          error:
-            "An API key has already been added for this repository. Re-run the command with --force to overwrite.",
-        },
-        { status: 409 },
-      );
+      return res.status(409).json({
+        error:
+          "An API key has already been added for this repository. Re-run the command with --force to overwrite.",
+      });
     }
 
     const id = randomUUID();
@@ -69,16 +67,16 @@ export async function POST(request: Request) {
       encrypted: payload.encrypted,
     });
 
-    return Response.json({ id });
+    return res.status(200).json({ id });
   } catch (error) {
     console.error(error);
-
-    return Response.json(
-      { error: "Failed to create an agent API key." },
-      { status: 500 },
-    );
+    return res
+      .status(500)
+      .json({ error: "Failed to create an agent API key." });
   }
-}
+};
+
+export default handler;
 
 function parseRepo(repo: string) {
   const [owner, name, ...rest] = repo.split("/");
@@ -127,7 +125,8 @@ async function checkAdminAccess({
     return {
       ok: false as const,
       status: 404,
-      error: "Unable to find that repository or access it with the provided GitHub token.",
+      error:
+        "Unable to find that repository or access it with the provided GitHub token.",
     };
   }
 

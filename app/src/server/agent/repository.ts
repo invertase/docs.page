@@ -1,5 +1,3 @@
-import "server-only";
-
 import { decryptAgentPayload } from "@/server/agent/encryption";
 import { getAgentStore } from "@/server/agent/storage";
 

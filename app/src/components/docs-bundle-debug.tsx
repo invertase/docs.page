@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import type { BundlerError, BundlerOutput } from "@/server/docs/bundle";
 
 type MetadataRow = {
   label: string;
@@ -50,7 +49,7 @@ export function DocsDebugShell({
   );
 }
 
-export function DocsBundleSection({ bundle }: { bundle: BundlerOutput }) {
+export function DocsBundleSection({ bundle }: { bundle: unknown }) {
   return (
     <section className="space-y-3">
       <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400">
@@ -63,7 +62,15 @@ export function DocsBundleSection({ bundle }: { bundle: BundlerOutput }) {
   );
 }
 
-export function DocsBundleErrorCard({ error }: { error: BundlerError }) {
+export function DocsBundleErrorCard({
+  error,
+}: {
+  error: {
+    name: string;
+    message: string;
+    source?: string;
+  };
+}) {
   return (
     <main className="flex min-h-screen flex-1 justify-center bg-zinc-50 px-6 py-16 dark:bg-black">
       <div className="flex w-full max-w-3xl flex-col gap-4 rounded-xl border border-red-200 bg-white p-6 shadow-sm dark:border-red-950 dark:bg-zinc-950">

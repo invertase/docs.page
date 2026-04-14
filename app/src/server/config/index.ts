@@ -1,5 +1,3 @@
-import "server-only";
-
 import yaml from "js-yaml";
 import { type Config, ConfigSchema } from "./schema";
 import { V1ConfigSchema } from "./v1.schema";

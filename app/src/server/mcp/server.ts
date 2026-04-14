@@ -1,5 +1,3 @@
-import "server-only";
-
 import { zodToJsonSchema } from "zod-to-json-schema";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp";

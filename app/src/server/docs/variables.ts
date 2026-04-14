@@ -1,5 +1,3 @@
-import "server-only";
-
 const VARIABLE_REGEX = /{{\s([a-zA-Z0-9_.]*)\s}}/gm;
 
 function getNestedValue(
@@ -25,6 +23,7 @@ export function replaceMoustacheVariables(
   let output = value;
   let match: RegExpExecArray | null;
 
+  // biome-ignore lint/suspicious/noAssignInExpressions: This is a false positive.
   while ((match = VARIABLE_REGEX.exec(value)) !== null) {
     if (match.index === VARIABLE_REGEX.lastIndex) {
       VARIABLE_REGEX.lastIndex++;

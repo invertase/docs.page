@@ -1,5 +1,3 @@
-import "server-only";
-
 import { Readable } from "node:stream";
 import { resolveDocsRoute } from "@/lib/docs-routing";
 import type { GitHubDocFile } from "@/server/github/tree";

@@ -1,20 +1,30 @@
 import type { NextConfig } from "next";
-import path from "node:path";
-
-const isProduction = process.env.NODE_ENV === "production";
 
 const nextConfig: NextConfig = {
   output: "standalone",
   reactCompiler: true,
-  ...(isProduction
-    ? {
-        /** ISR / `unstable_cache` / fetch cache — `@neshca/cache-handler` (see `cache-handler.cjs`). */
-        cacheHandler: path.join(process.cwd(), "cache-handler.cjs"),
-        outputFileTracingIncludes: {
-          "/*": ["./cache-handler.cjs"],
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: "/schema.json",
+          destination: "/api/schema.json",
         },
-      }
-    : {}),
+        {
+          source: "/:owner/:repo/search.json",
+          destination: "/api/:owner/:repo/search.json",
+        },
+        {
+          source: "/:owner/:repo/sitemap.xml",
+          destination: "/api/:owner/:repo/sitemap.xml",
+        },
+        {
+          source: "/:owner/:repo/mcp",
+          destination: "/api/:owner/:repo/mcp",
+        },
+      ],
+    };
+  },
 };
 
 export default nextConfig;

@@ -1,10 +1,5 @@
-import "server-only";
-
-import { unstable_cache } from "next/cache";
 import { getGitHubRestClient } from "./client";
 import { resolveGitHubSource, type GitHubSource } from "./contents";
-
-const SHORT_REF_CACHE_SECONDS = 60;
 
 type RefArgs = {
   owner: string;
@@ -59,71 +54,61 @@ export type GitHubSkillFileList = {
   skills: GitHubSkillFile[];
 };
 
-const getDefaultBranch = unstable_cache(
-  async (owner: string, repository: string) => {
-    const response = await getGitHubRestClient().request("GET /repos/{owner}/{repo}", {
-      owner,
-      repo: repository,
-    });
+async function getDefaultBranch(owner: string, repository: string) {
+  const response = await getGitHubRestClient().request("GET /repos/{owner}/{repo}", {
+    owner,
+    repo: repository,
+  });
 
-    return response.data.default_branch;
-  },
-  ["github-default-branch"],
-  {
-    revalidate: SHORT_REF_CACHE_SECONDS,
-  },
-);
+  return response.data.default_branch;
+}
 
-export const resolveGitHubRefToSha = unstable_cache(
-  async (owner: string, repository: string, ref: string) => {
-    const response = await getGitHubRestClient().request("GET /repos/{owner}/{repo}/commits/{ref}", {
-      owner,
-      repo: repository,
-      ref,
-    });
+export async function resolveGitHubRefToSha(
+  owner: string,
+  repository: string,
+  ref: string,
+) {
+  const response = await getGitHubRestClient().request("GET /repos/{owner}/{repo}/commits/{ref}", {
+    owner,
+    repo: repository,
+    ref,
+  });
 
-    return {
-      ref,
-      sha: response.data.sha,
-    };
-  },
-  ["github-ref-to-sha"],
-  {
-    revalidate: SHORT_REF_CACHE_SECONDS,
-  },
-);
+  return {
+    ref,
+    sha: response.data.sha,
+  };
+}
 
-export const getGitHubRecursiveTreeBySha = unstable_cache(
-  async (owner: string, repository: string, sha: string): Promise<GitHubRecursiveTree> => {
-    const response = await getGitHubRestClient().request("GET /repos/{owner}/{repo}/git/trees/{tree_sha}", {
-      owner,
-      repo: repository,
-      tree_sha: sha,
-      recursive: "1",
-    });
+export async function getGitHubRecursiveTreeBySha(
+  owner: string,
+  repository: string,
+  sha: string,
+): Promise<GitHubRecursiveTree> {
+  const response = await getGitHubRestClient().request("GET /repos/{owner}/{repo}/git/trees/{tree_sha}", {
+    owner,
+    repo: repository,
+    tree_sha: sha,
+    recursive: "1",
+  });
 
-    return {
-      truncated: response.data.truncated,
-      tree: response.data.tree
-        .filter((entry) => {
-          return (
-            typeof entry.path === "string" &&
-            typeof entry.sha === "string" &&
-            (entry.type === "blob" || entry.type === "tree" || entry.type === "commit")
-          );
-        })
-        .map((entry) => ({
-          path: entry.path!,
-          sha: entry.sha!,
-          type: entry.type as GitHubTreeEntry["type"],
-        })),
-    };
-  },
-  ["github-tree-by-sha"],
-  {
-    revalidate: false,
-  },
-);
+  return {
+    truncated: response.data.truncated,
+    tree: response.data.tree
+      .filter((entry) => {
+        return (
+          typeof entry.path === "string" &&
+          typeof entry.sha === "string" &&
+          (entry.type === "blob" || entry.type === "tree" || entry.type === "commit")
+        );
+      })
+      .map((entry) => ({
+        path: entry.path!,
+        sha: entry.sha!,
+        type: entry.type as GitHubTreeEntry["type"],
+      })),
+  };
+}
 
 function buildSkillUri(slug: string) {
   return `docs-page://skills/${slug.split("/").map(encodeURIComponent).join("/")}`;

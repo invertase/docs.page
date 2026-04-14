@@ -1,15 +1,9 @@
-import "server-only";
-
 import { Index, type IndexOptions } from "flexsearch";
 import frontmatter from "gray-matter";
-import { unstable_cache } from "next/cache";
 
 import { getGitHubFileSourcesBatch } from "@/server/github/contents";
 import { listGitHubDocFiles } from "@/server/github/tree";
 import type { GitHubDocFileList } from "@/server/github/tree";
-
-/** Pinned-commit index: long TTL so unused SHAs can fall out of the Data Cache over time. */
-const PINNED_FLEXSEARCH_REVALIDATE_SECONDS = 7 * 24 * 60 * 60;
 
 export const DOCS_FLEXSEARCH_INDEX_OPTIONS: IndexOptions = {
   tokenize: "forward",
@@ -136,31 +130,10 @@ async function buildFlexSearchIndexForResolvedSha(
   return buildFlexSearchPayload(docList);
 }
 
-const getCachedDocsFlexSearchIndexMutable = unstable_cache(
-  buildFlexSearchIndexForResolvedSha,
-  ["docs-flexsearch-export", "mutable-ref"],
-  {
-    revalidate: 60,
-  },
-);
-
-const getCachedDocsFlexSearchIndexPinned = unstable_cache(
-  buildFlexSearchIndexForResolvedSha,
-  ["docs-flexsearch-export", "pinned-sha"],
-  {
-    revalidate: PINNED_FLEXSEARCH_REVALIDATE_SECONDS,
-  },
-);
-
-export function getCachedDocsFlexSearchIndex(
+export async function buildDocsFlexSearchIndex(
   owner: string,
   repository: string,
   resolvedSha: string,
-  requestedRefPinnedToCommit: boolean,
 ): Promise<DocsFlexSearchJson> {
-  if (requestedRefPinnedToCommit) {
-    return getCachedDocsFlexSearchIndexPinned(owner, repository, resolvedSha);
-  }
-
-  return getCachedDocsFlexSearchIndexMutable(owner, repository, resolvedSha);
+  return buildFlexSearchIndexForResolvedSha(owner, repository, resolvedSha);
 }

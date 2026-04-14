@@ -1,5 +1,3 @@
-import "server-only";
-
 import { graphql } from "@octokit/graphql";
 import { Octokit } from "octokit";
 import { ENV } from "../env";

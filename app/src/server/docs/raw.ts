@@ -1,5 +1,3 @@
-import "server-only";
-
 import { z } from "zod";
 import { stripRawDocRequestSuffix } from "@/lib/docs-routing";
 import { getGitHubDocumentSource } from "../github/contents";
