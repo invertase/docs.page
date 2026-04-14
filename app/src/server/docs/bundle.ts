@@ -28,7 +28,14 @@ const MUTABLE_DOC_BUNDLE_REVALIDATE = 60;
 /** Same window as pinned FlexSearch index — lets Data Cache / Redis evict old commit bundles. */
 const PINNED_DOC_BUNDLE_REVALIDATE_SECONDS = 7 * 24 * 60 * 60;
 
-async function buildDocBundleInternal(input: ParsedDocBundleArgs): Promise<BundlerOutput> {
+async function buildDocBundleInternal(
+  input: ParsedDocBundleArgs,
+): Promise<BundlerOutput> {
+  // This body runs only on Data Cache MISS — if you see this every request, the cache isn’t persisting.
+  console.info(
+    `[docs-perf] doc-bundle cache MISS — build ${input.owner}/${input.repository} path=${input.path} ref=${input.ref ?? "(default)"}`,
+  );
+  const t0 = performance.now();
   const bundler = new Bundler({
     owner: input.owner,
     repository: input.repository,
@@ -36,7 +43,11 @@ async function buildDocBundleInternal(input: ParsedDocBundleArgs): Promise<Bundl
     path: input.path,
     components: input.components,
   });
-  return bundler.build();
+  const out = await bundler.build();
+  console.info(
+    `[docs-perf] doc-bundle build() done in ${(performance.now() - t0).toFixed(1)}ms`,
+  );
+  return out;
 }
 
 const getCachedDocBundleMutable = unstable_cache(
@@ -55,12 +66,21 @@ const getCachedDocBundlePinned = unstable_cache(
   },
 );
 
-export async function getDocBundle(args: GetDocBundleArgs): Promise<BundlerOutput> {
+export async function getDocBundle(
+  args: GetDocBundleArgs,
+): Promise<BundlerOutput> {
   const input = QuerySchema.parse(args);
+  const t0 = performance.now();
 
-  if (isPinnedCommitRef(input.ref)) {
-    return getCachedDocBundlePinned(input);
-  }
+  const result = isPinnedCommitRef(input.ref)
+    ? await getCachedDocBundlePinned(input)
+    : await getCachedDocBundleMutable(input);
 
-  return getCachedDocBundleMutable(input);
+  const wallMs = performance.now() - t0;
+
+  console.info(
+    `[docs-perf] getDocBundle wall=${wallMs.toFixed(1)}ms ${input.owner}/${input.repository}:${input.path} (HIT = no MISS lines above)`,
+  );
+
+  return result;
 }
