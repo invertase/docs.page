@@ -42,6 +42,11 @@ export function isRawDocRequestPath(pathname: string) {
   return RAW_DOC_SUFFIX_REGEX.test(pathname);
 }
 
+/** Per-repo docs sitemap at `/{owner}/{repo}/sitemap.xml` (or vanity / custom-domain equivalents). */
+export function isDocsSitemapPath(pathname: string) {
+  return pathname === "/sitemap.xml" || pathname.endsWith("/sitemap.xml");
+}
+
 export function stripRawDocRequestSuffix(path: string) {
   return path.replace(RAW_DOC_SUFFIX_REGEX, "");
 }

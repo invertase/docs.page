@@ -1,6 +1,6 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { getVanityOwnerFromHost, isRawDocRequestPath } from "@/lib/docs-routing";
+import { getVanityOwnerFromHost, isDocsSitemapPath, isRawDocRequestPath } from "@/lib/docs-routing";
 
 const DOCS_CACHE_CONTROL = "public, s-maxage=1, stale-while-revalidate=59";
 
@@ -15,7 +15,9 @@ function isBypassPath(pathname: string) {
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
     pathname === "/favicon.ico" ||
-    (/\.[a-zA-Z0-9]+$/.test(pathname) && !isRawDocRequestPath(pathname))
+    (/\.[a-zA-Z0-9]+$/.test(pathname) &&
+      !isRawDocRequestPath(pathname) &&
+      !isDocsSitemapPath(pathname))
   );
 }
 
