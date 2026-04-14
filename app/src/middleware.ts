@@ -4,6 +4,10 @@ import { getVanityOwnerFromHost, isRawDocRequestPath } from "@/lib/docs-routing"
 
 const DOCS_CACHE_CONTROL = "public, s-maxage=1, stale-while-revalidate=59";
 
+function isMcpPath(pathname: string) {
+  return pathname === "/mcp" || pathname.endsWith("/mcp");
+}
+
 function isBypassPath(pathname: string) {
   return (
     pathname === "/" ||
@@ -21,6 +25,10 @@ function getPathSegments(pathname: string) {
 
 function shouldApplyDocsCache(request: NextRequest, vanityOwner: string | null) {
   if (isBypassPath(request.nextUrl.pathname)) {
+    return false;
+  }
+
+  if (isMcpPath(request.nextUrl.pathname)) {
     return false;
   }
 

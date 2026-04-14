@@ -1,6 +1,7 @@
 import "server-only";
 
 import { graphql } from "@octokit/graphql";
+import { Octokit } from "octokit";
 import { ENV } from "../env";
 
 const getGitHubToken = (() => {
@@ -27,5 +28,11 @@ export function getGitHubGraphQLClient(): typeof graphql {
     headers: {
       authorization: `token ${token}`,
     },
+  });
+}
+
+export function getGitHubRestClient(): Octokit {
+  return new Octokit({
+    auth: getGitHubToken(),
   });
 }

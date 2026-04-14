@@ -1,5 +1,5 @@
 import { type Config, defaultConfig, parseConfig } from "../../config";
-import { getGitHubContents, getPullRequestMetadata } from "../../github/contents";
+import { getGitHubContents, resolveGitHubSource, type GitHubSource } from "../../github/contents";
 import { replaceMoustacheVariables } from "../variables";
 import { BundlerError } from "./error";
 import { parseMdx } from "./mdx";
@@ -14,12 +14,7 @@ export const ERROR_CODES = {
 
 export type ErrorCodes = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];
 
-type Source = {
-  type: "PR" | "commit" | "branch";
-  owner: string;
-  repository: string;
-  ref?: string;
-};
+type Source = GitHubSource;
 
 export type BundlerOutput = {
   source: Source;
@@ -63,38 +58,11 @@ export class Bundler {
   }
 
   private async getSource(): Promise<Source> {
-    if (this.#ref) {
-      if (/^[0-9]*$/.test(this.#ref)) {
-        const pullRequest = await getPullRequestMetadata(
-          this.#owner,
-          this.#repository,
-          this.#ref,
-        );
-
-        if (pullRequest) {
-          return {
-            type: "PR",
-            ...pullRequest,
-          };
-        }
-      }
-
-      if (/^[a-fA-F0-9]{40}$/.test(this.#ref)) {
-        return {
-          type: "commit",
-          owner: this.#owner,
-          repository: this.#repository,
-          ref: this.#ref,
-        };
-      }
-    }
-
-    return {
-      type: "branch",
+    return resolveGitHubSource({
       owner: this.#owner,
       repository: this.#repository,
       ref: this.#ref,
-    };
+    });
   }
 
   async build(): Promise<BundlerOutput> {

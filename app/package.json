@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@mdx-js/mdx": "^3.1.1",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "@octokit/graphql": "^9.0.3",
     "@shikijs/transformers": "^4.0.2",
     "class-variance-authority": "^0.7.1",
@@ -22,6 +23,7 @@
     "lucide-react": "^1.8.0",
     "mdast-util-to-string": "^4.0.0",
     "next": "16.2.3",
+    "octokit": "^5.0.5",
     "radix-ui": "^1.4.3",
     "react": "19.2.4",
     "react-dom": "19.2.4",

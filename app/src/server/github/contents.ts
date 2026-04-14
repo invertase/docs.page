@@ -9,6 +9,8 @@ type MetaData = {
   path: string;
 };
 
+type SourceMetaData = Omit<MetaData, "path">;
+
 type PageContentsQuery = {
   repository: {
     stars: number;
@@ -69,6 +71,11 @@ export type DocumentSource = {
   content: string;
   path: string;
   contentType: "md" | "mdx";
+};
+
+export type FileSource = {
+  content: string;
+  path: string;
 };
 
 export async function getGitHubContents(
@@ -233,10 +240,66 @@ export async function getGitHubDocumentSource(
   }
 }
 
+type FileSourceQuery = {
+  repository: {
+    file?: {
+      text: string;
+    };
+  } | null;
+};
+
+export async function getGitHubFileSource(
+  metadata: {
+    owner: string;
+    repository: string;
+    ref?: string;
+    path: string;
+  },
+): Promise<FileSource | undefined> {
+  const ref = metadata.ref || "HEAD";
+
+  try {
+    const response = await getGitHubGraphQLClient()<FileSourceQuery>({
+      query: `
+        query RepositoryFile($owner: String!, $repository: String!, $file: String!) {
+          repository(owner: $owner, name: $repository) {
+            file: object(expression: $file) {
+              ... on Blob {
+                text
+              }
+            }
+          }
+        }
+      `,
+      owner: metadata.owner,
+      repository: metadata.repository,
+      file: `${ref}:${metadata.path}`,
+    });
+
+    if (!response.repository?.file?.text) {
+      return;
+    }
+
+    return {
+      content: response.repository.file.text,
+      path: metadata.path,
+    };
+  } catch {
+    return;
+  }
+}
+
 export type PullRequestMetadata = {
   owner: string;
   repository: string;
   ref: string;
+};
+
+export type GitHubSource = {
+  type: "PR" | "commit" | "branch";
+  owner: string;
+  repository: string;
+  ref?: string;
 };
 
 type PullRequestQuery = {
@@ -298,4 +361,41 @@ export async function getPullRequestMetadata(
   } catch {
     return null;
   }
+}
+
+export async function resolveGitHubSource(
+  metadata: SourceMetaData,
+): Promise<GitHubSource> {
+  if (metadata.ref) {
+    if (/^[0-9]+$/.test(metadata.ref)) {
+      const pullRequest = await getPullRequestMetadata(
+        metadata.owner,
+        metadata.repository,
+        metadata.ref,
+      );
+
+      if (pullRequest) {
+        return {
+          type: "PR",
+          ...pullRequest,
+        };
+      }
+    }
+
+    if (/^[a-fA-F0-9]{40}$/.test(metadata.ref)) {
+      return {
+        type: "commit",
+        owner: metadata.owner,
+        repository: metadata.repository,
+        ref: metadata.ref,
+      };
+    }
+  }
+
+  return {
+    type: "branch",
+    owner: metadata.owner,
+    repository: metadata.repository,
+    ref: metadata.ref,
+  };
 }
