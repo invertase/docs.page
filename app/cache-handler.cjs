@@ -1,5 +1,10 @@
 /**
- * Next.js `cacheHandler` via `@neshca/cache-handler` — Redis only (`redis-stack`).
+ * Next.js `cacheHandler` via `@neshca/cache-handler` — Redis (`redis-strings`).
+ *
+ * Use `redis-strings`, not `redis-stack`: the stack handler relies on RedisJSON + RediSearch
+ * (`JSON.*`, `FT.*`). Plain managed Redis (no modules) connects fine but every `JSON.SET`
+ * fails silently from the app’s perspective, so you get perpetual MISS and an empty keyspace.
+ *
  * @see https://caching-tools.github.io/next-shared-cache/redis
  *
  * Set `CACHE_REDIS_URL` or `REDIS_URL` in production. Without Redis, the handler list is
@@ -8,7 +13,7 @@
  */
 
 const { CacheHandler } = require("@neshca/cache-handler");
-const createRedisHandler = require("@neshca/cache-handler/redis-stack").default;
+const createRedisHandler = require("@neshca/cache-handler/redis-strings").default;
 const { createClient } = require("redis");
 const { PHASE_PRODUCTION_BUILD } = require("next/constants");
 
