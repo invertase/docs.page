@@ -31,11 +31,6 @@ const PINNED_DOC_BUNDLE_REVALIDATE_SECONDS = 7 * 24 * 60 * 60;
 async function buildDocBundleInternal(
   input: ParsedDocBundleArgs,
 ): Promise<BundlerOutput> {
-  // This body runs only on Data Cache MISS — if you see this every request, the cache isn’t persisting.
-  console.info(
-    `[docs-perf] doc-bundle cache MISS — build ${input.owner}/${input.repository} path=${input.path} ref=${input.ref ?? "(default)"}`,
-  );
-  const t0 = performance.now();
   const bundler = new Bundler({
     owner: input.owner,
     repository: input.repository,
@@ -43,11 +38,7 @@ async function buildDocBundleInternal(
     path: input.path,
     components: input.components,
   });
-  const out = await bundler.build();
-  console.info(
-    `[docs-perf] doc-bundle build() done in ${(performance.now() - t0).toFixed(1)}ms`,
-  );
-  return out;
+  return bundler.build();
 }
 
 const getCachedDocBundleMutable = unstable_cache(
@@ -70,17 +61,8 @@ export async function getDocBundle(
   args: GetDocBundleArgs,
 ): Promise<BundlerOutput> {
   const input = QuerySchema.parse(args);
-  const t0 = performance.now();
 
-  const result = isPinnedCommitRef(input.ref)
+  return isPinnedCommitRef(input.ref)
     ? await getCachedDocBundlePinned(input)
     : await getCachedDocBundleMutable(input);
-
-  const wallMs = performance.now() - t0;
-
-  console.info(
-    `[docs-perf] getDocBundle wall=${wallMs.toFixed(1)}ms ${input.owner}/${input.repository}:${input.path} (HIT = no MISS lines above)`,
-  );
-
-  return result;
 }
