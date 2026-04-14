@@ -1,5 +1,6 @@
 import { headers } from "next/headers";
 import { resolveDocsRoute } from "@/lib/docs-routing";
+import { checkRepositoryAgentConfig } from "@/server/agent/repository";
 import { BundlerError, getDocBundle } from "@/server/docs/bundle";
 
 type PageProps = {
@@ -11,7 +12,10 @@ type PageProps = {
 };
 
 export default async function RepoDocPage({ params }: PageProps) {
-  const [{ owner, repo, path }, requestHeaders] = await Promise.all([params, headers()]);
+  const [{ owner, repo, path }, requestHeaders] = await Promise.all([
+    params,
+    headers(),
+  ]);
   const route = resolveDocsRoute({
     owner,
     repoSegment: repo,
@@ -26,6 +30,14 @@ export default async function RepoDocPage({ params }: PageProps) {
       ref: route.ref ?? undefined,
       path: route.docPath || "index",
     });
+
+    const hasAgent = bundle.config.agent
+      ? await checkRepositoryAgentConfig({
+          owner: route.owner,
+          repository: route.repository,
+          token: bundle.config.agent,
+        })
+      : false;
 
     return (
       <main className="flex min-h-screen flex-1 justify-center bg-zinc-50 px-6 py-16 dark:bg-black">
@@ -43,6 +55,7 @@ export default async function RepoDocPage({ params }: PageProps) {
               <p>Request mode: {route.requestMode}</p>
               <p>Public pathname: {route.publicPathname}</p>
               <p>Canonical pathname: {route.canonicalPathname}</p>
+              <p>Has agent: {hasAgent ? "Yes" : "No"}</p>
             </div>
           </header>
 
@@ -68,9 +81,13 @@ export default async function RepoDocPage({ params }: PageProps) {
             <h1 className="text-2xl font-semibold text-zinc-950 dark:text-zinc-50">
               {error.name}
             </h1>
-            <p className="text-sm text-zinc-700 dark:text-zinc-300">{error.message}</p>
+            <p className="text-sm text-zinc-700 dark:text-zinc-300">
+              {error.message}
+            </p>
             {error.source ? (
-              <p className="text-xs text-zinc-500 dark:text-zinc-400">Source: {error.source}</p>
+              <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                Source: {error.source}
+              </p>
             ) : null}
           </div>
         </main>
