@@ -10,10 +10,12 @@
   "dependencies": {
     "@mdx-js/mdx": "^3.1.1",
     "@modelcontextprotocol/sdk": "^1.29.0",
+    "@neshca/cache-handler": "^1.9.0",
     "@octokit/graphql": "^9.0.3",
     "@shikijs/transformers": "^4.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "flexsearch": "^0.8.212",
     "gray-matter": "^4.0.3",
     "hast-util-has-property": "^3.0.0",
     "hast-util-heading-rank": "^3.0.0",

@@ -248,14 +248,12 @@ type FileSourceQuery = {
   } | null;
 };
 
-export async function getGitHubFileSource(
-  metadata: {
-    owner: string;
-    repository: string;
-    ref?: string;
-    path: string;
-  },
-): Promise<FileSource | undefined> {
+export async function getGitHubFileSource(metadata: {
+  owner: string;
+  repository: string;
+  ref?: string;
+  path: string;
+}): Promise<FileSource | undefined> {
   const ref = metadata.ref || "HEAD";
 
   try {
@@ -287,6 +285,83 @@ export async function getGitHubFileSource(
   } catch {
     return;
   }
+}
+
+/** GraphQL cost grows with field count; keep batches moderate. */
+const GITHUB_BLOB_GRAPHQL_BATCH = 20;
+
+/**
+ * Load many blob texts with fewer HTTP round-trips than calling `getGitHubFileSource` per path.
+ * Falls back to per-file fetches for a chunk if the batched query fails.
+ */
+export async function getGitHubFileSourcesBatch(args: {
+  owner: string;
+  repository: string;
+  ref?: string;
+  paths: string[];
+}): Promise<Map<string, string | undefined>> {
+  const out = new Map<string, string | undefined>();
+
+  if (args.paths.length === 0) {
+    return out;
+  }
+
+  const ref = args.ref || "HEAD";
+
+  for (
+    let offset = 0;
+    offset < args.paths.length;
+    offset += GITHUB_BLOB_GRAPHQL_BATCH
+  ) {
+    const paths = args.paths.slice(offset, offset + GITHUB_BLOB_GRAPHQL_BATCH);
+
+    const varDefs = paths.map((_, j) => `$e${j}: String!`).join(", ");
+    const fieldBlock = paths
+      .map(
+        (_, j) => `b${j}: object(expression: $e${j}) { ... on Blob { text } }`,
+      )
+      .join("\n");
+
+    const query = `
+        query BatchRepoBlobs($owner: String!, $repository: String!, ${varDefs}) {
+          repository(owner: $owner, name: $repository) {
+            ${fieldBlock}
+          }
+        }
+      `;
+
+    const variables: Record<string, string> = {
+      owner: args.owner,
+      repository: args.repository,
+    };
+
+    for (let j = 0; j < paths.length; j++) {
+      variables[`e${j}`] = `${ref}:${paths[j]}`;
+    }
+
+    const response = await getGitHubGraphQLClient()<{
+      repository: null | Record<string, { text?: string } | null | undefined>;
+    }>({
+      query,
+      ...variables,
+    });
+
+    const repo = response.repository;
+
+    if (!repo) {
+      for (const p of paths) {
+        out.set(p, undefined);
+      }
+      continue;
+    }
+
+    for (let j = 0; j < paths.length; j++) {
+      const blob = repo[`b${j}`];
+      out.set(paths[j], blob?.text ?? undefined);
+    }
+  }
+
+  return out;
 }
 
 export type PullRequestMetadata = {
@@ -349,7 +424,11 @@ export async function getPullRequestMetadata(
 
     const metadata = response.repository?.pullRequest;
 
-    if (!metadata?.owner?.login || !metadata.repository?.name || !metadata.ref?.name) {
+    if (
+      !metadata?.owner?.login ||
+      !metadata.repository?.name ||
+      !metadata.ref?.name
+    ) {
       return null;
     }
 
