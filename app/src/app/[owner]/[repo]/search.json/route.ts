@@ -1,10 +1,10 @@
 import { headers } from "next/headers";
 
 import { resolveDocsRoute } from "@/lib/docs-routing";
+import { isPinnedCommitRef } from "@/lib/docs-routing";
 import {
   emptyDocsFlexSearchPayload,
   getCachedDocsFlexSearchIndex,
-  isPinnedCommitRef,
 } from "@/server/docs/search-index";
 import { listGitHubDocFiles } from "@/server/github/tree";
 

@@ -107,11 +107,6 @@ export function emptyDocsFlexSearchPayload(docList: GitHubDocFileList): DocsFlex
   };
 }
 
-/** Matches `resolveGitHubSource` commit detection: pinned to an immutable tree. */
-export function isPinnedCommitRef(ref: string | null | undefined): boolean {
-  return typeof ref === "string" && /^[a-fA-F0-9]{40}$/.test(ref);
-}
-
 async function buildFlexSearchIndexForResolvedSha(
   owner: string,
   repository: string,

@@ -178,3 +178,8 @@ export function getVanityOwnerFromHost(hostname: string): string | null {
 
   return subdomain;
 }
+
+/** Matches `resolveGitHubSource` commit detection: pinned to an immutable tree. */
+export function isPinnedCommitRef(ref: string | null | undefined): boolean {
+  return typeof ref === "string" && /^[a-fA-F0-9]{40}$/.test(ref);
+}
