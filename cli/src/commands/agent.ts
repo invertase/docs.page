@@ -3,13 +3,16 @@ import { spawn } from "node:child_process";
 import chalk from "chalk";
 import type { Command } from "commander";
 
-const DEFAULT_API_BASE = "https://docs.page";
-
 type CreateAgentOptions = {
   repo: string;
   model: string;
-  token: string;
+  apikey: string;
   auth?: string;
+  force?: boolean;
+};
+
+type GlobalCliOptions = {
+  apiUrl?: string;
 };
 
 type CommandError = Error & {
@@ -32,26 +35,32 @@ export function registerAgentCommand(program: Command) {
       "GitHub repository in the form org/name",
     )
     .requiredOption("--model <string>", "Model identifier to use for the agent")
-    .requiredOption("--token <string>", "Docs.page token to send to the API")
+    .requiredOption("--apikey <string>", "Docs.page API key to send to the API")
     .option(
       "--auth <string>",
       "GitHub auth token to use instead of `gh auth token`",
     )
-    .action(async (options: CreateAgentOptions) => {
+    .option(
+      "--force",
+      "Overwrite an existing agent API key for this repository",
+    )
+    .action(async (options: CreateAgentOptions, command: Command) => {
       try {
         const repo = validateRepo(options.repo);
         const model = validateModel(options.model);
-        const token = validateToken(options.token);
+        const apikey = validateApiKey(options.apikey);
         const githubToken = await resolveGitHubToken(options.auth);
-        const agentToken = await createAgent({
-          apiBase: getApiBase(),
+        const globalOptions = command.optsWithGlobals() as GlobalCliOptions;
+        const agentId = await createAgent({
+          apiBase: getApiBase(globalOptions.apiUrl),
           repo,
           model,
-          token,
+          apikey,
           githubToken,
+          force: Boolean(options.force),
         });
 
-        console.log(agentToken);
+        console.log(agentId);
       } catch (error) {
         console.error(chalk.red(getErrorMessage(error)));
         process.exit(1);
@@ -80,20 +89,24 @@ function validateModel(model: string) {
   return trimmedModel;
 }
 
-function validateToken(token: string) {
-  const trimmedToken = token.trim();
+function validateApiKey(apikey: string) {
+  const trimmedApiKey = apikey.trim();
 
-  if (trimmedToken.length <= 1) {
-    throw new Error("`--token` must be longer than 1 character.");
+  if (trimmedApiKey.length <= 1) {
+    throw new Error("`--apikey` must be longer than 1 character.");
   }
 
-  return trimmedToken;
+  return trimmedApiKey;
 }
 
-function getApiBase() {
-  const configuredBase = process.env.DOCS_PAGE_API_BASE?.trim();
+function getApiBase(apiUrl?: string) {
+  const configuredBase = apiUrl?.trim();
 
-  return (configuredBase || DEFAULT_API_BASE).replace(/\/+$/, "");
+  if (!configuredBase) {
+    throw new Error("`apiUrl` was not provided.");
+  }
+
+  return configuredBase.replace(/\/+$/, "");
 }
 
 async function resolveGitHubToken(auth?: string) {
@@ -139,14 +152,16 @@ async function createAgent({
   apiBase,
   repo,
   model,
-  token,
+  apikey,
   githubToken,
+  force,
 }: {
   apiBase: string;
   repo: string;
   model: string;
-  token: string;
+  apikey: string;
   githubToken: string;
+  force: boolean;
 }) {
   const response = await fetch(`${apiBase}/api/agent`, {
     method: "POST",
@@ -156,22 +171,30 @@ async function createAgent({
     body: JSON.stringify({
       repo,
       model,
-      token,
+      apikey,
       githubToken,
+      force,
     }),
   });
 
-  const json = await response.json() as object;
+  const responseText = await response.text();
+  const json = parseJson(responseText);
 
-  if ('error' in json) {
-    throw new Error(String(json.error));
-  }
-  
-  if ('token' in json) {
-    return json.token;
+  if (isRecord(json) && typeof json.error === "string") {
+    throw new Error(json.error);
   }
 
-  throw new Error("Agent creation failed: unknown error");
+  if (!response.ok) {
+    throw new Error(
+      `Agent creation failed (${response.status} ${response.statusText}).`,
+    );
+  }
+
+  if (isRecord(json) && typeof json.id === "string" && json.id.trim()) {
+    return json.id;
+  }
+
+  throw new Error("Agent creation failed: response did not include an `id`.");
 }
 
 function parseJson(value: string) {

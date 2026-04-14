@@ -1,12 +1,17 @@
 #!/usr/bin/env bun
 
-import { program } from "commander";
+import { Option, program } from "commander";
 
 import { registerAgentCommand } from "./commands/agent";
 import { registerInitCommand } from "./commands/init";
 import { registerPreviewCommand } from "./commands/preview";
 
 program.name("docs.page").version("0.1.0").description("docs.page CLI");
+program.addOption(
+  new Option("--api-url <url>")
+    .default(process.env.DOCS_PAGE_API_BASE?.trim() || "https://docs.page")
+    .hideHelp(),
+);
 
 registerInitCommand(program);
 registerPreviewCommand(program);

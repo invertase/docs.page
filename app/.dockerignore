@@ -22,3 +22,6 @@ coverage
 # IDE
 .idea
 .vscode
+
+# docs.page
+.db
