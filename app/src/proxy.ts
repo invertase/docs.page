@@ -64,7 +64,7 @@ function rewriteToRawDocs(request: NextRequest, pathname: string, headers?: Head
     : undefined);
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const vanityOwner = getVanityOwnerFromHost(request.nextUrl.hostname);
   const shouldCache = shouldApplyDocsCache(request, vanityOwner);
   const isRawDocRequest = isRawDocRequestPath(request.nextUrl.pathname);

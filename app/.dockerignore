@@ -10,6 +10,7 @@ out
 # Dev / tooling
 .git
 .gitignore
+.env
 .env*.local
 *.log
 .DS_Store
