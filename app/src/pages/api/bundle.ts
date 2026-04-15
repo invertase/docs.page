@@ -2,7 +2,7 @@ import type { NextApiHandler } from "next";
 import { z } from "zod";
 
 import type { DocsBundleApiResponse } from "@/lib/docs-bundle-api";
-import { BUNDLE_JSON_CACHE_CONTROL } from "@/proxy";
+import { getBundleJsonCacheControl } from "@/proxy";
 
 const QuerySchema = z.object({
   owner: z.string().trim().min(1),
@@ -51,7 +51,7 @@ const handler: NextApiHandler<DocsBundleApiResponse> = async (req, res) => {
       : false;
 
     res.setHeader("Content-Type", "application/json; charset=utf-8");
-    res.setHeader("Cache-Control", BUNDLE_JSON_CACHE_CONTROL);
+    res.setHeader("Cache-Control", getBundleJsonCacheControl(input.data.ref));
 
     return res.status(200).json({
       code: "OK",

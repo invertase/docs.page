@@ -34,26 +34,6 @@ async function buildDocBundleInternal(
 export async function getDocBundle(
   args: GetDocBundleArgs,
 ): Promise<BundlerOutput> {
-  const startedAt = Date.now();
   const input = QuerySchema.parse(args);
-  const bundle = await buildDocBundleInternal(input);
-  logBundleEvent("build-success", input, {
-    elapsedMs: Date.now() - startedAt,
-  });
-
-  return bundle;
-}
-
-function logBundleEvent(
-  event: string,
-  input: ParsedDocBundleArgs,
-  extra: Record<string, number | string>,
-) {
-  console.info("[docs.bundle]", event, {
-    owner: input.owner,
-    repository: input.repository,
-    ref: input.ref ?? "HEAD",
-    path: input.path,
-    ...extra,
-  });
+  return buildDocBundleInternal(input);
 }

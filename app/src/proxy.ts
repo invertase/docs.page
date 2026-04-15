@@ -1,17 +1,44 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { getVanityOwnerFromHost, isDocsSitemapPath, isRawDocRequestPath } from "@/lib/docs-routing";
+import {
+  getVanityOwnerFromHost,
+  isDocsSitemapPath,
+  isPinnedCommitRef,
+  isRawDocRequestPath,
+} from "@/lib/docs-routing";
 
 export const DOCS_HTML_CACHE_CONTROL =
   "public, max-age=0, s-maxage=60, stale-while-revalidate=86400, stale-if-error=86400";
-export const BUNDLE_JSON_CACHE_CONTROL =
-  "public, max-age=0, s-maxage=60, stale-while-revalidate=604800, stale-if-error=604800";
 export const RAW_DOC_CACHE_CONTROL =
   "public, max-age=0, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400";
 export const SEARCH_CACHE_CONTROL =
   "public, max-age=0, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400";
 export const SITEMAP_CACHE_CONTROL =
   "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400, stale-if-error=86400";
+
+const SECONDS_PER_DAY = 24 * 60 * 60;
+const MUTABLE_BUNDLE_S_MAXAGE = 60;
+const MUTABLE_BUNDLE_STALE_WHILE_REVALIDATE = 7 * SECONDS_PER_DAY;
+const MUTABLE_BUNDLE_STALE_IF_ERROR = 5 * 60;
+const PINNED_BUNDLE_S_MAXAGE = 7 * SECONDS_PER_DAY;
+const PINNED_BUNDLE_STALE_WHILE_REVALIDATE = 7 * SECONDS_PER_DAY;
+const PINNED_BUNDLE_STALE_IF_ERROR = 7 * SECONDS_PER_DAY;
+
+export function getBundleJsonCacheControl(ref: string | null | undefined) {
+  if (isPinnedCommitRef(ref)) {
+    return buildCacheControl({
+      sMaxAge: PINNED_BUNDLE_S_MAXAGE,
+      staleWhileRevalidate: PINNED_BUNDLE_STALE_WHILE_REVALIDATE,
+      staleIfError: PINNED_BUNDLE_STALE_IF_ERROR,
+    });
+  }
+
+  return buildCacheControl({
+    sMaxAge: MUTABLE_BUNDLE_S_MAXAGE,
+    staleWhileRevalidate: MUTABLE_BUNDLE_STALE_WHILE_REVALIDATE,
+    staleIfError: MUTABLE_BUNDLE_STALE_IF_ERROR,
+  });
+}
 
 function isMcpPath(pathname: string) {
   return pathname === "/mcp" || pathname.endsWith("/mcp");
@@ -94,6 +121,20 @@ function withDocsCache(response: NextResponse, cacheControl: string | null) {
   }
 
   return response;
+}
+
+function buildCacheControl(args: {
+  sMaxAge: number;
+  staleWhileRevalidate: number;
+  staleIfError: number;
+}) {
+  return [
+    "public",
+    "max-age=0",
+    `s-maxage=${args.sMaxAge}`,
+    `stale-while-revalidate=${args.staleWhileRevalidate}`,
+    `stale-if-error=${args.staleIfError}`,
+  ].join(", ");
 }
 
 export function proxy(request: NextRequest) {
