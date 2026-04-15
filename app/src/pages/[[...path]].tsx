@@ -5,6 +5,12 @@ import {
   DocsBundleSection,
   DocsDebugShell,
 } from "@/components/docs-bundle-debug";
+import type {
+  DocsBundleApiErrorResponse,
+  DocsBundleApiResponse,
+  DocsBundleApiSuccessResponse,
+} from "@/lib/docs-bundle-api";
+import { buildDocsBundleApiPath } from "@/lib/docs-bundle-api";
 import { incomingHttpHeadersToWebHeaders } from "@/lib/incoming-http-headers";
 import {
   isRawDocRequestPath,
@@ -50,10 +56,6 @@ type HomePageProps = {
 };
 
 type PageProps = DocPageProps | ErrorPageProps | RawPageProps | HomePageProps;
-
-function toJsonSafe<T>(value: T): T {
-  return JSON.parse(JSON.stringify(value)) as T;
-}
 
 export const getServerSideProps = (async ({ params, req, res }) => {
   const requestStartedAt = Date.now();
@@ -186,116 +188,102 @@ export const getServerSideProps = (async ({ params, req, res }) => {
     path,
     headers: requestHeaders,
   });
-  const bundleImportStartedAt = Date.now();
-  const bundleModule = await import("@/server/docs/bundle");
-  const bundleImportElapsedMs = Date.now() - bundleImportStartedAt;
-  const { BundlerError } = bundleModule;
 
-  try {
-    logDocsPageEvent("doc-start", {
+  res.setHeader(
+    "Cache-Control",
+    DOCS_HTML_CACHE_CONTROL,
+  );
+
+  logDocsPageEvent("doc-start", {
+    requestPath,
+    owner: route.owner,
+    repository: route.repository,
+    ref: route.ref ?? "HEAD",
+    docPath: route.docPath || "index",
+    elapsedMs: Date.now() - requestStartedAt,
+  });
+
+  const bundleApiPath = buildDocsBundleApiPath(route);
+  const bundleFetchStartedAt = Date.now();
+  const bundleResponse = await fetch(getRequestOrigin(req, requestUrl) + bundleApiPath, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+    },
+  });
+  const bundlePayload = (await bundleResponse.json()) as DocsBundleApiResponse;
+  const bundleFetchElapsedMs = Date.now() - bundleFetchStartedAt;
+
+  logDocsPageEvent("doc-bundle-response", {
+    requestPath,
+    owner: route.owner,
+    repository: route.repository,
+    ref: route.ref ?? "HEAD",
+    docPath: route.docPath || "index",
+    bundleApiPath,
+    statusCode: bundleResponse.status,
+    bundleFetchElapsedMs,
+    elapsedMs: Date.now() - requestStartedAt,
+  });
+
+  if (!bundleResponse.ok || bundlePayload.code !== "OK") {
+    const errorResponse = bundlePayload as DocsBundleApiErrorResponse;
+    const error =
+      typeof errorResponse.error === "string"
+        ? { message: errorResponse.error }
+        : errorResponse.error;
+
+    logDocsPageEvent("doc-bundle-error", {
       requestPath,
       owner: route.owner,
       repository: route.repository,
       ref: route.ref ?? "HEAD",
       docPath: route.docPath || "index",
-      bundleImportElapsedMs,
-      elapsedMs: Date.now() - requestStartedAt,
-    });
-
-    const dependencyImportStartedAt = Date.now();
-    const [{ getDocBundle }, { checkRepositoryAgentConfig }] = await Promise.all([
-      Promise.resolve(bundleModule),
-      import("@/server/agent/repository"),
-    ]);
-    const dependencyImportElapsedMs = Date.now() - dependencyImportStartedAt;
-
-    logDocsPageEvent("doc-dependencies-ready", {
-      requestPath,
-      owner: route.owner,
-      repository: route.repository,
-      ref: route.ref ?? "HEAD",
-      docPath: route.docPath || "index",
-      dependencyImportElapsedMs,
-      elapsedMs: Date.now() - requestStartedAt,
-    });
-
-    const bundleStartedAt = Date.now();
-    const bundle = await getDocBundle({
-      owner: route.owner,
-      repository: route.repository,
-      ref: route.ref ?? undefined,
-      path: route.docPath || "index",
-    });
-    const bundleElapsedMs = Date.now() - bundleStartedAt;
-
-    const agentStartedAt = Date.now();
-    const hasAgent = bundle.config.agent
-      ? await checkRepositoryAgentConfig({
-          owner: route.owner,
-          repository: route.repository,
-          token: bundle.config.agent,
-        })
-      : false;
-    const agentElapsedMs = Date.now() - agentStartedAt;
-
-    res.setHeader(
-      "Cache-Control",
-      DOCS_HTML_CACHE_CONTROL,
-    );
-
-    logDocsPageEvent("doc-success", {
-      requestPath,
-      owner: route.owner,
-      repository: route.repository,
-      ref: route.ref ?? "HEAD",
-      docPath: route.docPath || "index",
-      bundleElapsedMs,
-      agentElapsedMs,
+      statusCode: bundleResponse.status,
+      bundleFetchElapsedMs,
       elapsedMs: Date.now() - requestStartedAt,
     });
 
     return {
       props: {
-        kind: "doc" as const,
-        route: {
-          owner: route.owner,
-          repository: route.repository,
-          ref: route.ref,
-          docPath: route.docPath,
-          requestMode: route.requestMode,
-          publicPathname: route.publicPathname,
-          canonicalPathname: route.canonicalPathname,
+        kind: "error" as const,
+        error: {
+          name: "BundleError",
+          message: error.message,
+          ...(error.source ? { source: error.source } : {}),
         },
-        hasAgent,
-        bundle: toJsonSafe(bundle),
-      } satisfies DocPageProps,
+      } satisfies ErrorPageProps,
     };
-  } catch (error) {
-    if (error instanceof BundlerError) {
-      logDocsPageEvent("doc-bundler-error", {
-        requestPath,
+  }
+
+  const successResponse = bundlePayload as DocsBundleApiSuccessResponse;
+
+  logDocsPageEvent("doc-success", {
+    requestPath,
+    owner: route.owner,
+    repository: route.repository,
+    ref: route.ref ?? "HEAD",
+    docPath: route.docPath || "index",
+    bundleFetchElapsedMs,
+    elapsedMs: Date.now() - requestStartedAt,
+  });
+
+  return {
+    props: {
+      kind: "doc" as const,
+      route: {
         owner: route.owner,
         repository: route.repository,
-        ref: route.ref ?? "HEAD",
-        docPath: route.docPath || "index",
-        statusCode: error.code,
-        elapsedMs: Date.now() - requestStartedAt,
-      });
-
-      return {
-        props: {
-          kind: "error" as const,
-          error: {
-            name: error.name,
-            message: error.message,
-            ...(error.source ? { source: error.source } : {}),
-          },
-        } satisfies ErrorPageProps,
-      };
-    }
-
-    throw error;
-  }
+        ref: route.ref,
+        docPath: route.docPath,
+        requestMode: route.requestMode,
+        publicPathname: route.publicPathname,
+        canonicalPathname: route.canonicalPathname,
+      },
+      hasAgent: successResponse.hasAgent,
+      bundle: successResponse.bundle,
+    } satisfies DocPageProps,
+  };
 }) satisfies GetServerSideProps<PageProps>;
 
 export default function RepoDocsCatchAllPage(
@@ -337,6 +325,25 @@ export default function RepoDocsCatchAllPage(
       <DocsBundleSection bundle={bundle} />
     </DocsDebugShell>
   );
+}
+
+function getRequestOrigin(
+  req: Parameters<GetServerSideProps>[0]["req"],
+  fallbackUrl: URL,
+) {
+  const port = process.env.PORT?.trim() || "3000";
+
+  if (process.env.NODE_ENV !== "production") {
+    return `http://localhost:${port}`;
+  }
+
+  const railwayPublicDomain = process.env.RAILWAY_PUBLIC_DOMAIN?.trim();
+
+  if (railwayPublicDomain) {
+    return `https://${railwayPublicDomain}`;
+  }
+
+  throw new Error("No request origin found");
 }
 
 function logDocsPageEvent(

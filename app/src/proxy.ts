@@ -4,6 +4,8 @@ import { getVanityOwnerFromHost, isDocsSitemapPath, isRawDocRequestPath } from "
 
 export const DOCS_HTML_CACHE_CONTROL =
   "public, max-age=0, s-maxage=60, stale-while-revalidate=86400, stale-if-error=86400";
+export const BUNDLE_JSON_CACHE_CONTROL =
+  "public, max-age=0, s-maxage=60, stale-while-revalidate=604800, stale-if-error=604800";
 export const RAW_DOC_CACHE_CONTROL =
   "public, max-age=0, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400";
 export const SEARCH_CACHE_CONTROL =
