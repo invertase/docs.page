@@ -56,14 +56,21 @@ function toJsonSafe<T>(value: T): T {
 }
 
 export const getServerSideProps = (async ({ params, req, res }) => {
+  const requestStartedAt = Date.now();
   const raw = params?.path;
   const chunks = raw
     ? Array.isArray(raw)
       ? raw
       : [raw]
     : [];
+  const requestPath = req.url ?? "/";
 
   if (chunks.length === 0) {
+    logDocsPageEvent("home", {
+      requestPath,
+      elapsedMs: Date.now() - requestStartedAt,
+    });
+
     return {
       props: {
         kind: "home" as const,
@@ -72,10 +79,20 @@ export const getServerSideProps = (async ({ params, req, res }) => {
   }
 
   if (chunks.length === 1) {
+    logDocsPageEvent("not-found-short-path", {
+      requestPath,
+      elapsedMs: Date.now() - requestStartedAt,
+    });
+
     return { notFound: true };
   }
 
   if (chunks[0]?.startsWith(".")) {
+    logDocsPageEvent("not-found-hidden-path", {
+      requestPath,
+      elapsedMs: Date.now() - requestStartedAt,
+    });
+
     return { notFound: true };
   }
 
@@ -85,6 +102,7 @@ export const getServerSideProps = (async ({ params, req, res }) => {
   const isRawRequest = isRawDocRequestPath(requestUrl.pathname);
 
   if (isRawRequest) {
+    const rawStartedAt = Date.now();
     const route = resolveRawDocsRoute({
       owner,
       repoSegment: repo,
@@ -97,6 +115,16 @@ export const getServerSideProps = (async ({ params, req, res }) => {
     ]);
 
     try {
+      logDocsPageEvent("raw-start", {
+        requestPath,
+        owner: route.owner,
+        repository: route.repository,
+        ref: route.ref ?? "HEAD",
+        docPath: route.docPath,
+        elapsedMs: Date.now() - requestStartedAt,
+      });
+
+      const sourceStartedAt = Date.now();
       const source = await getRawDocSource({
         owner: route.owner,
         repository: route.repository,
@@ -109,6 +137,16 @@ export const getServerSideProps = (async ({ params, req, res }) => {
       res.statusCode = 200;
       res.end(source.content);
 
+      logDocsPageEvent("raw-success", {
+        requestPath,
+        owner: route.owner,
+        repository: route.repository,
+        ref: route.ref ?? "HEAD",
+        docPath: route.docPath,
+        sourceElapsedMs: Date.now() - sourceStartedAt,
+        elapsedMs: Date.now() - rawStartedAt,
+      });
+
       return {
         props: {
           kind: "raw" as const,
@@ -120,6 +158,16 @@ export const getServerSideProps = (async ({ params, req, res }) => {
         res.setHeader("Cache-Control", RAW_DOC_CACHE_CONTROL);
         res.statusCode = error.code;
         res.end(error.message);
+
+        logDocsPageEvent("raw-bundler-error", {
+          requestPath,
+          owner: route.owner,
+          repository: route.repository,
+          ref: route.ref ?? "HEAD",
+          docPath: route.docPath,
+          statusCode: error.code,
+          elapsedMs: Date.now() - rawStartedAt,
+        });
 
         return {
           props: {
@@ -142,17 +190,30 @@ export const getServerSideProps = (async ({ params, req, res }) => {
   const { BundlerError } = bundleModule;
 
   try {
+    logDocsPageEvent("doc-start", {
+      requestPath,
+      owner: route.owner,
+      repository: route.repository,
+      ref: route.ref ?? "HEAD",
+      docPath: route.docPath || "index",
+      elapsedMs: Date.now() - requestStartedAt,
+    });
+
     const [{ getDocBundle }, { checkRepositoryAgentConfig }] = await Promise.all([
       Promise.resolve(bundleModule),
       import("@/server/agent/repository"),
     ]);
+
+    const bundleStartedAt = Date.now();
     const bundle = await getDocBundle({
       owner: route.owner,
       repository: route.repository,
       ref: route.ref ?? undefined,
       path: route.docPath || "index",
     });
+    const bundleElapsedMs = Date.now() - bundleStartedAt;
 
+    const agentStartedAt = Date.now();
     const hasAgent = bundle.config.agent
       ? await checkRepositoryAgentConfig({
           owner: route.owner,
@@ -160,11 +221,23 @@ export const getServerSideProps = (async ({ params, req, res }) => {
           token: bundle.config.agent,
         })
       : false;
+    const agentElapsedMs = Date.now() - agentStartedAt;
 
     res.setHeader(
       "Cache-Control",
       DOCS_HTML_CACHE_CONTROL,
     );
+
+    logDocsPageEvent("doc-success", {
+      requestPath,
+      owner: route.owner,
+      repository: route.repository,
+      ref: route.ref ?? "HEAD",
+      docPath: route.docPath || "index",
+      bundleElapsedMs,
+      agentElapsedMs,
+      elapsedMs: Date.now() - requestStartedAt,
+    });
 
     return {
       props: {
@@ -184,6 +257,16 @@ export const getServerSideProps = (async ({ params, req, res }) => {
     };
   } catch (error) {
     if (error instanceof BundlerError) {
+      logDocsPageEvent("doc-bundler-error", {
+        requestPath,
+        owner: route.owner,
+        repository: route.repository,
+        ref: route.ref ?? "HEAD",
+        docPath: route.docPath || "index",
+        statusCode: error.code,
+        elapsedMs: Date.now() - requestStartedAt,
+      });
+
       return {
         props: {
           kind: "error" as const,
@@ -239,4 +322,11 @@ export default function RepoDocsCatchAllPage(
       <DocsBundleSection bundle={bundle} />
     </DocsDebugShell>
   );
+}
+
+function logDocsPageEvent(
+  event: string,
+  extra: Record<string, number | string>,
+) {
+  console.info("[docs.page]", event, extra);
 }

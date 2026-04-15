@@ -49,6 +49,7 @@ async function buildDocBundleInternal(
 export async function getDocBundle(
   args: GetDocBundleArgs,
 ): Promise<BundlerOutput> {
+  const startedAt = Date.now();
   const input = QuerySchema.parse(args);
   const cache = await getCache();
   const cacheKey = getDocBundleCacheKey(input);
@@ -56,11 +57,24 @@ export async function getDocBundle(
   const cached = await cache?.get<BundlerOutput>(cacheKey);
 
   if (cached?.value) {
+    const ageMs = Date.now() - cached.createdAt;
+
     if (isFresh(cached.createdAt, cachePolicy.freshForSeconds)) {
+      logBundleEvent("cache-hit", input, {
+        cacheKey,
+        ageMs,
+        elapsedMs: Date.now() - startedAt,
+      });
       return cached.value;
     }
 
     // Serve stale immediately and let one request refresh in the background.
+    logBundleEvent("cache-stale", input, {
+      cacheKey,
+      ageMs,
+      elapsedMs: Date.now() - startedAt,
+    });
+
     void refreshDocBundleInBackground({
       cacheKey,
       cachePolicy,
@@ -70,7 +84,15 @@ export async function getDocBundle(
     return cached.value;
   }
 
+  logBundleEvent("cache-miss", input, {
+    cacheKey,
+    elapsedMs: Date.now() - startedAt,
+  });
+
+  const buildStartedAt = Date.now();
   const bundle = await buildDocBundleInternal(input);
+  const buildElapsedMs = Date.now() - buildStartedAt;
+
   await cache?.put(
     cacheKey,
     {
@@ -79,6 +101,12 @@ export async function getDocBundle(
     },
     cachePolicy.ttlSeconds,
   );
+
+  logBundleEvent("cache-store", input, {
+    cacheKey,
+    buildElapsedMs,
+    elapsedMs: Date.now() - startedAt,
+  });
 
   return bundle;
 }
@@ -123,9 +151,14 @@ async function refreshDocBundleInBackground(args: {
   cachePolicy: BundleCachePolicy;
   input: ParsedDocBundleArgs;
 }) {
+  const startedAt = Date.now();
   const cache = await getCache();
 
   if (!cache) {
+    logBundleEvent("refresh-skipped-no-cache", args.input, {
+      cacheKey: args.cacheKey,
+      elapsedMs: Date.now() - startedAt,
+    });
     return;
   }
 
@@ -133,10 +166,21 @@ async function refreshDocBundleInBackground(args: {
   const lockAcquired = await cache.acquireLock(lockKey, REFRESH_LOCK_TTL_SECONDS);
 
   if (!lockAcquired) {
+    logBundleEvent("refresh-skipped-locked", args.input, {
+      cacheKey: args.cacheKey,
+      elapsedMs: Date.now() - startedAt,
+    });
     return;
   }
 
+  logBundleEvent("refresh-start", args.input, {
+    cacheKey: args.cacheKey,
+    elapsedMs: Date.now() - startedAt,
+  });
+
   void (async () => {
+    const refreshStartedAt = Date.now();
+
     try {
       const bundle = await buildDocBundleInternal(args.input);
       await cache.put(
@@ -147,8 +191,31 @@ async function refreshDocBundleInBackground(args: {
         },
         args.cachePolicy.ttlSeconds,
       );
+
+      logBundleEvent("refresh-success", args.input, {
+        cacheKey: args.cacheKey,
+        elapsedMs: Date.now() - refreshStartedAt,
+      });
     } catch (error) {
       console.error("Failed to refresh doc bundle cache.", error);
+      logBundleEvent("refresh-error", args.input, {
+        cacheKey: args.cacheKey,
+        elapsedMs: Date.now() - refreshStartedAt,
+      });
     }
   })();
+}
+
+function logBundleEvent(
+  event: string,
+  input: ParsedDocBundleArgs,
+  extra: Record<string, number | string>,
+) {
+  console.info("[docs.bundle]", event, {
+    owner: input.owner,
+    repository: input.repository,
+    ref: input.ref ?? "HEAD",
+    path: input.path,
+    ...extra,
+  });
 }
