@@ -2,6 +2,7 @@ import type { NextApiHandler } from "next";
 
 import { incomingHttpHeadersToWebHeaders } from "@/lib/incoming-http-headers";
 import { resolveDocsRoute } from "@/lib/docs-routing";
+import { SEARCH_CACHE_CONTROL } from "@/proxy";
 
 const handler: NextApiHandler = async (req, res) => {
   if (req.method !== "GET") {
@@ -53,7 +54,7 @@ const handler: NextApiHandler = async (req, res) => {
         );
 
   res.setHeader("Content-Type", "application/json; charset=utf-8");
-  res.setHeader("Cache-Control", "public, s-maxage=60, stale-while-revalidate=300");
+  res.setHeader("Cache-Control", SEARCH_CACHE_CONTROL);
 
   if (docList.truncated) {
     res.setHeader("x-docs-page-tree-truncated", "1");

@@ -2,7 +2,14 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import { getVanityOwnerFromHost, isDocsSitemapPath, isRawDocRequestPath } from "@/lib/docs-routing";
 
-const DOCS_CACHE_CONTROL = "public, s-maxage=1, stale-while-revalidate=59";
+export const DOCS_HTML_CACHE_CONTROL =
+  "public, max-age=0, s-maxage=60, stale-while-revalidate=86400, stale-if-error=86400";
+export const RAW_DOC_CACHE_CONTROL =
+  "public, max-age=0, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400";
+export const SEARCH_CACHE_CONTROL =
+  "public, max-age=0, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400";
+export const SITEMAP_CACHE_CONTROL =
+  "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400, stale-if-error=86400";
 
 function isMcpPath(pathname: string) {
   return pathname === "/mcp" || pathname.endsWith("/mcp");
@@ -30,6 +37,10 @@ function getPathSegments(pathname: string) {
 }
 
 function shouldApplyDocsCache(request: NextRequest, vanityOwner: string | null) {
+  if (!getDocsCacheControl(request.nextUrl.pathname)) {
+    return false;
+  }
+
   if (isBypassPath(request.nextUrl.pathname)) {
     return false;
   }
@@ -49,9 +60,35 @@ function shouldApplyDocsCache(request: NextRequest, vanityOwner: string | null) 
   return getPathSegments(request.nextUrl.pathname).length >= 2;
 }
 
-function withDocsCache(response: NextResponse, enabled: boolean) {
-  if (enabled) {
-    response.headers.set("Cache-Control", DOCS_CACHE_CONTROL);
+function getDocsCacheControl(pathname: string) {
+  if (isMcpPath(pathname)) {
+    return null;
+  }
+
+  if (isRawDocRequestPath(pathname)) {
+    return RAW_DOC_CACHE_CONTROL;
+  }
+
+  if (isDocsSearchPath(pathname)) {
+    return SEARCH_CACHE_CONTROL;
+  }
+
+  if (isDocsSitemapPath(pathname)) {
+    return SITEMAP_CACHE_CONTROL;
+  }
+
+  const segments = getPathSegments(pathname);
+
+  if (segments.length >= 2) {
+    return DOCS_HTML_CACHE_CONTROL;
+  }
+
+  return null;
+}
+
+function withDocsCache(response: NextResponse, cacheControl: string | null) {
+  if (cacheControl) {
+    response.headers.set("Cache-Control", cacheControl);
   }
 
   return response;
@@ -59,23 +96,25 @@ function withDocsCache(response: NextResponse, enabled: boolean) {
 
 export function proxy(request: NextRequest) {
   const vanityOwner = getVanityOwnerFromHost(request.nextUrl.hostname);
-  const shouldCache = shouldApplyDocsCache(request, vanityOwner);
+  const cacheControl = shouldApplyDocsCache(request, vanityOwner)
+    ? getDocsCacheControl(request.nextUrl.pathname)
+    : null;
 
   if (
     request.headers.get("x-docs-page-vanity-domain") ||
     request.headers.get("x-docs-page-custom-domain")
   ) {
-    return withDocsCache(NextResponse.next(), shouldCache);
+    return withDocsCache(NextResponse.next(), cacheControl);
   }
 
   if (!vanityOwner || isBypassPath(request.nextUrl.pathname)) {
-    return withDocsCache(NextResponse.next(), shouldCache);
+    return withDocsCache(NextResponse.next(), cacheControl);
   }
 
   const firstSegment = request.nextUrl.pathname.split("/").filter(Boolean).at(0);
 
   if (firstSegment === vanityOwner) {
-    return withDocsCache(NextResponse.next(), shouldCache);
+    return withDocsCache(NextResponse.next(), cacheControl);
   }
 
   const rewrittenUrl = request.nextUrl.clone();
@@ -90,6 +129,6 @@ export function proxy(request: NextRequest) {
         headers: requestHeaders,
       },
     }),
-    true
+    getDocsCacheControl(request.nextUrl.pathname)
   );
 }

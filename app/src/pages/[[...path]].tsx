@@ -12,8 +12,10 @@ import {
   resolveRawDocsRoute,
   type DocsRequestMode,
 } from "@/lib/docs-routing";
-
-const DOCS_CACHE_CONTROL = "public, s-maxage=1, stale-while-revalidate=59";
+import {
+  DOCS_HTML_CACHE_CONTROL,
+  RAW_DOC_CACHE_CONTROL,
+} from "@/proxy";
 
 type DocPageProps = {
   kind: "doc";
@@ -103,7 +105,7 @@ export const getServerSideProps = (async ({ params, req, res }) => {
       });
 
       res.setHeader("Content-Type", "text/markdown; charset=utf-8");
-      res.setHeader("Cache-Control", DOCS_CACHE_CONTROL);
+      res.setHeader("Cache-Control", RAW_DOC_CACHE_CONTROL);
       res.statusCode = 200;
       res.end(source.content);
 
@@ -115,7 +117,7 @@ export const getServerSideProps = (async ({ params, req, res }) => {
     } catch (error) {
       if (error instanceof BundlerError) {
         res.setHeader("Content-Type", "text/plain; charset=utf-8");
-        res.setHeader("Cache-Control", DOCS_CACHE_CONTROL);
+        res.setHeader("Cache-Control", RAW_DOC_CACHE_CONTROL);
         res.statusCode = error.code;
         res.end(error.message);
 
@@ -161,7 +163,7 @@ export const getServerSideProps = (async ({ params, req, res }) => {
 
     res.setHeader(
       "Cache-Control",
-      DOCS_CACHE_CONTROL,
+      DOCS_HTML_CACHE_CONTROL,
     );
 
     return {
