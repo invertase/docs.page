@@ -1,4 +1,3 @@
-import { decryptAgentPayload } from "@/server/agent/encryption";
 import { getAgentStore } from "@/server/agent/storage";
 
 export async function checkRepositoryAgentConfig(args: {

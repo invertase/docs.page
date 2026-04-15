@@ -1,6 +1,6 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { createClient } from "redis";
+import { getRedisClient } from "@/server/redis";
 import type { EncryptedAgentPayload } from "./encryption";
 
 export interface AgentRecord {
@@ -18,11 +18,6 @@ interface AgentStore {
 const FILE_STORAGE_DIR = path.join(process.cwd(), ".db", "agents");
 const REDIS_KEY_PREFIX = "agent:";
 
-type RedisClient = ReturnType<typeof createClient>;
-
-let redisClient: RedisClient | null = null;
-let redisConnectionPromise: Promise<RedisClient> | null = null;
-
 export function getAgentStore(): AgentStore {
   if (process.env.REDIS_URL?.trim()) {
     return {
@@ -37,33 +32,13 @@ export function getAgentStore(): AgentStore {
   };
 }
 
-async function getRedisClient() {
-  if (redisClient) {
-    if (redisConnectionPromise) {
-      await redisConnectionPromise;
-    }
+async function getRedisRecordByRepo(repo: string) {
+  const client = await getRedisClient();
 
-    return redisClient;
-  }
-
-  const url = process.env.REDIS_URL?.trim();
-
-  if (!url) {
+  if (!client) {
     throw new Error("REDIS_URL is not configured.");
   }
 
-  redisClient = createClient({
-    url,
-  });
-
-  redisConnectionPromise = redisClient.connect();
-  await redisConnectionPromise;
-
-  return redisClient;
-}
-
-async function getRedisRecordByRepo(repo: string) {
-  const client = await getRedisClient();
   const value = await client.get(getRedisKey(repo));
 
   if (!value) {
@@ -81,6 +56,11 @@ async function getRedisRecordByRepo(repo: string) {
 
 async function setRedisRecord(record: AgentRecord) {
   const client = await getRedisClient();
+
+  if (!client) {
+    throw new Error("REDIS_URL is not configured.");
+  }
+
   await client.set(getRedisKey(record.repo), JSON.stringify(record));
 }
 
