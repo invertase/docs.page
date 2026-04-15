@@ -186,7 +186,9 @@ export const getServerSideProps = (async ({ params, req, res }) => {
     path,
     headers: requestHeaders,
   });
+  const bundleImportStartedAt = Date.now();
   const bundleModule = await import("@/server/docs/bundle");
+  const bundleImportElapsedMs = Date.now() - bundleImportStartedAt;
   const { BundlerError } = bundleModule;
 
   try {
@@ -196,13 +198,26 @@ export const getServerSideProps = (async ({ params, req, res }) => {
       repository: route.repository,
       ref: route.ref ?? "HEAD",
       docPath: route.docPath || "index",
+      bundleImportElapsedMs,
       elapsedMs: Date.now() - requestStartedAt,
     });
 
+    const dependencyImportStartedAt = Date.now();
     const [{ getDocBundle }, { checkRepositoryAgentConfig }] = await Promise.all([
       Promise.resolve(bundleModule),
       import("@/server/agent/repository"),
     ]);
+    const dependencyImportElapsedMs = Date.now() - dependencyImportStartedAt;
+
+    logDocsPageEvent("doc-dependencies-ready", {
+      requestPath,
+      owner: route.owner,
+      repository: route.repository,
+      ref: route.ref ?? "HEAD",
+      docPath: route.docPath || "index",
+      dependencyImportElapsedMs,
+      elapsedMs: Date.now() - requestStartedAt,
+    });
 
     const bundleStartedAt = Date.now();
     const bundle = await getDocBundle({

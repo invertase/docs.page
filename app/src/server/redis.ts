@@ -17,19 +17,37 @@ let redisClient: RedisClient | null = null;
 let redisConnectionPromise: Promise<RedisClient> | null = null;
 
 export async function getCache(): Promise<AppCache | null> {
+  const startedAt = Date.now();
   const client = await getRedisClient();
 
   if (!client) {
+    logRedisEvent("cache-disabled", {
+      elapsedMs: Date.now() - startedAt,
+    });
     return null;
   }
 
+  logRedisEvent("cache-ready", {
+    elapsedMs: Date.now() - startedAt,
+  });
+
   return {
     get: async <T>(key: string): Promise<CacheEntry<T> | null> => {
+      const getStartedAt = Date.now();
       const value = await client.get(key);
 
       if (!value) {
+        logRedisEvent("get-miss", {
+          key,
+          elapsedMs: Date.now() - getStartedAt,
+        });
         return null;
       }
+
+      logRedisEvent("get-hit", {
+        key,
+        elapsedMs: Date.now() - getStartedAt,
+      });
 
       return parseCacheEntry<T>(JSON.parse(value) as unknown);
     },
@@ -38,14 +56,28 @@ export async function getCache(): Promise<AppCache | null> {
       entry: CacheEntry<T>,
       ttlSeconds: number,
     ): Promise<void> => {
+      const setStartedAt = Date.now();
       await client.set(key, JSON.stringify(entry), {
         EX: ttlSeconds,
       });
+
+      logRedisEvent("set", {
+        key,
+        ttlSeconds,
+        elapsedMs: Date.now() - setStartedAt,
+      });
     },
     acquireLock: async (key: string, ttlSeconds: number): Promise<boolean> => {
+      const lockStartedAt = Date.now();
       const result = await client.set(key, String(Date.now()), {
         EX: ttlSeconds,
         NX: true,
+      });
+
+      logRedisEvent(result === "OK" ? "lock-acquired" : "lock-skipped", {
+        key,
+        ttlSeconds,
+        elapsedMs: Date.now() - lockStartedAt,
       });
 
       return result === "OK";
@@ -54,9 +86,13 @@ export async function getCache(): Promise<AppCache | null> {
 }
 
 export async function getRedisClient(): Promise<RedisClient | null> {
+  const startedAt = Date.now();
   const url = process.env.REDIS_URL?.trim();
 
   if (!url) {
+    logRedisEvent("client-disabled", {
+      elapsedMs: Date.now() - startedAt,
+    });
     return null;
   }
 
@@ -65,6 +101,10 @@ export async function getRedisClient(): Promise<RedisClient | null> {
       await redisConnectionPromise;
     }
 
+    logRedisEvent("client-reuse", {
+      elapsedMs: Date.now() - startedAt,
+    });
+
     return redisClient;
   }
 
@@ -72,10 +112,21 @@ export async function getRedisClient(): Promise<RedisClient | null> {
   redisConnectionPromise = redisClient.connect().then(() => redisClient as RedisClient);
 
   try {
-    return await redisConnectionPromise;
+    const client = await redisConnectionPromise;
+
+    logRedisEvent("client-connect", {
+      elapsedMs: Date.now() - startedAt,
+    });
+
+    return client;
   } catch (error) {
     redisClient = null;
     redisConnectionPromise = null;
+    logRedisEvent("client-connect-error", {
+      elapsedMs: Date.now() - startedAt,
+      error:
+        error instanceof Error ? error.message : "Unknown Redis connection error",
+    });
     throw error;
   }
 }
@@ -95,4 +146,11 @@ function parseCacheEntry<T>(value: unknown): CacheEntry<T> | null {
     createdAt: value.createdAt,
     value: value.value as T,
   };
+}
+
+function logRedisEvent(
+  event: string,
+  extra: Record<string, number | string>,
+) {
+  console.info("[docs.redis]", event, extra);
 }
