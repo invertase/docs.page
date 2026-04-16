@@ -218,9 +218,20 @@ export default function RepoDocsCatchAllPage(
   }
 
   return (
-    <DocPageContext.Provider value={props}>
-      {props.kind === "debug" ? <DocsDebug /> : <Docs />}
-    </DocPageContext.Provider>
+    <>
+      <DocPageContext.Provider value={props}>
+        {props.kind === "debug" ? <DocsDebug /> : <Docs />}
+      </DocPageContext.Provider>
+      {props.bundle.config.theme.preset ? (
+        <style key="theme-preset">{`
+          ${props.bundle.config.theme.preset.css}
+          *, *::before, *::after { 
+            --font-sans: ${props.bundle.config.theme.preset.build.fontSans} !important;
+            --font-heading: ${props.bundle.config.theme.preset.build.fontHeading} !important;
+          }
+        `.trim()}</style>
+      ) : null}
+    </>
   );
 }
 
