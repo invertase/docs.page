@@ -37,13 +37,23 @@ function buildSurrogateControl(args: {
   ].join(", ");
 }
 
+const SEARCH_JSON_BROWSER_MAX_AGE_SECONDS = 5 * 60;
+
 function buildDocsCacheHeaders(args: {
   edgeMaxAgeSeconds: number;
   staleWhileRevalidate: number;
   staleIfError: number;
+  /** When set, browsers may reuse the response without revalidating for this many seconds (e.g. local search index). */
+  browserMaxAgeSeconds?: number;
 }): DocsCacheHeaders {
+  const browserMaxAge = args.browserMaxAgeSeconds ?? 0;
+  const cacheControl =
+    browserMaxAge > 0
+      ? `public, max-age=${browserMaxAge}`
+      : BROWSER_CACHE_CONTROL;
+
   return {
-    cacheControl: BROWSER_CACHE_CONTROL,
+    cacheControl,
     surrogateControl: buildSurrogateControl({
       edgeMaxAgeSeconds: args.edgeMaxAgeSeconds,
       staleWhileRevalidate: args.staleWhileRevalidate,
@@ -62,7 +72,16 @@ export const RAW_DOC_CACHE_HEADERS = buildDocsCacheHeaders({
   staleWhileRevalidate: CDN_STALE_SECONDS,
   staleIfError: CDN_STALE_SECONDS,
 });
+/** `search.json`: short browser TTL so SPAs can reuse the FlexSearch payload during a session without extra round-trips. */
 export const SEARCH_CACHE_HEADERS = buildDocsCacheHeaders({
+  edgeMaxAgeSeconds: 300,
+  staleWhileRevalidate: CDN_STALE_SECONDS,
+  staleIfError: CDN_STALE_SECONDS,
+  browserMaxAgeSeconds: SEARCH_JSON_BROWSER_MAX_AGE_SECONDS,
+});
+
+/** Same edge policy as search; keep `max-age=0` for clients (llms.txt consumers often want a fresh aggregate). */
+export const LLMS_TXT_CACHE_HEADERS = buildDocsCacheHeaders({
   edgeMaxAgeSeconds: 300,
   staleWhileRevalidate: CDN_STALE_SECONDS,
   staleIfError: CDN_STALE_SECONDS,
@@ -167,7 +186,7 @@ function getDocsCacheHeaders(pathname: string): DocsCacheHeaders | null {
   }
 
   if (isDocsLlmsTxtPath(pathname)) {
-    return SEARCH_CACHE_HEADERS;
+    return LLMS_TXT_CACHE_HEADERS;
   }
 
   if (isDocsSitemapPath(pathname)) {
