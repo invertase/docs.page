@@ -83,6 +83,7 @@ export const V1ConfigSchema = z
         showGitHubCard: true,
       },
       theme: {
+        preset: undefined,
         defaultTheme: undefined,
         primary: v1.theme,
         primaryLight: undefined,
