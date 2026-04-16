@@ -12,62 +12,95 @@ const SECONDS_PER_DAY = 24 * 60 * 60;
 /** Fastly edge: allow stale serve + async revalidate / error fallback for up to 7 days after freshness TTL. */
 const CDN_STALE_SECONDS = 7 * SECONDS_PER_DAY;
 
-function buildCacheControl(args: {
-  sMaxAge: number;
+/**
+ * Browser-oriented caching only. Stale-while-revalidate / long TTLs for the CDN live in
+ * {@link DocsCacheHeaders.surrogateControl} (Surrogate-Control), which Fastly applies at the edge
+ * and strips before the response reaches clients.
+ */
+const BROWSER_CACHE_CONTROL = "public, max-age=0";
+
+export type DocsCacheHeaders = {
+  cacheControl: string;
+  surrogateControl: string;
+};
+
+/** Fastly: same directive shapes as Cache-Control, but use `max-age` (not `s-maxage`) for edge TTL. */
+function buildSurrogateControl(args: {
+  edgeMaxAgeSeconds: number;
   staleWhileRevalidate: number;
   staleIfError: number;
 }) {
   return [
-    "public",
-    "max-age=0",
-    `s-maxage=${args.sMaxAge}`,
+    `max-age=${args.edgeMaxAgeSeconds}`,
     `stale-while-revalidate=${args.staleWhileRevalidate}`,
     `stale-if-error=${args.staleIfError}`,
   ].join(", ");
 }
 
-export const DOCS_HTML_CACHE_CONTROL = buildCacheControl({
-  sMaxAge: 60,
+function buildDocsCacheHeaders(args: {
+  edgeMaxAgeSeconds: number;
+  staleWhileRevalidate: number;
+  staleIfError: number;
+}): DocsCacheHeaders {
+  return {
+    cacheControl: BROWSER_CACHE_CONTROL,
+    surrogateControl: buildSurrogateControl({
+      edgeMaxAgeSeconds: args.edgeMaxAgeSeconds,
+      staleWhileRevalidate: args.staleWhileRevalidate,
+      staleIfError: args.staleIfError,
+    }),
+  };
+}
+
+export const DOCS_HTML_CACHE_HEADERS = buildDocsCacheHeaders({
+  edgeMaxAgeSeconds: 60,
   staleWhileRevalidate: CDN_STALE_SECONDS,
   staleIfError: CDN_STALE_SECONDS,
 });
-export const RAW_DOC_CACHE_CONTROL = buildCacheControl({
-  sMaxAge: 300,
+export const RAW_DOC_CACHE_HEADERS = buildDocsCacheHeaders({
+  edgeMaxAgeSeconds: 300,
   staleWhileRevalidate: CDN_STALE_SECONDS,
   staleIfError: CDN_STALE_SECONDS,
 });
-export const SEARCH_CACHE_CONTROL = buildCacheControl({
-  sMaxAge: 300,
+export const SEARCH_CACHE_HEADERS = buildDocsCacheHeaders({
+  edgeMaxAgeSeconds: 300,
   staleWhileRevalidate: CDN_STALE_SECONDS,
   staleIfError: CDN_STALE_SECONDS,
 });
-export const SITEMAP_CACHE_CONTROL = buildCacheControl({
-  sMaxAge: 3600,
+export const SITEMAP_CACHE_HEADERS = buildDocsCacheHeaders({
+  edgeMaxAgeSeconds: 3600,
   staleWhileRevalidate: CDN_STALE_SECONDS,
   staleIfError: CDN_STALE_SECONDS,
 });
 
-const MUTABLE_BUNDLE_S_MAXAGE = 60;
-const MUTABLE_BUNDLE_STALE_WHILE_REVALIDATE = CDN_STALE_SECONDS;
-const MUTABLE_BUNDLE_STALE_IF_ERROR = CDN_STALE_SECONDS;
-const PINNED_BUNDLE_S_MAXAGE = CDN_STALE_SECONDS;
-const PINNED_BUNDLE_STALE_WHILE_REVALIDATE = CDN_STALE_SECONDS;
-const PINNED_BUNDLE_STALE_IF_ERROR = CDN_STALE_SECONDS;
+const MUTABLE_BUNDLE_EDGE_MAX_AGE = 60;
+const PINNED_BUNDLE_EDGE_MAX_AGE = CDN_STALE_SECONDS;
 
-export function getBundleJsonCacheControl(ref: string | null | undefined) {
+export function getBundleJsonCacheHeaders(
+  ref: string | null | undefined,
+): DocsCacheHeaders {
   if (isPinnedCommitRef(ref)) {
-    return buildCacheControl({
-      sMaxAge: PINNED_BUNDLE_S_MAXAGE,
-      staleWhileRevalidate: PINNED_BUNDLE_STALE_WHILE_REVALIDATE,
-      staleIfError: PINNED_BUNDLE_STALE_IF_ERROR,
+    return buildDocsCacheHeaders({
+      edgeMaxAgeSeconds: PINNED_BUNDLE_EDGE_MAX_AGE,
+      staleWhileRevalidate: CDN_STALE_SECONDS,
+      staleIfError: CDN_STALE_SECONDS,
     });
   }
 
-  return buildCacheControl({
-    sMaxAge: MUTABLE_BUNDLE_S_MAXAGE,
-    staleWhileRevalidate: MUTABLE_BUNDLE_STALE_WHILE_REVALIDATE,
-    staleIfError: MUTABLE_BUNDLE_STALE_IF_ERROR,
+  return buildDocsCacheHeaders({
+    edgeMaxAgeSeconds: MUTABLE_BUNDLE_EDGE_MAX_AGE,
+    staleWhileRevalidate: CDN_STALE_SECONDS,
+    staleIfError: CDN_STALE_SECONDS,
   });
+}
+
+/** Apply Cache-Control + Surrogate-Control (Fastly edge policy). */
+export function setDocsCacheHeaders(
+  res: { setHeader(name: string, value: string): void },
+  headers: DocsCacheHeaders,
+): void {
+  res.setHeader("Cache-Control", headers.cacheControl);
+  res.setHeader("Surrogate-Control", headers.surrogateControl);
 }
 
 function isMcpPath(pathname: string) {
@@ -97,7 +130,7 @@ function getPathSegments(pathname: string) {
 }
 
 function shouldApplyDocsCache(request: NextRequest, vanityOwner: string | null) {
-  if (!getDocsCacheControl(request.nextUrl.pathname)) {
+  if (!getDocsCacheHeaders(request.nextUrl.pathname)) {
     return false;
   }
 
@@ -120,39 +153,40 @@ function shouldApplyDocsCache(request: NextRequest, vanityOwner: string | null) 
   return getPathSegments(request.nextUrl.pathname).length >= 2;
 }
 
-function getDocsCacheControl(pathname: string) {
+function getDocsCacheHeaders(pathname: string): DocsCacheHeaders | null {
   if (isMcpPath(pathname)) {
     return null;
   }
 
   if (isRawDocRequestPath(pathname)) {
-    return RAW_DOC_CACHE_CONTROL;
+    return RAW_DOC_CACHE_HEADERS;
   }
 
   if (isDocsSearchPath(pathname)) {
-    return SEARCH_CACHE_CONTROL;
+    return SEARCH_CACHE_HEADERS;
   }
 
   if (isDocsLlmsTxtPath(pathname)) {
-    return SEARCH_CACHE_CONTROL;
+    return SEARCH_CACHE_HEADERS;
   }
 
   if (isDocsSitemapPath(pathname)) {
-    return SITEMAP_CACHE_CONTROL;
+    return SITEMAP_CACHE_HEADERS;
   }
 
   const segments = getPathSegments(pathname);
 
   if (segments.length >= 2) {
-    return DOCS_HTML_CACHE_CONTROL;
+    return DOCS_HTML_CACHE_HEADERS;
   }
 
   return null;
 }
 
-function withDocsCache(response: NextResponse, cacheControl: string | null) {
-  if (cacheControl) {
-    response.headers.set("Cache-Control", cacheControl);
+function withDocsCache(response: NextResponse, headers: DocsCacheHeaders | null) {
+  if (headers) {
+    response.headers.set("Cache-Control", headers.cacheControl);
+    response.headers.set("Surrogate-Control", headers.surrogateControl);
   }
 
   return response;
@@ -160,25 +194,25 @@ function withDocsCache(response: NextResponse, cacheControl: string | null) {
 
 export function proxy(request: NextRequest) {
   const vanityOwner = getVanityOwnerFromHost(request.nextUrl.hostname);
-  const cacheControl = shouldApplyDocsCache(request, vanityOwner)
-    ? getDocsCacheControl(request.nextUrl.pathname)
+  const cacheHeaders = shouldApplyDocsCache(request, vanityOwner)
+    ? getDocsCacheHeaders(request.nextUrl.pathname)
     : null;
 
   if (
     request.headers.get("x-docs-page-vanity-domain") ||
     request.headers.get("x-docs-page-custom-domain")
   ) {
-    return withDocsCache(NextResponse.next(), cacheControl);
+    return withDocsCache(NextResponse.next(), cacheHeaders);
   }
 
   if (!vanityOwner || isBypassPath(request.nextUrl.pathname)) {
-    return withDocsCache(NextResponse.next(), cacheControl);
+    return withDocsCache(NextResponse.next(), cacheHeaders);
   }
 
   const firstSegment = request.nextUrl.pathname.split("/").filter(Boolean).at(0);
 
   if (firstSegment === vanityOwner) {
-    return withDocsCache(NextResponse.next(), cacheControl);
+    return withDocsCache(NextResponse.next(), cacheHeaders);
   }
 
   const rewrittenUrl = request.nextUrl.clone();
@@ -193,6 +227,6 @@ export function proxy(request: NextRequest) {
         headers: requestHeaders,
       },
     }),
-    getDocsCacheControl(request.nextUrl.pathname)
+    getDocsCacheHeaders(request.nextUrl.pathname),
   );
 }

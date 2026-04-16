@@ -47,6 +47,11 @@ export function isDocsSitemapPath(pathname: string) {
   return pathname === "/sitemap.xml" || pathname.endsWith("/sitemap.xml");
 }
 
+/** Per-repo LLM-oriented doc index at `/{owner}/{repo}/llms.txt` (or vanity / custom-domain equivalents). */
+export function isDocsLlmsTxtPath(pathname: string) {
+  return pathname === "/llms.txt" || pathname.endsWith("/llms.txt");
+}
+
 export function stripRawDocRequestSuffix(path: string) {
   return path.replace(RAW_DOC_SUFFIX_REGEX, "");
 }

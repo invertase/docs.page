@@ -1,4 +1,5 @@
 import type { IncomingHttpHeaders, IncomingMessage } from "node:http";
+import { Accept } from "@mjackson/headers";
 
 /** Build a Web `Headers` from Node request headers (for `resolveDocsRoute` and similar). */
 export function incomingHttpHeadersToWebHeaders(
@@ -34,4 +35,32 @@ export function getAbsoluteRequestUrl(
   request: Pick<IncomingMessage, "headers" | "url">,
 ): string {
   return new URL(request.url ?? "/", getRequestOrigin(request)).toString();
+}
+
+/**
+ * Content negotiation for LLM/crawler clients: prefer raw markdown when
+ * `text/markdown` is at least as preferred as HTML in the Accept header.
+ * Uses `Accept#getWeight` for spec-correct quality and wildcard matching (RFC 7231).
+ */
+export function acceptPrefersMarkdown(accept: string | undefined): boolean {
+  if (!accept?.trim()) {
+    return false;
+  }
+
+  const header = new Accept(accept);
+  const markdown = Math.max(
+    header.getWeight("text/markdown"),
+    header.getWeight("text/x-markdown"),
+  );
+
+  if (markdown === 0) {
+    return false;
+  }
+
+  const html = Math.max(
+    header.getWeight("text/html"),
+    header.getWeight("application/xhtml+xml"),
+  );
+
+  return markdown >= html;
 }

@@ -6,7 +6,7 @@ import {
   incomingHttpHeadersToWebHeaders,
 } from "@/lib/incoming-http-headers";
 import { resolveDocsRoute } from "@/lib/docs-routing";
-import { SEARCH_CACHE_CONTROL } from "@/proxy";
+import { setDocsCacheHeaders, SEARCH_CACHE_HEADERS } from "@/proxy";
 import { defaultConfig, parseConfig } from "@/server/config";
 import { getGitHubContents, getGitHubFileSourcesBatch } from "@/server/github/contents";
 import { listGitHubDocFiles } from "@/server/github/tree";
@@ -113,7 +113,7 @@ const handler: NextApiHandler = async (req, res) => {
   const body = lines.join("\n");
 
   res.setHeader("Content-Type", "text/markdown; charset=utf-8");
-  res.setHeader("Cache-Control", SEARCH_CACHE_CONTROL);
+  setDocsCacheHeaders(res, SEARCH_CACHE_HEADERS);
 
   if (docList.truncated) {
     res.setHeader("x-docs-page-tree-truncated", "1");

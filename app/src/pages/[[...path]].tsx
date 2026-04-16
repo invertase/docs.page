@@ -1,69 +1,33 @@
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
-import {
-  DocsBundleErrorCard,
-  DocsBundleSection,
-  DocsDebugShell,
-} from "@/components/docs-bundle-debug";
 import type {
   DocsBundleApiErrorResponse,
   DocsBundleApiResponse,
   DocsBundleApiSuccessResponse,
 } from "@/lib/docs-bundle-api";
-import { buildDocsBundleApiPath } from "@/lib/docs-bundle-api";
-import { incomingHttpHeadersToWebHeaders } from "@/lib/incoming-http-headers";
 import {
   isRawDocRequestPath,
   resolveDocsRoute,
   resolveRawDocsRoute,
-  type DocsRequestMode,
 } from "@/lib/docs-routing";
+import { buildDocsBundleApiPath } from "@/lib/docs-bundle-api";
 import {
-  DOCS_HTML_CACHE_CONTROL,
-  RAW_DOC_CACHE_CONTROL,
+  acceptPrefersMarkdown,
+  incomingHttpHeadersToWebHeaders,
+} from "@/lib/incoming-http-headers";
+import {
+  DOCS_HTML_CACHE_HEADERS,
+  RAW_DOC_CACHE_HEADERS,
+  setDocsCacheHeaders,
 } from "@/proxy";
+import type { DocPageProps, ErrorPageProps, PageProps } from "@/lib/types";
+import { DocsBundleErrorCard, DocsDebug } from "@/components/docs-debug";
+import { Docs } from "@/components/docs";
+import { DocPageContext } from "@/lib/context";
 
-type DocPageProps = {
-  kind: "doc";
-  route: {
-    owner: string;
-    repository: string;
-    ref: string | null;
-    docPath: string;
-    requestMode: DocsRequestMode;
-    publicPathname: string;
-    canonicalPathname: string;
-  };
-  hasAgent: boolean;
-  bundle: unknown;
-};
-
-type ErrorPageProps = {
-  kind: "error";
-  error: {
-    name: string;
-    message: string;
-    source?: string;
-  };
-};
-
-type RawPageProps = {
-  kind: "raw";
-};
-
-type HomePageProps = {
-  kind: "home";
-};
-
-type PageProps = DocPageProps | ErrorPageProps | RawPageProps | HomePageProps;
-
-export const getServerSideProps = (async ({ params, req, res }) => {
+export const getServerSideProps = (async ({ params, req, res, query }) => {
   const raw = params?.path;
-  const chunks = raw
-    ? Array.isArray(raw)
-      ? raw
-      : [raw]
-    : [];
+  const chunks = raw ? (Array.isArray(raw) ? raw : [raw]) : [];
 
   if (chunks.length === 0) {
     return {
@@ -107,7 +71,7 @@ export const getServerSideProps = (async ({ params, req, res }) => {
       });
 
       res.setHeader("Content-Type", "text/markdown; charset=utf-8");
-      res.setHeader("Cache-Control", RAW_DOC_CACHE_CONTROL);
+      setDocsCacheHeaders(res, RAW_DOC_CACHE_HEADERS);
       res.statusCode = 200;
       res.end(source.content);
 
@@ -119,7 +83,7 @@ export const getServerSideProps = (async ({ params, req, res }) => {
     } catch (error) {
       if (error instanceof BundlerError) {
         res.setHeader("Content-Type", "text/plain; charset=utf-8");
-        res.setHeader("Cache-Control", RAW_DOC_CACHE_CONTROL);
+        setDocsCacheHeaders(res, RAW_DOC_CACHE_HEADERS);
         res.statusCode = error.code;
         res.end(error.message);
 
@@ -141,13 +105,59 @@ export const getServerSideProps = (async ({ params, req, res }) => {
     headers: requestHeaders,
   });
 
-  res.setHeader(
-    "Cache-Control",
-    DOCS_HTML_CACHE_CONTROL,
-  );
+  const accept = Array.isArray(req.headers.accept)
+    ? req.headers.accept.join(", ")
+    : req.headers.accept;
+
+  if (acceptPrefersMarkdown(accept)) {
+    const [{ getRawDocSource }, { BundlerError }] = await Promise.all([
+      import("@/server/docs/raw"),
+      import("@/server/docs/bundle"),
+    ]);
+
+    try {
+      const source = await getRawDocSource({
+        owner: route.owner,
+        repository: route.repository,
+        ref: route.ref ?? undefined,
+        path: route.docPath || "index",
+      });
+
+      res.setHeader("Content-Type", "text/markdown; charset=utf-8");
+      res.setHeader("Vary", "Accept");
+      setDocsCacheHeaders(res, RAW_DOC_CACHE_HEADERS);
+      res.statusCode = 200;
+      res.end(source.content);
+
+      return {
+        props: {
+          kind: "raw" as const,
+        },
+      };
+    } catch (error) {
+      if (error instanceof BundlerError) {
+        res.setHeader("Content-Type", "text/plain; charset=utf-8");
+        res.setHeader("Vary", "Accept");
+        setDocsCacheHeaders(res, RAW_DOC_CACHE_HEADERS);
+        res.statusCode = error.code;
+        res.end(error.message);
+
+        return {
+          props: {
+            kind: "raw" as const,
+          },
+        };
+      }
+
+      throw error;
+    }
+  }
+
+  res.setHeader("Vary", "Accept");
+  setDocsCacheHeaders(res, DOCS_HTML_CACHE_HEADERS);
 
   const bundleApiPath = buildDocsBundleApiPath(route);
-  const bundleResponse = await fetch(getRequestOrigin(req, requestUrl) + bundleApiPath, {
+  const bundleResponse = await fetch(getRequestOrigin() + bundleApiPath, {
     method: "GET",
     headers: {
       Accept: "application/json",
@@ -178,16 +188,8 @@ export const getServerSideProps = (async ({ params, req, res }) => {
 
   return {
     props: {
-      kind: "doc" as const,
-      route: {
-        owner: route.owner,
-        repository: route.repository,
-        ref: route.ref,
-        docPath: route.docPath,
-        requestMode: route.requestMode,
-        publicPathname: route.publicPathname,
-        canonicalPathname: route.canonicalPathname,
-      },
+      kind: query.debug ? ("debug" as const) : ("doc" as const),
+      route,
       hasAgent: successResponse.hasAgent,
       bundle: successResponse.bundle,
     } satisfies DocPageProps,
@@ -215,30 +217,15 @@ export default function RepoDocsCatchAllPage(
     return <DocsBundleErrorCard error={props.error} />;
   }
 
-  const { route, hasAgent, bundle } = props;
-
   return (
-    <DocsDebugShell
-      eyebrow="Documentation route"
-      title={`${route.owner}/${route.repository}`}
-      rows={[
-        { label: "Ref", value: route.ref ?? "(default branch)" },
-        { label: "Path", value: route.docPath || "(root document)" },
-        { label: "Request mode", value: route.requestMode },
-        { label: "Public pathname", value: route.publicPathname },
-        { label: "Canonical pathname", value: route.canonicalPathname },
-        { label: "Has agent", value: hasAgent ? "Yes" : "No" },
-      ]}
-    >
-      <DocsBundleSection bundle={bundle} />
-    </DocsDebugShell>
+    <DocPageContext.Provider value={props}>
+      {props.kind === "debug" ? <DocsDebug /> : <Docs />}
+    </DocPageContext.Provider>
   );
 }
 
-function getRequestOrigin(
-  req: Parameters<GetServerSideProps>[0]["req"],
-  fallbackUrl: URL,
-) {
+// TODO: move me somehwere...
+function getRequestOrigin() {
   const port = process.env.PORT?.trim() || "3000";
 
   if (process.env.NODE_ENV !== "production") {

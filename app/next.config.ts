@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
           destination: "/api/:owner/:repo/search.json",
         },
         {
+          source: "/:owner/:repo/llms.txt",
+          destination: "/api/:owner/:repo/llms.txt",
+        },
+        {
           source: "/:owner/:repo/sitemap.xml",
           destination: "/api/:owner/:repo/sitemap.xml",
         },
