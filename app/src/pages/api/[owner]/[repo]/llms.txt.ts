@@ -6,7 +6,7 @@ import {
   incomingHttpHeadersToWebHeaders,
 } from "@/lib/incoming-http-headers";
 import { resolveDocsRoute } from "@/lib/docs-routing";
-import { setDocsCacheHeaders, SEARCH_CACHE_HEADERS } from "@/proxy";
+import { LLMS_TXT_CACHE_HEADERS, setDocsCacheHeaders } from "@/proxy";
 import { defaultConfig, parseConfig } from "@/server/config";
 import { getGitHubContents, getGitHubFileSourcesBatch } from "@/server/github/contents";
 import { listGitHubDocFiles } from "@/server/github/tree";
@@ -46,7 +46,9 @@ const handler: NextApiHandler = async (req, res) => {
   const resolvedRef = ghRef ?? docList.resolvedRef;
 
   const paths = docList.files.map((f) => f.sourcePath);
-  const sortedFiles = [...docList.files].sort((a, b) => a.path.localeCompare(b.path));
+  const sortedFiles = [...docList.files].sort((a, b) =>
+    compareStructuredDocPath(a.path, b.path),
+  );
 
   const requestUrl = getAbsoluteRequestUrl(req);
   const origin = new URL(requestUrl).origin;
@@ -113,7 +115,7 @@ const handler: NextApiHandler = async (req, res) => {
   const body = lines.join("\n");
 
   res.setHeader("Content-Type", "text/markdown; charset=utf-8");
-  setDocsCacheHeaders(res, SEARCH_CACHE_HEADERS);
+  setDocsCacheHeaders(res, LLMS_TXT_CACHE_HEADERS);
 
   if (docList.truncated) {
     res.setHeader("x-docs-page-tree-truncated", "1");
@@ -126,6 +128,43 @@ export default handler;
 
 function getSingleParam(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
+}
+
+/**
+ * Path segments for sorting (`index` → root).
+ * Depth = segment count (0 = `/`).
+ */
+function docPathToSegments(path: string): string[] {
+  if (!path || path === "index") {
+    return [];
+  }
+
+  return path.split("/").filter(Boolean);
+}
+
+/**
+ * Order by depth first (shallower pages before deeper ones), then alphabetically by each segment.
+ * Without depth-first, pure segment compare puts `foo/bar` before `typescript` (first segment `foo` sorts before `typescript`).
+ */
+function compareStructuredDocPath(aPath: string, bPath: string): number {
+  const segsA = docPathToSegments(aPath);
+  const segsB = docPathToSegments(bPath);
+
+  if (segsA.length !== segsB.length) {
+    return segsA.length - segsB.length;
+  }
+
+  for (let i = 0; i < segsA.length; i++) {
+    const cmp = segsA[i].localeCompare(segsB[i], undefined, {
+      numeric: true,
+      sensitivity: "base",
+    });
+    if (cmp !== 0) {
+      return cmp;
+    }
+  }
+
+  return 0;
 }
 
 function docFileToPathSegments(file: GitHubDocFile): string[] | undefined {
