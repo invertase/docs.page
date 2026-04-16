@@ -117,6 +117,62 @@ function buildPublicPathname(args: {
   return `/${owner}/${repository}${encodedRef}${docSegment}`;
 }
 
+/** Normalizes a route doc path or sidebar href segment for comparison (root ↔ `/`, `index`). */
+export function normalizeDocPathSegment(path: string): string {
+  const s = path.replace(/^\/+|\/+$/g, "");
+  if (s === "" || s === "index") {
+    return "";
+  }
+  return s;
+}
+
+/** Resolves a sidebar `href` from docs config to the correct pathname for the current request mode. */
+export function resolveSidebarNavHref(route: ResolvedDocsRoute, href: string): string {
+  const trimmed = href.trim();
+  if (/^https?:\/\//i.test(trimmed)) {
+    return trimmed;
+  }
+  const docPath = normalizeDocPathSegment(trimmed);
+  return buildPublicPathname({
+    requestMode: route.requestMode,
+    owner: route.owner,
+    repository: route.repository,
+    ref: route.ref,
+    docPath,
+  });
+}
+
+/** True when the current page matches a sidebar link (same docs path). */
+export function docPathMatchesSidebarHref(routeDocPath: string, sidebarHref: string): boolean {
+  return (
+    normalizeDocPathSegment(routeDocPath) === normalizeDocPathSegment(sidebarHref)
+  );
+}
+
+/**
+ * When `tabs` is non-empty, returns the tab `id` whose `href` prefix best matches the current doc path.
+ */
+export function resolveActiveTabId(
+  route: ResolvedDocsRoute,
+  tabs: Array<{ id: string; href: string }>,
+): string | null {
+  if (tabs.length === 0) {
+    return null;
+  }
+  const current = normalizeDocPathSegment(route.docPath);
+  let best: { id: string; len: number } | null = null;
+  for (const tab of tabs) {
+    const tabPath = normalizeDocPathSegment(tab.href);
+    const matches =
+      current === tabPath ||
+      (tabPath !== "" && (current === tabPath || current.startsWith(`${tabPath}/`)));
+    if (matches && (!best || tabPath.length >= best.len)) {
+      best = { id: tab.id, len: tabPath.length };
+    }
+  }
+  return best?.id ?? tabs[0]?.id ?? null;
+}
+
 export function resolveDocsRoute(args: {
   owner: string;
   repoSegment: string;

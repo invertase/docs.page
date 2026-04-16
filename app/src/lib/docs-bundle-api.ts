@@ -1,8 +1,12 @@
+import type { BundlerOutput } from "@/server/docs/bundle";
 import type { ResolvedDocsRoute } from "@/lib/docs-routing";
+
+/** JSON body shape for `code: "OK"` responses from `/api/bundle` (matches `getDocBundle`). */
+export type DocsBundlePayload = BundlerOutput;
 
 export type DocsBundleApiSuccessResponse = {
   code: "OK";
-  bundle: unknown;
+  bundle: DocsBundlePayload;
   hasAgent: boolean;
 };
 

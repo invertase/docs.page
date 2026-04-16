@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 
-import { DocsDebugShell } from "@/components/docs-bundle-debug";
+import { DocsDebug } from "@/components/docs-debug";
 
 type PreviewClientProps = {
   docPath: string;
@@ -93,176 +93,177 @@ function buildEndpoint(baseUrl: URL, suffix = "") {
 }
 
 export function PreviewClient({ docPath, rawUrl }: PreviewClientProps) {
-  const [status, setStatus] = useState<ConnectionState>(() =>
-    rawUrl ? "connecting" : "missing-url",
-  );
-  const [error, setError] = useState<string | null>(null);
-  const [logs, setLogs] = useState<string[]>([]);
-  const previewUrl = useMemo(() => normalizePreviewUrl(rawUrl), [rawUrl]);
+  return null;
+  // const [status, setStatus] = useState<ConnectionState>(() =>
+  //   rawUrl ? "connecting" : "missing-url",
+  // );
+  // const [error, setError] = useState<string | null>(null);
+  // const [logs, setLogs] = useState<string[]>([]);
+  // const previewUrl = useMemo(() => normalizePreviewUrl(rawUrl), [rawUrl]);
 
-  useEffect(() => {
-    if (!rawUrl) {
-      setStatus("missing-url");
-      setError(null);
-      setLogs([]);
-      return;
-    }
+  // useEffect(() => {
+  //   if (!rawUrl) {
+  //     setStatus("missing-url");
+  //     setError(null);
+  //     setLogs([]);
+  //     return;
+  //   }
 
-    if (!previewUrl) {
-      setStatus("invalid-url");
-      setError("`url` must be a valid http:// URL.");
-      setLogs([]);
-      return;
-    }
+  //   if (!previewUrl) {
+  //     setStatus("invalid-url");
+  //     setError("`url` must be a valid http:// URL.");
+  //     setLogs([]);
+  //     return;
+  //   }
 
-    const resolvedPreviewUrl = previewUrl;
-    let disposed = false;
-    const controller = new AbortController();
-    const sseUrl = buildEndpoint(resolvedPreviewUrl, "events");
-    const pathUrl = buildEndpoint(resolvedPreviewUrl, "path");
+  //   const resolvedPreviewUrl = previewUrl;
+  //   let disposed = false;
+  //   const controller = new AbortController();
+  //   const sseUrl = buildEndpoint(resolvedPreviewUrl, "events");
+  //   const pathUrl = buildEndpoint(resolvedPreviewUrl, "path");
 
-    setStatus("connecting");
-    setError(null);
-    setLogs([]);
+  //   setStatus("connecting");
+  //   setError(null);
+  //   setLogs([]);
 
-    async function connect() {
-      try {
-        const response = await fetch(pathUrl, {
-          method: "POST",
-          signal: controller.signal,
-          headers: {
-            Accept: "application/json, text/plain, */*",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            path: docPath || "index",
-          }),
-        });
+  //   async function connect() {
+  //     try {
+  //       const response = await fetch(pathUrl, {
+  //         method: "POST",
+  //         signal: controller.signal,
+  //         headers: {
+  //           Accept: "application/json, text/plain, */*",
+  //           "Content-Type": "application/json",
+  //         },
+  //         body: JSON.stringify({
+  //           path: docPath || "index",
+  //         }),
+  //       });
 
-        if (!response.ok) {
-          throw new Error(await getErrorMessage(response));
-        }
+  //       if (!response.ok) {
+  //         throw new Error(await getErrorMessage(response));
+  //       }
 
-        if (disposed) {
-          return;
-        }
+  //       if (disposed) {
+  //         return;
+  //       }
 
-        const source = new EventSource(sseUrl.toString());
+  //       const source = new EventSource(sseUrl.toString());
 
-        source.onopen = () => {
-          if (disposed) {
-            return;
-          }
+  //       source.onopen = () => {
+  //         if (disposed) {
+  //           return;
+  //         }
 
-          setLogs((current) => [
-            ...current,
-            `Connected to ${resolvedPreviewUrl.toString()}`,
-            `Listening for SSE updates on ${sseUrl.toString()}`,
-          ]);
-        };
+  //         setLogs((current) => [
+  //           ...current,
+  //           `Connected to ${resolvedPreviewUrl.toString()}`,
+  //           `Listening for SSE updates on ${sseUrl.toString()}`,
+  //         ]);
+  //       };
 
-        source.onmessage = (event) => {
-          console.log("preview:sse", event.data);
+  //       source.onmessage = (event) => {
+  //         console.log("preview:sse", event.data);
 
-          try {
-            const payload = JSON.parse(event.data) as PreviewEvent;
+  //         try {
+  //           const payload = JSON.parse(event.data) as PreviewEvent;
 
-            if (payload.type === "error") {
-              setStatus("error");
-              setError(payload.error ?? "Preview server returned an error.");
-            } else {
-              setStatus("connected");
-              setError(null);
-            }
+  //           if (payload.type === "error") {
+  //             setStatus("error");
+  //             setError(payload.error ?? "Preview server returned an error.");
+  //           } else {
+  //             setStatus("connected");
+  //             setError(null);
+  //           }
 
-            setLogs((current) => [...current, JSON.stringify(payload, null, 2)]);
-          } catch {
-            setLogs((current) => [...current, event.data]);
-          }
-        };
+  //           setLogs((current) => [...current, JSON.stringify(payload, null, 2)]);
+  //         } catch {
+  //           setLogs((current) => [...current, event.data]);
+  //         }
+  //       };
 
-        source.onerror = () => {
-          if (disposed) {
-            return;
-          }
+  //       source.onerror = () => {
+  //         if (disposed) {
+  //           return;
+  //         }
 
-          setStatus("error");
-          setError("Lost connection to the preview SSE stream.");
-          source.close();
-        };
+  //         setStatus("error");
+  //         setError("Lost connection to the preview SSE stream.");
+  //         source.close();
+  //       };
 
-        controller.signal.addEventListener("abort", () => {
-          source.close();
-        });
-      } catch (cause) {
-        if (disposed || controller.signal.aborted) {
-          return;
-        }
+  //       controller.signal.addEventListener("abort", () => {
+  //         source.close();
+  //       });
+  //     } catch (cause) {
+  //       if (disposed || controller.signal.aborted) {
+  //         return;
+  //       }
 
-        const message =
-          cause instanceof Error
-            ? cause.message
-            : "Failed to connect to the preview server.";
+  //       const message =
+  //         cause instanceof Error
+  //           ? cause.message
+  //           : "Failed to connect to the preview server.";
 
-        setStatus("error");
-        setError(message);
-      }
-    }
+  //       setStatus("error");
+  //       setError(message);
+  //     }
+  //   }
 
-    void connect();
+  //   void connect();
 
-    return () => {
-      disposed = true;
-      controller.abort();
-    };
-  }, [docPath, previewUrl, rawUrl]);
+  //   return () => {
+  //     disposed = true;
+  //     controller.abort();
+  //   };
+  // }, [docPath, previewUrl, rawUrl]);
 
-  return (
-    <DocsDebugShell
-      eyebrow="Preview route"
-      title="Local preview connection"
-      rows={[
-        { label: "Path", value: docPath || "(root document)" },
-        { label: "URL", value: rawUrl || "(missing)" },
-        { label: "Status", value: status },
-      ]}
-    >
-      {!rawUrl ? (
-        <section className="space-y-3 text-sm text-zinc-700 dark:text-zinc-300">
-          <p>
-            Add a `url` query parameter that points to your local preview
-            server.
-          </p>
-          <p className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 font-mono text-xs text-zinc-800 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100">
-            /preview
-            {docPath ? `/${docPath}` : ""}
-            ?url=http://localhost:3001
-          </p>
-        </section>
-      ) : null}
+  // return (
+  //   <DocsDebugShell
+  //     eyebrow="Preview route"
+  //     title="Local preview connection"
+  //     rows={[
+  //       { label: "Path", value: docPath || "(root document)" },
+  //       { label: "URL", value: rawUrl || "(missing)" },
+  //       { label: "Status", value: status },
+  //     ]}
+  //   >
+  //     {!rawUrl ? (
+  //       <section className="space-y-3 text-sm text-zinc-700 dark:text-zinc-300">
+  //         <p>
+  //           Add a `url` query parameter that points to your local preview
+  //           server.
+  //         </p>
+  //         <p className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 font-mono text-xs text-zinc-800 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100">
+  //           /preview
+  //           {docPath ? `/${docPath}` : ""}
+  //           ?url=http://localhost:3001
+  //         </p>
+  //       </section>
+  //     ) : null}
 
-      {rawUrl && !previewUrl ? (
-        <section className="space-y-3 text-sm text-red-700 dark:text-red-300">
-          <p>{error}</p>
-        </section>
-      ) : null}
+  //     {rawUrl && !previewUrl ? (
+  //       <section className="space-y-3 text-sm text-red-700 dark:text-red-300">
+  //         <p>{error}</p>
+  //       </section>
+  //     ) : null}
 
-      {rawUrl && previewUrl && error ? (
-        <section className="space-y-3 text-sm text-red-700 dark:text-red-300">
-          <p>{error}</p>
-        </section>
-      ) : null}
+  //     {rawUrl && previewUrl && error ? (
+  //       <section className="space-y-3 text-sm text-red-700 dark:text-red-300">
+  //         <p>{error}</p>
+  //       </section>
+  //     ) : null}
 
-      {previewUrl ? (
-        <section className="space-y-3">
-          <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400">
-            SSE log
-          </h2>
-          <pre className="min-h-32 overflow-x-auto rounded-lg border border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-800 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100">
-            {logs.length > 0 ? logs.join("\n") : "Waiting for events..."}
-          </pre>
-        </section>
-      ) : null}
-    </DocsDebugShell>
-  );
+  //     {previewUrl ? (
+  //       <section className="space-y-3">
+  //         <h2 className="text-sm font-semibold uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-400">
+  //           SSE log
+  //         </h2>
+  //         <pre className="min-h-32 overflow-x-auto rounded-lg border border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-800 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-100">
+  //           {logs.length > 0 ? logs.join("\n") : "Waiting for events..."}
+  //         </pre>
+  //       </section>
+  //     ) : null}
+  //   </DocsDebugShell>
+  // );
 }
