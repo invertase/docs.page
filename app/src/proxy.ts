@@ -2,27 +2,57 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import {
   getVanityOwnerFromHost,
+  isDocsLlmsTxtPath,
   isDocsSitemapPath,
   isPinnedCommitRef,
   isRawDocRequestPath,
 } from "@/lib/docs-routing";
 
-export const DOCS_HTML_CACHE_CONTROL =
-  "public, max-age=0, s-maxage=60, stale-while-revalidate=86400, stale-if-error=86400";
-export const RAW_DOC_CACHE_CONTROL =
-  "public, max-age=0, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400";
-export const SEARCH_CACHE_CONTROL =
-  "public, max-age=0, s-maxage=300, stale-while-revalidate=86400, stale-if-error=86400";
-export const SITEMAP_CACHE_CONTROL =
-  "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400, stale-if-error=86400";
-
 const SECONDS_PER_DAY = 24 * 60 * 60;
+/** Fastly edge: allow stale serve + async revalidate / error fallback for up to 7 days after freshness TTL. */
+const CDN_STALE_SECONDS = 7 * SECONDS_PER_DAY;
+
+function buildCacheControl(args: {
+  sMaxAge: number;
+  staleWhileRevalidate: number;
+  staleIfError: number;
+}) {
+  return [
+    "public",
+    "max-age=0",
+    `s-maxage=${args.sMaxAge}`,
+    `stale-while-revalidate=${args.staleWhileRevalidate}`,
+    `stale-if-error=${args.staleIfError}`,
+  ].join(", ");
+}
+
+export const DOCS_HTML_CACHE_CONTROL = buildCacheControl({
+  sMaxAge: 60,
+  staleWhileRevalidate: CDN_STALE_SECONDS,
+  staleIfError: CDN_STALE_SECONDS,
+});
+export const RAW_DOC_CACHE_CONTROL = buildCacheControl({
+  sMaxAge: 300,
+  staleWhileRevalidate: CDN_STALE_SECONDS,
+  staleIfError: CDN_STALE_SECONDS,
+});
+export const SEARCH_CACHE_CONTROL = buildCacheControl({
+  sMaxAge: 300,
+  staleWhileRevalidate: CDN_STALE_SECONDS,
+  staleIfError: CDN_STALE_SECONDS,
+});
+export const SITEMAP_CACHE_CONTROL = buildCacheControl({
+  sMaxAge: 3600,
+  staleWhileRevalidate: CDN_STALE_SECONDS,
+  staleIfError: CDN_STALE_SECONDS,
+});
+
 const MUTABLE_BUNDLE_S_MAXAGE = 60;
-const MUTABLE_BUNDLE_STALE_WHILE_REVALIDATE = 7 * SECONDS_PER_DAY;
-const MUTABLE_BUNDLE_STALE_IF_ERROR = 5 * 60;
-const PINNED_BUNDLE_S_MAXAGE = 7 * SECONDS_PER_DAY;
-const PINNED_BUNDLE_STALE_WHILE_REVALIDATE = 7 * SECONDS_PER_DAY;
-const PINNED_BUNDLE_STALE_IF_ERROR = 7 * SECONDS_PER_DAY;
+const MUTABLE_BUNDLE_STALE_WHILE_REVALIDATE = CDN_STALE_SECONDS;
+const MUTABLE_BUNDLE_STALE_IF_ERROR = CDN_STALE_SECONDS;
+const PINNED_BUNDLE_S_MAXAGE = CDN_STALE_SECONDS;
+const PINNED_BUNDLE_STALE_WHILE_REVALIDATE = CDN_STALE_SECONDS;
+const PINNED_BUNDLE_STALE_IF_ERROR = CDN_STALE_SECONDS;
 
 export function getBundleJsonCacheControl(ref: string | null | undefined) {
   if (isPinnedCommitRef(ref)) {
@@ -57,7 +87,8 @@ function isBypassPath(pathname: string) {
     (/\.[a-zA-Z0-9]+$/.test(pathname) &&
       !isRawDocRequestPath(pathname) &&
       !isDocsSearchPath(pathname) &&
-      !isDocsSitemapPath(pathname))
+      !isDocsSitemapPath(pathname) &&
+      !isDocsLlmsTxtPath(pathname))
   );
 }
 
@@ -102,6 +133,10 @@ function getDocsCacheControl(pathname: string) {
     return SEARCH_CACHE_CONTROL;
   }
 
+  if (isDocsLlmsTxtPath(pathname)) {
+    return SEARCH_CACHE_CONTROL;
+  }
+
   if (isDocsSitemapPath(pathname)) {
     return SITEMAP_CACHE_CONTROL;
   }
@@ -121,20 +156,6 @@ function withDocsCache(response: NextResponse, cacheControl: string | null) {
   }
 
   return response;
-}
-
-function buildCacheControl(args: {
-  sMaxAge: number;
-  staleWhileRevalidate: number;
-  staleIfError: number;
-}) {
-  return [
-    "public",
-    "max-age=0",
-    `s-maxage=${args.sMaxAge}`,
-    `stale-while-revalidate=${args.staleWhileRevalidate}`,
-    `stale-if-error=${args.staleIfError}`,
-  ].join(", ");
 }
 
 export function proxy(request: NextRequest) {
