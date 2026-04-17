@@ -447,6 +447,7 @@ const brands: Record<string, true> = {
   suse: true,
   jenkins: true,
   twitter: true,
+  "x-twitter": true,
   rockrms: true,
   pinterest: true,
   buffer: true,

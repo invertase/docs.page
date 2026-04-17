@@ -15,7 +15,8 @@ import {
 
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { Button } from "~/components/Button";
+import { Button } from "~/components/ui/button";
+import { LINKS } from "~/constants/links";
 import { PageContext } from "~/context";
 import { Footer } from "~/layouts/Footer";
 import { Header } from "~/layouts/Header";
@@ -53,9 +54,7 @@ function Preview() {
       <>
         <Header />
         <div className="p-6 text-center max-w-2xl w-full mx-auto my-24">
-          <h1 className="text-4xl font-bold text-brand-50 mb-3">
-            No Configuration File Found
-          </h1>
+          <h1 className="heading-h1 mb-3">No Configuration File Found</h1>
           <div className="text-brand-100 space-y-3">
             <p>
               The selected directory does not contain a docs.json configuration
@@ -65,7 +64,7 @@ function Preview() {
               To get started, create a docs.json file at the root of your
               project. Read the{" "}
               <a
-                href="https://use.docs.page/configuration"
+                href={`${LINKS.docs}/configuration`}
                 target="_blank"
                 rel="noreferrer"
                 className="underline"
@@ -91,9 +90,7 @@ function Preview() {
       <>
         <Header />
         <div className="p-6 text-center max-w-5xl w-full mx-auto my-24">
-          <h1 className="text-4xl font-bold text-brand-50 mb-3">
-            File Not Found
-          </h1>
+          <h1 className="heading-h1 mb-3">File Not Found</h1>
           <div className="text-brand-100 space-y-3">
             <p>The file you are trying to preview could not be found.</p>
             <p>
@@ -140,13 +137,13 @@ function Preview() {
       <section className="max-w-5xl w-full mx-auto py-20 px-6">
         <div>
           <div className="max-w-3xl mx-auto">
-            <h1 className="text-4xl !leading-[45px] lg:!leading-[65px] font-bold text-center text-brand-50 drop-shadow-md">
+            <h1 className="heading-h1 text-center drop-shadow-md">
               Local Preview
             </h1>
-            <h2 className="text-brand-100 text-center">
+            <p className="mt-3 text-center text-lg text-muted-foreground/70">
               Live preview your local documentation in real-time directly in the
               browser.
-            </h2>
+            </p>
             <div className="flex justify-center mt-6">
               {client ? <Trigger /> : null}
             </div>
@@ -210,9 +207,9 @@ function Trigger() {
           </p>
         ) : null}
         <Button
-          element="button"
+          variant="primary"
+          size="lg"
           type="button"
-          cta
           onClick={() => {
             requestPermissions.mutate();
           }}
@@ -227,8 +224,9 @@ function Trigger() {
 
   return (
     <Button
-      cta
-      element="button"
+      variant="primary"
+      size="lg"
+      type="button"
       disabled={disabled}
       className={cn({
         "opacity-50": disabled,

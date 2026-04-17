@@ -24,7 +24,7 @@ export function Locale() {
   return (
     <div>
       <Menu>
-        <MenuButton className="flex items-center gap-1.5 bg-gray-200/60 hover:bg-gray-200/80 dark:bg-white/10 hover:dark:bg-white/20 transition-all rounded-full pl-4 pr-3 py-1.5 text-xs font-bold">
+        <MenuButton className="flex items-center gap-1.5 bg-zinc-200/60 hover:bg-zinc-200/80 dark:bg-white/10 hover:dark:bg-white/20 transition-all rounded-full pl-4 pr-3 py-1.5 text-xs font-bold">
           <span>{iso639LanguageCodes[locale]}</span>
           <ChevronDownIcon size={12} />
         </MenuButton>
@@ -46,7 +46,7 @@ export function Locale() {
                 <MenuItem key={locale}>
                   <Link
                     href={`/${locale}`}
-                    className="flex w-full rounded-lg hover:bg-black/5 hover:dark:bg-white/5 px-3 py-1.5 text-sm"
+                    className="flex w-full rounded-lg px-3 py-1.5 font-mono text-sm hover:bg-black/5 hover:dark:bg-white/5"
                   >
                     {iso639LanguageCodes[locale]}
                   </Link>

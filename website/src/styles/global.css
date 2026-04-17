@@ -1,0 +1,820 @@
+/*
+ * Authoritative design tokens and app styles.
+ * Structure follows `.cursor/rules/design-token-structure.mdc`.
+ */
+
+/* -------------------------------------------------------------------------- */
+/* Primitive palettes                                                         */
+/* -------------------------------------------------------------------------- */
+/*
+  HSL components (space-separated) for use with `hsl(var(--token) / <alpha>)`.
+
+  Tailwind default `yellow`, `zinc`, `emerald`, and `red` scales (same steps as
+  the default theme).
+*/
+:root {
+  /* Yellow */
+  --color-yellow-50: 55 91.7% 95.3%;
+  --color-yellow-100: 55 96.7% 88%;
+  --color-yellow-200: 53 98.3% 76.9%;
+  --color-yellow-300: 50 97.8% 63.5%;
+  --color-yellow-400: 48 95.8% 53.1%;
+  --color-yellow-500: 45 93.4% 47.5%;
+  --color-yellow-600: 41 96.1% 40.4%;
+  --color-yellow-700: 35 91.7% 32.9%;
+  --color-yellow-800: 32 81% 28.8%;
+  --color-yellow-900: 28 72.5% 25.7%;
+  --color-yellow-950: 26 83.3% 14.1%;
+
+  /* Zinc */
+  --color-zinc-50: 0 0% 98%;
+  --color-zinc-100: 240 4.8% 95.9%;
+  --color-zinc-200: 240 5.9% 90%;
+  --color-zinc-300: 240 4.9% 83.9%;
+  --color-zinc-400: 240 5% 64.9%;
+  --color-zinc-500: 240 3.8% 46.1%;
+  --color-zinc-600: 240 5.2% 33.9%;
+  --color-zinc-700: 240 5.3% 26.1%;
+  --color-zinc-800: 240 3.7% 15.9%;
+  --color-zinc-900: 240 5.9% 10%;
+  --color-zinc-950: 240 10% 3.9%;
+
+  /* Emerald */
+  --color-emerald-50: 152 81% 95.9%;
+  --color-emerald-100: 149 80.4% 90%;
+  --color-emerald-200: 152 76% 80.4%;
+  --color-emerald-300: 156 71.6% 66.9%;
+  --color-emerald-400: 158 64.4% 51.6%;
+  --color-emerald-500: 160 84.1% 39.4%;
+  --color-emerald-600: 161 93.5% 30.4%;
+  --color-emerald-700: 163 93.5% 24.3%;
+  --color-emerald-800: 163 88.1% 19.8%;
+  --color-emerald-900: 164 85.7% 16.5%;
+  --color-emerald-950: 166 91.3% 9%;
+
+  /* Red */
+  --color-red-50: 0 85.7% 97.3%;
+  --color-red-100: 0 93.3% 94.1%;
+  --color-red-200: 0 96.3% 89.4%;
+  --color-red-300: 0 93.5% 81.8%;
+  --color-red-400: 0 90.6% 70.8%;
+  --color-red-500: 0 84.2% 60.2%;
+  --color-red-600: 0 72.2% 50.6%;
+  --color-red-700: 0 73.7% 41.8%;
+  --color-red-800: 0 70% 35.3%;
+  --color-red-900: 0 62.8% 30.6%;
+  --color-red-950: 0 74.7% 15.5%;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Theme aliases and design tokens                                            */
+/* -------------------------------------------------------------------------- */
+/*
+  Semantic `--color-*` names align with `tailwind.config.ts` colour keys.
+  Values resolve via `--background`, `--primary`, etc. below.
+*/
+:root {
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  --font-sans: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  --font-heading: var(--font-mono);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --shadow-elevation-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Global defaults                                                            */
+/* -------------------------------------------------------------------------- */
+body {
+  letter-spacing: normal;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Light theme                                                                */
+/* -------------------------------------------------------------------------- */
+:root {
+  /* Base radius */
+  --radius: 0.75rem;
+
+  /*
+    `ThemeScripts` overrides `--primary-light`, `--background-light`, etc. on
+    documentation pages.
+  */
+  --primary-light: 45 93% 47%;
+  --primary-light-lighter: 48 96% 58%;
+  /* Page canvas (ThemeScripts may override for doc sites). */
+  --background-light: var(--color-zinc-50);
+  --primary-dark: 45 93% 52%;
+  --primary-dark-lighter: 48 96% 65%;
+  --background-dark: var(--color-zinc-950);
+
+  --primary: var(--primary-light);
+  --primary-lighter: var(--primary-light-lighter);
+  --background: var(--background-light);
+
+  /* shadcn semantic tokens (HSL triplets, used with hsl(var(--x))). */
+  --foreground: var(--color-zinc-950);
+  --card: var(--color-zinc-50);
+  --card-foreground: var(--color-zinc-950);
+  --popover: var(--color-zinc-50);
+  --popover-foreground: var(--color-zinc-950);
+  --primary-foreground: var(--color-zinc-950);
+  --secondary: var(--color-zinc-50);
+  --secondary-foreground: var(--color-zinc-950);
+  --muted: var(--color-zinc-50);
+  --muted-foreground: var(--color-zinc-950);
+  --accent: var(--color-zinc-50);
+  --accent-foreground: var(--color-zinc-950);
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 210 20% 98%;
+  --border: var(--color-zinc-300);
+  --input: var(--color-zinc-300);
+  --input-background: var(--color-zinc-50);
+  --ring: 45 93% 47%;
+
+  --chart-1: var(--color-yellow-500);
+  --chart-2: var(--color-emerald-500);
+  --chart-3: var(--color-zinc-500);
+  --chart-4: var(--color-yellow-300);
+  --chart-5: var(--color-red-400);
+
+  --sidebar: var(--color-zinc-50);
+  --sidebar-foreground: var(--color-zinc-950);
+  --sidebar-primary: 45 93% 47%;
+  --sidebar-primary-foreground: var(--color-zinc-950);
+  --sidebar-accent: var(--color-zinc-50);
+  --sidebar-accent-foreground: var(--color-zinc-950);
+  --sidebar-border: var(--color-zinc-300);
+  --sidebar-ring: 45 93% 47%;
+
+  /*
+    Marketing landing (maps to primitive yellow / zinc scales).
+    Consumed via Tailwind `marketing-*` colours and `.marketing-*` utilities.
+  */
+  --marketing-accent: var(--color-yellow-400);
+  --marketing-accent-bright: var(--color-yellow-300);
+  --marketing-accent-emphasis: var(--color-yellow-600);
+  --marketing-hero-glow: var(--color-yellow-400);
+  --marketing-hero-frame-border: var(--color-zinc-300);
+  --marketing-hero-video-tint: 199 89% 48%;
+  --marketing-hero-video-tint-dark: 217 91% 60%;
+  --marketing-pill-foreground: var(--color-yellow-800);
+  --marketing-pill-foreground-dark: var(--color-zinc-300);
+  --marketing-feature-divider: var(--color-zinc-300);
+  --marketing-feature-divider-dark: var(--color-zinc-600);
+  --marketing-cell-hover: var(--color-zinc-50);
+  --marketing-cell-ring-offset: var(--color-zinc-50);
+  --marketing-feature-icon: var(--color-yellow-500);
+  --marketing-feature-icon-bright: var(--color-yellow-400);
+  --marketing-platform-border: var(--color-zinc-300);
+  --marketing-platform-border-dark: var(--color-zinc-700);
+  --marketing-platform-title: var(--color-zinc-950);
+  --marketing-platform-title-dark: 240 6% 98%;
+  --marketing-platform-desc: var(--color-zinc-950);
+  --marketing-platform-desc-dark: var(--color-zinc-400);
+  --marketing-platform-gradient-from: var(--color-yellow-400);
+  --marketing-platform-gradient-via: var(--background);
+  --marketing-platform-inner-dark: var(--color-zinc-950);
+  --marketing-testimonial-avatar-bg: var(--color-yellow-500);
+  --marketing-testimonial-avatar-bg-dark: var(--color-yellow-400);
+  --marketing-testimonial-avatar-text: var(--color-yellow-700);
+  --marketing-testimonial-avatar-text-dark: var(--color-yellow-300);
+  --marketing-step-rail: var(--color-yellow-600);
+  --marketing-step-rail-dark: var(--color-zinc-600);
+  --marketing-step-badge-border: var(--color-yellow-600);
+  --marketing-step-badge-border-dark: var(--color-zinc-800);
+  --marketing-step-badge-fill-dark: var(--color-zinc-950);
+  --marketing-success: var(--color-emerald-600);
+  --marketing-success-bright: var(--color-emerald-400);
+  /* Primary marketing CTAs and text buttons (`ui/button` marketing variants) */
+  --marketing-button-cta: var(--color-yellow-400);
+  --marketing-button-cta-hover: var(--color-yellow-500);
+  --marketing-ghost-hover-foreground: var(--color-yellow-700);
+  --marketing-nav-link-hover: var(--color-yellow-600);
+  --marketing-surface-muted: var(--color-zinc-50);
+  --marketing-surface-muted-hover: var(--color-zinc-100);
+
+  /* Twoslash (hex / alpha — library expects these shapes) */
+  --twoslash-border-color: #8888;
+  --twoslash-underline-color: currentColor;
+  --twoslash-highlighted-border: #c37d0d50;
+  --twoslash-highlighted-bg: #c37d0d20;
+  --twoslash-popup-bg: #1c1c20;
+  --twoslash-popup-color: inherit;
+  --twoslash-popup-shadow: rgba(0, 0, 0, 0.08) 0px 1px 4px;
+  --twoslash-docs-color: #888888;
+  --twoslash-docs-font: var(--font-sans);
+  --twoslash-code-font: inherit;
+  --twoslash-code-font-size: 1em;
+  --twoslash-matched-color: inherit;
+  --twoslash-unmatched-color: #888888;
+  --twoslash-cursor-color: #8888;
+  --twoslash-error-color: #d45656;
+  --twoslash-error-bg: #d4565620;
+  --twoslash-warn-color: #c37d0d;
+  --twoslash-warn-bg: #c37d0d20;
+  --twoslash-tag-color: #3772cf;
+  --twoslash-tag-bg: #3772cf20;
+  --twoslash-tag-warn-color: var(--twoslash-warn-color);
+  --twoslash-tag-warn-bg: var(--twoslash-warn-bg);
+  --twoslash-tag-annotate-color: #1ba673;
+  --twoslash-tag-annotate-bg: #1ba67320;
+
+  /* Docsearch */
+  --docsearch-primary-color: hsl(var(--primary)) !important;
+  --docsearch-modal-background: hsl(var(--background)) !important;
+  --docsearch-footer-background: hsl(var(--background)) !important;
+  --docsearch-container-background: hsl(var(--background) / 0.9) !important;
+  --docsearch-key-gradient: linear-gradient(
+    90deg,
+    hsl(var(--primary) / 0.1),
+    hsl(var(--primary-dark) / 0.05)
+  ) !important;
+
+  /* Shiki (documentation code blocks) */
+  --shiki-background: #222226;
+  --shiki-foreground: #ffffff;
+  --shiki-token-constant: #6ee7b7;
+  --shiki-token-string: #6ee7b7;
+  --shiki-token-comment: #71717a;
+  --shiki-token-keyword: #7dd3fc;
+  --shiki-token-parameter: #f9a8d4;
+  --shiki-token-function: #c4b5fd;
+  --shiki-token-string-expression: #6ee7b7;
+  --shiki-token-punctuation: #e4e4e7;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Dark theme                                                                 */
+/* -------------------------------------------------------------------------- */
+.dark,
+html[data-theme="dark"] {
+  color-scheme: dark;
+
+  --primary: var(--primary-dark);
+  --primary-lighter: var(--primary-dark-lighter);
+  --background: var(--background-dark);
+
+  --foreground: 55 92% 95%;
+  --card: 220 14% 10%;
+  --card-foreground: 55 92% 95%;
+  --popover: 220 14% 10%;
+  --popover-foreground: 55 92% 95%;
+  --primary-foreground: 224 71% 4%;
+  --secondary: 166 40% 12%;
+  --secondary-foreground: 55 92% 95%;
+  --muted: 215 28% 17%;
+  --muted-foreground: 55 92% 95%;
+  --accent: 215 28% 17%;
+  --accent-foreground: 55 92% 95%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 210 20% 98%;
+  --border: 215 28% 17%;
+  --input: 215 28% 17%;
+  --input-background: 220 14% 10%;
+  --ring: 45 93% 52%;
+
+  --chart-1: var(--color-yellow-400);
+  --chart-2: var(--color-emerald-400);
+  --chart-3: var(--color-zinc-400);
+  --chart-4: var(--color-yellow-200);
+  --chart-5: var(--color-red-400);
+
+  --sidebar: 220 14% 10%;
+  --sidebar-foreground: 55 92% 95%;
+  --sidebar-primary: 45 93% 52%;
+  --sidebar-primary-foreground: 224 71% 4%;
+  --sidebar-accent: 215 28% 17%;
+  --sidebar-accent-foreground: 55 92% 95%;
+  --sidebar-border: 215 28% 17%;
+  --sidebar-ring: 45 93% 52%;
+
+  --marketing-accent: var(--color-yellow-400);
+  --marketing-accent-bright: var(--color-yellow-300);
+  --marketing-accent-emphasis: var(--color-yellow-500);
+  --marketing-hero-glow: var(--color-yellow-500);
+  --marketing-hero-frame-border: var(--color-zinc-700);
+  --marketing-hero-video-tint: 217 91% 60%;
+  --marketing-hero-video-tint-dark: 217 91% 60%;
+  --marketing-pill-foreground: var(--color-zinc-300);
+  --marketing-pill-foreground-dark: var(--color-zinc-300);
+  --marketing-feature-divider: var(--color-zinc-600);
+  --marketing-feature-divider-dark: var(--color-zinc-600);
+  --marketing-cell-hover: var(--color-zinc-950);
+  --marketing-cell-ring-offset: var(--color-zinc-950);
+  --marketing-feature-icon: var(--color-yellow-400);
+  --marketing-feature-icon-bright: var(--color-yellow-300);
+  --marketing-platform-border: var(--color-zinc-700);
+  --marketing-platform-border-dark: var(--color-zinc-700);
+  --marketing-platform-title: 240 6% 98%;
+  --marketing-platform-title-dark: 240 6% 98%;
+  --marketing-platform-desc: var(--color-zinc-400);
+  --marketing-platform-desc-dark: var(--color-zinc-400);
+  --marketing-platform-gradient-from: var(--color-zinc-950);
+  --marketing-platform-gradient-via: var(--background);
+  --marketing-platform-inner-dark: var(--color-zinc-950);
+  --marketing-testimonial-avatar-bg: var(--color-yellow-400);
+  --marketing-testimonial-avatar-bg-dark: var(--color-yellow-400);
+  --marketing-testimonial-avatar-text: var(--color-yellow-300);
+  --marketing-testimonial-avatar-text-dark: var(--color-yellow-300);
+  --marketing-step-rail: var(--color-zinc-600);
+  --marketing-step-rail-dark: var(--color-zinc-600);
+  --marketing-step-badge-border: var(--color-zinc-800);
+  --marketing-step-badge-border-dark: var(--color-zinc-800);
+  --marketing-step-badge-fill-dark: var(--color-zinc-950);
+  --marketing-success: var(--color-emerald-400);
+  --marketing-success-bright: var(--color-emerald-300);
+  --marketing-button-cta: var(--color-yellow-400);
+  --marketing-button-cta-hover: var(--color-yellow-500);
+  --marketing-ghost-hover-foreground: var(--color-yellow-300);
+  --marketing-nav-link-hover: var(--color-yellow-400);
+  --marketing-surface-muted: var(--color-yellow-100);
+  --marketing-surface-muted-hover: var(--color-yellow-200);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Third-party integrations                                                   */
+/* -------------------------------------------------------------------------- */
+
+/* React Medium Image Zoom — let page background show through */
+[data-rmiz-modal-overlay="visible"] {
+  background-color: transparent !important;
+}
+
+/* NProgress */
+#nprogress .bar {
+  background: hsl(var(--primary)) !important;
+}
+#nprogress .peg {
+  box-shadow: 0 0 10px hsl(var(--primary)), 0 0 5px hsl(var(--primary)) !important;
+}
+
+/* Shiki — diff and focus (colours match existing syntax theme) */
+pre.shiki code .diff {
+  transition: background-color 0.5s;
+  margin: 0 -17px;
+  padding: 0 17px;
+  width: calc(100% + 33px);
+  display: inline-block;
+}
+
+pre.shiki code .diff:before {
+  position: absolute;
+  left: 3px;
+}
+
+pre.shiki code .diff.add:before {
+  content: "+";
+  color: #6ee7b7;
+}
+
+pre.shiki code .diff.remove:before {
+  content: "-";
+  color: #f9a8d4;
+}
+
+pre.shiki span.line.diff.add {
+  background-color: #2c3a2c;
+}
+
+pre.shiki code .diff.remove {
+  background-color: #421e27;
+}
+
+pre.shiki code .highlighted {
+  background-color: #363941;
+  transition: background-color 0.5s;
+  margin: 0 -17px;
+  padding: 0 17px;
+  width: calc(100% + 33px);
+  display: inline-block;
+}
+
+pre.shiki.has-focused .line:not(.focused) {
+  filter: blur(0.095rem);
+  opacity: 0.4;
+  transition: filter 0.35s, opacity 0.35s;
+}
+
+pre.shiki.has-focused .line:not(.focused) {
+  opacity: 0.7;
+  transition: filter 0.35s, opacity 0.35s;
+}
+
+pre.shiki.has-focused:hover .line {
+  filter: blur(0);
+  opacity: 1;
+}
+
+/* Twoslash — hover, popups, completions, tags */
+.twoslash:hover .twoslash-hover {
+  border-color: var(--twoslash-underline-color);
+}
+
+.twoslash .twoslash-hover {
+  border-bottom: 1px dotted transparent;
+  transition-timing-function: ease;
+  transition: border-color 0.3s;
+  position: relative;
+}
+
+.twoslash .twoslash-popup-container {
+  position: absolute;
+  opacity: 0;
+  display: inline-flex;
+  flex-direction: column;
+  transform: translateY(1.1em);
+  background: var(--twoslash-popup-bg);
+  color: var(--twoslash-popup-color);
+  border: 1px solid var(--twoslash-border-color);
+  transition: opacity 0.3s;
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 10;
+  user-select: none;
+  text-align: left;
+  box-shadow: var(--twoslash-popup-shadow);
+}
+
+.twoslash .twoslash-query-presisted .twoslash-popup-container {
+  z-index: 9;
+  transform: translateY(1.5em);
+}
+
+.twoslash .twoslash-hover:hover .twoslash-popup-container,
+.twoslash .twoslash-error-hover:hover .twoslash-popup-container,
+.twoslash .twoslash-query-presisted .twoslash-popup-container,
+.twoslash .twoslash-query-line .twoslash-popup-container {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.twoslash .twoslash-popup-container:hover {
+  user-select: auto;
+}
+
+.twoslash .twoslash-popup-arrow {
+  position: absolute;
+  top: -4px;
+  left: 1em;
+  border-top: 1px solid var(--twoslash-border-color);
+  border-right: 1px solid var(--twoslash-border-color);
+  background: var(--twoslash-popup-bg);
+  transform: rotate(-45deg);
+  width: 6px;
+  height: 6px;
+  pointer-events: none;
+}
+
+.twoslash .twoslash-popup-code,
+.twoslash .twoslash-popup-error,
+.twoslash .twoslash-popup-docs {
+  padding: 6px 8px !important;
+}
+
+.twoslash .twoslash-popup-code {
+  font-family: var(--twoslash-code-font);
+  font-size: var(--twoslash-code-font-size);
+}
+
+.twoslash .twoslash-popup-docs {
+  color: var(--twoslash-docs-color);
+  font-family: var(--twoslash-docs-font);
+  font-size: 0.8em;
+  border-top: 1px solid var(--twoslash-border-color);
+}
+
+.twoslash .twoslash-popup-error {
+  color: var(--twoslash-error-color);
+  background-color: var(--twoslash-error-bg);
+  font-family: var(--twoslash-docs-font);
+  font-size: 0.8em;
+}
+
+.twoslash .twoslash-popup-docs-tags {
+  display: flex;
+  flex-direction: column;
+  font-family: var(--twoslash-docs-font);
+}
+
+.twoslash .twoslash-popup-docs-tags,
+.twoslash .twoslash-popup-docs-tag-name {
+  margin-right: 0.5em;
+}
+
+.twoslash .twoslash-popup-docs-tag-name {
+  font-family: var(--twoslash-code-font);
+}
+
+.twoslash .twoslash-query-line .twoslash-popup-container {
+  position: relative;
+  margin-bottom: 1.4em;
+  transform: translateY(0.6em);
+}
+
+.twoslash .twoslash-error-line {
+  position: relative;
+  background-color: var(--twoslash-error-bg);
+  border-left: 3px solid var(--twoslash-error-color);
+  color: var(--twoslash-error-color);
+  padding: 6px 12px;
+  margin: 0.2em 0;
+  min-width: 100%;
+  width: max-content;
+}
+
+.twoslash .twoslash-error-line.twoslash-error-level-warning {
+  background-color: var(--twoslash-warn-bg);
+  border-left: 3px solid var(--twoslash-warn-color);
+  color: var(--twoslash-warn-color);
+}
+
+.twoslash .twoslash-error {
+  background: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%206%203'%20enable-background%3D'new%200%200%206%203'%20height%3D'3'%20width%3D'6'%3E%3Cg%20fill%3D'%23c94824'%3E%3Cpolygon%20points%3D'5.5%2C0%202.5%2C3%201.1%2C3%204.1%2C0'%2F%3E%3Cpolygon%20points%3D'4%2C0%206%2C2%206%2C0.6%205.4%2C0'%2F%3E%3Cpolygon%20points%3D'0%2C2%201%2C3%202.4%2C3%200%2C0.6'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")
+    repeat-x bottom left;
+  padding-bottom: 2px;
+}
+
+.twoslash .twoslash-error.twoslash-error-level-warning {
+  background: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%206%203'%20enable-background%3D'new%200%200%206%203'%20height%3D'3'%20width%3D'6'%3E%3Cg%20fill%3D'%23c37d0d'%3E%3Cpolygon%20points%3D'5.5%2C0%202.5%2C3%201.1%2C3%204.1%2C0'%2F%3E%3Cpolygon%20points%3D'4%2C0%206%2C2%206%2C0.6%205.4%2C0'%2F%3E%3Cpolygon%20points%3D'0%2C2%201%2C3%202.4%2C3%200%2C0.6'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E")
+    repeat-x bottom left;
+  padding-bottom: 2px;
+}
+
+.twoslash .twoslash-completion-cursor {
+  position: relative;
+}
+
+.twoslash .twoslash-completion-cursor .twoslash-completion-list {
+  user-select: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(0, 1.2em);
+  margin: 3px 0 0 -1px;
+  display: inline-block;
+  z-index: 8;
+  box-shadow: var(--twoslash-popup-shadow);
+  background: var(--twoslash-popup-bg);
+  border: 1px solid var(--twoslash-border-color);
+}
+
+.twoslash-completion-list {
+  width: 240px;
+  font-size: 0.8rem;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.twoslash-completion-list:hover {
+  user-select: auto;
+}
+
+.twoslash-completion-list::before {
+  background-color: var(--twoslash-cursor-color);
+  width: 2px;
+  position: absolute;
+  top: -1.6em;
+  height: 1.4em;
+  left: -1px;
+  content: " ";
+}
+
+.twoslash-completion-list li {
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: 0.25em;
+  line-height: 1em;
+}
+
+.twoslash-completion-list li span.twoslash-completions-unmatched {
+  color: var(--twoslash-unmatched-color);
+}
+
+.twoslash-completion-list .deprecated {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
+
+.twoslash-completion-list li span.twoslash-completions-matched {
+  color: var(--twoslash-matched-color);
+}
+
+.twoslash-highlighted {
+  background-color: var(--twoslash-highlighted-bg);
+  border: 1px solid var(--twoslash-highlighted-border);
+  padding: 1px 2px;
+  margin: -1px -3px;
+  border-radius: 4px;
+}
+
+.twoslash-completion-list .twoslash-completions-icon {
+  color: var(--twoslash-unmatched-color);
+  width: 1em;
+  flex: none;
+}
+
+.twoslash .twoslash-tag-line {
+  position: relative;
+  background-color: var(--twoslash-tag-bg);
+  border-left: 3px solid var(--twoslash-tag-color);
+  color: var(--twoslash-tag-color);
+  padding: 6px 10px;
+  margin: 0.2em 0;
+  display: flex;
+  align-items: center;
+  gap: 0.3em;
+  min-width: 100%;
+  width: max-content;
+}
+
+.twoslash .twoslash-tag-line .twoslash-tag-icon {
+  width: 1.1em;
+  color: inherit;
+}
+
+.twoslash .twoslash-tag-line.twoslash-tag-error-line {
+  background-color: var(--twoslash-error-bg);
+  border-left: 3px solid var(--twoslash-error-color);
+  color: var(--twoslash-error-color);
+}
+
+.twoslash .twoslash-tag-line.twoslash-tag-warn-line {
+  background-color: var(--twoslash-tag-warn-bg);
+  border-left: 3px solid var(--twoslash-tag-warn-color);
+  color: var(--twoslash-tag-warn-color);
+}
+
+.twoslash .twoslash-tag-line.twoslash-tag-annotate-line {
+  background-color: var(--twoslash-tag-annotate-bg);
+  border-left: 3px solid var(--twoslash-tag-annotate-color);
+  color: var(--twoslash-tag-annotate-color);
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+ * Marketing UI: nav link default text uses primitive scales from this file (same
+ * HSL components as Tailwind’s default zinc / yellow steps — see `:root` above).
+ */
+@layer utilities {
+  .text-marketing-link {
+    color: hsl(var(--color-zinc-950));
+  }
+  html[data-theme="dark"] .text-marketing-link {
+    color: hsl(var(--color-yellow-50));
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Components                                                                 */
+/* -------------------------------------------------------------------------- */
+/*
+ * Typography: JetBrains Mono for all display and UI headings. Colour via `text-foreground`.
+ */
+@layer components {
+  .heading-h1 {
+    @apply font-heading text-3xl font-medium leading-tight tracking-tight text-foreground md:text-4xl lg:text-5xl;
+  }
+  .heading-h2 {
+    @apply font-heading text-2xl font-medium tracking-tight text-foreground md:text-3xl lg:text-4xl;
+  }
+  .heading-h3 {
+    @apply font-mono text-base font-medium text-foreground md:text-lg;
+  }
+  .heading-h4 {
+    @apply font-mono text-sm font-medium text-foreground;
+  }
+
+  /**
+   * Marketing homepage: subtle spot grid (CSS-only; ~44px tile).
+   */
+  .homepage-spot-grid {
+    background-color: hsl(var(--background));
+    background-image: radial-gradient(
+      hsl(var(--foreground) / 0.15) 1px,
+      transparent 1px
+    );
+    background-size: 44px 44px;
+  }
+
+  /**
+   * Marketing pill + Features: light zinc-50; dark uses zinc-800 with alpha.
+   */
+  .marketing-surface-bg {
+    background-color: hsl(var(--color-zinc-50));
+  }
+  html[data-theme="dark"] .marketing-surface-bg {
+    background-color: hsl(var(--color-zinc-800) / 0.26);
+  }
+
+  .marketing-surface-pill-chrome {
+    border-width: 1px;
+    border-style: solid;
+    border-color: hsl(var(--color-zinc-300));
+    background-color: hsl(var(--color-zinc-50));
+  }
+  html[data-theme="dark"] .marketing-surface-pill-chrome {
+    border-color: hsl(var(--color-zinc-600) / 0.5);
+    background-color: hsl(var(--color-zinc-800) / 0.26);
+  }
+
+  /* Features strip: hide native bar; React draws the horizontal track.
+   * `overflow-y: hidden` on the scroller clips hover scale; upgraded where supported. */
+  .marketing-features-scroll-native-hidden {
+    overflow-x: auto;
+    overflow-y: hidden;
+    contain: none;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  @supports (overflow: clip) {
+    .marketing-features-scroll-native-hidden {
+      overflow-y: clip;
+      overflow-clip-margin: 8rem 6rem;
+    }
+  }
+
+  @supports not (overflow: clip) {
+    .marketing-features-scroll-native-hidden {
+      padding-block: 3.5rem;
+      padding-inline: 2.5rem;
+    }
+  }
+
+  .marketing-features-scroll-native-hidden::-webkit-scrollbar {
+    display: none;
+    height: 0;
+    width: 0;
+  }
+
+  @media (hover: none) {
+    .feature-cell {
+      transform: none;
+      box-shadow: none;
+      z-index: auto;
+    }
+
+    .feature-cell .feature-cell-icon-wrap {
+      transform: scale(1);
+    }
+
+    .feature-cell-copy-overlay {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .feature-cell .feature-cell-copy-inner {
+      padding-block: 0.25rem;
+    }
+  }
+
+  .doc-h1 {
+    @apply !font-heading !text-2xl !font-medium !tracking-tight !text-foreground md:!text-3xl;
+  }
+  .doc-h2 {
+    @apply !font-heading !text-xl !font-medium !tracking-tight !text-foreground md:!text-2xl;
+  }
+  .doc-h3 {
+    @apply !font-mono !text-lg !font-medium !text-foreground;
+  }
+  .doc-h4 {
+    @apply !font-mono !text-base !font-medium !text-foreground;
+  }
+  .doc-h5 {
+    @apply !font-mono !text-sm !font-medium !text-foreground;
+  }
+  .doc-h6 {
+    @apply !font-mono !text-xs !font-medium !uppercase !tracking-wide !text-foreground;
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Base layer                                                                 */
+/* -------------------------------------------------------------------------- */
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+  html {
+    @apply font-sans;
+  }
+}

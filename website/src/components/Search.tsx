@@ -51,7 +51,7 @@ export function Search(props: Props) {
       <button
         type="button"
         onClick={handleSearchEvent}
-        className="group transition-all bg-background bg-gradient-to-b shadow-sm dark:from-white/[0.02] border border-black/10 dark:border-white/10 hover:border-black/20 hover:dark:border-white/20 rounded-md flex items-center gap-3 pl-2 pr-3 py-1.5 w-full"
+        className="group flex w-full items-center gap-3 rounded-md border border-black/10 bg-background bg-gradient-to-b py-1.5 pr-3 pl-2 font-mono shadow-sm transition-all hover:border-black/20 dark:border-white/10 dark:from-white/[0.02] hover:dark:border-white/20"
       >
         <SearchIcon size={18} className="opacity-75" />
         <span className="grow text-left text-sm opacity-75">Search...</span>

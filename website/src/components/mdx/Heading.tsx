@@ -8,6 +8,15 @@ interface HeadingProps extends React.HTMLAttributes<HTMLHeadingElement> {
   type: "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 }
 
+const DOC_HEADING: Record<HeadingProps["type"], string> = {
+  h1: "doc-h1",
+  h2: "doc-h2",
+  h3: "doc-h3",
+  h4: "doc-h4",
+  h5: "doc-h5",
+  h6: "doc-h6",
+};
+
 export function Heading(props: HeadingProps) {
   const { id, type, className, ...other } = props;
 
@@ -15,10 +24,14 @@ export function Heading(props: HeadingProps) {
     type,
     {
       ...other,
-      className: cn("group relative flex items-center gap-2", className),
+      className: cn(
+        "group relative flex items-center gap-2 tracking-normal",
+        DOC_HEADING[type],
+        className,
+      ),
     },
     <>
-      <span className="font-bold tracking-normal">{props.children}</span>
+      {props.children}
       {!!props.anchor && !!id && <Anchor id={id} />}
     </>,
   );

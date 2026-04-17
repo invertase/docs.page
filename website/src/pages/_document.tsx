@@ -5,7 +5,7 @@ export default function Document() {
     <Html lang="en">
       <Head>
         <meta charSet="utf-8" />
-        <meta name="theme-color" content="#0B0D0E" />
+        <meta name="theme-color" content="#09090b" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="preconnect"
@@ -13,11 +13,7 @@ export default function Document() {
           crossOrigin="anonymous"
         />
         <link
-          href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=auto"
-          rel="stylesheet"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap"
+          href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&display=swap"
           rel="stylesheet"
         />
         <link href="/_docs.page/fa/fontawesome.min.css" rel="stylesheet" />
@@ -25,7 +21,7 @@ export default function Document() {
         <link href="/_docs.page/fa/solid.min.css" rel="stylesheet" />
       </Head>
       <body
-        className="antialiased bg-background text-gray-900 dark:text-gray-200"
+        className="min-h-screen bg-background font-sans text-foreground antialiased"
         style={{
           textRendering: "optimizeLegibility",
         }}

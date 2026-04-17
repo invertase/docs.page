@@ -105,7 +105,7 @@ function Anchor(props: AnchorSource & { type: "previous" | "next" }) {
   return (
     <Link
       href={props.href}
-      className="inline-flex items-center gap-2 transition-opacity opacity-75 hover:opacity-100"
+      className="inline-flex items-center gap-2 font-mono transition-opacity opacity-75 hover:opacity-100"
     >
       {props.type === "previous" ? <ChevronLeftIcon size={16} /> : ""}
       <span>{props.title}</span>

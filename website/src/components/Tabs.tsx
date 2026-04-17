@@ -31,7 +31,7 @@ export function Tabs(props: Props) {
                   <Link
                     href={href}
                     className={cn(
-                      "relative top-px flex items-center h-12 border-b-[1.5px] border-transparent whitespace-nowrap",
+                      "relative top-px flex h-12 items-center whitespace-nowrap border-b-[1.5px] border-transparent font-mono",
                       {
                         "hover:border-black/20 dark:hover:border-white/20 opacity-75 hover:opacity-100 transition-all":
                           !isActive,

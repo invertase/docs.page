@@ -1,0 +1,159 @@
+---
+description: UI layout, spacing, alignment, and component styling best practices for consistent, polished interfaces using Tailwind and shadcn/ui. Use when creating or updating UI components, layouts, or styling.
+globs:
+  - "**/*.tsx"
+  - "**/*.jsx"
+  - "**/*.ts"
+  - "**/*.js"
+alwaysApply: false
+---
+
+# UI Best Practices
+
+## Core Principles
+- UI should feel visually balanced, consistent, and intentional.
+- Elements should align cleanly and follow a clear spacing rhythm.
+- Prefer consistency across components over one-off design decisions.
+- Design decisions should scale across the system, not just solve one instance.
+
+---
+
+## Layout and Alignment
+- Align elements to a consistent axis wherever possible.
+- Avoid visual misalignment between adjacent components (icons, buttons, text, dividers).
+- Ensure interactive elements (buttons, inputs, icons) are vertically centred within their containers.
+- Maintain consistent horizontal alignment across sections.
+
+---
+
+## Spacing and Rhythm
+- Use a consistent spacing scale (Tailwind spacing utilities).
+- Ensure padding and margins feel proportional across the UI.
+- Avoid elements touching dividers or edges without intentional spacing.
+- Maintain consistent spacing between:
+  - sections
+  - headings and content
+  - controls and containers
+- Prefer even spacing increments (e.g. 4, 6, 8) over arbitrary values.
+
+---
+
+## Visual Hierarchy
+- Establish a clear hierarchy between:
+  - page titles
+  - section headers
+  - labels
+  - body text
+- Ensure typography scales logically across the UI.
+- Avoid situations where less important elements appear more prominent than primary content.
+- Icons, labels, and controls should feel visually balanced relative to surrounding text.
+
+---
+
+## Icon and Control Consistency
+- Use consistent icon sizes within the same UI context.
+- Ensure icons align visually with text baselines or container centres.
+- Avoid mixing drastically different icon sizes in the same row or toolbar.
+- Maintain consistent sizing for similar controls (buttons, dropdowns, icon buttons).
+
+---
+
+## Borders and Dividers
+- Ensure borders and separators align across sections.
+- Avoid offset or misaligned divider lines.
+- Maintain consistent spacing above and below dividers.
+- Use subtle, consistent border colours (via tokens).
+
+---
+
+## Component Consistency
+- Similar components should share:
+  - sizing
+  - spacing
+  - border radius
+  - interaction behaviour
+- Avoid creating slightly different versions of the same component without reason.
+- Prefer updating shared components over duplicating styles.
+
+---
+
+## Design System Consumption
+- Always consume semantic tokens from `global.css`.
+- Treat `global.css` as the source of truth for colours, typography, radius, and surfaces.
+- Do not hardcode colour, radius, typography, or surface values in component files when tokens exist.
+- If shadcn defaults conflict with project tokens, project tokens win.
+- Prefer Tailwind utility classes that reference tokens (e.g. `bg-background`, `text-foreground`, `border-border`, `ring-ring`).
+- Do not use raw palette values directly in components unless intentionally required.
+
+---
+
+## Component Variant Architecture
+- Shared UI components should define reusable variants rather than one-off styles.
+- Use a variant system such as `class-variance-authority (cva)` for components like:
+  - Button
+  - Badge
+  - Input
+  - Tabs
+  - Card
+- Define variants such as:
+  - `primary`
+  - `secondary`
+  - `outline`
+  - `ghost`
+  - `destructive`
+  - `link`
+- Variants should map to semantic tokens from `global.css`.
+
+### Example expectations
+- `primary` → `bg-primary text-primary-foreground`
+- `secondary` → `bg-secondary text-secondary-foreground`
+- `outline` → `border border-border bg-background`
+- `ghost` → `bg-transparent hover:bg-muted`
+- `destructive` → `bg-destructive text-destructive-foreground`
+
+---
+
+## Component Implementation Rules
+- Component files (e.g. `button.tsx`) should:
+  - define variants
+  - define sizes
+  - define interaction states (hover, focus, disabled)
+  - centralise styling logic
+- Avoid styling components at usage sites when a shared variant should exist.
+- Prefer `asChild` pattern when working with links and buttons.
+
+---
+
+## Interaction States
+- Ensure hover, focus, active, and disabled states are defined consistently.
+- Use token-based colours for states (e.g. `hover:bg-primary/90`).
+- Ensure focus states are accessible and visible (e.g. `focus-visible:ring-ring`).
+
+---
+
+## Accessibility and Feedback
+- Maintain sufficient contrast between text and backgrounds.
+- Ensure interactive elements have clear affordances.
+- Use consistent focus and hover feedback across components.
+
+---
+
+## When Refactoring UI
+- Identify inconsistencies in spacing, alignment, and sizing.
+- Normalise components to follow the shared system.
+- Replace hardcoded values with semantic tokens.
+- Consolidate duplicate patterns into shared components.
+
+---
+
+## Review Checklist
+Before finalising UI changes, check:
+- spacing is consistent and balanced
+- elements are aligned correctly
+- icon sizes are consistent
+- borders and dividers line up
+- typography hierarchy is clear
+- semantic tokens are used instead of hardcoded values
+- shared components are used instead of duplicated styles
+- component variants are defined where needed
+- shadcn components follow the project design system

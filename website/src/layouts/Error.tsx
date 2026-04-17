@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import type { BundleErrorResponse } from "~/api";
+import { LINKS } from "~/constants/links";
 
 const CODE_MAP: Record<BundleErrorResponse["code"], string> = {
   NOT_FOUND: "Page not found",
@@ -64,9 +65,7 @@ function View(props: ViewProps) {
       }}
     >
       <div className="text-center space-y-5 max-w-2xl">
-        <h1 className="font-bold tracking-normal text-4xl md:text-5xl">
-          {props.title}
-        </h1>
+        <h1 className="heading-h1">{props.title}</h1>
         <p>{props.description}</p>
         {props.source ? (
           <a href={props.source} className="inline-block hover:underline">
@@ -79,7 +78,7 @@ function View(props: ViewProps) {
         )}
         <div className="text-2xl flex items-center justify-center gap-3">
           <a
-            href="https://github.com/invertase/docs.page"
+            href={LINKS.githubRepo}
             className="opacity-100 transition-all hover:opacity-75"
           >
             <i className="fa-brands fa-github" />

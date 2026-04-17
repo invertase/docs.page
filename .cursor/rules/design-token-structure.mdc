@@ -1,0 +1,145 @@
+---
+description: Design token and theme file structure for global.css and related theme files. Use when creating, editing, refactoring, or reviewing design tokens, CSS variables, Tailwind theme definitions, primitive palettes, semantic aliases, light and dark theme mappings, or global theme scaffolds. Preserve the canonical section order, standard token naming, and clear grouping for primitive palettes, typography, radius, semantic colours, and theme modes. Treat global.css as the source of truth that overrides base shadcn/ui styling when project tokens exist.
+globs:
+  - "**/global.css"
+  - "**/*theme*.css"
+  - "**/*tokens*.css"
+alwaysApply: false
+---
+
+# Design Token Structure
+
+## Core Principles
+
+- Follow the canonical global theme scaffold and preserve its section order.
+- Keep the file easy to scan, extend, and review.
+- Group related tokens into clear sections with consistent spacing between them.
+- Prefer structure and readability over dense blocks of ungrouped variables.
+- Treat the scaffold as a contract for file structure, not a loose suggestion.
+
+## Relationship to shadcn/ui
+
+- This global.css defines the authoritative design tokens for the application.
+- These tokens intentionally override and extend the default shadcn/ui styling system.
+- Do not rely on default shadcn colour, radius, typography, or surface values when project tokens exist.
+- Always prefer project-defined tokens such as `--color-*`, `--radius-*`, and `--font-*` over library defaults.
+- When adjusting UI styling, modify or extend tokens in global.css rather than hardcoding values in components.
+- Treat shadcn components as primitives that consume this token system, not as the source of design decisions.
+- The design system flows from tokens to components, not from components to tokens.
+
+## Language and Naming Conventions
+
+- Use British English in comments and explanatory prose.
+- Preserve standard ecosystem token naming conventions for variables and aliases.
+- Use `color`, not `colour`, in token and variable names.
+- Use standard Tailwind and CSS token patterns such as `--color-*`, `--font-*`, and `--radius-*`.
+- Do not mix naming styles within the same file.
+
+## Canonical Section Order
+
+Keep files in this order unless there is a strong reason not to:
+
+1. imports and plugins
+2. custom variants
+3. primitive palettes
+4. theme aliases and design tokens
+5. global defaults
+6. light theme (`:root`)
+7. dark theme (`.dark`)
+8. base layer
+
+## Primitive Palettes
+
+- Put raw palette tokens in the primitive palette section.
+- This section may contain neutral palettes, brand palettes, support palettes, or other raw colour families used by the design system.
+- Use consistent palette families such as `--color-<name>-50` through `--color-<name>-950` when appropriate.
+- Keep each palette family together and ordered by scale.
+- Do not scatter primitive palette values across semantic sections.
+- Do not use primitive palette tokens directly in components when semantic tokens exist.
+- Do not assume any specific palette family unless the design system requires it.
+
+## Typography Tokens
+
+- Keep typography tokens together in their own subsection.
+- Leave clear spacing around font declarations so new fonts are easy to add.
+- Separate raw font-family tokens from semantic font aliases where relevant.
+- Avoid duplicating tokens unless the duplication is intentional and documented.
+- Prefer semantic font aliases such as `--font-sans` and `--font-mono` for application use.
+
+## Radius and Primitive Tokens
+
+- Keep radius tokens grouped together in a dedicated subsection.
+- Keep primitive tokens such as base colours, fonts, radius, and shadows separate from semantic aliases.
+- Maintain consistent ordering within each subsection.
+- Extend token scales deliberately rather than ad hoc.
+
+## Semantic Aliases
+
+- Group semantic aliases by domain, for example surface, text, charts, sidebar, or interaction.
+- Keep aliases mapped cleanly to semantic variables such as `--background`, `--primary`, and `--sidebar`.
+- Make semantic alias blocks easy to scan by breaking them into logical subsections.
+- Prefer semantic naming for application usage rather than direct palette references in components.
+
+## Light and Dark Theme Modes
+
+- Keep `:root` for light theme values and `.dark` for dark theme overrides.
+- Preserve the same semantic token order across light and dark sections wherever possible.
+- Keep corresponding light and dark tokens easy to compare.
+- When adding a new semantic token, add it to both light and dark theme sections unless there is a deliberate reason not to.
+- Mirror structure first, then vary values intentionally.
+
+## Formatting and Readability
+
+- Use section comments to break up major areas such as palettes, typography, radius, aliases, and theme modes.
+- Leave deliberate blank lines between major sections and between meaningful subsections.
+- Keep related declarations visually grouped.
+- Avoid long unbroken walls of variables.
+- Optimise for future extension as well as current readability.
+
+## Global Defaults and Base Layer
+
+- Keep non-token global rules such as body letter spacing in a dedicated global defaults section.
+- Keep `@layer base` at the end of the file.
+- Use semantic tokens such as `bg-background` and `text-foreground` in the base layer rather than hardcoded values.
+- Use semantic font aliases such as `var(--font-sans)` in the base layer rather than hardcoded font-family values.
+
+## When Creating a New Token File
+
+- Start from the canonical scaffold rather than generating a token file from scratch.
+- Populate the scaffold while preserving section order and grouping.
+- Define primitive palettes first, then map them into semantic tokens.
+- Keep the scaffold neutral unless the design system clearly requires specific palette families.
+- Do not invent bespoke palette structures unless the project genuinely requires them.
+- Keep the scaffold’s comments and annotations useful for future contributors.
+
+## When Refactoring Existing Files
+
+- Reorganise tokens into the canonical section order.
+- Preserve the existing design intent while improving clarity and grouping.
+- Normalise comments, spacing, and ordering.
+- Remove accidental duplication and flag ambiguous token purpose when necessary.
+- Convert messy or mixed structures into one coherent scaffold.
+
+## Usage in Components
+
+- Components should consume semantic tokens exposed by this file.
+- Do not hardcode colour, radius, typography, or surface values in components when tokens already exist.
+- Do not use primitive palette tokens directly in components unless there is a deliberate low-level reason.
+- Prefer updating the token layer when the design system changes, rather than patching individual components.
+- If shadcn defaults conflict with the project design system, the project token system should win.
+
+## Review Checklist
+
+Before finalising, check that:
+
+- primitive palettes live in one dedicated section
+- typography tokens are grouped with enough space to extend them
+- radius tokens are grouped separately from colours
+- semantic aliases are grouped logically
+- light and dark sections mirror each other clearly
+- comments use British English
+- token names use standard ecosystem spellings such as `color`
+- project tokens override shadcn defaults consistently
+- no hardcoded colours, radius, typography, or surface values remain where tokens exist
+- shadcn components are using semantic tokens rather than raw values
+- the file is easy to scan and extend

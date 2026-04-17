@@ -1,8 +1,7 @@
-import cx from "classnames";
-import { twMerge } from "tailwind-merge";
 import type { BundleResponse } from "./api";
 import type { Context } from "./context";
 import { getEnvironment } from "./env";
+import { cn as cnLib } from "./lib/utils";
 
 export class Redirect extends Error {
   url: string;
@@ -13,9 +12,9 @@ export class Redirect extends Error {
   }
 }
 
-// Helper function to merge Tailwind CSS classes with classnames.
-export function cn(...inputs: cx.ArgumentArray) {
-  return twMerge(cx(inputs));
+/** Merge Tailwind classes (clsx + tailwind-merge). */
+export function cn(...inputs: Parameters<typeof cnLib>) {
+  return cnLib(...inputs);
 }
 
 // Returns a string with a leading slash
@@ -40,10 +39,10 @@ export function isExternalLink(href: string) {
 // Gets a custom domain for a given owner and repository.
 export async function getCustomDomain(
   owner: string,
-  repository: string
+  repository: string,
 ): Promise<string | null> {
   const response = await fetch(
-    `https://custom-domain.invertase.workers.dev/?owner=${owner}&repo=${repository}`
+    `https://custom-domain.invertase.workers.dev/?owner=${owner}&repo=${repository}`,
   );
 
   if (!response.ok) {
@@ -77,17 +76,17 @@ export function getBlobSrc(ctx: Context, path: string) {
 
   if (source.type === "branch") {
     return `https://raw.githubusercontent.com/${owner}/${repository}/${encodeURIComponent(
-      ref ?? baseBranch
+      ref ?? baseBranch,
     )}/docs${ensureLeadingSlash(path)}`;
   }
   if (source.type === "PR") {
     return `https://raw.githubusercontent.com/${owner}/${repository}/${encodeURIComponent(
-      ref ?? baseBranch
+      ref ?? baseBranch,
     )}/docs${ensureLeadingSlash(path)}`;
   }
 
   return `https://raw.githubusercontent.com/${owner}/${repository}/HEAD/docs${ensureLeadingSlash(
-    path
+    path,
   )}`;
 }
 
@@ -107,7 +106,7 @@ export function getLocale(ctx: Context) {
 export function getHrefIsActive(
   ctx: Context,
   currentPath: string,
-  path: string
+  path: string,
 ) {
   const href = getHref(ctx, path);
 
@@ -245,7 +244,7 @@ export function toBase64(str: string): string {
     /%([0-9A-F]{2})/g,
     (_, p1) => {
       return String.fromCharCode(Number.parseInt(p1, 16));
-    }
+    },
   );
 
   return typeof window !== "undefined"

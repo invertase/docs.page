@@ -36,7 +36,7 @@ export function Card({ href, icon, title, children, ...props }: CardProps) {
 
   const card = (
     <div
-      className="h-full p-6 mb-4 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 rounded-lg border border-black/10 dark:border-white/10 group-hover:border-primary"
+      className="h-full p-6 mb-4 [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 rounded-none border border-black/10 dark:border-white/10 group-hover:border-primary"
       {...props}
     >
       {(title || icon) && (

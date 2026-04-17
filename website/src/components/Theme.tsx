@@ -34,8 +34,8 @@ export function ThemeScripts() {
   const primaryDark = getColor(
     theme?.primaryDark ?? theme?.primary ?? fallback,
   );
-  const backgroundLight = getColor(theme?.backgroundLight ?? "#F9FAFB");
-  const backgroundDark = getColor(theme?.backgroundDark ?? "#0B0D0E");
+  const backgroundLight = getColor(theme?.backgroundLight ?? "#fcfbef");
+  const backgroundDark = getColor(theme?.backgroundDark ?? "#09090b");
 
   function toHslVariable(color: Color) {
     const [h, s, l] = color.hsl().array();
@@ -122,7 +122,7 @@ export function ThemeToggle() {
       checked={enabled}
       onChange={setEnabled}
       className={cn(
-        "relative inline-flex h-3 w-7 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-200/60 transition-colors duration-200 ease-in-out dark:bg-white/10",
+        "relative inline-flex h-3 w-7 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-zinc-200/60 transition-colors duration-200 ease-in-out dark:bg-white/10",
       )}
     >
       <span className="sr-only">Toggle theme</span>

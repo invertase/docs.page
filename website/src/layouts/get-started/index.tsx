@@ -6,33 +6,41 @@ import {
   EyeIcon,
 } from "lucide-react";
 import Link from "next/link";
-import { type ComponentProps, useEffect, useState } from "react";
-import { useInlineScript } from "~/hooks";
+import { useEffect, useState } from "react";
+import { Button } from "~/components/ui/button";
+import { LINKS } from "~/constants/links";
 import { Footer } from "~/layouts/Footer";
 import { Header } from "~/layouts/Header";
-import { cn } from "~/utils";
 import { Site } from "../Site";
 import { Card } from "./Card";
+
+/** Desktop: intrinsic width + right-align with CTAs; mobile: full width of column. */
+const assetImgClassName = "h-auto w-full max-w-full lg:w-auto";
 
 export default function GetStartedRoute() {
   return (
     <Site>
-      <Header />
-      <section className="max-w-5xl w-full mx-auto py-20 px-6">
-        <div className="">
-          <h1 className="text-center text-5xl font-semibold leading-[55px] bg-clip-text text-transparent bg-gradient-to-b from-brand-50 to-brand-100">
-            Publish docs in 4 steps
-          </h1>
-          <div className="relative max-w-[800px] space-y-6 mx-auto mt-12">
-            <div className="hidden lg:block absolute w-px bg-gradient-to-b top-10 from-brand-100/50 via-brand-100/50 bottom-0 h-full -left-8" />
-            <Install />
-            <PreviewDocs />
-            <AddContent />
-            <PublishChanges />
+      <div className="homepage-spot-grid min-h-screen">
+        <Header />
+        <section className="mx-auto w-full max-w-5xl px-6 py-20">
+          <div>
+            <h1 className="heading-h1 text-center">
+              Publish docs in{" "}
+              <span className="font-mono text-marketing-accent-bright dark:text-marketing-accent-emphasis">
+                four
+              </span>{" "}
+              steps
+            </h1>
+            <div className="relative mx-auto mt-12 max-w-[800px] space-y-6">
+              <Install />
+              <PreviewDocs />
+              <AddContent />
+              <PublishChanges />
+            </div>
           </div>
-        </div>
-      </section>
-      <Footer />
+        </section>
+        <Footer />
+      </div>
     </Site>
   );
 }
@@ -57,25 +65,25 @@ function Install() {
       description="Add docs.page to your project"
       asset={
         <img
-          src="/_docs.page/assets/get-started/terminal.png"
-          alt="Terminal Command"
-          className=""
+          src="/_docs.page/assets/get-started/install/install.png"
+          alt="Install docs.page with the CLI"
+          className={assetImgClassName}
         />
       }
       meta={
         <p>
           Run the{" "}
-          <a
-            href="https://use.docs.page/cli/commands/init"
-            className="underline"
-          >
+          <a href={`${LINKS.docs}/cli/commands/init`} className="underline">
             CLI init
           </a>{" "}
           command in your project to add docs.page to your project.
         </p>
       }
     >
-      <ActionButton
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
         onClick={() => {
           navigator.clipboard.writeText("npx @docs.page/cli init");
           setCopied(true);
@@ -83,7 +91,7 @@ function Install() {
       >
         {copied ? (
           <>
-            <CheckIcon size={16} className="text-green-500" />
+            <CheckIcon size={16} className="text-marketing-success dark:text-marketing-success-bright" />
             <span>Copied!</span>
           </>
         ) : (
@@ -92,7 +100,7 @@ function Install() {
             <span>Copy Command</span>
           </>
         )}
-      </ActionButton>
+      </Button>
     </Card>
   );
 }
@@ -107,29 +115,29 @@ function AddContent() {
         <img
           src="/_docs.page/assets/get-started/add-content-editor.png"
           alt="Markdown"
-          className="w-full"
+          className={assetImgClassName}
         />
       }
       meta={
         <p>
-          <a
-            href="https://use.docs.page/writing-content"
-            className="  underline"
-          >
+          <a href={`${LINKS.docs}/writing-content`} className="  underline">
             Write your documentation
           </a>{" "}
           using Markdown, adding new pages to your `docs` directory.
         </p>
       }
     >
-      <ActionButton
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
         onClick={() => {
-          window.location.href = "https://use.docs.page/writing-content";
+          window.location.href = `${LINKS.docs}/writing-content`;
         }}
       >
         <BookIcon size={16} />
         <span>Read Guide</span>
-      </ActionButton>
+      </Button>
     </Card>
   );
 }
@@ -142,9 +150,9 @@ function PreviewDocs() {
       description="Preview your docs.page site"
       asset={
         <img
-          src="/_docs.page/assets/get-started/preview.png"
+          src="/_docs.page/assets/get-started/preview-docs.png"
           alt="Markdown"
-          className="w-full"
+          className={assetImgClassName}
         />
       }
       meta={
@@ -157,14 +165,17 @@ function PreviewDocs() {
         </p>
       }
     >
-      <ActionButton
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
         onClick={() => {
           window.location.href = "/preview";
         }}
       >
         <EyeIcon size={16} />
         <span>Local Preview</span>
-      </ActionButton>
+      </Button>
     </Card>
   );
 }
@@ -178,6 +189,7 @@ function PublishChanges() {
 
   return (
     <Card
+      isLast
       step={4}
       title="Publish Changes"
       description="Make your changes public"
@@ -185,7 +197,7 @@ function PublishChanges() {
         <img
           src="/_docs.page/assets/get-started/publish.png"
           alt="Markdown"
-          className="w-full"
+          className={assetImgClassName}
         />
       }
       meta={
@@ -201,24 +213,22 @@ function PublishChanges() {
           <div className="flex items-start gap-2">
             <div className="grow">
               <input
-                className="w-full border border-white/10 rounded-md px-3 py-2 bg-gradient-to-br from-brand-900/90 to-black text-white"
+                className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground shadow-sm transition-colors placeholder:text-muted-foreground focus-visible:border-ring focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40"
                 type="text"
                 value={input}
                 placeholder="https://github.com/org/repo"
                 onChange={(e) => setInput(e.target.value)}
               />
-              <div className="text-xs mt-1 text-red-500">
+              <div className="mt-1 text-xs text-destructive">
                 {isInvalid ? "Enter a valid GitHub repository URL" : null}
               </div>
             </div>
-            <button
+            <Button
               type="button"
-              className={cn(
-                "bg-white hover:bg-white/90 size-9 rounded flex items-center justify-center text-black",
-                {
-                  "opacity-50 cursor-not-allowed": !input || isInvalid,
-                },
-              )}
+              variant="outline"
+              size="icon-sm"
+              className="shrink-0"
+              disabled={!input || isInvalid}
               onClick={() => {
                 if (!input || isInvalid) {
                   return;
@@ -230,32 +240,22 @@ function PublishChanges() {
               }}
             >
               <ExternalLinkIcon size={16} />
-            </button>
+            </Button>
           </div>
         </div>
       }
     >
-      <ActionButton
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
         onClick={() => {
-          window.location.href = "https://use.docs.page/publishing";
+          window.location.href = `${LINKS.docs}/publishing`;
         }}
       >
         <ExternalLinkIcon size={16} />
         <span>Visit Docs</span>
-      </ActionButton>
+      </Button>
     </Card>
-  );
-}
-
-function ActionButton({ className, ...props }: ComponentProps<"button">) {
-  return (
-    <button
-      {...props}
-      type="button"
-      className={cn(
-        "inline-flex items-center gap-2 bg-brand-50 hover:bg-brand-50/90 transition-all text-black px-3 py-2 font-medium rounded-md",
-        className,
-      )}
-    />
   );
 }

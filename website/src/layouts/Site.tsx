@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { MARKETING_THEME_STORAGE_KEY } from "~/constants/links";
 import { useInlineScript } from "~/hooks";
 
 const title = "docs.page | Ship documentation, like you ship code";
@@ -8,10 +9,14 @@ const image = "https://docs.page/_docs.page/social-preview.png";
 
 export function Site({ children }: { children: React.ReactNode }) {
   const scripts = useInlineScript(`<script>(() => {
-		document.documentElement.setAttribute('data-theme', 'dark');
-    const root = document.documentElement;
-		root.style.setProperty('--background-dark', '224, 71%, 4%');		
-	})()</script>`);
+    var key = ${JSON.stringify(MARKETING_THEME_STORAGE_KEY)};
+    var stored = null;
+    try { stored = localStorage.getItem(key); } catch (e) {}
+    var theme = stored === "light" || stored === "dark"
+      ? stored
+      : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })()</script>`);
 
   return (
     <>

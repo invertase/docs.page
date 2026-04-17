@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 export async function trackPageRequest(
   request: NextRequest,
   owner: string,
-  repository: string
+  repository: string,
 ): Promise<void> {
   try {
     await fetch("https://plausible.io/api/event", {

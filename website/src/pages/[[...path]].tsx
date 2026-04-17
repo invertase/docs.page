@@ -5,8 +5,8 @@ import type { SharedEnvironmentVariables } from "~/env";
 
 import { Documentation } from "~/layouts/Documentation";
 import { Error } from "~/layouts/Error";
-import { Homepage } from "~/layouts/homepage";
 import { Site } from "~/layouts/Site";
+import { Homepage } from "~/layouts/homepage";
 import { Redirect, bundleCodeToStatusCode } from "~/utils";
 
 export const getServerSideProps = (async ({ params, req, res }) => {
@@ -80,7 +80,7 @@ export const getServerSideProps = (async ({ params, req, res }) => {
   // Cache the response for 1 second, and revalidate in the background.
   res.setHeader(
     "Cache-Control",
-    "public, s-maxage=1, stale-while-revalidate=59"
+    "public, s-maxage=1, stale-while-revalidate=59",
   );
 
   return { props: { env, ctx } };

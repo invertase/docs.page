@@ -1,18 +1,50 @@
 import InternalLink from "next/link";
 import type { ComponentProps } from "react";
-import { useHref } from "~/context";
-import { isExternalLink } from "~/utils";
+import { useContext } from "react";
 
-type LinkProps = ComponentProps<"a">;
+import { buttonVariants } from "~/components/ui/button";
+import type { Context } from "~/context";
+import { PageContext } from "~/context";
+import { cn } from "~/lib/utils";
+import { ensureLeadingSlash, getHref, isExternalLink } from "~/utils";
 
-export function Link(props: LinkProps) {
-  const href = useHref(props.href ?? "");
+export type LinkProps = ComponentProps<"a"> & {
+  variant?: "marketingNav";
+};
+
+function resolveHref(href: string | undefined, ctx: Context | undefined): string {
+  const raw = String(href ?? "");
+  if (ctx === undefined) {
+    return isExternalLink(raw) ? raw : ensureLeadingSlash(raw);
+  }
+  return getHref(ctx, raw);
+}
+
+export function Link({ className, variant, ...props }: LinkProps) {
+  const ctx = useContext(PageContext);
+  const href = resolveHref(props.href, ctx);
+
+  const mergedClassName =
+    variant === "marketingNav"
+      ? cn(
+          buttonVariants({ variant: "ghost", size: "lg" }),
+          "text-marketing-link hover:text-yellow-500 dark:hover:text-yellow-400",
+          "hover:bg-transparent aria-expanded:bg-transparent dark:hover:bg-transparent dark:aria-expanded:bg-transparent",
+          className,
+        )
+      : className;
 
   if (isExternalLink(props.href ?? "")) {
     return (
-      <a rel="noopener noreferrer" target="_blank" {...props} href={href} />
+      <a
+        rel="noopener noreferrer"
+        target="_blank"
+        {...props}
+        href={href}
+        className={mergedClassName}
+      />
     );
   }
 
-  return <InternalLink {...props} href={href} />;
+  return <InternalLink {...props} href={href} className={mergedClassName} />;
 }

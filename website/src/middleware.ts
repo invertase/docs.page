@@ -1,8 +1,8 @@
+import { waitUntil } from "@vercel/functions";
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { waitUntil } from "@vercel/functions";
-import { trackPageRequest } from "./plausible";
 import { getEnvironment } from "./env";
+import { trackPageRequest } from "./plausible";
 
 // https://regex101.com/r/RMw0Ib/1
 const BLOCK_LIST_REGEX =
@@ -15,7 +15,7 @@ export function middleware(request: NextRequest) {
   if (BLOCK_LIST_REGEX.test(url.pathname)) {
     return new Response(
       "This request has been blocked due to security reasons. Please create an issue at https://github.com/invertase/docs.page if you think is incorrect.",
-      { status: 403 }
+      { status: 403 },
     );
   }
 
