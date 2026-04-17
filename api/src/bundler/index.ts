@@ -201,7 +201,6 @@ export class Bundler {
       };
     } catch (e) {
       console.error(e);
-      // @ts-expect-error
       throw new BundlerError({
         code: 500,
         name: ERROR_CODES.BUNDLE_ERROR,
