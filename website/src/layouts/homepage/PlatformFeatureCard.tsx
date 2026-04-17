@@ -36,7 +36,7 @@ export function PlatformFeatureCard(props: {
     >
       <div
         className={cn(
-          "relative flex w-full flex-col gap-2.5 overflow-hidden p-5 pt-4 sm:p-6 sm:pt-4",
+          "relative flex h-full min-h-0 w-full flex-1 flex-col overflow-x-hidden p-5 pt-4 sm:p-6 sm:pt-4",
         )}
       >
         <div
@@ -64,17 +64,19 @@ export function PlatformFeatureCard(props: {
             )}
           />
         </div>
-        <CardTitle
-          className={cn(
-            "shrink-0 text-start text-base font-normal leading-snug text-foreground",
-            props.titleClassName,
-          )}
-        >
-          {props.title}
-        </CardTitle>
-        <CardDescription className="shrink-0 text-left text-sm font-light leading-snug group-hover/platform-tile:text-zinc-600 dark:group-hover/platform-tile:text-zinc-400 sm:text-base sm:leading-snug">
-          {props.description}
-        </CardDescription>
+        <div className="mt-auto flex min-h-0 flex-col gap-2.5 pt-2.5">
+          <CardTitle
+            className={cn(
+              "shrink-0 text-start text-base font-normal leading-snug text-foreground",
+              props.titleClassName,
+            )}
+          >
+            {props.title}
+          </CardTitle>
+          <CardDescription className="shrink-0 text-left text-sm font-light leading-snug group-hover/platform-tile:text-zinc-600 dark:group-hover/platform-tile:text-zinc-400 sm:text-base sm:leading-snug">
+            {props.description}
+          </CardDescription>
+        </div>
       </div>
     </Card>
   );

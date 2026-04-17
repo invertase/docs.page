@@ -18,7 +18,13 @@ const platformGridTileShell = cn(
   "lg:border-r lg:[&:nth-child(n+4)]:border-b-0 lg:[&:nth-child(3n)]:border-r-0",
 );
 
-const platformGridCardClassName = "h-full border-0 !shadow-none";
+const platformGridCardClassName =
+  "min-h-0 flex-1 border-0 !shadow-none";
+
+const platformGridCell = cn(
+  platformGridTileShell,
+  "flex h-full min-h-0 flex-col",
+);
 
 export function Platform() {
   return (
@@ -36,7 +42,7 @@ export function Platform() {
 
       <div className="border border-zinc-300 dark:border-zinc-700">
         <div className="grid gap-0 md:grid-cols-4 lg:grid-cols-6">
-          <div className={platformGridTileShell}>
+          <div className={platformGridCell}>
             <PlatformFeatureCard
               className={platformGridCardClassName}
               image={asset("publish-instantly")}
@@ -45,7 +51,7 @@ export function Platform() {
               description="Create fully managed documentation sites in seconds, without complex setup."
             />
           </div>
-          <div className={platformGridTileShell}>
+          <div className={platformGridCell}>
             <PlatformFeatureCard
               className={platformGridCardClassName}
               image={asset("manage-docs-as-code")}
@@ -54,17 +60,16 @@ export function Platform() {
               description="Branch, review, and version your docs like the rest of your project."
             />
           </div>
-          <div className={platformGridTileShell}>
+          <div className={platformGridCell}>
             <PlatformFeatureCard
               className={platformGridCardClassName}
               image={asset("collaborate-with-live-preview")}
               imageSize="large"
               title="Collaborate with Live Preview"
-              titleClassName="whitespace-nowrap"
               description="Write Markdown and see changes in real time. Share preview links for feedback."
             />
           </div>
-          <div className={platformGridTileShell}>
+          <div className={platformGridCell}>
             <PlatformFeatureCard
               className={platformGridCardClassName}
               image={asset("cutomise-and-theme")}
@@ -72,7 +77,7 @@ export function Platform() {
               description="Tailor colors, typography, and layout so documentation feels native to your product."
             />
           </div>
-          <div className={platformGridTileShell}>
+          <div className={platformGridCell}>
             <PlatformFeatureCard
               className={platformGridCardClassName}
               image={asset("polished-by-default")}
