@@ -1,5 +1,5 @@
-import type { ReactNode } from "react";
 import { cva } from "class-variance-authority";
+import type { ReactNode } from "react";
 
 import { Card as UICard } from "~/components/ui/card";
 import { cn } from "~/lib/utils";
@@ -47,11 +47,13 @@ export function Card(props: Props) {
       >
         <div className="relative isolate flex flex-col gap-6 lg:grid lg:grid-cols-12 lg:gap-x-12 lg:gap-y-6">
           <div className="col-start-1 col-end-6 flex flex-col">
-            <h2 className="!font-mono !text-xl !font-medium !tracking-tight !text-foreground md:!text-2xl">
+            <h2 className="font-mono text-xl font-medium tracking-tight text-foreground md:text-2xl">
               <span className="lg:hidden">{props.step}. </span>
               <span>{props.title}</span>
             </h2>
-            <p className="mb-6 mt-4 text-muted-foreground/70">{props.description}</p>
+            <p className="mb-6 mt-4 text-muted-foreground/70">
+              {props.description}
+            </p>
             {props.meta ? (
               <div
                 className={cn(

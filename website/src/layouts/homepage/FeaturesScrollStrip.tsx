@@ -1,13 +1,8 @@
 "use client";
 
-import {
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
+import { useIsomorphicLayoutEffect } from "~/lib/use-isomorphic-layout-effect";
 import { cn } from "~/lib/utils";
 
 type ThumbState = { widthPct: number; leftPct: number };
@@ -43,12 +38,11 @@ export function FeaturesScrollStrip({
     const rawWidthPct = (clientWidth / scrollWidth) * 100;
     const widthPct = Math.max(rawWidthPct, MIN_THUMB_PCT);
     const maxLeft = 100 - widthPct;
-    const leftPct =
-      maxScroll > 0 ? (scrollLeft / maxScroll) * maxLeft : 0;
+    const leftPct = maxScroll > 0 ? (scrollLeft / maxScroll) * maxLeft : 0;
     setThumb({ widthPct, leftPct });
   }, []);
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     updateThumb();
   }, [updateThumb]);
 
@@ -73,8 +67,8 @@ export function FeaturesScrollStrip({
     if ((e.target as HTMLElement).dataset.thumb === "true") return;
     const rect = track.getBoundingClientRect();
     const x = e.clientX - rect.left;
-    const ratio = Math.max(0, Math.min(1, x / rect.width));
     const maxScroll = scroll.scrollWidth - scroll.clientWidth;
+    const ratio = rect.width > 0 ? Math.max(0, Math.min(1, x / rect.width)) : 0;
     scroll.scrollLeft = ratio * maxScroll;
   };
 
@@ -91,7 +85,8 @@ export function FeaturesScrollStrip({
 
     const onMove = (ev: PointerEvent) => {
       const dx = ev.clientX - startX;
-      scroll.scrollLeft = startScroll + (dx / trackW) * maxScroll;
+      scroll.scrollLeft =
+        trackW > 0 ? startScroll + (dx / trackW) * maxScroll : startScroll;
     };
     const onUp = () => {
       window.removeEventListener("pointermove", onMove);

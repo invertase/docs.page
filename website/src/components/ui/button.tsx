@@ -4,12 +4,11 @@ import { type VariantProps, cva } from "class-variance-authority";
 import { cn } from "~/lib/utils";
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-full border border-transparent bg-clip-padding font-mono text-base font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-yellow-500 focus-visible:ring-3 focus-visible:ring-yellow-500/40 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-red-500 aria-invalid:ring-3 aria-invalid:ring-red-500/20 dark:aria-invalid:border-red-400 dark:aria-invalid:ring-red-400/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-full border border-transparent bg-clip-padding font-mono text-base font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-yellow-500 focus-visible:ring focus-visible:ring-yellow-500/40 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-red-500 aria-invalid:ring aria-invalid:ring-red-500/20 dark:aria-invalid:border-red-400 dark:aria-invalid:ring-red-400/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
-        primary:
-          "bg-yellow-400 text-zinc-950 hover:bg-yellow-300",
+        primary: "bg-yellow-400 text-zinc-950 hover:bg-yellow-300",
         secondary:
           "bg-zinc-200 text-zinc-900 hover:bg-zinc-300 aria-expanded:bg-zinc-200 aria-expanded:text-zinc-900 dark:bg-zinc-800 dark:text-zinc-50 dark:hover:bg-zinc-700 dark:aria-expanded:bg-zinc-800 dark:aria-expanded:text-zinc-50",
         outline:
@@ -38,7 +37,9 @@ const buttonVariants = cva(
   },
 );
 
-type ButtonVariant = NonNullable<VariantProps<typeof buttonVariants>["variant"]>;
+type ButtonVariant = NonNullable<
+  VariantProps<typeof buttonVariants>["variant"]
+>;
 
 type ButtonProps = ButtonPrimitive.Props & {
   variant?: ButtonVariant;
