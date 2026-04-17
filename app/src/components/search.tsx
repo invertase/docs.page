@@ -1,13 +1,13 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { RiSearch2Line } from "@remixicon/react";
 import { useHotkeys } from "react-hotkeys-hook";
-import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { prewarmSearch } from "@/lib/search-client";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "./ui/input-group";
 import { Kbd } from "./ui/kbd";
+import { Button } from "./ui/button";
 
 const SearchDialog = dynamic(() => import("./search-dialog"), {
   ssr: false,
@@ -35,22 +35,15 @@ export function Search() {
 
   return (
     <>
-      <div className="">
-        <InputGroup
-          className="w-20"
-          role="button"
-          onClick={() => setOpen(true)}
-          onMouseEnter={warm}
-          onFocus={warm}
+      <div>
+        <Button
+          variant="outline"
+          aria-label="Search"
+          onClick={() => setOpen(!open)}
         >
-          <InputGroupInput readOnly />
-          <InputGroupAddon>
-            <RiSearch2Line className="text-foreground" />
-          </InputGroupAddon>
-          <InputGroupAddon align="inline-end">
-            <Kbd>⌘K</Kbd>
-          </InputGroupAddon>
-        </InputGroup>
+          <RiSearch2Line />
+          <Kbd className="hidden md:block">⌘K</Kbd>
+        </Button>
       </div>
       {open ? (
         <SearchDialog

@@ -4,10 +4,12 @@ import { useDocTabs } from "@/hooks/use-doc-tabs";
 import { getAssetSrc } from "@/lib/docs-assets";
 import { resolveActiveTabId } from "@/lib/docs-routing";
 import { cn } from "@/lib/utils";
-import { RiSunFill, RiMoonFill } from "@remixicon/react";
+import { RiSunFill, RiMoonFill, RiSparkling2Fill } from "@remixicon/react";
 import { useTheme } from "next-themes";
 import { Button } from "./ui/button";
 import { Search } from "./search";
+import { useAgentPanel } from "./agent-panel";
+import { Kbd } from "./ui/kbd";
 
 export function Header() {
   const hasTabs = useDocTabs().length > 0;
@@ -66,15 +68,29 @@ function Logo() {
   );
 }
 
-
-
 function Actions() {
   return (
     <div className="flex min-w-0 flex-1 items-center justify-end gap-3">
+      <AgentPanelToggle />
       <Search />
       <HeaderLinks />
       <ThemeToggle />
     </div>
+  );
+}
+
+function AgentPanelToggle() {
+  const { open, setOpen } = useAgentPanel();
+
+  return (
+    <Button
+      variant="outline"
+      aria-label="Toggle agent panel"
+      onClick={() => setOpen(!open)}
+    >
+      <RiSparkling2Fill />
+      <Kbd className="hidden md:block">⌘I</Kbd>
+    </Button>
   );
 }
 

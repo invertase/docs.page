@@ -1,42 +1,68 @@
 "use client";
 
-import { useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { Sheet, SheetContent, SheetTitle } from "./ui/sheet";
 
-export function useAgentPanel() {
+type AgentPanelContextValue = {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  toggle: () => void;
+};
+
+const AgentPanelContext = createContext<AgentPanelContextValue | null>(null);
+
+export function AgentPanelProvider({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
+
+  const toggle = useCallback(() => setOpen((previous) => !previous), []);
 
   useHotkeys(
     "mod+i",
     (event) => {
       event.preventDefault();
-      setOpen((previous) => !previous);
+      toggle();
     },
     { enableOnFormTags: true },
   );
 
-  return { open, setOpen };
+  const value = useMemo<AgentPanelContextValue>(
+    () => ({ open, setOpen, toggle }),
+    [open, toggle],
+  );
+
+  return (
+    <AgentPanelContext.Provider value={value}>
+      {children}
+    </AgentPanelContext.Provider>
+  );
 }
 
-export function AgentPanel({
-  open,
-  onOpenChange,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-}) {
+export function useAgentPanel() {
+  const context = useContext(AgentPanelContext);
+  if (!context) {
+    throw new Error("useAgentPanel must be used within an AgentPanelProvider");
+  }
+  return context;
+}
+
+export function AgentPanel() {
+  const { open, setOpen } = useAgentPanel();
   const isMobile = useIsMobile(1200);
 
   if (isMobile) {
     return (
-      <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent
-          side="bottom"
-          className="h-[75svh]! rounded-t-xl"
-        >
+      <Sheet open={open} onOpenChange={setOpen}>
+        <SheetContent side="bottom" className="h-[75svh]! rounded-t-xl">
           <SheetTitle className="sr-only">Agent</SheetTitle>
         </SheetContent>
       </Sheet>
