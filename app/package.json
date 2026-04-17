@@ -21,6 +21,7 @@
     "@shikijs/transformers": "^4.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "cmdk": "^1.1.1",
     "flexsearch": "^0.8.212",
     "gray-matter": "^4.0.3",
     "hast-util-has-property": "^3.0.0",
@@ -36,6 +37,7 @@
     "radix-ui": "^1.4.3",
     "react": "19.2.4",
     "react-dom": "19.2.4",
+    "react-hotkeys-hook": "^5.2.4",
     "redis": "^4.7.1",
     "rehype-accessible-emojis": "^0.3.2",
     "rehype-slug": "^6.0.0",
@@ -54,6 +56,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
+    "@tailwindcss/typography": "^0.5.19",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^20",
     "@types/react": "^19",

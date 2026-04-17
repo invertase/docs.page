@@ -1,22 +1,18 @@
-import { Index, type IndexOptions } from "flexsearch";
 import frontmatter from "gray-matter";
 
 import { getGitHubFileSourcesBatch } from "@/server/github/contents";
 import { listGitHubDocFiles } from "@/server/github/tree";
 import type { GitHubDocFileList } from "@/server/github/tree";
 
-export const DOCS_FLEXSEARCH_INDEX_OPTIONS: IndexOptions = {
-  tokenize: "forward",
-  encoder: "Normalize",
+export type DocsFlexSearchDoc = {
+  path: string;
+  title: string;
+  content: string;
 };
 
 export type DocsFlexSearchJson = {
-  version: 2;
-  indexOptions: typeof DOCS_FLEXSEARCH_INDEX_OPTIONS;
-  /** FlexSearch `export()` chunks (e.g. `1.reg`, `1.map`), not user-facing doc ids. */
-  index: Record<string, string>;
-  /** Doc id → display fields (`Index.search` returns ids matching these keys). */
-  documents: Record<string, { path: string; title: string }>;
+  version: 4;
+  documents: DocsFlexSearchDoc[];
   meta: {
     resolvedRef: string;
     resolvedSha: string;
@@ -25,7 +21,11 @@ export type DocsFlexSearchJson = {
   };
 };
 
-function titleFromMatterAndBody(data: Record<string, unknown>, body: string, fallback: string): string {
+function titleFromMatterAndBody(
+  data: Record<string, unknown>,
+  body: string,
+  fallback: string,
+): string {
   if (typeof data.title === "string" && data.title.trim()) {
     return data.title.trim();
   }
@@ -35,12 +35,24 @@ function titleFromMatterAndBody(data: Record<string, unknown>, body: string, fal
   return heading ? heading[1].trim() : fallback;
 }
 
-async function buildFlexSearchPayload(docList: GitHubDocFileList): Promise<DocsFlexSearchJson> {
+function stripMarkdown(input: string): string {
+  return input
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/`[^`]*`/g, " ")
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, " ")
+    .replace(/\[([^\]]+)\]\([^)]*\)/g, "$1")
+    .replace(/^>\s?/gm, "")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/[*_~]{1,3}([^*_~]+)[*_~]{1,3}/g, "$1")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+async function buildFlexSearchPayload(
+  docList: GitHubDocFileList,
+): Promise<DocsFlexSearchJson> {
   const { owner, repository, ref } = docList.source;
   const resolvedRef = ref ?? docList.resolvedRef;
-
-  const searchIndex = new Index(DOCS_FLEXSEARCH_INDEX_OPTIONS);
-  const documents: Record<string, { path: string; title: string }> = {};
 
   const paths = docList.files.map((f) => f.sourcePath);
   const blobs = await getGitHubFileSourcesBatch({
@@ -50,32 +62,24 @@ async function buildFlexSearchPayload(docList: GitHubDocFileList): Promise<DocsF
     paths,
   });
 
+  const documents: DocsFlexSearchDoc[] = [];
+
   for (const file of docList.files) {
-    const content = blobs.get(file.sourcePath);
-    if (content == null) {
+    const raw = blobs.get(file.sourcePath);
+    if (raw == null) {
       continue;
     }
 
     const { path } = file;
-    const parsed = frontmatter(content);
+    const parsed = frontmatter(raw);
     const title = titleFromMatterAndBody(parsed.data, parsed.content, path);
-    const text = parsed.content.replace(/\r\n/g, "\n");
-    const combined = `${title}\n\n${text}`;
+    const content = stripMarkdown(parsed.content.replace(/\r\n/g, "\n"));
 
-    searchIndex.add(path, combined);
-    documents[path] = { path, title };
+    documents.push({ path, title, content });
   }
 
-  const exportIndex: Record<string, string> = {};
-
-  searchIndex.export((key, data) => {
-    exportIndex[key] = data;
-  });
-
   return {
-    version: 2,
-    indexOptions: DOCS_FLEXSEARCH_INDEX_OPTIONS,
-    index: exportIndex,
+    version: 4,
     documents,
     meta: {
       resolvedRef: docList.resolvedRef,
@@ -86,12 +90,12 @@ async function buildFlexSearchPayload(docList: GitHubDocFileList): Promise<DocsF
   };
 }
 
-export function emptyDocsFlexSearchPayload(docList: GitHubDocFileList): DocsFlexSearchJson {
+export function emptyDocsFlexSearchPayload(
+  docList: GitHubDocFileList,
+): DocsFlexSearchJson {
   return {
-    version: 2,
-    indexOptions: DOCS_FLEXSEARCH_INDEX_OPTIONS,
-    index: {},
-    documents: {},
+    version: 4,
+    documents: [],
     meta: {
       resolvedRef: docList.resolvedRef,
       resolvedSha: docList.resolvedSha,
@@ -114,10 +118,8 @@ async function buildFlexSearchIndexForResolvedSha(
 
   if (!docList || docList.files.length === 0) {
     return {
-      version: 2,
-      indexOptions: DOCS_FLEXSEARCH_INDEX_OPTIONS,
-      index: {},
-      documents: {},
+      version: 4,
+      documents: [],
       meta: {
         resolvedRef: docList?.resolvedRef ?? "",
         resolvedSha: docList?.resolvedSha ?? resolvedSha,

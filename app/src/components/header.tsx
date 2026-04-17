@@ -1,18 +1,13 @@
 import { Link } from "@/components/doc-link";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/input-group";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useDocTabs } from "@/hooks/use-doc-tabs";
 import { getAssetSrc } from "@/lib/docs-assets";
 import { resolveActiveTabId } from "@/lib/docs-routing";
 import { cn } from "@/lib/utils";
-import { RiSunFill, RiMoonFill, RiSearch2Line } from "@remixicon/react";
-import { Kbd } from "./ui/kbd";
+import { RiSunFill, RiMoonFill } from "@remixicon/react";
 import { useTheme } from "next-themes";
 import { Button } from "./ui/button";
+import { Search } from "./search";
 
 export function Header() {
   const hasTabs = useDocTabs().length > 0;
@@ -22,7 +17,6 @@ export function Header() {
       <div className="mx-auto w-full max-w-8xl px-4">
         <div className="h-12 flex items-center justify-between">
           <Logo />
-          <Search />
           <Actions />
         </div>
         {hasTabs && (
@@ -72,25 +66,12 @@ function Logo() {
   );
 }
 
-function Search() {
-  return (
-    <div className="flex min-w-0 flex-2 items-center justify-center">
-      <InputGroup className="max-w-xs">
-        <InputGroupInput placeholder="Search..." />
-        <InputGroupAddon>
-          <RiSearch2Line />
-        </InputGroupAddon>
-        <InputGroupAddon align="inline-end">
-          <Kbd>⌘K</Kbd>
-        </InputGroupAddon>
-      </InputGroup>
-    </div>
-  );
-}
+
 
 function Actions() {
   return (
     <div className="flex min-w-0 flex-1 items-center justify-end gap-3">
+      <Search />
       <HeaderLinks />
       <ThemeToggle />
     </div>
@@ -149,13 +130,13 @@ function Tabs() {
             href={tab.href}
             aria-current={isActive ? "page" : undefined}
             className={cn(
-              "inline-flex h-8 items-center px-1 text-sm border-b-2 -mb-px transition-colors",
+              "inline-flex gap-2 h-8 items-center px-1 text-sm border-b-2 -mb-px transition-colors",
               isActive
                 ? "border-primary text-foreground"
                 : "border-transparent text-muted-foreground hover:text-foreground hover:border-border",
             )}
           >
-            {tab.title}
+            <span>{tab.title}</span>
           </Link>
         );
       })}

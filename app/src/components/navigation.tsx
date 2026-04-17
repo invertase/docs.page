@@ -270,7 +270,7 @@ export function Navigation() {
           aria-hidden
           className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-12 bg-linear-to-t from-background to-transparent"
         />
-        <SidebarContent className="relative flex-1 bg-background py-5">
+        <SidebarContent className="relative flex-1 bg-background py-5 pl-2">
           {groups.map((group, gi) => (
             <SidebarGroup
               key={`${group.group ?? "group"}-${gi}`}
