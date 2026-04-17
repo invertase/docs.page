@@ -38,9 +38,5 @@ const containsBadge = (node: HastNode): boolean => {
   const first = node.children?.[0];
   if (first?.type !== "element" || first.tagName !== "img") return false;
   const src = first.properties?.src;
-  return (
-    typeof src === "string" &&
-    isBadge(src) &&
-    node.visited !== "true"
-  );
+  return typeof src === "string" && isBadge(src) && node.visited !== "true";
 };
