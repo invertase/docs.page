@@ -1,9 +1,9 @@
 import {
-  BookOpenIcon,
   ChevronRightIcon,
-  GithubIcon,
+  MenuIcon,
   MoonIcon,
   SunIcon,
+  XIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -16,6 +16,17 @@ import { platformCardVariants } from "~/layouts/homepage/platformCardSurface";
 import { cn } from "~/lib/utils";
 
 export function Header() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!menuOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMenuOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [menuOpen]);
+
   return (
     <header className="w-full">
       <div className="mx-auto w-full max-w-6xl px-4">
@@ -25,53 +36,92 @@ export function Header() {
             "gap-0 border-t-0 p-4 text-foreground sm:p-5 md:p-6",
           )}
         >
-          <div className="flex flex-col items-center gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <Link
-              href="/"
-              className="group flex items-center transition-opacity hover:opacity-90"
-            >
-              <DocsPageLogo />
-            </Link>
+          <div className="flex flex-col gap-0">
+            <div className="flex w-full flex-row items-center justify-between gap-4">
+              <Link
+                href="/"
+                className="group flex shrink-0 items-center transition-opacity hover:opacity-90"
+              >
+                <DocsPageLogo />
+              </Link>
 
-            <div className="flex w-full flex-wrap items-center justify-center gap-3 sm:w-auto sm:grow sm:justify-end">
-              <nav className="flex flex-wrap items-center justify-center gap-1 md:gap-2">
+              <div className="hidden min-w-0 flex-1 min-[813px]:flex min-[813px]:items-center min-[813px]:justify-end">
+                <nav className="flex w-full flex-wrap items-center justify-end gap-1 md:gap-2">
+                  <MarketingHeaderThemeToggle />
+                  <ul className="flex flex-wrap items-center justify-end gap-1 md:gap-2">
+                    <li>
+                      <Link variant="marketingNav" href={LINKS.githubRepo}>
+                        GitHub
+                        <ChevronRightIcon aria-hidden />
+                      </Link>
+                    </li>
+                    <li>
+                      <Link variant="marketingNav" href={LINKS.docs}>
+                        Documentation
+                        <ChevronRightIcon aria-hidden />
+                      </Link>
+                    </li>
+                  </ul>
+                  <Link
+                    href={LINKS.preview}
+                    className={cn(
+                      buttonVariants({
+                        variant: "primary",
+                        size: "lg",
+                      }),
+                      "dark:border dark:border-zinc-700 dark:bg-transparent dark:text-yellow-400 dark:hover:bg-zinc-800",
+                    )}
+                  >
+                    Local Preview
+                    <ChevronRightIcon aria-hidden />
+                  </Link>
+                </nav>
+              </div>
+
+              <div className="flex min-[813px]:hidden shrink-0 items-center gap-2">
                 <MarketingHeaderThemeToggle />
-                <ul className="flex flex-wrap items-center justify-center gap-1 md:gap-2">
-                  <li className="hidden sm:block">
-                    <Link variant="marketingNav" href={LINKS.githubRepo}>
-                      GitHub
-                      <ChevronRightIcon aria-hidden />
-                    </Link>
-                  </li>
-                  <li className="hidden sm:block">
-                    <Link variant="marketingNav" href={LINKS.docs}>
-                      Documentation
-                      <ChevronRightIcon aria-hidden />
-                    </Link>
-                  </li>
-                  <li className="sm:hidden">
-                    <a
-                      target="_blank"
-                      rel="noreferrer"
-                      href={LINKS.githubRepo}
-                      className="text-muted-foreground/70 hover:text-yellow-600 dark:hover:text-yellow-400"
-                      aria-label="GitHub"
-                    >
-                      <GithubIcon className="size-6" />
-                    </a>
-                  </li>
-                  <li className="sm:hidden">
-                    <a
-                      target="_blank"
-                      rel="noreferrer"
-                      href={LINKS.docs}
-                      className="text-muted-foreground/70 hover:text-yellow-600 dark:hover:text-yellow-400"
-                      aria-label="Documentation"
-                    >
-                      <BookOpenIcon className="size-6" />
-                    </a>
-                  </li>
-                </ul>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-lg"
+                  className="text-foreground hover:text-foreground aria-expanded:text-foreground dark:hover:text-foreground dark:aria-expanded:text-foreground"
+                  aria-expanded={menuOpen}
+                  aria-controls="marketing-header-menu"
+                  aria-label={menuOpen ? "Close menu" : "Open menu"}
+                  onClick={() => setMenuOpen((open) => !open)}
+                >
+                  {menuOpen ? (
+                    <XIcon className="size-5" aria-hidden />
+                  ) : (
+                    <MenuIcon className="size-5" aria-hidden />
+                  )}
+                </Button>
+              </div>
+            </div>
+
+            {menuOpen ? (
+              <nav
+                id="marketing-header-menu"
+                className="mt-4 flex min-[813px]:hidden flex-col items-end gap-1 border-t border-zinc-300 pt-4 text-right dark:border-zinc-700"
+              >
+                <Link
+                  variant="marketingNav"
+                  href={LINKS.githubRepo}
+                  className="w-full justify-end"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  GitHub
+                  <ChevronRightIcon aria-hidden />
+                </Link>
+                <Link
+                  variant="marketingNav"
+                  href={LINKS.docs}
+                  className="w-full justify-end"
+                  onClick={() => setMenuOpen(false)}
+                >
+                  Documentation
+                  <ChevronRightIcon aria-hidden />
+                </Link>
                 <Link
                   href={LINKS.preview}
                   className={cn(
@@ -80,13 +130,15 @@ export function Header() {
                       size: "lg",
                     }),
                     "dark:border dark:border-zinc-700 dark:bg-transparent dark:text-yellow-400 dark:hover:bg-zinc-800",
+                    "mt-2 w-fit self-end",
                   )}
+                  onClick={() => setMenuOpen(false)}
                 >
                   Local Preview
                   <ChevronRightIcon aria-hidden />
                 </Link>
               </nav>
-            </div>
+            ) : null}
           </div>
         </Card>
       </div>

@@ -5,9 +5,9 @@ import { platformCardVariants } from "./platformCardSurface";
 
 const platformImageSizeClass = {
   default:
-    "max-h-[10rem] max-w-[min(100%,12.5rem)] sm:max-h-[10.75rem] sm:max-w-[14rem]",
+    "max-h-[12rem] max-w-[min(100%,15.5rem)] sm:max-h-[12.5rem] sm:max-w-[16.5rem] md:max-lg:max-h-[13.5rem] md:max-lg:max-w-[min(100%,19rem)] lg:max-h-[14rem] lg:max-w-[min(100%,19.5rem)]",
   large:
-    "max-h-[11.75rem] max-w-[min(100%,14rem)] sm:max-h-[12.75rem] sm:max-w-[16rem]",
+    "max-h-[14rem] max-w-[min(100%,17.5rem)] sm:max-h-[14.5rem] sm:max-w-[19.5rem] md:max-lg:max-h-[15.5rem] md:max-lg:max-w-[min(100%,22rem)] lg:max-h-[16.5rem] lg:max-w-[min(100%,22.5rem)]",
 } as const;
 
 export function PlatformFeatureCard(props: {
@@ -32,9 +32,13 @@ export function PlatformFeatureCard(props: {
         props.className,
       )}
     >
-      <div className="relative flex aspect-square w-full flex-col gap-3 overflow-hidden p-6 pt-4">
+      <div
+        className={cn(
+          "relative flex w-full flex-col gap-2.5 overflow-hidden p-5 pt-4 sm:p-6 sm:pt-4",
+        )}
+      >
         <div
-          className="relative flex min-h-0 w-full flex-1 items-center justify-center"
+          className="relative flex w-full shrink-0 items-center justify-center py-1"
           aria-hidden
         >
           <img
@@ -60,13 +64,13 @@ export function PlatformFeatureCard(props: {
         </div>
         <CardTitle
           className={cn(
-            "shrink-0 text-start text-lg font-normal text-foreground",
+            "shrink-0 text-start text-base font-normal leading-snug text-foreground",
             props.titleClassName,
           )}
         >
           {props.title}
         </CardTitle>
-        <CardDescription className="shrink-0 text-left text-base font-light leading-6 group-hover/platform-tile:text-zinc-600 dark:group-hover/platform-tile:text-zinc-400">
+        <CardDescription className="shrink-0 text-left text-sm font-light leading-snug group-hover/platform-tile:text-zinc-600 dark:group-hover/platform-tile:text-zinc-400 sm:text-base sm:leading-snug">
           {props.description}
         </CardDescription>
       </div>

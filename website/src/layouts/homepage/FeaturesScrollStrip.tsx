@@ -101,9 +101,10 @@ export function FeaturesScrollStrip({
       <div
         ref={scrollRef}
         className={cn(
-          "marketing-features-scroll-native-hidden w-full py-0",
-          /* Room for the custom scrollbar track (h-1) so cards aren’t covered */
-          overflow && "pb-2",
+          /* Horizontal inset so end cards aren’t flush with the strip edges; outer wrapper size unchanged */
+          "marketing-features-scroll-native-hidden w-full py-0 px-4 sm:px-6",
+          /* Space below cards; extra when scrollbar track is shown */
+          overflow ? "pb-5" : "pb-4",
         )}
       >
         {children}
@@ -121,7 +122,7 @@ export function FeaturesScrollStrip({
           >
             <div
               data-thumb="true"
-              className="absolute top-0 h-full cursor-grab rounded-none bg-zinc-300 active:cursor-grabbing dark:bg-zinc-700"
+              className="absolute top-0 h-full cursor-grab rounded-none bg-zinc-500 active:cursor-grabbing dark:bg-zinc-700"
               style={{
                 width: `${thumb.widthPct}%`,
                 left: `${thumb.leftPct}%`,

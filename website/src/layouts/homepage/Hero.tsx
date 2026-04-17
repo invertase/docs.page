@@ -30,8 +30,8 @@ export function Hero() {
             left: "calc(2.5rem + (100% - 2.5rem + 2rem) / 2)",
           }}
         />
-        <div className="relative z-[2] grid items-start gap-x-8 gap-y-6 lg:grid-cols-2 lg:gap-y-0">
-          <div className="mx-auto w-full max-w-[calc(100%-1.25rem-40px)] space-y-6 text-center lg:mx-0 lg:text-left">
+        <div className="relative z-[2] grid min-w-0 w-full items-start gap-x-8 gap-y-6 lg:grid-cols-2 lg:gap-y-0">
+          <div className="w-full space-y-6 text-left">
             <h1 className="heading-h1">
               Ship documentation,
               <br className="hidden sm:inline" /> like you ship{" "}
@@ -46,37 +46,61 @@ export function Hero() {
 
           <div
             className={cn(
-              "relative w-full min-w-0",
-              /* Bleed to Card padding — matches `p-6 sm:p-8 md:p-10` on parent Card */
-              "-mx-6 sm:-mx-8 md:-mx-10",
-              /* Desktop: align with card top; right edge via `lg:pr-0` on Card */
-              "lg:mx-0 lg:-mt-10",
+              "relative min-w-0 max-w-none justify-self-stretch",
+              /*
+               * Full-bleed within the Card: `w-full` + negative margin does NOT widen the border box,
+               * so rules stop short. Use explicit width = 100% + horizontal padding (matches Card pl/pr).
+               */
+              "max-lg:w-[calc(100%+3rem)] max-lg:-mx-6",
+              "sm:max-lg:w-[calc(100%+4rem)] sm:max-lg:-mx-8",
+              "md:max-lg:w-[calc(100%+5rem)] md:max-lg:-mx-10",
+              "lg:w-full lg:mx-0 lg:-mt-10",
+              /* Two-column layout: keep the video vertically centred when copy is taller than the frame */
+              "lg:self-center",
+              /* Stacked: 1px rails; inner uses mx-auto so video centres in the full-bleed band */
+              "max-lg:flex max-lg:flex-col max-lg:gap-0 max-lg:leading-none",
+              "max-lg:border-y max-lg:border-solid max-lg:border-zinc-300 max-lg:dark:border-zinc-700",
             )}
           >
-            <div className="relative w-full overflow-hidden rounded-none">
-              <video
-                autoPlay
-                loop
-                muted
-                playsInline
-                controls
-                preload="metadata"
-                className="relative z-0 block h-auto w-full max-w-full object-contain object-center"
-                poster="/_docs.page/social-preview.png"
-              >
-                <source
-                  src="/_docs.page/docs-page-hero-video.webm#t=1"
-                  type="video/webm"
+            <div
+              className={cn(
+                "w-full max-lg:mx-auto max-lg:max-w-2xl max-lg:shrink-0 max-lg:pt-0",
+                "lg:max-w-none",
+              )}
+            >
+              <div className="relative flex w-full items-start justify-center overflow-hidden rounded-none leading-none">
+                <video
+                  autoPlay
+                  loop
+                  muted
+                  playsInline
+                  controls
+                  preload="metadata"
+                  className="relative z-0 m-0 block h-auto w-full max-w-full object-contain max-lg:object-top lg:object-center"
+                  poster="/_docs.page/social-preview.png"
+                >
+                  <source
+                    src="/_docs.page/docs-page-hero-video.webm#t=1"
+                    type="video/webm"
+                  />
+                </video>
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 z-10 bg-marketing-hero-video-tint/8 dark:bg-marketing-hero-video-tint-dark/10"
                 />
-              </video>
-              <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 z-10 bg-marketing-hero-video-tint/8 dark:bg-marketing-hero-video-tint-dark/10"
-              />
+              </div>
             </div>
           </div>
 
-          <div className="flex w-full items-center justify-end py-4 sm:py-5 md:py-6 pr-4 sm:pr-5 md:pr-6 lg:col-start-2">
+          <div
+            className={cn(
+              "flex w-full items-center justify-start max-lg:pr-0",
+              /* Stacked: grid gap-y-6 already separates video → CTA; extra py-top doubled the space above the button */
+              "max-lg:pt-0 max-lg:pb-6",
+              /* Two columns: gap-y-0 — use symmetric padding inside the CTA row */
+              "lg:col-start-2 lg:justify-end lg:pr-6 lg:py-6",
+            )}
+          >
             <Link
               href={LINKS.getStarted}
               className={buttonVariants({

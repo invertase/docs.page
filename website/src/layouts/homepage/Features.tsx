@@ -75,12 +75,13 @@ export function Features() {
   return (
     <section className="mx-auto max-w-6xl space-y-6 px-4 pt-4">
       <div className="flex flex-col items-start gap-4 pl-6 text-left">
-        <h2 className="heading-h2">
+        <h2 className="heading-h2 text-balance">
           Everything needed to publish{" "}
+          <br className="md:hidden" aria-hidden />
           <span className="font-mono text-marketing-accent">polished</span>{" "}
           documentation
         </h2>
-        <p className="w-fit max-w-none whitespace-nowrap font-light text-muted-foreground/70">
+        <p className="w-full max-w-2xl text-pretty font-light leading-snug text-muted-foreground/70">
           Built to improve developer experience from first commit to production.
         </p>
       </div>
