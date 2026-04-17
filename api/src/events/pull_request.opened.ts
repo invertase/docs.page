@@ -1,6 +1,5 @@
 import type { EmitterWebhookEvent } from "@octokit/webhooks";
 import { getDomains, getOctokitForInstallation } from "../octokit";
-import { createGitHubCheckRun } from "../utils/github";
 
 export async function onPullRequestOpened(
   event: EmitterWebhookEvent<"pull_request.opened">,

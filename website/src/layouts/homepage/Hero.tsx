@@ -38,8 +38,9 @@ export function Hero() {
               <span className="font-mono text-marketing-accent">code</span>.
             </h1>
             <p className="text-base font-light text-muted-foreground/70">
-              Publish beautiful documentation instantly from your editor. Markdown,
-              GitHub, and a workflow that feels as natural as committing code.
+              Publish beautiful documentation instantly from your editor.
+              Markdown, GitHub, and a workflow that feels as natural as
+              committing code.
             </p>
           </div>
 

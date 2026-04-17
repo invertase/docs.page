@@ -1,9 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import {
-  type BundleErrorResponse,
-  type BundlerOutput,
-  getPreviewBundle,
-} from "~/api";
+import { type BundlerOutput, getPreviewBundle } from "~/api";
 
 type ResponseData = {
   bundle: BundlerOutput;

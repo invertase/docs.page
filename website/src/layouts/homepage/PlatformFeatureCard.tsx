@@ -22,8 +22,7 @@ export function PlatformFeatureCard(props: {
   /** Merged onto the root `Card` (e.g. `border-0` when the parent grid supplies edges). */
   className?: string;
 }) {
-  const sizeClass =
-    platformImageSizeClass[props.imageSize ?? "default"];
+  const sizeClass = platformImageSizeClass[props.imageSize ?? "default"];
 
   return (
     <Card

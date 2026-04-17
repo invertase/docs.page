@@ -12,9 +12,8 @@ import { Link } from "~/components/Link";
 import { Button, buttonVariants } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { LINKS, MARKETING_THEME_STORAGE_KEY } from "~/constants/links";
-import { cn } from "~/lib/utils";
-
 import { platformCardVariants } from "~/layouts/homepage/platformCardSurface";
+import { cn } from "~/lib/utils";
 
 export function Header() {
   return (

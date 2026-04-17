@@ -8,7 +8,6 @@ import {
   PencilIcon,
   RefreshCcwDotIcon,
   SearchIcon,
-  SwatchBookIcon,
 } from "lucide-react";
 
 import { FeatureCell } from "./FeatureCell";

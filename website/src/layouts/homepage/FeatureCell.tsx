@@ -87,9 +87,7 @@ export function FeatureCell({
   const typingDesc =
     titleShown.length >= title.length && descShown.length < description.length;
   const showCaret =
-    active &&
-    typewriterOff === false &&
-    (typingTitle || typingDesc);
+    active && typewriterOff === false && (typingTitle || typingDesc);
 
   return (
     <div
@@ -138,7 +136,7 @@ export function FeatureCell({
                 {showCaret && typingTitle ? (
                   <span
                     aria-hidden
-                      className="ml-px inline-block h-[1.05em] w-[2px] translate-y-[0.08em] animate-pulse bg-zinc-950 align-baseline dark:bg-zinc-100"
+                    className="ml-px inline-block h-[1.05em] w-[2px] translate-y-[0.08em] animate-pulse bg-zinc-950 align-baseline dark:bg-zinc-100"
                   />
                 ) : null}
               </span>
@@ -154,7 +152,7 @@ export function FeatureCell({
                 {showCaret && typingDesc ? (
                   <span
                     aria-hidden
-                      className="ml-px inline-block h-[1.05em] w-[2px] translate-y-[0.08em] animate-pulse bg-zinc-600 align-baseline dark:bg-zinc-400"
+                    className="ml-px inline-block h-[1.05em] w-[2px] translate-y-[0.08em] animate-pulse bg-zinc-600 align-baseline dark:bg-zinc-400"
                   />
                 ) : null}
               </span>

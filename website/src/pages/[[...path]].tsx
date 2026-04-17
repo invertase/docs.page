@@ -5,9 +5,9 @@ import type { SharedEnvironmentVariables } from "~/env";
 
 import { Documentation } from "~/layouts/Documentation";
 import { Error } from "~/layouts/Error";
-import { Site } from "~/layouts/Site";
 import { Homepage } from "~/layouts/homepage";
-import { Redirect, bundleCodeToStatusCode } from "~/utils";
+import { Site } from "~/layouts/Site";
+import { bundleCodeToStatusCode, Redirect } from "~/utils";
 
 export const getServerSideProps = (async ({ params, req, res }) => {
   const env = {

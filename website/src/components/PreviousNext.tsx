@@ -67,7 +67,7 @@ export function PreviousNext() {
     previous = {
       title: frontmatter.previousTitle
         ? String(frontmatter.previousTitle)
-        : findAnchor(String(frontmatter.previous))?.title ?? "",
+        : (findAnchor(String(frontmatter.previous))?.title ?? ""),
       href: String(frontmatter.previous),
     };
   }
@@ -77,7 +77,7 @@ export function PreviousNext() {
     next = {
       title: frontmatter.nextTitle
         ? String(frontmatter.nextTitle)
-        : findAnchor(String(frontmatter.next))?.title ?? "",
+        : (findAnchor(String(frontmatter.next))?.title ?? ""),
       href: String(frontmatter.next),
     };
   }

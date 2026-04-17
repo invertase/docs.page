@@ -1,4 +1,4 @@
-import { PencilIcon, StarIcon } from "lucide-react";
+import { PencilIcon } from "lucide-react";
 import { usePageContext, useSourceUrl } from "~/context";
 
 export function Edit() {

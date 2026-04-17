@@ -1,7 +1,7 @@
 import { type CheckResult, check } from "@docs.page/cli";
 import {
-  QueryClient,
   keepPreviousData,
+  QueryClient,
   useMutation,
   useQuery,
 } from "@tanstack/react-query";

@@ -39,7 +39,7 @@ export default function remarkUndeclaredVariables(): (ast: Node) => void {
     if (node.value && !declared.includes(node.value)) {
       node.type = "text";
       node.data = undefined;
-      node.value = `\{${node.value}\}`;
+      node.value = `{${node.value}}`;
     }
   }
 

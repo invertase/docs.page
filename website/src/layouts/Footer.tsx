@@ -1,11 +1,10 @@
-import { Card } from "~/components/ui/card";
 import { DocsPageLogo } from "~/components/DocsPageLogo";
 import { Icon } from "~/components/Icon";
 import { buttonVariants } from "~/components/ui/button";
+import { Card } from "~/components/ui/card";
 import { LINKS } from "~/constants/links";
-import { cn } from "~/lib/utils";
-
 import { platformCardVariants } from "~/layouts/homepage/platformCardSurface";
+import { cn } from "~/lib/utils";
 
 const footerSocialLinkClass = cn(
   buttonVariants({ variant: "ghost", size: "icon-lg" }),

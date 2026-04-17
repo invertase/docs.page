@@ -14,7 +14,7 @@ export function registerCheckCommand(program: Command) {
       "[path]",
       "Path to the relative directory to check. Defaults to the current directory.",
     )
-    .action(async (input: unknown, o) => {
+    .action(async (input: unknown, _o) => {
       const relativePath = String(input || ".");
       const absolutePath = path.resolve(relativePath);
 

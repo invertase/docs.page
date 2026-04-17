@@ -27,10 +27,12 @@ export default function remarkFixClassname(): (tree: Node) => void {
         node.attributes.push({
           type: "mdxJsxAttribute",
           name: "className",
-          value: classAttr.value
+          value: classAttr.value,
         });
         // Remove class attribute
-        node.attributes = node.attributes.filter((attr) => attr.name !== "class");
+        node.attributes = node.attributes.filter(
+          (attr) => attr.name !== "class",
+        );
       }
     });
 
@@ -47,10 +49,12 @@ export default function remarkFixClassname(): (tree: Node) => void {
         node.attributes.push({
           type: "mdxJsxAttribute",
           name: "className",
-          value: classAttr.value
+          value: classAttr.value,
         });
         // Remove class attribute
-        node.attributes = node.attributes.filter((attr) => attr.name !== "class");
+        node.attributes = node.attributes.filter(
+          (attr) => attr.name !== "class",
+        );
       }
     });
   };

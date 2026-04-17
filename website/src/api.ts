@@ -8,8 +8,8 @@ import { COMPONENTS } from "./components/Content";
 import { getBuildHash } from "./env";
 
 export type {
-  BundleResponse,
   BundleErrorResponse,
+  BundleResponse,
   BundlerOutput,
   SidebarGroup,
 };

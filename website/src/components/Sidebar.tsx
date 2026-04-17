@@ -1,7 +1,7 @@
 import { ChevronDownIcon, ChevronUpIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { type ReactElement, cloneElement, useState } from "react";
+import { cloneElement, type ReactElement, useState } from "react";
 import { useHrefMeta, usePageContext, useSidebar } from "~/context";
 import { cn, getHrefIsActive, isExternalLink } from "~/utils";
 import { Anchors } from "./Anchors";

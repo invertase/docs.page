@@ -27,7 +27,8 @@ export function Platform() {
           <span className="font-mono text-marketing-accent">simple</span>
         </h2>
         <p className="w-fit max-w-none whitespace-nowrap font-light text-muted-foreground/70">
-          The easiest way to maintain open-source documentation alongside your codebase.
+          The easiest way to maintain open-source documentation alongside your
+          codebase.
         </p>
       </div>
 

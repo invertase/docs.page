@@ -1,6 +1,5 @@
 import { type Config, defaultConfig, parseConfig } from "../config";
 import { getGitHubContents, getPullRequestMetadata } from "../utils/github";
-import { escapeHtml } from "../utils/sanitize";
 import { replaceMoustacheVariables } from "../utils/variables";
 import { BundlerError } from "./error";
 import { parseMdx } from "./mdx";
@@ -202,7 +201,7 @@ export class Bundler {
       };
     } catch (e) {
       console.error(e);
-      // @ts-ignore
+      // @ts-expect-error
       throw new BundlerError({
         code: 500,
         name: ERROR_CODES.BUNDLE_ERROR,

@@ -12,7 +12,7 @@ import type { Context } from "~/context";
 import { cn } from "~/utils";
 
 // Used to get the key for the local storage for the selected tab group.
-function getCodeGroupKey(context: Context, value: string) {
+function _getCodeGroupKey(context: Context, value: string) {
   return context.preview
     ? `preview:code-group:${value}`
     : `docs.page:code-group:${context.owner}/${context.repository}:${value}`;

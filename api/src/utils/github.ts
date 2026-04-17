@@ -208,7 +208,7 @@ export async function getPullRequestMetadata(
       `,
       owner: owner,
       repository: repository,
-      pullRequest: Number.parseInt(pullRequest),
+      pullRequest: Number.parseInt(pullRequest, 10),
     }),
   );
   if (error || !response) {
@@ -268,7 +268,7 @@ export async function createGitHubCheckRun(
 
   let hasErrors = false;
 
-  const ms = new Date().getTime();
+  const ms = Date.now();
   for await (const result of check(new Set(Object.keys(files)), getFileFn)) {
     if (result.type === "error") {
       hasErrors = true;
@@ -276,7 +276,7 @@ export async function createGitHubCheckRun(
 
     results.push(result);
   }
-  const timer = new Date().getTime() - ms;
+  const timer = Date.now() - ms;
 
   const errors = results.map((result) => {
     const tag = result.type === "error" ? "[ERROR]" : "[WARN]";

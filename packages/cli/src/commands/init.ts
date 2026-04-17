@@ -9,7 +9,7 @@ export function registerInitCommand(program: Command) {
     .command("init")
     .description("Initializes new docs.page files")
     .argument("[path]", "Path to the relative directory to initilize in.")
-    .action(async (input: unknown, o) => {
+    .action(async (input: unknown, _o) => {
       const relativePath = String(input || ".");
       const absolutePath = path.resolve(relativePath);
 

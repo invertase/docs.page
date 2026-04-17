@@ -119,7 +119,7 @@ function ListFiles() {
 function Diagnostics() {
   const checks = useCheckResult();
   const [open, setOpen] = useState(false);
-  const files = useFiles(open);
+  const _files = useFiles(open);
 
   return (
     <>

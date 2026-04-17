@@ -68,7 +68,7 @@ function Links() {
   const ctx = usePageContext();
   const links = ctx.bundle.config.header?.links;
 
-  if (!links || !links.length) {
+  if (!links?.length) {
     return null;
   }
 

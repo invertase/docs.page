@@ -91,7 +91,10 @@ function Install() {
       >
         {copied ? (
           <>
-            <CheckIcon size={16} className="text-marketing-success dark:text-marketing-success-bright" />
+            <CheckIcon
+              size={16}
+              className="text-marketing-success dark:text-marketing-success-bright"
+            />
             <span>Copied!</span>
           </>
         ) : (
@@ -183,7 +186,7 @@ function PreviewDocs() {
 function PublishChanges() {
   const [input, setInput] = useState("");
 
-  const match = input.match(/^https:\/\/github\.com\/([^\/]+)\/([^\/]+)$/);
+  const match = input.match(/^https:\/\/github\.com\/([^/]+)\/([^/]+)$/);
 
   const isInvalid = !!input && !match;
 

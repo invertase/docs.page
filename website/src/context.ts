@@ -1,10 +1,9 @@
 import { useRouter } from "next/router";
 import type { GetServerSidePropsContext } from "next/types";
 import { createContext, useContext, useEffect, useState } from "react";
-import { type BundlerOutput, type SidebarGroup, getBundle } from "./api";
+import { type BundlerOutput, getBundle, type SidebarGroup } from "./api";
 import { getEnvironment } from "./env";
 import {
-  Redirect,
   ensureLeadingSlash,
   getAssetSrc,
   getCustomDomain,
@@ -12,6 +11,7 @@ import {
   getHrefIsActive,
   getLocale,
   isExternalLink,
+  Redirect,
 } from "./utils";
 
 type BaseContext = {
@@ -249,7 +249,7 @@ export function useActiveTab(): string | undefined {
     return;
   }
 
-  let closestTab: string | undefined = undefined;
+  let closestTab: string | undefined;
   let maxSegments = -1;
 
   for (const tab of tabs) {

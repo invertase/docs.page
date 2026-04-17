@@ -3,16 +3,16 @@ import type { PluggableList } from "@mdx-js/mdx/lib/core";
 import remarkComment from "remark-comment";
 // Remark Plugins
 import remarkGfm from "remark-gfm";
+import remarkFixClassname from "./remark-class-names";
 import remarkComponentCheck from "./remark-component-check";
 import remarkUndeclaredVariables from "./remark-undeclared-variables";
-import remarkFixClassname from "./remark-class-names";
 // import { remarkCodeHike } from '@code-hike/mdx';
 // import { theme as codeHikeTheme } from './codeHikeTheme';
 
 import { rehypeAccessibleEmojis } from "rehype-accessible-emojis";
-import rehypeUnwrapImages from "rehype-unwrap-images";
 // Rehype Plugins
 import rehypeSlug from "rehype-slug";
+import rehypeUnwrapImages from "rehype-unwrap-images";
 import rehypeCodeBlocks from "./rehype-code-blocks";
 import rehypeInlineBadges from "./rehype-inline-badges";
 

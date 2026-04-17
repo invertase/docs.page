@@ -12,7 +12,10 @@ export type LinkProps = ComponentProps<"a"> & {
   variant?: "marketingNav";
 };
 
-function resolveHref(href: string | undefined, ctx: Context | undefined): string {
+function resolveHref(
+  href: string | undefined,
+  ctx: Context | undefined,
+): string {
   const raw = String(href ?? "");
   if (ctx === undefined) {
     return isExternalLink(raw) ? raw : ensureLeadingSlash(raw);

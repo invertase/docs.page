@@ -1,6 +1,5 @@
 import Script from "next/script";
 import { usePageContext } from "~/context";
-import { getEnvironment } from "~/env";
 
 export function Scripts() {
   const ctx = usePageContext();

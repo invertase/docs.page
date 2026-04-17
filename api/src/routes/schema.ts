@@ -3,7 +3,7 @@ import { zodToJsonSchema } from "zod-to-json-schema";
 import { ConfigSchema } from "../config/schema";
 
 export default async function schema(
-  req: Request,
+  _req: Request,
   res: Response,
 ): Promise<Response> {
   res.status(200);

@@ -10,10 +10,14 @@
     "typescript": "^5.5.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "1.8.3",
+    "@biomejs/biome": "2.4.12",
     "concurrently": "^7.0.0"
   },
-  "workspaces": ["api", "website", "packages/*"],
+  "workspaces": [
+    "api",
+    "website",
+    "packages/*"
+  ],
   "patchedDependencies": {
     "@remix-run/react@2.9.2": "patches/@remix-run%2Freact@2.9.2.patch"
   }

@@ -57,12 +57,15 @@ const config: Config = {
         },
         marketing: {
           accent: "hsl(var(--marketing-accent) / <alpha-value>)",
-          "accent-bright": "hsl(var(--marketing-accent-bright) / <alpha-value>)",
-          "accent-emphasis": "hsl(var(--marketing-accent-emphasis) / <alpha-value>)",
+          "accent-bright":
+            "hsl(var(--marketing-accent-bright) / <alpha-value>)",
+          "accent-emphasis":
+            "hsl(var(--marketing-accent-emphasis) / <alpha-value>)",
           "hero-glow": "hsl(var(--marketing-hero-glow) / <alpha-value>)",
           "hero-frame-border":
             "hsl(var(--marketing-hero-frame-border) / <alpha-value>)",
-          "hero-video-tint": "hsl(var(--marketing-hero-video-tint) / <alpha-value>)",
+          "hero-video-tint":
+            "hsl(var(--marketing-hero-video-tint) / <alpha-value>)",
           "hero-video-tint-dark":
             "hsl(var(--marketing-hero-video-tint-dark) / <alpha-value>)",
           "pill-foreground":
@@ -83,8 +86,10 @@ const config: Config = {
             "hsl(var(--marketing-platform-border) / <alpha-value>)",
           "platform-border-dark":
             "hsl(var(--marketing-platform-border-dark) / <alpha-value>)",
-          "platform-title": "hsl(var(--marketing-platform-title) / <alpha-value>)",
-          "platform-desc": "hsl(var(--marketing-platform-desc) / <alpha-value>)",
+          "platform-title":
+            "hsl(var(--marketing-platform-title) / <alpha-value>)",
+          "platform-desc":
+            "hsl(var(--marketing-platform-desc) / <alpha-value>)",
           "platform-gradient-from":
             "hsl(var(--marketing-platform-gradient-from) / <alpha-value>)",
           "platform-gradient-via":

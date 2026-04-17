@@ -7,4 +7,5 @@
  */
 export const marketingPillBgClassName = "marketing-surface-bg";
 
-export const marketingPillBorderAndBgClassName = "marketing-surface-pill-chrome";
+export const marketingPillBorderAndBgClassName =
+  "marketing-surface-pill-chrome";

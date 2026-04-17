@@ -49,8 +49,8 @@ export function Image(props: ImageProps) {
             "mb-1": props.caption,
           })}
           style={{
-            width: width ? Number.parseInt(width.toString()) : "inherit",
-            height: height ? Number.parseInt(height.toString()) : "inherit",
+            width: width ? Number.parseInt(width.toString(), 10) : "inherit",
+            height: height ? Number.parseInt(height.toString(), 10) : "inherit",
           }}
         />,
       )}

@@ -1,6 +1,7 @@
 import { checkConfiguration } from "./configuration";
 import { checkRelativeLinks } from "./relative-links";
 import type { CheckResult, Route } from "./types";
+
 export type * from "./types";
 
 export async function* check(
