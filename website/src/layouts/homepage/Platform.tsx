@@ -18,8 +18,7 @@ const platformGridTileShell = cn(
   "lg:border-r lg:[&:nth-child(n+4)]:border-b-0 lg:[&:nth-child(3n)]:border-r-0",
 );
 
-const platformGridCardClassName =
-  "min-h-0 flex-1 border-0 !shadow-none";
+const platformGridCardClassName = "min-h-0 flex-1 border-0 !shadow-none";
 
 const platformGridCell = cn(
   platformGridTileShell,
