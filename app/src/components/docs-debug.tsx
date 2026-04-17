@@ -1,23 +1,10 @@
-import type { ReactNode } from "react";
-
-import type { DocsBundlePayload } from "@/lib/docs-bundle-api";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import type { ResolvedDocsRoute } from "@/lib/docs-routing";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import type { DocPageProps } from "@/lib/types";
-import { useDocPageContext } from "@/lib/context";
+import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
+import { useDocPageContext } from "@/hooks/use-doc-page-context";
 
 export function DocsDebug() {
   const { route, bundle } = useDocPageContext();
-  
+
   return (
     <div className="max-w-5xl mx-auto px-4 mt-12">
       <Card className="shadow-lg">

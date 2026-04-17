@@ -1,3 +1,5 @@
+import { isExternalLink } from "@/lib/docs-assets";
+
 export type DocsRequestMode = "canonical" | "vanity" | "custom-domain";
 const RAW_DOC_SUFFIX_REGEX = /\.(md|mdx)$/i;
 const ROOT_RAW_DOC_FALLBACK = "index.md";
@@ -126,13 +128,46 @@ export function normalizeDocPathSegment(path: string): string {
   return s;
 }
 
-/** Resolves a sidebar `href` from docs config to the correct pathname for the current request mode. */
-export function resolveSidebarNavHref(route: ResolvedDocsRoute, href: string): string {
+export function getRouteLocale(routeDocPath: string, locales: string[] = []) {
+  const locale = normalizeDocPathSegment(routeDocPath).split("/").filter(Boolean).at(0);
+  return locale && locales.includes(locale) ? locale : undefined;
+}
+
+function resolveLocalizedDocPath(
+  currentDocPath: string,
+  href: string,
+  locales: string[] = [],
+) {
   const trimmed = href.trim();
-  if (/^https?:\/\//i.test(trimmed)) {
+  if (isExternalLink(trimmed)) {
     return trimmed;
   }
+
   const docPath = normalizeDocPathSegment(trimmed);
+  const locale = getRouteLocale(currentDocPath, locales);
+
+  if (!locale) {
+    return docPath;
+  }
+
+  const [firstSegment] = docPath.split("/").filter(Boolean);
+  if (firstSegment === locale || locales.includes(firstSegment ?? "")) {
+    return docPath;
+  }
+
+  return docPath ? `${locale}/${docPath}` : locale;
+}
+
+export function resolveInternalDocHref(
+  route: ResolvedDocsRoute,
+  href: string,
+  locales: string[] = [],
+): string {
+  const docPath = resolveLocalizedDocPath(route.docPath, href, locales);
+  if (isExternalLink(docPath)) {
+    return docPath;
+  }
+
   return buildPublicPathname({
     requestMode: route.requestMode,
     owner: route.owner,
@@ -142,11 +177,41 @@ export function resolveSidebarNavHref(route: ResolvedDocsRoute, href: string): s
   });
 }
 
+/** Resolves a sidebar `href` from docs config to the correct pathname for the current request mode. */
+export function resolveSidebarNavHref(
+  route: ResolvedDocsRoute,
+  href: string,
+  locales: string[] = [],
+): string {
+  return resolveInternalDocHref(route, href, locales);
+}
+
 /** True when the current page matches a sidebar link (same docs path). */
-export function docPathMatchesSidebarHref(routeDocPath: string, sidebarHref: string): boolean {
+export function docPathMatchesSidebarHref(
+  routeDocPath: string,
+  sidebarHref: string,
+  locales: string[] = [],
+): boolean {
+  if (isExternalLink(sidebarHref.trim())) {
+    return false;
+  }
+
   return (
-    normalizeDocPathSegment(routeDocPath) === normalizeDocPathSegment(sidebarHref)
+    normalizeDocPathSegment(routeDocPath)
+    === normalizeDocPathSegment(resolveLocalizedDocPath(routeDocPath, sidebarHref, locales))
   );
+}
+
+export function isDocHrefActive(
+  route: ResolvedDocsRoute,
+  href: string,
+  locales: string[] = [],
+): boolean {
+  if (isExternalLink(href.trim())) {
+    return false;
+  }
+
+  return route.publicPathname === resolveInternalDocHref(route, href, locales);
 }
 
 /**
@@ -155,14 +220,17 @@ export function docPathMatchesSidebarHref(routeDocPath: string, sidebarHref: str
 export function resolveActiveTabId(
   route: ResolvedDocsRoute,
   tabs: Array<{ id: string; href: string }>,
+  locales: string[] = [],
 ): string | null {
   if (tabs.length === 0) {
     return null;
   }
-  const current = normalizeDocPathSegment(route.docPath);
+  const current = normalizeDocPathSegment(route.publicPathname);
   let best: { id: string; len: number } | null = null;
   for (const tab of tabs) {
-    const tabPath = normalizeDocPathSegment(tab.href);
+    const tabPath = normalizeDocPathSegment(
+      resolveInternalDocHref(route, tab.href, locales),
+    );
     const matches =
       current === tabPath ||
       (tabPath !== "" && (current === tabPath || current.startsWith(`${tabPath}/`)));

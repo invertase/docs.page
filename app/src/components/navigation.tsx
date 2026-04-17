@@ -1,7 +1,4 @@
-"use client";
-
-import { GitBranchIcon, StarIcon } from "@phosphor-icons/react";
-import { ChevronRightIcon } from "lucide-react";
+import { RiArrowRightSLine, RiExternalLinkLine } from "@remixicon/react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -15,21 +12,24 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
+  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { Button } from "./ui/button";
-import { useDocPageContext } from "@/lib/context";
+import { useDocPageContext } from "@/hooks/use-doc-page-context";
+import { useDocTabs } from "@/hooks/use-doc-tabs";
+import { isExternalLink } from "@/lib/docs-assets";
 import {
-  docPathMatchesSidebarHref,
+  isDocHrefActive,
   resolveActiveTabId,
-  resolveSidebarNavHref,
 } from "@/lib/docs-routing";
 import type { SidebarGroup as SidebarConfigGroup } from "@/server/config/models/sidebar";
 import { cn } from "@/lib/utils";
+import { Link } from "./doc-link";
+import { GithubSource } from "./github-source";
 
 function getSidebarGroups(config: { sidebar: unknown }): SidebarConfigGroup[] {
   const raw = config.sidebar;
@@ -47,24 +47,42 @@ function isPageLink(item: SidebarConfigGroup["pages"][number]): boolean {
   return "title" in item;
 }
 
-function subtreeHasActivePage(routeDocPath: string, pages: SidebarConfigGroup["pages"]): boolean {
+function subtreeHasActivePage(
+  route: ReturnType<typeof useDocPageContext>["route"],
+  pages: SidebarConfigGroup["pages"],
+  locales: string[],
+): boolean {
   for (const p of pages) {
     if (isPageLink(p)) {
       const link = p as { title: string; href: string };
-      if (docPathMatchesSidebarHref(routeDocPath, link.href)) {
+      if (isDocHrefActive(route, link.href, locales)) {
         return true;
       }
     } else {
       const nested = p as SidebarConfigGroup;
-      if (nested.href && docPathMatchesSidebarHref(routeDocPath, nested.href)) {
+      if (nested.href && isDocHrefActive(route, nested.href, locales)) {
         return true;
       }
-      if (subtreeHasActivePage(routeDocPath, nested.pages)) {
+      if (subtreeHasActivePage(route, nested.pages, locales)) {
         return true;
       }
     }
   }
   return false;
+}
+
+function ExternalLinkBadge(props: { nested?: boolean }) {
+  return (
+    <SidebarMenuBadge
+      aria-hidden="true"
+      className={cn(
+        "text-sidebar-foreground/60 [&>svg]:size-3.5",
+        props.nested && "top-1",
+      )}
+    >
+      <RiExternalLinkLine />
+    </SidebarMenuBadge>
+  );
 }
 
 function SidebarPageRow(props: {
@@ -73,25 +91,39 @@ function SidebarPageRow(props: {
   isActive: boolean;
   nested?: boolean;
 }) {
-  const { route } = useDocPageContext();
-  const url = resolveSidebarNavHref(route, props.href);
+  const external = isExternalLink(props.href);
 
   if (props.nested) {
     return (
-      <SidebarMenuSubButton asChild isActive={props.isActive} size="md">
-        <a href={url}>
-          <span>{props.title}</span>
-        </a>
-      </SidebarMenuSubButton>
+      <>
+        <SidebarMenuSubButton
+          asChild
+          isActive={props.isActive}
+          size="md"
+          className={cn(external && "pr-7")}
+        >
+          <Link href={props.href}>
+            <span>{props.title}</span>
+          </Link>
+        </SidebarMenuSubButton>
+        {external ? <ExternalLinkBadge nested /> : null}
+      </>
     );
   }
 
   return (
-    <SidebarMenuButton asChild isActive={props.isActive}>
-      <a href={url}>
-        <span>{props.title}</span>
-      </a>
-    </SidebarMenuButton>
+    <>
+      <SidebarMenuButton
+        asChild
+        isActive={props.isActive}
+        className={cn(external && "pr-8")}
+      >
+        <Link href={props.href}>
+          <span>{props.title}</span>
+        </Link>
+      </SidebarMenuButton>
+      {external ? <ExternalLinkBadge /> : null}
+    </>
   );
 }
 
@@ -99,27 +131,32 @@ function SidebarNestedGroup(props: {
   node: SidebarConfigGroup;
   depth: number;
 }) {
-  const { route } = useDocPageContext();
+  const { bundle, route } = useDocPageContext();
   const label = props.node.group ?? "More";
-  const hasActive = subtreeHasActivePage(route.docPath, props.node.pages);
+  const locales = bundle.config.locales;
+  const hasActive = subtreeHasActivePage(route, props.node.pages, locales);
   const groupHrefActive =
-    props.node.href != null && docPathMatchesSidebarHref(route.docPath, props.node.href);
+    props.node.href != null &&
+    isDocHrefActive(route, props.node.href, locales);
 
   const isActive = hasActive || groupHrefActive;
 
   if (props.depth === 0) {
     return (
-      <Collapsible defaultOpen={isActive} className="group/collapsible">
-        <SidebarMenuItem>
+      <Collapsible defaultOpen={isActive}>
+        <SidebarMenuItem className="pb-1">
           <CollapsibleTrigger asChild>
             <SidebarMenuButton tooltip={label} isActive={isActive}>
               <span className="truncate">{label}</span>
-              <ChevronRightIcon className="ml-auto size-4 shrink-0 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+              <RiArrowRightSLine className="ml-auto size-4 shrink-0 transition-transform duration-200 [[data-state=open]>&]:rotate-90" />
             </SidebarMenuButton>
           </CollapsibleTrigger>
           <CollapsibleContent>
             <SidebarMenuSub>
-              <SidebarPagesList pages={props.node.pages} depth={props.depth + 1} />
+              <SidebarPagesList
+                pages={props.node.pages}
+                depth={props.depth + 1}
+              />
             </SidebarMenuSub>
           </CollapsibleContent>
         </SidebarMenuItem>
@@ -128,17 +165,20 @@ function SidebarNestedGroup(props: {
   }
 
   return (
-    <Collapsible defaultOpen={isActive} className="group/collapsible">
-      <SidebarMenuSubItem>
+    <Collapsible defaultOpen={isActive}>
+      <SidebarMenuSubItem className="pb-1">
         <CollapsibleTrigger asChild>
           <SidebarMenuSubButton isActive={isActive}>
             <span className="truncate">{label}</span>
-            <ChevronRightIcon className="ml-auto size-4 shrink-0 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+            <RiArrowRightSLine className="ml-auto size-4 shrink-0 transition-transform duration-200 [[data-state=open]>&]:rotate-90" />
           </SidebarMenuSubButton>
         </CollapsibleTrigger>
         <CollapsibleContent>
           <SidebarMenuSub className="mx-3.5 border-l border-sidebar-border px-2.5 py-0.5">
-            <SidebarPagesList pages={props.node.pages} depth={props.depth + 1} />
+            <SidebarPagesList
+              pages={props.node.pages}
+              depth={props.depth + 1}
+            />
           </SidebarMenuSub>
         </CollapsibleContent>
       </SidebarMenuSubItem>
@@ -146,8 +186,12 @@ function SidebarNestedGroup(props: {
   );
 }
 
-function SidebarPagesList(props: { pages: SidebarConfigGroup["pages"]; depth: number }) {
-  const { route } = useDocPageContext();
+function SidebarPagesList(props: {
+  pages: SidebarConfigGroup["pages"];
+  depth: number;
+}) {
+  const { bundle, route } = useDocPageContext();
+  const locales = bundle.config.locales;
 
   return (
     <>
@@ -156,10 +200,10 @@ function SidebarPagesList(props: { pages: SidebarConfigGroup["pages"]; depth: nu
 
         if (isPageLink(item)) {
           const link = item as { title: string; href: string };
-          const active = docPathMatchesSidebarHref(route.docPath, link.href);
+          const active = isDocHrefActive(route, link.href, locales);
           if (props.depth > 0) {
             return (
-              <SidebarMenuSubItem key={key}>
+              <SidebarMenuSubItem key={key} className="pb-1">
                 <SidebarPageRow
                   title={link.title}
                   href={link.href}
@@ -170,14 +214,22 @@ function SidebarPagesList(props: { pages: SidebarConfigGroup["pages"]; depth: nu
             );
           }
           return (
-            <SidebarMenuItem key={key}>
-              <SidebarPageRow title={link.title} href={link.href} isActive={active} />
+            <SidebarMenuItem key={key} className="pb-1">
+              <SidebarPageRow
+                title={link.title}
+                href={link.href}
+                isActive={active}
+              />
             </SidebarMenuItem>
           );
         }
 
         return (
-          <SidebarNestedGroup key={key} node={item as SidebarConfigGroup} depth={props.depth} />
+          <SidebarNestedGroup
+            key={key}
+            node={item as SidebarConfigGroup}
+            depth={props.depth}
+          />
         );
       })}
     </>
@@ -186,22 +238,29 @@ function SidebarPagesList(props: { pages: SidebarConfigGroup["pages"]; depth: nu
 
 export function Navigation() {
   const { bundle, route } = useDocPageContext();
-  const tabs = bundle.config.tabs ?? [];
-  const activeTabId = resolveActiveTabId(route, tabs);
+  const tabs = useDocTabs();
+  const hasTabs = tabs.length > 0;
+  const activeTabId = resolveActiveTabId(route, tabs, bundle.config.locales);
   const groups = getSidebarGroups(bundle.config).filter((g) => {
     if (!g.tab) {
       return true;
     }
-    if (tabs.length === 0) {
+    if (!hasTabs) {
       return true;
     }
     return g.tab === activeTabId;
   });
 
-  const gh = bundle.source;
-
   return (
-    <Sidebar variant="sidebar" className="absolute inset-y-0 h-full max-h-none">
+    <Sidebar
+      variant="sidebar"
+      className={cn(
+        "sticky bottom-auto max-h-none will-change-transform",
+        hasTabs
+          ? "top-[calc(5rem+1px)] h-[calc(100svh-5rem-1px)]"
+          : "top-[calc(3rem+1px)] h-[calc(100svh-3rem-1px)]",
+      )}
+    >
       <div className="relative flex min-h-0 flex-1 flex-col">
         <div
           aria-hidden
@@ -211,11 +270,16 @@ export function Navigation() {
           aria-hidden
           className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-12 bg-linear-to-t from-background to-transparent"
         />
-        <SidebarContent className="relative flex-1 bg-background pt-5">
+        <SidebarContent className="relative flex-1 bg-background py-5">
           {groups.map((group, gi) => (
-            <SidebarGroup key={`${group.group ?? "group"}-${gi}`} className="group-data-[collapsible=icon]:hidden">
+            <SidebarGroup
+              key={`${group.group ?? "group"}-${gi}`}
+              className="group-data-[collapsible=icon]:hidden"
+            >
               {group.group ? (
-                <SidebarGroupLabel className={cn(!group.pages?.length && "sr-only")}>
+                <SidebarGroupLabel
+                  className={cn(!group.pages?.length && "sr-only")}
+                >
                   {group.group}
                 </SidebarGroupLabel>
               ) : null}
@@ -229,32 +293,7 @@ export function Navigation() {
         </SidebarContent>
       </div>
       <SidebarFooter className="bg-background p-2">
-        <Button
-          asChild
-          type="button"
-          variant="outline"
-          className="h-auto w-full min-w-0 flex-col items-stretch justify-start gap-1.5 whitespace-normal px-3 py-2.5 text-left"
-        >
-          <a
-            href={`https://github.com/${gh.owner}/${gh.repository}`}
-            target="_blank"
-            rel="noreferrer"
-          >
-            <div className="min-w-0 truncate text-sm leading-snug font-medium">
-              {gh.owner}/{gh.repository}
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <StarIcon className="size-4" />
-                <span>{bundle.stars.toLocaleString()}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <GitBranchIcon className="size-4" />
-                <span>{bundle.forks.toLocaleString()}</span>
-              </div>
-            </div>
-          </a>
-        </Button>
+        <GithubSource />
       </SidebarFooter>
     </Sidebar>
   );

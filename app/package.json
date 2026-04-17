@@ -17,6 +17,7 @@
     "@octokit/graphql": "^9.0.3",
     "@phosphor-icons/react": "^2.1.10",
     "@radix-ui/react-collapsible": "^1.1.12",
+    "@remixicon/react": "^4.9.0",
     "@shikijs/transformers": "^4.0.2",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

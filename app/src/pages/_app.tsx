@@ -13,10 +13,10 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <ThemeProvider attribute="class">
         <TooltipProvider>
-          <SidebarProvider>
+          <SidebarProvider className="w-full">
             <div
               className={cn(
-                "flex min-h-svh w-full flex-col font-sans",
+                "flex min-h-svh w-full flex-col overflow-x-clip font-sans",
                 fontVariableClasses,
               )}
             >

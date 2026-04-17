@@ -11,6 +11,8 @@ import {
   resolveRawDocsRoute,
 } from "@/lib/docs-routing";
 import { buildDocsBundleApiPath } from "@/lib/docs-bundle-api";
+import { getRequestOrigin } from "@/lib/docs-environment";
+import { resolveFrontmatterRedirectDestination } from "@/lib/docs-redirect";
 import {
   acceptPrefersMarkdown,
   incomingHttpHeadersToWebHeaders,
@@ -23,7 +25,7 @@ import {
 import type { DocPageProps, ErrorPageProps, PageProps } from "@/lib/types";
 import { DocsBundleErrorCard, DocsDebug } from "@/components/docs-debug";
 import { Docs } from "@/components/docs";
-import { DocPageContext } from "@/lib/context";
+import { DocPageContext } from "@/hooks/use-doc-page-context";
 
 export const getServerSideProps = (async ({ params, req, res, query }) => {
   const raw = params?.path;
@@ -38,10 +40,6 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
   }
 
   if (chunks.length === 1) {
-    return { notFound: true };
-  }
-
-  if (chunks[0]?.startsWith(".")) {
     return { notFound: true };
   }
 
@@ -109,7 +107,13 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
     ? req.headers.accept.join(", ")
     : req.headers.accept;
 
-  if (acceptPrefersMarkdown(accept)) {
+  // Client-side navigations fetch `/_next/data/*.json` with `Accept: */*`. Our markdown
+  // negotiator treats `*/*` as preferring markdown (same weight as HTML), which would
+  // send raw markdown in the response body and break JSON parsing — blank page.
+  if (
+    !requestUrl.pathname.startsWith("/_next/") &&
+    acceptPrefersMarkdown(accept)
+  ) {
     const [{ getRawDocSource }, { BundlerError }] = await Promise.all([
       import("@/server/docs/raw"),
       import("@/server/docs/bundle"),
@@ -186,6 +190,20 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
 
   const successResponse = bundlePayload as DocsBundleApiSuccessResponse;
 
+  const redirectDestination = await resolveFrontmatterRedirectDestination(
+    route,
+    successResponse.bundle,
+  );
+
+  if (redirectDestination) {
+    return {
+      redirect: {
+        destination: redirectDestination,
+        permanent: false,
+      },
+    };
+  }
+
   return {
     props: {
       kind: query.debug ? ("debug" as const) : ("doc" as const),
@@ -217,37 +235,30 @@ export default function RepoDocsCatchAllPage(
     return <DocsBundleErrorCard error={props.error} />;
   }
 
+  if (props.kind !== "doc" && props.kind !== "debug") {
+    return null;
+  }
+
+  if (!props.bundle?.config) {
+    return null;
+  }
+
+  const preset = props.bundle.config.theme.preset;
+
   return (
     <>
       <DocPageContext.Provider value={props}>
         {props.kind === "debug" ? <DocsDebug /> : <Docs />}
       </DocPageContext.Provider>
-      {props.bundle.config.theme.preset ? (
+      {preset ? (
         <style key="theme-preset">{`
-          ${props.bundle.config.theme.preset.css}
+          ${preset.css}
           *, *::before, *::after { 
-            --font-sans: ${props.bundle.config.theme.preset.build.fontSans} !important;
-            --font-heading: ${props.bundle.config.theme.preset.build.fontHeading} !important;
+            --font-sans: ${preset.build.fontSans} !important;
+            --font-heading: ${preset.build.fontHeading} !important;
           }
         `.trim()}</style>
       ) : null}
     </>
   );
-}
-
-// TODO: move me somehwere...
-function getRequestOrigin() {
-  const port = process.env.PORT?.trim() || "3000";
-
-  if (process.env.NODE_ENV !== "production") {
-    return `http://localhost:${port}`;
-  }
-
-  const railwayPublicDomain = process.env.RAILWAY_PUBLIC_DOMAIN?.trim();
-
-  if (railwayPublicDomain) {
-    return `https://${railwayPublicDomain}`;
-  }
-
-  throw new Error("No request origin found");
 }

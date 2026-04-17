@@ -146,7 +146,8 @@ export async function getGitHubContents(
       md: response.repository?.mdxIndex?.text || response.repository?.mdx?.text,
       path: response.repository?.mdxIndex?.text ? indexPath : absolutePath,
     };
-  } catch {
+  } catch (error) {
+    console.error(error);
     return;
   }
 }
