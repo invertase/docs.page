@@ -514,7 +514,12 @@ export function Icon({ className, name, size, style, ...other }: IconProps) {
   return (
     <i
       {...other}
-      className={cn("fa-fw inline-block leading-none", base, `fa-${name}`, className)}
+      className={cn(
+        "fa-fw inline-block leading-none",
+        base,
+        `fa-${name}`,
+        className,
+      )}
       style={{
         fontSize: size ? `${size}px` : undefined,
         ...style,

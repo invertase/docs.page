@@ -5,6 +5,7 @@ import {
   ExternalLinkIcon,
   EyeIcon,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Button } from "~/components/ui/button";
@@ -64,9 +65,11 @@ function Install() {
       title="Install"
       description="Add docs.page to your project"
       asset={
-        <img
+        <Image
           src="/_docs.page/assets/get-started/install/install.png"
           alt="Install docs.page with the CLI"
+          width={800}
+          height={500}
           className={assetImgClassName}
         />
       }
@@ -115,9 +118,11 @@ function AddContent() {
       title="Add Content"
       description="Add markdown to a page"
       asset={
-        <img
+        <Image
           src="/_docs.page/assets/get-started/add-content-editor.png"
           alt="Markdown"
+          width={800}
+          height={500}
           className={assetImgClassName}
         />
       }
@@ -152,9 +157,11 @@ function PreviewDocs() {
       title="Preview Docs"
       description="Preview your docs.page site"
       asset={
-        <img
+        <Image
           src="/_docs.page/assets/get-started/preview-docs.png"
           alt="Markdown"
+          width={800}
+          height={500}
           className={assetImgClassName}
         />
       }
@@ -197,9 +204,11 @@ function PublishChanges() {
       title="Publish Changes"
       description="Make your changes public"
       asset={
-        <img
+        <Image
           src="/_docs.page/assets/get-started/publish.png"
           alt="Markdown"
+          width={800}
+          height={500}
           className={assetImgClassName}
         />
       }

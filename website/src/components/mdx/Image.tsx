@@ -39,6 +39,7 @@ export function Image(props: ImageProps) {
       })}
     >
       {container(
+        // biome-ignore lint/performance/noImgElement: MDX zoom + preview blob URLs need a native img
         <img
           {...other}
           data-zoom={`${shouldZoom}`}

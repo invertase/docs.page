@@ -37,7 +37,7 @@ export function Sidebar(props: Props) {
                 })}
               >
                 {group ? <GroupHeading title={group} icon={icon} /> : null}
-                <SidebarLinks pages={pages} open={false} depth={0} />
+                <SidebarLinks pages={pages} depth={0} />
               </div>
             );
           })}
@@ -53,6 +53,7 @@ function GroupHeading(props: { title: string; icon?: string }) {
     <h3 className="pl-3 font-semibold text-[14px] mb-4 flex items-center gap-2 text-black dark:text-white">
       {props.icon ? (
         isExternalLink(props.icon!) ? (
+          // biome-ignore lint/performance/noImgElement: sidebar icon may be any external URL
           <img
             key="icon"
             src={props.icon}
@@ -69,11 +70,9 @@ function GroupHeading(props: { title: string; icon?: string }) {
 }
 
 // A recursive sidebar navigation component, renders a list of links and groups.
-function SidebarLinks(
-  props: { pages: Pages } & { open: boolean; depth: number },
-) {
+function SidebarLinks(props: { pages: Pages } & { depth: number }) {
   return (
-    <ul aria-expanded={props.open}>
+    <ul>
       {props.pages.map((child, index) => {
         return (
           <SidebarGroup
@@ -142,11 +141,7 @@ function SidebarGroup(props: { group: Pages[number] } & { depth: number }) {
         onClick={() => setOpen((open) => !open)}
       />
       {open ? (
-        <SidebarLinks
-          pages={props.group.pages}
-          depth={props.depth + 1}
-          open={open}
-        />
+        <SidebarLinks pages={props.group.pages} depth={props.depth + 1} />
       ) : null}
     </li>
   );
@@ -178,11 +173,10 @@ function SidebarAnchor(props: {
       style={style}
     />
   ) : (
-    <div
-      role="button"
+    <button
+      type="button"
       className={className}
       style={style}
-      onKeyDown={props.onClick}
       onClick={props.onClick}
     />
   );
@@ -190,6 +184,7 @@ function SidebarAnchor(props: {
   const anchor = cloneElement(element, {}, [
     props.icon ? (
       isExternalLink(props.icon!) ? (
+        // biome-ignore lint/performance/noImgElement: sidebar icon may be any external URL
         <img key="icon" src={props.icon} alt={props.title} className="fa-fw" />
       ) : (
         <span key="icon">

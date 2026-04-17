@@ -176,8 +176,9 @@ export function DocumentationLayout() {
             "pt-28": hasTabs,
           })}
         >
-          <div
-            role="button"
+          <button
+            type="button"
+            aria-label="Close navigation menu"
             className={cn(
               "bg-background/50 z-10 absolute inset-0 lg:opacity-0 transition-opacity",
               {
@@ -186,7 +187,6 @@ export function DocumentationLayout() {
               },
             )}
             onClick={() => toggleSidebar()}
-            onKeyDown={() => toggleSidebar()}
           />
           <section className="pt-8 ps-4 lg:ps-16 pe-4 flex">
             <div className="min-w-0 flex-1 pr-0 xl:pr-12">

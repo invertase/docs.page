@@ -1,3 +1,5 @@
+import Image from "next/image";
+
 import { Card, CardDescription, CardTitle } from "~/components/ui/card";
 import { cn } from "~/lib/utils";
 
@@ -41,25 +43,25 @@ export function PlatformFeatureCard(props: {
           className="relative flex w-full shrink-0 items-center justify-center py-1"
           aria-hidden
         >
-          <img
+          <Image
             src={props.image.light}
             alt=""
+            width={800}
+            height={600}
             className={cn(
               "h-auto w-auto object-contain object-center dark:hidden",
               sizeClass,
             )}
-            loading="lazy"
-            decoding="async"
           />
-          <img
+          <Image
             src={props.image.dark}
             alt=""
+            width={800}
+            height={600}
             className={cn(
               "hidden h-auto w-auto object-contain object-center dark:block",
               sizeClass,
             )}
-            loading="lazy"
-            decoding="async"
           />
         </div>
         <CardTitle

@@ -51,7 +51,10 @@ export default async function handler(req: NextRequest) {
         }}
       >
         <div tw="flex mt-32">
-          {!!logo && <img alt="Logo" style={{ height: 45 }} src={logo} />}
+          {!!logo && (
+            // biome-ignore lint/performance/noImgElement: @vercel/og Satori only supports native img
+            <img alt="Logo" style={{ height: 45 }} src={logo} />
+          )}
         </div>
         <div
           tw="flex font-bold mt-6"

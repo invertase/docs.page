@@ -76,8 +76,7 @@ export function Features() {
     <section className="mx-auto max-w-6xl space-y-6 px-4 pt-4">
       <div className="flex flex-col items-start gap-4 pl-6 text-left">
         <h2 className="heading-h2 text-balance">
-          Everything needed to publish{" "}
-          <br className="md:hidden" aria-hidden />
+          Everything needed to publish <br className="md:hidden" aria-hidden />
           <span className="font-mono text-marketing-accent">polished</span>{" "}
           documentation
         </h2>

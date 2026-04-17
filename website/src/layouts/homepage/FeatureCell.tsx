@@ -90,8 +90,10 @@ export function FeatureCell({
     active && typewriterOff === false && (typingTitle || typingDesc);
 
   return (
+    // biome-ignore lint/a11y/useSemanticElements: Marketing tile contains headings and overlay content; not representable as a single button or fieldset.
     <div
       {...rest}
+      role="group"
       tabIndex={tabIndex}
       aria-label={`${title}. ${description}`}
       className={cn(

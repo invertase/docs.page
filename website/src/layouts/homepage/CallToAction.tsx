@@ -1,4 +1,5 @@
 import { ChevronRightIcon } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 import { buttonVariants } from "~/components/ui/button";
@@ -38,19 +39,19 @@ export function CallToAction() {
 
           <div className="hidden min-h-0 overflow-hidden border-l border-zinc-300 bg-transparent dark:border-zinc-700 md:absolute md:inset-y-0 md:left-1/2 md:right-0 md:flex md:items-center md:justify-center md:pl-8 md:pr-4">
             <div className="flex h-full max-h-full min-h-0 w-full items-center justify-center p-1">
-              <img
+              <Image
                 src="/_docs.page/assets/large-icon-light.svg"
                 alt=""
+                width={240}
+                height={240}
                 className="h-auto max-h-full w-auto max-w-[min(100%,10.5rem)] object-contain sm:max-w-[11.55rem] md:max-h-[min(100%,11rem)] md:max-w-[min(100%,11rem)] lg:max-h-[min(100%,13rem)] lg:max-w-[min(100%,13rem)] xl:max-h-[min(100%,15rem)] xl:max-w-[min(100%,15rem)] dark:hidden"
-                loading="lazy"
-                decoding="async"
               />
-              <img
+              <Image
                 src="/_docs.page/assets/large-icon.svg"
                 alt=""
+                width={240}
+                height={240}
                 className="hidden h-auto max-h-full w-auto max-w-[min(100%,10.5rem)] object-contain sm:max-w-[11.55rem] md:max-h-[min(100%,11rem)] md:max-w-[min(100%,11rem)] lg:max-h-[min(100%,13rem)] lg:max-w-[min(100%,13rem)] xl:max-h-[min(100%,15rem)] xl:max-w-[min(100%,15rem)] dark:block"
-                loading="lazy"
-                decoding="async"
               />
             </div>
           </div>
