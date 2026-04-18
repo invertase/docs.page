@@ -1,7 +1,7 @@
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { runSync } from "@mdx-js/mdx";
 import * as runtime from "react/jsx-runtime";
-import { memo, useMemo } from "react";
+import { type ComponentProps, memo, useMemo } from "react";
 
 export function Prose() {
   const { bundle } = useDocPageContext();
@@ -15,7 +15,7 @@ export function Prose() {
 
       return (
         <MDX
-        // components={{
+        components={{
         //   /* HTML Overrides */
         //   h1: (props: ComponentProps<"h1">) => (
         //     <Heading {...props} type="h1" />
@@ -50,10 +50,10 @@ export function Prose() {
         //   pre: (props: ComponentProps<"pre">) => <CodeBlock {...props} />,
         //   /* Custom Components */
         //   ...COMPONENTS,
-        //   __InvalidComponent__: (props: ComponentProps<"div">) => (
-        //     <InvalidComponent {...props} />
-        //   ),
-        // }}
+          __InvalidComponent__: (props: ComponentProps<"div">) => (
+            <div>TODO INVALID!!</div>
+          ),
+        }}
         />
       );
     });
