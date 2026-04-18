@@ -2,6 +2,7 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import {
   getVanityOwnerFromHost,
+  isDocsLlmsFullTxtPath,
   isDocsLlmsTxtPath,
   isDocsSitemapPath,
   isPinnedCommitRef,
@@ -86,6 +87,12 @@ export const LLMS_TXT_CACHE_HEADERS = buildDocsCacheHeaders({
   staleWhileRevalidate: CDN_STALE_SECONDS,
   staleIfError: CDN_STALE_SECONDS,
 });
+/** `llms-full.txt` can be larger and expensive to rebuild; reuse llms.txt edge/browser policy. */
+export const LLMS_FULL_TXT_CACHE_HEADERS = buildDocsCacheHeaders({
+  edgeMaxAgeSeconds: 300,
+  staleWhileRevalidate: CDN_STALE_SECONDS,
+  staleIfError: CDN_STALE_SECONDS,
+});
 export const SITEMAP_CACHE_HEADERS = buildDocsCacheHeaders({
   edgeMaxAgeSeconds: 3600,
   staleWhileRevalidate: CDN_STALE_SECONDS,
@@ -140,7 +147,8 @@ function isBypassPath(pathname: string) {
       !isRawDocRequestPath(pathname) &&
       !isDocsSearchPath(pathname) &&
       !isDocsSitemapPath(pathname) &&
-      !isDocsLlmsTxtPath(pathname))
+      !isDocsLlmsTxtPath(pathname) &&
+      !isDocsLlmsFullTxtPath(pathname))
   );
 }
 
@@ -187,6 +195,10 @@ function getDocsCacheHeaders(pathname: string): DocsCacheHeaders | null {
 
   if (isDocsLlmsTxtPath(pathname)) {
     return LLMS_TXT_CACHE_HEADERS;
+  }
+
+  if (isDocsLlmsFullTxtPath(pathname)) {
+    return LLMS_FULL_TXT_CACHE_HEADERS;
   }
 
   if (isDocsSitemapPath(pathname)) {

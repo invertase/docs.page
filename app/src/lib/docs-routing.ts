@@ -54,6 +54,11 @@ export function isDocsLlmsTxtPath(pathname: string) {
   return pathname === "/llms.txt" || pathname.endsWith("/llms.txt");
 }
 
+/** Per-repo full LLM-oriented doc index at `/{owner}/{repo}/llms-full.txt` (or vanity / custom-domain equivalents). */
+export function isDocsLlmsFullTxtPath(pathname: string) {
+  return pathname === "/llms-full.txt" || pathname.endsWith("/llms-full.txt");
+}
+
 export function stripRawDocRequestSuffix(path: string) {
   return path.replace(RAW_DOC_SUFFIX_REGEX, "");
 }

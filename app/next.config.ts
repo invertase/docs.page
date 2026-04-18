@@ -20,6 +20,10 @@ const nextConfig: NextConfig = {
           destination: "/api/:owner/:repo/llms.txt",
         },
         {
+          source: "/:owner/:repo/llms-full.txt",
+          destination: "/api/:owner/:repo/llms-full.txt",
+        },
+        {
           source: "/:owner/:repo/sitemap.xml",
           destination: "/api/:owner/:repo/sitemap.xml",
         },
