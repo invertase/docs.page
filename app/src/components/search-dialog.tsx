@@ -3,7 +3,7 @@
 import { startTransition, useDeferredValue, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import type { ComponentProps } from "react";
-import { searchDocs } from "@/lib/search-client";
+import { isSearchReady, searchDocs } from "@/lib/search-client";
 import type { SearchRow } from "@/workers/search.worker";
 import {
   Command,
@@ -64,6 +64,9 @@ export default function SearchDialog({ open, onOpenChange, searchUrl }: Props) {
       unsubscribe?.();
     };
   }, [deferredQuery, searchUrl]);
+
+  const hasQuery = query.trim().length > 0;
+  const showLoading = hasQuery && !isSearchReady();
 
   return (
     <CommandDialog
@@ -133,6 +136,8 @@ export default function SearchDialog({ open, onOpenChange, searchUrl }: Props) {
                 </CommandItem>
               ))}
             </CommandGroup>
+          ) : showLoading ? (
+            <CommandEmpty>Loading...</CommandEmpty>
           ) : (
             <CommandEmpty>No results found.</CommandEmpty>
           )}
