@@ -76,6 +76,15 @@ export type FileSource = {
   path: string;
 };
 
+function getJsDelivrGitHubUrl(metadata: {
+  owner: string;
+  repository: string;
+  ref: string;
+  path: string;
+}) {
+  return `https://cdn.jsdelivr.net/gh/${metadata.owner}/${metadata.repository}@${encodeURIComponent(metadata.ref)}/${metadata.path}`;
+}
+
 export async function getGitHubContents(
   metadata: MetaData,
   noDir?: boolean,
@@ -255,6 +264,29 @@ export async function getGitHubFileSource(metadata: {
 }): Promise<FileSource | undefined> {
   const ref = metadata.ref || "HEAD";
 
+  // Prefer jsDelivr for public refs; fall back to GitHub GraphQL for private repos or cache misses.
+  if (ref !== "HEAD") {
+    try {
+      const response = await fetch(
+        getJsDelivrGitHubUrl({
+          owner: metadata.owner,
+          repository: metadata.repository,
+          ref,
+          path: metadata.path,
+        }),
+      );
+
+      if (response.ok) {
+        return {
+          content: await response.text(),
+          path: metadata.path,
+        };
+      }
+    } catch {
+      // Fall through to the GraphQL-based source fetch.
+    }
+  }
+
   try {
     const response = await getGitHubGraphQLClient()<FileSourceQuery>({
       query: `
@@ -291,7 +323,7 @@ const GITHUB_BLOB_GRAPHQL_BATCH = 20;
 
 /**
  * Load many blob texts with fewer HTTP round-trips than calling `getGitHubFileSource` per path.
- * Falls back to per-file fetches for a chunk if the batched query fails.
+ * Prefers jsDelivr for public refs, then falls back to GitHub GraphQL for misses.
  */
 export async function getGitHubFileSourcesBatch(args: {
   owner: string;
@@ -313,9 +345,49 @@ export async function getGitHubFileSourcesBatch(args: {
     offset += GITHUB_BLOB_GRAPHQL_BATCH
   ) {
     const paths = args.paths.slice(offset, offset + GITHUB_BLOB_GRAPHQL_BATCH);
+    const unresolvedPaths: string[] = [];
 
-    const varDefs = paths.map((_, j) => `$e${j}: String!`).join(", ");
-    const fieldBlock = paths
+    if (ref !== "HEAD") {
+      const jsDelivrResults = await Promise.all(
+        paths.map(async (path) => {
+          try {
+            const response = await fetch(
+              getJsDelivrGitHubUrl({
+                owner: args.owner,
+                repository: args.repository,
+                ref,
+                path,
+              }),
+            );
+
+            if (!response.ok) {
+              return [path, undefined] as const;
+            }
+
+            return [path, await response.text()] as const;
+          } catch {
+            return [path, undefined] as const;
+          }
+        }),
+      );
+
+      for (const [path, content] of jsDelivrResults) {
+        if (content == null) {
+          unresolvedPaths.push(path);
+        } else {
+          out.set(path, content);
+        }
+      }
+    } else {
+      unresolvedPaths.push(...paths);
+    }
+
+    if (unresolvedPaths.length === 0) {
+      continue;
+    }
+
+    const varDefs = unresolvedPaths.map((_, j) => `$e${j}: String!`).join(", ");
+    const fieldBlock = unresolvedPaths
       .map(
         (_, j) => `b${j}: object(expression: $e${j}) { ... on Blob { text } }`,
       )
@@ -334,8 +406,8 @@ export async function getGitHubFileSourcesBatch(args: {
       repository: args.repository,
     };
 
-    for (let j = 0; j < paths.length; j++) {
-      variables[`e${j}`] = `${ref}:${paths[j]}`;
+    for (let j = 0; j < unresolvedPaths.length; j++) {
+      variables[`e${j}`] = `${ref}:${unresolvedPaths[j]}`;
     }
 
     const response = await getGitHubGraphQLClient()<{
@@ -348,15 +420,15 @@ export async function getGitHubFileSourcesBatch(args: {
     const repo = response.repository;
 
     if (!repo) {
-      for (const p of paths) {
+      for (const p of unresolvedPaths) {
         out.set(p, undefined);
       }
       continue;
     }
 
-    for (let j = 0; j < paths.length; j++) {
+    for (let j = 0; j < unresolvedPaths.length; j++) {
       const blob = repo[`b${j}`];
-      out.set(paths[j], blob?.text ?? undefined);
+      out.set(unresolvedPaths[j], blob?.text ?? undefined);
     }
   }
 
