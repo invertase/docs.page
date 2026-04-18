@@ -68,7 +68,14 @@ export async function getRedisClient(): Promise<RedisClient | null> {
     return redisClient;
   }
 
-  redisClient = createClient({ url });
+  redisClient = createClient({
+    url,
+    socket: {
+      // Keep connect attempts short to avoid long fallback delays.
+      connectTimeout: 2_000,
+      keepAlive: 5_000,
+    },
+  });
   redisConnectionPromise = redisClient.connect().then(() => redisClient as RedisClient);
 
   try {

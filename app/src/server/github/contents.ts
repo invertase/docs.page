@@ -1,4 +1,4 @@
-import { getGitHubGraphQLClient } from "./client";
+import { getGitHubGraphQLClient, getGitHubRestClient } from "./client";
 
 type MetaData = {
   owner: string;
@@ -8,47 +8,6 @@ type MetaData = {
 };
 
 type SourceMetaData = Omit<MetaData, "path">;
-
-type PageContentsQuery = {
-  repository: {
-    stars: number;
-    forks: number;
-    baseBranch: {
-      name: string;
-    };
-    isFork: boolean;
-    isPrivate: boolean;
-    configJson?: {
-      text: string;
-    };
-    configYaml?: {
-      text: string;
-    };
-    mdx?: {
-      text: string;
-    };
-    mdxIndex?: {
-      text: string;
-    };
-  } | null;
-};
-
-type DocumentSourceQuery = {
-  repository: {
-    mdx?: {
-      text: string;
-    };
-    mdxIndex?: {
-      text: string;
-    };
-    md?: {
-      text: string;
-    };
-    mdIndex?: {
-      text: string;
-    };
-  } | null;
-};
 
 export type Contents = {
   stars: number;
@@ -76,6 +35,14 @@ export type FileSource = {
   path: string;
 };
 
+type GitHubRepositoryMetadata = {
+  stars: number;
+  forks: number;
+  defaultBranch: string;
+  isFork: boolean;
+  isPrivate: boolean;
+};
+
 function getJsDelivrGitHubUrl(metadata: {
   owner: string;
   repository: string;
@@ -85,6 +52,125 @@ function getJsDelivrGitHubUrl(metadata: {
   return `https://cdn.jsdelivr.net/gh/${metadata.owner}/${metadata.repository}@${encodeURIComponent(metadata.ref)}/${metadata.path}`;
 }
 
+const PINNED_COMMIT_REF_PATTERN = /^[a-fA-F0-9]{40}$/;
+const JSDELIVR_FETCH_CONCURRENCY = 16;
+
+async function getRepositoryMetadata(owner: string, repository: string) {
+  const response = await getGitHubRestClient().request("GET /repos/{owner}/{repo}", {
+    owner,
+    repo: repository,
+  });
+
+  return {
+    stars: response.data.stargazers_count,
+    forks: response.data.forks_count,
+    defaultBranch: response.data.default_branch,
+    isFork: response.data.fork,
+    isPrivate: response.data.private,
+  } satisfies GitHubRepositoryMetadata;
+}
+
+async function resolveGitHubRefToSha(
+  owner: string,
+  repository: string,
+  ref: string,
+) {
+  const response = await getGitHubRestClient().request(
+    "GET /repos/{owner}/{repo}/commits/{ref}",
+    {
+      owner,
+      repo: repository,
+      ref,
+    },
+  );
+
+  return response.data.sha;
+}
+
+async function resolvePinnedGitHubSource(
+  metadata: SourceMetaData,
+): Promise<{
+  source: GitHubSource;
+  resolvedRef: string;
+  resolvedSha: string;
+  repositoryMetadata?: GitHubRepositoryMetadata;
+}> {
+  const source = await resolveGitHubSource(metadata);
+  let repositoryMetadata: GitHubRepositoryMetadata | undefined;
+  const resolvedRef = !source.ref || source.ref === "HEAD"
+    ? await (async () => {
+      repositoryMetadata = await getRepositoryMetadata(source.owner, source.repository);
+      return repositoryMetadata.defaultBranch;
+    })()
+    : source.ref;
+  const resolvedSha = source.type === "commit" || PINNED_COMMIT_REF_PATTERN.test(resolvedRef)
+    ? resolvedRef
+    : await resolveGitHubRefToSha(source.owner, source.repository, resolvedRef);
+
+  return {
+    source: {
+      ...source,
+      ref: resolvedRef,
+    },
+    resolvedRef,
+    resolvedSha,
+    repositoryMetadata,
+  };
+}
+
+async function fetchTextFromJsDelivr(metadata: {
+  owner: string;
+  repository: string;
+  ref: string;
+  path: string;
+}): Promise<string | undefined> {
+  try {
+    const response = await fetch(
+      getJsDelivrGitHubUrl({
+        owner: metadata.owner,
+        repository: metadata.repository,
+        ref: metadata.ref,
+        path: metadata.path,
+      }),
+    );
+
+    if (!response.ok) {
+      return;
+    }
+
+    return await response.text();
+  } catch {
+    return;
+  }
+}
+
+async function mapWithConcurrency<T, R>(
+  items: T[],
+  concurrency: number,
+  worker: (item: T, index: number) => Promise<R>,
+): Promise<R[]> {
+  const out = new Array<R>(items.length);
+  let cursor = 0;
+
+  const workers = Array.from(
+    { length: Math.max(1, Math.min(concurrency, items.length)) },
+    async () => {
+      while (true) {
+        const index = cursor++;
+        if (index >= items.length) {
+          return;
+        }
+
+        out[index] = await worker(items[index], index);
+      }
+    },
+  );
+
+  await Promise.all(workers);
+
+  return out;
+}
+
 export async function getGitHubContents(
   metadata: MetaData,
   noDir?: boolean,
@@ -92,71 +178,58 @@ export async function getGitHubContents(
   const base = noDir ? "" : "docs/";
   const absolutePath = `${base}${metadata.path}`;
   const indexPath = `${base}${metadata.path}/index`;
-  const ref = metadata.ref || "HEAD";
+  const resolved = await resolvePinnedGitHubSource({
+    owner: metadata.owner,
+    repository: metadata.repository,
+    ref: metadata.ref,
+  });
 
   try {
-    const response = await getGitHubGraphQLClient()<PageContentsQuery>({
-      query: `
-        query RepositoryConfig($owner: String!, $repository: String!, $configJson: String!, $configYaml: String!, $mdx: String!, $mdxIndex: String!) {
-          repository(owner: $owner, name: $repository) {
-            stars: stargazerCount
-            forks: forkCount
-            baseBranch: defaultBranchRef {
-              name
-            }
-            isFork
-            isPrivate
-            configJson: object(expression: $configJson) {
-              ... on Blob {
-                text
-              }
-            }
-            configYaml: object(expression: $configYaml) {
-              ... on Blob {
-                text
-              }
-            }
-            mdx: object(expression: $mdx) {
-              ... on Blob {
-                text
-              }
-            }
-            mdxIndex: object(expression: $mdxIndex) {
-              ... on Blob {
-                text
-              }
-            }
-          }
-        }
-      `,
-      owner: metadata.owner,
-      repository: metadata.repository,
-      configJson: `${ref}:docs.json`,
-      configYaml: `${ref}:docs.yaml`,
-      mdx: `${ref}:${absolutePath}.mdx`,
-      mdxIndex: `${ref}:${indexPath}.mdx`,
-    });
-
-    if (response.repository === null) {
-      return;
-    }
+    const [repositoryMetadata, configJson, configYaml, mdx, mdxIndex] = await Promise.all([
+      resolved.repositoryMetadata
+        ? Promise.resolve(resolved.repositoryMetadata)
+        : getRepositoryMetadata(resolved.source.owner, resolved.source.repository),
+      fetchTextFromJsDelivr({
+        owner: resolved.source.owner,
+        repository: resolved.source.repository,
+        ref: resolved.resolvedSha,
+        path: "docs.json",
+      }),
+      fetchTextFromJsDelivr({
+        owner: resolved.source.owner,
+        repository: resolved.source.repository,
+        ref: resolved.resolvedSha,
+        path: "docs.yaml",
+      }),
+      fetchTextFromJsDelivr({
+        owner: resolved.source.owner,
+        repository: resolved.source.repository,
+        ref: resolved.resolvedSha,
+        path: `${absolutePath}.mdx`,
+      }),
+      fetchTextFromJsDelivr({
+        owner: resolved.source.owner,
+        repository: resolved.source.repository,
+        ref: resolved.resolvedSha,
+        path: `${indexPath}.mdx`,
+      }),
+    ]);
 
     return {
-      stars: response.repository?.stars ?? 0,
-      forks: response.repository?.forks ?? 0,
+      stars: repositoryMetadata.stars,
+      forks: repositoryMetadata.forks,
       repositoryFound: true,
-      isFork: response.repository?.isFork ?? false,
-      isPrivate: response.repository?.isPrivate ?? false,
-      baseBranch: response.repository?.baseBranch.name ?? "main",
+      isFork: repositoryMetadata.isFork,
+      isPrivate: repositoryMetadata.isPrivate,
+      baseBranch: repositoryMetadata.defaultBranch,
       config: {
-        configJson: response.repository?.configJson?.text,
-        configYaml: response.repository?.configYaml?.text,
+        configJson,
+        configYaml,
       },
-      md: response.repository?.mdxIndex?.text || response.repository?.mdx?.text,
-      path: response.repository?.mdxIndex?.text ? indexPath : absolutePath,
+      md: mdxIndex || mdx,
+      path: mdxIndex ? indexPath : absolutePath,
     };
-  } catch (error) {
-    console.error(error);
+  } catch {
     return;
   }
 }
@@ -168,93 +241,49 @@ export async function getGitHubDocumentSource(
   const base = noDir ? "" : "docs/";
   const absolutePath = `${base}${metadata.path}`;
   const indexPath = `${base}${metadata.path}/index`;
-  const ref = metadata.ref || "HEAD";
+  const resolved = await resolvePinnedGitHubSource({
+    owner: metadata.owner,
+    repository: metadata.repository,
+    ref: metadata.ref,
+  });
+  const candidates = [
+    {
+      path: `${indexPath}.mdx`,
+      contentType: "mdx" as const,
+    },
+    {
+      path: `${absolutePath}.mdx`,
+      contentType: "mdx" as const,
+    },
+    {
+      path: `${indexPath}.md`,
+      contentType: "md" as const,
+    },
+    {
+      path: `${absolutePath}.md`,
+      contentType: "md" as const,
+    },
+  ];
 
-  try {
-    const response = await getGitHubGraphQLClient()<DocumentSourceQuery>({
-      query: `
-        query RepositoryDocument($owner: String!, $repository: String!, $mdx: String!, $mdxIndex: String!, $md: String!, $mdIndex: String!) {
-          repository(owner: $owner, name: $repository) {
-            mdx: object(expression: $mdx) {
-              ... on Blob {
-                text
-              }
-            }
-            mdxIndex: object(expression: $mdxIndex) {
-              ... on Blob {
-                text
-              }
-            }
-            md: object(expression: $md) {
-              ... on Blob {
-                text
-              }
-            }
-            mdIndex: object(expression: $mdIndex) {
-              ... on Blob {
-                text
-              }
-            }
-          }
-        }
-      `,
-      owner: metadata.owner,
-      repository: metadata.repository,
-      mdx: `${ref}:${absolutePath}.mdx`,
-      mdxIndex: `${ref}:${indexPath}.mdx`,
-      md: `${ref}:${absolutePath}.md`,
-      mdIndex: `${ref}:${indexPath}.md`,
+  for (const candidate of candidates) {
+    const content = await fetchTextFromJsDelivr({
+      owner: resolved.source.owner,
+      repository: resolved.source.repository,
+      ref: resolved.resolvedSha,
+      path: candidate.path,
     });
 
-    if (response.repository === null) {
-      return;
-    }
-
-    if (response.repository?.mdxIndex?.text) {
+    if (content != null) {
       return {
-        content: response.repository.mdxIndex.text,
-        path: `${indexPath}.mdx`,
-        contentType: "mdx",
+        content,
+        path: candidate.path,
+        contentType: candidate.contentType,
       };
     }
-
-    if (response.repository?.mdx?.text) {
-      return {
-        content: response.repository.mdx.text,
-        path: `${absolutePath}.mdx`,
-        contentType: "mdx",
-      };
-    }
-
-    if (response.repository?.mdIndex?.text) {
-      return {
-        content: response.repository.mdIndex.text,
-        path: `${indexPath}.md`,
-        contentType: "md",
-      };
-    }
-
-    if (response.repository?.md?.text) {
-      return {
-        content: response.repository.md.text,
-        path: `${absolutePath}.md`,
-        contentType: "md",
-      };
-    }
-
-    return;
-  } catch {
-    return;
   }
-}
 
-type FileSourceQuery = {
-  repository: {
-    file?: {
-      text: string;
-    };
-  } | null;
-};
+  return;
+}
 
 export async function getGitHubFileSource(metadata: {
   owner: string;
@@ -262,68 +291,30 @@ export async function getGitHubFileSource(metadata: {
   ref?: string;
   path: string;
 }): Promise<FileSource | undefined> {
-  const ref = metadata.ref || "HEAD";
+  const resolved = await resolvePinnedGitHubSource({
+    owner: metadata.owner,
+    repository: metadata.repository,
+    ref: metadata.ref,
+  });
+  const content = await fetchTextFromJsDelivr({
+    owner: resolved.source.owner,
+    repository: resolved.source.repository,
+    ref: resolved.resolvedSha,
+    path: metadata.path,
+  });
 
-  // Prefer jsDelivr for public refs; fall back to GitHub GraphQL for private repos or cache misses.
-  if (ref !== "HEAD") {
-    try {
-      const response = await fetch(
-        getJsDelivrGitHubUrl({
-          owner: metadata.owner,
-          repository: metadata.repository,
-          ref,
-          path: metadata.path,
-        }),
-      );
-
-      if (response.ok) {
-        return {
-          content: await response.text(),
-          path: metadata.path,
-        };
-      }
-    } catch {
-      // Fall through to the GraphQL-based source fetch.
-    }
-  }
-
-  try {
-    const response = await getGitHubGraphQLClient()<FileSourceQuery>({
-      query: `
-        query RepositoryFile($owner: String!, $repository: String!, $file: String!) {
-          repository(owner: $owner, name: $repository) {
-            file: object(expression: $file) {
-              ... on Blob {
-                text
-              }
-            }
-          }
-        }
-      `,
-      owner: metadata.owner,
-      repository: metadata.repository,
-      file: `${ref}:${metadata.path}`,
-    });
-
-    if (!response.repository?.file?.text) {
-      return;
-    }
-
-    return {
-      content: response.repository.file.text,
-      path: metadata.path,
-    };
-  } catch {
+  if (content == null) {
     return;
   }
+
+  return {
+    content,
+    path: metadata.path,
+  };
 }
 
-/** GraphQL cost grows with field count; keep batches moderate. */
-const GITHUB_BLOB_GRAPHQL_BATCH = 20;
-
 /**
- * Load many blob texts with fewer HTTP round-trips than calling `getGitHubFileSource` per path.
- * Prefers jsDelivr for public refs, then falls back to GitHub GraphQL for misses.
+ * Load many blob texts from jsDelivr using a pinned commit SHA.
  */
 export async function getGitHubFileSourcesBatch(args: {
   owner: string;
@@ -337,99 +328,28 @@ export async function getGitHubFileSourcesBatch(args: {
     return out;
   }
 
-  const ref = args.ref || "HEAD";
+  const resolved = await resolvePinnedGitHubSource({
+    owner: args.owner,
+    repository: args.repository,
+    ref: args.ref,
+  });
+  const results = await mapWithConcurrency(
+    args.paths,
+    JSDELIVR_FETCH_CONCURRENCY,
+    async (path) => {
+      const content = await fetchTextFromJsDelivr({
+        owner: resolved.source.owner,
+        repository: resolved.source.repository,
+        ref: resolved.resolvedSha,
+        path,
+      });
 
-  for (
-    let offset = 0;
-    offset < args.paths.length;
-    offset += GITHUB_BLOB_GRAPHQL_BATCH
-  ) {
-    const paths = args.paths.slice(offset, offset + GITHUB_BLOB_GRAPHQL_BATCH);
-    const unresolvedPaths: string[] = [];
+      return [path, content] as const;
+    },
+  );
 
-    if (ref !== "HEAD") {
-      const jsDelivrResults = await Promise.all(
-        paths.map(async (path) => {
-          try {
-            const response = await fetch(
-              getJsDelivrGitHubUrl({
-                owner: args.owner,
-                repository: args.repository,
-                ref,
-                path,
-              }),
-            );
-
-            if (!response.ok) {
-              return [path, undefined] as const;
-            }
-
-            return [path, await response.text()] as const;
-          } catch {
-            return [path, undefined] as const;
-          }
-        }),
-      );
-
-      for (const [path, content] of jsDelivrResults) {
-        if (content == null) {
-          unresolvedPaths.push(path);
-        } else {
-          out.set(path, content);
-        }
-      }
-    } else {
-      unresolvedPaths.push(...paths);
-    }
-
-    if (unresolvedPaths.length === 0) {
-      continue;
-    }
-
-    const varDefs = unresolvedPaths.map((_, j) => `$e${j}: String!`).join(", ");
-    const fieldBlock = unresolvedPaths
-      .map(
-        (_, j) => `b${j}: object(expression: $e${j}) { ... on Blob { text } }`,
-      )
-      .join("\n");
-
-    const query = `
-        query BatchRepoBlobs($owner: String!, $repository: String!, ${varDefs}) {
-          repository(owner: $owner, name: $repository) {
-            ${fieldBlock}
-          }
-        }
-      `;
-
-    const variables: Record<string, string> = {
-      owner: args.owner,
-      repository: args.repository,
-    };
-
-    for (let j = 0; j < unresolvedPaths.length; j++) {
-      variables[`e${j}`] = `${ref}:${unresolvedPaths[j]}`;
-    }
-
-    const response = await getGitHubGraphQLClient()<{
-      repository: null | Record<string, { text?: string } | null | undefined>;
-    }>({
-      query,
-      ...variables,
-    });
-
-    const repo = response.repository;
-
-    if (!repo) {
-      for (const p of unresolvedPaths) {
-        out.set(p, undefined);
-      }
-      continue;
-    }
-
-    for (let j = 0; j < unresolvedPaths.length; j++) {
-      const blob = repo[`b${j}`];
-      out.set(unresolvedPaths[j], blob?.text ?? undefined);
-    }
+  for (const [path, content] of results) {
+    out.set(path, content);
   }
 
   return out;

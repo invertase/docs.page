@@ -1,6 +1,5 @@
 import type { NextApiHandler } from "next";
 
-import { getRedisClient } from "@/server/redis";
 import { parseMdx } from "@/server/docs/bundler/mdx";
 
 let warmupComplete = false;
@@ -17,7 +16,6 @@ async function ensureWarmup() {
         headerDepth: 3,
         components: [],
       }),
-      ensureRedisWarmup(),
     ]).then(() => {
       warmupComplete = true;
     });
@@ -29,16 +27,6 @@ async function ensureWarmup() {
     warmupPromise = null;
     throw error;
   }
-}
-
-async function ensureRedisWarmup() {
-  const client = await getRedisClient();
-
-  if (!client) {
-    return;
-  }
-
-  await client.ping();
 }
 
 const handler: NextApiHandler = async (_, res) => {

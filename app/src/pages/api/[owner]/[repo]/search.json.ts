@@ -47,11 +47,7 @@ const handler: NextApiHandler = async (req, res) => {
   const payload =
     docList.files.length === 0
       ? emptyDocsFlexSearchPayload(docList)
-      : await buildDocsFlexSearchIndex(
-          route.owner,
-          route.repository,
-          docList.resolvedSha,
-        );
+      : await buildDocsFlexSearchIndex(docList);
 
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   setDocsCacheHeaders(res, SEARCH_CACHE_HEADERS);

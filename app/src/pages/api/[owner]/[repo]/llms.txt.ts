@@ -1,5 +1,4 @@
 import type { NextApiHandler } from "next";
-import frontmatter from "gray-matter";
 
 import {
   getAbsoluteRequestUrl,
@@ -7,10 +6,12 @@ import {
 } from "@/lib/incoming-http-headers";
 import { resolveDocsRoute } from "@/lib/docs-routing";
 import { LLMS_TXT_CACHE_HEADERS, setDocsCacheHeaders } from "@/proxy";
-import { defaultConfig, parseConfig } from "@/server/config";
-import { getGitHubContents, getGitHubFileSourcesBatch } from "@/server/github/contents";
+import { defaultConfig } from "@/server/config";
+import {
+  buildDocsSourceDataset,
+  loadDocsConfigForResolvedSha,
+} from "@/server/docs/source-dataset";
 import { listGitHubDocFiles } from "@/server/github/tree";
-import type { GitHubDocFile } from "@/server/github/tree";
 
 const handler: NextApiHandler = async (req, res) => {
   if (req.method !== "GET") {
@@ -42,43 +43,19 @@ const handler: NextApiHandler = async (req, res) => {
     return res.status(404).send("Not found");
   }
 
-  const { owner: ghOwner, repository: ghRepo, ref: ghRef } = docList.source;
-  const resolvedRef = ghRef ?? docList.resolvedRef;
-
-  const paths = docList.files.map((f) => f.sourcePath);
-  const sortedFiles = [...docList.files].sort((a, b) =>
-    compareStructuredDocPath(a.path, b.path),
-  );
+  const { owner: ghOwner, repository: ghRepo } = docList.source;
 
   const requestUrl = getAbsoluteRequestUrl(req);
   const origin = new URL(requestUrl).origin;
 
-  const [indexContents, blobs] = await Promise.all([
-    getGitHubContents({
+  const [config, dataset] = await Promise.all([
+    loadDocsConfigForResolvedSha({
       owner: ghOwner,
       repository: ghRepo,
-      ref: docList.source.ref,
-      path: "index",
+      resolvedSha: docList.resolvedSha,
     }),
-    getGitHubFileSourcesBatch({
-      owner: ghOwner,
-      repository: ghRepo,
-      ref: resolvedRef,
-      paths,
-    }),
+    buildDocsSourceDataset(docList),
   ]);
-
-  let config = defaultConfig;
-  if (indexContents?.config.configJson || indexContents?.config.configYaml) {
-    try {
-      config = parseConfig({
-        json: indexContents.config.configJson,
-        yaml: indexContents.config.configYaml,
-      });
-    } catch {
-      config = defaultConfig;
-    }
-  }
 
   const siteTitle = config.name?.trim() || `${ghOwner}/${ghRepo}`;
   const siteDescription =
@@ -87,27 +64,19 @@ const handler: NextApiHandler = async (req, res) => {
 
   const lines: string[] = [`# ${siteTitle}`, "", siteDescription, "", "## Docs", ""];
 
-  for (const file of sortedFiles) {
-    const content = blobs.get(file.sourcePath);
-    if (content == null) {
-      continue;
-    }
-
-    const parsed = frontmatter(content);
-    const title = titleFromMatterAndBody(parsed.data, parsed.content, file.path);
-    const pageDescription = pageDescriptionFromMatterAndBody(parsed.data, parsed.content);
+  for (const document of dataset.documents) {
     const docRoute = resolveDocsRoute({
       owner,
       repoSegment: repo,
-      path: docFileToPathSegments(file),
+      path: document.pathSegments,
       headers: requestHeaders,
     });
     const pathname = docRoute.publicPathname || "/";
     const href = `${origin}${pathname.startsWith("/") ? pathname : `/${pathname}`}`;
-    const label = sanitizeMdLinkLabel(title);
+    const label = sanitizeMdLinkLabel(document.title);
     lines.push(
-      pageDescription
-        ? `- [${label}](${href}): ${pageDescription}`
+      document.description
+        ? `- [${label}](${href}): ${document.description}`
         : `- [${label}](${href})`,
     );
   }
@@ -128,81 +97,6 @@ export default handler;
 
 function getSingleParam(value: string | string[] | undefined) {
   return Array.isArray(value) ? value[0] : value;
-}
-
-/**
- * Path segments for sorting (`index` → root).
- * Depth = segment count (0 = `/`).
- */
-function docPathToSegments(path: string): string[] {
-  if (!path || path === "index") {
-    return [];
-  }
-
-  return path.split("/").filter(Boolean);
-}
-
-/**
- * Order by depth first (shallower pages before deeper ones), then alphabetically by each segment.
- * Without depth-first, pure segment compare puts `foo/bar` before `typescript` (first segment `foo` sorts before `typescript`).
- */
-function compareStructuredDocPath(aPath: string, bPath: string): number {
-  const segsA = docPathToSegments(aPath);
-  const segsB = docPathToSegments(bPath);
-
-  if (segsA.length !== segsB.length) {
-    return segsA.length - segsB.length;
-  }
-
-  for (let i = 0; i < segsA.length; i++) {
-    const cmp = segsA[i].localeCompare(segsB[i], undefined, {
-      numeric: true,
-      sensitivity: "base",
-    });
-    if (cmp !== 0) {
-      return cmp;
-    }
-  }
-
-  return 0;
-}
-
-function docFileToPathSegments(file: GitHubDocFile): string[] | undefined {
-  if (!file.path || file.path === "index") {
-    return undefined;
-  }
-
-  return file.path.split("/").filter(Boolean);
-}
-
-function titleFromMatterAndBody(data: Record<string, unknown>, body: string, fallback: string): string {
-  if (typeof data.title === "string" && data.title.trim()) {
-    return data.title.trim();
-  }
-
-  const heading = body.match(/^#\s+(.+)$/m);
-
-  return heading ? heading[1].trim() : fallback;
-}
-
-function pageDescriptionFromMatterAndBody(data: Record<string, unknown>, body: string): string {
-  if (typeof data.description === "string" && data.description.trim()) {
-    return collapseWhitespace(data.description.trim());
-  }
-
-  const text = body.replace(/\r\n/g, "\n").replace(/^#.*$/gm, "").trim();
-  const firstBlock = text.split(/\n\n+/).find((block) => block.trim().length > 0);
-  if (!firstBlock) {
-    return "";
-  }
-
-  const singleLine = firstBlock.replace(/\s+/g, " ").trim();
-  return singleLine.length > 240 ? `${singleLine.slice(0, 237)}...` : singleLine;
-}
-
-function collapseWhitespace(text: string) {
-  const singleLine = text.replace(/\s+/g, " ").trim();
-  return singleLine.length > 240 ? `${singleLine.slice(0, 237)}...` : singleLine;
 }
 
 function sanitizeMdLinkLabel(text: string) {

@@ -5,6 +5,7 @@ import {
   incomingHttpHeadersToWebHeaders,
 } from "@/lib/incoming-http-headers";
 import { resolveDocsRoute } from "@/lib/docs-routing";
+import { listGitHubDocFiles } from "@/server/github/tree";
 
 const handler: NextApiHandler = async (req, res) => {
   const owner = getSingleParam(req.query.owner);
@@ -22,6 +23,19 @@ const handler: NextApiHandler = async (req, res) => {
   const { createMcpDescriptor, handleMcpDelete, handleMcpPost } = await import(
     "@/server/mcp/server"
   );
+
+  // Avoid advertising or serving MCP for repo/ref contexts that do not resolve on GitHub.
+  if (req.method === "GET" || req.method === "POST") {
+    const source = await listGitHubDocFiles({
+      owner: route.owner,
+      repository: route.repository,
+      ref: route.ref ?? undefined,
+    });
+
+    if (!source) {
+      return res.status(404).json({ error: "Not found." });
+    }
+  }
 
   switch (req.method) {
     case "GET":
