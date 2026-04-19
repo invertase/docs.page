@@ -15,9 +15,17 @@ export type SearchRow = {
   snippetHtml: string;
 };
 
+export type SearchScope = "all" | "title";
+
 export type SearchWorkerInMessage =
   | { type: "init"; url: string }
-  | { type: "search"; id: number; query: string; limit: number };
+  | {
+      type: "search";
+      id: number;
+      query: string;
+      limit: number;
+      scope?: SearchScope;
+    };
 
 export type SearchWorkerOutMessage =
   | { type: "ready" }
@@ -66,12 +74,15 @@ ctx.addEventListener("message", (event: MessageEvent<SearchWorkerInMessage>) => 
     }
 
     const q = msg.query.trim();
+    const scope = msg.scope ?? "all";
     if (!q) {
       post({ type: "result", id: msg.id, rows: [] });
       return;
     }
 
-    const raw = index.search(q, { merge: true, limit: msg.limit });
+    const lookupLimit =
+      scope === "title" ? Math.max(msg.limit * 5, msg.limit) : msg.limit;
+    const raw = index.search(q, { merge: true, limit: lookupLimit });
 
     const rows: SearchRow[] = [];
     const seen = new Set<string>();
@@ -81,6 +92,7 @@ ctx.addEventListener("message", (event: MessageEvent<SearchWorkerInMessage>) => 
 
       const doc = docsByPath.get(hit.id);
       if (!doc) continue;
+      if (scope === "title" && !matchesTitle(doc.title, q)) continue;
 
       rows.push({
         path: doc.path,
@@ -88,6 +100,7 @@ ctx.addEventListener("message", (event: MessageEvent<SearchWorkerInMessage>) => 
         titleHtml: highlightInline(doc.title, q),
         snippetHtml: buildSnippet(doc.content, q),
       });
+      if (rows.length >= msg.limit) break;
     }
 
     post({ type: "result", id: msg.id, rows });
@@ -165,4 +178,8 @@ function buildSnippet(content: string, query: string, radius = 60): string {
   const after = escapeHtml(content.slice(idx + q.length, end));
 
   return `${prefix}${before}<mark>${match}</mark>${after}${suffix}`;
+}
+
+function matchesTitle(title: string, query: string): boolean {
+  return title.toLowerCase().includes(query.toLowerCase());
 }

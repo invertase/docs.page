@@ -1,4 +1,5 @@
 import type {
+  SearchScope,
   SearchRow,
   SearchWorkerInMessage,
   SearchWorkerOutMessage,
@@ -66,6 +67,7 @@ export function searchDocs(
   query: string,
   limit: number,
   onResult: ResultCallback,
+  options?: { scope?: SearchScope },
 ): () => void {
   const w = ensureWorker(url);
   if (!w) {
@@ -77,7 +79,13 @@ export function searchDocs(
   pending.set(id, onResult);
 
   const send = () => {
-    const msg: SearchWorkerInMessage = { type: "search", id, query, limit };
+    const msg: SearchWorkerInMessage = {
+      type: "search",
+      id,
+      query,
+      limit,
+      scope: options?.scope,
+    };
     w.postMessage(msg);
   };
 

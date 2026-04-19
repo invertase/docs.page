@@ -1,6 +1,12 @@
 "use client";
 
-import { startTransition, useDeferredValue, useEffect, useState } from "react";
+import {
+  startTransition,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useRouter } from "next/router";
 import type { ComponentProps } from "react";
 import { isSearchReady, searchDocs } from "@/lib/search-client";
@@ -22,9 +28,10 @@ import {
 } from "@remixicon/react";
 import { useDocTabs } from "@/hooks/use-doc-tabs";
 import { useDocHref } from "@/hooks/use-doc-href";
-import { isExternalLink } from "@/lib/docs-assets";
+import { ensureLeadingSlash, isExternalLink } from "@/lib/docs-assets";
 import { useAgentPanel } from "./agent-panel";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
+import { Badge } from "./ui/badge";
 
 type Props = {
   open: boolean;
@@ -34,11 +41,13 @@ type Props = {
 
 export default function SearchDialog({ open, onOpenChange, searchUrl }: Props) {
   const [query, setQuery] = useState("");
+  const [titleOnly, setTitleOnly] = useState(false);
   const deferredQuery = useDeferredValue(query);
   const [results, setResults] = useState<SearchRow[]>([]);
   const tabs = useDocTabs();
   const { setOpen: setAgentPanelOpen } = useAgentPanel();
   const { bundle } = useDocPageContext();
+  const displayResults = useMemo(() => dedupeSearchResults(results), [results]);
 
   useEffect(() => {
     const q = deferredQuery.trim();
@@ -52,10 +61,16 @@ export default function SearchDialog({ open, onOpenChange, searchUrl }: Props) {
 
     const handle = window.setTimeout(() => {
       if (cancelled) return;
-      unsubscribe = searchDocs(searchUrl, q, q.length < 2 ? 5 : 10, (rows) => {
-        if (cancelled) return;
-        startTransition(() => setResults(rows));
-      });
+      unsubscribe = searchDocs(
+        searchUrl,
+        q,
+        q.length < 2 ? 5 : 10,
+        (rows) => {
+          if (cancelled) return;
+          startTransition(() => setResults(rows));
+        },
+        { scope: titleOnly ? "title" : "all" },
+      );
     }, 80);
 
     return () => {
@@ -63,7 +78,7 @@ export default function SearchDialog({ open, onOpenChange, searchUrl }: Props) {
       window.clearTimeout(handle);
       unsubscribe?.();
     };
-  }, [deferredQuery, searchUrl]);
+  }, [deferredQuery, searchUrl, titleOnly]);
 
   const hasQuery = query.trim().length > 0;
   const showLoading = hasQuery && !isSearchReady();
@@ -75,11 +90,37 @@ export default function SearchDialog({ open, onOpenChange, searchUrl }: Props) {
       className="sm:max-w-2xl"
     >
       <Command className="bar" shouldFilter={false}>
-        <CommandInput
-          placeholder="Search documentation..."
-          value={query}
-          onValueChange={setQuery}
-        />
+        <div className="relative">
+          <CommandInput
+            placeholder={titleOnly ? undefined : "Search docs (`>` for pages)"}
+            value={query}
+            onValueChange={(value) => {
+              const trimmed = value.trimStart();
+              if (trimmed.startsWith(">")) {
+                setTitleOnly(true);
+                const strippedValue = trimmed.slice(1).trimStart();
+                setQuery(strippedValue);
+                return;
+              }
+              setQuery(value);
+            }}
+            onKeyDown={(event) => {
+              if (
+                titleOnly &&
+                query.trim().length === 0 &&
+                event.key === "Backspace"
+              ) {
+                event.preventDefault();
+                setTitleOnly(false);
+              }
+            }}
+            className={titleOnly ? "ml-28" : undefined}
+          />
+          {titleOnly && (
+            <Badge className="absolute left-10 top-2.5">Search pages</Badge>
+          )}
+        </div>
+
         <CommandList>
           {query.length === 0 && (
             <CommandGroup heading="Navigate">
@@ -105,21 +146,27 @@ export default function SearchDialog({ open, onOpenChange, searchUrl }: Props) {
                 <RiCloudFill className="text-muted-foreground" />
                 <span>Install MCP</span>
               </CommandItem>
-              <CommandItem onSelect={() => {
-                window.open(`https://github.com/${bundle.source.owner}/${bundle.source.repository}`, "_blank", "noopener,noreferrer");
-              }}>
+              <CommandItem
+                onSelect={() => {
+                  window.open(
+                    `https://github.com/${bundle.source.owner}/${bundle.source.repository}`,
+                    "_blank",
+                    "noopener,noreferrer",
+                  );
+                }}
+              >
                 <RiGithubFill className="text-muted-foreground" />
                 <span>GitHub</span>
                 <span className="text-muted-foreground">
-                  invertase/react-native-firebase
+                  {bundle.source.owner}/{bundle.source.repository}
                 </span>
               </CommandItem>
             </CommandGroup>
           )}
 
-          {results.length > 0 ? (
-            <CommandGroup heading="Results">
-              {results.map((doc) => (
+          {displayResults.length > 0 ? (
+            <CommandGroup heading={titleOnly ? "Pages" : "Results"}>
+              {displayResults.map((doc) => (
                 <CommandItem
                   key={doc.path}
                   value={doc.path}
@@ -129,17 +176,26 @@ export default function SearchDialog({ open, onOpenChange, searchUrl }: Props) {
                     className="text-sm font-medium"
                     dangerouslySetInnerHTML={{ __html: doc.titleHtml }}
                   />
-                  <span
-                    className="text-muted-foreground text-xs line-clamp-2"
-                    dangerouslySetInnerHTML={{ __html: doc.snippetHtml }}
-                  />
+                  <span className="text-muted-foreground text-xs font-mono">
+                    {formatDisplayPath(doc.path)}
+                  </span>
+                  {!titleOnly && (
+                    <span
+                      className="text-muted-foreground text-xs line-clamp-2"
+                      dangerouslySetInnerHTML={{ __html: doc.snippetHtml }}
+                    />
+                  )}
                 </CommandItem>
               ))}
             </CommandGroup>
           ) : showLoading ? (
             <CommandEmpty>Loading...</CommandEmpty>
+          ) : titleOnly && !hasQuery ? (
+            <CommandEmpty>Type to search page titles.</CommandEmpty>
           ) : (
-            <CommandEmpty>No results found.</CommandEmpty>
+            <CommandEmpty>
+              {titleOnly ? "No page titles found." : "No results found."}
+            </CommandEmpty>
           )}
         </CommandList>
       </Command>
@@ -180,4 +236,31 @@ function TabCommandItem({
       <span>{title}</span>
     </CommandItem>
   );
+}
+
+function dedupeSearchResults(rows: SearchRow[]): SearchRow[] {
+  const seen = new Set<string>();
+  const deduped: SearchRow[] = [];
+
+  for (const row of rows) {
+    const key = normalizeResultPath(row.path);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    deduped.push(row);
+  }
+
+  return deduped;
+}
+
+function normalizeResultPath(path: string): string {
+  if (isExternalLink(path)) return path;
+  const [pathWithoutQuery] = path.split("?");
+  const [pathWithoutHash] = pathWithoutQuery.split("#");
+  const normalized = pathWithoutHash.replace(/\/+$/, "");
+  const withoutIndex = normalized.replace(/\/index$/i, "");
+  return ensureLeadingSlash(withoutIndex || "/");
+}
+
+function formatDisplayPath(path: string): string {
+  return normalizeResultPath(path);
 }
