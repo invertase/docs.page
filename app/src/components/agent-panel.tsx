@@ -12,6 +12,32 @@ import { useHotkeys } from "react-hotkeys-hook";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { Sheet, SheetContent, SheetTitle } from "./ui/sheet";
+import { ResizableHandle, ResizablePanel } from "@/components/ui/resizable";
+import {
+  PromptInputActionMenu,
+  PromptInputFooter,
+  PromptInputBody,
+  PromptInputProvider,
+  PromptInputTextarea,
+  PromptInputActionMenuTrigger,
+  PromptInput,
+  PromptInputButton,
+  PromptInputTools,
+  PromptInputActionMenuContent,
+  PromptInputActionAddAttachments,
+  PromptInputActionAddScreenshot,
+  PromptInputSubmit,
+} from "./ai-elements/prompt-input";
+import {
+  RiArrowRightBoxLine,
+  RiArrowRightLine,
+  RiArrowRightSFill,
+  RiArrowRightSLine,
+  RiChatAiLine,
+  RiSendPlaneLine,
+} from "@remixicon/react";
+import { Button } from "./ui/button";
+import { Textarea } from "./ui/textarea";
 
 type AgentPanelContextValue = {
   open: boolean;
@@ -69,15 +95,60 @@ export function AgentPanel() {
     );
   }
 
+  if (!open) {
+    return null;
+  }
+
   return (
-    <aside
-      aria-hidden={!open}
-      className={cn(
-        "sticky top-0 h-svh shrink-0 overflow-hidden transition-[width] duration-200 ease-out border-l",
-        open ? "w-88" : "w-0",
-      )}
-    >
-      <div className="h-full w-80" />
-    </aside>
+    <>
+      <ResizableHandle />
+      <ResizablePanel
+        id="docs-agent-panel"
+        defaultSize={400}
+        maxSize={600}
+        minSize={300}
+        className="overflow-visible!"
+      >
+        <aside
+          aria-hidden={false}
+          className={cn(
+            "sticky top-0 h-svh w-full min-w-0 shrink-0 overflow-hidden border-l bg-background",
+          )}
+        >
+          <div className="flex h-full min-h-0 w-full min-w-0 flex-col">
+            <div className="flex h-12 shrink-0 items-center px-4">
+              <h2 className="flex-1 text-sm font-medium">Agent</h2>
+              <div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setOpen(false)}
+                >
+                  <RiArrowRightSLine />
+                </Button>
+              </div>
+            </div>
+
+            <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3">
+              <div className="space-y-3 text-sm text-muted-foreground">
+                <p>
+                  Ask about this page, request edits, or summarize sections.
+                </p>
+                <p>Your conversation will appear here.</p>
+              </div>
+            </div>
+
+            <div className="shrink-0 p-3">
+              <div className="relative">
+                <Textarea className="h-12 pr-14" />
+                <Button className="absolute right-2 top-2">
+                  <RiChatAiLine />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </ResizablePanel>
+    </>
   );
 }
