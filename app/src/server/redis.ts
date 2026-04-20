@@ -53,7 +53,7 @@ export async function getCache(): Promise<AppCache | null> {
   };
 }
 
-export async function getRedisClient(): Promise<RedisClient | null> {
+export async function getRedisClient() {
   const url = process.env.REDIS_URL?.trim();
 
   if (!url) {
@@ -76,7 +76,7 @@ export async function getRedisClient(): Promise<RedisClient | null> {
       keepAlive: 5_000,
     },
   });
-  redisConnectionPromise = redisClient.connect().then(() => redisClient as RedisClient);
+  redisConnectionPromise = redisClient.connect();
 
   try {
     return await redisConnectionPromise;

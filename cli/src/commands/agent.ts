@@ -163,7 +163,7 @@ async function createAgent({
   githubToken: string;
   force: boolean;
 }) {
-  const response = await fetch(`${apiBase}/api/agent`, {
+  const response = await fetch(`${apiBase}/api/agent/create`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

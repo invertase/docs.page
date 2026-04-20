@@ -1,4 +1,5 @@
-import { AgentPanel, AgentPanelProvider } from "./agent-panel";
+import { AgentPanel } from "@/components/agent/panel";
+import { AgentPanelProvider } from "@/components/agent/provider";
 import { Header } from "./header";
 import { Navigation } from "./navigation";
 import { Prose } from "./prose";

@@ -1,7 +1,8 @@
 import { randomUUID } from "node:crypto";
-
-import type { NextApiHandler } from "next";
 import { z } from "zod";
+import { PROVIDERS } from "@/server/agent/providers";
+import { encryptAgentPayload } from "@/server/agent/encryption";
+import { getAgentStore } from "@/server/agent/storage";
 
 const CreateAgentSchema = z.object({
   repo: z.string().trim().min(1),
@@ -11,26 +12,28 @@ const CreateAgentSchema = z.object({
   force: z.boolean().optional().default(false),
 });
 
-const handler: NextApiHandler = async (req, res) => {
-  if (req.method !== "POST") {
-    res.setHeader("Allow", "POST");
-    return res.status(405).json({ error: "Method not allowed." });
-  }
-
+export async function POST(req: Request) {
   try {
-    const parsed = CreateAgentSchema.safeParse(req.body);
+    const parsed = CreateAgentSchema.safeParse(await req.json());
 
     if (!parsed.success) {
-      return res.status(400).json({ error: "Invalid request body." });
+      return Response.json({ error: "Invalid request body." }, { status: 400 });
     }
 
     const { repo, model, apikey, githubToken, force } = parsed.data;
     const repoParts = parseRepo(repo);
 
     if (!repoParts) {
-      return res
-        .status(400)
-        .json({ error: "`repo` must be in the form `org/name`." });
+      return Response.json(
+        { error: "`repo` must be in the form `org/name`." },
+        { status: 400 },
+      );
+    }
+
+    const [provider, modelName] = model.split("/");
+
+    if (!PROVIDERS.includes(provider)) {
+      return Response.json({ error: "Invalid model provider." }, { status: 400 });
     }
 
     const adminCheck = await checkAdminAccess({
@@ -40,25 +43,24 @@ const handler: NextApiHandler = async (req, res) => {
     });
 
     if (!adminCheck.ok) {
-      return res.status(adminCheck.status).json({ error: adminCheck.error });
+      return Response.json({ error: adminCheck.error }, { status: adminCheck.status });
     }
 
-    const [{ encryptAgentPayload }, { getAgentStore }] = await Promise.all([
-      import("@/server/agent/encryption"),
-      import("@/server/agent/storage"),
-    ]);
     const store = getAgentStore();
     const existingRecord = await store.getByRepo(repo);
 
     if (existingRecord && !force) {
-      return res.status(409).json({
-        error:
-          "An API key has already been added for this repository. Re-run the command with --force to overwrite.",
-      });
+      return Response.json(
+        {
+          error:
+            "An API key has already been added for this repository. Re-run the command with --force to overwrite.",
+        },
+        { status: 409 },
+      );
     }
 
-    const id = randomUUID();
-    const payload = encryptAgentPayload({ model, apikey });
+    const id = existingRecord?.id ?? randomUUID();
+    const payload = encryptAgentPayload({ provider, modelName, apikey });
 
     await store.set({
       repo,
@@ -67,16 +69,15 @@ const handler: NextApiHandler = async (req, res) => {
       encrypted: payload.encrypted,
     });
 
-    return res.status(200).json({ id });
+    return Response.json({ id }, { status: 200 });
   } catch (error) {
     console.error(error);
-    return res
-      .status(500)
-      .json({ error: "Failed to create an agent API key." });
+    return Response.json(
+      { error: "Failed to create an agent API key." },
+      { status: 500 },
+    );
   }
-};
-
-export default handler;
+}
 
 function parseRepo(repo: string) {
   const [owner, name, ...rest] = repo.split("/");

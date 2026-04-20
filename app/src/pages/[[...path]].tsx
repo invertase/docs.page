@@ -26,6 +26,11 @@ import type { DocPageProps, ErrorPageProps, PageProps } from "@/lib/types";
 import { DocsBundleErrorCard, DocsDebug } from "@/components/docs-debug";
 import { Docs } from "@/components/docs";
 import { DocPageContext } from "@/hooks/use-doc-page-context";
+import {
+  createAgentSession,
+  createAgentSessionCookies,
+  getAgentCsrfCookiePath,
+} from "@/server/agent/session";
 
 export const getServerSideProps = (async ({ params, req, res, query }) => {
   const raw = params?.path;
@@ -102,6 +107,7 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
     path,
     headers: requestHeaders,
   });
+  const csrfCookiePath = getAgentCsrfCookiePath(route);
 
   const accept = Array.isArray(req.headers.accept)
     ? req.headers.accept.join(", ")
@@ -204,9 +210,27 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
     };
   }
 
+  const isDebug = query.debug !== undefined;
+
+  if (!isDebug && successResponse.hasAgent) {
+    const session = await createAgentSession({
+      owner: route.owner,
+      repo: route.repository,
+    });
+
+    res.setHeader(
+      "Set-Cookie",
+      createAgentSessionCookies(
+        session.token,
+        session.csrfToken,
+        csrfCookiePath,
+      ),
+    );
+  }
+
   return {
     props: {
-      kind: query.debug ? ("debug" as const) : ("doc" as const),
+      kind: isDebug ? ("debug" as const) : ("doc" as const),
       route,
       hasAgent: successResponse.hasAgent,
       bundle: successResponse.bundle,

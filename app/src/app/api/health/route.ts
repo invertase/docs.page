@@ -1,5 +1,3 @@
-import type { NextApiHandler } from "next";
-
 import { parseMdx } from "@/server/docs/bundler/mdx";
 
 let warmupComplete = false;
@@ -29,10 +27,7 @@ async function ensureWarmup() {
   }
 }
 
-const handler: NextApiHandler = async (_, res) => {
+export async function GET() {
   await ensureWarmup();
-  res.status(200);
-  res.end("OK");
-};
-
-export default handler;
+  return new Response("OK", { status: 200 });
+}

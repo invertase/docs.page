@@ -6,10 +6,10 @@ import { resolveActiveTabId } from "@/lib/docs-routing";
 import { cn } from "@/lib/utils";
 import { RiSunFill, RiMoonFill, RiSparkling2Fill } from "@remixicon/react";
 import { useTheme } from "next-themes";
-import { Button } from "./ui/button";
-import { Search } from "./search";
-import { useAgentPanel } from "./agent-panel";
-import { Kbd } from "./ui/kbd";
+import { Button } from "@/components/ui/button";
+import { Search } from "@/components/search";
+import { useAgentPanel } from "@/hooks/use-agent-panel";
+import { Kbd } from "@/components/ui/kbd";
 
 export function Header() {
   const hasTabs = useDocTabs().length > 0;
@@ -69,9 +69,11 @@ function Logo() {
 }
 
 function Actions() {
+  const { hasAgent } = useDocPageContext();
+  
   return (
     <div className="flex min-w-0 flex-1 items-center justify-end gap-3">
-      <AgentPanelToggle />
+      {hasAgent && <AgentPanelToggle />}
       <Search />
       <HeaderLinks />
       <ThemeToggle />

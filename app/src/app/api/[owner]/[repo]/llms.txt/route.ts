@@ -1,36 +1,29 @@
-import type { NextApiHandler } from "next";
-
-import {
-  getAbsoluteRequestUrl,
-  incomingHttpHeadersToWebHeaders,
-} from "@/lib/incoming-http-headers";
 import { resolveDocsRoute } from "@/lib/docs-routing";
-import { LLMS_TXT_CACHE_HEADERS, setDocsCacheHeaders } from "@/proxy";
-import { defaultConfig } from "@/server/config";
+import { LLMS_TXT_CACHE_HEADERS } from "@/proxy";
 import {
   buildDocsSourceDataset,
   loadDocsConfigForResolvedSha,
 } from "@/server/docs/source-dataset";
 import { listGitHubDocFiles } from "@/server/github/tree";
 
-const handler: NextApiHandler = async (req, res) => {
-  if (req.method !== "GET") {
-    res.setHeader("Allow", "GET");
-    return res.status(405).send("Method not allowed");
-  }
+type RouteContext = {
+  params: Promise<{
+    owner: string;
+    repo: string;
+  }>;
+};
 
-  const owner = getSingleParam(req.query.owner);
-  const repo = getSingleParam(req.query.repo);
+export async function GET(req: Request, context: RouteContext) {
+  const { owner, repo } = await context.params;
 
   if (!owner || !repo) {
-    return res.status(400).send("Missing owner or repo");
+    return new Response("Missing owner or repo", { status: 400 });
   }
 
-  const requestHeaders = incomingHttpHeadersToWebHeaders(req.headers);
   const route = resolveDocsRoute({
     owner,
     repoSegment: repo,
-    headers: requestHeaders,
+    headers: req.headers,
   });
 
   const docList = await listGitHubDocFiles({
@@ -40,13 +33,11 @@ const handler: NextApiHandler = async (req, res) => {
   });
 
   if (!docList || docList.files.length === 0) {
-    return res.status(404).send("Not found");
+    return new Response("Not found", { status: 404 });
   }
 
   const { owner: ghOwner, repository: ghRepo } = docList.source;
-
-  const requestUrl = getAbsoluteRequestUrl(req);
-  const origin = new URL(requestUrl).origin;
+  const origin = new URL(req.url).origin;
 
   const [config, dataset] = await Promise.all([
     loadDocsConfigForResolvedSha({
@@ -69,7 +60,7 @@ const handler: NextApiHandler = async (req, res) => {
       owner,
       repoSegment: repo,
       path: document.pathSegments,
-      headers: requestHeaders,
+      headers: req.headers,
     });
     const pathname = docRoute.publicPathname || "/";
     const href = `${origin}${pathname.startsWith("/") ? pathname : `/${pathname}`}`;
@@ -81,22 +72,20 @@ const handler: NextApiHandler = async (req, res) => {
     );
   }
 
-  const body = lines.join("\n");
-
-  res.setHeader("Content-Type", "text/markdown; charset=utf-8");
-  setDocsCacheHeaders(res, LLMS_TXT_CACHE_HEADERS);
+  const response = new Response(lines.join("\n"), {
+    status: 200,
+    headers: {
+      "Content-Type": "text/markdown; charset=utf-8",
+    },
+  });
+  response.headers.set("Cache-Control", LLMS_TXT_CACHE_HEADERS.cacheControl);
+  response.headers.set("Surrogate-Control", LLMS_TXT_CACHE_HEADERS.surrogateControl);
 
   if (docList.truncated) {
-    res.setHeader("x-docs-page-tree-truncated", "1");
+    response.headers.set("x-docs-page-tree-truncated", "1");
   }
 
-  return res.status(200).send(body);
-};
-
-export default handler;
-
-function getSingleParam(value: string | string[] | undefined) {
-  return Array.isArray(value) ? value[0] : value;
+  return response;
 }
 
 function sanitizeMdLinkLabel(text: string) {
