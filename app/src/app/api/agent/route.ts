@@ -173,7 +173,7 @@ export async function POST(req: Request) {
     model: instance(modelName),
     instructions: SYSTEM_INSTRUCTIONS(repoSlug),
     tools: {
-      bash: bashToolkit.tools.bash,
+      bash: bashToolkit.tools.bash as never,
     },
     stopWhen: stepCountIs(20),
   });
