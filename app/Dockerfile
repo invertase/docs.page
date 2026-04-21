@@ -11,10 +11,12 @@ RUN bun install --cwd app --frozen-lockfile
 
 FROM base AS builder
 WORKDIR /app
-COPY --from=deps /app/app/node_modules ./app/node_modules
 COPY . .
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=deps /app/app/node_modules ./app/node_modules
+COPY --from=deps /app/packages/mdx-bundler/node_modules ./packages/mdx-bundler/node_modules
 ENV NODE_ENV=production
-RUN bun --cwd app run build
+RUN cd app && bun run build
 
 FROM base AS runner
 WORKDIR /app
@@ -25,6 +27,8 @@ COPY --from=builder /app/app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/app/.next/static ./.next/static
 USER nextjs
+EXPOSE 3000
+ENV PORT=3000
 
 ENV HOSTNAME="0.0.0.0"
 CMD ["bun", "server.js"]
