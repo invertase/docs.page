@@ -4,6 +4,7 @@ import { useChat } from "@ai-sdk/react";
 import Cookies from "js-cookie";
 import {
   RiArrowRightSLine,
+  RiArrowUpLine,
   RiChatAiLine,
   RiSparkling2Line,
   RiToolsLine,
@@ -21,9 +22,9 @@ const AGENT_CSRF_COOKIE_NAME = "agent_session_csrf";
 const AGENT_SESSION_HEADER_NAME = "X-Agent-Session";
 
 export function AgentChat({ setOpen }: { setOpen?: (open: boolean) => void }) {
-  const { hasAgent, kind } = useDocPageContext();
+  const { meta, kind } = useDocPageContext();
   const [input, setInput] = useState("");
-  const agentAvailable = kind === "doc" && hasAgent;
+  const agentAvailable = kind === "doc" && meta.hasAgent;
 
   const { messages, sendMessage, status, error, stop } = useChat({
     transport: new DefaultChatTransport({
@@ -174,7 +175,7 @@ export function AgentChat({ setOpen }: { setOpen?: (open: boolean) => void }) {
           />
           <Button
             className="absolute right-2 bottom-2"
-            size="icon-sm"
+            size="icon"
             type={isSending ? "button" : "submit"}
             onClick={isSending ? () => stop() : undefined}
             disabled={
@@ -182,7 +183,7 @@ export function AgentChat({ setOpen }: { setOpen?: (open: boolean) => void }) {
             }
             title={isSending ? "Stop generating" : "Send message"}
           >
-            <RiChatAiLine />
+            <RiArrowUpLine />
           </Button>
         </div>
       </form>

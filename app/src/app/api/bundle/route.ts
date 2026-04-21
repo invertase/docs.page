@@ -1,5 +1,8 @@
 import { z } from "zod";
-import type { DocsBundleApiResponse } from "@/lib/docs-bundle-api";
+import type {
+  DocsBundleApiErrorResponse,
+  DocsBundleApiResponse,
+} from "@/lib/docs-bundle-api";
 import { getBundleJsonCacheHeaders } from "@/proxy";
 import { checkRepositoryAgentConfig } from "@/server/agent/repository";
 import { BundlerError, getDocBundle } from "@/server/docs/bundle";
@@ -21,11 +24,11 @@ export async function GET(req: Request) {
   });
 
   if (!input.success) {
-    return Response.json<DocsBundleApiResponse>(
+    return Response.json(
       {
         code: "BAD_REQUEST",
         error: "Invalid bundle request.",
-      },
+      } satisfies DocsBundleApiErrorResponse,
       { status: 400 },
     );
   }
@@ -39,13 +42,15 @@ export async function GET(req: Request) {
       }),
     ]);
 
-    const hasAgent = Boolean(bundle.config.agent && bundle.config.agent === agent?.id);
-    const response = Response.json<DocsBundleApiResponse>(
+    const hasAgent = Boolean(
+      bundle.config.agent && bundle.config.agent === agent?.id,
+    );
+    const response = Response.json(
       {
         code: "OK",
         bundle: toJsonSafe(bundle),
         hasAgent,
-      },
+      } satisfies DocsBundleApiResponse,
       { status: 200 },
     );
     const cacheHeaders = getBundleJsonCacheHeaders(input.data.ref);
@@ -55,25 +60,25 @@ export async function GET(req: Request) {
   } catch (error) {
     if (error instanceof BundlerError) {
       console.error(error);
-      return Response.json<DocsBundleApiResponse>(
+      return Response.json(
         {
           code: error.code,
           error: {
             message: error.message,
             ...(error.source ? { source: error.source } : {}),
           },
-        },
+        } satisfies DocsBundleApiErrorResponse,
         { status: error.code },
       );
     }
 
     console.error(error);
 
-    return Response.json<DocsBundleApiResponse>(
+    return Response.json(
       {
         code: "INTERNAL_SERVER_ERROR",
         error: "Failed to load the docs bundle.",
-      },
+      } satisfies DocsBundleApiErrorResponse,
       { status: 500 },
     );
   }

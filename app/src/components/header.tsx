@@ -69,11 +69,11 @@ function Logo() {
 }
 
 function Actions() {
-  const { hasAgent } = useDocPageContext();
+  const { meta } = useDocPageContext();
   
   return (
     <div className="flex min-w-0 flex-1 items-center justify-end gap-3">
-      {hasAgent && <AgentPanelToggle />}
+      {meta.hasAgent && <AgentPanelToggle />}
       <Search />
       <HeaderLinks />
       <ThemeToggle />
@@ -82,13 +82,13 @@ function Actions() {
 }
 
 function AgentPanelToggle() {
-  const { open, setOpen } = useAgentPanel();
+  const { open, toggle } = useAgentPanel();
 
   return (
     <Button
       variant="outline"
       aria-label="Toggle agent panel"
-      onClick={() => setOpen(!open)}
+      onClick={toggle}
     >
       <RiSparkling2Fill />
       <Kbd className="hidden md:block">⌘I</Kbd>

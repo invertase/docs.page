@@ -26,10 +26,12 @@ import type { DocPageProps, ErrorPageProps, PageProps } from "@/lib/types";
 import { DocsBundleErrorCard, DocsDebug } from "@/components/docs-debug";
 import { Docs } from "@/components/docs";
 import { DocPageContext } from "@/hooks/use-doc-page-context";
+import { getAgentPanelCookieName } from "@/lib/agent-panel-state";
 import {
   createAgentSession,
   createAgentSessionCookies,
   getAgentCsrfCookiePath,
+  parseCookies,
 } from "@/server/agent/session";
 
 export const getServerSideProps = (async ({ params, req, res, query }) => {
@@ -108,6 +110,12 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
     headers: requestHeaders,
   });
   const csrfCookiePath = getAgentCsrfCookiePath(route);
+  const cookies = parseCookies(req.headers.cookie);
+  const panelCookieName = getAgentPanelCookieName(
+    route.owner,
+    route.repository,
+  );
+  const initialAgentPanelOpen = cookies[panelCookieName] === "1";
 
   const accept = Array.isArray(req.headers.accept)
     ? req.headers.accept.join(", ")
@@ -232,8 +240,11 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
     props: {
       kind: isDebug ? ("debug" as const) : ("doc" as const),
       route,
-      hasAgent: successResponse.hasAgent,
       bundle: successResponse.bundle,
+      meta: {
+        hasAgent: successResponse.hasAgent,
+        initialAgentPanelOpen,
+      },
     } satisfies DocPageProps,
   };
 }) satisfies GetServerSideProps<PageProps>;
@@ -275,13 +286,15 @@ export default function RepoDocsCatchAllPage(
         {props.kind === "debug" ? <DocsDebug /> : <Docs />}
       </DocPageContext.Provider>
       {preset ? (
-        <style key="theme-preset">{`
+        <style key="theme-preset">
+          {`
           ${preset.css}
           *, *::before, *::after { 
             --font-sans: ${preset.build.fontSans} !important;
             --font-heading: ${preset.build.fontHeading} !important;
           }
-        `.trim()}</style>
+        `.trim()}
+        </style>
       ) : null}
     </>
   );

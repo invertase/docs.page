@@ -4,8 +4,11 @@ import type { ResolvedDocsRoute } from "./docs-routing";
 export type DocPageProps = {
   kind: "doc" | "debug";
   route: ResolvedDocsRoute;
-  hasAgent: boolean;
   bundle: DocsBundlePayload;
+  meta: {
+    hasAgent: boolean;
+    initialAgentPanelOpen: boolean;
+  }
 };
 
 export type ErrorPageProps = {
