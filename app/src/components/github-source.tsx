@@ -3,8 +3,17 @@ import { Button } from "./ui/button";
 import { GitBranchIcon, StarIcon } from "lucide-react";
 
 export function GithubSource() {
-  const { bundle } = useDocPageContext();
+  const { bundle, route } = useDocPageContext();
   const gh = bundle.source;
+
+  if (route.requestMode === "preview") {
+    return (
+      <div className="rounded-md border px-3 py-2.5 text-sm">
+        <div className="min-w-0 truncate font-medium">{gh.owner}/{gh.repository}</div>
+        <div className="text-muted-foreground mt-1">Local preview</div>
+      </div>
+    );
+  }
 
   return (
     <Button

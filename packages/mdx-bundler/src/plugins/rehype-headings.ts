@@ -3,7 +3,7 @@ import { hasProperty } from "hast-util-has-property";
 import { headingRank } from "hast-util-heading-rank";
 import { parseSelector } from "hast-util-parse-selector";
 import { toString } from "mdast-util-to-string";
-import type { Data as UnistData, Node as UnistNode } from "unist";
+import type { Node as UnistNode } from "unist";
 import { visit } from "unist-util-visit";
 
 export type HeadingNode = {
@@ -22,14 +22,6 @@ const defaultOptions: RehypeHeadingsOptions = {
   callback: () => {},
 };
 
-interface MyData extends UnistData {
-  children: UnistNode[];
-  tagName: string;
-  properties: {
-    id: string | number | boolean | Array<string | number>;
-  };
-}
-
 type RehypeNode = {
   children?: HastContent[];
   properties?: Record<string, unknown>;
@@ -45,7 +37,7 @@ export default function rehypeHeadings(
     if (headingRank(node) && hasProperty(node, "id")) {
       if (options.headings.includes(node.tagName as string)) {
         nodes.push({
-          id: (node.properties as Record<string, string>).id,
+          id: String((node.properties as Record<string, unknown>).id ?? ""),
           title: toString(node),
           rank: headingRank(node) ?? null,
         });
@@ -82,15 +74,17 @@ const headingTest = (node: HastContent) =>
   !!headingRank(node as HastElement) && hasProperty(node as HastElement, "id");
 
 function partition<T>(array: T[], test: (input: T) => boolean): T[][] {
-  return array.reduce<T[][]>((previous, current) => {
-    if (previous.length === 0) {
-      return [[current]];
+  const partitions: T[][] = [];
+
+  for (const current of array) {
+    if (partitions.length === 0 || test(current)) {
+      partitions.push([current]);
+      continue;
     }
 
-    if (test(current)) {
-      return [...previous, [current]];
-    }
+    const lastGroup = partitions[partitions.length - 1];
+    lastGroup?.push(current);
+  }
 
-    return [...previous.slice(0, -1), [...previous[previous.length - 1], current]];
-  }, []);
+  return partitions;
 }

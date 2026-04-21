@@ -17,7 +17,7 @@ interface UndeclaredNode extends Node {
 }
 
 export default function remarkComponentCheck(
-  components: Array<string>,
+  components: string[],
 ): () => (ast: Node) => Promise<void> {
   return () => {
     const keywords = ["var", "let", "const", "function"];
@@ -28,12 +28,14 @@ export default function remarkComponentCheck(
       const exportKeyword = withExport.filter((expression) => expression.test(node.value))[0];
 
       if (exportKeyword) {
-        declared.push(
-          node.value
-            .replace(exportKeyword, "")
-            .replace(/^[a-z0-9-_A-Z]*[ \t][a-z0-9-_A-Z]*[ \t]/, "")
-            .split(" ")[0],
-        );
+        const declaredName = node.value
+          .replace(exportKeyword, "")
+          .replace(/^[a-z0-9-_A-Z]*[ \t][a-z0-9-_A-Z]*[ \t]/, "")
+          .split(" ")[0];
+
+        if (declaredName) {
+          declared.push(declaredName);
+        }
       }
     }
 

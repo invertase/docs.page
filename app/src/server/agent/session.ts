@@ -135,6 +135,10 @@ export function getAgentCsrfCookiePath(route: Pick<
     return "/";
   }
 
+  if (route.requestMode === "preview") {
+    return "/preview";
+  }
+
   const refSegment = route.ref ? `~${encodeURIComponent(route.ref)}` : "";
 
   if (route.requestMode === "vanity") {

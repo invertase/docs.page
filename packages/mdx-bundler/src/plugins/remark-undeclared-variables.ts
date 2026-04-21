@@ -20,12 +20,14 @@ export default function remarkUndeclaredVariables(): (ast: Node) => Promise<void
     const exportKeyword = withExport.filter((expression) => expression.test(node.value))[0];
 
     if (exportKeyword) {
-      declared.push(
-        node.value
-          .replace(exportKeyword, "")
-          .replace(/^[a-z0-9-_A-Z]*[ \t][a-z0-9-_A-Z]*[ \t]/, "")
-          .split(" ")[0],
-      );
+      const declaredName = node.value
+        .replace(exportKeyword, "")
+        .replace(/^[a-z0-9-_A-Z]*[ \t][a-z0-9-_A-Z]*[ \t]/, "")
+        .split(" ")[0];
+
+      if (declaredName) {
+        declared.push(declaredName);
+      }
     }
   }
 

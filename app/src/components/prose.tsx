@@ -3,6 +3,8 @@ import { runSync } from "@mdx-js/mdx";
 import * as runtime from "react/jsx-runtime";
 import { type ComponentProps, memo, useMemo } from "react";
 
+const mdxRuntime = runtime as Parameters<typeof runSync>[1];
+
 export function Prose() {
   const { bundle } = useDocPageContext();
 
@@ -10,7 +12,7 @@ export function Prose() {
     return memo(() => {
       const { default: MDX } = runSync(
         bundle.code,
-        { ...runtime },
+        mdxRuntime,
       );
 
       return (

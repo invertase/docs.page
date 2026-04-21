@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+
 import { confirm } from "@inquirer/prompts";
 import chalk from "chalk";
 import type { Command } from "commander";
@@ -8,8 +9,8 @@ export function registerInitCommand(program: Command) {
   program
     .command("init")
     .description("Initializes new docs.page files")
-    .argument("[path]", "Path to the relative directory to initilize in.")
-    .action(async (input: unknown, o) => {
+    .argument("[path]", "Path to the relative directory to initialize in.")
+    .action(async (input: unknown) => {
       const relativePath = String(input || ".");
       const absolutePath = path.resolve(relativePath);
 
@@ -36,8 +37,7 @@ export function registerInitCommand(program: Command) {
         });
       }
 
-      // Create the directory if it doesn't exist.
-      if (!fs.existsSync) {
+      if (!fs.existsSync(absolutePath)) {
         fs.mkdirSync(absolutePath, { recursive: true });
       }
 
@@ -46,31 +46,23 @@ export function registerInitCommand(program: Command) {
       const docsDirectoryExists = fs.existsSync(documentationPath);
 
       if (fs.existsSync(configurationFilePath) && !confirmOverwrite) {
-        console.log(
-          chalk.red("Configuration file 'docs.json' already exists."),
-        );
+        console.log(chalk.red("Configuration file 'docs.json' already exists."));
         process.exit(1);
       }
 
       if (docsDirectoryExists && !confirmOverwrite) {
-        console.log(
-          chalk.red("Documentation directory 'docs/' already exists."),
-        );
+        console.log(chalk.red("Documentation directory 'docs/' already exists."));
         process.exit(1);
       }
 
-      // Create the directory if it doesn't exist.
       if (!docsDirectoryExists) {
         fs.mkdirSync(documentationPath, { recursive: true });
       }
 
       const createdFiles = [
-        ` - ${chalk.green(
-          "docs.json",
-        )}: Configuration file for your documentation site`,
+        ` - ${chalk.green("docs.json")}: Configuration file for your documentation site`,
       ];
 
-      // Write the configuration file
       fs.writeFileSync(
         configurationFilePath,
         jsonConfiguration({
@@ -85,11 +77,8 @@ export function registerInitCommand(program: Command) {
       );
 
       createdFiles.push(
-        ` - ${chalk.green(
-          "docs/index.mdx",
-        )}: The home page of your documentation site`,
+        ` - ${chalk.green("docs/index.mdx")}: The home page of your documentation site`,
       );
-
       createdFiles.push(
         ` - ${chalk.green(
           "docs/next-steps.mdx",
@@ -139,7 +128,7 @@ title: Welcome to docs.page!
 description: Get started with docs.page
 ---
 
-Welcome to docs.page! The init command you just ran has created a basic file struture in your project to help you get started.
+Welcome to docs.page! The init command you just ran has created a basic file structure in your project to help you get started.
 
 ## Walkthrough
 
@@ -162,7 +151,7 @@ docs.page uses the \`docs\` directory to store your documentation pages. Two pag
 - \`index.mdx\` - The home page of your documentation site, resolves to the root URL.
 - \`next-steps.mdx\` - A page to help you get started with docs.page, resolves to \`/next-steps\`.
 
-Documentation can be written using the standard [GitHub Flavored Markdown Spec](https://github.github.com/gfm/) and also supports the use of [MDX](https://mdxjs.com/), 
+Documentation can be written using the standard [GitHub Flavored Markdown Spec](https://github.github.com/gfm/) and also supports the use of [MDX](https://mdxjs.com/),
 with the ability to render custom [components](https://use.docs.page/components) for more advanced use cases.
 
 ## Preview

@@ -20,6 +20,7 @@ export function Search() {
     [route.owner, route.repository],
   );
   const [open, setOpen] = useState(false);
+  const isPreview = route.requestMode === "preview";
 
   const warm = useCallback(() => prewarmSearch(searchUrl), [searchUrl]);
 
@@ -32,6 +33,10 @@ export function Search() {
     },
     { enableOnFormTags: true },
   );
+
+  if (isPreview) {
+    return null;
+  }
 
   return (
     <>

@@ -10,7 +10,7 @@ import remarkComponentCheck from "./remark-component-check";
 import remarkUndeclaredVariables from "./remark-undeclared-variables";
 
 type PluginOptions = {
-  components?: Array<string>;
+  components?: string[];
   codeHike?: boolean;
   math?: boolean;
 };

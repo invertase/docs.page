@@ -1,6 +1,6 @@
 import { isExternalLink } from "@/lib/docs-assets";
 
-export type DocsRequestMode = "canonical" | "vanity" | "custom-domain";
+export type DocsRequestMode = "canonical" | "vanity" | "custom-domain" | "preview";
 const RAW_DOC_SUFFIX_REGEX = /\.(md|mdx)$/i;
 const ROOT_RAW_DOC_FALLBACK = "index.md";
 
@@ -119,6 +119,10 @@ function buildPublicPathname(args: {
 
   if (requestMode === "vanity") {
     return `/${repository}${encodedRef}${docSegment}`;
+  }
+
+  if (requestMode === "preview") {
+    return docSegment ? `/preview${docSegment}` : "/preview";
   }
 
   return `/${owner}/${repository}${encodedRef}${docSegment}`;

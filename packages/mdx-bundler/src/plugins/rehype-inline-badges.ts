@@ -14,6 +14,7 @@ type NodeWithChildren = Node & {
 export default function rehypeInlineBadges(): (ast: NodeWithChildren) => void {
   function visitor(node: NodeWithChildren) {
     node.visited = "true";
+
     if (node.children[0]) {
       node.children[0].properties.style = "display: inline;";
     }

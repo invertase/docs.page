@@ -33,6 +33,7 @@ import {
   getAgentCsrfCookiePath,
   parseCookies,
 } from "@/server/agent/session";
+import { Preset } from "@/components/preset";
 
 export const getServerSideProps = (async ({ params, req, res, query }) => {
   const raw = params?.path;
@@ -278,24 +279,12 @@ export default function RepoDocsCatchAllPage(
     return null;
   }
 
-  const preset = props.bundle.config.theme.preset;
-
   return (
     <>
       <DocPageContext.Provider value={props}>
         {props.kind === "debug" ? <DocsDebug /> : <Docs />}
+        <Preset />
       </DocPageContext.Provider>
-      {preset ? (
-        <style key="theme-preset">
-          {`
-          ${preset.css}
-          *, *::before, *::after { 
-            --font-sans: ${preset.build.fontSans} !important;
-            --font-heading: ${preset.build.fontHeading} !important;
-          }
-        `.trim()}
-        </style>
-      ) : null}
     </>
   );
 }

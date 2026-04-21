@@ -62,6 +62,7 @@ export default function rehypeCodeBlocks(): (ast: Node) => Promise<void> {
 
     const meta = (node.data?.meta as string) ?? "";
     const title = extractTitle(meta);
+
     if (title) {
       parent.properties.title = title;
     }

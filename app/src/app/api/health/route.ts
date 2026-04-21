@@ -1,4 +1,4 @@
-import { parseMdx } from "@/server/docs/bundler/mdx";
+import { parseMdx } from "@docs.page/mdx-bundler";
 
 let warmupComplete = false;
 let warmupPromise: Promise<void> | null = null;

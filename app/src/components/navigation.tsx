@@ -292,9 +292,11 @@ export function Navigation() {
           ))}
         </SidebarContent>
       </div>
-      <SidebarFooter className="bg-background p-2">
-        <GithubSource />
-      </SidebarFooter>
+      {route.requestMode !== 'preview' && (
+        <SidebarFooter className="bg-background p-2">
+          <GithubSource />
+        </SidebarFooter>
+      )}
     </Sidebar>
   );
 }

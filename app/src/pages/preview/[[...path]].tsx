@@ -1,31 +1,12 @@
-import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import dynamic from "next/dynamic";
 
-import { PreviewClient } from "@/components/preview-client";
+const PreviewClient = dynamic(
+  () => import("@/components/preview-client").then((mod) => mod.PreviewClient),
+  {
+    ssr: false,
+  },
+);
 
-type PageProps = {
-  docPath: string;
-  rawUrl?: string;
-};
-
-export const getServerSideProps = (async ({ params, query }) => {
-  const raw = params?.path;
-  const chunks = raw
-    ? Array.isArray(raw)
-      ? raw
-      : [raw]
-    : [];
-  const rawUrl = typeof query.url === "string" ? query.url.trim() : undefined;
-
-  return {
-    props: {
-      docPath: chunks.join("/"),
-      rawUrl: rawUrl || undefined,
-    } satisfies PageProps,
-  };
-}) satisfies GetServerSideProps<PageProps>;
-
-export default function PreviewPage(
-  props: InferGetServerSidePropsType<typeof getServerSideProps>,
-) {
-  return <PreviewClient docPath={props.docPath} rawUrl={props.rawUrl} />;
+export default function PreviewPage() {
+  return <PreviewClient />;
 }

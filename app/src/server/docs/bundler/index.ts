@@ -1,9 +1,8 @@
 import { type Config, defaultConfig, parseConfig } from "../../config";
 import { getGitHubContents, resolveGitHubSource, type GitHubSource } from "../../github/contents";
 import { replaceMoustacheVariables } from "../variables";
+import { parseMdx, type HeadingNode } from "@docs.page/mdx-bundler";
 import { BundlerError } from "./error";
-import { parseMdx } from "./mdx";
-import type { HeadingNode } from "./plugins/rehype-headings";
 
 export const ERROR_CODES = {
   CONFIG_NOT_FOUND: "CONFIG_NOT_FOUND",
