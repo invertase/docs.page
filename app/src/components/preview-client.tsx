@@ -17,12 +17,13 @@ import {
 import { Preset } from "./preset";
 
 type PreviewBundle = {
-  code: string;
+  markdown?: string;
   frontmatter: Record<string, unknown>;
   headings: Array<{
     id: string;
     title: string;
     rank: number | null;
+    includeInToc: boolean;
   }>;
 };
 
@@ -137,10 +138,9 @@ export function PreviewClient() {
         baseBranch: "preview",
         path: docPath || "index",
         config,
-        markdown: response.markdown ?? "",
+        markdown: response.bundle.markdown ?? response.markdown ?? "",
         headings: response.bundle.headings,
         frontmatter: response.bundle.frontmatter,
-        code: response.bundle.code,
       },
       meta: {
         hasAgent: false,

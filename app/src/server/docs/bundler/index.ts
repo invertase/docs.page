@@ -1,7 +1,8 @@
-import { type Config, defaultConfig, parseConfig } from "../../config";
-import { getGitHubContents, resolveGitHubSource, type GitHubSource } from "../../github/contents";
-import { replaceMoustacheVariables } from "../variables";
-import { parseMdx, type HeadingNode } from "@docs.page/mdx-bundler";
+import frontmatter from "gray-matter";
+import { extractHeadingNodes, type HeadingNode } from "@/lib/docs-markdown";
+import { type Config, defaultConfig, parseConfig } from "@/server/config";
+import { getGitHubContents, resolveGitHubSource, type GitHubSource } from "@/server/github/contents";
+import { replaceMoustacheVariables } from "@/server/docs/variables";
 import { BundlerError } from "./error";
 
 export const ERROR_CODES = {
@@ -27,7 +28,6 @@ export type BundlerOutput = {
   markdown: string;
   headings: HeadingNode[];
   frontmatter: Record<string, unknown>;
-  code: string;
 };
 
 type CreateBundlerParams = {
@@ -119,9 +119,16 @@ export class Bundler {
     }
 
     try {
-      const mdx = await parseMdx(this.#markdown, {
-        headerDepth: this.#config.content?.headerDepth ?? 3,
-        components: this.#components,
+      const { content, data } = frontmatter(this.#markdown);
+
+      const markdown = replaceMoustacheVariables(
+        this.#config.variables ?? {},
+        content,
+      );
+
+      const headings = extractHeadingNodes(markdown, {
+        tocMinDepth: 2,
+        tocMaxDepth: this.#config.content?.headerDepth ?? 3,
       });
 
       return {
@@ -133,10 +140,9 @@ export class Bundler {
         baseBranch: metadata.baseBranch,
         path: this.#path,
         config: this.#config,
-        markdown: this.#markdown,
-        headings: mdx.headings,
-        frontmatter: mdx.frontmatter,
-        code: replaceMoustacheVariables(this.#config.variables ?? {}, mdx.code),
+        markdown,
+        headings,
+        frontmatter: data,
       };
     } catch (error) {
       console.error(error);
@@ -144,7 +150,7 @@ export class Bundler {
       throw new BundlerError({
         code: 500,
         name: ERROR_CODES.BUNDLE_ERROR,
-        message: `Something went wrong while bundling the file /${metadata.path}.mdx. Are you sure the MDX is valid?`,
+        message: `Something went wrong while preparing the file /${metadata.path}.mdx. Are you sure the markdown is valid?`,
         source: `https://github.com/${this.#source.owner}/${this.#source.repository}`,
       });
     }

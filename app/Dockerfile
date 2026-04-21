@@ -5,7 +5,6 @@ WORKDIR /app
 COPY package.json ./package.json
 COPY app/package.json ./app/package.json
 COPY app/bun.lock ./app/bun.lock
-COPY packages/mdx-bundler/package.json ./packages/mdx-bundler/package.json
 COPY packages/cli/package.json ./packages/cli/package.json
 RUN bun install --cwd app --frozen-lockfile
 
@@ -14,7 +13,6 @@ WORKDIR /app
 COPY . .
 COPY --from=deps /app/node_modules ./node_modules
 COPY --from=deps /app/app/node_modules ./app/node_modules
-COPY --from=deps /app/packages/mdx-bundler/node_modules ./packages/mdx-bundler/node_modules
 ENV NODE_ENV=production
 RUN cd app && bun run build
 

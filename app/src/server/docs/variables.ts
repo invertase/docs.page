@@ -29,7 +29,12 @@ export function replaceMoustacheVariables(
       VARIABLE_REGEX.lastIndex++;
     }
 
-    output = output.replace(match[0], getNestedValue(variables, match[1], match[0]));
+    const matchedPath = match[1];
+    if (!matchedPath) {
+      continue;
+    }
+
+    output = output.replace(match[0], getNestedValue(variables, matchedPath, match[0]));
   }
 
   return output;

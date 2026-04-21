@@ -6,11 +6,15 @@ import { useEffect, useState } from "react";
 export function TableOfContents() {
   const [activeId, setActiveId] = useState("");
   const { bundle } = useDocPageContext();
-  const headings = bundle.headings;
+  const headings = bundle.headings.filter((heading) => heading.includeInToc);
 
   useEffect(() => {
-    const sections =
-      document.querySelectorAll<HTMLElement>(".prose section[id]");
+    const headingIds = new Set(headings.map((heading) => heading.id));
+    const sections = Array.from(
+      document.querySelectorAll<HTMLElement>(
+        '.prose [data-doc-heading="true"][id]',
+      ),
+    ).filter((heading) => headingIds.has(heading.id));
     if (sections.length === 0) return;
 
     const visible = new Map<string, number>();
@@ -33,7 +37,7 @@ export function TableOfContents() {
           return;
         }
 
-        // nothing currently in the band — fall back to the last section above it
+        // nothing currently in the band — fall back to the last heading above it
         let above: { id: string; top: number } | null = null;
         for (const section of sections) {
           const top = section.getBoundingClientRect().top;
@@ -51,7 +55,7 @@ export function TableOfContents() {
 
     for (const section of sections) observer.observe(section);
     return () => observer.disconnect();
-  }, []);
+  }, [headings]);
 
   return (
     <div className="sticky top-30 px-4">

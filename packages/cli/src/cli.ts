@@ -4,7 +4,7 @@ import { Option, program } from "commander";
 
 import { registerAgentCommand } from "./commands/agent";
 import { registerInitCommand } from "./commands/init";
-import { registerPreviewCommand } from "./commands/preview";
+// import { registerPreviewCommand } from "./commands/preview";
 
 program.name("docs.page").version("0.1.0").description("docs.page CLI");
 program.addOption(
@@ -14,7 +14,7 @@ program.addOption(
 );
 
 registerInitCommand(program);
-registerPreviewCommand(program);
+// registerPreviewCommand(program);
 registerAgentCommand(program);
 
 program.parse(process.argv);
