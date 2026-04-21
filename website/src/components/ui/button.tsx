@@ -4,19 +4,19 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "~/lib/utils";
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-full border border-transparent bg-clip-padding font-mono text-base font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-yellow-500 focus-visible:ring focus-visible:ring-yellow-500/40 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-red-500 aria-invalid:ring aria-invalid:ring-red-500/20 dark:aria-invalid:border-red-400 dark:aria-invalid:ring-red-400/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-full border border-transparent bg-clip-padding font-mono text-base font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring focus-visible:ring-ring/40 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring aria-invalid:ring-destructive/25 dark:aria-invalid:ring-destructive/35 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
-        primary: "bg-yellow-400 text-zinc-950 hover:bg-yellow-300",
+        primary: "bg-primary text-primary-foreground hover:bg-primary/90",
         secondary:
-          "bg-zinc-200 text-zinc-900 hover:bg-zinc-300 aria-expanded:bg-zinc-200 aria-expanded:text-zinc-900 dark:bg-zinc-800 dark:text-zinc-50 dark:hover:bg-zinc-700 dark:aria-expanded:bg-zinc-800 dark:aria-expanded:text-zinc-50",
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80 aria-expanded:bg-secondary aria-expanded:text-secondary-foreground dark:hover:bg-secondary/90",
         outline:
-          "border-yellow-600 bg-white hover:bg-yellow-100 hover:text-zinc-950 aria-expanded:bg-yellow-100 aria-expanded:text-zinc-950 dark:border-yellow-400 dark:bg-transparent dark:text-yellow-400 dark:hover:bg-yellow-400/10 dark:aria-expanded:bg-yellow-400/10",
+          "border-primary bg-background text-foreground hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-primary dark:bg-transparent dark:text-primary dark:hover:bg-primary/10 dark:aria-expanded:bg-primary/10",
         ghost:
-          "hover:bg-zinc-100 hover:text-zinc-950 aria-expanded:bg-zinc-100 aria-expanded:text-zinc-950 dark:hover:bg-zinc-800/50 dark:aria-expanded:bg-zinc-800/50",
+          "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/60 dark:aria-expanded:bg-muted/60",
         destructive:
-          "bg-red-100 text-red-700 hover:bg-red-200 focus-visible:border-red-500 focus-visible:ring-red-500/30 dark:bg-red-950/50 dark:text-red-400 dark:hover:bg-red-900/60 dark:focus-visible:border-red-400 dark:focus-visible:ring-red-400/30",
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90 focus-visible:border-destructive focus-visible:ring-destructive/30 dark:focus-visible:ring-destructive/40",
       },
       size: {
         default:

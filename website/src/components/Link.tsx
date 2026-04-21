@@ -31,7 +31,7 @@ export function Link({ className, variant, ...props }: LinkProps) {
     variant === "marketingNav"
       ? cn(
           buttonVariants({ variant: "ghost", size: "lg" }),
-          "text-marketing-link hover:text-yellow-500 dark:hover:text-yellow-400",
+          "text-marketing-link hover:text-primary",
           "hover:bg-transparent aria-expanded:bg-transparent dark:hover:bg-transparent dark:aria-expanded:bg-transparent",
           className,
         )

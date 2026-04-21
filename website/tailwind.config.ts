@@ -13,7 +13,7 @@ const config: Config = {
       fontFamily: {
         sans: ['"JetBrains Mono"', ...defaultTheme.fontFamily.mono],
         mono: ['"JetBrains Mono"', ...defaultTheme.fontFamily.mono],
-        heading: ['"JetBrains Mono"', ...defaultTheme.fontFamily.mono],
+        heading: ['"Inter"', ...defaultTheme.fontFamily.sans],
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -21,6 +21,11 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
+        zinc: {
+          ...defaultTheme.colors.zinc,
+          /* Align with `--color-design-black` (#040406), not default Tailwind zinc-950. */
+          950: "hsl(var(--color-design-black) / <alpha-value>)",
+        },
         border: "hsl(var(--border) / <alpha-value>)",
         input: "hsl(var(--input) / <alpha-value>)",
         ring: "hsl(var(--ring) / <alpha-value>)",

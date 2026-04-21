@@ -30,7 +30,7 @@ export function Property({
           </code>
         )}
         {!!optional && (
-          <code className="font-semibold text-xs bg-yellow-500/30 px-1.5 py-1 rounded-md">
+          <code className="font-semibold text-xs bg-primary/25 px-1.5 py-1 rounded-md">
             optional
           </code>
         )}

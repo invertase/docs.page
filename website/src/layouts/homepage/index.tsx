@@ -12,19 +12,28 @@ export function Homepage() {
     <Site>
       <div className="homepage-spot-grid min-h-screen">
         <div className="relative">
-          {/* Solid centre column (above the dot grid, below page content + rails). */}
+          {/*
+            Solid centre column (above the dot grid, below page content + rails).
+            Inset matches the scaffold: rails sit at `left-4` / `right-4` inside `max-w-6xl`,
+            while content sections use `px-4` — the fill must use the same inset or the dark
+            surface reads as a “black edge” past the vertical lines.
+          */}
           <div
             aria-hidden
-            className="pointer-events-none absolute left-1/2 top-0 bottom-0 z-[1] w-full max-w-6xl -translate-x-1/2 bg-zinc-50 dark:bg-zinc-950"
-          />
+            className="pointer-events-none absolute inset-0 z-[1] flex justify-center"
+          >
+            <div className="relative h-full w-full max-w-6xl">
+              <div className="absolute inset-x-4 top-0 bottom-0 bg-background" />
+            </div>
+          </div>
           {/* Header above the gutter rails so nav/chrome stays unobstructed. */}
           <div className="relative z-30">
             <Header />
           </div>
           <div className="relative z-10">
             <Hero />
-            <Platform />
             <Features />
+            <Platform />
             <CallToAction />
             <Footer />
           </div>
@@ -34,8 +43,8 @@ export function Homepage() {
             className="pointer-events-none absolute inset-0 z-20"
           >
             <div className="relative mx-auto h-full min-h-full w-full max-w-6xl">
-              <div className="absolute left-4 top-0 bottom-0 w-px bg-zinc-300 dark:bg-zinc-700" />
-              <div className="absolute right-4 top-0 bottom-0 w-px bg-zinc-300 dark:bg-zinc-700" />
+              <div className="absolute left-4 top-0 bottom-0 w-px bg-border" />
+              <div className="absolute right-4 top-0 bottom-0 w-px bg-border" />
             </div>
           </div>
         </div>

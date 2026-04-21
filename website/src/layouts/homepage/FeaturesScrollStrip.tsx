@@ -117,12 +117,12 @@ export function FeaturesScrollStrip({
           <div
             ref={trackRef}
             role="presentation"
-            className="pointer-events-auto relative h-1 w-full cursor-pointer rounded-none bg-zinc-200 dark:bg-zinc-900"
+            className="pointer-events-auto relative h-1 w-full cursor-pointer rounded-none bg-muted"
             onPointerDown={onTrackPointerDown}
           >
             <div
               data-thumb="true"
-              className="absolute top-0 h-full cursor-grab rounded-none bg-zinc-500 active:cursor-grabbing dark:bg-zinc-700"
+              className="absolute top-0 h-full cursor-grab rounded-none bg-primary active:cursor-grabbing"
               style={{
                 width: `${thumb.widthPct}%`,
                 left: `${thumb.leftPct}%`,

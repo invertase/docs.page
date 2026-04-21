@@ -69,7 +69,7 @@ export function Header() {
                         variant: "primary",
                         size: "lg",
                       }),
-                      "dark:border dark:border-zinc-700 dark:bg-transparent dark:text-yellow-400 dark:hover:bg-zinc-800",
+                      "dark:border dark:border-border dark:bg-transparent dark:text-primary dark:hover:bg-muted",
                     )}
                   >
                     Local Preview
@@ -102,7 +102,7 @@ export function Header() {
             {menuOpen ? (
               <nav
                 id="marketing-header-menu"
-                className="mt-4 flex min-[813px]:hidden flex-col items-end gap-1 border-t border-zinc-300 pt-4 text-right dark:border-zinc-700"
+                className="mt-4 flex min-[813px]:hidden flex-col items-end gap-1 border-t border-border pt-4 text-right"
               >
                 <Link
                   variant="marketingNav"

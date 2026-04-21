@@ -40,7 +40,7 @@ export function Warning(props: PropsWithChildren) {
   return (
     <Callout
       icon={<TriangleAlertIcon size={20} />}
-      className="border border-yellow-500/20 bg-yellow-200/10 text-yellow-700 dark:border-yellow-500/50 dark:bg-yellow-500/10 dark:text-white"
+      className="border border-primary/25 bg-primary/10 text-foreground dark:border-primary/40 dark:bg-primary/15 dark:text-white"
     >
       {props.children}
     </Callout>

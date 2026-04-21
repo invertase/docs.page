@@ -1,0 +1,33 @@
+<svg width="1920" height="4194" viewBox="0 0 1920 4194" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<rect width="1920" height="4193" fill="url(#paint0_radial_3282_2623)" fill-opacity="0.4"/>
+<mask id="mask0_3282_2623" style="mask-type:alpha" maskUnits="userSpaceOnUse" x="0" y="0" width="1920" height="4194">
+<rect width="1920" height="4193.52" fill="#040406"/>
+</mask>
+<g mask="url(#mask0_3282_2623)">
+<rect width="1920" height="4206.43" fill="#040406"/>
+<rect width="1920" height="4206.43" fill="url(#pattern0_3282_2623)" fill-opacity="0.12"/>
+<rect width="1920" height="4206.43" fill="url(#paint1_radial_3282_2623)" fill-opacity="0.4" style="mix-blend-mode:plus-lighter"/>
+<rect width="1920" height="4206.43" fill="url(#paint2_radial_3282_2623)" fill-opacity="0.4" style="mix-blend-mode:plus-lighter"/>
+</g>
+<defs>
+<radialGradient id="paint0_radial_3282_2623" cx="0" cy="0" r="1" gradientTransform="matrix(-311.953 -1251.43 549.559 -1591.98 1316 3688.48)" gradientUnits="userSpaceOnUse">
+<stop offset="0.145" stop-color="#383D58"/>
+<stop offset="0.676832" stop-color="#383D58" stop-opacity="0.3"/>
+<stop offset="1" stop-color="#040406" stop-opacity="0"/>
+</radialGradient>
+<radialGradient id="paint1_radial_3282_2623" cx="0" cy="0" r="1" gradientTransform="matrix(1301.49 793.546 862.629 1793.56 1.42513e-05 -92.1339)" gradientUnits="userSpaceOnUse">
+<stop offset="0.145" stop-color="#383D58"/>
+<stop offset="0.676832" stop-color="#383D58" stop-opacity="0.3"/>
+<stop offset="1" stop-color="#040406" stop-opacity="0"/>
+</radialGradient>
+<radialGradient id="paint2_radial_3282_2623" cx="0" cy="0" r="1" gradientTransform="matrix(-1714.01 -724.294 -1363.8 -2010.57 2499.48 2673.77)" gradientUnits="userSpaceOnUse">
+<stop offset="0.145" stop-color="#383D58"/>
+<stop offset="0.676832" stop-color="#383D58" stop-opacity="0.3"/>
+<stop offset="1" stop-color="#040406" stop-opacity="0"/>
+</radialGradient>
+<pattern id="pattern0_3282_2623" patternUnits="userSpaceOnUse" patternTransform="matrix(27 0 0 27 959.25 2102.46)" preserveAspectRatio="none" viewBox="0 0 18 18" width="1" height="1">
+<g id="pattern0_3282_2623_inner">
+<circle cx="0.5" cy="0.5" r="0.5" fill="white"/>
+</g>
+</pattern></defs>
+</svg>

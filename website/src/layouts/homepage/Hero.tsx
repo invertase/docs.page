@@ -10,38 +10,56 @@ import { platformCardVariants } from "./platformCardSurface";
 
 export function Hero() {
   return (
-    <section className="mx-auto max-w-6xl px-4">
+    <section className="mx-auto min-w-0 w-full max-w-6xl overflow-x-clip px-4">
       <Card
         className={cn(
           platformCardVariants(),
-          "relative gap-0 overflow-visible",
+          /* Clip horizontal bleed; keep vertical visible for focus rings / video controls. */
+          "relative gap-0 overflow-x-clip overflow-y-visible",
           /* Stack under header Card: drop top border so only the header’s bottom rule shows (no 2px seam). */
           "border-t-0",
-          /* Top/left; no card bottom padding — CTA row supplies vertical padding. */
+          /* Top/left; copy column adds its own bottom padding (CTA moved under headline). */
           "pt-6 pl-6 pr-6 pb-0 sm:pt-8 sm:pl-8 sm:pr-8 md:pt-10 md:pl-10 md:pr-10 lg:pr-0",
           "text-foreground",
         )}
       >
-        {/* Left edge of video column → full card height (matches homepage rail tone) */}
+        {/*
+          Full-height rule between copy and media — absolute so it matches the grid column edge
+          (video + optional taller copy column). Position = left edge of col 2.
+        */}
         <div
           aria-hidden
-          className="pointer-events-none absolute inset-y-0 z-[1] hidden w-px bg-zinc-300 dark:bg-zinc-700 lg:block"
+          className="pointer-events-none absolute inset-y-0 z-[1] hidden w-px bg-border lg:block"
           style={{
             left: "calc(2.5rem + (100% - 2.5rem + 2rem) / 2)",
           }}
         />
-        <div className="relative z-[2] grid min-w-0 w-full items-start gap-x-8 gap-y-6 lg:grid-cols-2 lg:gap-y-0">
-          <div className="w-full space-y-6 text-left">
-            <h1 className="heading-h1">
+        {/*
+          minmax(0,1fr) + min-w-0 on copy: grid items default to min-width:auto, so large display
+          type can refuse to shrink and spill past the page rails / inner guide.
+        */}
+        <div className="relative z-[2] grid min-w-0 w-full grid-cols-1 items-start gap-x-8 gap-y-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-y-0">
+          <div className="min-w-0 w-full space-y-6 pb-6 text-left lg:min-h-0">
+            <h1 className="heading-h1 break-words">
               Ship documentation,
               <br className="hidden sm:inline" /> like you ship{" "}
               <span className="font-mono text-marketing-accent">code</span>.
             </h1>
-            <p className="text-base font-light text-muted-foreground/70">
+            <p className="max-w-md text-base font-light text-zinc-600 dark:text-zinc-300/80">
               Publish beautiful documentation instantly from your editor.
               Markdown, GitHub, and a workflow that feels as natural as
               committing code.
             </p>
+            <Link
+              href={LINKS.getStarted}
+              className={buttonVariants({
+                variant: "primary",
+                size: "lg",
+              })}
+            >
+              Start for free
+              <ChevronRightIcon aria-hidden />
+            </Link>
           </div>
 
           <div
@@ -59,7 +77,7 @@ export function Hero() {
               "lg:self-center",
               /* Stacked: 1px rails; inner uses mx-auto so video centres in the full-bleed band */
               "max-lg:flex max-lg:flex-col max-lg:gap-0 max-lg:leading-none",
-              "max-lg:border-y max-lg:border-solid max-lg:border-zinc-300 max-lg:dark:border-zinc-700",
+              "max-lg:border-y max-lg:border-solid max-lg:border-border",
             )}
           >
             <div
@@ -90,27 +108,6 @@ export function Hero() {
                 />
               </div>
             </div>
-          </div>
-
-          <div
-            className={cn(
-              "flex w-full items-center justify-start max-lg:pr-0",
-              /* Stacked: grid gap-y-6 already separates video → CTA; extra py-top doubled the space above the button */
-              "max-lg:pt-0 max-lg:pb-6",
-              /* Two columns: gap-y-0 — use symmetric padding inside the CTA row */
-              "lg:col-start-2 lg:justify-end lg:pr-6 lg:py-6",
-            )}
-          >
-            <Link
-              href={LINKS.getStarted}
-              className={buttonVariants({
-                variant: "primary",
-                size: "lg",
-              })}
-            >
-              Start for free
-              <ChevronRightIcon aria-hidden />
-            </Link>
           </div>
         </div>
       </Card>

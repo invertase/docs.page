@@ -9,61 +9,96 @@
 /*
   HSL components (space-separated) for use with `hsl(var(--token) / <alpha>)`.
 
-  Tailwind default `yellow`, `zinc`, `emerald`, and `red` scales (same steps as
-  the default theme).
+  Invertase-aligned scales: `honey` (Tailwind key `yellow`) = primary brand Honey,
+  `zinc` = canvas neutrals (Anti-flash → Black), `emerald` = Teal, `red` = coral
+  secondary. Lavender is used for marketing accents.
 */
 :root {
-  /* Yellow */
-  --color-yellow-50: 55 91.7% 95.3%;
-  --color-yellow-100: 55 96.7% 88%;
-  --color-yellow-200: 53 98.3% 76.9%;
-  --color-yellow-300: 50 97.8% 63.5%;
-  --color-yellow-400: 48 95.8% 53.1%;
-  --color-yellow-500: 45 93.4% 47.5%;
-  --color-yellow-600: 41 96.1% 40.4%;
-  --color-yellow-700: 35 91.7% 32.9%;
-  --color-yellow-800: 32 81% 28.8%;
-  --color-yellow-900: 28 72.5% 25.7%;
-  --color-yellow-950: 26 83.3% 14.1%;
+  /*
+   * Honey — primary brand scale (500 = #E69135). Tints raise lightness; shades
+   * deepen toward near-black while keeping hue ~31°.
+   */
+  --color-honey-50: 38 92% 97%;
+  --color-honey-100: 36 88% 92%;
+  --color-honey-200: 34 84% 84%;
+  --color-honey-300: 33 81% 74%;
+  --color-honey-400: 32 79% 64%;
+  --color-honey-500: 31 78% 55%;
+  --color-honey-600: 31 72% 45%;
+  --color-honey-700: 30 65% 35%;
+  --color-honey-800: 28 58% 26%;
+  --color-honey-900: 26 52% 18%;
+  --color-honey-950: 24 55% 11%;
 
-  /* Zinc */
-  --color-zinc-50: 0 0% 98%;
-  --color-zinc-100: 240 4.8% 95.9%;
-  --color-zinc-200: 240 5.9% 90%;
-  --color-zinc-300: 240 4.9% 83.9%;
-  --color-zinc-400: 240 5% 64.9%;
-  --color-zinc-500: 240 3.8% 46.1%;
-  --color-zinc-600: 240 5.2% 33.9%;
-  --color-zinc-700: 240 5.3% 26.1%;
-  --color-zinc-800: 240 3.7% 15.9%;
-  --color-zinc-900: 240 5.9% 10%;
-  --color-zinc-950: 240 10% 3.9%;
+  /* Legacy Tailwind / chart key — aliases Honey (keep call sites stable). */
+  --color-yellow-50: var(--color-honey-50);
+  --color-yellow-100: var(--color-honey-100);
+  --color-yellow-200: var(--color-honey-200);
+  --color-yellow-300: var(--color-honey-300);
+  --color-yellow-400: var(--color-honey-400);
+  --color-yellow-500: var(--color-honey-500);
+  --color-yellow-600: var(--color-honey-600);
+  --color-yellow-700: var(--color-honey-700);
+  --color-yellow-800: var(--color-honey-800);
+  --color-yellow-900: var(--color-honey-900);
+  --color-yellow-950: var(--color-honey-950);
 
-  /* Emerald */
-  --color-emerald-50: 152 81% 95.9%;
-  --color-emerald-100: 149 80.4% 90%;
-  --color-emerald-200: 152 76% 80.4%;
-  --color-emerald-300: 156 71.6% 66.9%;
-  --color-emerald-400: 158 64.4% 51.6%;
-  --color-emerald-500: 160 84.1% 39.4%;
-  --color-emerald-600: 161 93.5% 30.4%;
-  --color-emerald-700: 163 93.5% 24.3%;
-  --color-emerald-800: 163 88.1% 19.8%;
-  --color-emerald-900: 164 85.7% 16.5%;
-  --color-emerald-950: 166 91.3% 9%;
+  /* Canvas neutrals (Anti-flash #E7E8E9 → Black #040406) */
+  /* Invertase anti-flash white — #E7E8E9 (page canvas in light mode). */
+  --color-invertase-white: 210 4% 91%;
+  --color-zinc-50: 210 8% 97%;
+  --color-zinc-100: 210 7% 94%;
+  --color-zinc-200: 215 8% 88%;
+  --color-zinc-300: 215 7% 82%;
+  --color-zinc-400: 220 6% 64%;
+  --color-zinc-500: 220 5% 48%;
+  --color-zinc-600: 220 6% 38%;
+  --color-zinc-700: 220 6% 30%;
+  --color-zinc-800: 220 8% 18%;
+  --color-zinc-900: 240 12% 10%;
+  /* Design system black — #040406 (Invertase canvas black, RGB 4,4,6). */
+  --color-design-black: 240 20% 2%;
+  --color-zinc-950: var(--color-design-black);
 
-  /* Red */
-  --color-red-50: 0 85.7% 97.3%;
-  --color-red-100: 0 93.3% 94.1%;
-  --color-red-200: 0 96.3% 89.4%;
-  --color-red-300: 0 93.5% 81.8%;
-  --color-red-400: 0 90.6% 70.8%;
-  --color-red-500: 0 84.2% 60.2%;
-  --color-red-600: 0 72.2% 50.6%;
-  --color-red-700: 0 73.7% 41.8%;
-  --color-red-800: 0 70% 35.3%;
-  --color-red-900: 0 62.8% 30.6%;
-  --color-red-950: 0 74.7% 15.5%;
+  /* Teal secondary (anchor #63D0BD) — `emerald` keys keep Tailwind call sites stable */
+  --color-emerald-50: 168 55% 96%;
+  --color-emerald-100: 168 52% 90%;
+  --color-emerald-200: 169 54% 80%;
+  --color-emerald-300: 169 56% 70%;
+  --color-emerald-400: 169 57% 65%;
+  --color-emerald-500: 169 58% 60%;
+  --color-emerald-600: 170 55% 48%;
+  --color-emerald-700: 171 50% 38%;
+  --color-emerald-800: 172 45% 28%;
+  --color-emerald-900: 173 42% 20%;
+  --color-emerald-950: 175 45% 12%;
+
+  /* Coral red secondary (cooler than Honey) */
+  --color-red-50: 0 70% 97%;
+  --color-red-100: 0 65% 92%;
+  --color-red-200: 0 60% 84%;
+  --color-red-300: 0 58% 74%;
+  --color-red-400: 0 58% 68%;
+  --color-red-500: 0 58% 64%;
+  --color-red-600: 0 52% 54%;
+  --color-red-700: 0 48% 44%;
+  --color-red-800: 0 45% 34%;
+  --color-red-900: 0 42% 26%;
+  --color-red-950: 0 50% 14%;
+
+  /* Lavender (anchor #A68BF3) */
+  --color-lavender-50: 257 90% 98%;
+  --color-lavender-100: 257 85% 94%;
+  --color-lavender-200: 257 82% 88%;
+  --color-lavender-300: 257 84% 80%;
+  --color-lavender-400: 257 84% 77%;
+  --color-lavender-500: 257 84% 75%;
+  --color-lavender-600: 257 70% 62%;
+  --color-lavender-700: 257 55% 48%;
+  --color-lavender-800: 257 45% 36%;
+  --color-lavender-900: 257 40% 26%;
+  --color-lavender-950: 257 45% 14%;
+
 }
 
 /* -------------------------------------------------------------------------- */
@@ -75,7 +110,8 @@
 */
 :root {
   --color-white: #ffffff;
-  --color-black: #000000;
+  /* Hex alias for APIs expecting #RRGGBB; same as `--color-design-black` / `zinc-950`. */
+  --color-black: #040406;
 
   --font-sans:
     "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
@@ -83,7 +119,10 @@
   --font-mono:
     "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
-  --font-heading: var(--font-mono);
+  /* Display headings: Inter (loaded in `_document.tsx`); UI and code stay mono. */
+  --font-heading:
+    "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji";
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -111,12 +150,12 @@ body {
     `ThemeScripts` overrides `--primary-light`, `--background-light`, etc. on
     documentation pages.
   */
-  --primary-light: 45 93% 47%;
-  --primary-light-lighter: 48 96% 58%;
+  --primary-light: 31 77% 55%;
+  --primary-light-lighter: 31 78% 65%;
   /* Page canvas (ThemeScripts may override for doc sites). */
-  --background-light: var(--color-zinc-50);
-  --primary-dark: 45 93% 52%;
-  --primary-dark-lighter: 48 96% 65%;
+  --background-light: var(--color-invertase-white);
+  --primary-dark: 31 78% 58%;
+  --primary-dark-lighter: 31 78% 68%;
   --background-dark: var(--color-zinc-950);
 
   --primary: var(--primary-light);
@@ -125,56 +164,57 @@ body {
 
   /* shadcn semantic tokens (HSL triplets, used with hsl(var(--x))). */
   --foreground: var(--color-zinc-950);
-  --card: var(--color-zinc-50);
+  --card: var(--color-invertase-white);
   --card-foreground: var(--color-zinc-950);
-  --popover: var(--color-zinc-50);
+  --popover: var(--color-invertase-white);
   --popover-foreground: var(--color-zinc-950);
   --primary-foreground: var(--color-zinc-950);
-  --secondary: var(--color-zinc-50);
+  --secondary: var(--color-zinc-100);
   --secondary-foreground: var(--color-zinc-950);
-  --muted: var(--color-zinc-50);
-  --muted-foreground: var(--color-zinc-950);
-  --accent: var(--color-zinc-50);
+  --muted: var(--color-zinc-100);
+  --muted-foreground: var(--color-zinc-600);
+  --accent: var(--color-zinc-100);
   --accent-foreground: var(--color-zinc-950);
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 210 20% 98%;
+  --destructive: var(--color-red-500);
+  --destructive-foreground: 0 0% 100%;
   --border: var(--color-zinc-300);
   --input: var(--color-zinc-300);
-  --input-background: var(--color-zinc-50);
-  --ring: 45 93% 47%;
+  --input-background: var(--color-invertase-white);
+  --ring: var(--color-yellow-500);
 
   --chart-1: var(--color-yellow-500);
   --chart-2: var(--color-emerald-500);
-  --chart-3: var(--color-zinc-500);
-  --chart-4: var(--color-yellow-300);
+  --chart-3: var(--color-lavender-500);
+  /* Second Honey series tone (charts need a distinct swatch from chart-1). */
+  --chart-4: var(--color-honey-300);
   --chart-5: var(--color-red-400);
 
-  --sidebar: var(--color-zinc-50);
+  --sidebar: var(--color-invertase-white);
   --sidebar-foreground: var(--color-zinc-950);
-  --sidebar-primary: 45 93% 47%;
+  --sidebar-primary: var(--color-yellow-500);
   --sidebar-primary-foreground: var(--color-zinc-950);
-  --sidebar-accent: var(--color-zinc-50);
+  --sidebar-accent: var(--color-zinc-100);
   --sidebar-accent-foreground: var(--color-zinc-950);
   --sidebar-border: var(--color-zinc-300);
-  --sidebar-ring: 45 93% 47%;
+  --sidebar-ring: var(--color-yellow-500);
 
   /*
-    Marketing landing (maps to primitive yellow / zinc scales).
+    Marketing landing (Honey + secondaries).
     Consumed via Tailwind `marketing-*` colours and `.marketing-*` utilities.
   */
-  --marketing-accent: var(--color-yellow-400);
-  --marketing-accent-bright: var(--color-yellow-300);
+  --marketing-accent: var(--color-yellow-500);
+  --marketing-accent-bright: var(--color-yellow-400);
   --marketing-accent-emphasis: var(--color-yellow-600);
-  --marketing-hero-glow: var(--color-yellow-400);
+  --marketing-hero-glow: var(--color-lavender-400);
   --marketing-hero-frame-border: var(--color-zinc-300);
-  --marketing-hero-video-tint: 199 89% 48%;
-  --marketing-hero-video-tint-dark: 217 91% 60%;
-  --marketing-pill-foreground: var(--color-yellow-800);
+  --marketing-hero-video-tint: 169 58% 45%;
+  --marketing-hero-video-tint-dark: 257 55% 58%;
+  --marketing-pill-foreground: var(--color-yellow-900);
   --marketing-pill-foreground-dark: var(--color-zinc-300);
   --marketing-feature-divider: var(--color-zinc-300);
   --marketing-feature-divider-dark: var(--color-zinc-600);
-  --marketing-cell-hover: var(--color-zinc-50);
-  --marketing-cell-ring-offset: var(--color-zinc-50);
+  --marketing-cell-hover: var(--color-invertase-white);
+  --marketing-cell-ring-offset: var(--color-invertase-white);
   --marketing-feature-icon: var(--color-yellow-500);
   --marketing-feature-icon-bright: var(--color-yellow-400);
   --marketing-platform-border: var(--color-zinc-300);
@@ -188,8 +228,8 @@ body {
   --marketing-platform-inner-dark: var(--color-zinc-950);
   --marketing-testimonial-avatar-bg: var(--color-yellow-500);
   --marketing-testimonial-avatar-bg-dark: var(--color-yellow-400);
-  --marketing-testimonial-avatar-text: var(--color-yellow-700);
-  --marketing-testimonial-avatar-text-dark: var(--color-yellow-300);
+  --marketing-testimonial-avatar-text: var(--color-yellow-800);
+  --marketing-testimonial-avatar-text-dark: var(--color-yellow-200);
   --marketing-step-rail: var(--color-yellow-600);
   --marketing-step-rail-dark: var(--color-zinc-600);
   --marketing-step-badge-border: var(--color-yellow-600);
@@ -200,16 +240,16 @@ body {
   /* Primary marketing CTAs and text buttons (`ui/button` marketing variants) */
   --marketing-button-cta: var(--color-yellow-400);
   --marketing-button-cta-hover: var(--color-yellow-500);
-  --marketing-ghost-hover-foreground: var(--color-yellow-700);
+  --marketing-ghost-hover-foreground: var(--color-yellow-800);
   --marketing-nav-link-hover: var(--color-yellow-600);
-  --marketing-surface-muted: var(--color-zinc-50);
+  --marketing-surface-muted: var(--color-invertase-white);
   --marketing-surface-muted-hover: var(--color-zinc-100);
 
   /* Twoslash (hex / alpha — library expects these shapes) */
   --twoslash-border-color: #8888;
   --twoslash-underline-color: currentColor;
-  --twoslash-highlighted-border: #c37d0d50;
-  --twoslash-highlighted-bg: #c37d0d20;
+  --twoslash-highlighted-border: #e6913550;
+  --twoslash-highlighted-bg: #e6913520;
   --twoslash-popup-bg: #1c1c20;
   --twoslash-popup-color: inherit;
   --twoslash-popup-shadow: rgba(0, 0, 0, 0.08) 0px 1px 4px;
@@ -222,8 +262,8 @@ body {
   --twoslash-cursor-color: #8888;
   --twoslash-error-color: #d45656;
   --twoslash-error-bg: #d4565620;
-  --twoslash-warn-color: #c37d0d;
-  --twoslash-warn-bg: #c37d0d20;
+  --twoslash-warn-color: #c17a28;
+  --twoslash-warn-bg: #e6913520;
   --twoslash-tag-color: #3772cf;
   --twoslash-tag-bg: #3772cf20;
   --twoslash-tag-warn-color: var(--twoslash-warn-color);
@@ -266,55 +306,56 @@ html[data-theme="dark"] {
   --primary-lighter: var(--primary-dark-lighter);
   --background: var(--background-dark);
 
-  --foreground: 55 92% 95%;
-  --card: 220 14% 10%;
-  --card-foreground: 55 92% 95%;
-  --popover: 220 14% 10%;
-  --popover-foreground: 55 92% 95%;
-  --primary-foreground: 224 71% 4%;
-  --secondary: 166 40% 12%;
-  --secondary-foreground: 55 92% 95%;
-  --muted: 215 28% 17%;
-  --muted-foreground: 55 92% 95%;
-  --accent: 215 28% 17%;
-  --accent-foreground: 55 92% 95%;
-  --destructive: 0 72% 51%;
+  --foreground: 210 12% 96%;
+  --card: 240 15% 7%;
+  --card-foreground: 210 12% 96%;
+  --popover: 240 15% 7%;
+  --popover-foreground: 210 12% 96%;
+  --primary-foreground: 240 22% 8%;
+  --secondary: 240 12% 14%;
+  --secondary-foreground: 210 12% 96%;
+  --muted: 240 12% 14%;
+  --muted-foreground: 220 8% 58%;
+  --accent: 240 12% 14%;
+  --accent-foreground: 210 12% 96%;
+  --destructive: var(--color-red-400);
   --destructive-foreground: 210 20% 98%;
-  --border: 215 28% 17%;
-  --input: 215 28% 17%;
-  --input-background: 220 14% 10%;
-  --ring: 45 93% 52%;
+  --border: 240 10% 18%;
+  --input: 240 10% 18%;
+  --input-background: 240 15% 7%;
+  --ring: var(--color-yellow-400);
 
   --chart-1: var(--color-yellow-400);
   --chart-2: var(--color-emerald-400);
-  --chart-3: var(--color-zinc-400);
-  --chart-4: var(--color-yellow-200);
+  --chart-3: var(--color-lavender-400);
+  --chart-4: var(--color-honey-600);
   --chart-5: var(--color-red-400);
 
-  --sidebar: 220 14% 10%;
-  --sidebar-foreground: 55 92% 95%;
-  --sidebar-primary: 45 93% 52%;
-  --sidebar-primary-foreground: 224 71% 4%;
-  --sidebar-accent: 215 28% 17%;
-  --sidebar-accent-foreground: 55 92% 95%;
-  --sidebar-border: 215 28% 17%;
-  --sidebar-ring: 45 93% 52%;
+  --sidebar: 240 15% 7%;
+  --sidebar-foreground: 210 12% 96%;
+  --sidebar-primary: var(--color-yellow-400);
+  --sidebar-primary-foreground: 240 22% 8%;
+  --sidebar-accent: 240 12% 14%;
+  --sidebar-accent-foreground: 210 12% 96%;
+  --sidebar-border: 240 10% 18%;
+  --sidebar-ring: var(--color-yellow-400);
 
-  --marketing-accent: var(--color-yellow-400);
-  --marketing-accent-bright: var(--color-yellow-300);
-  --marketing-accent-emphasis: var(--color-yellow-500);
-  --marketing-hero-glow: var(--color-yellow-500);
+  /* Honey at 500 reads richer than 400 on dark (400 was pastel / washed). */
+  --marketing-accent: var(--color-yellow-500);
+  --marketing-accent-bright: var(--color-yellow-400);
+  --marketing-accent-emphasis: var(--color-yellow-600);
+  --marketing-hero-glow: var(--color-lavender-500);
   --marketing-hero-frame-border: var(--color-zinc-700);
-  --marketing-hero-video-tint: 217 91% 60%;
-  --marketing-hero-video-tint-dark: 217 91% 60%;
+  --marketing-hero-video-tint: 169 50% 42%;
+  --marketing-hero-video-tint-dark: 257 50% 52%;
   --marketing-pill-foreground: var(--color-zinc-300);
   --marketing-pill-foreground-dark: var(--color-zinc-300);
   --marketing-feature-divider: var(--color-zinc-600);
   --marketing-feature-divider-dark: var(--color-zinc-600);
   --marketing-cell-hover: var(--color-zinc-950);
   --marketing-cell-ring-offset: var(--color-zinc-950);
-  --marketing-feature-icon: var(--color-yellow-400);
-  --marketing-feature-icon-bright: var(--color-yellow-300);
+  --marketing-feature-icon: var(--color-yellow-500);
+  --marketing-feature-icon-bright: var(--color-yellow-400);
   --marketing-platform-border: var(--color-zinc-700);
   --marketing-platform-border-dark: var(--color-zinc-700);
   --marketing-platform-title: 240 6% 98%;
@@ -326,8 +367,8 @@ html[data-theme="dark"] {
   --marketing-platform-inner-dark: var(--color-zinc-950);
   --marketing-testimonial-avatar-bg: var(--color-yellow-400);
   --marketing-testimonial-avatar-bg-dark: var(--color-yellow-400);
-  --marketing-testimonial-avatar-text: var(--color-yellow-300);
-  --marketing-testimonial-avatar-text-dark: var(--color-yellow-300);
+  --marketing-testimonial-avatar-text: var(--color-yellow-200);
+  --marketing-testimonial-avatar-text-dark: var(--color-yellow-200);
   --marketing-step-rail: var(--color-zinc-600);
   --marketing-step-rail-dark: var(--color-zinc-600);
   --marketing-step-badge-border: var(--color-zinc-800);
@@ -335,12 +376,12 @@ html[data-theme="dark"] {
   --marketing-step-badge-fill-dark: var(--color-zinc-950);
   --marketing-success: var(--color-emerald-400);
   --marketing-success-bright: var(--color-emerald-300);
-  --marketing-button-cta: var(--color-yellow-400);
-  --marketing-button-cta-hover: var(--color-yellow-500);
-  --marketing-ghost-hover-foreground: var(--color-yellow-300);
-  --marketing-nav-link-hover: var(--color-yellow-400);
-  --marketing-surface-muted: var(--color-yellow-100);
-  --marketing-surface-muted-hover: var(--color-yellow-200);
+  --marketing-button-cta: var(--color-yellow-500);
+  --marketing-button-cta-hover: var(--color-yellow-600);
+  --marketing-ghost-hover-foreground: var(--color-yellow-400);
+  --marketing-nav-link-hover: var(--color-yellow-500);
+  --marketing-surface-muted: 240 12% 12%;
+  --marketing-surface-muted-hover: 240 12% 16%;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -682,8 +723,13 @@ pre.shiki.has-focused:hover .line {
   .text-marketing-link {
     color: hsl(var(--color-zinc-950));
   }
+  .dark .text-marketing-link,
   html[data-theme="dark"] .text-marketing-link {
-    color: hsl(var(--color-yellow-50));
+    color: hsl(var(--color-zinc-100));
+  }
+  .dark .text-marketing-link:hover,
+  html[data-theme="dark"] .text-marketing-link:hover {
+    color: hsl(var(--primary));
   }
 }
 
@@ -691,7 +737,7 @@ pre.shiki.has-focused:hover .line {
 /* Components                                                                 */
 /* -------------------------------------------------------------------------- */
 /*
- * Typography: JetBrains Mono for all display and UI headings. Colour via `text-foreground`.
+ * Typography: Inter for display headings (`font-heading`); JetBrains Mono elsewhere.
  */
 @layer components {
   .heading-h1 {
@@ -708,22 +754,36 @@ pre.shiki.has-focused:hover .line {
   }
 
   /**
-   * Marketing homepage: subtle spot grid (CSS-only; ~44px tile).
+   * Marketing homepage: light = `bg-hero-light.svg`; dark = `bg-hero.svg` (no dot grid).
    */
   .homepage-spot-grid {
+    position: relative;
+    isolation: isolate;
     background-color: hsl(var(--background));
-    background-image: radial-gradient(
-      hsl(var(--foreground) / 0.15) 1px,
-      transparent 1px
-    );
-    background-size: 44px 44px;
+    background-image: url("/_docs.page/assets/v3/bg-hero-light.svg");
+    background-size: cover;
+    background-position: top center;
+    background-repeat: no-repeat;
+  }
+
+  .homepage-spot-grid > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  .dark .homepage-spot-grid,
+  html[data-theme="dark"] .homepage-spot-grid {
+    background-image: url("/_docs.page/assets/v3/bg-hero.svg");
+    background-size: cover;
+    background-position: top center;
+    background-repeat: no-repeat;
   }
 
   /**
-   * Marketing pill + Features: light zinc-50; dark uses zinc-800 with alpha.
+   * Marketing pill + Features: light Invertase canvas; dark uses zinc-800 with alpha.
    */
   .marketing-surface-bg {
-    background-color: hsl(var(--color-zinc-50));
+    background-color: hsl(var(--color-invertase-white));
   }
   html[data-theme="dark"] .marketing-surface-bg {
     background-color: hsl(var(--color-zinc-800) / 0.26);
@@ -733,7 +793,7 @@ pre.shiki.has-focused:hover .line {
     border-width: 1px;
     border-style: solid;
     border-color: hsl(var(--color-zinc-300));
-    background-color: hsl(var(--color-zinc-50));
+    background-color: hsl(var(--color-invertase-white));
   }
   html[data-theme="dark"] .marketing-surface-pill-chrome {
     border-color: hsl(var(--color-zinc-600) / 0.5);

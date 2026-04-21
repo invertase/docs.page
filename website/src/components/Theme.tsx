@@ -17,7 +17,7 @@ export function ThemeScripts() {
   const key = getThemeKey(context);
   const theme = context.bundle.config.theme;
 
-  const fallback = "#00bcd4";
+  const fallback = "#E69135";
 
   const getColor = (color: string, fallback?: string) => {
     try {
@@ -34,8 +34,8 @@ export function ThemeScripts() {
   const primaryDark = getColor(
     theme?.primaryDark ?? theme?.primary ?? fallback,
   );
-  const backgroundLight = getColor(theme?.backgroundLight ?? "#fcfbef");
-  const backgroundDark = getColor(theme?.backgroundDark ?? "#09090b");
+  const backgroundLight = getColor(theme?.backgroundLight ?? "#E7E8E9");
+  const backgroundDark = getColor(theme?.backgroundDark ?? "#040406");
 
   function toHslVariable(color: Color) {
     const [h, s, l] = color.hsl().array();
@@ -130,7 +130,7 @@ export function ThemeToggle() {
         className={cn(
           "pointer-events-none relative -top-1.5 inline-block h-5 w-5 transform rounded-full border shadow ring-0 transition duration-200 ease-in-out",
           {
-            "border-primary translate-x-3 bg-black": enabled,
+            "border-primary translate-x-3 bg-zinc-950": enabled,
             "-translate-x-2 bg-white": !enabled,
           },
         )}
@@ -144,7 +144,7 @@ export function ThemeToggle() {
           )}
           aria-hidden="true"
         >
-          <SunDimIcon className="h-4 w-4 text-yellow-500" />
+          <SunDimIcon className="text-primary h-4 w-4" />
         </span>
         <span
           className={cn(
