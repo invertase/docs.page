@@ -12,49 +12,49 @@ export function TableOfContents() {
     const headingIds = new Set(headings.map((heading) => heading.id));
     const sections = Array.from(
       document.querySelectorAll<HTMLElement>(
-        '.prose [data-doc-heading="true"][id]',
+        'main [data-heading="true"][id]',
       ),
     ).filter((heading) => headingIds.has(heading.id));
-    if (sections.length === 0) return;
+    if (sections.length === 0) {
+      setActiveId("");
+      return;
+    }
 
-    const visible = new Map<string, number>();
+    // Keep active heading aligned with the content offset used by sticky UI.
+    const activeOffset = 96;
+    let frame: number | null = null;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (entry.isIntersecting) {
-            visible.set(entry.target.id, entry.boundingClientRect.top);
-          } else {
-            visible.delete(entry.target.id);
-          }
+    const updateActiveId = () => {
+      let currentId = sections[0].id;
+
+      for (const section of sections) {
+        if (section.getBoundingClientRect().top <= activeOffset) {
+          currentId = section.id;
+        } else {
+          break;
         }
+      }
 
-        if (visible.size > 0) {
-          const [topId] = [...visible.entries()].sort(
-            ([, a], [, b]) => a - b,
-          )[0];
-          setActiveId(topId);
-          return;
-        }
+      setActiveId((prev) => (prev === currentId ? prev : currentId));
+    };
 
-        // nothing currently in the band — fall back to the last heading above it
-        let above: { id: string; top: number } | null = null;
-        for (const section of sections) {
-          const top = section.getBoundingClientRect().top;
-          if (top < 0 && (!above || top > above.top)) {
-            above = { id: section.id, top };
-          }
-        }
-        if (above) setActiveId(above.id);
-      },
-      {
-        rootMargin: "-80px 0px -70% 0px", // TODO align me when we do the anchor positioning
-        threshold: 0,
-      },
-    );
+    const scheduleUpdate = () => {
+      if (frame !== null) return;
+      frame = window.requestAnimationFrame(() => {
+        frame = null;
+        updateActiveId();
+      });
+    };
 
-    for (const section of sections) observer.observe(section);
-    return () => observer.disconnect();
+    updateActiveId();
+    window.addEventListener("scroll", scheduleUpdate, { passive: true });
+    window.addEventListener("resize", scheduleUpdate);
+
+    return () => {
+      if (frame !== null) window.cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", scheduleUpdate);
+      window.removeEventListener("resize", scheduleUpdate);
+    };
   }, [headings]);
 
   return (

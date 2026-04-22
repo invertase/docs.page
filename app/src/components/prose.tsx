@@ -1,13 +1,6 @@
+import { code } from "@streamdown/code";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  decodeComponentProps,
-  normalizeCustomTags,
-} from "@/lib/docs-markdown";
+import { decodeComponentProps, normalizeCustomTags } from "@/lib/docs-markdown";
 import { cn } from "@/lib/utils";
 import { Streamdown } from "streamdown";
 import {
@@ -19,8 +12,12 @@ import {
   useMemo,
   useRef,
 } from "react";
+import { components } from "./mdx";
+import { Heading, HeadingTag, HeadingTagProps } from "./mdx/heading";
 
-type StreamdownComponents = NonNullable<ComponentProps<typeof Streamdown>["components"]>;
+type StreamdownComponents = NonNullable<
+  ComponentProps<typeof Streamdown>["components"]
+>;
 type MarkdownBlockProps = {
   markdown: string;
   takeNextHeadingId: () => string | undefined;
@@ -37,13 +34,8 @@ type DocComponentProps = ComponentProps<"div"> &
   };
 type DocComponent = (props: DocComponentProps) => ReactNode;
 
-const DOC_COMPONENTS: Record<string, DocComponent> = {
-  image: ImageDocComponent,
-};
+const DOC_COMPONENTS = components as unknown as Record<string, DocComponent>;
 const DOC_COMPONENT_NAMES = Object.keys(DOC_COMPONENTS);
-const ALLOWED_TAGS: Record<string, string[]> = {
-  div: ["data*"],
-};
 
 export function Prose() {
   const { bundle } = useDocPageContext();
@@ -62,30 +54,40 @@ export function Prose() {
   }, [headingIds]);
 
   return (
-    <div className="max-w-none prose dark:prose-invert">
+    <main className="max-w-none">
       <MarkdownBlock
         markdown={bundle.markdown}
         takeNextHeadingId={takeNextHeadingId}
       />
-    </div>
+    </main>
   );
 }
 
-function MarkdownBlock({
-  markdown,
-  takeNextHeadingId,
-}: MarkdownBlockProps) {
+function MarkdownBlock({ markdown, takeNextHeadingId }: MarkdownBlockProps) {
   const normalizedMarkdown = useMemo(
     () => normalizeCustomTags(markdown, DOC_COMPONENT_NAMES),
     [markdown],
   );
-  const components = useMemo(
+  const streamdownComponents = useMemo(
     () => createStreamdownComponents(takeNextHeadingId),
     [takeNextHeadingId],
   );
 
   return (
-    <Streamdown allowedTags={ALLOWED_TAGS} components={components} linkSafety={{ enabled: false }}>
+    <Streamdown
+      allowedTags={{
+        div: ["data*"],
+      }}
+      plugins={{ code }}
+      components={streamdownComponents}
+      linkSafety={{ enabled: false }}
+      controls={{
+        code: {
+          download: false,
+        }
+      }}
+      className="space-y-4 text-secondary-foreground"
+    >
       {normalizedMarkdown}
     </Streamdown>
   );
@@ -95,33 +97,30 @@ function createStreamdownComponents(
   takeNextHeadingId: () => string | undefined,
 ): StreamdownComponents {
   const renderHeading = (
-    Tag: "h1" | "h2" | "h3" | "h4" | "h5" | "h6",
-    children: ReactNode,
-    className?: string,
+    tag: HeadingTag,
+    props: ComponentProps<HeadingTag>,
   ) => {
     const id = takeNextHeadingId();
-
-    return (
-      <Tag id={id} data-doc-heading="true" className={className}>
-        {children}
-      </Tag>
-    );
+    return <Heading {...props} id={id} type={tag} />;
   };
 
   const renderNestedMarkdown = (markdown: string) => (
-    <MarkdownBlock
-      markdown={markdown}
-      takeNextHeadingId={takeNextHeadingId}
-    />
+    <MarkdownBlock markdown={markdown} takeNextHeadingId={takeNextHeadingId} />
   );
 
   return {
-    h1: ({ children, className }) => renderHeading("h1", children, className),
-    h2: ({ children, className }) => renderHeading("h2", children, className),
-    h3: ({ children, className }) => renderHeading("h3", children, className),
-    h4: ({ children, className }) => renderHeading("h4", children, className),
-    h5: ({ children, className }) => renderHeading("h5", children, className),
-    h6: ({ children, className }) => renderHeading("h6", children, className),
+    h1: (props) => renderHeading("h1", props),
+    h2: (props) => renderHeading("h2", props),
+    h3: (props) => renderHeading("h3", props),
+    h4: (props) => renderHeading("h4", props),
+    h5: (props) => renderHeading("h5", props),
+    h6: (props) => renderHeading("h6", props),
+    p: ({ children }) => <p className="leading-7 opacity-80">{children}</p>,
+    inlineCode: ({ children }) => (
+      <code className="bg-primary/5 rounded border font-mono text-sm px-1 py-1">
+        {children}
+      </code>
+    ),
     div: ({ children, ...props }) => {
       const {
         "data-component": dataComponent,
@@ -140,7 +139,9 @@ function createStreamdownComponents(
       }
 
       const markdown = extractTextContent(children).trim();
-      const renderedChildren = markdown ? renderNestedMarkdown(markdown) : children;
+      const renderedChildren = markdown
+        ? renderNestedMarkdown(markdown)
+        : children;
       const decodedProps = decodeComponentProps(encodedProps);
       const Component = DOC_COMPONENTS[dataComponent];
 
@@ -173,7 +174,9 @@ function createStreamdownComponents(
               {JSON.stringify(decodedProps, null, 2)}
             </pre>
           ) : null}
-          {renderedChildren ? <div className="mt-3">{renderedChildren}</div> : null}
+          {renderedChildren ? (
+            <div className="mt-3">{renderedChildren}</div>
+          ) : null}
         </div>
       );
     },
@@ -196,73 +199,4 @@ function extractTextContent(children: ReactNode): string {
       return "";
     })
     .join("");
-}
-
-function ImageDocComponent({
-  src,
-  alt,
-  zoom,
-  className,
-}: DocComponentProps) {
-  const imageSrc = typeof src === "string" ? src : "";
-  const imageAlt = typeof alt === "string" ? alt : "";
-  const isZoomEnabled = coerceBooleanProp(zoom);
-
-  if (!imageSrc) {
-    return (
-      <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-900">
-        Invalid Image component: missing <code>src</code>.
-      </div>
-    );
-  }
-
-  const image = (
-    <img
-      src={imageSrc}
-      alt={imageAlt}
-      loading="lazy"
-      className={cn(
-        "my-6 w-full rounded-xl border border-border bg-card object-cover shadow-sm",
-        isZoomEnabled && "cursor-zoom-in transition-opacity hover:opacity-95",
-        className,
-      )}
-    />
-  );
-
-  if (!isZoomEnabled) {
-    return image;
-  }
-
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <button type="button" className="block w-full text-left">
-          {image}
-        </button>
-      </DialogTrigger>
-      <DialogContent
-        className="max-w-6xl border-none bg-transparent p-0 shadow-none ring-0"
-        showCloseButton={false}
-      >
-        <img
-          src={imageSrc}
-          alt={imageAlt}
-          className="max-h-[85vh] w-full rounded-xl object-contain"
-        />
-      </DialogContent>
-    </Dialog>
-  );
-}
-
-function coerceBooleanProp(value: unknown) {
-  if (typeof value === "boolean") {
-    return value;
-  }
-
-  if (typeof value === "string") {
-    const normalized = value.trim().toLowerCase();
-    return normalized === "" || normalized === "true" || normalized === "1" || normalized === "yes";
-  }
-
-  return false;
 }
