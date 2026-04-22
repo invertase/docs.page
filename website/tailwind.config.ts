@@ -11,9 +11,9 @@ const config: Config = {
         "8xl": "90rem",
       },
       fontFamily: {
-        sans: ['"JetBrains Mono"', ...defaultTheme.fontFamily.mono],
+        sans: ['"Inter"', ...defaultTheme.fontFamily.sans],
         mono: ['"JetBrains Mono"', ...defaultTheme.fontFamily.mono],
-        heading: ['"Inter"', ...defaultTheme.fontFamily.sans],
+        heading: ['"JetBrains Mono"', ...defaultTheme.fontFamily.mono],
       },
       borderRadius: {
         lg: "var(--radius)",
