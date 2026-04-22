@@ -1,4 +1,5 @@
 import { ChevronRightIcon } from "lucide-react";
+import Image from "next/image";
 
 import { Link } from "~/components/Link";
 import { buttonVariants } from "~/components/ui/button";
@@ -10,45 +11,48 @@ import { platformCardVariants } from "./platformCardSurface";
 
 export function Hero() {
   return (
-    <section className="mx-auto min-w-0 w-full max-w-6xl overflow-x-clip px-4">
+    <section className="mx-auto min-w-0 w-full max-w-6xl overflow-x-clip px-4 pb-0 lg:overflow-x-visible">
       <Card
         className={cn(
           platformCardVariants(),
-          /* Clip horizontal bleed; keep vertical visible for focus rings / video controls. */
-          "relative gap-0 overflow-x-clip overflow-y-visible",
-          /* Stack under header Card: drop top border so only the header’s bottom rule shows (no 2px seam). */
+          "relative !overflow-visible",
           "border-t-0",
-          /* Top/left; copy column adds its own bottom padding (CTA moved under headline). */
-          "pt-6 pl-6 pr-6 pb-0 sm:pt-8 sm:pl-8 sm:pr-8 md:pt-10 md:pl-10 md:pr-10 lg:pr-0",
+          "pt-6 pl-6 pr-6 pb-6 sm:pt-8 sm:pl-8 sm:pr-8 sm:pb-8 md:pt-10 md:pl-10 md:pr-10 md:pb-10",
           "text-foreground",
         )}
       >
-        {/*
-          Full-height rule between copy and media — absolute so it matches the grid column edge
-          (video + optional taller copy column). Position = left edge of col 2.
-        */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-y-0 z-[1] hidden w-px bg-border lg:block"
-          style={{
-            left: "calc(2.5rem + (100% - 2.5rem + 2rem) / 2)",
-          }}
-        />
-        {/*
-          minmax(0,1fr) + min-w-0 on copy: grid items default to min-width:auto, so large display
-          type can refuse to shrink and spill past the page rails / inner guide.
-        */}
-        <div className="relative z-[2] grid min-w-0 w-full grid-cols-1 items-start gap-x-8 gap-y-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-y-0">
-          <div className="min-w-0 w-full space-y-6 pb-6 text-left lg:min-h-0">
-            <h1 className="heading-h1 break-words">
-              Ship documentation,
-              <br className="hidden sm:inline" /> like you ship{" "}
-              <span className="font-mono text-marketing-accent">code</span>.
+        <div className="relative z-[2] w-full min-w-0">
+          <div
+            className={cn(
+              "relative z-20 space-y-6 text-left",
+              "w-full max-w-[min(28rem,100%)]",
+              "sm:max-w-[36rem] lg:max-w-[min(42rem,54%)]",
+              "xl:max-w-[min(48rem,52%)] 2xl:max-w-[min(52rem,50%)]",
+            )}
+          >
+            <h1 className="heading-h1">
+              <span className="block lg:whitespace-nowrap">
+                Build and publish AI-ready
+              </span>
+              <span className="block lg:whitespace-nowrap">
+                documentation from your
+              </span>
+              <span className="block lg:whitespace-nowrap">
+                GitHub repository.
+              </span>
             </h1>
-            <p className="max-w-md text-base font-light text-zinc-600 dark:text-zinc-300/80">
-              Publish beautiful documentation instantly from your editor.
-              Markdown, GitHub, and a workflow that feels as natural as
-              committing code.
+            <p
+              className={cn(
+                "text-base font-light leading-relaxed text-zinc-600 dark:text-zinc-300/80",
+                "max-w-none",
+              )}
+            >
+              <strong className="font-bold text-zinc-700 dark:text-zinc-200/90">
+                docs.page
+              </strong>{" "}
+              transforms your GitHub repository into a refined documentation
+              interface. Serve developers in the browser and AI agents via native
+              machine-readable endpoints - all with zero platform overhead.
             </p>
             <Link
               href={LINKS.getStarted}
@@ -57,57 +61,35 @@ export function Hero() {
                 size: "lg",
               })}
             >
-              Start for free
+              Start Publishing for Free
               <ChevronRightIcon aria-hidden />
             </Link>
           </div>
 
           <div
             className={cn(
-              "relative min-w-0 max-w-none justify-self-stretch",
-              /*
-               * Full-bleed within the Card: `w-full` + negative margin does NOT widen the border box,
-               * so rules stop short. Use explicit width = 100% + horizontal padding (matches Card pl/pr).
-               */
-              "max-lg:w-[calc(100%+3rem)] max-lg:-mx-6",
-              "sm:max-lg:w-[calc(100%+4rem)] sm:max-lg:-mx-8",
-              "md:max-lg:w-[calc(100%+5rem)] md:max-lg:-mx-10",
-              "lg:w-full lg:mx-0 lg:-mt-10",
-              /* Two-column layout: keep the video vertically centred when copy is taller than the frame */
-              "lg:self-center",
-              /* Stacked: 1px rails; inner uses mx-auto so video centres in the full-bleed band */
-              "max-lg:flex max-lg:flex-col max-lg:gap-0 max-lg:leading-none",
-              "max-lg:border-y max-lg:border-solid max-lg:border-border",
+              "relative z-10 mt-8 w-full",
+              "lg:mt-0 lg:absolute lg:inset-y-0 lg:left-[26%] lg:right-0",
+              "xl:left-[24%] 2xl:left-[22%]",
+              "lg:-translate-y-[20px] lg:translate-x-[30px] lg:flex lg:items-center lg:justify-end lg:pl-2",
             )}
           >
-            <div
+            <Image
+              src="/_docs.page/assets/v4/hero-image.png"
+              alt="docs.page interface preview: editor, doc chat, and URL"
+              width={2841}
+              height={2773}
+              priority
+              sizes="(min-width: 1536px) 1254px, (min-width: 1280px) 1026px, (min-width: 1024px) 80vw, 100vw"
               className={cn(
-                "w-full max-lg:mx-auto max-lg:max-w-2xl max-lg:shrink-0 max-lg:pt-0",
-                "lg:max-w-none",
+                "mx-auto h-auto w-full max-w-[47.88rem] object-contain object-center",
+                "lg:ms-auto lg:me-0 lg:max-h-[min(45.6rem,78vh)] lg:max-w-none",
+                "lg:min-w-[36.48rem] lg:w-[min(68.4rem,100%)] lg:origin-right lg:scale-[1.254] lg:object-right",
+                "min-[1200px]:min-w-[41.04rem] min-[1200px]:scale-[1.2768]",
+                "xl:min-w-[45.6rem] xl:scale-[1.311]",
+                "2xl:min-w-[50.16rem] 2xl:w-[min(72.96rem,100%)]",
               )}
-            >
-              <div className="relative flex w-full items-start justify-center overflow-hidden rounded-none leading-none">
-                <video
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  controls
-                  preload="metadata"
-                  className="relative z-0 m-0 block h-auto w-full max-w-full object-contain max-lg:object-top lg:object-center"
-                  poster="/_docs.page/social-preview.png"
-                >
-                  <source
-                    src="/_docs.page/docs-page-hero-video.webm#t=1"
-                    type="video/webm"
-                  />
-                </video>
-                <div
-                  aria-hidden
-                  className="pointer-events-none absolute inset-0 z-10 bg-marketing-hero-video-tint/8 dark:bg-marketing-hero-video-tint-dark/10"
-                />
-              </div>
-            </div>
+            />
           </div>
         </div>
       </Card>

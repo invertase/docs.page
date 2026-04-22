@@ -30,7 +30,8 @@ export function Link({ className, variant, ...props }: LinkProps) {
   const mergedClassName =
     variant === "marketingNav"
       ? cn(
-          buttonVariants({ variant: "ghost", size: "lg" }),
+          buttonVariants({ variant: "ghost", size: "default" }),
+          "font-heading",
           "text-marketing-link hover:text-primary",
           "hover:bg-transparent aria-expanded:bg-transparent dark:hover:bg-transparent dark:aria-expanded:bg-transparent",
           className,

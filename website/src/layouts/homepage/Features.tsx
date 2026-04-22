@@ -1,159 +1,105 @@
 import Image from "next/image";
+import type { ReactNode } from "react";
 
-import { FeatureCell } from "./FeatureCell";
-import { FeaturesScrollStrip } from "./FeaturesScrollStrip";
+import { cn } from "~/lib/utils";
 
-const V3 = "/_docs.page/assets/v3";
+const V4 = "/_docs.page/assets/v4";
 
-const ICON_PX = 37.5;
-
-function FeatureIcon({ light, dark }: { light: string; dark: string }) {
-  if (light === dark) {
-    return (
-      <Image
-        src={light}
-        alt=""
-        width={ICON_PX}
-        height={ICON_PX}
-        className="size-[37.5px] object-contain drop-shadow-[0_4px_4px_rgba(0,0,0,0.24)] dark:drop-shadow-none"
-        aria-hidden
-      />
-    );
-  }
-  return (
-    <>
-      <Image
-        src={light}
-        alt=""
-        width={ICON_PX}
-        height={ICON_PX}
-        className="size-[37.5px] object-contain drop-shadow-[0_4px_4px_rgba(0,0,0,0.24)] dark:hidden"
-        aria-hidden
-      />
-      <Image
-        src={dark}
-        alt=""
-        width={ICON_PX}
-        height={ICON_PX}
-        className="hidden size-[37.5px] object-contain dark:block"
-        aria-hidden
-      />
-    </>
-  );
-}
-
+/**
+ * 2×2 grid order (row-major): Machine-readable | Free custom domains / BYOK | Git-native
+ *
+ * Card fill: linear gradient equivalent to #3B3B47 → #040406 at 20% layer opacity over `#040406`
+ * (top stop: 80% base / 20% slate; bottom: canvas black).
+ */
 const features: {
-  icon: React.ReactNode;
+  src: string;
   title: string;
-  description: string;
+  description: ReactNode;
+  /** Optional classes for the description paragraph (e.g. tighter type so two forced lines don’t reflow). */
+  descriptionClassName?: string;
 }[] = [
   {
-    icon: (
-      <FeatureIcon light={`${V3}/github-light.svg`} dark={`${V3}/github.svg`} />
+    src: `${V4}/machine-readable.svg`,
+    title: "Machine-readable",
+    descriptionClassName: "text-[13px] leading-snug sm:text-sm sm:leading-relaxed",
+    description: (
+      <>
+        <span className="block">
+          Native support for llms.txt, llms-full.txt,
+        </span>
+        <span className="block">
+          and /mcp endpoints - 94% faster for instant RAG context.
+        </span>
+      </>
     ),
-    title: "Made for GitHub",
+  },
+  {
+    src: `${V4}/custom-domains.svg`,
+    title: "Free custom domains",
     description:
-      "Source your docs from GitHub repositories with instant deploys.",
+      "Serve docs on your own domain at no added platform charge.",
   },
   {
-    icon: (
-      <FeatureIcon
-        light={`${V3}/publish-light.svg`}
-        dark={`${V3}/publish.svg`}
-      />
-    ),
-    title: "Publish from your editor",
+    src: `${V4}/byok.svg`,
+    title: "BYOK",
+    description: "Power search via your own API keys. No middleware markups.",
+  },
+  {
+    src: `${V4}/git-native.svg`,
+    title: "Git-native",
     description:
-      "Write where you already work—your editor stays the source of truth.",
-  },
-  {
-    icon: (
-      <FeatureIcon light={`${V3}/reload-light.svg`} dark={`${V3}/reload.svg`} />
-    ),
-    title: "Local preview & hot reload",
-    description:
-      "See every edit instantly with local preview and fast feedback.",
-  },
-  {
-    icon: (
-      <FeatureIcon
-        light={`${V3}/markdown-light.svg`}
-        dark={`${V3}/markdown.svg`}
-      />
-    ),
-    title: "Markdown powered",
-    description:
-      "Author in Markdown with components and shortcodes when you need more.",
-  },
-  {
-    icon: (
-      <FeatureIcon
-        light={`${V3}/preview-light.svg`}
-        dark={`${V3}/preview.svg`}
-      />
-    ),
-    title: "Shareable preview links",
-    description: "Share previews with reviewers before anything goes live.",
-  },
-  {
-    icon: (
-      <FeatureIcon light={`${V3}/theme-light.svg`} dark={`${V3}/theme.svg`} />
-    ),
-    title: "Custom domains & themes",
-    description: "Use your own domain and tailor the look to match your brand.",
-  },
-  {
-    icon: (
-      <FeatureIcon
-        light={`${V3}/components-light.svg`}
-        dark={`${V3}/components.svg`}
-      />
-    ),
-    title: "Pre-built components",
-    description: "Tabs, callouts, code blocks, and more—ready out of the box.",
-  },
-  {
-    icon: (
-      <FeatureIcon light={`${V3}/search-light.svg`} dark={`${V3}/search.svg`} />
-    ),
-    title: "Powerful search",
-    description:
-      "Help readers find answers fast with built-in search integrations.",
-  },
-  {
-    icon: (
-      <FeatureIcon
-        light={`${V3}/analytics-light.svg`}
-        dark={`${V3}/analytics.svg`}
-      />
-    ),
-    title: "Documentation analytics",
-    description:
-      "Understand what pages matter with Plausible or Google Analytics.",
+      "Manage docs like you manage code. Branching, version control, and PR previews come standard.",
   },
 ];
 
+/** Gradient read as visible overlay; rgba-only stacking was imperceptible on the base. */
+const featureCardFill =
+  "bg-[linear-gradient(180deg,color-mix(in_srgb,var(--color-black)_80%,#3B3B47_20%),var(--color-black))]";
+
 export function Features() {
   return (
-    <section className="mx-auto max-w-6xl space-y-6 px-4 pt-10 md:pt-12">
-      <div className="flex flex-col items-start gap-4 pl-6 text-left sm:pl-8 md:pl-10">
-        <h2 className="heading-h2 text-balance">
-          Everything needed to publish <br className="md:hidden" aria-hidden />
-          <span className="font-mono text-marketing-accent">polished</span>{" "}
-          documentation
-        </h2>
-        <p className="w-full max-w-2xl text-pretty font-light leading-snug text-zinc-600 dark:text-zinc-300/80">
-          Built to improve developer experience from first commit to production.
-        </p>
+    <section className="mx-auto max-w-6xl px-4 py-10 md:py-12">
+      <div
+        className={cn(
+          "grid w-full grid-cols-1 items-stretch gap-5 sm:grid-cols-2 sm:gap-5 md:gap-6",
+          "pl-6 pr-6 sm:pl-8 sm:pr-8 md:pl-10 md:pr-10",
+        )}
+      >
+        {features.map((f) => (
+          <article
+            key={f.title}
+            className={cn(
+              "relative flex h-full min-h-0 flex-col rounded-lg border border-white/10 p-6 text-left shadow-sm",
+              /* Align row heights in the 2×2 grid: match the ~162px tall cards (shorter row was ~140px). */
+              "sm:min-h-[10.125rem]",
+              featureCardFill,
+            )}
+          >
+            <Image
+              src={f.src}
+              alt=""
+              width={44}
+              height={44}
+              unoptimized
+              className="pointer-events-none absolute right-5 top-5 size-11 shrink-0 object-contain sm:right-6 sm:top-6"
+              aria-hidden
+            />
+            <div className="relative flex min-w-0 flex-col gap-4 pr-11 sm:pr-12 md:pr-14">
+              <h3 className="font-heading text-lg font-medium leading-snug text-zinc-50 sm:text-xl">
+                {f.title}
+              </h3>
+              <p
+                className={cn(
+                  "font-light text-zinc-400",
+                  f.descriptionClassName ?? "text-sm leading-relaxed",
+                )}
+              >
+                {f.description}
+              </p>
+            </div>
+          </article>
+        ))}
       </div>
-
-      <FeaturesScrollStrip className="w-full rounded-none">
-        <div className="marketing-features-grid-inner grid w-full min-w-[114rem] grid-cols-[repeat(9,minmax(12rem,1fr))] items-start gap-3 overflow-visible py-5 sm:py-6">
-          {features.map((f) => (
-            <FeatureCell key={f.title} {...f} />
-          ))}
-        </div>
-      </FeaturesScrollStrip>
     </section>
   );
 }

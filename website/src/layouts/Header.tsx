@@ -46,9 +46,9 @@ export function Header() {
               </Link>
 
               <div className="hidden min-w-0 flex-1 min-[813px]:flex min-[813px]:items-center min-[813px]:justify-end">
-                <nav className="flex w-full flex-wrap items-center justify-end gap-1 md:gap-2">
+                <nav className="flex w-full flex-wrap items-center justify-end gap-0.5 md:gap-1">
                   <MarketingHeaderThemeToggle />
-                  <ul className="flex flex-wrap items-center justify-end gap-1 md:gap-2">
+                  <ul className="flex flex-wrap items-center justify-end gap-0">
                     <li>
                       <Link variant="marketingNav" href={LINKS.githubRepo}>
                         GitHub
@@ -67,7 +67,7 @@ export function Header() {
                     className={cn(
                       buttonVariants({
                         variant: "primary",
-                        size: "lg",
+                        size: "default",
                       }),
                       "dark:border dark:border-border dark:bg-transparent dark:text-primary dark:hover:bg-muted",
                     )}
@@ -127,7 +127,7 @@ export function Header() {
                   className={cn(
                     buttonVariants({
                       variant: "primary",
-                      size: "lg",
+                      size: "default",
                     }),
                     "dark:border dark:border-zinc-700 dark:bg-transparent dark:text-yellow-400 dark:hover:bg-zinc-800",
                     "mt-2 w-fit self-end",

@@ -2,10 +2,10 @@ import { Footer } from "~/layouts/Footer";
 import { Header } from "~/layouts/Header";
 import { Site } from "~/layouts/Site";
 
-import { CallToAction } from "./CallToAction";
 import { Features } from "./Features";
 import { Hero } from "./Hero";
 import { Platform } from "./Platform";
+import { TrustedBy } from "./TrustedBy";
 
 export function Homepage() {
   return (
@@ -34,7 +34,7 @@ export function Homepage() {
             <Hero />
             <Features />
             <Platform />
-            <CallToAction />
+            <TrustedBy />
             <Footer />
           </div>
           {/* Rails paint above main content (cards/sections) but below the header shell. */}

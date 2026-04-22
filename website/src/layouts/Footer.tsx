@@ -20,77 +20,83 @@ export function Footer() {
         <Card
           className={cn(
             platformCardVariants(),
-            "flex min-h-[13rem] min-w-0 flex-col border-b-0 px-4 pb-5 pt-6 text-foreground sm:min-h-[14rem] sm:px-5 md:px-6",
+            "flex min-h-[13rem] min-w-0 flex-col border-b-0 text-foreground sm:min-h-[14rem]",
           )}
         >
-          <div className="flex w-full shrink-0 flex-col items-start gap-6 md:flex-row md:items-start md:gap-8">
+          <div
+            className={cn(
+              "flex min-h-0 flex-1 flex-col px-6 pb-5 pt-6 font-heading sm:px-8 md:px-10",
+            )}
+          >
             <a
               href="/"
-              className="flex items-center transition-opacity hover:opacity-90"
+              className="flex w-fit shrink-0 items-center transition-opacity hover:opacity-90"
             >
               <DocsPageLogo />
             </a>
 
-            <div className="flex flex-wrap items-center justify-start gap-2">
-              <a
-                href={LINKS.twitter}
-                target="_blank"
-                rel="noreferrer"
-                className={footerSocialLinkClass}
-                aria-label="Invertase on X"
-              >
-                <Icon name="x-twitter" size={20} />
-              </a>
-              <a
-                href={LINKS.githubOrg}
-                target="_blank"
-                rel="noreferrer"
-                className={footerSocialLinkClass}
-                aria-label="Invertase on GitHub"
-              >
-                <Icon name="github" size={20} />
-              </a>
-              <a
-                href={LINKS.discord}
-                target="_blank"
-                rel="noreferrer"
-                className={footerSocialLinkClass}
-                aria-label="Invertase on Discord"
-              >
-                <Icon name="discord" size={20} />
-              </a>
-            </div>
-          </div>
+            <div className="mt-auto flex w-full flex-col gap-6 pt-8 sm:flex-row sm:items-end sm:justify-between sm:gap-8 md:pt-10">
+              <div className="flex min-w-0 flex-col gap-4 text-sm text-muted-foreground/70 sm:flex-row sm:flex-wrap sm:items-center sm:gap-x-8 md:gap-x-10">
+                <p className="shrink-0 text-left">
+                  <a
+                    href={LINKS.invertase}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:text-foreground"
+                  >
+                    Built and maintained by Invertase
+                  </a>
+                </p>
+                <div className="flex min-w-0 flex-1 flex-wrap items-center justify-end gap-x-4 gap-y-2 text-right">
+                  <a
+                    href={LINKS.terms}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="hover:text-foreground"
+                  >
+                    Terms
+                  </a>
+                  <a
+                    href={LINKS.privacy}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="hover:text-foreground"
+                  >
+                    Privacy Policy
+                  </a>
+                  <span>© {year} docs.page. All rights reserved.</span>
+                </div>
+              </div>
 
-          <div className="mt-auto flex w-full shrink-0 flex-col gap-4 text-left text-sm text-muted-foreground/70 md:flex-row md:items-start md:gap-x-10">
-            <p>
-              <a
-                href={LINKS.invertase}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-foreground"
-              >
-                Powered by Invertase
-              </a>
-            </p>
-            <div className="flex flex-wrap items-center justify-start gap-x-4 gap-y-2">
-              <a
-                href={LINKS.terms}
-                target="_blank"
-                rel="noreferrer"
-                className="hover:text-foreground"
-              >
-                Terms
-              </a>
-              <a
-                href={LINKS.privacy}
-                target="_blank"
-                rel="noreferrer"
-                className="hover:text-foreground"
-              >
-                Privacy Policy
-              </a>
-              <span>© {year} docs.page. All rights reserved.</span>
+              <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 self-end sm:self-auto">
+                <a
+                  href={LINKS.twitter}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={footerSocialLinkClass}
+                  aria-label="Invertase on X"
+                >
+                  <Icon name="x-twitter" size={20} />
+                </a>
+                <a
+                  href={LINKS.githubOrg}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={footerSocialLinkClass}
+                  aria-label="Invertase on GitHub"
+                >
+                  <Icon name="github" size={20} />
+                </a>
+                <a
+                  href={LINKS.discord}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={footerSocialLinkClass}
+                  aria-label="Invertase on Discord"
+                >
+                  <Icon name="discord" size={20} />
+                </a>
+              </div>
             </div>
           </div>
         </Card>

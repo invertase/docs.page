@@ -1,6 +1,7 @@
 import Image from "next/image";
+import type { ReactNode } from "react";
 
-import { Card, CardDescription, CardTitle } from "~/components/ui/card";
+import { Card, CardTitle } from "~/components/ui/card";
 import { cn } from "~/lib/utils";
 
 import { platformCardVariants } from "./platformCardSurface";
@@ -17,7 +18,7 @@ const platformImageSizes =
   "(min-width: 1024px) min(34vw, 28rem), (min-width: 768px) 45vw, 92vw";
 
 const titleBlock = (props: {
-  title: string;
+  title: ReactNode;
   description: string;
   titleClassName?: string;
   /** Extra classes on the text stack (e.g. overlay legibility). */
@@ -33,33 +34,33 @@ const titleBlock = (props: {
   >
     <CardTitle
       className={cn(
-        "shrink-0 text-start text-base font-normal leading-snug",
+        "shrink-0 text-start leading-snug",
         props.onDarkSurface
-          ? "text-white dark:text-foreground"
-          : "text-foreground",
+          ? "font-heading text-lg font-medium text-zinc-50 sm:text-xl"
+          : "text-base font-normal text-foreground",
         props.titleClassName,
       )}
     >
       {props.title}
     </CardTitle>
-    <CardDescription
+    <p
       className={cn(
-        "shrink-0 text-left text-sm font-light leading-snug sm:text-base sm:leading-snug",
+        "shrink-0 text-left text-sm font-light leading-relaxed",
         props.onDarkSurface
-          ? "text-zinc-300 group-hover/platform-tile:text-zinc-200 dark:text-zinc-300/80 dark:group-hover/platform-tile:text-zinc-200/85"
+          ? "text-zinc-400 group-hover/platform-tile:text-zinc-300"
           : "text-zinc-400 group-hover/platform-tile:text-zinc-500 dark:text-zinc-300/80 dark:group-hover/platform-tile:text-zinc-200/85",
       )}
     >
       {props.description}
-    </CardDescription>
+    </p>
   </div>
 );
 
 export function PlatformFeatureCard(props: {
-  title: string;
+  title: ReactNode;
   description: string;
-  /** Public paths for theme-specific screenshots (`/_docs.page/assets/...`). */
-  image: { light: string; dark: string };
+  /** Public paths for theme-specific screenshots (`/_docs.page/assets/...`). Omit for text-only tiles. */
+  image?: { light: string; dark: string };
   /** Wider frame for hero-style tiles; default keeps a slightly smaller cap. */
   imageSize?: keyof typeof platformImageFrameWidthClass;
   /** Full-bleed image under bottom-aligned copy (same copy position as stacked layout). */
@@ -68,7 +69,12 @@ export function PlatformFeatureCard(props: {
   titleClassName?: string;
   /** Merged onto the root `Card` (e.g. `border-0` when the parent grid supplies edges). */
   className?: string;
+  /** Merged onto the title + description stack (e.g. `mb-2` to nudge copy up in overlay text-only tiles). */
+  textStackClassName?: string;
+  /** Fills upper area of overlay text-only tiles (e.g. “image tbc” until art is available). */
+  imagePlaceholder?: string;
 }) {
+  const hasImage = props.image != null;
   const frameWidthClass =
     platformImageFrameWidthClass[props.imageSize ?? "default"];
   const layout = props.imageLayout ?? "stacked";
@@ -90,7 +96,47 @@ export function PlatformFeatureCard(props: {
     props.className,
   );
 
-  if (layout === "overlay") {
+  if (layout === "overlay" && !hasImage) {
+    return (
+      <Card
+        className={cn(
+          platformCardVariants(),
+          "group/platform-tile w-full text-foreground transition-colors duration-200",
+          "hover:!bg-black dark:hover:!bg-marketing-platform-inner-dark dark:hover:!text-foreground",
+          "min-h-[21rem] sm:min-h-[22.5rem] md:min-h-[24rem] lg:min-h-[26.25rem]",
+          "relative overflow-hidden !shadow-none",
+          "!bg-black dark:!bg-marketing-platform-inner-dark",
+          props.className,
+        )}
+      >
+        <div
+          className={cn(
+            "relative z-10 flex h-full min-h-0 w-full min-w-0 flex-1 flex-col",
+            "p-5 sm:p-6",
+            props.imagePlaceholder == null && "justify-end",
+          )}
+        >
+          {props.imagePlaceholder != null && props.imagePlaceholder !== "" ? (
+            <div className="flex min-h-0 min-w-0 flex-1 items-center justify-center px-2">
+              <p className="text-center font-mono text-xs font-light tracking-wide text-zinc-500">
+                {props.imagePlaceholder}
+              </p>
+            </div>
+          ) : null}
+          {titleBlock({
+            title: props.title,
+            description: props.description,
+            titleClassName: props.titleClassName,
+            onDarkSurface: true,
+            textWrapperClassName: props.textStackClassName,
+          })}
+        </div>
+      </Card>
+    );
+  }
+
+  if (layout === "overlay" && props.image) {
+    const { light, dark } = props.image;
     return (
       <Card
         className={cn(
@@ -103,7 +149,7 @@ export function PlatformFeatureCard(props: {
       >
         <div className="pointer-events-none absolute inset-0" aria-hidden>
           <Image
-            src={props.image.light}
+            src={light}
             alt=""
             fill
             sizes={platformImageSizes}
@@ -111,7 +157,7 @@ export function PlatformFeatureCard(props: {
             priority={false}
           />
           <Image
-            src={props.image.dark}
+            src={dark}
             alt=""
             fill
             sizes={platformImageSizes}
@@ -145,6 +191,26 @@ export function PlatformFeatureCard(props: {
     );
   }
 
+  if (!props.image) {
+    return (
+      <Card className={cardShellClass}>
+        <div
+          className={cn(
+            "relative flex h-full min-h-0 w-full min-w-0 flex-1 flex-col overflow-hidden p-5 pt-4 sm:p-6 sm:pt-4",
+          )}
+        >
+          {titleBlock({
+            title: props.title,
+            description: props.description,
+            titleClassName: props.titleClassName,
+          })}
+        </div>
+      </Card>
+    );
+  }
+
+  const { light, dark } = props.image;
+
   return (
     <Card className={cardShellClass}>
       <div
@@ -163,14 +229,14 @@ export function PlatformFeatureCard(props: {
             )}
           >
             <Image
-              src={props.image.light}
+              src={light}
               alt=""
               fill
               sizes={platformImageSizes}
               className="object-contain object-center dark:hidden"
             />
             <Image
-              src={props.image.dark}
+              src={dark}
               alt=""
               fill
               sizes={platformImageSizes}
