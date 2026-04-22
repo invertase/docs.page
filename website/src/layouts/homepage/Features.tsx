@@ -5,12 +5,7 @@ import { cn } from "~/lib/utils";
 
 const V4 = "/_docs.page/assets/v4";
 
-/**
- * 2×2 grid order (row-major): Machine-readable | Free custom domains / BYOK | Git-native
- *
- * Card fill: linear gradient equivalent to #3B3B47 → #040406 at 20% layer opacity over `#040406`
- * (top stop: 80% base / 20% slate; bottom: canvas black).
- */
+/** 2×2 grid order (row-major): Machine-readable | Free custom domains / BYOK | Git-native */
 const features: {
   src: string;
   title: string;
@@ -52,27 +47,32 @@ const features: {
   },
 ];
 
-/** Gradient read as visible overlay; rgba-only stacking was imperceptible on the base. */
-const featureCardFill =
-  "bg-[linear-gradient(180deg,color-mix(in_srgb,var(--color-black)_80%,#3B3B47_20%),var(--color-black))]";
+function featureCellClass(i: number) {
+  return cn(
+    "min-w-0 border-border",
+    i < 3 && "border-b",
+    i === 0 && "sm:border-b sm:border-r",
+    i === 1 && "sm:border-b",
+    i === 2 && "sm:border-b-0 sm:border-r",
+  );
+}
 
 export function Features() {
   return (
-    <section className="mx-auto max-w-6xl px-4 py-10 md:py-12">
+    <section className="mx-auto w-full min-w-0 max-w-8xl px-4">
       <div
         className={cn(
-          "grid w-full grid-cols-1 items-stretch gap-5 sm:grid-cols-2 sm:gap-5 md:gap-6",
-          "pl-6 pr-6 sm:pl-8 sm:pr-8 md:pl-10 md:pr-10",
+          "border-t border-b border-border",
+          "grid grid-cols-1 sm:grid-cols-2",
+          "items-stretch gap-0",
         )}
       >
-        {features.map((f) => (
+        {features.map((f, i) => (
           <article
             key={f.title}
             className={cn(
-              "relative flex h-full min-h-0 flex-col rounded-lg border border-white/10 p-6 text-left shadow-sm",
-              /* Align row heights in the 2×2 grid: match the ~162px tall cards (shorter row was ~140px). */
-              "sm:min-h-[10.125rem]",
-              featureCardFill,
+              "flex min-w-0 gap-4 p-6 text-left sm:p-8 md:p-10",
+              featureCellClass(i),
             )}
           >
             <Image
@@ -81,10 +81,10 @@ export function Features() {
               width={44}
               height={44}
               unoptimized
-              className="pointer-events-none absolute right-5 top-5 size-11 shrink-0 object-contain sm:right-6 sm:top-6"
+              className="pointer-events-none size-11 shrink-0 object-contain"
               aria-hidden
             />
-            <div className="relative flex min-w-0 flex-col gap-4 pr-11 sm:pr-12 md:pr-14">
+            <div className="flex min-w-0 flex-1 flex-col gap-2">
               <h3 className="font-heading text-lg font-medium leading-snug text-zinc-50 sm:text-xl">
                 {f.title}
               </h3>

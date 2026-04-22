@@ -101,9 +101,8 @@ export function PlatformFeatureCard(props: {
       <Card
         className={cn(
           platformCardVariants(),
-          "group/platform-tile w-full text-foreground transition-colors duration-200",
+          "group/platform-tile flex h-full min-h-0 w-full flex-col text-foreground transition-colors duration-200",
           "hover:!bg-black dark:hover:!bg-marketing-platform-inner-dark dark:hover:!text-foreground",
-          "min-h-[21rem] sm:min-h-[22.5rem] md:min-h-[24rem] lg:min-h-[26.25rem]",
           "relative overflow-hidden !shadow-none",
           "!bg-black dark:!bg-marketing-platform-inner-dark",
           props.className,
@@ -112,8 +111,10 @@ export function PlatformFeatureCard(props: {
         <div
           className={cn(
             "relative z-10 flex h-full min-h-0 w-full min-w-0 flex-1 flex-col",
-            "p-5 sm:p-6",
-            props.imagePlaceholder == null && "justify-end",
+            "p-6 sm:p-8 md:p-10",
+            props.imagePlaceholder == null
+              ? "justify-center"
+              : "justify-end",
           )}
         >
           {props.imagePlaceholder != null && props.imagePlaceholder !== "" ? (

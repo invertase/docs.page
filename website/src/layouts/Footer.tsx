@@ -16,7 +16,7 @@ export function Footer() {
 
   return (
     <footer className="w-full">
-      <div className="mx-auto w-full max-w-6xl px-4">
+      <div className="mx-auto w-full min-w-0 max-w-8xl px-4">
         <Card
           className={cn(
             platformCardVariants(),
