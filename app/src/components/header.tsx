@@ -48,14 +48,14 @@ function Logo() {
       <Link href="/" className="inline-flex min-w-0 items-center gap-3">
         {hasLightLogo && (
           <img
-            className={`relative block h-8 w-auto shrink-0 ${hasDarkLogo ? "dark:hidden" : ""}`}
+            className={`relative block h-6 w-auto shrink-0 ${hasDarkLogo ? "dark:hidden" : ""}`}
             src={lightLogoSrc}
             alt="Light logo"
           />
         )}
         {hasDarkLogo && (
           <img
-            className={`relative h-8 w-auto shrink-0 ${hasLightLogo ? "hidden dark:block" : "block"}`}
+            className={`relative h-6 w-auto shrink-0 ${hasLightLogo ? "hidden dark:block" : "block"}`}
             src={darkLogoSrc}
             alt="Dark logo"
           />

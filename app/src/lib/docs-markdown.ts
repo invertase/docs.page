@@ -23,39 +23,83 @@ export function normalizeCustomTags(
     Array.from(componentNames, (name) => name.toLowerCase()),
   );
 
-  return markdown.replace(
-    /<(\/?)([A-Za-z][A-Za-z0-9-]*)([^>]*)>/g,
-    (_full, slash: string, rawName: string, rawAttributes: string) => {
-      const isClosing = slash === "/";
-      const isSelfClosing = /\/\s*$/.test(rawAttributes);
-      const normalizedName = rawName.toLowerCase();
-      const isKnownComponent = knownComponents.has(normalizedName);
-      const isCustomLike = /^[A-Z]/.test(rawName) || isKnownComponent;
+  return mapMarkdownOutsideFences(markdown, (segment) => {
+    const normalizedTags = segment.replace(
+      /<(\/?)([A-Za-z][A-Za-z0-9-]*)([^>]*)>/g,
+      (_full, slash: string, rawName: string, rawAttributes: string) => {
+        const normalizedName = rawName.toLowerCase();
+        const isKnownComponent = knownComponents.has(normalizedName);
 
-      if (!isCustomLike) {
-        return `<${slash}${rawName}${rawAttributes}>`;
-      }
+        if (isKnownComponent) {
+          return `<${slash}${normalizedName}${rawAttributes}>`;
+        }
 
-      if (isClosing) {
-        return "</div>";
-      }
+        if (slash === "/") {
+          return "</unknown>";
+        }
 
-      const attributes = parseTagAttributes(rawAttributes);
-      const encodedAttributes =
-        Object.keys(attributes).length > 0
-          ? ` data-props="${escapeAttributeValue(encodeURIComponent(JSON.stringify(attributes)))}"`
-          : "";
-      const componentName = isKnownComponent
-        ? normalizedName
-        : "unknown-component";
-      const dataNamePart = isKnownComponent
-        ? ""
-        : ` data-name="${escapeAttributeValue(rawName)}"`;
-      const openTag = `<div data-component="${componentName}"${dataNamePart}${encodedAttributes}>`;
+        return `<unknown data-name="${escapeAttributeValue(rawName)}"${rawAttributes}>`;
+      },
+    );
 
-      return isSelfClosing ? `${openTag}</div>` : openTag;
-    },
-  );
+    return expandInlineKnownComponents(normalizedTags, knownComponents);
+  });
+}
+
+function mapMarkdownOutsideFences(
+  markdown: string,
+  transform: (segment: string) => string,
+): string {
+  const lines = markdown.split(/\r?\n/);
+  const output: string[] = [];
+  let activeFence: string | null = null;
+  let segmentStart = 0;
+
+  const flushSegment = (segmentEnd: number) => {
+    if (segmentEnd <= segmentStart) {
+      return;
+    }
+    output.push(transform(lines.slice(segmentStart, segmentEnd).join("\n")));
+  };
+
+  lines.forEach((line, index) => {
+    const fence = /^\s{0,3}(```+|~~~+)/.exec(line);
+    if (!fence) {
+      return;
+    }
+
+    const marker = fence[1]?.[0];
+    if (!marker) {
+      return;
+    }
+
+    if (activeFence === null) {
+      flushSegment(index);
+      activeFence = marker;
+      output.push(line);
+      segmentStart = index + 1;
+      return;
+    }
+
+    if (activeFence === marker) {
+      output.push(lines.slice(segmentStart, index).join("\n"));
+      output.push(line);
+      activeFence = null;
+      segmentStart = index + 1;
+    }
+  });
+
+  if (segmentStart < lines.length) {
+    if (activeFence === null) {
+      flushSegment(lines.length);
+    } else {
+      output.push(lines.slice(segmentStart).join("\n"));
+    }
+  } else if (markdown.endsWith("\n")) {
+    output.push("");
+  }
+
+  return output.join("\n");
 }
 
 export function decodeComponentProps(
@@ -72,6 +116,39 @@ export function decodeComponentProps(
   } catch {
     return {};
   }
+}
+
+type CustomComponentNode = {
+  properties?: {
+    dataComponent?: unknown;
+    dataProps?: unknown;
+  };
+};
+
+export function getCustomComponentName(
+  node: CustomComponentNode | undefined,
+): string | null {
+  const componentName = node?.properties?.dataComponent;
+  return typeof componentName === "string" ? componentName : null;
+}
+
+export function getCustomComponentProps(
+  node: CustomComponentNode | undefined,
+  expectedComponentName?: string,
+): Record<string, string | boolean> | null {
+  const componentName = getCustomComponentName(node);
+  if (!componentName) {
+    return null;
+  }
+
+  if (expectedComponentName && componentName !== expectedComponentName) {
+    return null;
+  }
+
+  const encodedProps = node?.properties?.dataProps;
+  return decodeComponentProps(
+    typeof encodedProps === "string" ? encodedProps : undefined,
+  );
 }
 
 export function extractHeadingNodes(
@@ -168,6 +245,29 @@ function parseTagAttributes(rawAttributes: string): Record<string, string | bool
   return attributes;
 }
 
+function expandInlineKnownComponents(
+  markdown: string,
+  knownComponents: Set<string>,
+): string {
+  if (knownComponents.size === 0) {
+    return markdown;
+  }
+
+  const knownComponentsPattern = Array.from(knownComponents, escapeRegex)
+    .sort((a, b) => b.length - a.length)
+    .join("|");
+  const inlineComponentPattern = new RegExp(
+    `<(${knownComponentsPattern})(\\s[^>]*)?>([^\\n]*?)<\\/\\1>`,
+    "g",
+  );
+
+  return markdown.replace(
+    inlineComponentPattern,
+    (_full, tag: string, attributes: string | undefined, content: string) =>
+      `<${tag}${attributes ?? ""}>\n${content}\n</${tag}>`,
+  );
+}
+
 function slugifyHeading(value: string) {
   const slug = value
     .toLowerCase()
@@ -180,6 +280,10 @@ function slugifyHeading(value: string) {
 
 function escapeAttributeValue(value: string) {
   return value.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+}
+
+function escapeRegex(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function isStringRecord(

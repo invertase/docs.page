@@ -6,7 +6,6 @@ import { Heading } from "./heading";
 import { Image } from "./image";
 import { Property } from "./property";
 import { Step, Steps } from "./steps";
-import { TabItem, Tabs } from "./tabs";
 import { Tweet } from "./tweet";
 import { Video } from "./video";
 import { Vimeo } from "./vimeo";
@@ -23,12 +22,12 @@ export const components = {
   "card-group": CardGroup,
   "code-group": CodeGroup,
   heading: Heading,
-  image: Image,
+  // image: Image,
   property: Property,
   steps: Steps,
   step: Step,
-  tabs: Tabs,
-  "tab-item": TabItem,
+  tabs: () => <div>TABS!</div>,
+  tabitem: () => <div>TABITEM!</div>,
   tweet: Tweet,
   video: Video,
   vimeo: Vimeo,

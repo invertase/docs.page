@@ -1,29 +1,34 @@
 import type { ComponentProps, PropsWithChildren, ReactElement } from "react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { cn } from "@/lib/utils";
+import {
+  RiAlertFill,
+  RiCheckboxCircleFill,
+  RiCloseCircleFill,
+  RiInformationFill,
+} from "@remixicon/react";
 
 type CalloutProps = ComponentProps<"div"> & {
   icon?: ReactElement;
+  title: string;
 };
 
 function Callout(props: CalloutProps) {
   return (
-    <div
-      className={cn(
-        "relative mb-3 flex gap-4 overflow-hidden rounded-xl px-5 py-4",
-        props.className,
-      )}
-    >
-      <span className="relative top-1 shrink-0">{props.icon}</span>
-      <span className="[&>p]:m-0">{props.children}</span>
-    </div>
+    <Alert className={cn("px-4 py-3", props.className)}>
+      {props.icon}
+      <AlertTitle>{props.title}</AlertTitle>
+      <AlertDescription>{props.children}</AlertDescription>
+    </Alert>
   );
 }
 
 export function Info(props: PropsWithChildren) {
   return (
     <Callout
-      // icon={<InfoIcon size={20} />}
-      className="border border-sky-500/20 bg-sky-200/10 text-sky-700 dark:border-sky-500/50 dark:bg-sky-500/10 dark:text-white"
+      title="Information"
+      icon={<RiInformationFill />}
+      className="bg-sky-500/5 border-sky-500/20"
     >
       {props.children}
     </Callout>
@@ -33,8 +38,9 @@ export function Info(props: PropsWithChildren) {
 export function Warning(props: PropsWithChildren) {
   return (
     <Callout
-      // icon={<TriangleAlertIcon size={20} />}
-      className="border border-yellow-500/20 bg-yellow-200/10 text-yellow-700 dark:border-yellow-500/50 dark:bg-yellow-500/10 dark:text-white"
+      title="Warning"
+      icon={<RiAlertFill />}
+      className="bg-yellow-500/5 border-yellow-500/20"
     >
       {props.children}
     </Callout>
@@ -44,8 +50,9 @@ export function Warning(props: PropsWithChildren) {
 export function Error(props: PropsWithChildren) {
   return (
     <Callout
-      // icon={<CircleXIcon size={22} />}
-      className="border border-red-500/20 bg-red-200/10 text-red-700 dark:border-red-500/50 dark:bg-red-500/10 dark:text-white"
+      title="Error"
+      icon={<RiCloseCircleFill />}
+      className="bg-destructive/5 border-destructive/20"
     >
       {props.children}
     </Callout>
@@ -55,8 +62,9 @@ export function Error(props: PropsWithChildren) {
 export function Success(props: PropsWithChildren) {
   return (
     <Callout
-      // icon={<CircleCheckIcon size={20} />}
-      className="border border-green-500/20 bg-green-200/10 text-green-7s00 dark:border-green-500/50 dark:bg-green-500/10 dark:text-white"
+      title="Success"
+      icon={<RiCheckboxCircleFill />}
+      className="bg-green-500/5 border-green-500/20"
     >
       {props.children}
     </Callout>
