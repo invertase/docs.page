@@ -12,95 +12,6 @@ type ExtractHeadingNodesOptions = {
 
 const DEFAULT_TOC_MIN_DEPTH = 2;
 const DEFAULT_TOC_MAX_DEPTH = 3;
-const ATTRIBUTE_REGEX =
-  /([:@A-Za-z_][\w:.-]*)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+)))?/g;
-
-export function normalizeCustomTags(
-  markdown: string,
-  componentNames: Iterable<string>,
-): string {
-  const knownComponents = new Set(
-    Array.from(componentNames, (name) => name.toLowerCase()),
-  );
-
-  return mapMarkdownOutsideFences(markdown, (segment) => {
-    const normalizedTags = segment.replace(
-      /<(\/?)([A-Za-z][A-Za-z0-9-]*)([^>]*)>/g,
-      (_full, slash: string, rawName: string, rawAttributes: string) => {
-        const normalizedName = rawName.toLowerCase();
-        const isKnownComponent = knownComponents.has(normalizedName);
-
-        if (isKnownComponent) {
-          return `<${slash}${normalizedName}${rawAttributes}>`;
-        }
-
-        if (slash === "/") {
-          return "</unknown>";
-        }
-
-        return `<unknown data-name="${escapeAttributeValue(rawName)}"${rawAttributes}>`;
-      },
-    );
-
-    return expandInlineKnownComponents(normalizedTags, knownComponents);
-  });
-}
-
-function mapMarkdownOutsideFences(
-  markdown: string,
-  transform: (segment: string) => string,
-): string {
-  const lines = markdown.split(/\r?\n/);
-  const output: string[] = [];
-  let activeFence: string | null = null;
-  let segmentStart = 0;
-
-  const flushSegment = (segmentEnd: number) => {
-    if (segmentEnd <= segmentStart) {
-      return;
-    }
-    output.push(transform(lines.slice(segmentStart, segmentEnd).join("\n")));
-  };
-
-  lines.forEach((line, index) => {
-    const fence = /^\s{0,3}(```+|~~~+)/.exec(line);
-    if (!fence) {
-      return;
-    }
-
-    const marker = fence[1]?.[0];
-    if (!marker) {
-      return;
-    }
-
-    if (activeFence === null) {
-      flushSegment(index);
-      activeFence = marker;
-      output.push(line);
-      segmentStart = index + 1;
-      return;
-    }
-
-    if (activeFence === marker) {
-      output.push(lines.slice(segmentStart, index).join("\n"));
-      output.push(line);
-      activeFence = null;
-      segmentStart = index + 1;
-    }
-  });
-
-  if (segmentStart < lines.length) {
-    if (activeFence === null) {
-      flushSegment(lines.length);
-    } else {
-      output.push(lines.slice(segmentStart).join("\n"));
-    }
-  } else if (markdown.endsWith("\n")) {
-    output.push("");
-  }
-
-  return output.join("\n");
-}
 
 export function decodeComponentProps(
   encodedValue: string | undefined,
@@ -165,24 +76,17 @@ export function extractHeadingNodes(
   const slugCounts = new Map<string, number>();
   const headings: HeadingNode[] = [];
   const lines = markdown.split(/\r?\n/);
-  let activeFence: string | null = null;
+  let activeFence: { marker: string; length: number } | null = null;
 
   for (const line of lines) {
-    const fence = /^\s{0,3}(```+|~~~+)/.exec(line);
+    const fence = getFenceRun(line);
     if (fence) {
-      const fenceToken = fence[1];
-      if (!fenceToken) {
-        continue;
-      }
-
-      const marker = fenceToken[0] ?? null;
-      if (marker === null) {
-        continue;
-      }
-
       if (activeFence === null) {
-        activeFence = marker;
-      } else if (activeFence === marker) {
+        activeFence = fence;
+      } else if (
+        activeFence.marker === fence.marker &&
+        fence.length >= activeFence.length
+      ) {
         activeFence = null;
       }
 
@@ -225,47 +129,19 @@ export function extractHeadingNodes(
   return headings;
 }
 
-function parseTagAttributes(rawAttributes: string): Record<string, string | boolean> {
-  const attributes: Record<string, string | boolean> = {};
-  const cleaned = rawAttributes.replace(/\/\s*$/, "");
-  let match: RegExpExecArray | null;
-
-  ATTRIBUTE_REGEX.lastIndex = 0;
-
-  // biome-ignore lint/suspicious/noAssignInExpressions: iterative regex parsing is intended here.
-  while ((match = ATTRIBUTE_REGEX.exec(cleaned)) !== null) {
-    const [, name, doubleQuoted, singleQuoted, bareValue] = match;
-    if (!name) {
-      continue;
-    }
-
-    attributes[name] = doubleQuoted ?? singleQuoted ?? bareValue ?? true;
+function getFenceRun(line: string): { marker: string; length: number } | null {
+  const match = /^\s*(`{3,}|~{3,})/.exec(line);
+  const token = match?.[1];
+  if (!token) {
+    return null;
   }
 
-  return attributes;
-}
-
-function expandInlineKnownComponents(
-  markdown: string,
-  knownComponents: Set<string>,
-): string {
-  if (knownComponents.size === 0) {
-    return markdown;
+  const marker = token[0];
+  if (!marker) {
+    return null;
   }
 
-  const knownComponentsPattern = Array.from(knownComponents, escapeRegex)
-    .sort((a, b) => b.length - a.length)
-    .join("|");
-  const inlineComponentPattern = new RegExp(
-    `<(${knownComponentsPattern})(\\s[^>]*)?>([^\\n]*?)<\\/\\1>`,
-    "g",
-  );
-
-  return markdown.replace(
-    inlineComponentPattern,
-    (_full, tag: string, attributes: string | undefined, content: string) =>
-      `<${tag}${attributes ?? ""}>\n${content}\n</${tag}>`,
-  );
+  return { marker, length: token.length };
 }
 
 function slugifyHeading(value: string) {
@@ -276,14 +152,6 @@ function slugifyHeading(value: string) {
     .replace(/\s+/g, "-");
 
   return slug || "section";
-}
-
-function escapeAttributeValue(value: string) {
-  return value.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
-}
-
-function escapeRegex(value: string) {
-  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function isStringRecord(

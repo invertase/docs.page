@@ -1,11 +1,14 @@
 import { code } from "@streamdown/code";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
-import { normalizeCustomTags } from "@/lib/docs-markdown";
-import { Streamdown } from "streamdown";
+import { createDocsPageRehypePlugins } from "@/lib/markdown/plugins/docs-page-components";
+import {
+  Streamdown,
+  defaultRemarkPlugins,
+  type ExtraProps,
+} from "streamdown";
 import {
   Children,
   type ComponentProps,
-  Fragment,
   isValidElement,
   type ReactNode,
   useCallback,
@@ -34,6 +37,11 @@ type MarkdownBlockProps = {
   markdown: string;
   takeNextHeadingId: () => string | undefined;
 };
+
+type HastElement = NonNullable<ExtraProps["node"]>;
+type HastChild = HastElement["children"][number];
+
+const CUSTOM_BLOCK_TAGS = new Set([...Object.keys(COMPONENTS), "unknown"]);
 
 export function Prose() {
   const { bundle } = useDocPageContext();
@@ -64,19 +72,22 @@ export function Prose() {
 }
 
 function MarkdownBlock({ markdown, takeNextHeadingId }: MarkdownBlockProps) {
-  const normalizedMarkdown = useMemo(
-    () => normalizeCustomTags(markdown, Object.keys(COMPONENTS)),
-    [markdown],
-  );
   const streamdownComponents = useMemo(
     () => createStreamdownComponents(takeNextHeadingId),
     [takeNextHeadingId],
+  );
+  const remarkPlugins = useMemo(() => Object.values(defaultRemarkPlugins), []);
+  const rehypePlugins = useMemo(
+    () => createDocsPageRehypePlugins(COMPONENTS),
+    [],
   );
 
   return (
     <Streamdown
       allowedTags={COMPONENTS}
       plugins={{ code }}
+      remarkPlugins={remarkPlugins}
+      rehypePlugins={rehypePlugins}
       components={streamdownComponents}
       linkSafety={{ enabled: false }}
       controls={{
@@ -86,7 +97,7 @@ function MarkdownBlock({ markdown, takeNextHeadingId }: MarkdownBlockProps) {
       }}
       className="space-y-4 text-secondary-foreground [&>p]:leading-7 [&>p]:opacity-90"
     >
-      {normalizedMarkdown}
+      {markdown}
     </Streamdown>
   );
 }
@@ -113,6 +124,13 @@ function createStreamdownComponents(
     h4: (props) => renderHeading("h4", props),
     h5: (props) => renderHeading("h5", props),
     h6: (props) => renderHeading("h6", props),
+    p: ({ children, node, ...props }) => {
+      if (shouldUnwrapParagraphNode(node)) {
+        return <>{children}</>;
+      }
+
+      return <p {...props}>{children}</p>;
+    },
     info: ({ children }) => (
       <Info>
         {renderComponentChildren(children as ReactNode, renderNestedMarkdown)}
@@ -147,16 +165,28 @@ function createStreamdownComponents(
     tabitem: ({ children }) =>
       renderComponentChildren(children as ReactNode, renderNestedMarkdown),
     image: ({ children }) => <div>IMAGE{children}</div>,
-    unknown: (props) => (
-      <div className="bg-destructive/80 text-white border border-destructive/50 rounded p-4 space-y-2">
-        <p>
-          Markdown contains an unknown component which could not be rendered:
-        </p>
-        <p>
-          <code>{`<${propValue<string>(props, "data-name")} />`}</code>
-        </p>
-      </div>
-    ),
+    unknown: ({ children, ...props }) => {
+      const renderedChildren = renderComponentChildren(
+        children as ReactNode,
+        renderNestedMarkdown,
+      );
+
+      return (
+        <div className="bg-destructive/80 text-white border border-destructive/50 rounded p-4 space-y-2">
+          <p>
+            Markdown contains an unknown component which could not be rendered:
+          </p>
+          <p>
+            <code>{`<${propValue<string>(props, "data-name")} />`}</code>
+          </p>
+          {renderedChildren ? (
+            <div className="border-destructive-foreground/30 border-t pt-2">
+              {renderedChildren}
+            </div>
+          ) : null}
+        </div>
+      );
+    },
     // div: (props) => {
     //   const componentName = getCustomComponentName(props.node);
     //   const Component = componentName ? DOC_COMPONENTS[componentName] : null;
@@ -244,22 +274,39 @@ function createStreamdownComponents(
   } satisfies StreamdownComponents;
 }
 
-function extractTextContent(children: ReactNode): string {
-  return Children.toArray(children)
-    .map((child) => {
-      if (typeof child === "string" || typeof child === "number") {
-        return String(child);
-      }
+function shouldUnwrapParagraphNode(node: unknown): node is HastElement {
+  if (!node || typeof node !== "object") {
+    return false;
+  }
 
-      if (isValidElement(child)) {
-        return extractTextContent(
-          (child.props as { children?: ReactNode }).children ?? "",
-        );
-      }
+  const paragraphNode = node as HastElement;
+  if (paragraphNode.type !== "element" || paragraphNode.tagName !== "p") {
+    return false;
+  }
 
-      return "";
-    })
-    .join("");
+  let hasCustomBlockChild = false;
+  for (const child of paragraphNode.children ?? []) {
+    if (isWhitespaceHastText(child)) {
+      continue;
+    }
+
+    if (isCustomBlockElement(child)) {
+      hasCustomBlockChild = true;
+      continue;
+    }
+
+    return false;
+  }
+
+  return hasCustomBlockChild;
+}
+
+function isCustomBlockElement(child: HastChild): child is HastElement {
+  return child.type === "element" && CUSTOM_BLOCK_TAGS.has(child.tagName);
+}
+
+function isWhitespaceHastText(child: HastChild): boolean {
+  return child.type === "text" && child.value.trim().length === 0;
 }
 
 function propValue<T>(
@@ -269,11 +316,11 @@ function propValue<T>(
   return props[key] as T | undefined;
 }
 
-function extractTextOnlyContent(children: ReactNode): string {
+function extractTextOnlyContent(children: ReactNode): string | null {
   const childNodes = Children.toArray(children);
 
   if (childNodes.some((child) => isValidElement(child))) {
-    return "";
+    return null;
   }
 
   return childNodes
@@ -289,64 +336,40 @@ function renderComponentChildren(
   children: ReactNode,
   renderNestedMarkdown: (markdown: string) => ReactNode,
 ): ReactNode {
-  const childNodes = Children.toArray(children);
-  const hasSerializedCustomComponents = childNodes.some(
-    (child) => typeof child === "string" && child.includes('data-component="'),
-  );
-
-  // When streamdown yields a mix of rendered elements + serialized custom-component
-  // HTML in strings, re-parse only the string chunks to recover nested components.
-  if (hasSerializedCustomComponents) {
-    return childNodes.map((child, index) => {
-      if (typeof child !== "string") {
-        return child;
-      }
-
-      const markdown = normalizeNestedMarkdown(child);
-      if (!markdown) {
-        return null;
-      }
-
-      return (
-        <Fragment key={`nested-markdown-${index}`}>
-          {renderNestedMarkdown(markdown)}
-        </Fragment>
-      );
-    });
+  const textContent = extractTextOnlyContent(children);
+  if (textContent === null) {
+    return children;
   }
 
-  const markdown = normalizeNestedMarkdown(extractTextOnlyContent(children));
+  const markdown = normalizeNestedMarkdown(textContent);
   return markdown ? renderNestedMarkdown(markdown) : children;
 }
 
 function normalizeNestedMarkdown(markdown: string): string {
   const lines = markdown.split("\n");
+  const startIndex = lines.findIndex((line) => line.trim().length > 0);
 
-  // Remove outer padding from JSX/MDX so we only normalize meaningful content.
-  while (lines.length > 0 && (lines[0] ?? "").trim().length === 0) {
-    lines.shift();
-  }
-  while (
-    lines.length > 0 &&
-    (lines[lines.length - 1] ?? "").trim().length === 0
-  ) {
-    lines.pop();
-  }
-
-  if (lines.length === 0) {
+  if (startIndex === -1) {
     return "";
   }
 
-  // Dedent by the smallest shared indentation to preserve fenced block structure.
+  let endIndex = lines.length - 1;
+  while (endIndex >= startIndex && lines[endIndex]?.trim().length === 0) {
+    endIndex -= 1;
+  }
+
+  const contentLines = lines.slice(startIndex, endIndex + 1);
   const minimumIndent = Math.min(
-    ...lines
+    ...contentLines
       .filter((line) => line.trim().length > 0)
       .map((line) => line.match(/^[ \t]*/)![0].length),
   );
 
   if (!Number.isFinite(minimumIndent) || minimumIndent === 0) {
-    return lines.join("\n");
+    return contentLines.join("\n");
   }
 
-  return lines.map((line) => line.slice(minimumIndent)).join("\n");
+  return contentLines
+    .map((line) => line.slice(Math.min(minimumIndent, line.length)))
+    .join("\n");
 }
