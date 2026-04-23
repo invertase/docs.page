@@ -20,10 +20,14 @@ const CUSTOM_TAG_REGEX = /<(\/?)([A-Za-z][A-Za-z0-9-]*)([^>]*)>/g;
 export function createDocsPageRehypePlugins(
   allowedTags: AllowedTags,
 ): RehypePlugins {
+  // Custom tags are matched case-insensitively during normalization so
+  // authors can write `<Info>` while Streamdown ultimately renders `<info>`.
   const knownComponents = new Set(
     Object.keys(allowedTags).map((tag) => tag.toLowerCase()),
   );
   const customBlockTags = new Set([...knownComponents, UNKNOWN_COMPONENT_TAG]);
+  // Streamdown ships its own sanitize plugin tuple; keep that plugin instance
+  // and extend only the schema so our custom tags survive sanitization.
   const sanitizePlugin = Array.isArray(defaultRehypePlugins.sanitize)
     ? defaultRehypePlugins.sanitize[0]
     : defaultRehypePlugins.sanitize;
@@ -32,6 +36,8 @@ export function createDocsPageRehypePlugins(
       ? defaultRehypePlugins.sanitize[1]
       : {}
   ) as SanitizeSchema;
+  // Rebuild the sanitize tuple with our docs-page tags and attributes merged
+  // into Streamdown's default allowlist instead of replacing it outright.
   const sanitizeEntry = [
     sanitizePlugin as RehypePlugins[number],
     {
@@ -56,49 +62,67 @@ export function createDocsPageRehypePlugins(
 }
 
 function createNormalizeCustomTagsPlugin(knownComponents: Set<string>) {
-  return (tree: HastNode | undefined) => {
-    if (!tree) {
-      return;
-    }
-
-    visitNodes(tree, (node) => {
-      if (node.type !== "raw" || typeof node.value !== "string") {
+  return () => {
+    return (tree: HastNode | undefined) => {
+      if (!tree) {
         return;
       }
 
-      node.value = node.value.replace(
-        CUSTOM_TAG_REGEX,
-        (_full, slash: string, rawName: string, rawAttributes: string) => {
-          const normalizedName = rawName.toLowerCase();
-          const isKnownComponent = knownComponents.has(normalizedName);
-          const isCustomLike = /^[A-Z]/.test(rawName) || isKnownComponent;
+      visitNodes(tree, (node) => {
+        if (node.type !== "raw" || typeof node.value !== "string") {
+          return;
+        }
 
-          if (!isCustomLike) {
-            return `<${slash}${rawName}${rawAttributes}>`;
-          }
+        node.value = node.value.replace(
+          CUSTOM_TAG_REGEX,
+          (_full, slash: string, rawName: string, rawAttributes: string) => {
+            const normalizedName = rawName.toLowerCase();
+            const isKnownComponent = knownComponents.has(normalizedName);
+            const isCustomLike = /^[A-Z]/.test(rawName) || isKnownComponent;
+            const isSelfClosing = /\/\s*$/.test(rawAttributes);
+            const attributes = isSelfClosing
+              ? rawAttributes.replace(/\/\s*$/, "")
+              : rawAttributes;
 
-          if (isKnownComponent) {
-            return `<${slash}${normalizedName}${rawAttributes}>`;
-          }
+            if (!isCustomLike) {
+              return `<${slash}${rawName}${rawAttributes}>`;
+            }
 
-          if (slash === "/") {
-            return `</${UNKNOWN_COMPONENT_TAG}>`;
-          }
+            if (isKnownComponent) {
+              if (slash === "/") {
+                return `</${normalizedName}>`;
+              }
 
-          return `<${UNKNOWN_COMPONENT_TAG} data-name="${escapeAttributeValue(rawName)}"${rawAttributes}>`;
-        },
-      );
-    });
+              const openTag = `<${normalizedName}${attributes}>`;
+              return isSelfClosing
+                ? `${openTag}</${normalizedName}>`
+                : openTag;
+            }
+
+            if (slash === "/") {
+              return "</div>";
+            }
+
+            const openTag = `<div data-unknown-component="" data-name="${escapeAttributeValue(rawName)}"${attributes}>`;
+            return isSelfClosing
+              ? `${openTag}</div>`
+              : openTag;
+          },
+        );
+      });
+    };
   };
 }
 
 function createUnwrapCustomBlockParagraphsPlugin(customBlockTags: Set<string>) {
-  return (tree: HastNode | undefined) => {
-    if (!tree) {
-      return;
-    }
+  return () => {
+    return (tree: HastNode | undefined) => {
+      if (!tree) {
+        return;
+      }
 
-    unwrapCustomBlockParagraphs(tree, customBlockTags);
+      unwrapCustomBlockParagraphs(tree, customBlockTags);
+    };
   };
 }
 

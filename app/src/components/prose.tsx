@@ -20,13 +20,13 @@ import { Tabs, TabsProvider } from "./mdx/tabs";
 import { Info, Success, Warning, Error } from "./mdx/callout";
 
 const COMPONENTS = {
+  div: ["data*"],
   info: [],
   warning: [],
   error: [],
   success: [],
   tabs: ["groupid", "defaultvalue"],
   tabitem: [],
-  unknown: ["data*"],
 };
 
 type StreamdownComponents = NonNullable<
@@ -41,7 +41,7 @@ type MarkdownBlockProps = {
 type HastElement = NonNullable<ExtraProps["node"]>;
 type HastChild = HastElement["children"][number];
 
-const CUSTOM_BLOCK_TAGS = new Set([...Object.keys(COMPONENTS), "unknown"]);
+const CUSTOM_BLOCK_TAGS = new Set(Object.keys(COMPONENTS));
 
 export function Prose() {
   const { bundle } = useDocPageContext();
@@ -124,6 +124,22 @@ function createStreamdownComponents(
     h4: (props) => renderHeading("h4", props),
     h5: (props) => renderHeading("h5", props),
     h6: (props) => renderHeading("h6", props),
+    div: ({ children, ...props }) => {
+      if (!hasUnknownComponentMarker(props)) {
+        return <div {...props}>{children}</div>;
+      }
+
+      return (
+        <div className="bg-destructive/80 text-white border border-destructive/50 rounded p-4 space-y-2">
+          <p>
+            Markdown contains an unknown component which could not be rendered:
+          </p>
+          <p>
+            <code>{`<${propValue<string>(props, "data-name")} />`}</code>
+          </p>
+        </div>
+      );
+    },
     p: ({ children, node, ...props }) => {
       if (shouldUnwrapParagraphNode(node)) {
         return <>{children}</>;
@@ -165,28 +181,6 @@ function createStreamdownComponents(
     tabitem: ({ children }) =>
       renderComponentChildren(children as ReactNode, renderNestedMarkdown),
     image: ({ children }) => <div>IMAGE{children}</div>,
-    unknown: ({ children, ...props }) => {
-      const renderedChildren = renderComponentChildren(
-        children as ReactNode,
-        renderNestedMarkdown,
-      );
-
-      return (
-        <div className="bg-destructive/80 text-white border border-destructive/50 rounded p-4 space-y-2">
-          <p>
-            Markdown contains an unknown component which could not be rendered:
-          </p>
-          <p>
-            <code>{`<${propValue<string>(props, "data-name")} />`}</code>
-          </p>
-          {renderedChildren ? (
-            <div className="border-destructive-foreground/30 border-t pt-2">
-              {renderedChildren}
-            </div>
-          ) : null}
-        </div>
-      );
-    },
     // div: (props) => {
     //   const componentName = getCustomComponentName(props.node);
     //   const Component = componentName ? DOC_COMPONENTS[componentName] : null;
@@ -302,11 +296,26 @@ function shouldUnwrapParagraphNode(node: unknown): node is HastElement {
 }
 
 function isCustomBlockElement(child: HastChild): child is HastElement {
-  return child.type === "element" && CUSTOM_BLOCK_TAGS.has(child.tagName);
+  return (
+    child.type === "element" &&
+    (CUSTOM_BLOCK_TAGS.has(child.tagName) ||
+      (child.tagName === "div" && hasUnknownComponentMarker(child.properties)))
+  );
 }
 
 function isWhitespaceHastText(child: HastChild): boolean {
   return child.type === "text" && child.value.trim().length === 0;
+}
+
+function hasUnknownComponentMarker(
+  props: Record<string, unknown> | undefined,
+): boolean {
+  // HAST stores data-* attributes as camelCase properties, while the React
+  // renderer receives the same attributes with their dashed HTML names.
+  return props
+    ? Object.prototype.hasOwnProperty.call(props, "data-unknown-component") ||
+        Object.prototype.hasOwnProperty.call(props, "dataUnknownComponent")
+    : false;
 }
 
 function propValue<T>(
@@ -316,6 +325,8 @@ function propValue<T>(
   return props[key] as T | undefined;
 }
 
+// Nested custom tags sometimes hand us plain text children that still need a
+// second markdown pass; bail out once real elements are already present.
 function extractTextOnlyContent(children: ReactNode): string | null {
   const childNodes = Children.toArray(children);
 
@@ -332,6 +343,8 @@ function extractTextOnlyContent(children: ReactNode): string | null {
     .join("");
 }
 
+// Re-run string-only custom-component bodies through Streamdown so markdown
+// like headings, lists, and fences inside callouts/tabs render correctly.
 function renderComponentChildren(
   children: ReactNode,
   renderNestedMarkdown: (markdown: string) => ReactNode,
@@ -345,6 +358,8 @@ function renderComponentChildren(
   return markdown ? renderNestedMarkdown(markdown) : children;
 }
 
+// Trim outer blank lines and remove shared indentation before the nested
+// markdown pass so indented JSX-style children keep their intended structure.
 function normalizeNestedMarkdown(markdown: string): string {
   const lines = markdown.split("\n");
   const startIndex = lines.findIndex((line) => line.trim().length > 0);
