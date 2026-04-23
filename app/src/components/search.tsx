@@ -15,6 +15,7 @@ const SearchDialog = dynamic(() => import("./search-dialog"), {
 
 export function Search() {
   const { route } = useDocPageContext();
+  // TODO: This probably needs to work for custom domains + vanity domains
   const searchUrl = useMemo(
     () => `/${route.owner}/${route.repository}/search.json`,
     [route.owner, route.repository],
@@ -44,10 +45,11 @@ export function Search() {
         <Button
           variant="outline"
           aria-label="Search"
+          className="gap-2"
           onClick={() => setOpen(!open)}
         >
           <RiSearch2Line />
-          <Kbd className="hidden md:block">⌘K</Kbd>
+          <Kbd className="hidden md:block h-[17px]">⌘K</Kbd>
         </Button>
       </div>
       {open ? (

@@ -29,7 +29,6 @@ import {
 import type { SidebarGroup as SidebarConfigGroup } from "@/server/config/models/sidebar";
 import { cn } from "@/lib/utils";
 import { Link } from "./doc-link";
-import { GithubSource } from "./github-source";
 
 function getSidebarGroups(config: { sidebar: unknown }): SidebarConfigGroup[] {
   const raw = config.sidebar;
@@ -100,7 +99,7 @@ function SidebarPageRow(props: {
           asChild
           isActive={props.isActive}
           size="md"
-          className={cn(external && "pr-7")}
+          className={cn("text-muted-foreground", external && "pr-7")}
         >
           <Link href={props.href}>
             <span>{props.title}</span>
@@ -168,7 +167,7 @@ function SidebarNestedGroup(props: {
     <Collapsible defaultOpen={isActive}>
       <SidebarMenuSubItem className="pb-1">
         <CollapsibleTrigger asChild>
-          <SidebarMenuSubButton isActive={isActive}>
+          <SidebarMenuSubButton isActive={isActive} className="text-muted-foreground">
             <span className="truncate">{label}</span>
             <RiArrowRightSLine className="ml-auto size-4 shrink-0 transition-transform duration-200 [[data-state=open]>&]:rotate-90" />
           </SidebarMenuSubButton>
@@ -203,7 +202,7 @@ function SidebarPagesList(props: {
           const active = isDocHrefActive(route, link.href, locales);
           if (props.depth > 0) {
             return (
-              <SidebarMenuSubItem key={key} className="pb-1">
+              <SidebarMenuSubItem key={key} className="pb-1 text-muted-foreground">
                 <SidebarPageRow
                   title={link.title}
                   href={link.href}
@@ -214,7 +213,7 @@ function SidebarPagesList(props: {
             );
           }
           return (
-            <SidebarMenuItem key={key} className="pb-1">
+            <SidebarMenuItem key={key} className="pb-1 text-muted-foreground">
               <SidebarPageRow
                 title={link.title}
                 href={link.href}
@@ -255,10 +254,10 @@ export function Navigation() {
     <Sidebar
       variant="sidebar"
       className={cn(
-        "sticky bottom-auto max-h-none will-change-transform",
+        "sticky bottom-auto max-h-none will-change-transform border-none",
         hasTabs
-          ? "top-[calc(5rem+1px)] h-[calc(100svh-5rem-1px)]"
-          : "top-[calc(3rem+1px)] h-[calc(100svh-3rem-1px)]",
+          ? "top-[calc(5.5rem+1px)] h-[calc(100svh-5.5rem-1px)]"
+          : "top-[calc(3.5rem+1px)] h-[calc(100svh-3.5rem-1px)]",
       )}
     >
       <div className="relative flex min-h-0 flex-1 flex-col">
@@ -284,7 +283,7 @@ export function Navigation() {
                 </SidebarGroupLabel>
               ) : null}
               <SidebarGroupContent>
-                <SidebarMenu>
+                <SidebarMenu className="text-muted-foreground">
                   <SidebarPagesList pages={group.pages} depth={0} />
                 </SidebarMenu>
               </SidebarGroupContent>
@@ -292,11 +291,6 @@ export function Navigation() {
           ))}
         </SidebarContent>
       </div>
-      {route.requestMode !== 'preview' && (
-        <SidebarFooter className="bg-background p-2">
-          <GithubSource />
-        </SidebarFooter>
-      )}
     </Sidebar>
   );
 }

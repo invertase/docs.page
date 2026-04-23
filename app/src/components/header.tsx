@@ -4,18 +4,35 @@ import { useDocTabs } from "@/hooks/use-doc-tabs";
 import { getAssetSrc } from "@/lib/docs-assets";
 import { resolveActiveTabId } from "@/lib/docs-routing";
 import { cn } from "@/lib/utils";
-import { RiSunFill, RiMoonFill, RiSparkling2Fill } from "@remixicon/react";
+import {
+  RiSunFill,
+  RiMoonFill,
+  RiSparkling2Fill,
+  RiGithubFill,
+} from "@remixicon/react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { Search } from "@/components/search";
 import { useAgentPanel } from "@/hooks/use-agent-panel";
 import { Kbd } from "@/components/ui/kbd";
+import { Tabs as TabsRoot, TabsList, TabsTrigger } from "./ui/tabs";
+import { useEffect, useState } from "react";
 
 export function Header() {
   const hasTabs = useDocTabs().length > 0;
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 0);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   return (
-    <header className="sticky top-0 z-30 border-b bg-background">
+    <header className="sticky top-0 z-30 bg-background">
       <div className="mx-auto w-full max-w-8xl px-4">
         <div className="h-12 flex items-center justify-between">
           <Logo />
@@ -27,6 +44,15 @@ export function Header() {
           </div>
         )}
       </div>
+      <div
+        className={cn(
+          "mt-2 h-px bg-border transition-all duration-500",
+          {
+            "opacity-0": !scrolled,
+            "opacity-100": scrolled,
+          },
+        )}
+      />
     </header>
   );
 }
@@ -70,28 +96,29 @@ function Logo() {
 
 function Actions() {
   const { meta } = useDocPageContext();
-  
+
   return (
-    <div className="flex min-w-0 flex-1 items-center justify-end gap-3">
-      {meta.hasAgent && <AgentPanelToggle />}
-      <Search />
-      <HeaderLinks />
-      <ThemeToggle />
+    <div className="flex min-w-0 flex-1 items-center justify-end gap-1">
+      <div className="flex items-center gap-2">
+        {meta.hasAgent && <Agent />}
+        <Search />
+        <HeaderLinks />
+      </div>
+      <div>
+        <GitHubLink />
+        <ThemeToggle />
+      </div>
     </div>
   );
 }
 
-function AgentPanelToggle() {
-  const { open, toggle } = useAgentPanel();
+function Agent() {
+  const { toggle } = useAgentPanel();
 
   return (
-    <Button
-      variant="outline"
-      aria-label="Toggle agent panel"
-      onClick={toggle}
-    >
+    <Button variant="outline" aria-label="Toggle agent panel" onClick={toggle}>
       <RiSparkling2Fill />
-      <Kbd className="hidden md:block">⌘I</Kbd>
+      <Kbd className="hidden md:block h-[17px] gap-2">⌘I</Kbd>
     </Button>
   );
 }
@@ -101,13 +128,42 @@ function ThemeToggle() {
 
   return (
     <Button
-      variant="outline"
-      size="icon"
+      variant="ghost"
+      size="lg"
       aria-label="Toggle theme"
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
     >
-      <RiSunFill className="hidden dark:block" />
-      <RiMoonFill className="block dark:hidden" />
+      <RiSunFill className="hidden dark:block relative -top-px" />
+      <RiMoonFill className="block dark:hidden relative -top-px" />
+    </Button>
+  );
+}
+
+function GitHubLink() {
+  const { bundle } = useDocPageContext();
+  let stars: string | number = bundle.stars;
+
+  if (stars > 1000 && stars < 10_000) {
+    const rounded = Math.round((stars / 1_000) * 10) / 10;
+    stars = `${rounded.toString().replace(/\.0$/, "")}k`;
+  } else if (stars > 10_000) {
+    stars = `${Math.round(stars / 1_000)}k`;
+  }
+
+  return (
+    <Button
+      variant="ghost"
+      size="lg"
+      aria-label="Toggle theme"
+      className="gap-2"
+      asChild
+    >
+      <Link href={`https://github.com/${bundle.source.owner}/${bundle.source.repository}`} target="_blank">
+        <RiGithubFill className="size-5" />
+        <span className="relative top-px text-xs text-muted-foreground">
+          {stars}
+        </span>
+      </Link>
     </Button>
   );
 }
@@ -125,7 +181,7 @@ function HeaderLinks() {
     <Button
       key={link.href}
       variant={link.cta ? "default" : "outline"}
-      className="px-4"
+      className="px-3"
       asChild
     >
       <Link href={link.href}>{link.title}</Link>
@@ -139,25 +195,14 @@ function Tabs() {
   const activeTabId = resolveActiveTabId(route, tabs, bundle.config.locales);
 
   return (
-    <div className="h-8 flex items-center gap-4">
-      {tabs.map((tab) => {
-        const isActive = tab.id === activeTabId;
-        return (
-          <Link
-            key={tab.id}
-            href={tab.href}
-            aria-current={isActive ? "page" : undefined}
-            className={cn(
-              "inline-flex gap-2 h-8 items-center px-1 text-sm border-b-2 -mb-px transition-colors",
-              isActive
-                ? "border-primary text-foreground"
-                : "border-transparent text-muted-foreground hover:text-foreground hover:border-border",
-            )}
-          >
-            <span>{tab.title}</span>
-          </Link>
-        );
-      })}
-    </div>
+    <TabsRoot defaultValue={activeTabId ?? undefined} className="">
+      <TabsList className="dark:bg-background">
+        {tabs.map((tab) => (
+          <TabsTrigger key={tab.id} value={tab.id} className="px-2.5" asChild>
+            <Link href={tab.href}>{tab.title}</Link>
+          </TabsTrigger>
+        ))}
+      </TabsList>
+    </TabsRoot>
   );
 }
