@@ -33,9 +33,9 @@ export function Homepage() {
           </div>
           <div className="relative z-10">
             <Hero />
-            <TrustedBy />
             <Features />
             <Platform />
+            <TrustedBy />
             <PricingCta />
             <Footer />
           </div>

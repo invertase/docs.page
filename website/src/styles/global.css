@@ -9,39 +9,26 @@
 /*
   HSL components (space-separated) for use with `hsl(var(--token) / <alpha>)`.
 
-  Invertase-aligned scales: `honey` (Tailwind key `yellow`) = primary brand Honey,
+  Invertase-aligned scales: `soft-periwinkle` = primary brand (use Tailwind `periwinkle` scale),
   `zinc` = canvas neutrals (Anti-flash → Black), `emerald` = Teal, `red` = coral
   secondary. Lavender is used for marketing accents.
 */
 :root {
   /*
-   * Honey — primary brand scale (500 = #E69135). Tints raise lightness; shades
-   * deepen toward near-black while keeping hue ~31°.
+   * Soft periwinkle — primary brand scale (500 = #5368BD). Tints raise lightness; shades
+   * deepen toward near-black while keeping hue ~228°.
    */
-  --color-honey-50: 38 92% 97%;
-  --color-honey-100: 36 88% 92%;
-  --color-honey-200: 34 84% 84%;
-  --color-honey-300: 33 81% 74%;
-  --color-honey-400: 32 79% 64%;
-  --color-honey-500: 31 78% 55%;
-  --color-honey-600: 31 72% 45%;
-  --color-honey-700: 30 65% 35%;
-  --color-honey-800: 28 58% 26%;
-  --color-honey-900: 26 52% 18%;
-  --color-honey-950: 24 55% 11%;
-
-  /* Legacy Tailwind / chart key — aliases Honey (keep call sites stable). */
-  --color-yellow-50: var(--color-honey-50);
-  --color-yellow-100: var(--color-honey-100);
-  --color-yellow-200: var(--color-honey-200);
-  --color-yellow-300: var(--color-honey-300);
-  --color-yellow-400: var(--color-honey-400);
-  --color-yellow-500: var(--color-honey-500);
-  --color-yellow-600: var(--color-honey-600);
-  --color-yellow-700: var(--color-honey-700);
-  --color-yellow-800: var(--color-honey-800);
-  --color-yellow-900: var(--color-honey-900);
-  --color-yellow-950: var(--color-honey-950);
+  --color-soft-periwinkle-50: 228 100% 97%;
+  --color-soft-periwinkle-100: 228 88% 92%;
+  --color-soft-periwinkle-200: 228 72% 86%;
+  --color-soft-periwinkle-300: 228 58% 77%;
+  --color-soft-periwinkle-400: 228 50% 63%;
+  --color-soft-periwinkle-500: 228 44.5% 53.3%;
+  --color-soft-periwinkle-600: 228 44% 44%;
+  --color-soft-periwinkle-700: 228 44% 35%;
+  --color-soft-periwinkle-800: 228 44% 27%;
+  --color-soft-periwinkle-900: 228 44% 18%;
+  --color-soft-periwinkle-950: 228 44% 9%;
 
   /* Canvas neutrals (Anti-flash #E7E8E9 → Black #040406) */
   /* Invertase anti-flash white — #E7E8E9 (page canvas in light mode). */
@@ -73,7 +60,7 @@
   --color-emerald-900: 173 42% 20%;
   --color-emerald-950: 175 45% 12%;
 
-  /* Coral red secondary (cooler than Honey) */
+  /* Coral red secondary (cooler than soft periwinkle) */
   --color-red-50: 0 70% 97%;
   --color-red-100: 0 65% 92%;
   --color-red-200: 0 60% 84%;
@@ -151,12 +138,13 @@ body {
     `ThemeScripts` overrides `--primary-light`, `--background-light`, etc. on
     documentation pages.
   */
-  --primary-light: 31 77% 55%;
-  --primary-light-lighter: 31 78% 65%;
+  --primary-light: var(--color-soft-periwinkle-500);
+  --primary-light-lighter: var(--color-soft-periwinkle-400);
   /* Page canvas (ThemeScripts may override for doc sites). */
   --background-light: var(--color-invertase-white);
-  --primary-dark: 31 78% 58%;
-  --primary-dark-lighter: 31 78% 68%;
+  /* Dark UIs: slightly lighter saturations (400 / 300) for contrast on charcoals. */
+  --primary-dark: var(--color-soft-periwinkle-400);
+  --primary-dark-lighter: var(--color-soft-periwinkle-300);
   --background-dark: var(--color-zinc-950);
 
   --primary: var(--primary-light);
@@ -181,76 +169,76 @@ body {
   --border: var(--color-zinc-300);
   --input: var(--color-zinc-300);
   --input-background: var(--color-invertase-white);
-  --ring: var(--color-yellow-500);
+  --ring: var(--color-soft-periwinkle-500);
 
-  --chart-1: var(--color-yellow-500);
+  --chart-1: var(--color-soft-periwinkle-500);
   --chart-2: var(--color-emerald-500);
   --chart-3: var(--color-lavender-500);
-  /* Second Honey series tone (charts need a distinct swatch from chart-1). */
-  --chart-4: var(--color-honey-300);
+  /* Second soft-periwinkle swatch (charts need a distinct tone from chart-1). */
+  --chart-4: var(--color-soft-periwinkle-300);
   --chart-5: var(--color-red-400);
 
   --sidebar: var(--color-invertase-white);
   --sidebar-foreground: var(--color-zinc-950);
-  --sidebar-primary: var(--color-yellow-500);
+  --sidebar-primary: var(--color-soft-periwinkle-500);
   --sidebar-primary-foreground: var(--color-zinc-950);
   --sidebar-accent: var(--color-zinc-100);
   --sidebar-accent-foreground: var(--color-zinc-950);
   --sidebar-border: var(--color-zinc-300);
-  --sidebar-ring: var(--color-yellow-500);
+  --sidebar-ring: var(--color-soft-periwinkle-500);
 
   /*
-    Marketing landing (Honey + secondaries).
+    Marketing landing (soft periwinkle + secondaries).
     Consumed via Tailwind `marketing-*` colours and `.marketing-*` utilities.
   */
-  --marketing-accent: var(--color-yellow-500);
-  --marketing-accent-bright: var(--color-yellow-400);
-  --marketing-accent-emphasis: var(--color-yellow-600);
+  --marketing-accent: var(--color-soft-periwinkle-500);
+  --marketing-accent-bright: var(--color-soft-periwinkle-400);
+  --marketing-accent-emphasis: var(--color-soft-periwinkle-600);
   --marketing-hero-glow: var(--color-lavender-400);
   --marketing-hero-frame-border: var(--color-zinc-300);
   --marketing-hero-video-tint: 169 58% 45%;
   --marketing-hero-video-tint-dark: 257 55% 58%;
-  --marketing-pill-foreground: var(--color-yellow-900);
+  --marketing-pill-foreground: var(--color-soft-periwinkle-900);
   --marketing-pill-foreground-dark: var(--color-zinc-300);
   --marketing-feature-divider: var(--color-zinc-300);
   --marketing-feature-divider-dark: var(--color-zinc-600);
   --marketing-cell-hover: var(--color-invertase-white);
   --marketing-cell-ring-offset: var(--color-invertase-white);
-  --marketing-feature-icon: var(--color-yellow-500);
-  --marketing-feature-icon-bright: var(--color-yellow-400);
+  --marketing-feature-icon: var(--color-soft-periwinkle-500);
+  --marketing-feature-icon-bright: var(--color-soft-periwinkle-400);
   --marketing-platform-border: var(--color-zinc-300);
   --marketing-platform-border-dark: var(--color-zinc-700);
   --marketing-platform-title: var(--color-zinc-950);
   --marketing-platform-title-dark: 240 6% 98%;
   --marketing-platform-desc: var(--color-zinc-950);
   --marketing-platform-desc-dark: var(--color-zinc-400);
-  --marketing-platform-gradient-from: var(--color-yellow-400);
+  --marketing-platform-gradient-from: var(--color-soft-periwinkle-400);
   --marketing-platform-gradient-via: var(--background);
   --marketing-platform-inner-dark: var(--color-zinc-950);
-  --marketing-testimonial-avatar-bg: var(--color-yellow-500);
-  --marketing-testimonial-avatar-bg-dark: var(--color-yellow-400);
-  --marketing-testimonial-avatar-text: var(--color-yellow-800);
-  --marketing-testimonial-avatar-text-dark: var(--color-yellow-200);
-  --marketing-step-rail: var(--color-yellow-600);
+  --marketing-testimonial-avatar-bg: var(--color-soft-periwinkle-500);
+  --marketing-testimonial-avatar-bg-dark: var(--color-soft-periwinkle-400);
+  --marketing-testimonial-avatar-text: var(--color-soft-periwinkle-800);
+  --marketing-testimonial-avatar-text-dark: var(--color-soft-periwinkle-200);
+  --marketing-step-rail: var(--color-soft-periwinkle-600);
   --marketing-step-rail-dark: var(--color-zinc-600);
-  --marketing-step-badge-border: var(--color-yellow-600);
+  --marketing-step-badge-border: var(--color-soft-periwinkle-600);
   --marketing-step-badge-border-dark: var(--color-zinc-800);
   --marketing-step-badge-fill-dark: var(--color-zinc-950);
   --marketing-success: var(--color-emerald-600);
   --marketing-success-bright: var(--color-emerald-400);
   /* Primary marketing CTAs and text buttons (`ui/button` marketing variants) */
-  --marketing-button-cta: var(--color-yellow-400);
-  --marketing-button-cta-hover: var(--color-yellow-500);
-  --marketing-ghost-hover-foreground: var(--color-yellow-800);
-  --marketing-nav-link-hover: var(--color-yellow-600);
+  --marketing-button-cta: var(--color-soft-periwinkle-400);
+  --marketing-button-cta-hover: var(--color-soft-periwinkle-500);
+  --marketing-ghost-hover-foreground: var(--color-soft-periwinkle-800);
+  --marketing-nav-link-hover: var(--color-soft-periwinkle-600);
   --marketing-surface-muted: var(--color-invertase-white);
   --marketing-surface-muted-hover: var(--color-zinc-100);
 
   /* Twoslash (hex / alpha — library expects these shapes) */
   --twoslash-border-color: #8888;
   --twoslash-underline-color: currentColor;
-  --twoslash-highlighted-border: #e6913550;
-  --twoslash-highlighted-bg: #e6913520;
+  --twoslash-highlighted-border: #5368bd50;
+  --twoslash-highlighted-bg: #5368bd20;
   --twoslash-popup-bg: #1c1c20;
   --twoslash-popup-color: inherit;
   --twoslash-popup-shadow: rgba(0, 0, 0, 0.08) 0px 1px 4px;
@@ -263,8 +251,8 @@ body {
   --twoslash-cursor-color: #8888;
   --twoslash-error-color: #d45656;
   --twoslash-error-bg: #d4565620;
-  --twoslash-warn-color: #c17a28;
-  --twoslash-warn-bg: #e6913520;
+  --twoslash-warn-color: #3f53a2;
+  --twoslash-warn-bg: #3f53a220;
   --twoslash-tag-color: #3772cf;
   --twoslash-tag-bg: #3772cf20;
   --twoslash-tag-warn-color: var(--twoslash-warn-color);
@@ -324,27 +312,27 @@ html[data-theme="dark"] {
   --border: 240 10% 18%;
   --input: 240 10% 18%;
   --input-background: 240 15% 7%;
-  --ring: var(--color-yellow-400);
+  --ring: var(--color-soft-periwinkle-400);
 
-  --chart-1: var(--color-yellow-400);
+  --chart-1: var(--color-soft-periwinkle-400);
   --chart-2: var(--color-emerald-400);
   --chart-3: var(--color-lavender-400);
-  --chart-4: var(--color-honey-600);
+  --chart-4: var(--color-soft-periwinkle-600);
   --chart-5: var(--color-red-400);
 
   --sidebar: 240 15% 7%;
   --sidebar-foreground: 210 12% 96%;
-  --sidebar-primary: var(--color-yellow-400);
+  --sidebar-primary: var(--color-soft-periwinkle-400);
   --sidebar-primary-foreground: 240 22% 8%;
   --sidebar-accent: 240 12% 14%;
   --sidebar-accent-foreground: 210 12% 96%;
   --sidebar-border: 240 10% 18%;
-  --sidebar-ring: var(--color-yellow-400);
+  --sidebar-ring: var(--color-soft-periwinkle-400);
 
-  /* Honey at 500 reads richer than 400 on dark (400 was pastel / washed). */
-  --marketing-accent: var(--color-yellow-500);
-  --marketing-accent-bright: var(--color-yellow-400);
-  --marketing-accent-emphasis: var(--color-yellow-600);
+  /* 500 reads richer than 400 on dark (400 was pastel / washed). */
+  --marketing-accent: var(--color-soft-periwinkle-500);
+  --marketing-accent-bright: var(--color-soft-periwinkle-400);
+  --marketing-accent-emphasis: var(--color-soft-periwinkle-600);
   --marketing-hero-glow: var(--color-lavender-500);
   --marketing-hero-frame-border: var(--color-zinc-700);
   --marketing-hero-video-tint: 169 50% 42%;
@@ -355,8 +343,8 @@ html[data-theme="dark"] {
   --marketing-feature-divider-dark: var(--color-zinc-600);
   --marketing-cell-hover: var(--color-zinc-950);
   --marketing-cell-ring-offset: var(--color-zinc-950);
-  --marketing-feature-icon: var(--color-yellow-500);
-  --marketing-feature-icon-bright: var(--color-yellow-400);
+  --marketing-feature-icon: var(--color-soft-periwinkle-500);
+  --marketing-feature-icon-bright: var(--color-soft-periwinkle-400);
   --marketing-platform-border: var(--color-zinc-700);
   --marketing-platform-border-dark: var(--color-zinc-700);
   --marketing-platform-title: 240 6% 98%;
@@ -366,10 +354,10 @@ html[data-theme="dark"] {
   --marketing-platform-gradient-from: var(--color-zinc-950);
   --marketing-platform-gradient-via: var(--background);
   --marketing-platform-inner-dark: var(--color-zinc-950);
-  --marketing-testimonial-avatar-bg: var(--color-yellow-400);
-  --marketing-testimonial-avatar-bg-dark: var(--color-yellow-400);
-  --marketing-testimonial-avatar-text: var(--color-yellow-200);
-  --marketing-testimonial-avatar-text-dark: var(--color-yellow-200);
+  --marketing-testimonial-avatar-bg: var(--color-soft-periwinkle-400);
+  --marketing-testimonial-avatar-bg-dark: var(--color-soft-periwinkle-400);
+  --marketing-testimonial-avatar-text: var(--color-soft-periwinkle-200);
+  --marketing-testimonial-avatar-text-dark: var(--color-soft-periwinkle-200);
   --marketing-step-rail: var(--color-zinc-600);
   --marketing-step-rail-dark: var(--color-zinc-600);
   --marketing-step-badge-border: var(--color-zinc-800);
@@ -377,10 +365,10 @@ html[data-theme="dark"] {
   --marketing-step-badge-fill-dark: var(--color-zinc-950);
   --marketing-success: var(--color-emerald-400);
   --marketing-success-bright: var(--color-emerald-300);
-  --marketing-button-cta: var(--color-yellow-500);
-  --marketing-button-cta-hover: var(--color-yellow-600);
-  --marketing-ghost-hover-foreground: var(--color-yellow-400);
-  --marketing-nav-link-hover: var(--color-yellow-500);
+  --marketing-button-cta: var(--color-soft-periwinkle-500);
+  --marketing-button-cta-hover: var(--color-soft-periwinkle-600);
+  --marketing-ghost-hover-foreground: var(--color-soft-periwinkle-400);
+  --marketing-nav-link-hover: var(--color-soft-periwinkle-500);
   --marketing-surface-muted: 240 12% 12%;
   --marketing-surface-muted-hover: 240 12% 16%;
 }
@@ -718,7 +706,7 @@ pre.shiki.has-focused:hover .line {
 
 /*
  * Marketing UI: nav link default text uses primitive scales from this file (same
- * HSL components as Tailwind’s default zinc / yellow steps — see `:root` above).
+ * HSL components as the zinc / soft-periwinkle scales in `:root` above).
  */
 @layer utilities {
   .text-marketing-link {

@@ -60,6 +60,20 @@ const config: Config = {
           DEFAULT: "hsl(var(--card) / <alpha-value>)",
           foreground: "hsl(var(--card-foreground) / <alpha-value>)",
         },
+        /* Primary brand: soft periwinkle (500 = #5368BD) — `bg-periwinkle-500`, etc. */
+        periwinkle: {
+          50: "hsl(var(--color-soft-periwinkle-50) / <alpha-value>)",
+          100: "hsl(var(--color-soft-periwinkle-100) / <alpha-value>)",
+          200: "hsl(var(--color-soft-periwinkle-200) / <alpha-value>)",
+          300: "hsl(var(--color-soft-periwinkle-300) / <alpha-value>)",
+          400: "hsl(var(--color-soft-periwinkle-400) / <alpha-value>)",
+          500: "hsl(var(--color-soft-periwinkle-500) / <alpha-value>)",
+          600: "hsl(var(--color-soft-periwinkle-600) / <alpha-value>)",
+          700: "hsl(var(--color-soft-periwinkle-700) / <alpha-value>)",
+          800: "hsl(var(--color-soft-periwinkle-800) / <alpha-value>)",
+          900: "hsl(var(--color-soft-periwinkle-900) / <alpha-value>)",
+          950: "hsl(var(--color-soft-periwinkle-950) / <alpha-value>)",
+        },
         marketing: {
           accent: "hsl(var(--marketing-accent) / <alpha-value>)",
           "accent-bright":

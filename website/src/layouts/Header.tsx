@@ -129,7 +129,7 @@ export function Header() {
                       variant: "primary",
                       size: "default",
                     }),
-                    "dark:border dark:border-zinc-700 dark:bg-transparent dark:text-yellow-400 dark:hover:bg-zinc-800",
+                    "dark:border dark:border-zinc-700 dark:bg-transparent dark:text-periwinkle-400 dark:hover:bg-zinc-800",
                     "mt-2 w-fit self-end",
                   )}
                   onClick={() => setMenuOpen(false)}

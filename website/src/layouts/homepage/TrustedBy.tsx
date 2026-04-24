@@ -36,7 +36,7 @@ export function TrustedBy() {
       className="mx-auto w-full min-w-0 max-w-8xl px-4"
       aria-labelledby="trusted-by-heading"
     >
-      <div className="pt-12 pb-10 md:pt-16 md:pb-12">
+      <div className="border-t border-border pt-12 pb-10 md:pt-16 md:pb-12">
         <h2
           id="trusted-by-heading"
           className="text-center font-heading text-lg font-medium leading-snug text-balance text-foreground sm:text-xl"

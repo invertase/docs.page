@@ -30,7 +30,7 @@ type Props = {
 /**
  * Light: no extra wash — the page is already `bg-background` + `.homepage-spot-grid`.
  * A tinted fill here stacked with the inner grid (and we previously doubled the wash on the
- * inner wrapper) read as a muddy “inner yellow”. Dark: solid panel like platform cards.
+ * inner wrapper) read as a muddy “inner wash”. Dark: solid panel like platform cards.
  */
 export function Card(props: Props) {
   return (

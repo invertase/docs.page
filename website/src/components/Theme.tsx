@@ -17,7 +17,7 @@ export function ThemeScripts() {
   const key = getThemeKey(context);
   const theme = context.bundle.config.theme;
 
-  const fallback = "#E69135";
+  const fallback = "#5368BD";
 
   const getColor = (color: string, fallback?: string) => {
     try {
