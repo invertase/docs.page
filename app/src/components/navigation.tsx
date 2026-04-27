@@ -1,4 +1,3 @@
-import { RiArrowRightSLine, RiExternalLinkLine } from "@remixicon/react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -23,51 +22,19 @@ import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useDocTabs } from "@/hooks/use-doc-tabs";
 import { isExternalLink } from "@/lib/docs-assets";
 import {
-  isDocHrefActive,
-  resolveActiveTabId,
-} from "@/lib/docs-routing";
-import type { SidebarGroup as SidebarConfigGroup } from "@/server/config/models/sidebar";
+  docsContentTopPaddingClassName,
+  docsNavMaxHeightClassName,
+  docsStickyOffsetClassName,
+} from "@/lib/docs-layout";
+import { isDocHrefActive, resolveActiveTabId } from "@/lib/docs-routing";
+import { getSidebarGroups, subtreeHasActivePage } from "@/lib/docs-sidebar";
 import { cn } from "@/lib/utils";
+import type { SidebarGroup as SidebarConfigGroup } from "@/server/config/models/sidebar";
+import { RiArrowRightSLine, RiExternalLinkLine } from "@remixicon/react";
 import { Link } from "./doc-link";
-
-function getSidebarGroups(config: { sidebar: unknown }): SidebarConfigGroup[] {
-  const raw = config.sidebar;
-  if (Array.isArray(raw)) {
-    return raw as SidebarConfigGroup[];
-  }
-  if (raw && typeof raw === "object") {
-    const rec = raw as Record<string, SidebarConfigGroup[]>;
-    return rec.default ?? Object.values(rec)[0] ?? [];
-  }
-  return [];
-}
 
 function isPageLink(item: SidebarConfigGroup["pages"][number]): boolean {
   return "title" in item;
-}
-
-function subtreeHasActivePage(
-  route: ReturnType<typeof useDocPageContext>["route"],
-  pages: SidebarConfigGroup["pages"],
-  locales: string[],
-): boolean {
-  for (const p of pages) {
-    if (isPageLink(p)) {
-      const link = p as { title: string; href: string };
-      if (isDocHrefActive(route, link.href, locales)) {
-        return true;
-      }
-    } else {
-      const nested = p as SidebarConfigGroup;
-      if (nested.href && isDocHrefActive(route, nested.href, locales)) {
-        return true;
-      }
-      if (subtreeHasActivePage(route, nested.pages, locales)) {
-        return true;
-      }
-    }
-  }
-  return false;
 }
 
 function ExternalLinkBadge(props: { nested?: boolean }) {
@@ -99,7 +66,7 @@ function SidebarPageRow(props: {
           asChild
           isActive={props.isActive}
           size="md"
-          className={cn("text-muted-foreground", external && "pr-7")}
+          className={cn("text-muted-foreground/80", external && "pr-7")}
         >
           <Link href={props.href}>
             <span>{props.title}</span>
@@ -135,8 +102,7 @@ function SidebarNestedGroup(props: {
   const locales = bundle.config.locales;
   const hasActive = subtreeHasActivePage(route, props.node.pages, locales);
   const groupHrefActive =
-    props.node.href != null &&
-    isDocHrefActive(route, props.node.href, locales);
+    props.node.href != null && isDocHrefActive(route, props.node.href, locales);
 
   const isActive = hasActive || groupHrefActive;
 
@@ -145,7 +111,11 @@ function SidebarNestedGroup(props: {
       <Collapsible defaultOpen={isActive}>
         <SidebarMenuItem className="pb-1">
           <CollapsibleTrigger asChild>
-            <SidebarMenuButton tooltip={label} isActive={isActive}>
+            <SidebarMenuButton
+              tooltip={label}
+              isActive={isActive}
+              className="!py-0"
+            >
               <span className="truncate">{label}</span>
               <RiArrowRightSLine className="ml-auto size-4 shrink-0 transition-transform duration-200 [[data-state=open]>&]:rotate-90" />
             </SidebarMenuButton>
@@ -167,7 +137,10 @@ function SidebarNestedGroup(props: {
     <Collapsible defaultOpen={isActive}>
       <SidebarMenuSubItem className="pb-1">
         <CollapsibleTrigger asChild>
-          <SidebarMenuSubButton isActive={isActive} className="text-muted-foreground">
+          <SidebarMenuSubButton
+            isActive={isActive}
+            className="text-muted-foreground/80"
+          >
             <span className="truncate">{label}</span>
             <RiArrowRightSLine className="ml-auto size-4 shrink-0 transition-transform duration-200 [[data-state=open]>&]:rotate-90" />
           </SidebarMenuSubButton>
@@ -202,7 +175,10 @@ function SidebarPagesList(props: {
           const active = isDocHrefActive(route, link.href, locales);
           if (props.depth > 0) {
             return (
-              <SidebarMenuSubItem key={key} className="pb-1 text-muted-foreground">
+              <SidebarMenuSubItem
+                key={key}
+                className="pb-1 text-muted-foreground/80"
+              >
                 <SidebarPageRow
                   title={link.title}
                   href={link.href}
@@ -213,7 +189,10 @@ function SidebarPagesList(props: {
             );
           }
           return (
-            <SidebarMenuItem key={key} className="pb-1 text-muted-foreground">
+            <SidebarMenuItem
+              key={key}
+              className="pb-1 text-muted-foreground/80"
+            >
               <SidebarPageRow
                 title={link.title}
                 href={link.href}
@@ -253,37 +232,35 @@ export function Navigation() {
   return (
     <Sidebar
       variant="sidebar"
+      collapsible="none"
       className={cn(
-        "sticky bottom-auto max-h-none will-change-transform border-none",
-        hasTabs
-          ? "top-[calc(5.5rem+1px)] h-[calc(100svh-5.5rem-1px)]"
-          : "top-[calc(3.5rem+1px)] h-[calc(100svh-3.5rem-1px)]",
+        "sticky z-20 self-start max-h-none border-none",
+        docsStickyOffsetClassName(hasTabs),
+        docsNavMaxHeightClassName(hasTabs),
       )}
     >
       <div className="relative flex min-h-0 flex-1 flex-col">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 z-10 h-12 bg-linear-to-b from-background to-transparent"
-        />
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-12 bg-linear-to-t from-background to-transparent"
-        />
-        <SidebarContent className="relative flex-1 bg-background py-5 pl-2">
+        <SidebarContent className="relative flex-1 bg-background pb-5 pl-2">
           {groups.map((group, gi) => (
             <SidebarGroup
               key={`${group.group ?? "group"}-${gi}`}
-              className="group-data-[collapsible=icon]:hidden"
+              className={cn(
+                "group-data-[collapsible=icon]:hidden",
+                gi === 0 && docsContentTopPaddingClassName,
+              )}
             >
               {group.group ? (
                 <SidebarGroupLabel
-                  className={cn(!group.pages?.length && "sr-only")}
+                  className={cn(
+                    "font-light",
+                    !group.pages?.length && "sr-only",
+                  )}
                 >
                   {group.group}
                 </SidebarGroupLabel>
               ) : null}
-              <SidebarGroupContent>
-                <SidebarMenu className="text-muted-foreground">
+              <SidebarGroupContent className={group.group ? "mt-2" : undefined}>
+                <SidebarMenu className="text-muted-foreground/80">
                   <SidebarPagesList pages={group.pages} depth={0} />
                 </SidebarMenu>
               </SidebarGroupContent>

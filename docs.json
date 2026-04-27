@@ -38,7 +38,7 @@
   ],
   "sidebar": [
     {
-      "group": "Getting Started",
+      "group": "get started",
       "tab": "root",
       "pages": [
         { "title": "Overview", "href": "/", "icon": "book" },

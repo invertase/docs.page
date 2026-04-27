@@ -1,23 +1,26 @@
-import { code } from "@streamdown/code";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { createDocsPageRehypePlugins } from "@/lib/markdown/plugins/docs-page-components";
-import {
-  Streamdown,
-  defaultRemarkPlugins,
-  type ExtraProps,
-} from "streamdown";
+import { cn } from "@/lib/utils";
+import { RiCheckLine, RiFileCopyLine } from "@remixicon/react";
+import { code } from "@streamdown/code";
 import {
   Children,
   type ComponentProps,
-  isValidElement,
   type ReactNode,
+  isValidElement,
   useCallback,
   useMemo,
   useRef,
 } from "react";
+import {
+  type ExtraProps,
+  type IconMap,
+  Streamdown,
+  defaultRemarkPlugins,
+} from "streamdown";
+import { Error, Info, Success, Warning } from "./mdx/callout";
 import { Heading, type HeadingTag } from "./mdx/heading";
 import { Tabs, TabsProvider } from "./mdx/tabs";
-import { Info, Success, Warning, Error } from "./mdx/callout";
 
 const COMPONENTS = {
   div: ["data*"],
@@ -42,6 +45,33 @@ type HastElement = NonNullable<ExtraProps["node"]>;
 type HastChild = HastElement["children"][number];
 
 const CUSTOM_BLOCK_TAGS = new Set(Object.keys(COMPONENTS));
+
+/**
+ * Match “Copy page” in `action-menu` (Remix) instead of Streamdown’s default Lucide-style
+ * code-block copy / copied icons.
+ */
+const streamdownControlIcons: Partial<IconMap> = {
+  CopyIcon: (props) => {
+    const { className, size, children: _c, ...rest } = props;
+    return (
+      <RiFileCopyLine
+        {...rest}
+        className={cn("shrink-0", className)}
+        size={size}
+      />
+    );
+  },
+  CheckIcon: (props) => {
+    const { className, size, children: _c, ...rest } = props;
+    return (
+      <RiCheckLine
+        {...rest}
+        className={cn("shrink-0", className)}
+        size={size}
+      />
+    );
+  },
+};
 
 export function Prose() {
   const { bundle } = useDocPageContext();
@@ -89,13 +119,14 @@ function MarkdownBlock({ markdown, takeNextHeadingId }: MarkdownBlockProps) {
       remarkPlugins={remarkPlugins}
       rehypePlugins={rehypePlugins}
       components={streamdownComponents}
+      icons={streamdownControlIcons}
       linkSafety={{ enabled: false }}
       controls={{
         code: {
           download: false,
         },
       }}
-      className="space-y-4 text-secondary-foreground [&>p]:leading-7 [&>p]:opacity-90"
+      className="docs-md space-y-4 text-sm font-light text-secondary-foreground [&>p]:leading-7 [&>p]:text-foreground/80 [&>ul]:text-foreground/80 [&>ol]:text-foreground/80 [&>blockquote]:text-foreground/80"
     >
       {markdown}
     </Streamdown>

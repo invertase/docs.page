@@ -209,7 +209,7 @@ export function Tabs(props: TabProps) {
         <TabsContent
           key={item.props.value}
           value={item.props.value}
-          className="py-5 *:first:mt-0 *:last:mb-0"
+          className="pt-5 pb-0 *:first:mt-0 *:last:mb-0"
         >
           {item}
         </TabsContent>

@@ -16,7 +16,10 @@ export default function App({ Component, pageProps }: AppProps) {
           <SidebarProvider className="w-full">
             <div
               className={cn(
-                "flex min-h-svh w-full flex-col overflow-x-clip font-sans",
+                // Avoid overflow-x-clip: it can create a scrollport that breaks
+                // position: sticky for the docs left nav. Use w-full + min-w-0 on
+                // flex children where needed to prevent rare horizontal layout blowout.
+                "flex min-h-svh w-full min-w-0 max-w-full flex-col font-sans",
                 fontVariableClasses,
               )}
             >
