@@ -1,7 +1,4 @@
-import { type FormEvent, Fragment, useMemo, useState } from "react";
-import { DefaultChatTransport } from "ai";
 import { useChat } from "@ai-sdk/react";
-import Cookies from "js-cookie";
 import {
   RiArrowRightSLine,
   RiArrowUpLine,
@@ -9,14 +6,17 @@ import {
   RiSparkling2Line,
   RiToolsLine,
 } from "@remixicon/react";
+import { DefaultChatTransport } from "ai";
+import Cookies from "js-cookie";
+import { type FormEvent, Fragment, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
+import { Textarea } from "@/components/ui/textarea";
+import { useDocPageContext } from "@/hooks/use-doc-page-context";
 
 const AGENT_CSRF_COOKIE_NAME = "agent_session_csrf";
 const AGENT_SESSION_HEADER_NAME = "X-Agent-Session";
@@ -210,9 +210,15 @@ function BashCalls({
     >
       <div className="flex items-center justify-between gap-4">
         <CollapsibleTrigger asChild>
-          <Button variant="link" size="xs" className="-ml-2 hover:no-underline text-muted-foreground">
+          <Button
+            variant="link"
+            size="xs"
+            className="-ml-2 hover:no-underline text-muted-foreground"
+          >
             <RiToolsLine />
-            <span>{expanded ? "Hide" : "Show"} {calls.length} tool calls</span>
+            <span>
+              {expanded ? "Hide" : "Show"} {calls.length} tool calls
+            </span>
           </Button>
         </CollapsibleTrigger>
       </div>

@@ -1,9 +1,8 @@
 import { Webhooks } from "@octokit/webhooks";
 import type { Request, Response } from "express";
-import { badRequest, ok } from "../res";
-
 import { onInstallation } from "../events/installation";
 import { onPullRequestOpened } from "../events/pull_request.opened";
+import { badRequest, ok } from "../res";
 // import { onPullRequestSynchronize } from "../events/pull_request.synchronize";
 
 export default async function githubWebhook(

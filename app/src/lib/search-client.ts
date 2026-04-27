@@ -1,6 +1,6 @@
 import type {
-  SearchScope,
   SearchRow,
+  SearchScope,
   SearchWorkerInMessage,
   SearchWorkerOutMessage,
 } from "@/workers/search.worker";

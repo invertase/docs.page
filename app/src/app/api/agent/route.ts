@@ -1,13 +1,13 @@
-import { z } from "zod";
+import { createAgentUIStreamResponse, stepCountIs, ToolLoopAgent } from "ai";
+import { createBashTool } from "bash-tool";
+import type { InitialFiles } from "just-bash";
+import { Bash } from "just-bash";
 import {
   RateLimiterMemory,
   RateLimiterRedis,
   RateLimiterRes,
 } from "rate-limiter-flexible";
-import { createBashTool } from "bash-tool";
-import { Bash } from "just-bash";
-import { ToolLoopAgent, createAgentUIStreamResponse, stepCountIs } from "ai";
-import { getAgentStore } from "@/server/agent/storage";
+import { z } from "zod";
 import { decryptAgentPayload } from "@/server/agent/encryption";
 import { getProvider } from "@/server/agent/providers";
 import {
@@ -17,10 +17,10 @@ import {
   verifyAgentCsrfToken,
   verifyAgentSession,
 } from "@/server/agent/session";
-import { getRedisClient } from "@/server/redis";
-import type { InitialFiles } from "just-bash";
+import { getAgentStore } from "@/server/agent/storage";
 import { getRawDocSource } from "@/server/docs/raw";
 import { listGitHubDocFiles } from "@/server/github/tree";
+import { getRedisClient } from "@/server/redis";
 
 const AgentRequestSchema = z.object({
   messages: z.array(z.any()),

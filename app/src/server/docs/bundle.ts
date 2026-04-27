@@ -15,8 +15,8 @@ type ParsedDocBundleArgs = z.infer<typeof QuerySchema>;
 
 export type GetDocBundleArgs = z.input<typeof QuerySchema>;
 export type { BundlerOutput } from "./bundler";
-export { BundlerError } from "./bundler/error";
 export { ERROR_CODES } from "./bundler";
+export { BundlerError } from "./bundler/error";
 
 async function buildDocBundleInternal(
   input: ParsedDocBundleArgs,

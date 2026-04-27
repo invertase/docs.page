@@ -1,22 +1,22 @@
-import { zodToJsonSchema } from "zod-to-json-schema";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp";
 import * as z from "zod/v3";
+import { zodToJsonSchema } from "zod-to-json-schema";
 import type { ResolvedDocsRoute } from "@/lib/docs-routing";
 import { defaultConfig, parseConfig } from "@/server/config";
 import { ConfigSchema } from "@/server/config/schema";
 import { BundlerError } from "@/server/docs/bundle";
+import { getRawDocSource } from "@/server/docs/raw";
 import {
   getGitHubContents,
   getGitHubFileSource,
   resolveGitHubSource,
 } from "@/server/github/contents";
 import {
+  type GitHubSkillFile,
   listGitHubDocFiles,
   listGitHubSkillFiles,
-  type GitHubSkillFile,
 } from "@/server/github/tree";
-import { getRawDocSource } from "@/server/docs/raw";
 
 const MCP_SERVER_VERSION = "1.0.0";
 const CONFIG_SCHEMA_URI = "docs-page://schema/config";
@@ -30,7 +30,9 @@ type McpServerMetadata = {
   description: string;
 };
 
-async function getMcpServerMetadata(route: ResolvedDocsRoute): Promise<McpServerMetadata> {
+async function getMcpServerMetadata(
+  route: ResolvedDocsRoute,
+): Promise<McpServerMetadata> {
   const source = await resolveGitHubSource({
     owner: route.owner,
     repository: route.repository,
@@ -57,8 +59,9 @@ async function getMcpServerMetadata(route: ResolvedDocsRoute): Promise<McpServer
   }
 
   const name = config.name?.trim() || `${source.owner}/${source.repository}`;
-  const description = config.description?.trim()
-    || `Documentation for ${source.owner}/${source.repository}${source.ref ? ` at ref ${source.ref}` : ""}.`;
+  const description =
+    config.description?.trim() ||
+    `Documentation for ${source.owner}/${source.repository}${source.ref ? ` at ref ${source.ref}` : ""}.`;
 
   return {
     name,
@@ -66,7 +69,9 @@ async function getMcpServerMetadata(route: ResolvedDocsRoute): Promise<McpServer
   };
 }
 
-async function getMcpSkillResources(route: ResolvedDocsRoute): Promise<GitHubSkillFile[]> {
+async function getMcpSkillResources(
+  route: ResolvedDocsRoute,
+): Promise<GitHubSkillFile[]> {
   const skills = await listGitHubSkillFiles({
     owner: route.owner,
     repository: route.repository,
@@ -82,14 +87,14 @@ export async function createMcpDescriptor(route: ResolvedDocsRoute) {
     getMcpSkillResources(route),
   ]);
   const readDocSchema = zodToJsonSchema(
-    ReadDocToolSchema.describe("Read a docs.page markdown or MDX source file.") as unknown as Parameters<
-      typeof zodToJsonSchema
-    >[0],
+    ReadDocToolSchema.describe(
+      "Read a docs.page markdown or MDX source file.",
+    ) as unknown as Parameters<typeof zodToJsonSchema>[0],
   );
   const listDocFilesSchema = zodToJsonSchema(
-    (ListDocFilesToolSchema.describe(
+    ListDocFilesToolSchema.describe(
       "List docs.page `.mdx` pages available in the current repository context.",
-    ) as unknown as Parameters<typeof zodToJsonSchema>[0]),
+    ) as unknown as Parameters<typeof zodToJsonSchema>[0],
   );
 
   return {
@@ -109,12 +114,14 @@ export async function createMcpDescriptor(route: ResolvedDocsRoute) {
       tools: {
         read_doc_page: {
           name: "read_doc_page",
-          description: "Read the raw markdown or MDX source for a docs page in the current repository context.",
+          description:
+            "Read the raw markdown or MDX source for a docs page in the current repository context.",
           inputSchema: readDocSchema,
         },
         list_doc_files: {
           name: "list_doc_files",
-          description: "List the available `.mdx` docs pages in the current repository context.",
+          description:
+            "List the available `.mdx` docs pages in the current repository context.",
           inputSchema: listDocFilesSchema,
         },
       },
@@ -168,7 +175,9 @@ async function createMcpServer(route: ResolvedDocsRoute) {
             mimeType: "application/json",
             text: JSON.stringify(
               zodToJsonSchema(
-                ConfigSchema as unknown as Parameters<typeof zodToJsonSchema>[0],
+                ConfigSchema as unknown as Parameters<
+                  typeof zodToJsonSchema
+                >[0],
               ),
               null,
               2,
@@ -222,12 +231,13 @@ async function createMcpServer(route: ResolvedDocsRoute) {
 
   server.registerTool(
     "read_doc_page",
-    ({
-      description: "Read the raw markdown or MDX source for a docs page in the current repository context.",
+    {
+      description:
+        "Read the raw markdown or MDX source for a docs page in the current repository context.",
       inputSchema: {
         path: z.string().min(1),
       },
-    } as unknown) as never,
+    } as unknown as never,
     (async (args: unknown) => {
       const { path } = ReadDocToolSchema.parse(args);
 
@@ -267,10 +277,11 @@ async function createMcpServer(route: ResolvedDocsRoute) {
 
   server.registerTool(
     "list_doc_files",
-    ({
-      description: "List the available `.mdx` docs pages in the current repository context.",
+    {
+      description:
+        "List the available `.mdx` docs pages in the current repository context.",
       inputSchema: {},
-    } as unknown) as never,
+    } as unknown as never,
     (async (args: unknown) => {
       ListDocFilesToolSchema.parse(args ?? {});
 
@@ -327,7 +338,10 @@ function jsonRpcError(status: number, code: number, message: string) {
   );
 }
 
-export async function handleMcpPost(request: Request, route: ResolvedDocsRoute) {
+export async function handleMcpPost(
+  request: Request,
+  route: ResolvedDocsRoute,
+) {
   const body = await request.json().catch(() => undefined);
   const server = await createMcpServer(route);
   const transport = createTransport();

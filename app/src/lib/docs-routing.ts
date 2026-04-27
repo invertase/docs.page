@@ -1,6 +1,10 @@
 import { isExternalLink } from "@/lib/docs-assets";
 
-export type DocsRequestMode = "canonical" | "vanity" | "custom-domain" | "preview";
+export type DocsRequestMode =
+  | "canonical"
+  | "vanity"
+  | "custom-domain"
+  | "preview";
 const RAW_DOC_SUFFIX_REGEX = /\.(md|mdx)$/i;
 const ROOT_RAW_DOC_FALLBACK = "index.md";
 
@@ -138,7 +142,10 @@ export function normalizeDocPathSegment(path: string): string {
 }
 
 export function getRouteLocale(routeDocPath: string, locales: string[] = []) {
-  const locale = normalizeDocPathSegment(routeDocPath).split("/").filter(Boolean).at(0);
+  const locale = normalizeDocPathSegment(routeDocPath)
+    .split("/")
+    .filter(Boolean)
+    .at(0);
   return locale && locales.includes(locale) ? locale : undefined;
 }
 
@@ -206,8 +213,10 @@ export function docPathMatchesSidebarHref(
   }
 
   return (
-    normalizeDocPathSegment(routeDocPath)
-    === normalizeDocPathSegment(resolveLocalizedDocPath(routeDocPath, sidebarHref, locales))
+    normalizeDocPathSegment(routeDocPath) ===
+    normalizeDocPathSegment(
+      resolveLocalizedDocPath(routeDocPath, sidebarHref, locales),
+    )
   );
 }
 
@@ -242,7 +251,8 @@ export function resolveActiveTabId(
     );
     const matches =
       current === tabPath ||
-      (tabPath !== "" && (current === tabPath || current.startsWith(`${tabPath}/`)));
+      (tabPath !== "" &&
+        (current === tabPath || current.startsWith(`${tabPath}/`)));
     if (matches && (!best || tabPath.length >= best.len)) {
       best = { id: tab.id, len: tabPath.length };
     }
@@ -310,7 +320,11 @@ export function getVanityOwnerFromHost(hostname: string): string | null {
 
   const subdomain = hostname.slice(0, -".docs.page".length);
 
-  if (!subdomain || subdomain.includes(".") || RESERVED_VANITY_SUBDOMAINS.has(subdomain)) {
+  if (
+    !subdomain ||
+    subdomain.includes(".") ||
+    RESERVED_VANITY_SUBDOMAINS.has(subdomain)
+  ) {
     return null;
   }
 

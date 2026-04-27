@@ -6,7 +6,11 @@ function getNestedValue(
   fallback: string,
 ): string {
   const value = path.split(".").reduce<unknown>((current, key) => {
-    if (current && typeof current === "object" && key in (current as Record<string, unknown>)) {
+    if (
+      current &&
+      typeof current === "object" &&
+      key in (current as Record<string, unknown>)
+    ) {
       return (current as Record<string, unknown>)[key];
     }
 
@@ -34,7 +38,10 @@ export function replaceMoustacheVariables(
       continue;
     }
 
-    output = output.replace(match[0], getNestedValue(variables, matchedPath, match[0]));
+    output = output.replace(
+      match[0],
+      getNestedValue(variables, matchedPath, match[0]),
+    );
   }
 
   return output;

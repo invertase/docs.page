@@ -1,23 +1,23 @@
-import { useDocPageContext } from "@/hooks/use-doc-page-context";
-import { createDocsPageRehypePlugins } from "@/lib/markdown/plugins/docs-page-components";
-import { cn } from "@/lib/utils";
 import { RiCheckLine, RiFileCopyLine } from "@remixicon/react";
 import { code } from "@streamdown/code";
 import {
   Children,
   type ComponentProps,
-  type ReactNode,
   isValidElement,
+  type ReactNode,
   useCallback,
   useMemo,
   useRef,
 } from "react";
 import {
+  defaultRemarkPlugins,
   type ExtraProps,
   type IconMap,
   Streamdown,
-  defaultRemarkPlugins,
 } from "streamdown";
+import { useDocPageContext } from "@/hooks/use-doc-page-context";
+import { createDocsPageRehypePlugins } from "@/lib/markdown/plugins/docs-page-components";
+import { cn } from "@/lib/utils";
 import { Error, Info, Success, Warning } from "./mdx/callout";
 import { Heading, type HeadingTag } from "./mdx/heading";
 import { Tabs, TabsProvider } from "./mdx/tabs";
@@ -344,8 +344,8 @@ function hasUnknownComponentMarker(
   // HAST stores data-* attributes as camelCase properties, while the React
   // renderer receives the same attributes with their dashed HTML names.
   return props
-    ? Object.prototype.hasOwnProperty.call(props, "data-unknown-component") ||
-        Object.prototype.hasOwnProperty.call(props, "dataUnknownComponent")
+    ? Object.hasOwn(props, "data-unknown-component") ||
+        Object.hasOwn(props, "dataUnknownComponent")
     : false;
 }
 

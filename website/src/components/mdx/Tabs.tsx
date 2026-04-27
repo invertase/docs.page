@@ -71,7 +71,7 @@ export function Tabs(props: TabsProps) {
   // Otherwise, get the values from the children.
   const values = props.values
     ? props.values
-    : Children.map(props.children, (child) => {
+    : (Children.map(props.children, (child) => {
         if (isValidElement(child) && child.type === TabItem) {
           if (child.props.label && child.props.value) {
             return {
@@ -82,7 +82,7 @@ export function Tabs(props: TabsProps) {
         }
 
         return null;
-      })?.filter(Boolean) ?? [];
+      })?.filter(Boolean) ?? []);
 
   const [selected, setSelected] = useState(
     props.defaultValue || values[0].value,

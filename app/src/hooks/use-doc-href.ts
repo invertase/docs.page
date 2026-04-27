@@ -1,12 +1,16 @@
-import { useDocPageContext } from "@/hooks/use-doc-page-context";
-import { resolveInternalDocHref } from "@/lib/docs-routing";
-import { isExternalLink } from "@/lib/docs-assets";
 import { useRouter } from "next/router";
+import { useDocPageContext } from "@/hooks/use-doc-page-context";
+import { isExternalLink } from "@/lib/docs-assets";
+import { resolveInternalDocHref } from "@/lib/docs-routing";
 
 export function useDocHref(href: string) {
   const { bundle, route } = useDocPageContext();
   const router = useRouter();
-  const resolvedHref = resolveInternalDocHref(route, href, bundle.config.locales);
+  const resolvedHref = resolveInternalDocHref(
+    route,
+    href,
+    bundle.config.locales,
+  );
 
   if (route.requestMode !== "preview" || isExternalLink(href)) {
     return resolvedHref;

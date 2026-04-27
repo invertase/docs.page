@@ -1,5 +1,5 @@
 import { Accordion, AccordionGroup } from "./accordion";
-import { Info, Success, Warning, Error } from "./callout";
+import { Error, Info, Success, Warning } from "./callout";
 import { Card, CardGroup } from "./card";
 import { CodeGroup } from "./code-group";
 import { Heading } from "./heading";

@@ -46,12 +46,16 @@ export function registerInitCommand(program: Command) {
       const docsDirectoryExists = fs.existsSync(documentationPath);
 
       if (fs.existsSync(configurationFilePath) && !confirmOverwrite) {
-        console.log(chalk.red("Configuration file 'docs.json' already exists."));
+        console.log(
+          chalk.red("Configuration file 'docs.json' already exists."),
+        );
         process.exit(1);
       }
 
       if (docsDirectoryExists && !confirmOverwrite) {
-        console.log(chalk.red("Documentation directory 'docs/' already exists."));
+        console.log(
+          chalk.red("Documentation directory 'docs/' already exists."),
+        );
         process.exit(1);
       }
 

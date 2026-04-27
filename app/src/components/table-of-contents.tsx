@@ -1,3 +1,6 @@
+import { RiListIndefinite } from "@remixicon/react";
+import type { MouseEvent } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -10,9 +13,6 @@ import {
   docsStickyOffsetClassName,
 } from "@/lib/docs-layout";
 import { cn } from "@/lib/utils";
-import { RiListIndefinite } from "@remixicon/react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { MouseEvent } from "react";
 
 /**
  * Anchor offset fallback when the header is not in the DOM. Prefer the measured

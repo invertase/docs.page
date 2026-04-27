@@ -5,7 +5,10 @@ export async function GET() {
   const client = await getRedisClient();
 
   if (!client) {
-    return Response.json({ error: "Redis connection failed." }, { status: 500 });
+    return Response.json(
+      { error: "Redis connection failed." },
+      { status: 500 },
+    );
   }
 
   await client.ping();

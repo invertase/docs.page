@@ -7,6 +7,6 @@ export function useAgentPanel() {
   if (!context) {
     throw new Error("useAgentPanel must be used within an AgentPanelProvider");
   }
-  
+
   return context;
 }

@@ -1,13 +1,11 @@
 import express, { Router, text } from "express";
 import morgan from "morgan";
-
+import { ENV } from "./env";
 import { notFound } from "./res";
 import bundle from "./routes/bundle";
 import preview from "./routes/preview";
 import schema from "./routes/schema";
 import githubWebhook from "./routes/webhooks.github";
-
-import { ENV } from "./env";
 
 const PORT = ENV.PORT;
 const app = express();

@@ -20,7 +20,10 @@ export const ConfigSchema = z
     name: z.string().min(1).optional().catch(undefined),
     description: z.string().min(1).optional().catch(undefined),
     agent: z.string().min(1).optional().catch(undefined),
-    socialPreview: z.union([z.string().min(1), z.literal(false)]).optional().catch(undefined),
+    socialPreview: z
+      .union([z.string().min(1), z.literal(false)])
+      .optional()
+      .catch(undefined),
     favicon,
     logo,
     theme,

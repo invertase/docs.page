@@ -92,12 +92,17 @@ function parseArgs(argv: string[]): BenchArgs {
     repository: out.repository,
     path: out.path ?? "index",
     ref: out.ref,
-    runs: Number.isFinite(out.runs) && (out.runs ?? 0) > 0 ? out.runs! : DEFAULT_RUNS,
+    runs:
+      Number.isFinite(out.runs) && (out.runs ?? 0) > 0
+        ? out.runs!
+        : DEFAULT_RUNS,
   };
 }
 
 function getGitHubToken(): string {
-  const token = process.env.GITHUB_PAT?.split(",").map((value) => value.trim()).find(Boolean);
+  const token = process.env.GITHUB_PAT?.split(",")
+    .map((value) => value.trim())
+    .find(Boolean);
 
   if (!token) {
     throw new Error(
@@ -144,7 +149,10 @@ async function getRepositoryMetadata(args: {
     default_branch: string;
     fork: boolean;
     private: boolean;
-  }>(`https://api.github.com/repos/${args.owner}/${args.repository}`, args.token);
+  }>(
+    `https://api.github.com/repos/${args.owner}/${args.repository}`,
+    args.token,
+  );
 
   return {
     stars: response.stargazers_count,
@@ -219,26 +227,26 @@ async function benchCurrentFlow(args: {
   const resolvedSha = SHA_PATTERN.test(resolvedRef)
     ? resolvedRef
     : await (async () => {
-      const sha = await resolveRefToSha({
-        owner: args.owner,
-        repository: args.repository,
-        ref: resolvedRef,
-        token: args.token,
-      });
-      requestCount++;
-      return sha;
-    })();
+        const sha = await resolveRefToSha({
+          owner: args.owner,
+          repository: args.repository,
+          ref: resolvedRef,
+          token: args.token,
+        });
+        requestCount++;
+        return sha;
+      })();
 
   const repoMetadataPromise = repositoryMetadata
     ? Promise.resolve(repositoryMetadata)
     : (() => {
-      requestCount++;
-      return getRepositoryMetadata({
-        owner: args.owner,
-        repository: args.repository,
-        token: args.token,
-      });
-    })();
+        requestCount++;
+        return getRepositoryMetadata({
+          owner: args.owner,
+          repository: args.repository,
+          token: args.token,
+        });
+      })();
 
   const [, configJson, configYaml, mdx, mdxIndex] = await Promise.all([
     repoMetadataPromise,
@@ -284,10 +292,10 @@ async function benchCurrentFlow(args: {
     durationMs: nowMs() - started,
     requestCount,
     bytes:
-      utf8ByteLength(configJson)
-      + utf8ByteLength(configYaml)
-      + utf8ByteLength(mdx)
-      + utf8ByteLength(mdxIndex),
+      utf8ByteLength(configJson) +
+      utf8ByteLength(configYaml) +
+      utf8ByteLength(mdx) +
+      utf8ByteLength(mdxIndex),
     resolvedRef,
     resolvedSha,
     mdPath,
@@ -384,17 +392,19 @@ async function benchGraphQLFlow(args: {
 
   const repository = body.data?.repository;
   const md = repository?.mdxIndex?.text || repository?.mdx?.text;
-  const mdPath = repository?.mdxIndex?.text ? `${indexPath}.mdx` : `${absolutePath}.mdx`;
+  const mdPath = repository?.mdxIndex?.text
+    ? `${indexPath}.mdx`
+    : `${absolutePath}.mdx`;
 
   return {
     durationMs: nowMs() - started,
     requestCount: 1,
     gqlCost: body.data?.rateLimit?.cost ?? 0,
     bytes:
-      utf8ByteLength(repository?.configJson?.text)
-      + utf8ByteLength(repository?.configYaml?.text)
-      + utf8ByteLength(repository?.mdx?.text)
-      + utf8ByteLength(repository?.mdxIndex?.text),
+      utf8ByteLength(repository?.configJson?.text) +
+      utf8ByteLength(repository?.configYaml?.text) +
+      utf8ByteLength(repository?.mdx?.text) +
+      utf8ByteLength(repository?.mdxIndex?.text),
     mdPath,
     hasMd: Boolean(md),
   };
@@ -456,7 +466,9 @@ async function run() {
     token,
   });
 
-  console.log(`\nBenchmarking getGitHubContents() for ${args.owner}/${args.repository}`);
+  console.log(
+    `\nBenchmarking getGitHubContents() for ${args.owner}/${args.repository}`,
+  );
   console.log(`Path: ${args.path}`);
   console.log(`Runs per mode: ${args.runs}`);
   console.log(`Modes: ${modes.map((mode) => mode.label).join(", ")}\n`);
@@ -518,18 +530,25 @@ async function run() {
       }
     }
 
-    const currentAvg = average(currentResults.map((result) => result.durationMs));
+    const currentAvg = average(
+      currentResults.map((result) => result.durationMs),
+    );
     const gqlAvg = average(gqlResults.map((result) => result.durationMs));
     const winner = currentAvg < gqlAvg ? "current" : "graphql";
-    const deltaPct = Math.abs(currentAvg - gqlAvg) / Math.max(currentAvg, gqlAvg) * 100;
+    const deltaPct =
+      (Math.abs(currentAvg - gqlAvg) / Math.max(currentAvg, gqlAvg)) * 100;
 
     console.table([
       {
         mode: mode.label,
         strategy: "current",
         avgMs: currentAvg.toFixed(1),
-        avgRequests: average(currentResults.map((result) => result.requestCount)).toFixed(1),
-        avgBytes: average(currentResults.map((result) => result.bytes)).toFixed(1),
+        avgRequests: average(
+          currentResults.map((result) => result.requestCount),
+        ).toFixed(1),
+        avgBytes: average(currentResults.map((result) => result.bytes)).toFixed(
+          1,
+        ),
         hasMd: currentResults.every((result) => result.hasMd),
         mdPath: currentResults[0]?.mdPath ?? "",
       },
@@ -537,9 +556,13 @@ async function run() {
         mode: mode.label,
         strategy: "graphql",
         avgMs: gqlAvg.toFixed(1),
-        avgRequests: average(gqlResults.map((result) => result.requestCount)).toFixed(1),
+        avgRequests: average(
+          gqlResults.map((result) => result.requestCount),
+        ).toFixed(1),
         avgBytes: average(gqlResults.map((result) => result.bytes)).toFixed(1),
-        avgGqlCost: average(gqlResults.map((result) => result.gqlCost)).toFixed(1),
+        avgGqlCost: average(gqlResults.map((result) => result.gqlCost)).toFixed(
+          1,
+        ),
         hasMd: gqlResults.every((result) => result.hasMd),
         mdPath: gqlResults[0]?.mdPath ?? "",
       },

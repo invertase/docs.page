@@ -40,10 +40,10 @@ export function isExternalLink(href: string) {
 // Gets a custom domain for a given owner and repository.
 export async function getCustomDomain(
   owner: string,
-  repository: string
+  repository: string,
 ): Promise<string | null> {
   const response = await fetch(
-    `https://custom-domain.invertase.workers.dev/?owner=${owner}&repo=${repository}`
+    `https://custom-domain.invertase.workers.dev/?owner=${owner}&repo=${repository}`,
   );
 
   if (!response.ok) {
@@ -77,17 +77,17 @@ export function getBlobSrc(ctx: Context, path: string) {
 
   if (source.type === "branch") {
     return `https://raw.githubusercontent.com/${owner}/${repository}/${encodeURIComponent(
-      ref ?? baseBranch
+      ref ?? baseBranch,
     )}/docs${ensureLeadingSlash(path)}`;
   }
   if (source.type === "PR") {
     return `https://raw.githubusercontent.com/${owner}/${repository}/${encodeURIComponent(
-      ref ?? baseBranch
+      ref ?? baseBranch,
     )}/docs${ensureLeadingSlash(path)}`;
   }
 
   return `https://raw.githubusercontent.com/${owner}/${repository}/HEAD/docs${ensureLeadingSlash(
-    path
+    path,
   )}`;
 }
 
@@ -107,7 +107,7 @@ export function getLocale(ctx: Context) {
 export function getHrefIsActive(
   ctx: Context,
   currentPath: string,
-  path: string
+  path: string,
 ) {
   const href = getHref(ctx, path);
 
@@ -245,7 +245,7 @@ export function toBase64(str: string): string {
     /%([0-9A-F]{2})/g,
     (_, p1) => {
       return String.fromCharCode(Number.parseInt(p1, 16));
-    }
+    },
   );
 
   return typeof window !== "undefined"

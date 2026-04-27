@@ -6,10 +6,12 @@ export function getAgentPanelCookieName(owner: string, repository: string) {
   return `${AGENT_PANEL_COOKIE_PREFIX}_${toCookiePart(owner)}_${toCookiePart(repository)}`;
 }
 
-export function getAgentPanelCookiePath(route: Pick<
-  ResolvedDocsRoute,
-  "requestMode" | "owner" | "repository" | "ref"
->) {
+export function getAgentPanelCookiePath(
+  route: Pick<
+    ResolvedDocsRoute,
+    "requestMode" | "owner" | "repository" | "ref"
+  >,
+) {
   if (route.requestMode === "custom-domain") {
     return "/";
   }

@@ -156,7 +156,10 @@ function getPathSegments(pathname: string) {
   return pathname.split("/").filter(Boolean);
 }
 
-function shouldApplyDocsCache(request: NextRequest, vanityOwner: string | null) {
+function shouldApplyDocsCache(
+  request: NextRequest,
+  vanityOwner: string | null,
+) {
   if (!getDocsCacheHeaders(request.nextUrl.pathname)) {
     return false;
   }
@@ -214,7 +217,10 @@ function getDocsCacheHeaders(pathname: string): DocsCacheHeaders | null {
   return null;
 }
 
-function withDocsCache(response: NextResponse, headers: DocsCacheHeaders | null) {
+function withDocsCache(
+  response: NextResponse,
+  headers: DocsCacheHeaders | null,
+) {
   if (headers) {
     response.headers.set("Cache-Control", headers.cacheControl);
     response.headers.set("Surrogate-Control", headers.surrogateControl);
@@ -240,7 +246,10 @@ export function proxy(request: NextRequest) {
     return withDocsCache(NextResponse.next(), cacheHeaders);
   }
 
-  const firstSegment = request.nextUrl.pathname.split("/").filter(Boolean).at(0);
+  const firstSegment = request.nextUrl.pathname
+    .split("/")
+    .filter(Boolean)
+    .at(0);
 
   if (firstSegment === vanityOwner) {
     return withDocsCache(NextResponse.next(), cacheHeaders);

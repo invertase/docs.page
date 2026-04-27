@@ -1,20 +1,20 @@
+import Cookies from "js-cookie";
+import {
+  createContext,
+  type Dispatch,
+  type ReactNode,
+  type SetStateAction,
+  useCallback,
+  useLayoutEffect,
+  useMemo,
+  useState,
+} from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import {
   getAgentPanelCookieName,
   getAgentPanelCookiePath,
 } from "@/lib/agent-panel-state";
-import {
-  createContext,
-  type Dispatch,
-  type ReactNode,
-  useCallback,
-  useLayoutEffect,
-  useMemo,
-  type SetStateAction,
-  useState,
-} from "react";
-import Cookies from "js-cookie";
-import { useHotkeys } from "react-hotkeys-hook";
 
 type AgentPanelContextValue = {
   open: boolean;
@@ -22,19 +22,21 @@ type AgentPanelContextValue = {
   toggle: () => void;
 };
 
-export const AgentPanelContext = createContext<AgentPanelContextValue | null>(null);
+export const AgentPanelContext = createContext<AgentPanelContextValue | null>(
+  null,
+);
 
 export function AgentPanelProvider({ children }: { children: ReactNode }) {
   const { meta, bundle, route } = useDocPageContext();
-  const [open, setOpenState] = useState(() => meta.hasAgent && meta.initialAgentPanelOpen);
+  const [open, setOpenState] = useState(
+    () => meta.hasAgent && meta.initialAgentPanelOpen,
+  );
   const cookieName = useMemo(
-    () => getAgentPanelCookieName(bundle.source.owner, bundle.source.repository),
+    () =>
+      getAgentPanelCookieName(bundle.source.owner, bundle.source.repository),
     [bundle.source.owner, bundle.source.repository],
   );
-  const cookiePath = useMemo(
-    () => getAgentPanelCookiePath(route),
-    [route],
-  );
+  const cookiePath = useMemo(() => getAgentPanelCookiePath(route), [route]);
 
   const setOpen = useCallback<Dispatch<SetStateAction<boolean>>>(
     (value) => {

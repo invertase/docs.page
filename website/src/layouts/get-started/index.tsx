@@ -172,7 +172,7 @@ function PreviewDocs() {
 function PublishChanges() {
   const [input, setInput] = useState("");
 
-  const match = input.match(/^https:\/\/github\.com\/([^\/]+)\/([^\/]+)$/);
+  const match = input.match(/^https:\/\/github\.com\/([^/]+)\/([^/]+)$/);
 
   const isInvalid = !!input && !match;
 

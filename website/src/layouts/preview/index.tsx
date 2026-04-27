@@ -1,5 +1,15 @@
 import { QueryClientProvider } from "@tanstack/react-query";
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { Button } from "~/components/Button";
+import { PageContext } from "~/context";
+import { Footer } from "~/layouts/Footer";
+import { Header } from "~/layouts/Header";
+import { cn, ensureLeadingSlash } from "~/utils";
+import { DocumentationLayout } from "../Documentation";
+import { Site } from "../Site";
+import { Toolbar } from "./Toolbar";
 import { useTrigger } from "./trigger";
 import {
   ConfigurationFileNotFoundError,
@@ -12,17 +22,6 @@ import {
   useRestart,
   useSelectDirectory,
 } from "./utils";
-
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { Button } from "~/components/Button";
-import { PageContext } from "~/context";
-import { Footer } from "~/layouts/Footer";
-import { Header } from "~/layouts/Header";
-import { cn, ensureLeadingSlash } from "~/utils";
-import { DocumentationLayout } from "../Documentation";
-import { Site } from "../Site";
-import { Toolbar } from "./Toolbar";
 
 export default function PreviewOutlet() {
   return (

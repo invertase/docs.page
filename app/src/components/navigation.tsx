@@ -1,3 +1,4 @@
+import { RiArrowRightSLine, RiExternalLinkLine } from "@remixicon/react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -30,7 +31,6 @@ import { isDocHrefActive, resolveActiveTabId } from "@/lib/docs-routing";
 import { getSidebarGroups, subtreeHasActivePage } from "@/lib/docs-sidebar";
 import { cn } from "@/lib/utils";
 import type { SidebarGroup as SidebarConfigGroup } from "@/server/config/models/sidebar";
-import { RiArrowRightSLine, RiExternalLinkLine } from "@remixicon/react";
 import { Link } from "./doc-link";
 
 function isPageLink(item: SidebarConfigGroup["pages"][number]): boolean {

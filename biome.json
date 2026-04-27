@@ -1,17 +1,22 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.13/schema.json",
   "files": {
-    "ignore": [
-      "node_modules",
-      ".git",
-      ".vercel",
-      "dist/**",
-      "website/build/**",
-      "website/public/**"
+    "includes": [
+      "**",
+      "!**/.next",
+      "!**/.output",
+      "!**/.cache",
+      "!**/node_modules",
+      "!**/.git",
+      "!**/.vercel",
+      "!**/dist",
+      "!**/website/build",
+      "!**/website/public"
     ]
   },
-  "organizeImports": {
-    "enabled": true
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
+  "css": {
+    "parser": { "tailwindDirectives": true }
   },
   "formatter": {
     "enabled": true,
@@ -21,12 +26,24 @@
     "enabled": true,
     "rules": {
       "recommended": true,
-      "style": {
-        "noNonNullAssertion": "off"
+      "a11y": {
+        "noNoninteractiveElementInteractions": "off",
+        "useAriaPropsSupportedByRole": "off",
+        "useFocusableInteractive": "off",
+        "useKeyWithClickEvents": "off",
+        "useSemanticElements": "off"
+      },
+      "performance": {
+        "noImgElement": "off"
       },
       "suspicious": {
+        "noArrayIndexKey": "off",
+        "noDocumentCookie": "off",
         "noShadowRestrictedNames": "off",
-        "noArrayIndexKey": "off"
+        "noUnknownAtRules": "off"
+      },
+      "style": {
+        "noNonNullAssertion": "off"
       },
       "security": {
         "noDangerouslySetInnerHtml": "off"

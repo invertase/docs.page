@@ -1,7 +1,7 @@
 import { ChevronDownIcon, ChevronUpIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { type ReactElement, cloneElement, useState } from "react";
+import { cloneElement, type ReactElement, useState } from "react";
 import { useHrefMeta, usePageContext, useSidebar } from "~/context";
 import { cn, getHrefIsActive, isExternalLink } from "~/utils";
 import { Anchors } from "./Anchors";
@@ -70,7 +70,7 @@ function GroupHeading(props: { title: string; icon?: string }) {
 
 // A recursive sidebar navigation component, renders a list of links and groups.
 function SidebarLinks(
-  props: { pages: Pages } & { open: boolean; depth: number }
+  props: { pages: Pages } & { open: boolean; depth: number },
 ) {
   return (
     <ul aria-expanded={props.open}>
@@ -206,7 +206,7 @@ function SidebarAnchor(props: {
     <div
       className={cn(
         "flex opacity-75 hover:opacity-100 mb-px relative rounded-md hover:bg-black/5 dark:hover:bg-white/5 transition-all has-[.nav-link-active]:font-bold overflow-hidden truncate",
-        "has-[.nav-link-active]:opacity-100 has-[.nav-link-active]:bg-primary-light/10 dark:has-[.nav-link-active]:bg-primary-light/10  dark:hover:has-[.nav-link-active]:bg-primary-light/10  has-[.nav-link-active]:text-primary-light dark:has-[.nav-link-active]:text-primary-light"
+        "has-[.nav-link-active]:opacity-100 has-[.nav-link-active]:bg-primary-light/10 dark:has-[.nav-link-active]:bg-primary-light/10  dark:hover:has-[.nav-link-active]:bg-primary-light/10  has-[.nav-link-active]:text-primary-light dark:has-[.nav-link-active]:text-primary-light",
       )}
     >
       {anchor}

@@ -2,9 +2,9 @@
 
 import {
   Children,
+  type ComponentProps,
   createContext,
   isValidElement,
-  type ComponentProps,
   type PropsWithChildren,
   type ReactElement,
   type ReactNode,
@@ -15,15 +15,15 @@ import {
   useRef,
   useState,
 } from "react";
-import { useDocPageContext } from "@/hooks/use-doc-page-context";
-import type { DocsRequestMode } from "@/lib/docs-routing";
 import type { ExtraProps } from "streamdown";
 import {
-  Tabs as TabsRoot,
   TabsContent,
   TabsList,
+  Tabs as TabsRoot,
   TabsTrigger,
 } from "@/components/ui/tabs";
+import { useDocPageContext } from "@/hooks/use-doc-page-context";
+import type { DocsRequestMode } from "@/lib/docs-routing";
 
 type TabProps = PropsWithChildren<{
   groupId?: string;

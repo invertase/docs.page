@@ -208,7 +208,7 @@ export async function getPullRequestMetadata(
       `,
       owner: owner,
       repository: repository,
-      pullRequest: Number.parseInt(pullRequest),
+      pullRequest: Number.parseInt(pullRequest, 10),
     }),
   );
   if (error || !response) {

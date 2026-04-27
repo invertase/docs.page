@@ -1,8 +1,4 @@
-import {
-  Dialog,
-  DialogContent,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { cn } from "@/lib/utils";
 
@@ -17,7 +13,16 @@ type ImageProps = {
   className?: string;
 };
 
-export function Image({ src, alt, zoom, caption, theme, width, height, className }: ImageProps) {
+export function Image({
+  src,
+  alt,
+  zoom,
+  caption,
+  theme,
+  width,
+  height,
+  className,
+}: ImageProps) {
   const { bundle } = useDocPageContext();
   const defaultZoom = Boolean(bundle.config.content?.zoomImages);
   const imageSrc = typeof src === "string" ? src : "";
@@ -48,7 +53,7 @@ export function Image({ src, alt, zoom, caption, theme, width, height, className
   if (!isZoomEnabled) {
     return (
       <figure
-        className={cn('mb-6', {
+        className={cn("mb-6", {
           "hidden dark:block": themeVariant === "dark",
           "dark:hidden": themeVariant === "light",
         })}
@@ -63,7 +68,7 @@ export function Image({ src, alt, zoom, caption, theme, width, height, className
 
   return (
     <figure
-      className={cn('mb-6', {
+      className={cn("mb-6", {
         "hidden dark:block": themeVariant === "dark",
         "dark:hidden": themeVariant === "light",
       })}
@@ -107,7 +112,12 @@ function parseBooleanish(value: unknown) {
 
   if (typeof value === "string") {
     const normalized = value.trim().toLowerCase();
-    if (normalized === "" || normalized === "true" || normalized === "1" || normalized === "yes") {
+    if (
+      normalized === "" ||
+      normalized === "true" ||
+      normalized === "1" ||
+      normalized === "yes"
+    ) {
       return true;
     }
     if (normalized === "false" || normalized === "0" || normalized === "no") {

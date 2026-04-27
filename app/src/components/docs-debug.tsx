@@ -1,6 +1,6 @@
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
 export function DocsDebug() {
   const { route, bundle } = useDocPageContext();

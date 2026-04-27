@@ -1,6 +1,10 @@
 import { resolveDocsRoute } from "@/lib/docs-routing";
-import { createMcpDescriptor, handleMcpDelete, handleMcpPost } from "@/server/mcp/server";
 import { listGitHubDocFiles } from "@/server/github/tree";
+import {
+  createMcpDescriptor,
+  handleMcpDelete,
+  handleMcpPost,
+} from "@/server/mcp/server";
 
 type RouteContext = {
   params: Promise<{
@@ -23,7 +27,9 @@ async function resolveRoute(req: Request, context: RouteContext) {
   });
 }
 
-async function ensureSourceExists(route: Awaited<ReturnType<typeof resolveRoute>>) {
+async function ensureSourceExists(
+  route: Awaited<ReturnType<typeof resolveRoute>>,
+) {
   if (!route) {
     return false;
   }

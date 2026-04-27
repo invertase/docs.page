@@ -57,7 +57,7 @@ export function Content() {
       const { default: MDX } = runSync(
         bundle.code,
         // @ts-expect-error - seems to be a bug in the types
-        { ...runtime }
+        { ...runtime },
       );
 
       return (
@@ -133,10 +133,7 @@ export function Content() {
         <div className="space-y-4 mb-8">
           {!!title && (
             <>
-              <Heading
-                type="h1"
-                className="dark:text-white text-3xl"
-              >
+              <Heading type="h1" className="dark:text-white text-3xl">
                 {String(title)}
               </Heading>
               {!!description && (
@@ -146,7 +143,9 @@ export function Content() {
               )}
             </>
           )}
-          {!!image && showPageImage && <Image zoom={false} src={String(image)} />}
+          {!!image && showPageImage && (
+            <Image zoom={false} src={String(image)} />
+          )}
         </div>
       )}
       <div

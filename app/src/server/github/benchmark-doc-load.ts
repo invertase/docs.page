@@ -93,20 +93,26 @@ function parseArgs(argv: string[]): BenchArgs {
     owner: out.owner,
     repository: out.repository,
     ref: out.ref,
-    runs: Number.isFinite(out.runs) && (out.runs ?? 0) > 0 ? out.runs! : DEFAULTS.runs,
+    runs:
+      Number.isFinite(out.runs) && (out.runs ?? 0) > 0
+        ? out.runs!
+        : DEFAULTS.runs,
     gqlBatchSize:
       Number.isFinite(out.gqlBatchSize) && (out.gqlBatchSize ?? 0) > 0
         ? out.gqlBatchSize!
         : DEFAULTS.gqlBatchSize,
     jsDelivrConcurrency:
-      Number.isFinite(out.jsDelivrConcurrency) && (out.jsDelivrConcurrency ?? 0) > 0
+      Number.isFinite(out.jsDelivrConcurrency) &&
+      (out.jsDelivrConcurrency ?? 0) > 0
         ? out.jsDelivrConcurrency!
         : DEFAULTS.jsDelivrConcurrency,
   };
 }
 
 function getGitHubToken(): string {
-  const token = process.env.GITHUB_PAT?.split(",").map((v) => v.trim()).find(Boolean);
+  const token = process.env.GITHUB_PAT?.split(",")
+    .map((v) => v.trim())
+    .find(Boolean);
 
   if (!token) {
     throw new Error(
@@ -195,10 +201,18 @@ async function getGitHubRecursiveTreeBySha(args: {
     truncated: response.truncated,
     tree: response.tree
       .filter(
-        (entry): entry is { path: string; sha: string; type: "blob" | "tree" | "commit" } =>
-          typeof entry.path === "string"
-          && typeof entry.sha === "string"
-          && (entry.type === "blob" || entry.type === "tree" || entry.type === "commit"),
+        (
+          entry,
+        ): entry is {
+          path: string;
+          sha: string;
+          type: "blob" | "tree" | "commit";
+        } =>
+          typeof entry.path === "string" &&
+          typeof entry.sha === "string" &&
+          (entry.type === "blob" ||
+            entry.type === "tree" ||
+            entry.type === "commit"),
       )
       .map((entry) => ({
         path: entry.path,
@@ -229,7 +243,10 @@ function normalizeDocPath(sourcePath: string) {
 }
 
 function collectDocSourcePaths(tree: GitHubRecursiveTree) {
-  const files = new Map<string, { path: string; sourcePath: string; isIndex: boolean }>();
+  const files = new Map<
+    string,
+    { path: string; sourcePath: string; isIndex: boolean }
+  >();
 
   for (const entry of tree.tree) {
     if (entry.type !== "blob") {
@@ -283,7 +300,10 @@ async function benchGraphQL(args: {
   for (const paths of chunk(args.paths, args.batchSize)) {
     const varDefs = paths.map((_, index) => `$e${index}: String!`).join(", ");
     const fieldBlock = paths
-      .map((_, index) => `b${index}: object(expression: $e${index}) { ... on Blob { text } }`)
+      .map(
+        (_, index) =>
+          `b${index}: object(expression: $e${index}) { ... on Blob { text } }`,
+      )
       .join("\n");
 
     const query = `
@@ -379,32 +399,33 @@ async function benchJsDelivr(args: {
 
   const workers = Array.from(
     { length: Math.max(1, Math.min(args.concurrency, args.paths.length)) },
-    () => (async () => {
-      while (true) {
-        const nextIndex = cursor++;
-        if (nextIndex >= args.paths.length) {
-          return;
+    () =>
+      (async () => {
+        while (true) {
+          const nextIndex = cursor++;
+          if (nextIndex >= args.paths.length) {
+            return;
+          }
+
+          const path = args.paths[nextIndex];
+          const url = `https://cdn.jsdelivr.net/gh/${args.owner}/${args.repository}@${encodeURIComponent(args.ref)}/${path}`;
+          const response = await fetch(url);
+          requestCount++;
+
+          const cacheHeader = response.headers.get("x-cache");
+          if (cacheHeader?.toUpperCase().includes("HIT")) {
+            jsDelivrCacheHits++;
+          }
+
+          if (!response.ok) {
+            missingFiles++;
+            continue;
+          }
+
+          const text = await response.text();
+          bytes += utf8ByteLength(text);
         }
-
-        const path = args.paths[nextIndex];
-        const url = `https://cdn.jsdelivr.net/gh/${args.owner}/${args.repository}@${encodeURIComponent(args.ref)}/${path}`;
-        const response = await fetch(url);
-        requestCount++;
-
-        const cacheHeader = response.headers.get("x-cache");
-        if (cacheHeader?.toUpperCase().includes("HIT")) {
-          jsDelivrCacheHits++;
-        }
-
-        if (!response.ok) {
-          missingFiles++;
-          continue;
-        }
-
-        const text = await response.text();
-        bytes += utf8ByteLength(text);
-      }
-    })(),
+      })(),
   );
 
   await Promise.all(workers);
@@ -435,7 +456,9 @@ async function run() {
   const args = parseArgs(process.argv.slice(2));
   const token = getGitHubToken();
 
-  console.log(`\nBenchmarking doc fetch providers for ${args.owner}/${args.repository}`);
+  console.log(
+    `\nBenchmarking doc fetch providers for ${args.owner}/${args.repository}`,
+  );
   console.log(`Requested ref: ${args.ref ?? "HEAD"}`);
   console.log(
     `Runs: ${args.runs}, GraphQL batch: ${args.gqlBatchSize}, jsDelivr concurrency: ${args.jsDelivrConcurrency}`,
@@ -462,8 +485,12 @@ async function run() {
 
   console.log(`Resolved ref: ${resolvedRef}`);
   console.log(`Resolved sha: ${resolvedSha}`);
-  console.log(`Tree load: ${formatMs(treeDurationMs)} (resolve+tree total ${formatMs(resolveDurationMs + treeDurationMs)})`);
-  console.log(`Docs files selected: ${paths.length}${tree.truncated ? " (tree truncated)" : ""}\n`);
+  console.log(
+    `Tree load: ${formatMs(treeDurationMs)} (resolve+tree total ${formatMs(resolveDurationMs + treeDurationMs)})`,
+  );
+  console.log(
+    `Docs files selected: ${paths.length}${tree.truncated ? " (tree truncated)" : ""}\n`,
+  );
 
   const allGraphQL: ProviderStats[] = [];
   const allJsDelivr: ProviderStats[] = [];
@@ -471,7 +498,9 @@ async function run() {
   for (let runIndex = 0; runIndex < args.runs; runIndex++) {
     const runLabel = `Run ${runIndex + 1}/${args.runs}`;
     const gqlFirst = runIndex % 2 === 0;
-    console.log(`${runLabel} (${gqlFirst ? "GraphQL first" : "jsDelivr first"})`);
+    console.log(
+      `${runLabel} (${gqlFirst ? "GraphQL first" : "jsDelivr first"})`,
+    );
 
     if (gqlFirst) {
       const gql = await benchGraphQL({
@@ -529,33 +558,50 @@ async function run() {
   const gqlAvgMs = average(allGraphQL.map((item) => item.durationMs));
   const jsdAvgMs = average(allJsDelivr.map((item) => item.durationMs));
   const gqlAvgCost = average(allGraphQL.map((item) => item.gqlCost ?? 0));
-  const jsdAvgHits = average(allJsDelivr.map((item) => item.jsDelivrCacheHits ?? 0));
+  const jsdAvgHits = average(
+    allJsDelivr.map((item) => item.jsDelivrCacheHits ?? 0),
+  );
 
   console.log("\nAverage results:");
   console.table([
     {
       provider: "GraphQL",
       avgMs: gqlAvgMs.toFixed(1),
-      avgRequests: average(allGraphQL.map((item) => item.requestCount)).toFixed(1),
-      avgLoadedFiles: average(allGraphQL.map((item) => item.loadedFiles)).toFixed(1),
-      avgMissingFiles: average(allGraphQL.map((item) => item.missingFiles)).toFixed(1),
+      avgRequests: average(allGraphQL.map((item) => item.requestCount)).toFixed(
+        1,
+      ),
+      avgLoadedFiles: average(
+        allGraphQL.map((item) => item.loadedFiles),
+      ).toFixed(1),
+      avgMissingFiles: average(
+        allGraphQL.map((item) => item.missingFiles),
+      ).toFixed(1),
       avgBytes: average(allGraphQL.map((item) => item.bytes)).toFixed(1),
       avgGqlCost: gqlAvgCost.toFixed(1),
     },
     {
       provider: "jsDelivr",
       avgMs: jsdAvgMs.toFixed(1),
-      avgRequests: average(allJsDelivr.map((item) => item.requestCount)).toFixed(1),
-      avgLoadedFiles: average(allJsDelivr.map((item) => item.loadedFiles)).toFixed(1),
-      avgMissingFiles: average(allJsDelivr.map((item) => item.missingFiles)).toFixed(1),
+      avgRequests: average(
+        allJsDelivr.map((item) => item.requestCount),
+      ).toFixed(1),
+      avgLoadedFiles: average(
+        allJsDelivr.map((item) => item.loadedFiles),
+      ).toFixed(1),
+      avgMissingFiles: average(
+        allJsDelivr.map((item) => item.missingFiles),
+      ).toFixed(1),
       avgBytes: average(allJsDelivr.map((item) => item.bytes)).toFixed(1),
       avgCacheHits: jsdAvgHits.toFixed(1),
     },
   ]);
 
   const faster = gqlAvgMs < jsdAvgMs ? "GraphQL" : "jsDelivr";
-  const deltaPct = Math.abs(gqlAvgMs - jsdAvgMs) / Math.max(gqlAvgMs, jsdAvgMs) * 100;
-  console.log(`\nWinner by average wall time: ${faster} (${deltaPct.toFixed(1)}% faster)\n`);
+  const deltaPct =
+    (Math.abs(gqlAvgMs - jsdAvgMs) / Math.max(gqlAvgMs, jsdAvgMs)) * 100;
+  console.log(
+    `\nWinner by average wall time: ${faster} (${deltaPct.toFixed(1)}% faster)\n`,
+  );
 }
 
 await run();

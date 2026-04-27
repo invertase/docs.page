@@ -1,11 +1,8 @@
 "use client";
 
-import { defaultConfig, parseConfig } from "@/server/config";
-import { Docs } from "@/components/docs";
-import { DocPageContext } from "@/hooks/use-doc-page-context";
-import type { DocPageProps } from "@/lib/types";
-import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Docs } from "@/components/docs";
 import {
   Empty,
   EmptyContent,
@@ -14,6 +11,9 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
+import { DocPageContext } from "@/hooks/use-doc-page-context";
+import type { DocPageProps } from "@/lib/types";
+import { defaultConfig, parseConfig } from "@/server/config";
 import { Preset } from "./preset";
 
 type PreviewBundle = {
@@ -268,10 +268,12 @@ export function PreviewClient() {
           {isMissingSocketUrl ? (
             <>
               <div className="rounded-md border bg-muted/40 px-3 py-2 font-mono text-xs break-all">
-                /preview{previewPath === "/" ? "" : previewPath}?url=ws://localhost:PORT
+                /preview{previewPath === "/" ? "" : previewPath}
+                ?url=ws://localhost:PORT
               </div>
               <p className="text-muted-foreground">
-                Run <code>docs preview</code> and open the URL it prints in the terminal.
+                Run <code>docs preview</code> and open the URL it prints in the
+                terminal.
               </p>
             </>
           ) : isInvalidSocketUrl ? (
@@ -280,8 +282,9 @@ export function PreviewClient() {
                 {rawSocketUrl}
               </div>
               <p className="text-muted-foreground">
-                Use a valid <code>ws://</code>, <code>wss://</code>, <code>http://</code>, or{" "}
-                <code>https://</code> preview server URL.
+                Use a valid <code>ws://</code>, <code>wss://</code>,{" "}
+                <code>http://</code>, or <code>https://</code> preview server
+                URL.
               </p>
             </>
           ) : (
@@ -290,8 +293,9 @@ export function PreviewClient() {
                 {websocketUrl?.toString()}
               </div>
               <p className="text-muted-foreground">
-                If this takes more than a moment, make sure <code>docs preview</code> is still
-                running and that the requested page exists under <code>docs/</code>.
+                If this takes more than a moment, make sure{" "}
+                <code>docs preview</code> is still running and that the
+                requested page exists under <code>docs/</code>.
               </p>
             </>
           )}
@@ -299,7 +303,7 @@ export function PreviewClient() {
       </Empty>
     );
   }
-  
+
   return (
     <>
       <DocPageContext.Provider value={previewDocProps}>

@@ -50,10 +50,17 @@ export async function GET(req: Request, context: RouteContext) {
 
   const siteTitle = config.name?.trim() || `${ghOwner}/${ghRepo}`;
   const siteDescription =
-    config.description?.trim()
-    || `Documentation for ${ghOwner}/${ghRepo}${route.ref ? ` at ref ${route.ref}` : ""}.`;
+    config.description?.trim() ||
+    `Documentation for ${ghOwner}/${ghRepo}${route.ref ? ` at ref ${route.ref}` : ""}.`;
 
-  const lines: string[] = [`# ${siteTitle}`, "", siteDescription, "", "## Docs", ""];
+  const lines: string[] = [
+    `# ${siteTitle}`,
+    "",
+    siteDescription,
+    "",
+    "## Docs",
+    "",
+  ];
 
   for (const document of dataset.documents) {
     const docRoute = resolveDocsRoute({
@@ -79,7 +86,10 @@ export async function GET(req: Request, context: RouteContext) {
     },
   });
   response.headers.set("Cache-Control", LLMS_TXT_CACHE_HEADERS.cacheControl);
-  response.headers.set("Surrogate-Control", LLMS_TXT_CACHE_HEADERS.surrogateControl);
+  response.headers.set(
+    "Surrogate-Control",
+    LLMS_TXT_CACHE_HEADERS.surrogateControl,
+  );
 
   if (docList.truncated) {
     response.headers.set("x-docs-page-tree-truncated", "1");

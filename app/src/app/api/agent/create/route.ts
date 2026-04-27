@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
-import { PROVIDERS } from "@/server/agent/providers";
 import { encryptAgentPayload } from "@/server/agent/encryption";
+import { PROVIDERS } from "@/server/agent/providers";
 import { getAgentStore } from "@/server/agent/storage";
 
 const CreateAgentSchema = z.object({
@@ -33,7 +33,10 @@ export async function POST(req: Request) {
     const [provider, modelName] = model.split("/");
 
     if (!PROVIDERS.includes(provider)) {
-      return Response.json({ error: "Invalid model provider." }, { status: 400 });
+      return Response.json(
+        { error: "Invalid model provider." },
+        { status: 400 },
+      );
     }
 
     const adminCheck = await checkAdminAccess({
@@ -43,7 +46,10 @@ export async function POST(req: Request) {
     });
 
     if (!adminCheck.ok) {
-      return Response.json({ error: adminCheck.error }, { status: adminCheck.status });
+      return Response.json(
+        { error: adminCheck.error },
+        { status: adminCheck.status },
+      );
     }
 
     const store = getAgentStore();
@@ -101,16 +107,19 @@ async function checkAdminAccess({
   repo: string;
   githubToken: string;
 }) {
-  const response = await fetch(`https://api.github.com/repos/${owner}/${repo}`, {
-    method: "GET",
-    headers: {
-      Accept: "application/vnd.github+json",
-      Authorization: `Bearer ${githubToken}`,
-      "User-Agent": "docs.page",
-      "X-GitHub-Api-Version": "2022-11-28",
+  const response = await fetch(
+    `https://api.github.com/repos/${owner}/${repo}`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/vnd.github+json",
+        Authorization: `Bearer ${githubToken}`,
+        "User-Agent": "docs.page",
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+      cache: "no-store",
     },
-    cache: "no-store",
-  });
+  );
 
   const payload = (await response.json().catch(() => null)) as unknown;
 

@@ -1,12 +1,12 @@
-import type { ComponentProps, PropsWithChildren, ReactElement } from "react";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { cn } from "@/lib/utils";
 import {
   RiAlertFill,
   RiCheckboxCircleFill,
   RiCloseCircleFill,
   RiInformationFill,
 } from "@remixicon/react";
+import type { ComponentProps, PropsWithChildren, ReactElement } from "react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { cn } from "@/lib/utils";
 
 type CalloutProps = ComponentProps<"div"> & {
   icon?: ReactElement;

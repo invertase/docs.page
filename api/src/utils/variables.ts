@@ -1,4 +1,5 @@
 import get from "lodash.get";
+
 const VARIABLE_REGEX = /{{\s([a-zA-Z0-9_.]*)\s}}/gm;
 
 // Replaces an object of variables with their moustache values in a string

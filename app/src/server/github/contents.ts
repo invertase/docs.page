@@ -56,10 +56,13 @@ const PINNED_COMMIT_REF_PATTERN = /^[a-fA-F0-9]{40}$/;
 const JSDELIVR_FETCH_CONCURRENCY = 16;
 
 async function getRepositoryMetadata(owner: string, repository: string) {
-  const response = await getGitHubRestClient().request("GET /repos/{owner}/{repo}", {
-    owner,
-    repo: repository,
-  });
+  const response = await getGitHubRestClient().request(
+    "GET /repos/{owner}/{repo}",
+    {
+      owner,
+      repo: repository,
+    },
+  );
 
   return {
     stars: response.data.stargazers_count,
@@ -87,9 +90,7 @@ async function resolveGitHubRefToSha(
   return response.data.sha;
 }
 
-async function resolvePinnedGitHubSource(
-  metadata: SourceMetaData,
-): Promise<{
+async function resolvePinnedGitHubSource(metadata: SourceMetaData): Promise<{
   source: GitHubSource;
   resolvedRef: string;
   resolvedSha: string;
@@ -97,15 +98,24 @@ async function resolvePinnedGitHubSource(
 }> {
   const source = await resolveGitHubSource(metadata);
   let repositoryMetadata: GitHubRepositoryMetadata | undefined;
-  const resolvedRef = !source.ref || source.ref === "HEAD"
-    ? await (async () => {
-      repositoryMetadata = await getRepositoryMetadata(source.owner, source.repository);
-      return repositoryMetadata.defaultBranch;
-    })()
-    : source.ref;
-  const resolvedSha = source.type === "commit" || PINNED_COMMIT_REF_PATTERN.test(resolvedRef)
-    ? resolvedRef
-    : await resolveGitHubRefToSha(source.owner, source.repository, resolvedRef);
+  const resolvedRef =
+    !source.ref || source.ref === "HEAD"
+      ? await (async () => {
+          repositoryMetadata = await getRepositoryMetadata(
+            source.owner,
+            source.repository,
+          );
+          return repositoryMetadata.defaultBranch;
+        })()
+      : source.ref;
+  const resolvedSha =
+    source.type === "commit" || PINNED_COMMIT_REF_PATTERN.test(resolvedRef)
+      ? resolvedRef
+      : await resolveGitHubRefToSha(
+          source.owner,
+          source.repository,
+          resolvedRef,
+        );
 
   return {
     source: {
@@ -185,35 +195,39 @@ export async function getGitHubContents(
   });
 
   try {
-    const [repositoryMetadata, configJson, configYaml, mdx, mdxIndex] = await Promise.all([
-      resolved.repositoryMetadata
-        ? Promise.resolve(resolved.repositoryMetadata)
-        : getRepositoryMetadata(resolved.source.owner, resolved.source.repository),
-      fetchTextFromJsDelivr({
-        owner: resolved.source.owner,
-        repository: resolved.source.repository,
-        ref: resolved.resolvedSha,
-        path: "docs.json",
-      }),
-      fetchTextFromJsDelivr({
-        owner: resolved.source.owner,
-        repository: resolved.source.repository,
-        ref: resolved.resolvedSha,
-        path: "docs.yaml",
-      }),
-      fetchTextFromJsDelivr({
-        owner: resolved.source.owner,
-        repository: resolved.source.repository,
-        ref: resolved.resolvedSha,
-        path: `${absolutePath}.mdx`,
-      }),
-      fetchTextFromJsDelivr({
-        owner: resolved.source.owner,
-        repository: resolved.source.repository,
-        ref: resolved.resolvedSha,
-        path: `${indexPath}.mdx`,
-      }),
-    ]);
+    const [repositoryMetadata, configJson, configYaml, mdx, mdxIndex] =
+      await Promise.all([
+        resolved.repositoryMetadata
+          ? Promise.resolve(resolved.repositoryMetadata)
+          : getRepositoryMetadata(
+              resolved.source.owner,
+              resolved.source.repository,
+            ),
+        fetchTextFromJsDelivr({
+          owner: resolved.source.owner,
+          repository: resolved.source.repository,
+          ref: resolved.resolvedSha,
+          path: "docs.json",
+        }),
+        fetchTextFromJsDelivr({
+          owner: resolved.source.owner,
+          repository: resolved.source.repository,
+          ref: resolved.resolvedSha,
+          path: "docs.yaml",
+        }),
+        fetchTextFromJsDelivr({
+          owner: resolved.source.owner,
+          repository: resolved.source.repository,
+          ref: resolved.resolvedSha,
+          path: `${absolutePath}.mdx`,
+        }),
+        fetchTextFromJsDelivr({
+          owner: resolved.source.owner,
+          repository: resolved.source.repository,
+          ref: resolved.resolvedSha,
+          path: `${indexPath}.mdx`,
+        }),
+      ]);
 
     return {
       stars: repositoryMetadata.stars,

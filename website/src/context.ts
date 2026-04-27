@@ -1,9 +1,9 @@
+import { useRouter } from "next/router";
 import type { GetServerSidePropsContext } from "next/types";
 import { createContext, useContext, useEffect, useState } from "react";
-import { type BundlerOutput, type SidebarGroup, getBundle } from "./api";
+import { type BundlerOutput, getBundle, type SidebarGroup } from "./api";
 import { getEnvironment } from "./env";
 import {
-  Redirect,
   ensureLeadingSlash,
   getAssetSrc,
   getCustomDomain,
@@ -11,8 +11,8 @@ import {
   getHrefIsActive,
   getLocale,
   isExternalLink,
+  Redirect,
 } from "./utils";
-import { useRouter } from "next/router";
 
 type BaseContext = {
   // The relative path of the current page, e.g. `/contributing`.
@@ -52,7 +52,7 @@ export async function getRequestContext(
     repository: string;
     path: string;
     ref: string | undefined;
-  }
+  },
 ) {
   const { owner, repository, ref, path } = opts;
 
@@ -106,8 +106,8 @@ export async function getRequestContext(
         environment === "production"
           ? "https://docs.page"
           : environment === "preview"
-          ? "https://staging.docs.page"
-          : "http://localhost:3000";
+            ? "https://staging.docs.page"
+            : "http://localhost:3000";
 
       // If no domain, redirect to docs.page.
       url = `${base}/${owner}/${repository}`;
@@ -127,8 +127,8 @@ export async function getRequestContext(
       isCustomDomainRequest && environment === "development"
         ? "localhost:8787"
         : domain && environment === "production"
-        ? domain
-        : null,
+          ? domain
+          : null,
     vanity: isVanityDomainRequest,
     bundle,
     preview: false,
@@ -143,7 +143,7 @@ export function usePageContext(): Context {
 
   if (!context) {
     throw new Error(
-      "usePageContext must be used within a PageContext.Provider"
+      "usePageContext must be used within a PageContext.Provider",
     );
   }
 
@@ -156,8 +156,8 @@ export function useAssetSrc(path: string) {
   const isPreview = ctx.preview;
   const isExternal = isExternalLink(path);
 
-  const [src, setSrc] = useState(() => 
-    isExternal || !isPreview ? getAssetSrc(ctx, path) : ""
+  const [src, setSrc] = useState(() =>
+    isExternal || !isPreview ? getAssetSrc(ctx, path) : "",
   );
 
   useEffect(() => {
@@ -249,7 +249,7 @@ export function useActiveTab(): string | undefined {
     return;
   }
 
-  let closestTab: string | undefined = undefined;
+  let closestTab: string | undefined;
   let maxSegments = -1;
 
   for (const tab of tabs) {

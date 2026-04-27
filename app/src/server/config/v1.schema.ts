@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { ConfigSchema } from "./schema";
 import type { Config, Sidebar } from "./schema";
+import { ConfigSchema } from "./schema";
 
 const V1SidebarItem = z.tuple([
   z.coerce.string(),
@@ -40,7 +40,9 @@ export const V1ConfigSchema = z
     automaticallyDisplayName: z.boolean().catch(true),
     automaticallyInferNextPrevious: z.boolean().catch(true),
     plausibleAnalytics: z.boolean().catch(false),
-    plausibleAnalyticsScript: z.string().catch("https://plausible.io/js/script.js"),
+    plausibleAnalyticsScript: z
+      .string()
+      .catch("https://plausible.io/js/script.js"),
     anchors: z
       .array(
         z
@@ -62,7 +64,12 @@ export const V1ConfigSchema = z
       })
       .optional()
       .catch(undefined),
-    sidebar: z.union([z.record(z.string(), z.array(V1SidebarItem)), z.array(V1SidebarItem)]).catch([]),
+    sidebar: z
+      .union([
+        z.record(z.string(), z.array(V1SidebarItem)),
+        z.array(V1SidebarItem),
+      ])
+      .catch([]),
   })
   .transform((v1) => {
     const config: Config = {
@@ -127,7 +134,9 @@ export const V1ConfigSchema = z
       locales: [],
     };
 
-    function transformSidebarItem(item: z.infer<typeof V1SidebarItem>): Sidebar {
+    function transformSidebarItem(
+      item: z.infer<typeof V1SidebarItem>,
+    ): Sidebar {
       const [title, hrefOrChildren] = item;
 
       if (typeof hrefOrChildren === "string") {
@@ -164,9 +173,9 @@ export const V1ConfigSchema = z
       config.sidebar = v1.sidebar.map(transformSidebarItem);
     } else {
       const sidebar: Record<string, Sidebar[]> = {};
-      Object.entries(v1.sidebar).map(([locale, sidebarItems]) => {
+      for (const [locale, sidebarItems] of Object.entries(v1.sidebar)) {
         sidebar[locale] = sidebarItems.map(transformSidebarItem);
-      });
+      }
       config.sidebar = sidebar;
     }
 

@@ -2,7 +2,9 @@ import type { ComponentProps } from "react";
 import { defaultRehypePlugins, type Streamdown } from "streamdown";
 
 type AllowedTags = Record<string, string[]>;
-type RehypePlugins = NonNullable<ComponentProps<typeof Streamdown>["rehypePlugins"]>;
+type RehypePlugins = NonNullable<
+  ComponentProps<typeof Streamdown>["rehypePlugins"]
+>;
 type HastNode = {
   type: string;
   children?: Array<HastNode | undefined>;
@@ -43,7 +45,10 @@ export function createDocsPageRehypePlugins(
     {
       ...sanitizeSchema,
       tagNames: Array.from(
-        new Set([...(sanitizeSchema.tagNames ?? []), ...Object.keys(allowedTags)]),
+        new Set([
+          ...(sanitizeSchema.tagNames ?? []),
+          ...Object.keys(allowedTags),
+        ]),
       ),
       attributes: {
         ...(sanitizeSchema.attributes ?? {}),
@@ -94,9 +99,7 @@ function createNormalizeCustomTagsPlugin(knownComponents: Set<string>) {
               }
 
               const openTag = `<${normalizedName}${attributes}>`;
-              return isSelfClosing
-                ? `${openTag}</${normalizedName}>`
-                : openTag;
+              return isSelfClosing ? `${openTag}</${normalizedName}>` : openTag;
             }
 
             if (slash === "/") {
@@ -104,9 +107,7 @@ function createNormalizeCustomTagsPlugin(knownComponents: Set<string>) {
             }
 
             const openTag = `<div data-unknown-component="" data-name="${escapeAttributeValue(rawName)}"${attributes}>`;
-            return isSelfClosing
-              ? `${openTag}</div>`
-              : openTag;
+            return isSelfClosing ? `${openTag}</div>` : openTag;
           },
         );
       });

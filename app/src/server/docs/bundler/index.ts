@@ -1,8 +1,12 @@
 import frontmatter from "gray-matter";
 import { extractHeadingNodes, type HeadingNode } from "@/lib/docs-markdown";
 import { type Config, defaultConfig, parseConfig } from "@/server/config";
-import { getGitHubContents, resolveGitHubSource, type GitHubSource } from "@/server/github/contents";
 import { replaceMoustacheVariables } from "@/server/docs/variables";
+import {
+  type GitHubSource,
+  getGitHubContents,
+  resolveGitHubSource,
+} from "@/server/github/contents";
 import { BundlerError } from "./error";
 
 export const ERROR_CODES = {

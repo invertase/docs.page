@@ -8,7 +8,7 @@ export type DocPageProps = {
   meta: {
     hasAgent: boolean;
     initialAgentPanelOpen: boolean;
-  }
+  };
 };
 
 export type ErrorPageProps = {
@@ -28,4 +28,8 @@ export type HomePageProps = {
   kind: "home";
 };
 
-export type PageProps = DocPageProps | ErrorPageProps | RawPageProps | HomePageProps;
+export type PageProps =
+  | DocPageProps
+  | ErrorPageProps
+  | RawPageProps
+  | HomePageProps;

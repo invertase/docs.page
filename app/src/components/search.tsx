@@ -1,13 +1,13 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import { RiSearch2Line } from "@remixicon/react";
-import { useHotkeys } from "react-hotkeys-hook";
+import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
+import { useHotkeys } from "react-hotkeys-hook";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { prewarmSearch } from "@/lib/search-client";
-import { Kbd } from "./ui/kbd";
 import { Button } from "./ui/button";
+import { Kbd } from "./ui/kbd";
 
 const SearchDialog = dynamic(() => import("./search-dialog"), {
   ssr: false,

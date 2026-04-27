@@ -1,6 +1,9 @@
 import { resolveDocsRoute } from "@/lib/docs-routing";
 import { SEARCH_CACHE_HEADERS } from "@/proxy";
-import { buildDocsFlexSearchIndex, emptyDocsFlexSearchPayload } from "@/server/docs/search-index";
+import {
+  buildDocsFlexSearchIndex,
+  emptyDocsFlexSearchPayload,
+} from "@/server/docs/search-index";
 import { listGitHubDocFiles } from "@/server/github/tree";
 
 type RouteContext = {
@@ -39,7 +42,10 @@ export async function GET(req: Request, context: RouteContext) {
 
   const response = Response.json(payload, { status: 200 });
   response.headers.set("Cache-Control", SEARCH_CACHE_HEADERS.cacheControl);
-  response.headers.set("Surrogate-Control", SEARCH_CACHE_HEADERS.surrogateControl);
+  response.headers.set(
+    "Surrogate-Control",
+    SEARCH_CACHE_HEADERS.surrogateControl,
+  );
 
   if (docList.truncated) {
     response.headers.set("x-docs-page-tree-truncated", "1");

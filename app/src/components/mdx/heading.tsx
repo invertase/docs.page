@@ -1,6 +1,6 @@
-import { cn } from "@/lib/utils";
 import type { ComponentProps } from "react";
 import type { ExtraProps } from "streamdown";
+import { cn } from "@/lib/utils";
 
 export type HeadingTag = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 

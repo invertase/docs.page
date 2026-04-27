@@ -1,16 +1,21 @@
 "use client";
 
 import {
+  RiArrowRightLine,
+  RiCloudFill,
+  RiGithubFill,
+  RiSparkling2Fill,
+} from "@remixicon/react";
+import { useRouter } from "next/router";
+import type { ComponentProps } from "react";
+import {
   startTransition,
   useDeferredValue,
   useEffect,
   useMemo,
   useState,
 } from "react";
-import { useRouter } from "next/router";
-import type { ComponentProps } from "react";
-import { isSearchReady, searchDocs } from "@/lib/search-client";
-import type { SearchRow } from "@/workers/search.worker";
+import { Badge } from "@/components/ui/badge";
 import {
   Command,
   CommandDialog,
@@ -20,18 +25,13 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import {
-  RiArrowRightLine,
-  RiCloudFill,
-  RiGithubFill,
-  RiSparkling2Fill,
-} from "@remixicon/react";
-import { useDocTabs } from "@/hooks/use-doc-tabs";
-import { useDocHref } from "@/hooks/use-doc-href";
-import { ensureLeadingSlash, isExternalLink } from "@/lib/docs-assets";
 import { useAgentPanel } from "@/hooks/use-agent-panel";
+import { useDocHref } from "@/hooks/use-doc-href";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
-import { Badge } from "@/components/ui/badge";
+import { useDocTabs } from "@/hooks/use-doc-tabs";
+import { ensureLeadingSlash, isExternalLink } from "@/lib/docs-assets";
+import { isSearchReady, searchDocs } from "@/lib/search-client";
+import type { SearchRow } from "@/workers/search.worker";
 
 type Props = {
   open: boolean;

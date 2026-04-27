@@ -1,14 +1,14 @@
+import {
+  RiArrowDownLine,
+  RiArrowDownSLine,
+  RiFileCopyLine,
+} from "@remixicon/react";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useDocTabs } from "@/hooks/use-doc-tabs";
 import { docsContentTopPaddingClassName } from "@/lib/docs-layout";
 import { resolveActiveTabId } from "@/lib/docs-routing";
 import { getActiveTopLevelSidebarGroupLabel } from "@/lib/docs-sidebar";
 import { cn } from "@/lib/utils";
-import {
-  RiArrowDownLine,
-  RiArrowDownSLine,
-  RiFileCopyLine,
-} from "@remixicon/react";
 import { ActionMenu } from "./action-menu";
 import { Heading } from "./mdx/heading";
 import { Image } from "./mdx/image";

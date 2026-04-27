@@ -19,14 +19,14 @@ export function getRequestOrigin(
 ): string {
   const protocol = Array.isArray(request.headers["x-forwarded-proto"])
     ? request.headers["x-forwarded-proto"][0]
-    : request.headers["x-forwarded-proto"] ?? "http";
+    : (request.headers["x-forwarded-proto"] ?? "http");
   const host = Array.isArray(request.headers["x-forwarded-host"])
     ? request.headers["x-forwarded-host"][0]
-    : request.headers["x-forwarded-host"]
-      ?? (Array.isArray(request.headers.host)
+    : (request.headers["x-forwarded-host"] ??
+      (Array.isArray(request.headers.host)
         ? request.headers.host[0]
-        : request.headers.host)
-      ?? "localhost";
+        : request.headers.host) ??
+      "localhost");
 
   return `${protocol}://${host}`;
 }

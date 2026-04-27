@@ -2,9 +2,7 @@ import { z } from "zod";
 
 export default z
   .union([
-    z
-      .string()
-      .min(1), // Support for a single path
+    z.string().min(1), // Support for a single path
     z.object({
       light: z.string().optional(),
       dark: z.string().optional(),

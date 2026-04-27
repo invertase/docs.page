@@ -8,8 +8,8 @@ import { COMPONENTS } from "./components/Content";
 import { getBuildHash } from "./env";
 
 export type {
-  BundleResponse,
   BundleErrorResponse,
+  BundleResponse,
   BundlerOutput,
   SidebarGroup,
 };
@@ -62,7 +62,7 @@ type GetPreviewBundleArgs = {
 };
 
 export async function getPreviewBundle(
-  args: GetPreviewBundleArgs
+  args: GetPreviewBundleArgs,
 ): Promise<BundlerOutput> {
   const response = await fetch(`${API_URL}/preview`, {
     method: "POST",

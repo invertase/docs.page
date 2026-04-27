@@ -1,10 +1,6 @@
-import {
-  Children,
-  isValidElement,
-  type ReactNode,
-} from "react";
-import { getCustomComponentProps } from "@/lib/docs-markdown";
+import { Children, isValidElement, type ReactNode } from "react";
 import type { ExtraProps } from "streamdown";
+import { getCustomComponentProps } from "@/lib/docs-markdown";
 
 type ChildWithNodeProps = {
   children?: ReactNode;
@@ -26,7 +22,10 @@ export function getChildrenComponents(
     }
 
     const childProps = child.props as ChildWithNodeProps;
-    const componentProps = getCustomComponentProps(childProps.node, componentName);
+    const componentProps = getCustomComponentProps(
+      childProps.node,
+      componentName,
+    );
     if (componentProps) {
       return [{ props: componentProps, children: childProps.children }];
     }

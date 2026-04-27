@@ -1,30 +1,27 @@
+import {
+  RiGithubFill,
+  RiMoonFill,
+  RiSparkling2Fill,
+  RiSunFill,
+} from "@remixicon/react";
+import { useTheme } from "next-themes";
 import { Link } from "@/components/doc-link";
+import { Search } from "@/components/search";
+import { Button } from "@/components/ui/button";
+import { Kbd } from "@/components/ui/kbd";
+import { useAgentPanel } from "@/hooks/use-agent-panel";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useDocTabs } from "@/hooks/use-doc-tabs";
 import { getAssetSrc } from "@/lib/docs-assets";
 import { resolveActiveTabId } from "@/lib/docs-routing";
 import { cn } from "@/lib/utils";
-import {
-  RiSunFill,
-  RiMoonFill,
-  RiSparkling2Fill,
-  RiGithubFill,
-} from "@remixicon/react";
-import { useTheme } from "next-themes";
-import { Button } from "@/components/ui/button";
-import { Search } from "@/components/search";
-import { useAgentPanel } from "@/hooks/use-agent-panel";
-import { Kbd } from "@/components/ui/kbd";
-import { Tabs as TabsRoot, TabsList, TabsTrigger } from "./ui/tabs";
+import { TabsList, Tabs as TabsRoot, TabsTrigger } from "./ui/tabs";
 
 export function Header() {
   const hasTabs = useDocTabs().length > 0;
 
   return (
-    <header
-      id="docs-app-header"
-      className="sticky top-0 z-30 bg-background"
-    >
+    <header id="docs-app-header" className="sticky top-0 z-30 bg-background">
       <div className="mx-auto w-full max-w-8xl px-3">
         <div className="flex min-h-16 items-center justify-between py-3">
           <Logo />
@@ -144,7 +141,10 @@ function GitHubLink() {
       className="gap-2"
       asChild
     >
-      <Link href={`https://github.com/${bundle.source.owner}/${bundle.source.repository}`} target="_blank">
+      <Link
+        href={`https://github.com/${bundle.source.owner}/${bundle.source.repository}`}
+        target="_blank"
+      >
         <RiGithubFill className="size-5" />
         <span className="relative top-px text-xs text-muted-foreground">
           {stars}

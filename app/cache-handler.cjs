@@ -14,7 +14,8 @@
  */
 
 const { CacheHandler } = require("@neshca/cache-handler");
-const createRedisHandler = require("@neshca/cache-handler/redis-strings").default;
+const createRedisHandler =
+  require("@neshca/cache-handler/redis-strings").default;
 const { createClient } = require("redis");
 const { PHASE_PRODUCTION_BUILD } = require("next/constants");
 
