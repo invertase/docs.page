@@ -1,5 +1,6 @@
 import {
   ChevronRightIcon,
+  Github,
   MenuIcon,
   MoonIcon,
   SunIcon,
@@ -9,7 +10,7 @@ import { useEffect, useState } from "react";
 
 import { DocsPageLogo } from "~/components/DocsPageLogo";
 import { Link } from "~/components/Link";
-import { Button, buttonVariants } from "~/components/ui/button";
+import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
 import { LINKS, MARKETING_THEME_STORAGE_KEY } from "~/constants/links";
 import { platformCardVariants } from "~/layouts/homepage/platformCardSurface";
@@ -33,53 +34,43 @@ export function Header() {
         <Card
           className={cn(
             platformCardVariants(),
-            "gap-0 border-t-0 p-4 text-foreground sm:p-5 md:p-6",
+            "gap-0 border-t-0 p-3 text-foreground sm:p-3.5 md:p-4",
           )}
         >
           <div className="flex flex-col gap-0">
             <div className="flex w-full flex-row items-center justify-between gap-4">
               <Link
                 href="/"
-                className="group flex shrink-0 items-center transition-opacity hover:opacity-90"
+                className="flex shrink-0 items-center"
               >
                 <DocsPageLogo />
               </Link>
 
               <div className="hidden min-w-0 flex-1 min-[813px]:flex min-[813px]:items-center min-[813px]:justify-end">
                 <nav className="flex w-full flex-wrap items-center justify-end gap-0.5 md:gap-1">
-                  <MarketingHeaderThemeToggle />
                   <ul className="flex flex-wrap items-center justify-end gap-0">
                     <li>
-                      <Link variant="marketingNav" href={LINKS.githubRepo}>
-                        GitHub
-                        <ChevronRightIcon aria-hidden />
+                      <Link
+                        variant="marketingNav"
+                        href={LINKS.githubRepo}
+                        className="!gap-0 !px-2"
+                        aria-label="View docs.page on GitHub"
+                      >
+                        <Github className="size-4" aria-hidden />
                       </Link>
                     </li>
                     <li>
                       <Link variant="marketingNav" href={LINKS.docs}>
-                        Documentation
+                        Docs
                         <ChevronRightIcon aria-hidden />
                       </Link>
                     </li>
                   </ul>
-                  <Link
-                    href={LINKS.preview}
-                    className={cn(
-                      buttonVariants({
-                        variant: "primary",
-                        size: "default",
-                      }),
-                      "dark:border dark:border-border dark:bg-transparent dark:text-primary dark:hover:bg-muted",
-                    )}
-                  >
-                    Local Preview
-                    <ChevronRightIcon aria-hidden />
-                  </Link>
+                  <MarketingHeaderThemeToggle />
                 </nav>
               </div>
 
               <div className="flex min-[813px]:hidden shrink-0 items-center gap-2">
-                <MarketingHeaderThemeToggle />
                 <Button
                   type="button"
                   variant="ghost"
@@ -96,6 +87,7 @@ export function Header() {
                     <MenuIcon className="size-5" aria-hidden />
                   )}
                 </Button>
+                <MarketingHeaderThemeToggle />
               </div>
             </div>
 
@@ -107,11 +99,11 @@ export function Header() {
                 <Link
                   variant="marketingNav"
                   href={LINKS.githubRepo}
-                  className="w-full justify-end"
+                  className="!gap-0 !px-2 w-fit self-end"
+                  aria-label="View docs.page on GitHub"
                   onClick={() => setMenuOpen(false)}
                 >
-                  GitHub
-                  <ChevronRightIcon aria-hidden />
+                  <Github className="size-4" aria-hidden />
                 </Link>
                 <Link
                   variant="marketingNav"
@@ -119,22 +111,7 @@ export function Header() {
                   className="w-full justify-end"
                   onClick={() => setMenuOpen(false)}
                 >
-                  Documentation
-                  <ChevronRightIcon aria-hidden />
-                </Link>
-                <Link
-                  href={LINKS.preview}
-                  className={cn(
-                    buttonVariants({
-                      variant: "primary",
-                      size: "default",
-                    }),
-                    "dark:border dark:border-zinc-700 dark:bg-transparent dark:text-periwinkle-400 dark:hover:bg-zinc-800",
-                    "mt-2 w-fit self-end",
-                  )}
-                  onClick={() => setMenuOpen(false)}
-                >
-                  Local Preview
+                  Docs
                   <ChevronRightIcon aria-hidden />
                 </Link>
               </nav>

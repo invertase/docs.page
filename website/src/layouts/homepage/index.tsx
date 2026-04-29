@@ -2,16 +2,17 @@ import { Footer } from "~/layouts/Footer";
 import { Header } from "~/layouts/Header";
 import { Site } from "~/layouts/Site";
 
-import { Features } from "./Features";
+import { EcosystemStatement } from "./EcosystemStatement";
+import { FeaturesSection } from "./FeaturesSection";
+import { HomepageSpotGridShell } from "./HomepageSpotGridShell";
 import { Hero } from "./Hero";
-import { Platform } from "./Platform";
 import { PricingCta } from "./PricingCta";
 import { TrustedBy } from "./TrustedBy";
 
 export function Homepage() {
   return (
     <Site>
-      <div className="homepage-spot-grid min-h-screen">
+      <HomepageSpotGridShell>
         <div className="relative">
           {/*
             Solid centre column (above the dot grid, below page content + rails).
@@ -33,10 +34,10 @@ export function Homepage() {
           </div>
           <div className="relative z-10">
             <Hero />
-            <Features />
-            <Platform />
-            <TrustedBy />
+            <EcosystemStatement />
+            <FeaturesSection />
             <PricingCta />
+            <TrustedBy />
             <Footer />
           </div>
           {/* Rails paint above main content (cards/sections) but below the header shell. */}
@@ -50,7 +51,7 @@ export function Homepage() {
             </div>
           </div>
         </div>
-      </div>
+      </HomepageSpotGridShell>
     </Site>
   );
 }

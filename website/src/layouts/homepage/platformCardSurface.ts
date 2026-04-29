@@ -1,6 +1,6 @@
 import { cva } from "class-variance-authority";
 
-/** Shared surface for Platform tiles and the marketing hero shell — matches `PlatformFeatureCard`. */
+/** Shared surface for the marketing hero shell, header, and footer cards. */
 export const platformCardVariants = cva(
   [
     "group gap-0 overflow-hidden rounded-none py-0 !ring-0",

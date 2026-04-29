@@ -6,6 +6,9 @@ import { Card } from "~/components/ui/card";
 import { LINKS } from "~/constants/links";
 import { cn } from "~/lib/utils";
 
+import { HeroHeadingDots } from "./HeroHeadingDots";
+import { HeroInitCommand } from "./HeroInitCommand";
+import { HeroPreview } from "./HeroPreview";
 import { platformCardVariants } from "./platformCardSurface";
 
 export function Hero() {
@@ -14,52 +17,48 @@ export function Hero() {
       <Card
         className={cn(
           platformCardVariants(),
-          "relative !overflow-visible",
-          "border-t-0",
-          "p-6 sm:p-8 md:p-10",
+          "relative",
+          "border-b-0 border-t-0",
+          "py-0 px-6 sm:px-8 md:px-10",
           "text-foreground",
         )}
       >
-        {/* Full-height vertical rule along the right edge of the `max-w-3xl` text column. */}
-        <div
-          aria-hidden
-          className={cn(
-            "pointer-events-none absolute inset-y-0 z-[1] w-px bg-border",
-            "left-[calc(1.5rem+min(100%_-_3rem,48rem))] sm:left-[calc(2rem+min(100%_-_4rem,48rem))] md:left-[calc(2.5rem+min(100%_-_5rem,48rem))]",
-          )}
-        />
-        <div className="relative z-[2] w-full min-w-0">
-          <div
-            className={cn(
-              "relative z-20 w-full min-w-0 max-w-3xl space-y-6 text-left",
-              "pr-6 sm:pr-8 md:pr-10",
-            )}
-          >
-            <h1 className="heading-h1">
-              <span className="block lg:whitespace-nowrap">Agent-ready</span>
-              <span className="block lg:whitespace-nowrap">documentation</span>
-              <span className="block lg:whitespace-nowrap">for developers</span>
-            </h1>
+        <div className="relative z-[2] mx-auto w-full min-w-0 max-w-3xl text-center pt-12 sm:pt-14 md:pt-16">
+          <div className="flex flex-col gap-6 sm:gap-7">
+            <HeroHeadingDots>
+              <h1 className="heading-h1">
+                <span className="block text-primary lg:whitespace-nowrap">
+                  Agent-ready
+                </span>
+                <span className="block lg:whitespace-nowrap">documentation</span>
+                <span className="block lg:whitespace-nowrap">for developers</span>
+              </h1>
+            </HeroHeadingDots>
             <p
               className={cn(
-                "text-base font-light leading-relaxed text-zinc-600 dark:text-zinc-300/80",
-                "max-w-none",
+                "mx-auto text-base font-light leading-relaxed text-zinc-600 dark:text-zinc-300/80",
               )}
             >
               Turn your repo into docs for developers and agents,
               <br />
               with built-in machine-readable endpoints.
             </p>
+          </div>
+          <div className="mt-8 flex flex-col items-center justify-center gap-5 sm:mt-10 sm:flex-row sm:flex-wrap sm:gap-6">
             <Link
               href={LINKS.getStarted}
               className={buttonVariants({
                 variant: "primary",
               })}
             >
-              Start Publishing for Free
+              Get started
               <ChevronRightIcon aria-hidden />
             </Link>
+            <HeroInitCommand />
           </div>
+        </div>
+        <div className="mt-10 md:mt-14">
+          <HeroPreview />
         </div>
       </Card>
     </section>

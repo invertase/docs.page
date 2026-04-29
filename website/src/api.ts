@@ -21,7 +21,35 @@ type GetBundleArgs = {
   path?: string;
 };
 
-const API_URL = process.env.API_URL || "http://localhost:8080";
+/** Bundler base URL (no trailing slash). Production deployments should set `API_URL`. */
+function bundlerApiUrl(): string {
+  if (process.env.API_URL) return process.env.API_URL;
+  // `next dev` without the local api/ service: avoid unreachable localhost:8080.
+  if (process.env.NODE_ENV === "development") {
+    return "https://staging-api.docs.page";
+  }
+  return "http://localhost:8080";
+}
+
+const API_URL = bundlerApiUrl();
+
+async function bundlerFetch(
+  input: string | URL,
+  init?: RequestInit,
+): Promise<Response> {
+  try {
+    return await fetch(input, init);
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error);
+    throw new Error(
+      `Could not reach the docs bundler at ${API_URL}. ` +
+        `If you run the API locally, set API_URL=http://localhost:8080 in website/.env.local. ` +
+        `Otherwise pick a reachable bundler base URL (e.g. https://staging-api.docs.page). ` +
+        `(${detail})`,
+      { cause: error },
+    );
+  }
+}
 
 export async function getBundle(args: GetBundleArgs): Promise<BundlerOutput> {
   const params = new URLSearchParams({
@@ -37,7 +65,7 @@ export async function getBundle(args: GetBundleArgs): Promise<BundlerOutput> {
     params.append("components", component);
   }
 
-  const response = await fetch(`${API_URL}/bundle?${params.toString()}`);
+  const response = await bundlerFetch(`${API_URL}/bundle?${params.toString()}`);
 
   const json = await response.json();
 
@@ -64,7 +92,7 @@ type GetPreviewBundleArgs = {
 export async function getPreviewBundle(
   args: GetPreviewBundleArgs,
 ): Promise<BundlerOutput> {
-  const response = await fetch(`${API_URL}/preview`, {
+  const response = await bundlerFetch(`${API_URL}/preview`, {
     method: "POST",
     headers: new Headers({
       "docs-page-preview": "true", // Disables caching on preview requests

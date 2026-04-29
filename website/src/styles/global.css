@@ -86,6 +86,14 @@
   --color-lavender-900: 257 40% 26%;
   --color-lavender-950: 257 45% 14%;
 
+  /*
+   * Brand secondaries (Invertase palette):
+   * Teal #63D0BD, Lavender #A68BF3, Warm Orange #E99363, Coral #E07672 (distinct from orange).
+   */
+  --color-brand-teal: 169 53% 60%;
+  --color-brand-lavender: 257 84% 75%;
+  --color-brand-warm-orange: 17 76% 65%;
+  --color-brand-coral-red: 6 70% 62%;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -147,8 +155,9 @@ body {
   --primary-dark-lighter: var(--color-soft-periwinkle-300);
   --background-dark: var(--color-zinc-950);
 
-  --primary: var(--primary-light);
-  --primary-lighter: var(--primary-light-lighter);
+  /* Primary actions (buttons, links using `bg-primary`): 400 for a lighter fill vs 500. */
+  --primary: var(--color-soft-periwinkle-400);
+  --primary-lighter: var(--color-soft-periwinkle-300);
   --background: var(--background-light);
 
   /* shadcn semantic tokens (HSL triplets, used with hsl(var(--x))). */
@@ -172,11 +181,10 @@ body {
   --ring: var(--color-soft-periwinkle-500);
 
   --chart-1: var(--color-soft-periwinkle-500);
-  --chart-2: var(--color-emerald-500);
-  --chart-3: var(--color-lavender-500);
-  /* Second soft-periwinkle swatch (charts need a distinct tone from chart-1). */
-  --chart-4: var(--color-soft-periwinkle-300);
-  --chart-5: var(--color-red-400);
+  --chart-2: var(--color-brand-teal);
+  --chart-3: var(--color-brand-lavender);
+  --chart-4: var(--color-brand-warm-orange);
+  --chart-5: var(--color-brand-coral-red);
 
   --sidebar: var(--color-invertase-white);
   --sidebar-foreground: var(--color-zinc-950);
@@ -194,7 +202,7 @@ body {
   --marketing-accent: var(--color-soft-periwinkle-500);
   --marketing-accent-bright: var(--color-soft-periwinkle-400);
   --marketing-accent-emphasis: var(--color-soft-periwinkle-600);
-  --marketing-hero-glow: var(--color-lavender-400);
+  --marketing-hero-glow: var(--color-brand-lavender);
   --marketing-hero-frame-border: var(--color-zinc-300);
   --marketing-hero-video-tint: 169 58% 45%;
   --marketing-hero-video-tint-dark: 257 55% 58%;
@@ -224,8 +232,8 @@ body {
   --marketing-step-badge-border: var(--color-soft-periwinkle-600);
   --marketing-step-badge-border-dark: var(--color-zinc-800);
   --marketing-step-badge-fill-dark: var(--color-zinc-950);
-  --marketing-success: var(--color-emerald-600);
-  --marketing-success-bright: var(--color-emerald-400);
+  --marketing-success: var(--color-brand-teal);
+  --marketing-success-bright: 169 48% 68%;
   /* Primary marketing CTAs and text buttons (`ui/button` marketing variants) */
   --marketing-button-cta: var(--color-soft-periwinkle-400);
   --marketing-button-cta-hover: var(--color-soft-periwinkle-500);
@@ -315,10 +323,10 @@ html[data-theme="dark"] {
   --ring: var(--color-soft-periwinkle-400);
 
   --chart-1: var(--color-soft-periwinkle-400);
-  --chart-2: var(--color-emerald-400);
-  --chart-3: var(--color-lavender-400);
-  --chart-4: var(--color-soft-periwinkle-600);
-  --chart-5: var(--color-red-400);
+  --chart-2: var(--color-brand-teal);
+  --chart-3: var(--color-brand-lavender);
+  --chart-4: var(--color-brand-warm-orange);
+  --chart-5: var(--color-brand-coral-red);
 
   --sidebar: 240 15% 7%;
   --sidebar-foreground: 210 12% 96%;
@@ -333,7 +341,7 @@ html[data-theme="dark"] {
   --marketing-accent: var(--color-soft-periwinkle-500);
   --marketing-accent-bright: var(--color-soft-periwinkle-400);
   --marketing-accent-emphasis: var(--color-soft-periwinkle-600);
-  --marketing-hero-glow: var(--color-lavender-500);
+  --marketing-hero-glow: var(--color-brand-lavender);
   --marketing-hero-frame-border: var(--color-zinc-700);
   --marketing-hero-video-tint: 169 50% 42%;
   --marketing-hero-video-tint-dark: 257 50% 52%;
@@ -363,8 +371,8 @@ html[data-theme="dark"] {
   --marketing-step-badge-border: var(--color-zinc-800);
   --marketing-step-badge-border-dark: var(--color-zinc-800);
   --marketing-step-badge-fill-dark: var(--color-zinc-950);
-  --marketing-success: var(--color-emerald-400);
-  --marketing-success-bright: var(--color-emerald-300);
+  --marketing-success: var(--color-brand-teal);
+  --marketing-success-bright: 169 52% 72%;
   --marketing-button-cta: var(--color-soft-periwinkle-500);
   --marketing-button-cta-hover: var(--color-soft-periwinkle-600);
   --marketing-ghost-hover-foreground: var(--color-soft-periwinkle-400);
@@ -743,16 +751,150 @@ pre.shiki.has-focused:hover .line {
   }
 
   /**
-   * Marketing homepage: light = `bg-hero-light.svg`; dark = `bg-hero.svg` (no dot grid).
+   * Marketing homepage: light/dark PNGs are gradient-only (no dots in art).
+   * Base dots = ::before. Cursor glow uses the same repeat grid as mask so only
+   * dots receive the highlight (see `.homepage-spot-glow`).
    */
   .homepage-spot-grid {
+    --homepage-dot-cell: 22px;
+    --homepage-dot-r: 1px;
+
     position: relative;
     isolation: isolate;
     background-color: hsl(var(--background));
-    background-image: url("/_docs.page/assets/v3/bg-hero-light.svg");
+    background-image: url("/_docs.page/assets/v4/bg-light.png");
     background-size: cover;
     background-position: top center;
     background-repeat: no-repeat;
+  }
+
+  .homepage-spot-grid::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image: radial-gradient(
+      circle,
+      hsl(var(--foreground) / 0.025) var(--homepage-dot-r),
+      transparent var(--homepage-dot-r)
+    );
+    background-size: var(--homepage-dot-cell) var(--homepage-dot-cell);
+    background-position: 0 0;
+    background-repeat: repeat;
+  }
+
+  .dark .homepage-spot-grid::before,
+  html[data-theme="dark"] .homepage-spot-grid::before {
+    background-image: radial-gradient(
+      circle,
+      hsl(var(--color-zinc-400) / 0.12) var(--homepage-dot-r),
+      transparent var(--homepage-dot-r)
+    );
+  }
+
+  /**
+   * Dot-only glow: radial follows `--homepage-glow-*` (set in JS); mask matches dot grid.
+   */
+  .homepage-spot-glow {
+    background: radial-gradient(
+      circle 380px at var(--homepage-glow-x, 50%) var(--homepage-glow-y, 35%),
+      hsl(var(--primary) / 0.62),
+      hsl(var(--primary) / 0.28) 24%,
+      transparent 52%
+    );
+    mask-image: radial-gradient(
+      circle at center,
+      #000 var(--homepage-dot-r),
+      transparent var(--homepage-dot-r)
+    );
+    mask-size: var(--homepage-dot-cell) var(--homepage-dot-cell);
+    mask-repeat: repeat;
+    mask-position: 0 0;
+    -webkit-mask-image: radial-gradient(
+      circle at center,
+      #000 var(--homepage-dot-r),
+      transparent var(--homepage-dot-r)
+    );
+    -webkit-mask-size: var(--homepage-dot-cell) var(--homepage-dot-cell);
+    -webkit-mask-repeat: repeat;
+    -webkit-mask-position: 0 0;
+  }
+
+  /* Hero title hover dots only (`HeroHeadingDots`). */
+  .hero-heading-dots {
+    --hero-heading-dot-cell: 22px;
+    --hero-heading-dot-r: 1px;
+    isolation: isolate;
+  }
+
+  .hero-heading-dots-glow {
+    z-index: 1;
+    background: radial-gradient(
+      circle 280px at var(--hero-heading-glow-x, 50%) var(--hero-heading-glow-y, 50%),
+      hsl(var(--primary) / 0.58),
+      hsl(var(--primary) / 0.24) 22%,
+      transparent 52%
+    );
+    mask-image: radial-gradient(
+      circle at center,
+      #000 var(--hero-heading-dot-r),
+      transparent var(--hero-heading-dot-r)
+    );
+    mask-size: var(--hero-heading-dot-cell) var(--hero-heading-dot-cell);
+    mask-repeat: repeat;
+    mask-position: 0 0;
+    -webkit-mask-image: radial-gradient(
+      circle at center,
+      #000 var(--hero-heading-dot-r),
+      transparent var(--hero-heading-dot-r)
+    );
+    -webkit-mask-size: var(--hero-heading-dot-cell) var(--hero-heading-dot-cell);
+    -webkit-mask-repeat: repeat;
+    -webkit-mask-position: 0 0;
+  }
+
+  /** TrustedBy grid cells: dot texture on hover (`TrustedBy.tsx`). */
+  .trusted-by-project-link {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .trusted-by-project-link::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease;
+    background-image: radial-gradient(
+      circle,
+      hsl(var(--foreground) / 0.09) 1px,
+      transparent 1px
+    );
+    background-size: 22px 22px;
+    background-position: 0 0;
+    background-repeat: repeat;
+  }
+
+  .dark .trusted-by-project-link::before,
+  html[data-theme="dark"] .trusted-by-project-link::before {
+    background-image: radial-gradient(
+      circle,
+      hsl(var(--color-zinc-400) / 0.14) 1px,
+      transparent 1px
+    );
+  }
+
+  .trusted-by-project-link:hover::before {
+    opacity: 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .trusted-by-project-link::before {
+      transition: none;
+    }
   }
 
   .homepage-spot-grid > * {
@@ -762,7 +904,7 @@ pre.shiki.has-focused:hover .line {
 
   .dark .homepage-spot-grid,
   html[data-theme="dark"] .homepage-spot-grid {
-    background-image: url("/_docs.page/assets/v3/bg-hero.svg");
+    background-image: url("/_docs.page/assets/v4/bg-dark.png");
     background-size: cover;
     background-position: top center;
     background-repeat: no-repeat;
