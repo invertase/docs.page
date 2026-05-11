@@ -13,7 +13,7 @@ const config: Config = {
       fontFamily: {
         sans: ['"Inter"', ...defaultTheme.fontFamily.sans],
         mono: ['"JetBrains Mono"', ...defaultTheme.fontFamily.mono],
-        heading: ['"JetBrains Mono"', ...defaultTheme.fontFamily.mono],
+        heading: ['"Lexend"', ...defaultTheme.fontFamily.sans],
       },
       borderRadius: {
         lg: "var(--radius)",

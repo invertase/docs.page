@@ -47,7 +47,7 @@ export function Card(props: Props) {
       >
         <div className="relative isolate flex flex-col gap-6 lg:grid lg:grid-cols-12 lg:gap-x-12 lg:gap-y-6">
           <div className="col-start-1 col-end-6 flex flex-col">
-            <h2 className="font-mono text-xl font-medium tracking-tight text-foreground md:text-2xl">
+            <h2 className="font-heading text-xl font-medium tracking-tight text-foreground md:text-2xl">
               <span className="lg:hidden">{props.step}. </span>
               <span>{props.title}</span>
             </h2>

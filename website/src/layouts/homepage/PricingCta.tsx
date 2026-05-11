@@ -14,7 +14,7 @@ export function PricingCta() {
         <div className="flex min-w-0 flex-col items-center gap-6 text-center">
           <h3
             id="pricing-cta-heading"
-            className="heading-h2 w-full text-balance break-words"
+            className="heading-h2 font-light w-full text-balance break-words"
           >
             Built for the <br />
             open source community

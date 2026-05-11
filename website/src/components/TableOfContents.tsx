@@ -42,7 +42,7 @@ export function TableOfContents() {
         "top-32": hasTabs,
       })}
     >
-      <h3 className="mb-2 flex items-center gap-2 font-mono text-sm font-semibold opacity-75">
+      <h3 className="mb-2 flex items-center gap-2 font-heading text-sm font-semibold opacity-75">
         <ListTreeIcon size={16} />
         <span>On this page</span>
       </h3>

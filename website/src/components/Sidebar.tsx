@@ -50,7 +50,7 @@ export function Sidebar(props: Props) {
 // Displays a top-level group heading
 function GroupHeading(props: { title: string; icon?: string }) {
   return (
-    <h3 className="pl-3 font-semibold text-[14px] mb-4 flex items-center gap-2 text-black dark:text-white">
+    <h3 className="pl-3 font-heading font-semibold text-[14px] mb-4 flex items-center gap-2 text-black dark:text-white">
       {props.icon ? (
         isExternalLink(props.icon!) ? (
           // biome-ignore lint/performance/noImgElement: sidebar icon may be any external URL

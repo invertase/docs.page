@@ -30,6 +30,19 @@
   --color-soft-periwinkle-900: 228 44% 18%;
   --color-soft-periwinkle-950: 228 44% 9%;
 
+  /* Honey (anchor #E69135) */
+  --color-honey-50: 31 90% 97%;
+  --color-honey-100: 31 90% 93%;
+  --color-honey-200: 31 90% 86%;
+  --color-honey-300: 31 86% 78%;
+  --color-honey-400: 31 82% 68%;
+  --color-honey-500: 31 78% 55%;
+  --color-honey-600: 31 78% 50%;
+  --color-honey-700: 31 78% 41%;
+  --color-honey-800: 31 70% 32%;
+  --color-honey-900: 31 70% 24%;
+  --color-honey-950: 31 70% 14%;
+
   /* Canvas neutrals (Anti-flash #E7E8E9 → Black #040406) */
   /* Invertase anti-flash white — #E7E8E9 (page canvas in light mode). */
   --color-invertase-white: 210 4% 91%;
@@ -112,13 +125,19 @@
   --font-sans:
     "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
     "Segoe UI Emoji";
-  /* JetBrains: display headings, `font-mono` (incl. buttons) and code. */
+  /* JetBrains: `font-mono` (buttons, code). Lexend: headings (`font-heading`, marketing headings). */
   --font-mono:
     "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
   --font-heading:
+    "Lexend", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji";
+  --font-marketing-body:
     "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
+  --font-marketing-heading:
+    "Lexend", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji";
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -199,46 +218,46 @@ body {
     Marketing landing (soft periwinkle + secondaries).
     Consumed via Tailwind `marketing-*` colours and `.marketing-*` utilities.
   */
-  --marketing-accent: var(--color-soft-periwinkle-500);
-  --marketing-accent-bright: var(--color-soft-periwinkle-400);
-  --marketing-accent-emphasis: var(--color-soft-periwinkle-600);
+  --marketing-accent: var(--color-honey-500);
+  --marketing-accent-bright: var(--color-honey-400);
+  --marketing-accent-emphasis: var(--color-honey-600);
   --marketing-hero-glow: var(--color-brand-lavender);
   --marketing-hero-frame-border: var(--color-zinc-300);
   --marketing-hero-video-tint: 169 58% 45%;
   --marketing-hero-video-tint-dark: 257 55% 58%;
-  --marketing-pill-foreground: var(--color-soft-periwinkle-900);
+  --marketing-pill-foreground: var(--color-honey-900);
   --marketing-pill-foreground-dark: var(--color-zinc-300);
   --marketing-feature-divider: var(--color-zinc-300);
   --marketing-feature-divider-dark: var(--color-zinc-600);
   --marketing-cell-hover: var(--color-invertase-white);
   --marketing-cell-ring-offset: var(--color-invertase-white);
-  --marketing-feature-icon: var(--color-soft-periwinkle-500);
-  --marketing-feature-icon-bright: var(--color-soft-periwinkle-400);
+  --marketing-feature-icon: var(--color-honey-500);
+  --marketing-feature-icon-bright: var(--color-honey-400);
   --marketing-platform-border: var(--color-zinc-300);
   --marketing-platform-border-dark: var(--color-zinc-700);
   --marketing-platform-title: var(--color-zinc-950);
   --marketing-platform-title-dark: 240 6% 98%;
   --marketing-platform-desc: var(--color-zinc-950);
   --marketing-platform-desc-dark: var(--color-zinc-400);
-  --marketing-platform-gradient-from: var(--color-soft-periwinkle-400);
+  --marketing-platform-gradient-from: var(--color-honey-400);
   --marketing-platform-gradient-via: var(--background);
   --marketing-platform-inner-dark: var(--color-zinc-950);
-  --marketing-testimonial-avatar-bg: var(--color-soft-periwinkle-500);
-  --marketing-testimonial-avatar-bg-dark: var(--color-soft-periwinkle-400);
-  --marketing-testimonial-avatar-text: var(--color-soft-periwinkle-800);
-  --marketing-testimonial-avatar-text-dark: var(--color-soft-periwinkle-200);
-  --marketing-step-rail: var(--color-soft-periwinkle-600);
+  --marketing-testimonial-avatar-bg: var(--color-honey-500);
+  --marketing-testimonial-avatar-bg-dark: var(--color-honey-400);
+  --marketing-testimonial-avatar-text: var(--color-honey-800);
+  --marketing-testimonial-avatar-text-dark: var(--color-honey-200);
+  --marketing-step-rail: var(--color-honey-600);
   --marketing-step-rail-dark: var(--color-zinc-600);
-  --marketing-step-badge-border: var(--color-soft-periwinkle-600);
+  --marketing-step-badge-border: var(--color-honey-600);
   --marketing-step-badge-border-dark: var(--color-zinc-800);
   --marketing-step-badge-fill-dark: var(--color-zinc-950);
   --marketing-success: var(--color-brand-teal);
   --marketing-success-bright: 169 48% 68%;
   /* Primary marketing CTAs and text buttons (`ui/button` marketing variants) */
-  --marketing-button-cta: var(--color-soft-periwinkle-400);
-  --marketing-button-cta-hover: var(--color-soft-periwinkle-500);
-  --marketing-ghost-hover-foreground: var(--color-soft-periwinkle-800);
-  --marketing-nav-link-hover: var(--color-soft-periwinkle-600);
+  --marketing-button-cta: var(--color-honey-400);
+  --marketing-button-cta-hover: var(--color-honey-500);
+  --marketing-ghost-hover-foreground: var(--color-honey-800);
+  --marketing-nav-link-hover: var(--color-honey-600);
   --marketing-surface-muted: var(--color-invertase-white);
   --marketing-surface-muted-hover: var(--color-zinc-100);
 
@@ -338,9 +357,9 @@ html[data-theme="dark"] {
   --sidebar-ring: var(--color-soft-periwinkle-400);
 
   /* 500 reads richer than 400 on dark (400 was pastel / washed). */
-  --marketing-accent: var(--color-soft-periwinkle-500);
-  --marketing-accent-bright: var(--color-soft-periwinkle-400);
-  --marketing-accent-emphasis: var(--color-soft-periwinkle-600);
+  --marketing-accent: var(--color-honey-500);
+  --marketing-accent-bright: var(--color-honey-400);
+  --marketing-accent-emphasis: var(--color-honey-600);
   --marketing-hero-glow: var(--color-brand-lavender);
   --marketing-hero-frame-border: var(--color-zinc-700);
   --marketing-hero-video-tint: 169 50% 42%;
@@ -351,8 +370,8 @@ html[data-theme="dark"] {
   --marketing-feature-divider-dark: var(--color-zinc-600);
   --marketing-cell-hover: var(--color-zinc-950);
   --marketing-cell-ring-offset: var(--color-zinc-950);
-  --marketing-feature-icon: var(--color-soft-periwinkle-500);
-  --marketing-feature-icon-bright: var(--color-soft-periwinkle-400);
+  --marketing-feature-icon: var(--color-honey-500);
+  --marketing-feature-icon-bright: var(--color-honey-400);
   --marketing-platform-border: var(--color-zinc-700);
   --marketing-platform-border-dark: var(--color-zinc-700);
   --marketing-platform-title: 240 6% 98%;
@@ -362,10 +381,10 @@ html[data-theme="dark"] {
   --marketing-platform-gradient-from: var(--color-zinc-950);
   --marketing-platform-gradient-via: var(--background);
   --marketing-platform-inner-dark: var(--color-zinc-950);
-  --marketing-testimonial-avatar-bg: var(--color-soft-periwinkle-400);
-  --marketing-testimonial-avatar-bg-dark: var(--color-soft-periwinkle-400);
-  --marketing-testimonial-avatar-text: var(--color-soft-periwinkle-200);
-  --marketing-testimonial-avatar-text-dark: var(--color-soft-periwinkle-200);
+  --marketing-testimonial-avatar-bg: var(--color-honey-400);
+  --marketing-testimonial-avatar-bg-dark: var(--color-honey-400);
+  --marketing-testimonial-avatar-text: var(--color-honey-200);
+  --marketing-testimonial-avatar-text-dark: var(--color-honey-200);
   --marketing-step-rail: var(--color-zinc-600);
   --marketing-step-rail-dark: var(--color-zinc-600);
   --marketing-step-badge-border: var(--color-zinc-800);
@@ -373,12 +392,27 @@ html[data-theme="dark"] {
   --marketing-step-badge-fill-dark: var(--color-zinc-950);
   --marketing-success: var(--color-brand-teal);
   --marketing-success-bright: 169 52% 72%;
-  --marketing-button-cta: var(--color-soft-periwinkle-500);
-  --marketing-button-cta-hover: var(--color-soft-periwinkle-600);
-  --marketing-ghost-hover-foreground: var(--color-soft-periwinkle-400);
-  --marketing-nav-link-hover: var(--color-soft-periwinkle-500);
+  --marketing-button-cta: var(--color-honey-500);
+  --marketing-button-cta-hover: var(--color-honey-600);
+  --marketing-ghost-hover-foreground: var(--color-honey-400);
+  --marketing-nav-link-hover: var(--color-honey-500);
   --marketing-surface-muted: 240 12% 12%;
   --marketing-surface-muted-hover: 240 12% 16%;
+}
+
+/* Marketing-only primary remap (keeps docs app semantic primary intact). */
+.marketing-theme {
+  --primary-light: var(--color-honey-500);
+  --primary-light-lighter: var(--color-honey-400);
+  --primary-dark: var(--color-honey-500);
+  --primary-dark-lighter: var(--color-honey-400);
+  --primary: var(--color-honey-500);
+  --primary-lighter: var(--color-honey-400);
+  --ring: var(--color-honey-500);
+}
+
+html[data-theme="dark"] .marketing-theme {
+  --ring: var(--color-honey-400);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -717,6 +751,12 @@ pre.shiki.has-focused:hover .line {
  * HSL components as the zinc / soft-periwinkle scales in `:root` above).
  */
 @layer utilities {
+  .font-marketing-body {
+    font-family: var(--font-marketing-body);
+  }
+  .font-marketing-heading {
+    font-family: var(--font-marketing-heading);
+  }
   .text-marketing-link {
     color: hsl(var(--color-zinc-950));
   }
@@ -726,7 +766,7 @@ pre.shiki.has-focused:hover .line {
   }
   .dark .text-marketing-link:hover,
   html[data-theme="dark"] .text-marketing-link:hover {
-    color: hsl(var(--primary));
+    color: hsl(var(--marketing-nav-link-hover));
   }
 }
 
@@ -734,7 +774,7 @@ pre.shiki.has-focused:hover .line {
 /* Components                                                                 */
 /* -------------------------------------------------------------------------- */
 /*
- * Typography: Inter for `font-sans` (body); JetBrains Mono for `font-heading`, `font-mono` (buttons, code), and related.
+ * Typography: Inter for `font-sans` (body); Lexend for `font-heading` / marketing headings; JetBrains Mono for `font-mono` (buttons, code).
  */
 @layer components {
   .heading-h1 {
@@ -744,10 +784,10 @@ pre.shiki.has-focused:hover .line {
     @apply font-heading text-2xl font-medium tracking-tight text-foreground md:text-3xl lg:text-4xl;
   }
   .heading-h3 {
-    @apply font-mono text-base font-medium text-foreground md:text-lg;
+    @apply font-heading text-base font-medium text-foreground md:text-lg;
   }
   .heading-h4 {
-    @apply font-mono text-sm font-medium text-foreground;
+    @apply font-heading text-sm font-medium text-foreground;
   }
 
   /**
@@ -799,8 +839,8 @@ pre.shiki.has-focused:hover .line {
   .homepage-spot-glow {
     background: radial-gradient(
       circle 380px at var(--homepage-glow-x, 50%) var(--homepage-glow-y, 35%),
-      hsl(var(--primary) / 0.62),
-      hsl(var(--primary) / 0.28) 24%,
+      hsl(var(--marketing-accent) / 0.62),
+      hsl(var(--marketing-accent) / 0.28) 24%,
       transparent 52%
     );
     mask-image: radial-gradient(
@@ -821,37 +861,173 @@ pre.shiki.has-focused:hover .line {
     -webkit-mask-position: 0 0;
   }
 
-  /* Hero title hover dots only (`HeroHeadingDots`). */
+  /* Hero title: local dot grid (`HeroHeadingDots.tsx`). Page-level dots sit under the opaque
+   * centre column — they do not paint through the hero card; this ::before matches that look.
+   * Do not put `.hero-text-opacity-mask` on a parent that wraps `.hero-heading-dots` — it
+   * will fade the dot `::before`. Safe on the inner `h1` only (see `Hero.tsx`). */
   .hero-heading-dots {
     --hero-heading-dot-cell: 22px;
     --hero-heading-dot-r: 1px;
+    /* Extra painting box above the heading so dots can sit behind “Agent-ready”. */
+    --hero-heading-dot-field-extend-top: 7rem;
+    /* Extend the grid slightly below the heading block (same for static dots + hover glow). */
+    --hero-heading-dot-field-extend-bottom: 2.75rem;
+    /* Negative Y shifts the repeat phase upward (same idea as background-position on homepage grid). */
+    --hero-heading-dot-field-shift-y: -110px;
+    /* Top: avoids a hard cutoff along the pseudo-element’s upper edge (extended above the title). */
+    --hero-heading-dot-edge-fade-top: linear-gradient(
+      to bottom,
+      rgb(255 255 255 / 0) 0%,
+      rgb(255 255 255 / 0.2) 8%,
+      rgb(255 255 255 / 0.65) 18%,
+      rgb(255 255 255 / 1) 30%,
+      rgb(255 255 255 / 1) 100%
+    );
+    /* Radial vignette: centre biased lower so the tall painting box fades in toward the top. */
+    --hero-heading-dot-edge-fade: radial-gradient(
+      ellipse 128% 74% at 50% 58%,
+      #fff 0%,
+      #fff 24%,
+      rgb(255 255 255 / 0.42) 50%,
+      rgb(255 255 255 / 0.09) 74%,
+      transparent 100%
+    );
     isolation: isolate;
+    overflow: visible;
+  }
+
+  .marketing-theme .hero-heading-dots::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(-1 * var(--hero-heading-dot-field-extend-top));
+    bottom: calc(-1 * var(--hero-heading-dot-field-extend-bottom));
+    z-index: 0;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
+    background-image: radial-gradient(
+      circle,
+      hsl(var(--foreground) / 0.025) var(--hero-heading-dot-r),
+      transparent var(--hero-heading-dot-r)
+    );
+    background-size: var(--hero-heading-dot-cell) var(--hero-heading-dot-cell);
+    background-position: 0 var(--hero-heading-dot-field-shift-y);
+    background-repeat: repeat;
+    -webkit-mask-image: var(--hero-heading-dot-edge-fade-top), var(--hero-heading-dot-edge-fade);
+    mask-image: var(--hero-heading-dot-edge-fade-top), var(--hero-heading-dot-edge-fade);
+    -webkit-mask-repeat: no-repeat, no-repeat;
+    mask-repeat: no-repeat, no-repeat;
+    -webkit-mask-size: 100% 100%, 100% 100%;
+    mask-size: 100% 100%, 100% 100%;
+    -webkit-mask-position: center, center;
+    mask-position: center, center;
+    mask-composite: intersect;
+    -webkit-mask-composite: source-in;
+  }
+
+  .marketing-theme .hero-heading-dots:hover::before {
+    opacity: 1;
+  }
+
+  .dark .marketing-theme .hero-heading-dots::before,
+  html[data-theme="dark"] .marketing-theme .hero-heading-dots::before {
+    background-image: radial-gradient(
+      circle,
+      hsl(var(--color-zinc-400) / 0.12) var(--hero-heading-dot-r),
+      transparent var(--hero-heading-dot-r)
+    );
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marketing-theme .hero-heading-dots::before {
+      transition: none;
+    }
   }
 
   .hero-heading-dots-glow {
     z-index: 1;
+    left: 0;
+    right: 0;
+    top: calc(-1 * var(--hero-heading-dot-field-extend-top));
+    bottom: calc(-1 * var(--hero-heading-dot-field-extend-bottom));
     background: radial-gradient(
       circle 280px at var(--hero-heading-glow-x, 50%) var(--hero-heading-glow-y, 50%),
-      hsl(var(--primary) / 0.58),
-      hsl(var(--primary) / 0.24) 22%,
+      hsl(var(--marketing-accent) / 0.58),
+      hsl(var(--marketing-accent) / 0.24) 22%,
       transparent 52%
     );
-    mask-image: radial-gradient(
-      circle at center,
-      #000 var(--hero-heading-dot-r),
-      transparent var(--hero-heading-dot-r)
+    mask-image: var(--hero-heading-dot-edge-fade-top), var(--hero-heading-dot-edge-fade),
+      radial-gradient(
+        circle at center,
+        #000 var(--hero-heading-dot-r),
+        transparent var(--hero-heading-dot-r)
+      );
+    mask-size:
+      100% 100%,
+      100% 100%,
+      var(--hero-heading-dot-cell) var(--hero-heading-dot-cell);
+    mask-repeat: no-repeat, no-repeat, repeat;
+    mask-position:
+      center,
+      center,
+      0 var(--hero-heading-dot-field-shift-y);
+    mask-composite: intersect, intersect;
+    -webkit-mask-image: var(--hero-heading-dot-edge-fade-top), var(--hero-heading-dot-edge-fade),
+      radial-gradient(
+        circle at center,
+        #000 var(--hero-heading-dot-r),
+        transparent var(--hero-heading-dot-r)
+      );
+    -webkit-mask-size:
+      100% 100%,
+      100% 100%,
+      var(--hero-heading-dot-cell) var(--hero-heading-dot-cell);
+    -webkit-mask-repeat: no-repeat, no-repeat, repeat;
+    -webkit-mask-position:
+      center,
+      center,
+      0 var(--hero-heading-dot-field-shift-y);
+    -webkit-mask-composite: source-in, source-in;
+  }
+
+  /* Hero `h1`: horizontal opacity fade on left/right. `w-max` on the heading keeps the mask
+   * aligned to the text block; full-width `h1` keeps short lines entirely in the opaque band. */
+  .marketing-theme .hero-text-opacity-mask {
+    mask-mode: alpha;
+    -webkit-mask-image: linear-gradient(
+      to right,
+      rgb(255 255 255 / 0.7) 0%,
+      rgb(255 255 255 / 0.76) 14%,
+      rgb(255 255 255 / 0.86) 28%,
+      rgb(255 255 255 / 0.94) 40%,
+      rgb(255 255 255 / 1) 48%,
+      rgb(255 255 255 / 1) 52%,
+      rgb(255 255 255 / 0.94) 60%,
+      rgb(255 255 255 / 0.86) 72%,
+      rgb(255 255 255 / 0.76) 86%,
+      rgb(255 255 255 / 0.7) 100%
     );
-    mask-size: var(--hero-heading-dot-cell) var(--hero-heading-dot-cell);
-    mask-repeat: repeat;
-    mask-position: 0 0;
-    -webkit-mask-image: radial-gradient(
-      circle at center,
-      #000 var(--hero-heading-dot-r),
-      transparent var(--hero-heading-dot-r)
+    mask-image: linear-gradient(
+      to right,
+      rgb(255 255 255 / 0.7) 0%,
+      rgb(255 255 255 / 0.76) 14%,
+      rgb(255 255 255 / 0.86) 28%,
+      rgb(255 255 255 / 0.94) 40%,
+      rgb(255 255 255 / 1) 48%,
+      rgb(255 255 255 / 1) 52%,
+      rgb(255 255 255 / 0.94) 60%,
+      rgb(255 255 255 / 0.86) 72%,
+      rgb(255 255 255 / 0.76) 86%,
+      rgb(255 255 255 / 0.7) 100%
     );
-    -webkit-mask-size: var(--hero-heading-dot-cell) var(--hero-heading-dot-cell);
-    -webkit-mask-repeat: repeat;
-    -webkit-mask-position: 0 0;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-position: center;
+    mask-position: center;
   }
 
   /** TrustedBy grid cells: dot texture on hover (`TrustedBy.tsx`). */
@@ -989,16 +1165,28 @@ pre.shiki.has-focused:hover .line {
     @apply !font-heading !text-xl !font-medium !tracking-tight !text-foreground md:!text-2xl;
   }
   .doc-h3 {
-    @apply !font-mono !text-lg !font-medium !text-foreground;
+    @apply !font-heading !text-lg !font-medium !text-foreground;
   }
   .doc-h4 {
-    @apply !font-mono !text-base !font-medium !text-foreground;
+    @apply !font-heading !text-base !font-medium !text-foreground;
   }
   .doc-h5 {
-    @apply !font-mono !text-sm !font-medium !text-foreground;
+    @apply !font-heading !text-sm !font-medium !text-foreground;
   }
   .doc-h6 {
-    @apply !font-mono !text-xs !font-medium !uppercase !tracking-wide !text-foreground;
+    @apply !font-heading !text-xs !font-medium !uppercase !tracking-wide !text-foreground;
+  }
+
+  .marketing-theme .heading-h1,
+  .marketing-theme .heading-h2,
+  .marketing-theme .heading-h3,
+  .marketing-theme .heading-h4 {
+    font-family: var(--font-marketing-heading);
+  }
+
+  /* Prose: headings default to sans in typography plugin; match site heading stack. */
+  .prose :where(h1, h2, h3, h4, h5, h6) {
+    font-family: var(--font-heading);
   }
 }
 

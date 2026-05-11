@@ -12,8 +12,8 @@ import {
 import { cn } from "~/lib/utils";
 
 /**
- * Dot-masked primary glow on hover only — no always-visible grid (same masking idea as
- * `.homepage-spot-glow`), coordinates relative to this box.
+ * Dot grid + honey glow share geometry; both show only while the heading block is hovered
+ * (`::before` opacity in CSS; glow opacity in React). Reduced motion: instant opacity step.
  */
 export function HeroHeadingDots({ children }: { children: ReactNode }) {
   const wrapRef = useRef<HTMLDivElement>(null);
@@ -54,12 +54,12 @@ export function HeroHeadingDots({ children }: { children: ReactNode }) {
   return (
     <div
       ref={wrapRef}
-      className="hero-heading-dots relative mx-auto w-full max-w-full pt-0 pb-16 sm:pb-20 -mb-14 sm:-mb-[4.25rem]"
+      className="hero-heading-dots relative mx-auto w-full max-w-full overflow-visible pt-0 pb-16 sm:pb-20 -mb-14 sm:-mb-[4.25rem]"
     >
       <div
         aria-hidden
         className={cn(
-          "hero-heading-dots-glow pointer-events-none absolute inset-0 motion-reduce:hidden -translate-y-3 sm:-translate-y-4 md:-translate-y-5",
+          "hero-heading-dots-glow pointer-events-none absolute motion-reduce:hidden",
           "transition-opacity duration-200 ease-out",
           hovered ? "opacity-100" : "opacity-0",
         )}
@@ -70,7 +70,7 @@ export function HeroHeadingDots({ children }: { children: ReactNode }) {
           } as CSSProperties
         }
       />
-      <div className="relative z-[2]">{children}</div>
+      <div className="relative z-[2] overflow-visible">{children}</div>
     </div>
   );
 }

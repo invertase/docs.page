@@ -43,7 +43,7 @@ const projects: {
     name: "Jaspr",
     href: "https://github.com/schultek/jaspr",
     stars: "2k",
-    nameColor: "primary",
+    nameColor: "teal",
   },
   {
     name: "Melos",
@@ -62,21 +62,22 @@ export function TrustedBy() {
       <div
         className={cn(
           "grid w-full min-h-0 min-w-0 grid-cols-1",
-          "min-h-28 sm:min-h-36",
-          "sm:grid-cols-[minmax(0,15rem)_1fr] sm:items-stretch md:grid-cols-[minmax(0,17.5rem)_1fr]",
+          "min-h-32 sm:min-h-36",
+          "sm:grid-cols-[minmax(0,11.25rem)_1fr] sm:items-stretch md:grid-cols-[minmax(0,12.5rem)_1fr] lg:grid-cols-[minmax(0,15rem)_1fr] xl:grid-cols-[minmax(0,17.5rem)_1fr]",
         )}
       >
           <div
             className={cn(
               platformCardVariants(),
-              "flex h-full min-h-0 w-full min-w-0 max-w-md self-stretch items-center justify-center sm:max-w-full",
-              "px-3 sm:px-4 sm:pr-10 md:px-5 md:pr-12",
+              "flex h-full min-h-0 w-full min-w-0 self-stretch items-center justify-center",
+              "border-b-0 sm:border-b",
+              "px-3 py-4 sm:px-3 sm:py-0 sm:pr-5 md:px-4 md:pr-7 lg:px-5 lg:pr-10 xl:pr-12",
             )}
           >
             <div className="flex w-full justify-center sm:justify-end">
               <h2
                 id="trusted-by-heading"
-                className="w-max max-w-full text-balance text-left font-heading text-lg font-medium leading-snug text-foreground sm:text-xl"
+                className="w-max max-w-full text-balance text-center font-heading text-lg font-light leading-snug text-foreground sm:text-left sm:text-lg md:text-xl"
               >
                 Trusted by the teams behind
               </h2>
@@ -105,15 +106,15 @@ export function TrustedBy() {
                     href={p.href}
                     aria-label={`${p.name} on GitHub, ${p.stars}+ stars`}
                     className={cn(
-                      "trusted-by-project-link box-border flex h-full min-h-0 w-full min-w-0 flex-col justify-between gap-0",
-                      "px-2.5 py-2.5 transition-colors sm:px-4 sm:py-3 md:px-5",
+                      "trusted-by-project-link box-border flex h-full min-h-0 w-full min-w-0 flex-col justify-between gap-4 sm:gap-3",
+                      "min-h-[5.75rem] px-2.5 py-4 transition-colors sm:min-h-0 sm:px-2.5 sm:py-3 md:px-3.5 lg:px-4 xl:px-5",
                       "text-foreground hover:bg-foreground/[0.02]",
                       "[&>*]:relative [&>*]:z-[1]",
                     )}
                   >
                     <span
                       className={cn(
-                        "line-clamp-2 min-w-0 text-left font-mono text-base font-medium sm:text-lg",
+                        "line-clamp-2 min-w-0 text-left font-mono text-sm font-medium leading-snug md:text-base lg:text-lg",
                         trustedByNameColorClass[p.nameColor],
                       )}
                     >

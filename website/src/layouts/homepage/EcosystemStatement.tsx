@@ -7,10 +7,13 @@ export function EcosystemStatement() {
       <div className="py-12 md:py-16">
         <h2
           id="ecosystem-statement-heading"
-          className="text-center font-heading text-lg font-medium leading-snug text-balance text-foreground sm:text-xl"
+          className="text-center text-lg font-light leading-snug text-balance text-foreground sm:text-xl"
         >
-          Engineering excellence for the <br />
-          open-source ecosystem
+          <span className="font-marketing-heading text-2xl sm:text-3xl">
+            Engineering excellence for the <br />
+            <span className="font-mono text-marketing-accent">open-source</span>{" "}
+            ecosystem
+          </span>
         </h2>
         <p
           className="mx-auto mt-5 max-w-2xl text-center text-sm font-light leading-relaxed text-zinc-600 text-balance dark:text-zinc-300/80 sm:mt-6 sm:text-base"

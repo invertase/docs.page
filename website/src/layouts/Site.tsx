@@ -39,7 +39,7 @@ export function Site({ children }: { children: React.ReactNode }) {
         data-domain="docs.page"
         src="https://plausible.io/js/script.js"
       />
-      {children}
+      <div className="marketing-theme font-marketing-body">{children}</div>
     </>
   );
 }

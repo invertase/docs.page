@@ -20,13 +20,11 @@ export function Footer() {
         <Card
           className={cn(
             platformCardVariants(),
-            "flex min-h-[13rem] min-w-0 flex-col border-b-0",
+            "flex min-h-[13rem] min-w-0 flex-col border-b-0 border-t-0",
             "gap-0 p-3 text-foreground sm:min-h-[14rem] sm:p-3.5 md:p-4",
           )}
         >
-          <div
-            className={cn("flex min-h-0 flex-1 flex-col font-heading")}
-          >
+          <div className={cn("flex min-h-0 flex-1 flex-col font-marketing-body")}>
             <a
               href="/"
               className="flex w-fit shrink-0 items-center"
@@ -63,7 +61,7 @@ export function Footer() {
                 >
                   Privacy Policy
                 </a>
-                <span>© {year} docs.page. All rights reserved.</span>
+                <span className="font-sans">© {year} docs.page. All rights reserved.</span>
                 <span className="inline-flex flex-wrap items-center justify-end gap-2">
                   <a
                     href={LINKS.twitter}
