@@ -142,6 +142,7 @@ function isBypassPath(pathname: string) {
     pathname === "/" ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api") ||
+    pathname.startsWith("/.well-known") ||
     pathname === "/favicon.ico" ||
     (/\.[a-zA-Z0-9]+$/.test(pathname) &&
       !isRawDocRequestPath(pathname) &&

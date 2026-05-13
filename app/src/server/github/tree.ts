@@ -1,10 +1,18 @@
 import { getGitHubRestClient } from "./client";
-import { resolveGitHubSource, type GitHubSource } from "./contents";
+import { type GitHubSource, resolveGitHubSource } from "./repo-source";
 
 type RefArgs = {
   owner: string;
   repository: string;
   ref?: string;
+};
+
+export type GitHubRepositoryMetadata = {
+  stars: number;
+  forks: number;
+  defaultBranch: string;
+  isFork: boolean;
+  isPrivate: boolean;
 };
 
 type GitHubTreeEntry = {
@@ -54,13 +62,64 @@ export type GitHubSkillFileList = {
   skills: GitHubSkillFile[];
 };
 
-async function getDefaultBranch(owner: string, repository: string) {
-  const response = await getGitHubRestClient().request("GET /repos/{owner}/{repo}", {
-    owner,
-    repo: repository,
-  });
+export async function getRepositoryMetadata(owner: string, repository: string) {
+  const response = await getGitHubRestClient().request(
+    "GET /repos/{owner}/{repo}",
+    {
+      owner,
+      repo: repository,
+    },
+  );
 
-  return response.data.default_branch;
+  return {
+    stars: response.data.stargazers_count,
+    forks: response.data.forks_count,
+    defaultBranch: response.data.default_branch,
+    isFork: response.data.fork,
+    isPrivate: response.data.private,
+  } satisfies GitHubRepositoryMetadata;
+}
+
+const PINNED_COMMIT_REF_PATTERN = /^[a-fA-F0-9]{40}$/;
+
+export async function resolvePinnedGitHubSource(metadata: RefArgs): Promise<{
+  source: GitHubSource;
+  resolvedRef: string;
+  resolvedSha: string;
+  repositoryMetadata?: GitHubRepositoryMetadata;
+}> {
+  const source = await resolveGitHubSource(metadata);
+  let repositoryMetadata: GitHubRepositoryMetadata | undefined;
+  const resolvedRef =
+    !source.ref || source.ref === "HEAD"
+      ? await (async () => {
+          repositoryMetadata = await getRepositoryMetadata(
+            source.owner,
+            source.repository,
+          );
+          return repositoryMetadata.defaultBranch;
+        })()
+      : source.ref;
+  const resolvedSha =
+    source.type === "commit" || PINNED_COMMIT_REF_PATTERN.test(resolvedRef)
+      ? resolvedRef
+      : (
+          await resolveGitHubRefToSha(
+            source.owner,
+            source.repository,
+            resolvedRef,
+          )
+        ).sha;
+
+  return {
+    source: {
+      ...source,
+      ref: resolvedRef,
+    },
+    resolvedRef,
+    resolvedSha,
+    repositoryMetadata,
+  };
 }
 
 export async function resolveGitHubRefToSha(
@@ -68,11 +127,14 @@ export async function resolveGitHubRefToSha(
   repository: string,
   ref: string,
 ) {
-  const response = await getGitHubRestClient().request("GET /repos/{owner}/{repo}/commits/{ref}", {
-    owner,
-    repo: repository,
-    ref,
-  });
+  const response = await getGitHubRestClient().request(
+    "GET /repos/{owner}/{repo}/commits/{ref}",
+    {
+      owner,
+      repo: repository,
+      ref,
+    },
+  );
 
   return {
     ref,
@@ -85,12 +147,15 @@ export async function getGitHubRecursiveTreeBySha(
   repository: string,
   sha: string,
 ): Promise<GitHubRecursiveTree> {
-  const response = await getGitHubRestClient().request("GET /repos/{owner}/{repo}/git/trees/{tree_sha}", {
-    owner,
-    repo: repository,
-    tree_sha: sha,
-    recursive: "1",
-  });
+  const response = await getGitHubRestClient().request(
+    "GET /repos/{owner}/{repo}/git/trees/{tree_sha}",
+    {
+      owner,
+      repo: repository,
+      tree_sha: sha,
+      recursive: "1",
+    },
+  );
 
   return {
     truncated: response.data.truncated,
@@ -99,7 +164,9 @@ export async function getGitHubRecursiveTreeBySha(
         return (
           typeof entry.path === "string" &&
           typeof entry.sha === "string" &&
-          (entry.type === "blob" || entry.type === "tree" || entry.type === "commit")
+          (entry.type === "blob" ||
+            entry.type === "tree" ||
+            entry.type === "commit")
         );
       })
       .map((entry) => ({
@@ -165,26 +232,9 @@ function filterDocFiles(tree: GitHubRecursiveTree) {
     }
   }
 
-  return [...files.values()].sort((left, right) => left.path.localeCompare(right.path));
-}
-
-async function resolveRef(args: RefArgs) {
-  const source = await resolveGitHubSource(args);
-  const resolvedRef = !source.ref || source.ref === "HEAD"
-    ? await getDefaultBranch(source.owner, source.repository)
-    : source.ref;
-  const resolvedSha = source.type === "commit"
-    ? resolvedRef
-    : (await resolveGitHubRefToSha(source.owner, source.repository, resolvedRef)).sha;
-
-  return {
-    source: {
-      ...source,
-      ref: resolvedRef,
-    },
-    resolvedRef,
-    resolvedSha,
-  };
+  return [...files.values()].sort((left, right) =>
+    left.path.localeCompare(right.path),
+  );
 }
 
 function filterSkillFiles(
@@ -194,7 +244,11 @@ function filterSkillFiles(
 ) {
   const skillCandidates = tree.tree
     .filter((entry) => entry.type === "blob")
-    .filter((entry) => entry.path.startsWith(".agents/skills/") && entry.path.endsWith("/SKILL.md"));
+    .filter(
+      (entry) =>
+        entry.path.startsWith(".agents/skills/") &&
+        entry.path.endsWith("/SKILL.md"),
+    );
 
   return skillCandidates
     .map((entry): GitHubSkillFile => {
@@ -220,7 +274,7 @@ export async function listGitHubDocFiles(
   args: RefArgs,
 ): Promise<GitHubDocFileList | undefined> {
   try {
-    const resolved = await resolveRef(args);
+    const resolved = await resolvePinnedGitHubSource(args);
     const tree = await getGitHubRecursiveTreeBySha(
       resolved.source.owner,
       resolved.source.repository,
@@ -244,7 +298,7 @@ export async function listGitHubSkillFiles(
   args: RefArgs,
 ): Promise<GitHubSkillFileList | undefined> {
   try {
-    const resolved = await resolveRef(args);
+    const resolved = await resolvePinnedGitHubSource(args);
     const tree = await getGitHubRecursiveTreeBySha(
       resolved.source.owner,
       resolved.source.repository,
