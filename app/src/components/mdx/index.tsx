@@ -27,7 +27,7 @@ export const components = {
   steps: Steps,
   step: Step,
   tabs: () => <div>TABS!</div>,
-  tabitem: () => <div>TABITEM!</div>,
+  "tab-item": () => <div>TABITEM!</div>,
   tweet: Tweet,
   video: Video,
   vimeo: Vimeo,

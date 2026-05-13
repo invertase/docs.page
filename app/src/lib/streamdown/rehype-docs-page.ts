@@ -1,7 +1,7 @@
 import type { ComponentProps } from "react";
 import { defaultRehypePlugins, type Streamdown } from "streamdown";
 
-type AllowedTags = Record<string, string[]>;
+type AllowedTagsInput = Record<string, readonly string[]>;
 type RehypePlugins = NonNullable<ComponentProps<typeof Streamdown>["rehypePlugins"]>;
 type HastNode = {
   type: string;
@@ -17,17 +17,49 @@ type SanitizeSchema = {
 const UNKNOWN_COMPONENT_TAG = "unknown";
 const CUSTOM_TAG_REGEX = /<(\/?)([A-Za-z][A-Za-z0-9-]*)([^>]*)>/g;
 
+/**
+ * HTML lowercases tag names. A hyphenated custom tag like `you-tube` often
+ * appears in HAST as the same letters run together (`youtube`) when the
+ * author wrote PascalCase (`<YouTube>`) and it did not go through our raw
+ * string normalizer first. Build `youtube` → `you-tube` (and similar) from
+ * allowlisted tag names so we do not hand-maintain per-component aliases.
+ */
+function collapsedHyphenTagAliases(
+  canonicalTagNames: readonly string[],
+): Record<string, string> {
+  const aliases: Record<string, string> = {};
+  for (const canonical of canonicalTagNames) {
+    if (!canonical.includes("-")) {
+      continue;
+    }
+    const collapsed = canonical.replace(/-/g, "");
+    if (!collapsed) {
+      continue;
+    }
+    const prior = aliases[collapsed];
+    if (prior !== undefined && prior !== canonical) {
+      continue;
+    }
+    aliases[collapsed] = canonical;
+  }
+  return aliases;
+}
+
+function toSanitizeAllowedTags(tags: AllowedTagsInput): Record<string, string[]> {
+  const result: Record<string, string[]> = {};
+  for (const [tag, attrs] of Object.entries(tags)) {
+    result[tag] = [...attrs];
+  }
+  return result;
+}
+
+/** Rehype plugins for markdown that uses fenced custom tags merged with Streamdown defaults. */
 export function createDocsPageRehypePlugins(
-  allowedTags: AllowedTags,
+  allowedTags: AllowedTagsInput,
 ): RehypePlugins {
-  // Custom tags are matched case-insensitively during normalization so
-  // authors can write `<Info>` while Streamdown ultimately renders `<info>`.
-  const knownComponents = new Set(
-    Object.keys(allowedTags).map((tag) => tag.toLowerCase()),
-  );
+  const sanitizeAttrs = toSanitizeAllowedTags(allowedTags);
+  const knownComponents = new Set(Object.keys(sanitizeAttrs).map((tag) => tag.toLowerCase()));
   const customBlockTags = new Set([...knownComponents, UNKNOWN_COMPONENT_TAG]);
-  // Streamdown ships its own sanitize plugin tuple; keep that plugin instance
-  // and extend only the schema so our custom tags survive sanitization.
   const sanitizePlugin = Array.isArray(defaultRehypePlugins.sanitize)
     ? defaultRehypePlugins.sanitize[0]
     : defaultRehypePlugins.sanitize;
@@ -36,29 +68,52 @@ export function createDocsPageRehypePlugins(
       ? defaultRehypePlugins.sanitize[1]
       : {}
   ) as SanitizeSchema;
-  // Rebuild the sanitize tuple with our docs-page tags and attributes merged
-  // into Streamdown's default allowlist instead of replacing it outright.
+
   const sanitizeEntry = [
     sanitizePlugin as RehypePlugins[number],
     {
       ...sanitizeSchema,
       tagNames: Array.from(
-        new Set([...(sanitizeSchema.tagNames ?? []), ...Object.keys(allowedTags)]),
+        new Set([...(sanitizeSchema.tagNames ?? []), ...Object.keys(sanitizeAttrs)]),
       ),
       attributes: {
         ...(sanitizeSchema.attributes ?? {}),
-        ...allowedTags,
+        ...sanitizeAttrs,
       },
     },
   ] as RehypePlugins[number];
 
+  const tagAliases = collapsedHyphenTagAliases(Object.keys(sanitizeAttrs));
+
   return [
     createNormalizeCustomTagsPlugin(knownComponents),
     defaultRehypePlugins.raw,
+    createCoerceHastTagNamesPlugin(tagAliases),
     sanitizeEntry,
     defaultRehypePlugins.harden,
     createUnwrapCustomBlockParagraphsPlugin(customBlockTags),
   ];
+}
+
+function createCoerceHastTagNamesPlugin(aliases: Record<string, string>) {
+  return () => {
+    return (tree: HastNode | undefined) => {
+      if (!tree) {
+        return;
+      }
+
+      visitNodes(tree, (node) => {
+        if (node.type !== "element" || typeof node.tagName !== "string") {
+          return;
+        }
+
+        const canonical = aliases[node.tagName];
+        if (canonical) {
+          node.tagName = canonical;
+        }
+      });
+    };
+  };
 }
 
 function createNormalizeCustomTagsPlugin(knownComponents: Set<string>) {
@@ -76,8 +131,8 @@ function createNormalizeCustomTagsPlugin(knownComponents: Set<string>) {
         node.value = node.value.replace(
           CUSTOM_TAG_REGEX,
           (_full, slash: string, rawName: string, rawAttributes: string) => {
-            const normalizedName = rawName.toLowerCase();
-            const isKnownComponent = knownComponents.has(normalizedName);
+            const tagKey = canonicalCustomTagName(rawName);
+            const isKnownComponent = knownComponents.has(tagKey);
             const isCustomLike = /^[A-Z]/.test(rawName) || isKnownComponent;
             const isSelfClosing = /\/\s*$/.test(rawAttributes);
             const attributes = isSelfClosing
@@ -90,12 +145,12 @@ function createNormalizeCustomTagsPlugin(knownComponents: Set<string>) {
 
             if (isKnownComponent) {
               if (slash === "/") {
-                return `</${normalizedName}>`;
+                return `</${tagKey}>`;
               }
 
-              const openTag = `<${normalizedName}${attributes}>`;
+              const openTag = `<${tagKey}${attributes}>`;
               return isSelfClosing
-                ? `${openTag}</${normalizedName}>`
+                ? `${openTag}</${tagKey}>`
                 : openTag;
             }
 
@@ -236,4 +291,11 @@ function visitNodes(
 
 function escapeAttributeValue(value: string) {
   return value.replace(/&/g, "&amp;").replace(/"/g, "&quot;");
+}
+
+function canonicalCustomTagName(rawName: string): string {
+  return rawName
+    .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
+    .replace(/([A-Z])([A-Z][a-z])/g, "$1-$2")
+    .toLowerCase();
 }

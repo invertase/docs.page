@@ -102,7 +102,7 @@ function isTabItemElement(child: ReactNode): child is TabItemElement {
 
   const { label, value, node } = child.props;
   return (
-    node?.tagName === "tabitem" &&
+    node?.tagName === "tab-item" &&
     typeof label === "string" &&
     typeof value === "string"
   );

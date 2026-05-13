@@ -13,55 +13,6 @@ type ExtractHeadingNodesOptions = {
 const DEFAULT_TOC_MIN_DEPTH = 2;
 const DEFAULT_TOC_MAX_DEPTH = 3;
 
-export function decodeComponentProps(
-  encodedValue: string | undefined,
-): Record<string, string | boolean> {
-  if (!encodedValue) {
-    return {};
-  }
-
-  try {
-    const decoded = decodeURIComponent(encodedValue);
-    const parsed = JSON.parse(decoded);
-    return isStringRecord(parsed) ? parsed : {};
-  } catch {
-    return {};
-  }
-}
-
-type CustomComponentNode = {
-  properties?: {
-    dataComponent?: unknown;
-    dataProps?: unknown;
-  };
-};
-
-export function getCustomComponentName(
-  node: CustomComponentNode | undefined,
-): string | null {
-  const componentName = node?.properties?.dataComponent;
-  return typeof componentName === "string" ? componentName : null;
-}
-
-export function getCustomComponentProps(
-  node: CustomComponentNode | undefined,
-  expectedComponentName?: string,
-): Record<string, string | boolean> | null {
-  const componentName = getCustomComponentName(node);
-  if (!componentName) {
-    return null;
-  }
-
-  if (expectedComponentName && componentName !== expectedComponentName) {
-    return null;
-  }
-
-  const encodedProps = node?.properties?.dataProps;
-  return decodeComponentProps(
-    typeof encodedProps === "string" ? encodedProps : undefined,
-  );
-}
-
 export function extractHeadingNodes(
   markdown: string,
   options: ExtractHeadingNodesOptions = {},
@@ -152,16 +103,4 @@ function slugifyHeading(value: string) {
     .replace(/\s+/g, "-");
 
   return slug || "section";
-}
-
-function isStringRecord(
-  value: unknown,
-): value is Record<string, string | boolean> {
-  if (!value || typeof value !== "object") {
-    return false;
-  }
-
-  return Object.values(value).every(
-    (entry) => typeof entry === "string" || typeof entry === "boolean",
-  );
 }
