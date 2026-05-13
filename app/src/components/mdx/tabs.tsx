@@ -17,7 +17,6 @@ import {
 } from "react";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import type { DocsRequestMode } from "@/lib/docs-routing";
-import type { ExtraProps } from "streamdown";
 import {
   Tabs as TabsRoot,
   TabsContent,
@@ -28,8 +27,7 @@ import {
 type TabProps = PropsWithChildren<{
   groupId?: string;
   defaultValue?: string;
-}> &
-  ExtraProps;
+}>;
 
 type TabsContextValue = {
   groups: Record<string, string>;
@@ -90,7 +88,6 @@ type TabItemElementProps = {
   label: string;
   value: string;
   children?: ReactNode;
-  node?: ExtraProps["node"];
 };
 
 type TabItemElement = ReactElement<TabItemElementProps>;
@@ -100,12 +97,8 @@ function isTabItemElement(child: ReactNode): child is TabItemElement {
     return false;
   }
 
-  const { label, value, node } = child.props;
-  return (
-    node?.tagName === "tab-item" &&
-    typeof label === "string" &&
-    typeof value === "string"
-  );
+  const { label, value } = child.props;
+  return typeof label === "string" && typeof value === "string";
 }
 
 function getTabItems(children: ReactNode): TabItemElement[] {

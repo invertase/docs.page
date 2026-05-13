@@ -3,6 +3,7 @@
 import { defaultConfig, parseConfig } from "@/server/config";
 import { Docs } from "@/components/docs";
 import { DocPageContext } from "@/hooks/use-doc-page-context";
+import type { DocIrNode } from "@/lib/docs-ir/types";
 import type { DocPageProps } from "@/lib/types";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/router";
@@ -18,6 +19,7 @@ import { Preset } from "./preset";
 
 type PreviewBundle = {
   markdown?: string;
+  docIr?: DocIrNode;
   frontmatter: Record<string, unknown>;
   headings: Array<{
     id: string;
@@ -110,6 +112,7 @@ export function PreviewClient() {
     const docPath = normalizePreviewDocPath(previewPath);
     const config = parsePreviewConfig(response.config);
     const repository = getWorkspaceName(response.rootDir);
+    const markdown = response.bundle.markdown ?? response.markdown ?? "";
 
     return {
       kind: "doc",
@@ -138,7 +141,11 @@ export function PreviewClient() {
         baseBranch: "preview",
         path: docPath || "index",
         config,
-        markdown: response.bundle.markdown ?? response.markdown ?? "",
+        markdown,
+        docIr: response.bundle.docIr ?? {
+          kind: "root",
+          children: [{ kind: "markdown", source: markdown }],
+        },
         headings: response.bundle.headings,
         frontmatter: response.bundle.frontmatter,
       },

@@ -1,4 +1,6 @@
 import frontmatter from "gray-matter";
+import { mdxToDocIr } from "@/lib/docs-ir/from-mdx";
+import type { DocIrNode } from "@/lib/docs-ir/types";
 import { extractHeadingNodes, type HeadingNode } from "@/lib/docs-markdown";
 import { type Config, defaultConfig, parseConfig } from "@/server/config";
 import { getGitHubContents, resolveGitHubSource, type GitHubSource } from "@/server/github/contents";
@@ -26,6 +28,7 @@ export type BundlerOutput = {
   path: string;
   config: Config;
   markdown: string;
+  docIr: DocIrNode;
   headings: HeadingNode[];
   frontmatter: Record<string, unknown>;
 };
@@ -130,6 +133,7 @@ export class Bundler {
         tocMinDepth: 2,
         tocMaxDepth: this.#config.content?.headerDepth ?? 3,
       });
+      const docIr = await mdxToDocIr(markdown);
 
       return {
         source: this.#source,
@@ -141,6 +145,7 @@ export class Bundler {
         path: this.#path,
         config: this.#config,
         markdown,
+        docIr,
         headings,
         frontmatter: data,
       };

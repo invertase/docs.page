@@ -129,3 +129,7 @@
     @apply bg-background text-foreground;
     }
 }
+
+[data-rmiz-modal-overlay="visible"] {
+  background-color: transparent !important;
+}

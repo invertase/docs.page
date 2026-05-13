@@ -2,7 +2,8 @@
   "private": true,
   "scripts": {
     "dev": "cd app && bun dev",
-    "check": "bunx @biomejs/biome check --write ."
+    "check": "bunx @biomejs/biome check --write .",
+    "test:mdx": "bun ./test/run-all.ts"
   },
   "dependencies": {
     "typescript": "^6.0.3"
@@ -10,5 +11,5 @@
   "devDependencies": {
     "@biomejs/biome": "1.8.3"
   },
-  "workspaces": ["app", "packages/*"]
+  "workspaces": ["app", "packages/*", "test"]
 }
