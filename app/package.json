@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "generate:fa-brand-icons": "bun scripts/generate-fa-brand-icons.ts",
     "dev": "next dev",
     "build": "next build",
     "start": "node .next/standalone/server.js"

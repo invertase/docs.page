@@ -22,6 +22,34 @@ type MdastNode = {
   children?: MdastNode[];
 };
 
+type EstreeProgram = {
+  type?: string;
+  body?: Array<{
+    type?: string;
+    expression?: EstreeExpression;
+  }>;
+};
+
+type EstreeExpression = {
+  type?: string;
+  value?: unknown;
+  elements?: EstreeExpression[];
+  properties?: Array<{
+    type?: string;
+    computed?: boolean;
+    key?: { type?: string; name?: string; value?: unknown };
+    value?: EstreeExpression;
+  }>;
+};
+
+type MdxExpressionValue = {
+  type?: string;
+  value?: string;
+  data?: {
+    estree?: EstreeProgram;
+  };
+};
+
 const UNSUPPORTED_NODE_TYPES = new Set([
   "mdxjsEsm",
   "mdxFlowExpression",
@@ -128,10 +156,79 @@ function mdxAttributesToProps(
       continue;
     }
 
-    throw new Error(`Unsupported MDX JSX expression attribute: ${attr.name}`);
+    props[attr.name] = expressionAttributeToProp(attr.name, attr.value);
   }
 
   return props;
+}
+
+function expressionAttributeToProp(
+  name: string,
+  value: unknown,
+): DocIrPropValue {
+  if (!isMdxExpressionValue(value)) {
+    throw new Error(`Unsupported MDX JSX expression attribute: ${name}`);
+  }
+
+  const expression = value.data?.estree?.body?.[0]?.expression;
+  if (!expression) {
+    throw new Error(`Unsupported MDX JSX expression attribute: ${name}`);
+  }
+
+  return estreeExpressionToProp(name, expression);
+}
+
+function estreeExpressionToProp(
+  attrName: string,
+  expression: EstreeExpression,
+): DocIrPropValue {
+  switch (expression.type) {
+    case "Literal":
+      if (
+        expression.value === null ||
+        typeof expression.value === "string" ||
+        typeof expression.value === "number" ||
+        typeof expression.value === "boolean"
+      ) {
+        return expression.value;
+      }
+      break;
+    case "ArrayExpression":
+      return (expression.elements ?? []).map((element) =>
+        estreeExpressionToProp(attrName, element),
+      );
+    case "ObjectExpression": {
+      const out: Record<string, DocIrPropValue> = {};
+      for (const property of expression.properties ?? []) {
+        if (property.type !== "Property" || property.computed || !property.key || !property.value) {
+          throw new Error(`Unsupported MDX JSX expression attribute: ${attrName}`);
+        }
+        const key = estreePropertyKey(property.key);
+        out[key] = estreeExpressionToProp(attrName, property.value);
+      }
+      return out;
+    }
+  }
+
+  throw new Error(`Unsupported MDX JSX expression attribute: ${attrName}`);
+}
+
+function estreePropertyKey(key: NonNullable<EstreeExpression["properties"]>[number]["key"]): string {
+  if (key?.type === "Identifier" && typeof key.name === "string") {
+    return key.name;
+  }
+  if (key?.type === "Literal" && typeof key.value === "string") {
+    return key.value;
+  }
+  throw new Error("Unsupported MDX JSX object property key.");
+}
+
+function isMdxExpressionValue(value: unknown): value is MdxExpressionValue {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    (value as MdxExpressionValue).type === "mdxJsxAttributeValueExpression"
+  );
 }
 
 function sourceForNode(node: MdastNode, source: string): string {

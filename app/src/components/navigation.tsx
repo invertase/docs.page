@@ -29,6 +29,30 @@ import {
 import type { SidebarGroup as SidebarConfigGroup } from "@/server/config/models/sidebar";
 import { cn } from "@/lib/utils";
 import { Link } from "./doc-link";
+import { Icon } from "./mdx/icon";
+
+type SidebarPageLink = Extract<
+  SidebarConfigGroup["pages"][number],
+  { title: string }
+>;
+
+function SidebarNavIcon(props: { icon: string }) {
+  if (isExternalLink(props.icon)) {
+    return (
+      <img
+        src={props.icon}
+        alt=""
+        aria-hidden
+        className="size-4 shrink-0 object-contain"
+      />
+    );
+  }
+  return (
+    <span className="inline-flex shrink-0 text-sm leading-none text-sidebar-foreground [&>div]:contents">
+      <Icon name={props.icon} size={14} />
+    </span>
+  );
+}
 
 function getSidebarGroups(config: { sidebar: unknown }): SidebarConfigGroup[] {
   const raw = config.sidebar;
@@ -53,7 +77,7 @@ function subtreeHasActivePage(
 ): boolean {
   for (const p of pages) {
     if (isPageLink(p)) {
-      const link = p as { title: string; href: string };
+      const link = p as SidebarPageLink;
       if (isDocHrefActive(route, link.href, locales)) {
         return true;
       }
@@ -87,6 +111,7 @@ function ExternalLinkBadge(props: { nested?: boolean }) {
 function SidebarPageRow(props: {
   title: string;
   href: string;
+  icon?: string;
   isActive: boolean;
   nested?: boolean;
 }) {
@@ -102,7 +127,8 @@ function SidebarPageRow(props: {
           className={cn("text-muted-foreground", external && "pr-7")}
         >
           <Link href={props.href}>
-            <span>{props.title}</span>
+            {props.icon ? <SidebarNavIcon icon={props.icon} /> : null}
+            <span className="truncate">{props.title}</span>
           </Link>
         </SidebarMenuSubButton>
         {external ? <ExternalLinkBadge nested /> : null}
@@ -118,7 +144,8 @@ function SidebarPageRow(props: {
         className={cn(external && "pr-8")}
       >
         <Link href={props.href}>
-          <span>{props.title}</span>
+          {props.icon ? <SidebarNavIcon icon={props.icon} /> : null}
+          <span className="truncate">{props.title}</span>
         </Link>
       </SidebarMenuButton>
       {external ? <ExternalLinkBadge /> : null}
@@ -146,6 +173,7 @@ function SidebarNestedGroup(props: {
         <SidebarMenuItem className="pb-1">
           <CollapsibleTrigger asChild>
             <SidebarMenuButton tooltip={label} isActive={isActive}>
+              {props.node.icon ? <SidebarNavIcon icon={props.node.icon} /> : null}
               <span className="truncate">{label}</span>
               <RiArrowRightSLine className="ml-auto size-4 shrink-0 transition-transform duration-200 [[data-state=open]>&]:rotate-90" />
             </SidebarMenuButton>
@@ -168,6 +196,7 @@ function SidebarNestedGroup(props: {
       <SidebarMenuSubItem className="pb-1">
         <CollapsibleTrigger asChild>
           <SidebarMenuSubButton isActive={isActive} className="text-muted-foreground">
+            {props.node.icon ? <SidebarNavIcon icon={props.node.icon} /> : null}
             <span className="truncate">{label}</span>
             <RiArrowRightSLine className="ml-auto size-4 shrink-0 transition-transform duration-200 [[data-state=open]>&]:rotate-90" />
           </SidebarMenuSubButton>
@@ -198,7 +227,7 @@ function SidebarPagesList(props: {
         const key = `page-${props.depth}-${index}`;
 
         if (isPageLink(item)) {
-          const link = item as { title: string; href: string };
+          const link = item as SidebarPageLink;
           const active = isDocHrefActive(route, link.href, locales);
           if (props.depth > 0) {
             return (
@@ -206,6 +235,7 @@ function SidebarPagesList(props: {
                 <SidebarPageRow
                   title={link.title}
                   href={link.href}
+                  icon={link.icon}
                   isActive={active}
                   nested
                 />
@@ -217,6 +247,7 @@ function SidebarPagesList(props: {
               <SidebarPageRow
                 title={link.title}
                 href={link.href}
+                icon={link.icon}
                 isActive={active}
               />
             </SidebarMenuItem>
@@ -277,8 +308,12 @@ export function Navigation() {
             >
               {group.group ? (
                 <SidebarGroupLabel
-                  className={cn(!group.pages?.length && "sr-only")}
+                  className={cn(
+                    "flex items-center gap-2",
+                    !group.pages?.length && "sr-only",
+                  )}
                 >
+                  {group.icon ? <SidebarNavIcon icon={group.icon} /> : null}
                   {group.group}
                 </SidebarGroupLabel>
               ) : null}

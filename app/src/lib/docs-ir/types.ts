@@ -10,5 +10,11 @@ export type DocIrNode =
   | { kind: "code"; lang?: string; meta?: string; value: string }
   | { kind: "thematicBreak" };
 
-export type DocIrPropValue = string | number | boolean;
+export type DocIrPropValue =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: DocIrPropValue }
+  | DocIrPropValue[];
 

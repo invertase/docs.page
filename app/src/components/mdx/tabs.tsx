@@ -202,7 +202,7 @@ export function Tabs(props: TabProps) {
         <TabsContent
           key={item.props.value}
           value={item.props.value}
-          className="py-5 *:first:mt-0 *:last:mb-0"
+          className="py-5 *:first:mt-0 *:last:mb-0 space-y-4"
         >
           {item}
         </TabsContent>

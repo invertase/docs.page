@@ -1,4 +1,4 @@
-import { Fragment, type ReactNode } from "react";
+import { Fragment, type CSSProperties, type ReactNode } from "react";
 import { Error, Info, Success, Warning } from "@/components/mdx/callout";
 import { Accordion, AccordionGroup } from "@/components/mdx/accordion";
 import { Property } from "@/components/mdx/property";
@@ -7,6 +7,7 @@ import { YouTube } from "@/components/mdx/youtube";
 import type { DocIrNode } from "@/lib/docs-ir/types";
 import { MarkdownLeaf } from "./markdown-leaf";
 import { Card, CardGroup } from "./mdx/card";
+import { Icon } from "./mdx/icon";
 import { Image } from "./mdx/image";
 import { Vimeo } from "./mdx/vimeo";
 import { Video } from "./mdx/video";
@@ -131,6 +132,14 @@ function renderComponent(
         theme={stringProp(node.props.theme) as "light" | "dark" | undefined}
       />
     ),
+    Icon: (
+      <Icon
+        key={key}
+        name={stringProp(node.props.name) ?? ""}
+        size={numberProp(node.props.size)}
+        style={styleProp(node.props.style)}
+      />
+    ),
     Info: <Info key={key}>{children}</Info>,
     Warning: <Warning key={key}>{children}</Warning>,
     Error: <Error key={key}>{children}</Error>,
@@ -208,6 +217,13 @@ function numberProp(value: unknown): number | undefined {
     return Number(value);
   }
   return undefined;
+}
+
+function styleProp(value: unknown): CSSProperties | undefined {
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return undefined;
+  }
+  return value as CSSProperties;
 }
 
 function codeBlockToMarkdown(

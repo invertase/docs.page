@@ -6,9 +6,10 @@ import {
   CardContent,
   CardAction,
 } from "@/components/ui/card";
-import { RiArrowRightLine, RiExternalLinkLine } from "@remixicon/react";
+import { RiExternalLinkLine } from "@remixicon/react";
 import { Button } from "../ui/button";
 import { Link } from "../doc-link";
+import { Icon } from "./icon";
 
 type CardProps = PropsWithChildren<{
   title?: string;
@@ -30,7 +31,10 @@ export function Card({ title, icon, href, children }: CardProps) {
               </Button>
             </CardAction>
           ) : null}
-          <CardTitle className="text-lg">{title}</CardTitle>
+          <CardTitle className="text-lg flex items-center gap-2">
+            {icon ? <Icon name={icon} /> : null}
+            <span>{title}</span>
+          </CardTitle>
         </CardHeader>
       ) : null}
       <CardContent className="space-y-4">{children}</CardContent>
