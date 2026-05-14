@@ -6,6 +6,7 @@ import { Prose } from "./prose";
 import { TableOfContents } from "./table-of-contents";
 import { ResizablePanel, ResizablePanelGroup } from "./ui/resizable";
 import { PageMetadata } from "./page-metadata";
+import { Footer } from "./footer";
 
 export function Docs() {
   return (
@@ -27,9 +28,7 @@ export function Docs() {
                   <div className="space-y-12">
                     <PageMetadata />
                     <Prose />
-                    <footer className="py-12">
-                      docs.page by invertase.io
-                    </footer>
+                    <Footer />
                   </div>
                 </div>
                 <div className="relative shrink-0 overflow-x-clip opacity-0 w-0 @3xl:w-68 @3xl:opacity-100 transition-[width,opacity] duration-200 ease-out">
