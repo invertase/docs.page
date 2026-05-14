@@ -1,13 +1,12 @@
+import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
-import { ComponentProps } from "react";
-import { ExtraProps } from "streamdown";
 
 export type HeadingTag = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
 export type HeadingTagProps = ComponentProps<HeadingTag> & {
   id?: string;
   type: HeadingTag;
-  node?: ExtraProps;
+  node?: unknown;
 };
 
 const styles = {
@@ -20,7 +19,7 @@ const styles = {
 } satisfies Record<HeadingTag, string>;
 
 export function Heading(props: HeadingTagProps) {
-  const { node, type, ...other} = props;
+  const { node: _node, type, ...other } = props;
   const Tag = type;
 
   return <Tag {...other} className={cn('font-heading text-balance', styles[type])} data-heading="true" />;

@@ -1,9 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@source "../../node_modules/streamdown/dist/*.js";
-@source "../../node_modules/@streamdown/code/dist/*.js";
-@source "../../node_modules/@streamdown/mermaid/dist/*.js";
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));
@@ -132,4 +129,77 @@
 
 [data-rmiz-modal-overlay="visible"] {
   background-color: transparent !important;
+}
+
+.shiki {
+  background-color: transparent !important;
+  color: var(--shiki-foreground);
+  margin: 0;
+  --shiki-background: transparent;
+  --shiki-foreground: var(--foreground);
+  --shiki-token-comment: var(--muted-foreground);
+  --shiki-token-constant: oklch(0.45 0.13 264);
+  --shiki-token-string: oklch(0.43 0.12 147);
+  --shiki-token-string-expression: oklch(0.43 0.12 147);
+  --shiki-token-keyword: orange;
+  --shiki-token-parameter: oklch(0.48 0.12 70);
+  --shiki-token-function: oklch(0.45 0.12 260);
+  --shiki-token-punctuation: var(--muted-foreground);
+  --shiki-token-link: var(--primary);
+}
+
+.dark .shiki {
+  --shiki-token-constant: oklch(0.75 0.12 264);
+  --shiki-token-string: oklch(0.78 0.11 147);
+  --shiki-token-string-expression: oklch(0.78 0.11 147);
+  --shiki-token-keyword: oklch(0.72 0.16 30);
+  --shiki-token-parameter: oklch(0.82 0.11 70);
+  --shiki-token-function: oklch(0.76 0.12 260);
+}
+
+.shiki code {
+  display: grid;
+  min-width: max-content;
+}
+
+.shiki .line {
+  display: block;
+  min-height: 1.5rem;
+  margin-inline: -1rem;
+  padding-inline: 1rem;
+}
+
+.shiki .line.highlighted {
+  background-color: color-mix(in oklch, var(--color-sidebar-foreground) 20%, transparent);
+}
+
+.shiki.has-focused .line:not(.focused) {
+  opacity: 0.45;
+}
+
+.shiki .line.diff.add {
+  background-color: color-mix(in oklch, var(--color-green-200) 60%, transparent);
+}
+
+.dark .shiki .line.diff.add {
+  background-color: color-mix(in oklch, var(--color-green-900) 60%, transparent);
+}
+
+.shiki .line.diff.remove {
+  background-color: color-mix(in oklch, var(--destructive) 14%, transparent);
+}
+
+.shiki .line.diff::before {
+  display: inline-block;
+  width: 1rem;
+  margin-right: 0.1rem;
+  color: var(--muted-foreground);
+}
+
+.shiki .line.diff.add::before {
+  content: "+";
+}
+
+.shiki .line.diff.remove::before {
+  content: "-";
 }

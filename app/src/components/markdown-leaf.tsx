@@ -1,42 +1,113 @@
-import { code } from "@streamdown/code";
-import { Streamdown } from "streamdown";
 import type { ComponentProps } from "react";
+import ReactMarkdown, { type Components } from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Heading, type HeadingTag } from "@/components/mdx/heading";
 import { Image } from "@/components/mdx/image";
+import { cn } from "@/lib/utils";
 
 type MarkdownLeafProps = {
   source: string;
   takeNextHeadingId: () => string | undefined;
 };
 
-type StreamdownComponents = NonNullable<
-  ComponentProps<typeof Streamdown>["components"]
->;
-
 export function MarkdownLeaf({
   source,
   takeNextHeadingId,
 }: MarkdownLeafProps) {
-  const components: StreamdownComponents = {
+  const components: Components = {
     h1: (props) => renderHeading("h1", props, takeNextHeadingId),
     h2: (props) => renderHeading("h2", props, takeNextHeadingId),
     h3: (props) => renderHeading("h3", props, takeNextHeadingId),
     h4: (props) => renderHeading("h4", props, takeNextHeadingId),
     h5: (props) => renderHeading("h5", props, takeNextHeadingId),
     h6: (props) => renderHeading("h6", props, takeNextHeadingId),
+    p: ({ node: _node, className, ...props }) => (
+      <p className={cn("leading-7 opacity-90", className)} {...props} />
+    ),
+    a: ({ node: _node, className, ...props }) => (
+      <a
+        className={cn(
+          "font-medium underline decoration-border underline-offset-4 transition-colors hover:text-foreground hover:decoration-foreground",
+          className,
+        )}
+        {...props}
+      />
+    ),
+    strong: ({ node: _node, className, ...props }) => (
+      <strong className={cn("font-semibold text-foreground", className)} {...props} />
+    ),
+    em: ({ node: _node, className, ...props }) => (
+      <em className={cn("italic", className)} {...props} />
+    ),
+    ul: ({ node: _node, className, ...props }) => (
+      <ul className={cn("my-4 ms-6 list-disc space-y-2", className)} {...props} />
+    ),
+    ol: ({ node: _node, className, ...props }) => (
+      <ol className={cn("my-4 ms-6 list-decimal space-y-2", className)} {...props} />
+    ),
+    li: ({ node: _node, className, ...props }) => (
+      <li className={cn("leading-7 ps-1", className)} {...props} />
+    ),
+    blockquote: ({ node: _node, className, ...props }) => (
+      <blockquote
+        className={cn(
+          "my-6 border-s-2 border-border ps-4 text-muted-foreground",
+          className,
+        )}
+        {...props}
+      />
+    ),
+    code: ({ node: _node, className, ...props }) => (
+      <code
+        className={cn(
+          "rounded-md bg-muted px-1.5 py-0.5 font-mono text-[0.9em] text-foreground",
+          className,
+        )}
+        {...props}
+      />
+    ),
+    pre: ({ node: _node, className, ...props }) => (
+      <pre
+        className={cn(
+          "my-4 overflow-x-auto rounded-lg border bg-card p-4 font-mono text-sm",
+          className,
+        )}
+        {...props}
+      />
+    ),
+    table: ({ node: _node, className, ...props }) => (
+      <div className="my-6 overflow-x-auto rounded-lg border">
+        <table className={cn("w-full border-collapse text-sm", className)} {...props} />
+      </div>
+    ),
+    thead: ({ node: _node, className, ...props }) => (
+      <thead className={cn("bg-muted/60", className)} {...props} />
+    ),
+    tr: ({ node: _node, className, ...props }) => (
+      <tr className={cn("border-b last:border-b-0", className)} {...props} />
+    ),
+    th: ({ node: _node, className, ...props }) => (
+      <th
+        className={cn(
+          "px-4 py-3 text-left font-medium text-foreground",
+          className,
+        )}
+        {...props}
+      />
+    ),
+    td: ({ node: _node, className, ...props }) => (
+      <td className={cn("px-4 py-3 align-top", className)} {...props} />
+    ),
+    hr: ({ node: _node, className, ...props }) => (
+      <hr className={cn("my-8 border-border", className)} {...props} />
+    ),
     img: ({ node: _node, ...props }) => <Image {...props} />,
   };
 
   return (
-    <Streamdown
-      mode="static"
-      plugins={{ code }}
-      components={components}
-      linkSafety={{ enabled: false }}
-      controls={{ code: { download: false } }}
-    >
+    <ReactMarkdown components={components} remarkPlugins={[remarkGfm]}>
       {source}
-    </Streamdown>
+    </ReactMarkdown>
   );
 }
 

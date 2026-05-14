@@ -7,6 +7,7 @@ import { YouTube } from "@/components/mdx/youtube";
 import type { DocIrNode } from "@/lib/docs-ir/types";
 import { MarkdownLeaf } from "./markdown-leaf";
 import { Card, CardGroup } from "./mdx/card";
+import { CodeFence } from "./mdx/code-fence";
 import { Icon } from "./mdx/icon";
 import { Image } from "./mdx/image";
 import { Vimeo } from "./mdx/vimeo";
@@ -52,10 +53,14 @@ function renderNode(
       );
     case "code":
       return (
-        <MarkdownLeaf
+        <CodeFence
           key={key}
-          source={codeBlockToMarkdown(node.lang, node.meta, node.value)}
-          takeNextHeadingId={takeNextHeadingId}
+          lang={node.lang}
+          highlightedLang={node.highlightedLang}
+          meta={node.meta}
+          title={node.title}
+          value={node.value}
+          highlightedHtml={node.highlightedHtml}
         />
       );
     case "thematicBreak":
@@ -226,20 +231,3 @@ function styleProp(value: unknown): CSSProperties | undefined {
   return value as CSSProperties;
 }
 
-function codeBlockToMarkdown(
-  lang: string | undefined,
-  meta: string | undefined,
-  value: string,
-) {
-  const fence = codeFenceFor(value);
-  const fenceInfo = [lang, meta].filter(Boolean).join(" ");
-  return `${fence}${fenceInfo}\n${value}\n${fence}`;
-}
-
-function codeFenceFor(value: string) {
-  const longestFence = Math.max(
-    2,
-    ...Array.from(value.matchAll(/`+/g), (match) => match[0].length),
-  );
-  return "`".repeat(longestFence + 1);
-}

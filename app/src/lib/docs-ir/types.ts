@@ -7,7 +7,15 @@ export type DocIrNode =
       children: DocIrNode[];
     }
   | { kind: "markdown"; source: string }
-  | { kind: "code"; lang?: string; meta?: string; value: string }
+  | {
+      kind: "code";
+      lang?: string;
+      meta?: string;
+      value: string;
+      highlightedHtml?: string;
+      highlightedLang?: string;
+      title?: string;
+    }
   | { kind: "thematicBreak" };
 
 export type DocIrPropValue =

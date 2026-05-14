@@ -1,5 +1,6 @@
 import frontmatter from "gray-matter";
 import { mdxToDocIr } from "@/lib/docs-ir/from-mdx";
+import { highlightCodeBlocksInIr } from "@/lib/docs-ir/highlight-code-blocks";
 import type { DocIrNode } from "@/lib/docs-ir/types";
 import { extractHeadingNodes, type HeadingNode } from "@/lib/docs-markdown";
 import { type Config, defaultConfig, parseConfig } from "@/server/config";
@@ -133,7 +134,7 @@ export class Bundler {
         tocMinDepth: 2,
         tocMaxDepth: this.#config.content?.headerDepth ?? 3,
       });
-      const docIr = await mdxToDocIr(markdown);
+      const docIr = await highlightCodeBlocksInIr(await mdxToDocIr(markdown));
 
       return {
         source: this.#source,
