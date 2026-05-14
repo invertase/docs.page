@@ -9,6 +9,7 @@ import * as shiki from "shiki";
 import type { DocIrNode } from "./types";
 
 let highlighter: shiki.Highlighter | undefined;
+let highlighterInit: Promise<shiki.Highlighter> | undefined;
 
 const cssVariablesTheme = shiki.createCssVariablesTheme({
   name: "css-variables",
@@ -104,11 +105,11 @@ async function getHighlighter() {
     return highlighter;
   }
 
-  highlighter = await shiki.createHighlighter({
+  highlighterInit ??= shiki.createHighlighter({
     langs: Array.from(new Set(Object.values(languages))),
     themes: [cssVariablesTheme],
   });
-
+  highlighter = await highlighterInit;
   return highlighter;
 }
 
