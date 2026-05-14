@@ -3,12 +3,11 @@
   "name": "docs.page",
   "description": "Ship documentation, like you ship code",
   "logo": {
-    "light": "https://static.invertase.io/assets/docs.page/docs-page-logo.png"
+    "light": "https://static.invertase.io/assets/docs.page/docs-page-logo-v2.png"
   },
-  "favicon": "https://static.invertase.io/assets/docs.page/docs-page-logo.png",
+  "favicon": "https://static.invertase.io/assets/docs.page/docs-page-logo-v2.png",
   "theme": {
-    "primary": "#ECC918",
-    "primaryLight": "#BFA213"
+    "primary": "#E69135"
   },
   "content": {
     "showPageTitle": true,
@@ -158,16 +157,6 @@
           "title": "Video",
           "href": "/components/video",
           "icon": "video"
-        },
-        {
-          "title": "Zapp!",
-          "href": "/components/zapp",
-          "icon": "bolt"
-        },
-        {
-          "title": "Custom Components",
-          "href": "/components/custom",
-          "icon": "square-pen"
         }
       ]
     },
@@ -239,13 +228,6 @@
       ]
     }
   ],
-  "search": {
-    "docsearch": {
-      "apiKey": "9b58d13ee3195094105d528fc6161a01",
-      "appId": "BH4D9OD16A",
-      "indexName": "use_docs_page"
-    }
-  },
   "scripts": {
     "googleTagManager": "GTM-W89J6BX"
   }
