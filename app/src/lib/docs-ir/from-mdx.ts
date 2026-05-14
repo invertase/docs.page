@@ -91,7 +91,12 @@ function nodeToIr(node: MdastNode, source: string): DocIrNode[] {
         return nodeToIr(node.children[0], source);
       }
 
-      assertNoInlineDocComponents(node);
+      // MDX often wraps indented JSX (e.g. <TabItem> under <Tabs>) in a paragraph with
+      // multiple mdxJsxTextElement siblings; recurse so each becomes a component IR node.
+      if (node.children?.some((c) => c.type === "mdxJsxTextElement")) {
+        return childrenToIr(node.children ?? [], source);
+      }
+
       return markdownLeafOrChildren(node, source);
     case "thematicBreak":
       return [{ kind: "thematicBreak" }];
@@ -106,16 +111,6 @@ function nodeToIr(node: MdastNode, source: string): DocIrNode[] {
       ];
     default:
       return markdownLeafOrChildren(node, source);
-  }
-}
-
-function assertNoInlineDocComponents(node: MdastNode): void {
-  for (const child of node.children ?? []) {
-    if (child.type === "mdxJsxTextElement") {
-      throw new Error(
-        "MDX JSX elements must be authored as standalone block elements.",
-      );
-    }
   }
 }
 
