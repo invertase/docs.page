@@ -203,3 +203,10 @@
 .shiki .line.diff.remove::before {
   content: "-";
 }
+
+#nprogress .bar {
+  background: var(--color-primary) !important;
+}
+#nprogress .peg {
+  box-shadow: 0 0 10px var(--color-primary), 0 0 5px var(--color-primary) !important;
+}
