@@ -2,6 +2,9 @@ import { useCallback, useMemo, useRef } from "react";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { DocsIrRenderer } from "@/components/docs-ir-renderer";
 import { TabsProvider } from "./mdx/tabs";
+import { useSourceUrl } from "@/hooks/use-source-url";
+import { Button } from "./ui/button";
+import { RiGithubFill } from "@remixicon/react";
 
 export function Prose() {
   const { bundle } = useDocPageContext();
@@ -29,6 +32,24 @@ export function Prose() {
           />
         </div>
       </TabsProvider>
+      <Actions />
     </main>
+  );
+}
+
+function Actions() {
+  const source = useSourceUrl();
+
+  return (
+    <div className="flex justify-end gap-2 mb-2 mt-4">
+      {source ? (
+        <Button variant="ghost" asChild>
+          <a href={source} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+            <RiGithubFill />
+            <span>Edit this page</span>
+          </a>
+        </Button>
+      ) : null}
+    </div>
   );
 }
