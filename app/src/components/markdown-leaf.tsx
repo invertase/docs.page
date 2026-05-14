@@ -10,6 +10,23 @@ type MarkdownLeafProps = {
   takeNextHeadingId: () => string | undefined;
 };
 
+/** Markdown wraps images in <p>; our Image uses <figure>, which must not sit inside <p>. */
+function hastSubtreeHasTag(node: unknown, tagName: string): boolean {
+  if (!node || typeof node !== "object") {
+    return false;
+  }
+  const n = node as { type?: string; tagName?: string; children?: unknown[] };
+  if (n.type === "element" && n.tagName === tagName) {
+    return true;
+  }
+  for (const child of n.children ?? []) {
+    if (hastSubtreeHasTag(child, tagName)) {
+      return true;
+    }
+  }
+  return false;
+}
+
 export function MarkdownLeaf({
   source,
   takeNextHeadingId,
@@ -21,9 +38,11 @@ export function MarkdownLeaf({
     h4: (props) => renderHeading("h4", props, takeNextHeadingId),
     h5: (props) => renderHeading("h5", props, takeNextHeadingId),
     h6: (props) => renderHeading("h6", props, takeNextHeadingId),
-    p: ({ node: _node, className, ...props }) => (
-      <p className={cn("leading-7 opacity-90", className)} {...props} />
-    ),
+    p: ({ node, className, ...props }) => {
+      const useDiv = hastSubtreeHasTag(node, "img");
+      const Tag = useDiv ? "div" : "p";
+      return <Tag className={cn("leading-7 opacity-90", className)} {...props} />;
+    },
     a: ({ node: _node, className, ...props }) => (
       <a
         className={cn(
