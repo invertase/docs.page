@@ -1,4 +1,30 @@
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
+import { cn } from "@/lib/utils";
+import { Button } from "./ui/button";
+
+const icons: Record<string, string> = {
+  website: "fa-solid fa-globe",
+  x: "fa-brands fa-twitter",
+  youtube: "fa-brands fa-youtube",
+  facebook: "fa-brands fa-facebook",
+  instagram: "fa-brands fa-instagram",
+  linkedin: "fa-brands fa-linkedin",
+  github: "fa-brands fa-github",
+  slack: "fa-brands fa-slack",
+  discord: "fa-brands fa-discord",
+};
+
+const links: Record<string, (value: string) => string> = {
+  website: (value) => value,
+  x: (value) => `https://twitter.com/${value}`,
+  youtube: (value) => `https://youtube.com/${value}`,
+  facebook: (value) => `https://facebook.com/${value}`,
+  instagram: (value) => `https://instagram.com/${value}`,
+  linkedin: (value) => `https://linkedin.com/in/${value}`,
+  github: (value) => `https://github.com/${value}`,
+  slack: (value) => `https://${value}.slack.com`,
+  discord: (value) => `https://discord.gg/${value}`,
+};
 
 export function Footer() {
   const ctx = useDocPageContext();
@@ -24,6 +50,15 @@ export function Footer() {
         >
           invertase.io
         </a>
+      </div>
+      <div className="flex-1 flex items-center justify-end gap-0.5">
+        {sorted.map(([name, url]) => (
+          <Button key={name} variant="ghost" size="icon-sm" asChild>
+            <a href={links[name](url)} target="_blank" rel="noopener noreferrer">
+              <i className={cn(icons[name], "text-[16px]")} />
+            </a>
+          </Button>
+        ))}
       </div>
     </footer>
   );
