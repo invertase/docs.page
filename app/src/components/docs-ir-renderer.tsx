@@ -12,6 +12,7 @@ import { Icon } from "./mdx/icon";
 import { Image } from "./mdx/image";
 import { Vimeo } from "./mdx/vimeo";
 import { Video } from "./mdx/video";
+import { Step, Steps } from "./mdx/steps";
 
 type DocsIrRendererProps = {
   root: DocIrNode;
@@ -168,8 +169,30 @@ function renderComponent(
       </TabItem>
     ),
     YouTube: <YouTube key={key} id={stringProp(node.props.id)} />,
-    Vimeo: <Vimeo key={key} id={stringProp(node.props.id)} video={stringProp(node.props.video)} />,
-    Video: <Video key={key} src={stringProp(node.props.src)} type={stringProp(node.props.type)} />,
+    Vimeo: (
+      <Vimeo
+        key={key}
+        id={stringProp(node.props.id)}
+        video={stringProp(node.props.video)}
+      />
+    ),
+    Video: (
+      <Video
+        key={key}
+        src={stringProp(node.props.src)}
+        type={stringProp(node.props.type)}
+      />
+    ),
+    Steps: <Steps key={key}>{children}</Steps>,
+    Step: (
+      <Step
+        key={key}
+        title={stringProp(node.props.title)}
+        icon={stringProp(node.props.icon)}
+      >
+        {children}
+      </Step>
+    ),
   };
 
   return (
@@ -230,4 +253,3 @@ function styleProp(value: unknown): CSSProperties | undefined {
   }
   return value as CSSProperties;
 }
-
