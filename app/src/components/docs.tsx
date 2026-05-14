@@ -8,6 +8,7 @@ import { ResizablePanel, ResizablePanelGroup } from "./ui/resizable";
 import { PageMetadata } from "./page-metadata";
 import { Footer } from "./footer";
 import dynamic from "next/dynamic";
+import { Metadata } from "./metadata";
 
 const NProgress = dynamic(() => import("@/components/nprogress"), {
   ssr: false,
@@ -16,6 +17,7 @@ const NProgress = dynamic(() => import("@/components/nprogress"), {
 export function Docs() {
   return (
     <>
+      <Metadata />
       <NProgress />
       <AgentPanelProvider>
         <div className="flex w-full flex-1 flex-row">

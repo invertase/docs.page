@@ -1,4 +1,5 @@
 import {
+  Lexend,
   DM_Sans,
   Figtree,
   Geist,
@@ -24,6 +25,11 @@ import {
   Source_Sans_3,
   Space_Grotesk,
 } from "next/font/google";
+
+const lexend = Lexend({
+  subsets: ["latin"],
+  variable: "--font-lexend",
+});
 
 const geistSans = Geist({
   subsets: ["latin"],
@@ -146,6 +152,7 @@ const playfairDisplay = Playfair_Display({
 });
 
 export const fonts = {
+  lexend: lexend,
   geist: geistSans,
   inter: inter,
   "noto-sans": notoSans,

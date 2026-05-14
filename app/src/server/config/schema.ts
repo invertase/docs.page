@@ -12,6 +12,7 @@ import sidebar from "./models/sidebar";
 import social from "./models/social";
 import tabs from "./models/tabs";
 import theme from "./models/theme";
+import og from "./models/og";
 
 export type { Sidebar } from "./models/sidebar";
 
@@ -21,6 +22,7 @@ export const ConfigSchema = z
     description: z.string().min(1).optional().catch(undefined),
     agent: z.string().min(1).optional().catch(undefined),
     socialPreview: z.union([z.string().min(1), z.literal(false)]).optional().catch(undefined),
+    og: og,
     favicon,
     logo,
     theme,
