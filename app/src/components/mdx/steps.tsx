@@ -27,7 +27,7 @@ type StepProps = PropsWithChildren<ComponentProps<"li">> & {
 export function Step(props: StepProps) {
   return (
     <li
-      className="relative flex gap-12"
+      className="relative flex gap-6"
       style={{
         counterIncrement: "line-number",
       }}
