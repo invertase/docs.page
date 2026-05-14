@@ -17,6 +17,7 @@ import { useAgentPanel } from "@/hooks/use-agent-panel";
 import { Kbd } from "@/components/ui/kbd";
 import { Tabs as TabsRoot, TabsList, TabsTrigger } from "./ui/tabs";
 import { useEffect, useState } from "react";
+import { RefBadge } from "./ref-badge";
 
 export function Header() {
   const hasTabs = useDocTabs().length > 0;
@@ -45,13 +46,10 @@ export function Header() {
         )}
       </div>
       <div
-        className={cn(
-          "mt-2 h-px bg-border transition-all duration-500",
-          {
-            "opacity-0": !scrolled,
-            "opacity-100": scrolled,
-          },
-        )}
+        className={cn("mt-2 h-px bg-border transition-all duration-500", {
+          "opacity-0": !scrolled,
+          "opacity-100": scrolled,
+        })}
       />
     </header>
   );
@@ -70,7 +68,7 @@ function Logo() {
   const darkLogoSrc = hasDarkLogo ? getAssetSrc(bundle, logo!.dark!) : "";
 
   return (
-    <div className="flex min-w-0 flex-1 items-center justify-start">
+    <div className="flex min-w-0 flex-1 items-center justify-start gap-3">
       <Link href="/" className="inline-flex min-w-0 items-center gap-3">
         {hasLightLogo && (
           <img
@@ -90,6 +88,9 @@ function Logo() {
           <span className="truncate font-heading font-medium">{name}</span>
         )}
       </Link>
+      <div className="relative top-px">
+        <RefBadge />
+      </div>
     </div>
   );
 }
@@ -158,9 +159,12 @@ function GitHubLink() {
       className="gap-2"
       asChild
     >
-      <Link href={`https://github.com/${bundle.source.owner}/${bundle.source.repository}`} target="_blank">
+      <Link
+        href={`https://github.com/${bundle.source.owner}/${bundle.source.repository}`}
+        target="_blank"
+      >
         <RiGithubFill className="size-5" />
-        <span className="relative top-px text-xs text-muted-foreground">
+        <span className="hidden md:block relative top-px text-xs text-muted-foreground">
           {stars}
         </span>
       </Link>
