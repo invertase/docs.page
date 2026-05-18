@@ -29,6 +29,7 @@ export const components = {
   tabs: () => <div>TABS!</div>,
   "tab-item": () => <div>TABITEM!</div>,
   tweet: Tweet,
+  x: Tweet,
   video: Video,
   vimeo: Vimeo,
   youtube: YouTube,

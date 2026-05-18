@@ -3,6 +3,7 @@ import { Error, Info, Success, Warning } from "@/components/mdx/callout";
 import { Accordion, AccordionGroup } from "@/components/mdx/accordion";
 import { Property } from "@/components/mdx/property";
 import { TabItem, Tabs } from "@/components/mdx/tabs";
+import { Tweet } from "@/components/mdx/tweet";
 import { YouTube } from "@/components/mdx/youtube";
 import type { DocIrNode } from "@/lib/docs-ir/types";
 import { MarkdownLeaf } from "./markdown-leaf";
@@ -163,6 +164,22 @@ function renderComponent(
       </Tabs>
     ),
     TabItem: <TabItem key={key}>{children}</TabItem>,
+    Tweet: (
+      <Tweet
+        key={key}
+        id={stringProp(node.props.id) ?? ""}
+        cards={booleanProp(node.props.cards)}
+        conversation={booleanProp(node.props.conversation)}
+      />
+    ),
+    X: (
+      <Tweet
+        key={key}
+        id={stringProp(node.props.id) ?? ""}
+        cards={booleanProp(node.props.cards)}
+        conversation={booleanProp(node.props.conversation)}
+      />
+    ),
     YouTube: <YouTube key={key} id={stringProp(node.props.id)} />,
     Vimeo: (
       <Vimeo
