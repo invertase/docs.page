@@ -10,6 +10,7 @@ import { PageMetadata } from "./page-metadata";
 import { Footer } from "./footer";
 import { Metadata } from "./metadata";
 import { Scripts } from "./scripts";
+import { PreviousNext } from "./previous-next";
 
 const NProgress = dynamic(() => import("@/components/nprogress"), {
   ssr: false,
@@ -39,6 +40,7 @@ export function Docs() {
                     <div className="space-y-12">
                       <PageMetadata />
                       <Prose />
+                      <PreviousNext />
                       <Footer />
                     </div>
                   </div>
