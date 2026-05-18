@@ -35,7 +35,7 @@ export function LocaleSwitcher() {
         }}
       >
         <SelectTrigger className="w-full">
-          <SelectValue placeholder="Select a fruit" />
+          <SelectValue placeholder="Select a language" />
         </SelectTrigger>
         <SelectContent position="popper">
           <SelectGroup>
@@ -55,7 +55,7 @@ export function LocaleSwitcher() {
 function SelectLocaleItem({ locale }: { locale: string }) {
   const href = useDocHref(`/${locale}`);
 
-  return <Link href={href}>{iso639LanguageCodes[locale]}</Link>;
+  return <SelectItem value={href}>{iso639LanguageCodes[locale]}</SelectItem>;
 }
 
 const iso639LanguageCodes: Record<string, string> = {
