@@ -3,11 +3,7 @@ import { useDocPageContext } from "./use-doc-page-context";
 export function useRefUrl() {
   const ctx = useDocPageContext();
 
-  // TODO: Preview mode
-  if (
-    // ctx.preview ||
-    !ctx.route.ref
-  ) {
+  if (ctx.route.requestMode === "preview" || !ctx.route.ref) {
     return "#";
   }
 

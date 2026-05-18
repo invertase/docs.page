@@ -3,10 +3,9 @@ import { useDocPageContext } from "./use-doc-page-context";
 export function useSourceUrl() {
   const ctx = useDocPageContext();
 
-  // TODO: Preview mode
-  // if (ctx.preview) {
-  //   return "#";
-  // }
+  if (ctx.route.requestMode === "preview") {
+    return "#";
+  }
 
   const source = ctx.bundle.source;
 

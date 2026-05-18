@@ -5,9 +5,8 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
-  Sidebar,
+  Sidebar as SidebarPrimitive,
   SidebarContent,
-  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -21,11 +20,9 @@ import {
 } from "@/components/ui/sidebar";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useDocTabs } from "@/hooks/use-doc-tabs";
+import { useSidebar } from "@/hooks/use-sidebar";
 import { isExternalLink } from "@/lib/docs-assets";
-import {
-  isDocHrefActive,
-  resolveActiveTabId,
-} from "@/lib/docs-routing";
+import { isDocHrefActive } from "@/lib/docs-routing";
 import type { SidebarGroup as SidebarConfigGroup } from "@/server/config/models/sidebar";
 import { cn } from "@/lib/utils";
 import { Link } from "./doc-link";
@@ -52,18 +49,6 @@ function SidebarNavIcon(props: { icon: string }) {
       <Icon name={props.icon} size={14} />
     </span>
   );
-}
-
-function getSidebarGroups(config: { sidebar: unknown }): SidebarConfigGroup[] {
-  const raw = config.sidebar;
-  if (Array.isArray(raw)) {
-    return raw as SidebarConfigGroup[];
-  }
-  if (raw && typeof raw === "object") {
-    const rec = raw as Record<string, SidebarConfigGroup[]>;
-    return rec.default ?? Object.values(rec)[0] ?? [];
-  }
-  return [];
 }
 
 function isPageLink(item: SidebarConfigGroup["pages"][number]): boolean {
@@ -266,23 +251,13 @@ function SidebarPagesList(props: {
   );
 }
 
-export function Navigation() {
-  const { bundle, route } = useDocPageContext();
+export function Sidebar() {
   const tabs = useDocTabs();
   const hasTabs = tabs.length > 0;
-  const activeTabId = resolveActiveTabId(route, tabs, bundle.config.locales);
-  const groups = getSidebarGroups(bundle.config).filter((g) => {
-    if (!g.tab) {
-      return true;
-    }
-    if (!hasTabs) {
-      return true;
-    }
-    return g.tab === activeTabId;
-  });
+  const groups = useSidebar();
 
   return (
-    <Sidebar
+    <SidebarPrimitive
       variant="sidebar"
       className={cn(
         "sticky bottom-auto max-h-none will-change-transform border-none",
@@ -326,6 +301,6 @@ export function Navigation() {
           ))}
         </SidebarContent>
       </div>
-    </Sidebar>
+    </SidebarPrimitive>
   );
 }

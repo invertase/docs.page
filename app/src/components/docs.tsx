@@ -2,7 +2,7 @@ import dynamic from "next/dynamic";
 import { AgentPanel } from "@/components/agent/panel";
 import { AgentPanelProvider } from "@/components/agent/provider";
 import { Header } from "./header";
-import { Navigation } from "./navigation";
+import { Sidebar } from "./sidebar";
 import { Prose } from "./prose";
 import { TableOfContents } from "./table-of-contents";
 import { ResizablePanel, ResizablePanelGroup } from "./ui/resizable";
@@ -33,7 +33,7 @@ export function Docs() {
             >
               <Header />
               <div className="relative mx-auto flex min-h-0 w-full max-w-8xl flex-1 flex-row">
-                <Navigation />
+                <Sidebar />
                 <div className="min-w-0 flex-1 flex @container">
                   <div className="min-w-0 flex-1 pt-8 ps-6 pe-6 @3xl:ps-14 @3xl:pe-14 @5xl:ps-16 @5xl:pe-16">
                     <div className="space-y-12">
