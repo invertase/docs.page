@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
-import { RiCheckLine, RiFileCheckLine, RiFileCopy2Line, RiFileCopyLine } from "@remixicon/react";
+import { RiCheckLine, RiFileCopyLine } from "@remixicon/react";
 
 type CodeFenceProps = ComponentProps<"figure"> & {
   lang?: string;

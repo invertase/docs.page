@@ -8,6 +8,7 @@ import type { DocIrNode } from "@/lib/docs-ir/types";
 import { MarkdownLeaf } from "./markdown-leaf";
 import { Card, CardGroup } from "./mdx/card";
 import { CodeFence } from "./mdx/code-fence";
+import { CodeGroup, type CodeGroupBlock } from "./mdx/code-group";
 import { Icon } from "./mdx/icon";
 import { Image } from "./mdx/image";
 import { Vimeo } from "./mdx/vimeo";
@@ -187,6 +188,15 @@ function renderComponent(
         {children}
       </Step>
     ),
+    CodeGroup: (
+      <CodeGroup
+        key={key}
+        title={stringProp(node.props.title)}
+        defaultLanguage={stringProp(node.props.defaultLanguage)}
+        synchronize={booleanProp(node.props.synchronize)}
+        blocks={codeBlocksFromChildren(node.children)}
+      />
+    ),
   };
 
   return (
@@ -205,6 +215,21 @@ function InvalidDocComponent({ name }: { name: string }) {
       </p>
     </div>
   );
+}
+
+function codeBlocksFromChildren(
+  children: DocIrNode[],
+): CodeGroupBlock[] {
+  return children
+    .filter(
+      (child): child is Extract<DocIrNode, { kind: "code" }> =>
+        child.kind === "code",
+    )
+    .map((block) => ({
+      lang: block.lang || "text",
+      highlighted: block.highlighted ?? "",
+      value: block.value,
+    }));
 }
 
 function stringProp(value: unknown): string | undefined {

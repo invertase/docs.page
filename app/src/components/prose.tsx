@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useRef } from "react";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { DocsIrRenderer } from "@/components/docs-ir-renderer";
+import { CodeGroupProvider } from "./mdx/code-group";
 import { TabsProvider } from "./mdx/tabs";
 import { useSourceUrl } from "@/hooks/use-source-url";
 import { Button } from "./ui/button";
@@ -25,12 +26,14 @@ export function Prose() {
   return (
     <main className="max-w-none">
       <TabsProvider>
-        <div className="space-y-4 text-secondary-foreground [&>p]:leading-7 [&>p]:opacity-90">
-          <DocsIrRenderer
-            root={bundle.docIr}
-            takeNextHeadingId={takeNextHeadingId}
-          />
-        </div>
+        <CodeGroupProvider>
+          <div className="space-y-4 text-secondary-foreground [&>p]:leading-7 [&>p]:opacity-90">
+            <DocsIrRenderer
+              root={bundle.docIr}
+              takeNextHeadingId={takeNextHeadingId}
+            />
+          </div>
+        </CodeGroupProvider>
       </TabsProvider>
       <Actions />
     </main>
