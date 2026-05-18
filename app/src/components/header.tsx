@@ -18,6 +18,7 @@ import { Kbd } from "@/components/ui/kbd";
 import { Tabs as TabsRoot, TabsList, TabsTrigger } from "./ui/tabs";
 import { useEffect, useState } from "react";
 import { RefBadge } from "./ref-badge";
+import { SidebarTrigger } from "./ui/sidebar";
 
 export function Header() {
   const hasTabs = useDocTabs().length > 0;
@@ -40,7 +41,10 @@ export function Header() {
           <Actions />
         </div>
         {hasTabs && (
-          <div className="h-8">
+          <div className="h-8 flex items-center">
+            <div className="md:hidden mr-1">
+              <SidebarTrigger />
+            </div>
             <Tabs />
           </div>
         )}
