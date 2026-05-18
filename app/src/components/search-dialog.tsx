@@ -173,7 +173,7 @@ export default function SearchDialog({ open, onOpenChange, searchUrl }: Props) {
                   className="flex flex-col items-start gap-1"
                 >
                   <span
-                    className="text-sm font-medium"
+                    className="text-sm font-medium [&_mark]:rounded-sm [&_mark]:bg-primary/15 [&_mark]:text-primary"
                     dangerouslySetInnerHTML={{ __html: doc.titleHtml }}
                   />
                   <span className="text-muted-foreground text-xs font-mono">
@@ -181,7 +181,7 @@ export default function SearchDialog({ open, onOpenChange, searchUrl }: Props) {
                   </span>
                   {!titleOnly && (
                     <span
-                      className="text-muted-foreground text-xs line-clamp-2"
+                      className="text-muted-foreground text-xs line-clamp-2 [&_mark]:rounded-sm [&_mark]:bg-primary/15 [&_mark]:text-primary"
                       dangerouslySetInnerHTML={{ __html: doc.snippetHtml }}
                     />
                   )}
