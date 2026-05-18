@@ -1,5 +1,7 @@
 import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
+import { RiHashtag } from "@remixicon/react";
 
 export type HeadingTag = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";
 
@@ -10,17 +12,37 @@ export type HeadingTagProps = ComponentProps<HeadingTag> & {
 };
 
 const styles = {
-  h1: 'text-4xl font-semibold',
-  h2: 'text-3xl font-medium pt-10',
-  h3: 'text-2xl font-medium pt-8',
-  h4: 'text-xl font-medium pt-3',
-  h5: 'text-lg pt-3',
-  h6: 'text-base pt-2',
+  h1: "text-4xl font-semibold",
+  h2: "text-3xl font-medium pt-10",
+  h3: "text-2xl font-medium pt-8",
+  h4: "text-xl font-medium pt-3",
+  h5: "text-lg pt-3",
+  h6: "text-base pt-2",
 } satisfies Record<HeadingTag, string>;
 
 export function Heading(props: HeadingTagProps) {
-  const { node: _node, type, ...other } = props;
+  const { node, id, type, ...other } = props;
   const Tag = type;
 
-  return <Tag {...other} className={cn('font-heading text-balance', styles[type])} data-heading="true" />;
+  return (
+    <div
+      className={cn(
+        "group relative flex items-center gap-3 font-heading text-balance",
+        styles[type],
+      )}
+    >
+      <span id={id} className="absolute -mt-36 pt-36" />
+      <Tag {...other} data-heading="true" />
+      {id ? (
+        <Button variant="outline" size="icon" asChild>
+          <a
+            href={`#${id}`}
+            className="opacity-0 group-hover:opacity-70 transition-opacity"
+          >
+            <RiHashtag />
+          </a>
+        </Button>
+      ) : null}
+    </div>
+  );
 }

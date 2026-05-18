@@ -4,6 +4,7 @@ import remarkGfm from "remark-gfm";
 import { Heading, type HeadingTag } from "@/components/mdx/heading";
 import { Image } from "@/components/mdx/image";
 import { cn } from "@/lib/utils";
+import { Link } from "./doc-link";
 
 type MarkdownLeafProps = {
   source: string;
@@ -44,9 +45,10 @@ export function MarkdownLeaf({
       return <Tag className={cn("leading-7 opacity-90", className)} {...props} />;
     },
     a: ({ node: _node, className, ...props }) => (
-      <a
+      <Link
+        href={props.href ?? "/"}
         className={cn(
-          "font-medium underline decoration-border underline-offset-4 transition-colors hover:text-foreground hover:decoration-foreground",
+          "font-medium underline decoration-primary underline-offset-4 hover:opacity-80 transition-opacity",
           className,
         )}
         {...props}

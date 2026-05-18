@@ -2,7 +2,7 @@ import { Fragment, type CSSProperties, type ReactNode } from "react";
 import { Error, Info, Success, Warning } from "@/components/mdx/callout";
 import { Accordion, AccordionGroup } from "@/components/mdx/accordion";
 import { Property } from "@/components/mdx/property";
-import { Tabs } from "@/components/mdx/tabs";
+import { TabItem, Tabs } from "@/components/mdx/tabs";
 import { YouTube } from "@/components/mdx/youtube";
 import type { DocIrNode } from "@/lib/docs-ir/types";
 import { MarkdownLeaf } from "./markdown-leaf";
@@ -168,15 +168,7 @@ function renderComponent(
         {children}
       </Tabs>
     ),
-    TabItem: (
-      <TabItem
-        key={key}
-        label={stringProp(node.props.label)}
-        value={stringProp(node.props.value)}
-      >
-        {children}
-      </TabItem>
-    ),
+    TabItem: <TabItem key={key}>{children}</TabItem>,
     YouTube: <YouTube key={key} id={stringProp(node.props.id)} />,
     Vimeo: (
       <Vimeo
@@ -209,10 +201,6 @@ function renderComponent(
       <InvalidDocComponent key={key} name={node.name} />
     )
   );
-}
-
-function TabItem({ children }: TabItemProps) {
-  return <>{children}</>;
 }
 
 function InvalidDocComponent({ name }: { name: string }) {

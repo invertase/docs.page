@@ -210,3 +210,8 @@ export function Tabs(props: TabProps) {
     </TabsRoot>
   );
 }
+
+
+export function TabItem({ children }: PropsWithChildren) {
+  return <>{children}</>;
+}
