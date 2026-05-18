@@ -1,10 +1,10 @@
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import type { SidebarGroup } from "@/server/config/models/sidebar";
 import { Link } from "./doc-link";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useSidebar } from "@/hooks/use-sidebar";
 import { docPathMatchesSidebarHref } from "@/lib/docs-routing";
 import { Button } from "./ui/button";
+import { RiArrowLeftLine, RiArrowRightLine } from "@remixicon/react";
 
 type AnchorSource = { title: string; href: string };
 
@@ -94,7 +94,7 @@ export function PreviousNext() {
   if (!previous && !next) return null;
 
   return (
-    <div className="flex items-center gap-3 font-bold py-6">
+    <div className="flex items-center gap-3">
       {previous ? (
         <div className="flex-1">
           <Anchor {...previous} type="previous" />
@@ -113,9 +113,9 @@ function Anchor(props: AnchorSource & { type: "previous" | "next" }) {
   return (
     <Button variant="secondary" asChild>
       <Link href={props.href}>
-        {props.type === "previous" ? <ChevronLeftIcon size={16} /> : ""}
+        {props.type === "previous" ? <RiArrowLeftLine size={16} /> : ""}
         <span>{props.title}</span>
-        {props.type === "next" ? <ChevronRightIcon size={16} /> : ""}
+        {props.type === "next" ? <RiArrowRightLine size={16} /> : ""}
       </Link>
     </Button>
   );
