@@ -13,8 +13,7 @@ export type DocIrNode =
       lang?: string;
       meta?: string;
       value: string;
-      highlightedHtml?: string;
-      highlightedLang?: string;
+      highlighted?: string;
       title?: string;
     }
   | { kind: "thematicBreak" };

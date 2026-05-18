@@ -19,12 +19,6 @@ type DocsIrRendererProps = {
   takeNextHeadingId: () => string | undefined;
 };
 
-type TabItemProps = {
-  label?: string;
-  value?: string;
-  children?: ReactNode;
-};
-
 export function DocsIrRenderer({
   root,
   takeNextHeadingId,
@@ -66,11 +60,10 @@ function renderNode(
         <CodeFence
           key={key}
           lang={node.lang}
-          highlightedLang={node.highlightedLang}
+          highlighted={node.highlighted ?? ""}
           meta={node.meta}
           title={node.title}
           value={node.value}
-          highlightedHtml={node.highlightedHtml}
         />
       );
     case "thematicBreak":

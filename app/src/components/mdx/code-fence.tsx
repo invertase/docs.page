@@ -1,48 +1,68 @@
-import type { ComponentProps } from "react";
+import { useEffect, useRef, useState, type ComponentProps } from "react";
 import { cn } from "@/lib/utils";
+import { Button } from "../ui/button";
+import { RiCheckLine, RiFileCheckLine, RiFileCopy2Line, RiFileCopyLine } from "@remixicon/react";
 
 type CodeFenceProps = ComponentProps<"figure"> & {
   lang?: string;
-  highlightedLang?: string;
+  highlighted: string;
   meta?: string;
   title?: string;
   value: string;
-  highlightedHtml?: string;
 };
 
 export function CodeFence({
   lang,
-  highlightedLang,
+  highlighted,
   meta: _meta,
   title,
   value,
-  highlightedHtml,
   className,
   ...props
 }: CodeFenceProps) {
-  const language = highlightedLang || lang || "text";
+  const language = lang || "text";
   const label = title || language;
+
+  const [copied, setCopied] = useState(false);
+  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
+
+  useEffect(() => {
+    return () => {
+      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
+    };
+  }, []);
+
+  const onCopy = () => {
+    void navigator.clipboard.writeText(value);
+    if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
+    setCopied(true);
+    copyTimeoutRef.current = setTimeout(() => {
+      copyTimeoutRef.current = null;
+      setCopied(false);
+    }, 2000);
+  };
 
   return (
     <figure
       className={cn(
-        "my-4 overflow-hidden rounded-xl border bg-card text-card-foreground",
+        "overflow-hidden rounded-lg border bg-card text-card-foreground",
         className,
       )}
       {...props}
     >
-      <figcaption className="flex min-h-9 items-center justify-between gap-3 border-b bg-muted/40 px-4 py-2 font-mono text-muted-foreground text-xs">
-        <span className="truncate">{label}</span>
-        {title ? <span>{language}</span> : null}
+      <figcaption className="flex h-9 items-center justify-between gap-3 border-b px-4 font-mono text-muted-foreground text-xs">
+        <div className="truncate">{label}</div>
+        <div>
+          {title ? <span>{language}</span> : null}
+          <Button variant="ghost" size="icon-sm" onClick={onCopy}>
+            {copied ? <RiCheckLine /> : <RiFileCopyLine />}
+          </Button>
+        </div>
       </figcaption>
-      <div className="docs-code overflow-x-auto p-4 text-sm">
-        {highlightedHtml ? (
-          <div dangerouslySetInnerHTML={{ __html: highlightedHtml }} />
-        ) : (
-          <pre>
-            <code>{value}</code>
-          </pre>
-        )}
+      <div className="overflow-x-auto p-4 text-sm">
+        {highlighted ? (
+          <div dangerouslySetInnerHTML={{ __html: highlighted }} />
+        ) : null}
       </div>
     </figure>
   );

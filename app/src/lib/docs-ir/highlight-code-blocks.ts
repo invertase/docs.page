@@ -58,8 +58,7 @@ export async function highlightCodeBlocksInIr(
       const highlighted = await highlightCode(node.value, node.lang, node.meta);
       return {
         ...node,
-        highlightedHtml: highlighted.html,
-        highlightedLang: highlighted.lang,
+        highlighted: highlighted.html,
         title: extractTitle(node.meta ?? "") ?? undefined,
       };
     }
