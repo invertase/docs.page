@@ -31,8 +31,8 @@ export function Heading(props: HeadingTagProps) {
         styles[type],
       )}
     >
-      <span id={id} className="absolute -mt-36 pt-36" />
-      <Tag {...other} data-heading="true" />
+      <span id={id} data-heading="true" className="absolute -mt-36 pt-36" />
+      <Tag {...other} />
       {id ? (
         <Button variant="outline" size="icon" asChild>
           <a
