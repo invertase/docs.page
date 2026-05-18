@@ -1,3 +1,4 @@
+import dynamic from "next/dynamic";
 import { AgentPanel } from "@/components/agent/panel";
 import { AgentPanelProvider } from "@/components/agent/provider";
 import { Header } from "./header";
@@ -7,8 +8,8 @@ import { TableOfContents } from "./table-of-contents";
 import { ResizablePanel, ResizablePanelGroup } from "./ui/resizable";
 import { PageMetadata } from "./page-metadata";
 import { Footer } from "./footer";
-import dynamic from "next/dynamic";
 import { Metadata } from "./metadata";
+import { Scripts } from "./scripts";
 
 const NProgress = dynamic(() => import("@/components/nprogress"), {
   ssr: false,
@@ -17,8 +18,9 @@ const NProgress = dynamic(() => import("@/components/nprogress"), {
 export function Docs() {
   return (
     <>
-      <Metadata />
       <NProgress />
+      <Metadata />
+      <Scripts />
       <AgentPanelProvider>
         <div className="flex w-full flex-1 flex-row">
           <ResizablePanelGroup

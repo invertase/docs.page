@@ -52,6 +52,15 @@ function renderNode(
           takeNextHeadingId={takeNextHeadingId}
         />
       );
+    case "html":
+      // Sanitized with rehype-sanitize when the bundle is built (see sanitize-html.ts).
+      return (
+        <div
+          key={key}
+          className="not-prose contents"
+          dangerouslySetInnerHTML={{ __html: node.source }}
+        />
+      );
     case "code":
       return (
         <CodeFence

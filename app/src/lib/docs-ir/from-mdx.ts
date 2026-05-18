@@ -2,6 +2,7 @@ import type { Root } from "mdast";
 import remarkMdx from "remark-mdx";
 import remarkParse from "remark-parse";
 import { unified } from "unified";
+import { sanitizeHtmlInIr } from "./sanitize-html";
 import type { DocIrNode, DocIrPropValue } from "./types";
 
 type MdastNode = {
@@ -56,39 +57,61 @@ const UNSUPPORTED_NODE_TYPES = new Set([
   "mdxTextExpression",
 ]);
 
-export async function mdxToDocIr(source: string): Promise<DocIrNode> {
-  const processor = unified().use(remarkParse).use(remarkMdx);
-  const tree = await processor.run(processor.parse(source));
+/**
+ * Normalizes content that is valid GitHub-flavored markdown but invalid MDX so
+ * remark-mdx can parse the document without failing the whole bundle.
+ */
+export function preprocessMdxSource(source: string): string {
+  const withoutHtmlComments = source.replace(/<!--[\s\S]*?-->/g, "");
+  return withoutHtmlComments.replace(/<(?![/A-Za-z{])/g, "&lt;");
+}
 
-  return {
+export async function mdxToDocIr(source: string): Promise<DocIrNode> {
+  const preprocessed = preprocessMdxSource(source);
+  const tree = parseToMdast(preprocessed);
+
+  const root: DocIrNode = {
     kind: "root",
-    children: childrenToIr((tree as Root as MdastNode).children ?? [], source),
+    children: childrenToIr((tree as Root as MdastNode).children ?? [], preprocessed),
   };
+
+  return sanitizeHtmlInIr(root);
+}
+
+function parseToMdast(source: string): Root {
+  const mdxProcessor = unified().use(remarkParse).use(remarkMdx);
+
+  try {
+    return mdxProcessor.parse(source) as Root;
+  } catch {
+    return unified().use(remarkParse).parse(source) as Root;
+  }
 }
 
 function childrenToIr(children: MdastNode[], source: string): DocIrNode[] {
-  return children.flatMap((child) => nodeToIr(child, source));
+  return children.flatMap((child) => safeNodeToIr(child, source));
+}
+
+function safeNodeToIr(node: MdastNode, source: string): DocIrNode[] {
+  try {
+    return nodeToIr(node, source);
+  } catch {
+    return markdownLeafFromNode(node, source);
+  }
 }
 
 function nodeToIr(node: MdastNode, source: string): DocIrNode[] {
   if (node.type && UNSUPPORTED_NODE_TYPES.has(node.type)) {
-    throw new Error(`Unsupported MDX syntax: ${node.type}`);
+    return markdownLeafFromNode(node, source);
   }
 
   switch (node.type) {
     case "mdxJsxFlowElement":
     case "mdxJsxTextElement":
-      return [
-        {
-          kind: "component",
-          name: node.name ?? "Unknown",
-          props: mdxAttributesToProps(node.attributes ?? []),
-          children: childrenToIr(node.children ?? [], source),
-        },
-      ];
+      return jsxElementToIr(node, source);
     case "paragraph":
       if (node.children?.length === 1 && node.children[0]?.type === "mdxJsxTextElement") {
-        return nodeToIr(node.children[0], source);
+        return jsxElementToIr(node.children[0], source);
       }
 
       // MDX often wraps indented JSX (e.g. <TabItem> under <Tabs>) in a paragraph with
@@ -114,6 +137,55 @@ function nodeToIr(node: MdastNode, source: string): DocIrNode[] {
   }
 }
 
+function jsxElementToIr(node: MdastNode, source: string): DocIrNode[] {
+  const name = node.name ?? "";
+
+  if (isHtmlElementName(name)) {
+    return htmlLeafFromNode(node, source);
+  }
+
+  if (isMdxComponentName(name)) {
+    return [
+      {
+        kind: "component",
+        name,
+        props: mdxAttributesToProps(node.attributes ?? []),
+        children: childrenToIr(node.children ?? [], source),
+      },
+    ];
+  }
+
+  return markdownLeafFromNode(node, source);
+}
+
+/** Lowercase tags are treated as HTML (e.g. p, img, a). */
+function isHtmlElementName(name: string): boolean {
+  return /^[a-z][a-z0-9-]*$/.test(name);
+}
+
+/** PascalCase tags are docs.page MDX components; the renderer owns the component map. */
+function isMdxComponentName(name: string): boolean {
+  return /^[A-Z][A-Za-z0-9]*$/.test(name);
+}
+
+function markdownLeafFromNode(node: MdastNode, source: string): DocIrNode[] {
+  const markdown = sourceForNode(node, source);
+  if (markdown.trim().length > 0) {
+    return [{ kind: "markdown", source: normalizeMarkdownLeaf(markdown) }];
+  }
+
+  return [];
+}
+
+function htmlLeafFromNode(node: MdastNode, source: string): DocIrNode[] {
+  const html = sourceForNode(node, source);
+  if (html.trim().length > 0) {
+    return [{ kind: "html", source: normalizeMarkdownLeaf(html) }];
+  }
+
+  return [];
+}
+
 function markdownLeafOrChildren(node: MdastNode, source: string): DocIrNode[] {
   const markdown = sourceForNode(node, source);
   if (markdown.trim().length > 0) {
@@ -133,25 +205,29 @@ function mdxAttributesToProps(
   const props: Record<string, DocIrPropValue> = {};
 
   for (const attr of attributes) {
-    if (attr.type !== "mdxJsxAttribute" || !attr.name) {
-      throw new Error("Unsupported MDX JSX attribute syntax.");
-    }
+    try {
+      if (attr.type !== "mdxJsxAttribute" || !attr.name) {
+        continue;
+      }
 
-    if (attr.value === null || attr.value === undefined) {
-      props[attr.name] = true;
-      continue;
-    }
+      if (attr.value === null || attr.value === undefined) {
+        props[attr.name] = true;
+        continue;
+      }
 
-    if (
-      typeof attr.value === "string" ||
-      typeof attr.value === "number" ||
-      typeof attr.value === "boolean"
-    ) {
-      props[attr.name] = attr.value;
-      continue;
-    }
+      if (
+        typeof attr.value === "string" ||
+        typeof attr.value === "number" ||
+        typeof attr.value === "boolean"
+      ) {
+        props[attr.name] = attr.value;
+        continue;
+      }
 
-    props[attr.name] = expressionAttributeToProp(attr.name, attr.value);
+      props[attr.name] = expressionAttributeToProp(attr.name, attr.value);
+    } catch {
+      // Skip attributes that cannot be converted; keep the component renderable.
+    }
   }
 
   return props;
@@ -270,4 +346,3 @@ function normalizeMarkdownLeaf(markdown: string): string {
     .map((line) => line.slice(Math.min(minimumIndent, line.length)))
     .join("\n");
 }
-

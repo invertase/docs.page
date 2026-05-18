@@ -7,6 +7,7 @@ export type DocIrNode =
       children: DocIrNode[];
     }
   | { kind: "markdown"; source: string }
+  | { kind: "html"; source: string }
   | {
       kind: "code";
       lang?: string;

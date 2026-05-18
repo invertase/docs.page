@@ -64,6 +64,7 @@ export async function highlightCodeBlocksInIr(
       };
     }
     case "markdown":
+    case "html":
     case "thematicBreak":
       return node;
   }
