@@ -37,8 +37,8 @@ export function HeroInitCommand({ className }: HeroInitCommandProps) {
           "flex h-9 min-h-9 w-max min-w-0 max-w-full items-center overflow-hidden overflow-x-auto rounded-md border border-border pl-2.5 pr-1.5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
           "bg-[hsl(var(--color-gray-200))]",
           "dark:border-gray-800/80 dark:bg-[hsl(var(--muted))]",
-          "focus-within:outline-none focus-within:ring-1 focus-within:ring-marketing-accent focus-within:ring-offset-2 focus-within:ring-offset-[hsl(var(--color-gray-200))]",
-          "dark:focus-within:ring-marketing-accent dark:focus-within:ring-offset-[hsl(var(--muted))]",
+          "focus-within:outline-none focus-within:ring-1 focus-within:ring-gray-300 focus-within:ring-offset-2 focus-within:ring-offset-[hsl(var(--color-gray-200))]",
+          "dark:focus-within:ring-gray-500 dark:focus-within:ring-offset-[hsl(var(--muted))]",
         )}
       >
         <span

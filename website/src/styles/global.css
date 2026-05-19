@@ -1322,6 +1322,37 @@ pre.shiki.has-focused:hover .line {
     }
   }
 
+  /* Hero tagline: brighter grey centre, darker grey at the ends (matches body copy scale). */
+  .marketing-theme .hero-tagline-gray-fade {
+    background-image: linear-gradient(
+      90deg,
+      hsl(var(--color-gray-500)) 0%,
+      hsl(var(--color-gray-500)) 14%,
+      hsl(var(--color-gray-450)) 30%,
+      hsl(var(--color-gray-450)) 50%,
+      hsl(var(--color-gray-450)) 70%,
+      hsl(var(--color-gray-500)) 86%,
+      hsl(var(--color-gray-500)) 100%
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .dark .marketing-theme .hero-tagline-gray-fade,
+  html[data-theme="dark"] .marketing-theme .hero-tagline-gray-fade {
+    background-image: linear-gradient(
+      90deg,
+      hsl(var(--color-gray-500)) 0%,
+      hsl(var(--color-gray-500)) 14%,
+      hsl(var(--color-gray-400)) 30%,
+      hsl(var(--color-gray-400)) 50%,
+      hsl(var(--color-gray-400)) 70%,
+      hsl(var(--color-gray-500)) 86%,
+      hsl(var(--color-gray-500)) 100%
+    );
+  }
+
   /* Hero “humans + agents”: honey → soft periwinkle (Figma linear stops). */
   .marketing-theme .hero-headline-honey-periwinkle {
     background-image: var(--hero-headline-honey-periwinkle-gradient);

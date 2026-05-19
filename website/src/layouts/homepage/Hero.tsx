@@ -50,16 +50,16 @@ export function Hero() {
         </div>
         <div className="relative z-[2] w-full min-w-0 text-center pt-14 pb-5 sm:pt-16 sm:pb-6 md:pt-18 md:pb-8">
           <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 overflow-visible sm:gap-6 md:gap-7">
-            <span className="mx-auto inline-flex w-fit max-w-[38rem] items-center justify-center rounded-md border border-gray-600 px-2.5 py-0.5 text-center font-mono text-xs font-medium leading-snug text-gray-500 opacity-70 transition-opacity duration-200 ease-out hover:opacity-100 md:text-sm">
+            <p className="hero-tagline-gray-fade mx-auto max-w-[38rem] text-base font-light leading-relaxed">
               The easiest way to ship agent-ready docs for free
-            </span>
+            </p>
             <HeroHeadingDots className="w-full">
             <div className="relative z-[2] mx-auto max-w-3xl overflow-visible">
               <h1 className="heading-h1 mx-auto flex w-max max-w-full flex-col items-center gap-0 overflow-visible text-center text-4xl font-light leading-none md:text-5xl lg:text-6xl">
                 <span className="inline-block max-w-full leading-none text-gray-950 dark:text-white lg:whitespace-nowrap">
                   Docs for
                 </span>
-                <span className="block max-w-full overflow-visible leading-none text-gray-950 dark:text-white [line-height:1.22] -mt-[0.08em] md:[line-height:1.23] lg:whitespace-nowrap lg:[line-height:1.26]">
+                <span className="block max-w-full overflow-visible font-normal leading-none text-gray-950 dark:text-white [line-height:1.22] -mt-[0.08em] md:[line-height:1.23] lg:whitespace-nowrap lg:[line-height:1.26]">
                   humans<span className="px-[0.2em]">+</span>agents
                 </span>
               </h1>
@@ -69,12 +69,11 @@ export function Hero() {
               A <span className="text-marketing-accent">free</span> and{" "}
               <span className="text-marketing-accent">open-source</span> service
               for publishing public GitHub repository markdown documentation as
-              a modern themed docs site. Native AI chat, MCP support, and
-              llms.txt out of the box.
+              a modern themed docs site.
             </p>
-            <div className="flex w-full flex-row flex-wrap items-center justify-center gap-x-4 gap-y-2">
+            <div className="mx-auto flex w-max max-w-full flex-row flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-2xl border border-marketing-accent p-2">
             <p className="shrink-0 text-left font-mono text-base font-light leading-relaxed text-gray-500 dark:text-gray-400">
-              Live in seconds:
+              Get started now:
             </p>
             <HeroInitCommand />
             </div>
