@@ -8,6 +8,7 @@ export type DocPageProps = {
   meta: {
     hasAgent: boolean;
     initialAgentPanelOpen: boolean;
+    requestOrigin: string;
   }
 };
 

@@ -32,6 +32,7 @@ import { ensureLeadingSlash, isExternalLink } from "@/lib/docs-assets";
 import { useAgentPanel } from "@/hooks/use-agent-panel";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { Badge } from "@/components/ui/badge";
+import { useMcpDialog } from "./mcp-dialog";
 
 type Props = {
   open: boolean;
@@ -48,7 +49,8 @@ export default function SearchDialog({ open, onOpenChange, searchUrl }: Props) {
   const { setOpen: setAgentPanelOpen } = useAgentPanel();
   const { bundle } = useDocPageContext();
   const displayResults = useMemo(() => dedupeSearchResults(results), [results]);
-
+  const dialog = useMcpDialog();
+  
   useEffect(() => {
     const q = deferredQuery.trim();
     if (!q) {
@@ -142,7 +144,11 @@ export default function SearchDialog({ open, onOpenChange, searchUrl }: Props) {
                 <span>Ask AI</span>
                 <span className="text-muted-foreground">Open agent window</span>
               </CommandItem>
-              <CommandItem>
+              <CommandItem
+                onSelect={() => {
+                  dialog.setOpen(true);
+                }}
+              >
                 <RiCloudFill className="text-muted-foreground" />
                 <span>Install MCP</span>
               </CommandItem>

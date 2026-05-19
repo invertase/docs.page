@@ -11,10 +11,11 @@ import {
   resolveRawDocsRoute,
 } from "@/lib/docs-routing";
 import { buildDocsBundleApiPath } from "@/lib/docs-bundle-api";
-import { getRequestOrigin } from "@/lib/docs-environment";
+import { getRequestOrigin as getInternalRequestOrigin } from "@/lib/docs-environment";
 import { resolveFrontmatterRedirectDestination } from "@/lib/docs-redirect";
 import {
   acceptPrefersMarkdown,
+  getRequestOrigin,
   incomingHttpHeadersToWebHeaders,
 } from "@/lib/incoming-http-headers";
 import {
@@ -176,7 +177,7 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
   setDocsCacheHeaders(res, DOCS_HTML_CACHE_HEADERS);
 
   const bundleApiPath = buildDocsBundleApiPath(route);
-  const bundleResponse = await fetch(getRequestOrigin() + bundleApiPath, {
+  const bundleResponse = await fetch(getInternalRequestOrigin() + bundleApiPath, {
     method: "GET",
     headers: {
       Accept: "application/json",
@@ -245,6 +246,7 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
       meta: {
         hasAgent: successResponse.hasAgent,
         initialAgentPanelOpen,
+        requestOrigin: getRequestOrigin(req),
       },
     } satisfies DocPageProps,
   };

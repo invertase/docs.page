@@ -28,6 +28,8 @@ import { cn } from "@/lib/utils";
 import { Link } from "./doc-link";
 import { Icon } from "./mdx/icon";
 import { LocaleSwitcher } from "./locale-switcher";
+import { Anchors } from "./anchors";
+import { Separator } from "./ui/separator";
 
 type SidebarPageLink = Extract<
   SidebarConfigGroup["pages"][number],
@@ -276,8 +278,9 @@ export function Sidebar() {
           aria-hidden
           className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-12 bg-linear-to-t from-background to-transparent"
         />
-        <SidebarContent className="relative flex-1 bg-background py-5 pl-2">
+        <SidebarContent className="relative flex-1 bg-background py-8 pl-2">
           <LocaleSwitcher />
+          <Anchors />
           {groups.map((group, gi) => (
             <SidebarGroup
               key={`${group.group ?? "group"}-${gi}`}
@@ -299,6 +302,7 @@ export function Sidebar() {
                   <SidebarPagesList pages={group.pages} depth={0} />
                 </SidebarMenu>
               </SidebarGroupContent>
+              <Separator className="mt-4" />
             </SidebarGroup>
           ))}
         </SidebarContent>

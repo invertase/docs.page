@@ -17,13 +17,20 @@ import {
   RiCodeAiLine,
   RiCursorAiLine,
   RiFileCopyLine,
+  RiGithubLine,
   RiMarkdownLine,
+  RiPencilLine,
 } from "@remixicon/react";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
+import { getMcpEndpointUrl } from "@/lib/mcp-endpoint-url";
+import { useSourceUrl } from "@/hooks/use-source-url";
+import { useMcpDialog } from "./mcp-dialog";
 
 export function ActionMenu() {
-  const { bundle, route } = useDocPageContext();
+  const { bundle, route, meta } = useDocPageContext();
   const [copied, setCopied] = useState(false);
+  const source = useSourceUrl();
+  const dialog = useMcpDialog();
 
   const handleCopy = useCallback(() => {
     setCopied(true);
@@ -54,7 +61,21 @@ export function ActionMenu() {
                 description="Copy page as Markdown"
               />
             </DropdownMenuItem>
-            <DropdownMenuItem className="gap-4"
+            <DropdownMenuItem
+              className="gap-4"
+              onClick={() => {
+                window.open(source, "_blank");
+              }}
+            >
+              <MenuItem
+                icon={<RiGithubLine />}
+                title="Edit page"
+                description="Edit this page on GitHub"
+                external
+              />
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              className="gap-4"
               onClick={() => {
                 const pathname = `${window.location.pathname}.md`;
                 const url = new URL(pathname, window.location.origin);
@@ -68,9 +89,10 @@ export function ActionMenu() {
                 external
               />
             </DropdownMenuItem>
-            <DropdownMenuItem className="gap-4"
+            <DropdownMenuItem
+              className="gap-4"
               onClick={() => {
-                alert("TODO: Not implemented");
+                dialog.setOpen(true);
               }}
             >
               <MenuItem
@@ -79,7 +101,8 @@ export function ActionMenu() {
                 description="Install MCP server for these docs"
               />
             </DropdownMenuItem>
-            <DropdownMenuItem className="gap-4"
+            <DropdownMenuItem
+              className="gap-4"
               onClick={() => {
                 const url = `https://claude.ai/new?q=${encodeURIComponent(`Read page ${location.href} and answer any questions I have`)}`;
                 window.open(url.toString(), "_blank");
@@ -92,13 +115,18 @@ export function ActionMenu() {
                 external
               />
             </DropdownMenuItem>
-            <DropdownMenuItem className="gap-4"
+            <DropdownMenuItem
+              className="gap-4"
               onClick={() => {
                 const config = {
-                  name: bundle.config.name?.trim() || `${route.owner}/${route.repository}`,
-                  url: getMcpEndpointUrl(route),
+                  name:
+                    bundle.config.name?.trim() ||
+                    `${route.owner}/${route.repository}`,
+                  url: getMcpEndpointUrl(route, meta.requestOrigin),
                 };
-                const url = new URL(`vscode:mcp/install?${encodeURIComponent(JSON.stringify(config))}`);
+                const url = new URL(
+                  `vscode:mcp/install?${encodeURIComponent(JSON.stringify(config))}`,
+                );
                 window.open(url.toString(), "_blank");
               }}
             >
@@ -109,14 +137,19 @@ export function ActionMenu() {
                 external
               />
             </DropdownMenuItem>
-            <DropdownMenuItem className="gap-4"
+            <DropdownMenuItem
+              className="gap-4"
               onClick={() => {
                 const config = {
-                  url: getMcpEndpointUrl(route),
+                  url: getMcpEndpointUrl(route, meta.requestOrigin),
                 };
                 const encodedConfig = btoa(JSON.stringify(config));
-                const serverName = bundle.config.name?.trim() || `${route.owner}/${route.repository}`;
-                const url = new URL("cursor://anysphere.cursor-deeplink/mcp/install");
+                const serverName =
+                  bundle.config.name?.trim() ||
+                  `${route.owner}/${route.repository}`;
+                const url = new URL(
+                  "cursor://anysphere.cursor-deeplink/mcp/install",
+                );
                 url.searchParams.set("name", serverName);
                 url.searchParams.set("config", encodedConfig);
                 window.open(url.toString(), "_blank");
@@ -136,21 +169,6 @@ export function ActionMenu() {
   );
 }
 
-function getMcpEndpointUrl(route: ReturnType<typeof useDocPageContext>["route"]) {
-  const encodedRef = route.ref ? `~${encodeURIComponent(route.ref)}` : "";
-  let pathname = "";
-
-  if (route.requestMode === "custom-domain") {
-    pathname = route.ref ? `/${encodedRef}/mcp` : "/mcp";
-  } else if (route.requestMode === "vanity") {
-    pathname = `/${route.repository}${encodedRef}/mcp`;
-  } else {
-    pathname = `/${route.owner}/${route.repository}${encodedRef}/mcp`;
-  }
-
-  return new URL(pathname, window.location.origin).toString();
-}
-
 function MenuItem(props: {
   icon: React.ReactNode;
   title: string;
@@ -163,7 +181,9 @@ function MenuItem(props: {
       <div>
         <div className="font-medium flex items-center gap-1">
           <span>{props.title}</span>
-          {props.external && <RiArrowRightUpLine className="text-muted-foreground" />}
+          {props.external && (
+            <RiArrowRightUpLine className="text-muted-foreground" />
+          )}
         </div>
         <p className="text-xs text-muted-foreground">{props.description}</p>
       </div>

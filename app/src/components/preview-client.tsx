@@ -152,6 +152,10 @@ export function PreviewClient() {
       meta: {
         hasAgent: false,
         initialAgentPanelOpen: false,
+        requestOrigin:
+          typeof window !== "undefined"
+            ? window.location.origin
+            : `http://localhost:${process.env.PORT?.trim() || "3000"}`,
       },
     };
   }, [previewPath, response]);
