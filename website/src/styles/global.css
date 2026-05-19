@@ -1328,9 +1328,9 @@ pre.shiki.has-focused:hover .line {
       90deg,
       hsl(var(--color-gray-500)) 0%,
       hsl(var(--color-gray-500)) 14%,
-      hsl(var(--color-gray-450)) 30%,
-      hsl(var(--color-gray-450)) 50%,
-      hsl(var(--color-gray-450)) 70%,
+      hsl(var(--color-gray-500)) 30%,
+      hsl(var(--color-gray-500)) 50%,
+      hsl(var(--color-gray-500)) 70%,
       hsl(var(--color-gray-500)) 86%,
       hsl(var(--color-gray-500)) 100%
     );
