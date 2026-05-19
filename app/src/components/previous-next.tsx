@@ -2,6 +2,7 @@ import type { SidebarGroup } from "@/server/config/models/sidebar";
 import { Link } from "./doc-link";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useSidebar } from "@/hooks/use-sidebar";
+import { isExternalLink } from "@/lib/docs-assets";
 import { docPathMatchesSidebarHref } from "@/lib/docs-routing";
 import { Button } from "./ui/button";
 import { RiArrowLeftLine, RiArrowRightLine } from "@remixicon/react";
@@ -24,18 +25,16 @@ export function PreviousNext() {
   // A flattened list of all sidebar items.
   const flattened: AnchorSource[] = [];
 
-  // Recursively flatten the sidebar.
+  // Recursively flatten the sidebar (internal doc links only).
   function flattenGroup(group: SidebarGroup) {
-    // If the group has an href, add it to the flattened list
-    if ("href" in group && group.href) {
-      flattened.push({ href: group.href, title: group.group! });
+    if ("href" in group && group.href && !isExternalLink(group.href) && group.group) {
+      flattened.push({ href: group.href, title: group.group });
     }
 
-    // Recursively flatten the pages
     for (const page of group.pages) {
       if ("pages" in page) {
         flattenGroup(page);
-      } else {
+      } else if (!isExternalLink(page.href)) {
         flattened.push(page);
       }
     }
@@ -70,27 +69,30 @@ export function PreviousNext() {
     }
   }
 
-  // If the page has a `previous` href, use that instead.
-  if (frontmatter.previous) {
+  const previousHref = frontmatter.previous
+    ? String(frontmatter.previous)
+    : undefined;
+  if (previousHref && !isExternalLink(previousHref)) {
     previous = {
       title: frontmatter.previousTitle
         ? String(frontmatter.previousTitle)
-        : (findAnchor(String(frontmatter.previous))?.title ?? ""),
-      href: String(frontmatter.previous),
+        : (findAnchor(previousHref)?.title ?? ""),
+      href: previousHref,
     };
   }
 
-  // If the page has a `next` href, use that instead.
-  if (frontmatter.next) {
+  const nextHref = frontmatter.next ? String(frontmatter.next) : undefined;
+  if (nextHref && !isExternalLink(nextHref)) {
     next = {
       title: frontmatter.nextTitle
         ? String(frontmatter.nextTitle)
-        : (findAnchor(String(frontmatter.next))?.title ?? ""),
-      href: String(frontmatter.next),
+        : (findAnchor(nextHref)?.title ?? ""),
+      href: nextHref,
     };
   }
 
-  // If there is no previous or next page, return null.
+  if (previous && !previous.title) previous = undefined;
+  if (next && !next.title) next = undefined;
   if (!previous && !next) return null;
 
   return (
