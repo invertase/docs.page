@@ -10,7 +10,13 @@
     "primary": "#E69135"
   },
   "agent": {
-    "key": "69d48775-750d-479d-8740-aa2cff2287f4"
+    "key": "69d48775-750d-479d-8740-aa2cff2287f4",
+    "questions": [
+      "How do I setup docs.page?",
+      "Is it free to use?",
+      "How do I customize the theme?",
+      "How is docs.page agent ready?"
+    ]
   },
   "content": {
     "showPageTitle": true,

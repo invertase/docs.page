@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { Link } from "../doc-link";
+import { Kbd } from "../ui/kbd";
 
 const AGENT_CSRF_COOKIE_NAME = "agent_session_csrf";
 const AGENT_SESSION_HEADER_NAME = "X-Agent-Session";
@@ -44,12 +45,7 @@ export function AgentChat({ setOpen }: { setOpen?: (open: boolean) => void }) {
   const [input, setInput] = useState("");
   const messagesScrollRef = useRef<HTMLDivElement>(null);
   const agentAvailable = kind === "doc" && meta.hasAgent;
-  const questions = bundle.config.agent?.questions ?? [
-    "How do I use this?",
-    "How do I install this?",
-    "How do I upgrade this?",
-    "How do I uninstall this?",
-  ];
+  const questions = bundle.config.agent?.questions ?? [];
 
   const { messages, sendMessage, status, error, stop } = useChat({
     transport: new DefaultChatTransport({
@@ -138,9 +134,9 @@ export function AgentChat({ setOpen }: { setOpen?: (open: boolean) => void }) {
         )}
       >
         {showQuestions ? (
-          <div className="mt-auto flex flex-col gap-4 pb-2">
+          <div className="mt-auto flex flex-col gap-4">
             <p className="text-sm text-muted-foreground">
-              Ask anything about this documentation.
+              Tip: You can open and close chat with <Kbd>Ctrl</Kbd>+<Kbd>I</Kbd>
             </p>
             {questions.length > 0 && (
               <ul className="flex flex-col items-start gap-0.5">
@@ -209,7 +205,10 @@ export function AgentChat({ setOpen }: { setOpen?: (open: boolean) => void }) {
                               linkSafety={{ enabled: false }}
                               components={{
                                 a: (props) => (
-                                  <Link href={props.href ?? "/"} className="underline decoration-primary underline-offset-4 hover:opacity-80 transition-opacity">
+                                  <Link
+                                    href={props.href ?? "/"}
+                                    className="underline decoration-primary underline-offset-4 hover:opacity-80 transition-opacity"
+                                  >
                                     {props.children}
                                   </Link>
                                 ),
@@ -247,9 +246,9 @@ export function AgentChat({ setOpen }: { setOpen?: (open: boolean) => void }) {
             {errorMessage}
           </p>
         )}
-        <InputGroup className="h-auto">
+        <InputGroup className="h-auto bg-input/30 shadow-none transition-none">
           <InputGroupTextarea
-            className="max-h-30 min-h-16"
+            className="max-h-30 min-h-16 bg-transparent transition-none dark:bg-transparent"
             placeholder={
               agentAvailable
                 ? (bundle.config.agent?.placeholder ?? "Ask a question...")
