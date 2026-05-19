@@ -72,6 +72,10 @@ export const V1ConfigSchema = z
         light: v1.favicon,
         dark: v1.favicon,
       },
+      og: {
+        logo: v1.logo,
+        github: true,
+      },
       socialPreview: v1.socialPreview,
       logo: {
         light: v1.logo,
