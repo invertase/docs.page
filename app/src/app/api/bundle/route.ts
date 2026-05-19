@@ -43,7 +43,7 @@ export async function GET(req: Request) {
     ]);
 
     const hasAgent = Boolean(
-      bundle.config.agent && bundle.config.agent === agent?.id,
+      bundle.config.agent && bundle.config.agent.key === agent?.id,
     );
     const response = Response.json(
       {

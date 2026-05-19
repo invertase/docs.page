@@ -44,6 +44,10 @@ You have access to bash commands, such as:
 - cat - read the contents of a file
 - grep - search the contents of a file for a string
 - find - search the repository for a file
+
+When referencing files, always provide the relative URL to the file as markdown links, for example:
+1. /docs/index.mdx -> [Documentation](/)
+2. /docs/getting-started/index.mdx -> [Getting Started](/getting-started)
 `;
 
 export async function POST(req: Request) {

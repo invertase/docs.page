@@ -2,6 +2,8 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @plugin "@tailwindcss/typography";
+@source "../../node_modules/streamdown/dist/*.js";
+@source "../../node_modules/@streamdown/code/dist/*.js";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -160,6 +162,42 @@
 .shiki code {
   display: grid;
   min-width: max-content;
+}
+
+/* Agent panel: constrain width without breaking Streamdown's code-block layout. */
+.agent-chat-markdown {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.agent-chat-markdown [data-streamdown="code-block"] {
+  position: relative;
+  max-width: 100%;
+  min-width: 0;
+}
+
+/* Sticky action bar breaks inside scroll containers — pin copy to top-right. */
+.agent-chat-markdown
+  [data-streamdown="code-block"]
+  > div:has([data-streamdown="code-block-actions"]) {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 10;
+  margin: 0 !important;
+  height: auto !important;
+  pointer-events: auto !important;
+}
+
+.agent-chat-markdown [data-streamdown="code-block-body"] {
+  max-width: 100%;
+  min-width: 0;
+}
+
+.agent-chat-markdown [data-streamdown="table-wrapper"] {
+  max-width: 100%;
+  min-width: 0;
 }
 
 .shiki .line {

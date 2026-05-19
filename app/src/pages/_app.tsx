@@ -1,6 +1,7 @@
 import type { AppProps } from "next/app";
 import { ThemeProvider } from "next-themes";
 import "@/styles/globals.css";
+import "streamdown/styles.css";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { fonts } from "@/lib/fonts";
