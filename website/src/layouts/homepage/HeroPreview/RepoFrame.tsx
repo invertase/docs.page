@@ -118,7 +118,7 @@ export function RepoFrame(props: Props) {
           className={cn(
             "relative min-h-0",
             "border-t border-border sm:border-t-0",
-            "sm:border-l sm:border-border dark:sm:border-l-zinc-800/80",
+            "sm:border-l sm:border-border dark:sm:border-l-gray-800/80",
           )}
         >
           <div className="flex h-9 items-center justify-between border-b border-border bg-muted/40 px-3 font-mono text-[11px] text-muted-foreground">
@@ -186,8 +186,8 @@ function FileExplorerColumn({
     <div
       className={cn(
         "hidden min-h-0 w-full min-w-0 flex-col sm:flex",
-        "border-b border-border sm:border-b-0 dark:border-zinc-800/80",
-        "bg-card text-foreground dark:bg-zinc-950 dark:text-zinc-300",
+        "border-b border-border sm:border-b-0 dark:border-gray-800/80",
+        "bg-card text-foreground dark:bg-gray-950 dark:text-gray-300",
       )}
     >
       <ExplorerHeader />
@@ -201,7 +201,7 @@ function ExplorerHeader() {
     <div
       className={cn(
         "flex h-9 min-h-9 shrink-0 items-center justify-between gap-1.5 pl-1.5 pr-1",
-        "border-b border-border bg-muted/40 dark:border-zinc-800/60 dark:bg-transparent",
+        "border-b border-border bg-muted/40 dark:border-gray-800/60 dark:bg-transparent",
         "text-muted-foreground",
       )}
     >
@@ -247,10 +247,10 @@ function FileTree({
       aria-label="Repository files"
       className={cn(
         "min-h-0 w-full min-w-0 flex-1 overflow-y-auto py-1.5 [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1.5",
-        "[scrollbar-color:hsl(var(--color-zinc-400))_transparent] dark:[scrollbar-color:hsl(var(--color-zinc-600))_transparent]",
+        "[scrollbar-color:hsl(var(--color-gray-400))_transparent] dark:[scrollbar-color:hsl(var(--color-gray-600))_transparent]",
       )}
     >
-      <ul className="w-full list-none p-0 font-sans text-[12px] leading-tight text-foreground dark:text-zinc-300">
+      <ul className="w-full list-none p-0 font-sans text-[12px] leading-tight text-foreground dark:text-gray-300">
         {TREE.map((node, index) => (
           <TreeItem
             key={`${node.kind}-${index}-${"name" in node ? node.name : ""}`}
@@ -286,7 +286,7 @@ function TreeItem({
             "group/folder flex w-full min-w-0 min-h-[22px] items-center gap-0.5",
             "py-0.5 pl-0.5 pr-1.5",
             "rounded-sm",
-            "text-foreground dark:text-zinc-300",
+            "text-foreground dark:text-gray-300",
             "hover:bg-muted/60 dark:hover:bg-white/5",
           )}
           style={{ paddingLeft: `${gutter}px` }}
@@ -299,7 +299,7 @@ function TreeItem({
               })}
             />
             <Folder className="size-3 shrink-0 text-[hsl(var(--color-brand-teal)/0.9)] dark:text-[hsl(var(--color-brand-teal)/0.82)]" strokeWidth={1.5} />
-            <span className="min-w-0 flex-1 truncate pr-0.5 text-foreground dark:text-zinc-300">
+            <span className="min-w-0 flex-1 truncate pr-0.5 text-foreground dark:text-gray-300">
               {node.name}
             </span>
             {node.statusDot ? (
@@ -391,15 +391,15 @@ function FileRow({
           "cursor-pointer select-none font-sans",
           isActive
             ? cn(
-                "border-y border-border dark:border-zinc-600/45",
-                "bg-muted dark:bg-zinc-800/85",
-                "text-foreground dark:text-zinc-100",
+                "border-y border-border dark:border-gray-600/45",
+                "bg-muted dark:bg-gray-800/85",
+                "text-foreground dark:text-gray-100",
                 "rounded-none",
               )
             : cn(
                 "border-0",
                 "rounded-sm",
-                "text-foreground dark:text-zinc-300",
+                "text-foreground dark:text-gray-300",
                 "hover:bg-muted/60 dark:hover:bg-white/5",
               ),
         )}
@@ -413,7 +413,7 @@ function FileRow({
         <span
           className={cn(
             "min-w-0 flex-1 truncate",
-            isActive && "text-foreground dark:text-zinc-100",
+            isActive && "text-foreground dark:text-gray-100",
           )}
         >
           {node.name}
@@ -423,7 +423,7 @@ function FileRow({
             className={cn(
               "shrink-0 pr-0.5 font-mono text-[9px] font-medium leading-none",
               isActive
-                ? "text-muted-foreground dark:text-zinc-500"
+                ? "text-muted-foreground dark:text-gray-500"
                 : "text-[hsl(var(--color-brand-coral-red)/0.95)] dark:text-[hsl(var(--color-brand-coral-red)/0.88)]",
             )}
             title="Modified in working tree"

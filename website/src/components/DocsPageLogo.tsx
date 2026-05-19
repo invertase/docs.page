@@ -6,7 +6,7 @@ export function DocsPageLogo({ className }: { className?: string }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center text-zinc-950 dark:text-zinc-50",
+        "inline-flex items-center text-gray-950 dark:text-gray-50",
         className,
       )}
     >

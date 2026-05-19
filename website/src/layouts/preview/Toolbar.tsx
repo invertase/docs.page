@@ -14,7 +14,7 @@ import { useCheckResult, useFiles, useRestart } from "./utils";
 export function Toolbar() {
   return (
     <div
-      className="fixed bottom-8 h-12 z-50 rounded-full bg-zinc-800 px-2 py-1 text-white flex items-center space-x-2 border border-black/10 dark:border-white/10"
+      className="fixed bottom-8 h-12 z-50 rounded-full bg-gray-800 px-2 py-1 text-white flex items-center space-x-2 border border-black/10 dark:border-white/10"
       style={{
         left: "50%",
         transform: "translateX(-50%)",
@@ -87,10 +87,10 @@ function ListFiles() {
                     <div className="text-sm py-2 px-2 grid grid-cols-2 text-white">
                       {Object.keys(files.data || {}).map((key) => (
                         <Fragment key={key}>
-                          <div className="border-b border-zinc-200/20 py-1">
+                          <div className="border-b border-gray-200/20 py-1">
                             <code>{key}</code>
                           </div>
-                          <div className="border-b border-zinc-200/20 py-1">
+                          <div className="border-b border-gray-200/20 py-1">
                             {key.replace(".mdx", "").replace("/index", "") ||
                               "/"}
                           </div>
@@ -100,7 +100,7 @@ function ListFiles() {
                   </div>
                   <div className="mt-2">
                     <Button
-                      className="inline-flex items-center gap-2 rounded-md bg-zinc-950 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-zinc-800 data-[open]:bg-zinc-700 data-[focus]:outline-1 data-[focus]:outline-white"
+                      className="inline-flex items-center gap-2 rounded-md bg-gray-950 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-gray-800 data-[open]:bg-gray-700 data-[focus]:outline-1 data-[focus]:outline-white"
                       onClick={() => setOpen(false)}
                     >
                       Close
@@ -163,7 +163,7 @@ function Diagnostics() {
                     <div className="text-sm py-2 px-2 text-white">
                       {(checks.data || []).map((check, i) => (
                         <Fragment key={i}>
-                          <div className="border-b border-zinc-200/20 py-1">
+                          <div className="border-b border-gray-200/20 py-1">
                             {!!check.filePath && (
                               <code>
                                 {check.filePath}:{check.line}:{check.column}
@@ -177,7 +177,7 @@ function Diagnostics() {
                   </div>
                   <div className="mt-2">
                     <Button
-                      className="inline-flex items-center gap-2 rounded-md bg-zinc-950 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-zinc-800 data-[open]:bg-zinc-700 data-[focus]:outline-1 data-[focus]:outline-white"
+                      className="inline-flex items-center gap-2 rounded-md bg-gray-950 py-1.5 px-3 text-sm/6 font-semibold text-white shadow-inner shadow-white/10 focus:outline-none data-[hover]:bg-gray-800 data-[open]:bg-gray-700 data-[focus]:outline-1 data-[focus]:outline-white"
                       onClick={() => setOpen(false)}
                     >
                       Close

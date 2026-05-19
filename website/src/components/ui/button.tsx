@@ -15,7 +15,7 @@ const buttonVariants = cva(
         outline:
           "border-primary bg-transparent text-primary hover:bg-primary/10 hover:text-primary aria-expanded:bg-primary/10 aria-expanded:text-primary",
         ghost:
-          "hover:bg-[hsl(var(--color-zinc-200))] hover:text-foreground aria-expanded:bg-[hsl(var(--color-zinc-200))] aria-expanded:text-foreground dark:hover:bg-muted/60 dark:aria-expanded:bg-muted/60",
+          "hover:bg-[hsl(var(--color-gray-200))] hover:text-foreground aria-expanded:bg-[hsl(var(--color-gray-200))] aria-expanded:text-foreground dark:hover:bg-muted/60 dark:aria-expanded:bg-muted/60",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90 focus-visible:border-destructive focus-visible:ring-destructive/30 dark:focus-visible:ring-destructive/40",
       },

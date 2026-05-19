@@ -12,13 +12,17 @@ import {
 import { cn } from "~/lib/utils";
 
 /**
- * Dot grid + honey glow share geometry; both show only while the heading block is hovered
- * (`::before` opacity in CSS; glow opacity in React). Reduced motion: instant opacity step.
+ * On hover: dot grid (`::before`) + honey → periwinkle gradient dots at the cursor. Reduced motion: hidden.
  */
-export function HeroHeadingDots({ children }: { children: ReactNode }) {
+export function HeroHeadingDots({
+  children,
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState({ x: 50, y: 50 });
-  const [hovered, setHovered] = useState(false);
 
   const updateFromEvent = useCallback((clientX: number, clientY: number) => {
     const el = wrapRef.current;
@@ -36,17 +40,11 @@ export function HeroHeadingDots({ children }: { children: ReactNode }) {
     const el = wrapRef.current;
     if (!el) return;
 
-    const onEnter = () => setHovered(true);
-    const onLeave = () => setHovered(false);
     const onMove = (e: MouseEvent) => updateFromEvent(e.clientX, e.clientY);
 
-    el.addEventListener("mouseenter", onEnter);
-    el.addEventListener("mouseleave", onLeave);
     el.addEventListener("mousemove", onMove);
 
     return () => {
-      el.removeEventListener("mouseenter", onEnter);
-      el.removeEventListener("mouseleave", onLeave);
       el.removeEventListener("mousemove", onMove);
     };
   }, [updateFromEvent]);
@@ -54,15 +52,14 @@ export function HeroHeadingDots({ children }: { children: ReactNode }) {
   return (
     <div
       ref={wrapRef}
-      className="hero-heading-dots relative mx-auto w-full max-w-full overflow-visible pt-0 pb-16 sm:pb-20 -mb-14 sm:-mb-[4.25rem]"
+      className={cn(
+        "hero-heading-dots hero-heading-dots--wide relative mx-auto w-full overflow-visible pt-2 pb-2 sm:pt-2.5 sm:pb-2.5",
+        className,
+      )}
     >
       <div
         aria-hidden
-        className={cn(
-          "hero-heading-dots-glow pointer-events-none absolute motion-reduce:hidden",
-          "transition-opacity duration-200 ease-out",
-          hovered ? "opacity-100" : "opacity-0",
-        )}
+        className="hero-heading-dots-glow pointer-events-none absolute motion-reduce:hidden"
         style={
           {
             "--hero-heading-glow-x": `${pos.x}%`,

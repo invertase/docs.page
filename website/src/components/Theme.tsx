@@ -122,7 +122,7 @@ export function ThemeToggle() {
       checked={enabled}
       onChange={setEnabled}
       className={cn(
-        "relative inline-flex h-3 w-7 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-zinc-200/60 transition-colors duration-200 ease-in-out dark:bg-white/10",
+        "relative inline-flex h-3 w-7 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-200/60 transition-colors duration-200 ease-in-out dark:bg-white/10",
       )}
     >
       <span className="sr-only">Toggle theme</span>
@@ -130,7 +130,7 @@ export function ThemeToggle() {
         className={cn(
           "pointer-events-none relative -top-1.5 inline-block h-5 w-5 transform rounded-full border shadow ring-0 transition duration-200 ease-in-out",
           {
-            "border-primary translate-x-3 bg-zinc-950": enabled,
+            "border-primary translate-x-3 bg-gray-950": enabled,
             "-translate-x-2 bg-white": !enabled,
           },
         )}

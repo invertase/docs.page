@@ -10,7 +10,7 @@
   HSL components (space-separated) for use with `hsl(var(--token) / <alpha>)`.
 
   Invertase-aligned scales: `soft-periwinkle` = primary brand (use Tailwind `periwinkle` scale),
-  `zinc` = canvas neutrals (Anti-flash → Black), `emerald` = Teal, `red` = coral
+  `gray` = Tailwind default grey ramp (50–900) + brand black on 950. `emerald` = Teal, `red` = coral
   secondary. Lavender is used for marketing accents.
 */
 :root {
@@ -43,22 +43,22 @@
   --color-honey-900: 31 70% 24%;
   --color-honey-950: 31 70% 14%;
 
-  /* Canvas neutrals (Anti-flash #E7E8E9 → Black #040406) */
-  /* Invertase anti-flash white — #E7E8E9 (page canvas in light mode). */
+  /* App white / light canvas — #E7E8E9 (pairs with `--color-white` hex alias). */
   --color-invertase-white: 210 4% 91%;
-  --color-zinc-50: 210 8% 97%;
-  --color-zinc-100: 210 7% 94%;
-  --color-zinc-200: 215 8% 88%;
-  --color-zinc-300: 215 7% 82%;
-  --color-zinc-400: 220 6% 64%;
-  --color-zinc-500: 220 5% 48%;
-  --color-zinc-600: 220 6% 38%;
-  --color-zinc-700: 220 6% 30%;
-  --color-zinc-800: 220 8% 18%;
-  --color-zinc-900: 240 12% 10%;
-  /* Design system black — #040406 (Invertase canvas black, RGB 4,4,6). */
+  /* Tailwind default `gray` ramp (HSL); greys in UI use Tailwind `gray-*` utilities. */
+  --color-gray-50: 210 20% 98%;
+  --color-gray-100: 220 14% 96%;
+  --color-gray-200: 220 13% 91%;
+  --color-gray-300: 216 12% 84%;
+  --color-gray-400: 218 11% 65%;
+  --color-gray-500: 220 9% 46%;
+  --color-gray-600: 215 14% 34%;
+  --color-gray-700: 217 19% 27%;
+  --color-gray-800: 215 28% 17%;
+  --color-gray-900: 221 39% 11%;
+  /* Design system black — #040406 (Tailwind `gray-950` / `black`). */
   --color-design-black: 240 20% 2%;
-  --color-zinc-950: var(--color-design-black);
+  --color-gray-950: var(--color-design-black);
 
   /* Teal secondary (anchor #63D0BD) — `emerald` keys keep Tailwind call sites stable */
   --color-emerald-50: 168 55% 96%;
@@ -117,8 +117,8 @@
   Values resolve via `--background`, `--primary`, etc. below.
 */
 :root {
-  --color-white: #ffffff;
-  /* Hex alias for APIs expecting #RRGGBB; same as `--color-design-black` / `zinc-950`. */
+  /* Hex aliases for tooling / integrations (Tailwind semantic `white` / `black`). */
+  --color-white: #e7e8e9;
   --color-black: #040406;
 
   /* Inter: body and default prose. */
@@ -138,6 +138,9 @@
   --font-marketing-heading:
     "Lexend", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
     "Segoe UI Emoji";
+
+  /* Heading letter-spacing (~−2% tracking in design tools). */
+  --heading-letter-spacing: -0.02em;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -172,7 +175,7 @@ body {
   /* Dark UIs: slightly lighter saturations (400 / 300) for contrast on charcoals. */
   --primary-dark: var(--color-soft-periwinkle-400);
   --primary-dark-lighter: var(--color-soft-periwinkle-300);
-  --background-dark: var(--color-zinc-950);
+  --background-dark: var(--color-gray-950);
 
   /* Primary actions (buttons, links using `bg-primary`): 400 for a lighter fill vs 500. */
   --primary: var(--color-soft-periwinkle-400);
@@ -180,22 +183,22 @@ body {
   --background: var(--background-light);
 
   /* shadcn semantic tokens (HSL triplets, used with hsl(var(--x))). */
-  --foreground: var(--color-zinc-950);
+  --foreground: var(--color-gray-950);
   --card: var(--color-invertase-white);
-  --card-foreground: var(--color-zinc-950);
+  --card-foreground: var(--color-gray-950);
   --popover: var(--color-invertase-white);
-  --popover-foreground: var(--color-zinc-950);
-  --primary-foreground: var(--color-zinc-950);
-  --secondary: var(--color-zinc-100);
-  --secondary-foreground: var(--color-zinc-950);
-  --muted: var(--color-zinc-100);
-  --muted-foreground: var(--color-zinc-600);
-  --accent: var(--color-zinc-100);
-  --accent-foreground: var(--color-zinc-950);
+  --popover-foreground: var(--color-gray-950);
+  --primary-foreground: var(--color-gray-950);
+  --secondary: var(--color-gray-100);
+  --secondary-foreground: var(--color-gray-950);
+  --muted: var(--color-gray-100);
+  --muted-foreground: var(--color-gray-600);
+  --accent: var(--color-gray-100);
+  --accent-foreground: var(--color-gray-950);
   --destructive: var(--color-red-500);
-  --destructive-foreground: 0 0% 100%;
-  --border: var(--color-zinc-300);
-  --input: var(--color-zinc-300);
+  --destructive-foreground: var(--color-invertase-white);
+  --border: var(--color-gray-300);
+  --input: var(--color-gray-300);
   --input-background: var(--color-invertase-white);
   --ring: var(--color-soft-periwinkle-500);
 
@@ -206,12 +209,12 @@ body {
   --chart-5: var(--color-brand-coral-red);
 
   --sidebar: var(--color-invertase-white);
-  --sidebar-foreground: var(--color-zinc-950);
+  --sidebar-foreground: var(--color-gray-950);
   --sidebar-primary: var(--color-soft-periwinkle-500);
-  --sidebar-primary-foreground: var(--color-zinc-950);
-  --sidebar-accent: var(--color-zinc-100);
-  --sidebar-accent-foreground: var(--color-zinc-950);
-  --sidebar-border: var(--color-zinc-300);
+  --sidebar-primary-foreground: var(--color-gray-950);
+  --sidebar-accent: var(--color-gray-100);
+  --sidebar-accent-foreground: var(--color-gray-950);
+  --sidebar-border: var(--color-gray-300);
   --sidebar-ring: var(--color-soft-periwinkle-500);
 
   /*
@@ -222,35 +225,35 @@ body {
   --marketing-accent-bright: var(--color-honey-400);
   --marketing-accent-emphasis: var(--color-honey-600);
   --marketing-hero-glow: var(--color-brand-lavender);
-  --marketing-hero-frame-border: var(--color-zinc-300);
+  --marketing-hero-frame-border: var(--color-gray-300);
   --marketing-hero-video-tint: 169 58% 45%;
   --marketing-hero-video-tint-dark: 257 55% 58%;
   --marketing-pill-foreground: var(--color-honey-900);
-  --marketing-pill-foreground-dark: var(--color-zinc-300);
-  --marketing-feature-divider: var(--color-zinc-300);
-  --marketing-feature-divider-dark: var(--color-zinc-600);
+  --marketing-pill-foreground-dark: var(--color-gray-300);
+  --marketing-feature-divider: var(--color-gray-300);
+  --marketing-feature-divider-dark: var(--color-gray-600);
   --marketing-cell-hover: var(--color-invertase-white);
   --marketing-cell-ring-offset: var(--color-invertase-white);
   --marketing-feature-icon: var(--color-honey-500);
   --marketing-feature-icon-bright: var(--color-honey-400);
-  --marketing-platform-border: var(--color-zinc-300);
-  --marketing-platform-border-dark: var(--color-zinc-700);
-  --marketing-platform-title: var(--color-zinc-950);
+  --marketing-platform-border: var(--color-gray-300);
+  --marketing-platform-border-dark: var(--color-gray-700);
+  --marketing-platform-title: var(--color-gray-950);
   --marketing-platform-title-dark: 240 6% 98%;
-  --marketing-platform-desc: var(--color-zinc-950);
-  --marketing-platform-desc-dark: var(--color-zinc-400);
+  --marketing-platform-desc: var(--color-gray-950);
+  --marketing-platform-desc-dark: var(--color-gray-400);
   --marketing-platform-gradient-from: var(--color-honey-400);
   --marketing-platform-gradient-via: var(--background);
-  --marketing-platform-inner-dark: var(--color-zinc-950);
+  --marketing-platform-inner-dark: var(--color-gray-950);
   --marketing-testimonial-avatar-bg: var(--color-honey-500);
   --marketing-testimonial-avatar-bg-dark: var(--color-honey-400);
   --marketing-testimonial-avatar-text: var(--color-honey-800);
   --marketing-testimonial-avatar-text-dark: var(--color-honey-200);
   --marketing-step-rail: var(--color-honey-600);
-  --marketing-step-rail-dark: var(--color-zinc-600);
+  --marketing-step-rail-dark: var(--color-gray-600);
   --marketing-step-badge-border: var(--color-honey-600);
-  --marketing-step-badge-border-dark: var(--color-zinc-800);
-  --marketing-step-badge-fill-dark: var(--color-zinc-950);
+  --marketing-step-badge-border-dark: var(--color-gray-800);
+  --marketing-step-badge-fill-dark: var(--color-gray-950);
   --marketing-success: var(--color-brand-teal);
   --marketing-success-bright: 169 48% 68%;
   /* Primary marketing CTAs and text buttons (`ui/button` marketing variants) */
@@ -259,7 +262,7 @@ body {
   --marketing-ghost-hover-foreground: var(--color-honey-800);
   --marketing-nav-link-hover: var(--color-honey-600);
   --marketing-surface-muted: var(--color-invertase-white);
-  --marketing-surface-muted-hover: var(--color-zinc-100);
+  --marketing-surface-muted-hover: var(--color-gray-100);
 
   /* Twoslash (hex / alpha — library expects these shapes) */
   --twoslash-border-color: #8888;
@@ -335,7 +338,7 @@ html[data-theme="dark"] {
   --accent: 240 12% 14%;
   --accent-foreground: 210 12% 96%;
   --destructive: var(--color-red-400);
-  --destructive-foreground: 210 20% 98%;
+  --destructive-foreground: var(--color-invertase-white);
   --border: 240 10% 18%;
   --input: 240 10% 18%;
   --input-background: 240 15% 7%;
@@ -361,35 +364,35 @@ html[data-theme="dark"] {
   --marketing-accent-bright: var(--color-honey-400);
   --marketing-accent-emphasis: var(--color-honey-600);
   --marketing-hero-glow: var(--color-brand-lavender);
-  --marketing-hero-frame-border: var(--color-zinc-700);
+  --marketing-hero-frame-border: var(--color-gray-700);
   --marketing-hero-video-tint: 169 50% 42%;
   --marketing-hero-video-tint-dark: 257 50% 52%;
-  --marketing-pill-foreground: var(--color-zinc-300);
-  --marketing-pill-foreground-dark: var(--color-zinc-300);
-  --marketing-feature-divider: var(--color-zinc-600);
-  --marketing-feature-divider-dark: var(--color-zinc-600);
-  --marketing-cell-hover: var(--color-zinc-950);
-  --marketing-cell-ring-offset: var(--color-zinc-950);
+  --marketing-pill-foreground: var(--color-gray-300);
+  --marketing-pill-foreground-dark: var(--color-gray-300);
+  --marketing-feature-divider: var(--color-gray-600);
+  --marketing-feature-divider-dark: var(--color-gray-600);
+  --marketing-cell-hover: var(--color-gray-950);
+  --marketing-cell-ring-offset: var(--color-gray-950);
   --marketing-feature-icon: var(--color-honey-500);
   --marketing-feature-icon-bright: var(--color-honey-400);
-  --marketing-platform-border: var(--color-zinc-700);
-  --marketing-platform-border-dark: var(--color-zinc-700);
+  --marketing-platform-border: var(--color-gray-700);
+  --marketing-platform-border-dark: var(--color-gray-700);
   --marketing-platform-title: 240 6% 98%;
   --marketing-platform-title-dark: 240 6% 98%;
-  --marketing-platform-desc: var(--color-zinc-400);
-  --marketing-platform-desc-dark: var(--color-zinc-400);
-  --marketing-platform-gradient-from: var(--color-zinc-950);
+  --marketing-platform-desc: var(--color-gray-400);
+  --marketing-platform-desc-dark: var(--color-gray-400);
+  --marketing-platform-gradient-from: var(--color-gray-950);
   --marketing-platform-gradient-via: var(--background);
-  --marketing-platform-inner-dark: var(--color-zinc-950);
+  --marketing-platform-inner-dark: var(--color-gray-950);
   --marketing-testimonial-avatar-bg: var(--color-honey-400);
   --marketing-testimonial-avatar-bg-dark: var(--color-honey-400);
   --marketing-testimonial-avatar-text: var(--color-honey-200);
   --marketing-testimonial-avatar-text-dark: var(--color-honey-200);
-  --marketing-step-rail: var(--color-zinc-600);
-  --marketing-step-rail-dark: var(--color-zinc-600);
-  --marketing-step-badge-border: var(--color-zinc-800);
-  --marketing-step-badge-border-dark: var(--color-zinc-800);
-  --marketing-step-badge-fill-dark: var(--color-zinc-950);
+  --marketing-step-rail: var(--color-gray-600);
+  --marketing-step-rail-dark: var(--color-gray-600);
+  --marketing-step-badge-border: var(--color-gray-800);
+  --marketing-step-badge-border-dark: var(--color-gray-800);
+  --marketing-step-badge-fill-dark: var(--color-gray-950);
   --marketing-success: var(--color-brand-teal);
   --marketing-success-bright: 169 52% 72%;
   --marketing-button-cta: var(--color-honey-500);
@@ -748,21 +751,25 @@ pre.shiki.has-focused:hover .line {
 
 /*
  * Marketing UI: nav link default text uses primitive scales from this file (same
- * HSL components as the zinc / soft-periwinkle scales in `:root` above).
+ * HSL components as the gray / soft-periwinkle scales in `:root` above).
  */
 @layer utilities {
   .font-marketing-body {
     font-family: var(--font-marketing-body);
   }
+  .font-heading {
+    letter-spacing: var(--heading-letter-spacing);
+  }
   .font-marketing-heading {
     font-family: var(--font-marketing-heading);
+    letter-spacing: var(--heading-letter-spacing);
   }
   .text-marketing-link {
-    color: hsl(var(--color-zinc-950));
+    color: hsl(var(--color-gray-950));
   }
   .dark .text-marketing-link,
   html[data-theme="dark"] .text-marketing-link {
-    color: hsl(var(--color-zinc-100));
+    color: hsl(var(--color-gray-100));
   }
   .dark .text-marketing-link:hover,
   html[data-theme="dark"] .text-marketing-link:hover {
@@ -778,16 +785,23 @@ pre.shiki.has-focused:hover .line {
  */
 @layer components {
   .heading-h1 {
-    @apply font-heading text-3xl font-medium leading-tight tracking-tight text-foreground md:text-4xl lg:text-5xl;
+    @apply font-heading text-3xl font-medium leading-tight text-foreground md:text-4xl lg:text-5xl;
   }
   .heading-h2 {
-    @apply font-heading text-2xl font-medium tracking-tight text-foreground md:text-3xl lg:text-4xl;
+    @apply font-heading text-2xl font-medium text-foreground md:text-3xl lg:text-4xl;
   }
   .heading-h3 {
     @apply font-heading text-base font-medium text-foreground md:text-lg;
   }
   .heading-h4 {
     @apply font-heading text-sm font-medium text-foreground;
+  }
+
+  .heading-h1,
+  .heading-h2,
+  .heading-h3,
+  .heading-h4 {
+    letter-spacing: var(--heading-letter-spacing);
   }
 
   /**
@@ -828,7 +842,7 @@ pre.shiki.has-focused:hover .line {
   html[data-theme="dark"] .homepage-spot-grid::before {
     background-image: radial-gradient(
       circle,
-      hsl(var(--color-zinc-400) / 0.12) var(--homepage-dot-r),
+      hsl(var(--color-gray-400) / 0.12) var(--homepage-dot-r),
       transparent var(--homepage-dot-r)
     );
   }
@@ -861,39 +875,206 @@ pre.shiki.has-focused:hover .line {
     -webkit-mask-position: 0 0;
   }
 
+  /* Hero card: Figma `hero-bg-glow.svg` behind the headline (`Hero.tsx`).
+   * Full-width intrinsic height — no object-cover — so soft edges are not cropped. */
+  .marketing-theme .hero-bg-glow {
+    top: 0.5rem;
+    overflow: visible;
+    width: 100%;
+    height: auto;
+    clip-path: none;
+  }
+
+  .marketing-theme .hero-bg-glow > span {
+    display: block !important;
+    position: relative !important;
+    overflow: visible !important;
+    width: 100% !important;
+    height: auto !important;
+    max-width: none !important;
+  }
+
+  .marketing-theme .hero-bg-glow__image,
+  .marketing-theme .hero-bg-glow img {
+    display: block;
+    position: relative;
+    top: -2.5rem;
+    width: 100%;
+    height: auto;
+    max-width: none;
+    transform: translateY(0);
+  }
+
+  @media (min-width: 768px) {
+    .marketing-theme .hero-bg-glow {
+      top: 0.75rem;
+    }
+
+    .marketing-theme .hero-bg-glow__image,
+    .marketing-theme .hero-bg-glow img {
+      top: -3rem;
+      transform: translateY(0);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .marketing-theme .hero-bg-glow {
+      top: 1rem;
+    }
+
+    .marketing-theme .hero-bg-glow__image,
+    .marketing-theme .hero-bg-glow img {
+      top: -3.5rem;
+      transform: translateY(0);
+    }
+  }
+
   /* Hero title: local dot grid (`HeroHeadingDots.tsx`). Page-level dots sit under the opaque
    * centre column — they do not paint through the hero card; this ::before matches that look.
-   * Do not put `.hero-text-opacity-mask` on a parent that wraps `.hero-heading-dots` — it
-   * will fade the dot `::before`. Safe on the inner `h1` only (see `Hero.tsx`). */
+   * (see `Hero.tsx`). */
   .hero-heading-dots {
     --hero-heading-dot-cell: 22px;
     --hero-heading-dot-r: 1px;
-    /* Extra painting box above the heading so dots can sit behind “Agent-ready”. */
+    /* Extra painting box above the heading so dots can sit behind the hero title. */
     --hero-heading-dot-field-extend-top: 7rem;
     /* Extend the grid slightly below the heading block (same for static dots + hover glow). */
-    --hero-heading-dot-field-extend-bottom: 2.75rem;
+    --hero-heading-dot-field-extend-bottom: 0.5rem;
     /* Negative Y shifts the repeat phase upward (same idea as background-position on homepage grid). */
     --hero-heading-dot-field-shift-y: -110px;
-    /* Top: avoids a hard cutoff along the pseudo-element’s upper edge (extended above the title). */
+    /* Nudge the whole dot field down without changing its size or fades. */
+    --hero-heading-dot-field-offset-y: 1.75rem;
+    /* Top: soft fade so dots don’t hard-cut along the upper edge. */
     --hero-heading-dot-edge-fade-top: linear-gradient(
       to bottom,
       rgb(255 255 255 / 0) 0%,
-      rgb(255 255 255 / 0.2) 8%,
-      rgb(255 255 255 / 0.65) 18%,
-      rgb(255 255 255 / 1) 30%,
+      rgb(255 255 255 / 0.05) 12%,
+      rgb(255 255 255 / 0.18) 26%,
+      rgb(255 255 255 / 0.4) 40%,
+      rgb(255 255 255 / 0.65) 52%,
+      rgb(255 255 255 / 0.85) 64%,
+      rgb(255 255 255 / 1) 78%,
       rgb(255 255 255 / 1) 100%
     );
-    /* Radial vignette: centre biased lower so the tall painting box fades in toward the top. */
+    /* Bottom: keep dots from bleeding into the subcopy. */
+    --hero-heading-dot-edge-fade-bottom: linear-gradient(
+      to top,
+      rgb(255 255 255 / 0) 0%,
+      rgb(255 255 255 / 0.06) 16%,
+      rgb(255 255 255 / 0.24) 32%,
+      rgb(255 255 255 / 0.5) 48%,
+      rgb(255 255 255 / 0.75) 62%,
+      rgb(255 255 255 / 0.92) 76%,
+      rgb(255 255 255 / 1) 88%,
+      rgb(255 255 255 / 1) 100%
+    );
+    /* Radial vignette: softer sides + shorter vertical reach. */
     --hero-heading-dot-edge-fade: radial-gradient(
-      ellipse 128% 74% at 50% 58%,
+      ellipse 168% 58% at 50% 44%,
       #fff 0%,
-      #fff 24%,
-      rgb(255 255 255 / 0.42) 50%,
-      rgb(255 255 255 / 0.09) 74%,
+      rgb(255 255 255 / 0.88) 20%,
+      rgb(255 255 255 / 0.58) 40%,
+      rgb(255 255 255 / 0.3) 58%,
+      rgb(255 255 255 / 0.12) 74%,
+      rgb(255 255 255 / 0.04) 88%,
       transparent 100%
+    );
+    /* Softer bounds for hover gradient dots (avoids harsh spotlight / box edges). */
+    --hero-heading-dot-glow-edge-fade-top: linear-gradient(
+      to bottom,
+      rgb(255 255 255 / 0) 0%,
+      rgb(255 255 255 / 0.05) 14%,
+      rgb(255 255 255 / 0.22) 30%,
+      rgb(255 255 255 / 0.48) 44%,
+      rgb(255 255 255 / 0.72) 56%,
+      rgb(255 255 255 / 0.9) 68%,
+      rgb(255 255 255 / 1) 82%,
+      rgb(255 255 255 / 1) 100%
+    );
+    --hero-heading-dot-glow-edge-fade-bottom: linear-gradient(
+      to top,
+      rgb(255 255 255 / 0) 0%,
+      rgb(255 255 255 / 0.06) 18%,
+      rgb(255 255 255 / 0.28) 36%,
+      rgb(255 255 255 / 0.55) 52%,
+      rgb(255 255 255 / 0.78) 66%,
+      rgb(255 255 255 / 0.94) 80%,
+      rgb(255 255 255 / 1) 92%,
+      rgb(255 255 255 / 1) 100%
+    );
+    --hero-heading-dot-glow-edge-fade: radial-gradient(
+      ellipse 180% 62% at 50% 44%,
+      #fff 0%,
+      rgb(255 255 255 / 0.9) 24%,
+      rgb(255 255 255 / 0.58) 46%,
+      rgb(255 255 255 / 0.28) 66%,
+      rgb(255 255 255 / 0.1) 82%,
+      rgb(255 255 255 / 0.03) 94%,
+      transparent 100%
+    );
+    --hero-headline-honey-periwinkle-gradient: linear-gradient(
+      90deg,
+      #e69135 0%,
+      #de8f3c 40%,
+      #5f6bb2 62%,
+      #5368bd 100%
     );
     isolation: isolate;
     overflow: visible;
+  }
+
+  /* Full hero-card width — matches `hero-bg-glow` (`inset-x-0` on the card). */
+  .hero-heading-dots--wide {
+    --hero-heading-dot-field-shift-y: -72px;
+    --hero-heading-dot-field-offset-y: 3rem;
+    --hero-heading-dot-edge-fade-left: linear-gradient(
+      to right,
+      rgb(255 255 255 / 0) 0%,
+      rgb(255 255 255 / 0.04) 8%,
+      rgb(255 255 255 / 0.14) 18%,
+      rgb(255 255 255 / 0.32) 30%,
+      rgb(255 255 255 / 0.52) 44%,
+      rgb(255 255 255 / 0.72) 58%,
+      rgb(255 255 255 / 0.88) 72%,
+      rgb(255 255 255 / 1) 86%,
+      rgb(255 255 255 / 1) 100%
+    );
+    --hero-heading-dot-edge-fade-right: linear-gradient(
+      to left,
+      rgb(255 255 255 / 0) 0%,
+      rgb(255 255 255 / 0.04) 8%,
+      rgb(255 255 255 / 0.14) 18%,
+      rgb(255 255 255 / 0.32) 30%,
+      rgb(255 255 255 / 0.52) 44%,
+      rgb(255 255 255 / 0.72) 58%,
+      rgb(255 255 255 / 0.88) 72%,
+      rgb(255 255 255 / 1) 86%,
+      rgb(255 255 255 / 1) 100%
+    );
+    --hero-heading-dot-edge-fade: radial-gradient(
+      ellipse 420% 72% at 50% 46%,
+      #fff 0%,
+      rgb(255 255 255 / 0.9) 20%,
+      rgb(255 255 255 / 0.68) 38%,
+      rgb(255 255 255 / 0.42) 54%,
+      rgb(255 255 255 / 0.22) 68%,
+      rgb(255 255 255 / 0.1) 80%,
+      rgb(255 255 255 / 0.04) 92%,
+      transparent 100%
+    );
+    --hero-heading-dot-glow-edge-fade-left: var(--hero-heading-dot-edge-fade-left);
+    --hero-heading-dot-glow-edge-fade-right: var(--hero-heading-dot-edge-fade-right);
+    --hero-heading-dot-glow-edge-fade: radial-gradient(
+      ellipse 440% 76% at 50% 46%,
+      #fff 0%,
+      rgb(255 255 255 / 0.92) 24%,
+      rgb(255 255 255 / 0.7) 42%,
+      rgb(255 255 255 / 0.45) 58%,
+      rgb(255 255 255 / 0.24) 72%,
+      rgb(255 255 255 / 0.1) 84%,
+      rgb(255 255 255 / 0.03) 94%,
+      transparent 100%
+    );
+    --hero-heading-dot-hover-radius: min(480px, 42vw);
   }
 
   .marketing-theme .hero-heading-dots::before {
@@ -901,8 +1082,12 @@ pre.shiki.has-focused:hover .line {
     position: absolute;
     left: 0;
     right: 0;
-    top: calc(-1 * var(--hero-heading-dot-field-extend-top));
-    bottom: calc(-1 * var(--hero-heading-dot-field-extend-bottom));
+    top: calc(
+      -1 * var(--hero-heading-dot-field-extend-top) + var(--hero-heading-dot-field-offset-y)
+    );
+    bottom: calc(
+      -1 * var(--hero-heading-dot-field-extend-bottom) - var(--hero-heading-dot-field-offset-y)
+    );
     z-index: 0;
     pointer-events: none;
     opacity: 0;
@@ -915,29 +1100,52 @@ pre.shiki.has-focused:hover .line {
     background-size: var(--hero-heading-dot-cell) var(--hero-heading-dot-cell);
     background-position: 0 var(--hero-heading-dot-field-shift-y);
     background-repeat: repeat;
-    -webkit-mask-image: var(--hero-heading-dot-edge-fade-top), var(--hero-heading-dot-edge-fade);
-    mask-image: var(--hero-heading-dot-edge-fade-top), var(--hero-heading-dot-edge-fade);
-    -webkit-mask-repeat: no-repeat, no-repeat;
-    mask-repeat: no-repeat, no-repeat;
-    -webkit-mask-size: 100% 100%, 100% 100%;
-    mask-size: 100% 100%, 100% 100%;
-    -webkit-mask-position: center, center;
-    mask-position: center, center;
-    mask-composite: intersect;
-    -webkit-mask-composite: source-in;
-  }
-
-  .marketing-theme .hero-heading-dots:hover::before {
-    opacity: 1;
+    -webkit-mask-image: var(--hero-heading-dot-edge-fade-top),
+      var(--hero-heading-dot-edge-fade-bottom), var(--hero-heading-dot-edge-fade);
+    mask-image: var(--hero-heading-dot-edge-fade-top),
+      var(--hero-heading-dot-edge-fade-bottom), var(--hero-heading-dot-edge-fade);
+    -webkit-mask-repeat: no-repeat, no-repeat, no-repeat;
+    mask-repeat: no-repeat, no-repeat, no-repeat;
+    -webkit-mask-size: 100% 100%, 100% 100%, 100% 100%;
+    mask-size: 100% 100%, 100% 100%, 100% 100%;
+    -webkit-mask-position: center, center, center;
+    mask-position: center, center, center;
+    mask-composite: intersect, intersect;
+    -webkit-mask-composite: source-in, source-in;
   }
 
   .dark .marketing-theme .hero-heading-dots::before,
   html[data-theme="dark"] .marketing-theme .hero-heading-dots::before {
     background-image: radial-gradient(
       circle,
-      hsl(var(--color-zinc-400) / 0.12) var(--hero-heading-dot-r),
+      hsl(var(--color-gray-400) / 0.12) var(--hero-heading-dot-r),
       transparent var(--hero-heading-dot-r)
     );
+  }
+
+  .marketing-theme .hero-heading-dots:hover::before {
+    opacity: 1;
+  }
+
+  .marketing-theme .hero-heading-dots--wide::before {
+    -webkit-mask-image: var(--hero-heading-dot-edge-fade-top),
+      var(--hero-heading-dot-edge-fade-bottom),
+      var(--hero-heading-dot-edge-fade-left),
+      var(--hero-heading-dot-edge-fade-right),
+      var(--hero-heading-dot-edge-fade);
+    mask-image: var(--hero-heading-dot-edge-fade-top),
+      var(--hero-heading-dot-edge-fade-bottom),
+      var(--hero-heading-dot-edge-fade-left),
+      var(--hero-heading-dot-edge-fade-right),
+      var(--hero-heading-dot-edge-fade);
+    -webkit-mask-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
+    mask-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
+    -webkit-mask-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+    mask-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+    -webkit-mask-position: center, center, center, center, center;
+    mask-position: center, center, center, center, center;
+    mask-composite: intersect, intersect, intersect, intersect;
+    -webkit-mask-composite: source-in, source-in, source-in, source-in;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -948,86 +1156,178 @@ pre.shiki.has-focused:hover .line {
 
   .hero-heading-dots-glow {
     z-index: 1;
+    opacity: 0;
+    transition: opacity 0.2s ease-out;
     left: 0;
     right: 0;
-    top: calc(-1 * var(--hero-heading-dot-field-extend-top));
-    bottom: calc(-1 * var(--hero-heading-dot-field-extend-bottom));
-    background: radial-gradient(
-      circle 280px at var(--hero-heading-glow-x, 50%) var(--hero-heading-glow-y, 50%),
-      hsl(var(--marketing-accent) / 0.58),
-      hsl(var(--marketing-accent) / 0.24) 22%,
-      transparent 52%
+    top: calc(
+      -1 * var(--hero-heading-dot-field-extend-top) + var(--hero-heading-dot-field-offset-y)
     );
-    mask-image: var(--hero-heading-dot-edge-fade-top), var(--hero-heading-dot-edge-fade),
+    bottom: calc(
+      -1 * var(--hero-heading-dot-field-extend-bottom) - var(--hero-heading-dot-field-offset-y)
+    );
+    /* Honey → periwinkle matches headline; radial mask below limits it to the cursor. */
+    background-image: var(--hero-headline-honey-periwinkle-gradient);
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    -webkit-mask-image: var(--hero-heading-dot-glow-edge-fade-top),
+      var(--hero-heading-dot-glow-edge-fade-bottom),
+      var(--hero-heading-dot-glow-edge-fade),
       radial-gradient(
         circle at center,
         #000 var(--hero-heading-dot-r),
         transparent var(--hero-heading-dot-r)
+      ),
+      radial-gradient(
+        circle var(--hero-heading-dot-hover-radius, 360px) at
+          var(--hero-heading-glow-x, 50%) var(--hero-heading-glow-y, 50%),
+        #000 0%,
+        rgb(0 0 0 / 0.34) 30%,
+        rgb(0 0 0 / 0.14) 48%,
+        rgb(0 0 0 / 0.05) 62%,
+        transparent 80%
       );
-    mask-size:
-      100% 100%,
-      100% 100%,
-      var(--hero-heading-dot-cell) var(--hero-heading-dot-cell);
-    mask-repeat: no-repeat, no-repeat, repeat;
-    mask-position:
-      center,
-      center,
-      0 var(--hero-heading-dot-field-shift-y);
-    mask-composite: intersect, intersect;
-    -webkit-mask-image: var(--hero-heading-dot-edge-fade-top), var(--hero-heading-dot-edge-fade),
+    mask-image: var(--hero-heading-dot-glow-edge-fade-top),
+      var(--hero-heading-dot-glow-edge-fade-bottom),
+      var(--hero-heading-dot-glow-edge-fade),
       radial-gradient(
         circle at center,
         #000 var(--hero-heading-dot-r),
         transparent var(--hero-heading-dot-r)
+      ),
+      radial-gradient(
+        circle var(--hero-heading-dot-hover-radius, 360px) at
+          var(--hero-heading-glow-x, 50%) var(--hero-heading-glow-y, 50%),
+        #000 0%,
+        rgb(0 0 0 / 0.34) 30%,
+        rgb(0 0 0 / 0.14) 48%,
+        rgb(0 0 0 / 0.05) 62%,
+        transparent 80%
       );
     -webkit-mask-size:
       100% 100%,
       100% 100%,
-      var(--hero-heading-dot-cell) var(--hero-heading-dot-cell);
-    -webkit-mask-repeat: no-repeat, no-repeat, repeat;
+      100% 100%,
+      var(--hero-heading-dot-cell) var(--hero-heading-dot-cell),
+      100% 100%;
+    mask-size:
+      100% 100%,
+      100% 100%,
+      100% 100%,
+      var(--hero-heading-dot-cell) var(--hero-heading-dot-cell),
+      100% 100%;
+    -webkit-mask-repeat: no-repeat, no-repeat, no-repeat, repeat, no-repeat;
+    mask-repeat: no-repeat, no-repeat, no-repeat, repeat, no-repeat;
     -webkit-mask-position:
       center,
       center,
-      0 var(--hero-heading-dot-field-shift-y);
-    -webkit-mask-composite: source-in, source-in;
+      center,
+      0 var(--hero-heading-dot-field-shift-y),
+      center;
+    mask-position:
+      center,
+      center,
+      center,
+      0 var(--hero-heading-dot-field-shift-y),
+      center;
+    mask-composite: intersect, intersect, intersect, intersect;
+    -webkit-mask-composite: source-in, source-in, source-in, source-in;
   }
 
-  /* Hero `h1`: horizontal opacity fade on left/right. `w-max` on the heading keeps the mask
-   * aligned to the text block; full-width `h1` keeps short lines entirely in the opaque band. */
-  .marketing-theme .hero-text-opacity-mask {
-    mask-mode: alpha;
-    -webkit-mask-image: linear-gradient(
-      to right,
-      rgb(255 255 255 / 0.7) 0%,
-      rgb(255 255 255 / 0.76) 14%,
-      rgb(255 255 255 / 0.86) 28%,
-      rgb(255 255 255 / 0.94) 40%,
-      rgb(255 255 255 / 1) 48%,
-      rgb(255 255 255 / 1) 52%,
-      rgb(255 255 255 / 0.94) 60%,
-      rgb(255 255 255 / 0.86) 72%,
-      rgb(255 255 255 / 0.76) 86%,
-      rgb(255 255 255 / 0.7) 100%
-    );
-    mask-image: linear-gradient(
-      to right,
-      rgb(255 255 255 / 0.7) 0%,
-      rgb(255 255 255 / 0.76) 14%,
-      rgb(255 255 255 / 0.86) 28%,
-      rgb(255 255 255 / 0.94) 40%,
-      rgb(255 255 255 / 1) 48%,
-      rgb(255 255 255 / 1) 52%,
-      rgb(255 255 255 / 0.94) 60%,
-      rgb(255 255 255 / 0.86) 72%,
-      rgb(255 255 255 / 0.76) 86%,
-      rgb(255 255 255 / 0.7) 100%
-    );
-    -webkit-mask-repeat: no-repeat;
-    mask-repeat: no-repeat;
-    -webkit-mask-size: 100% 100%;
-    mask-size: 100% 100%;
-    -webkit-mask-position: center;
-    mask-position: center;
+  .marketing-theme .hero-heading-dots:hover .hero-heading-dots-glow {
+    opacity: 1;
+  }
+
+  .marketing-theme .hero-heading-dots--wide .hero-heading-dots-glow {
+    -webkit-mask-image: var(--hero-heading-dot-glow-edge-fade-top),
+      var(--hero-heading-dot-glow-edge-fade-bottom),
+      var(--hero-heading-dot-glow-edge-fade-left),
+      var(--hero-heading-dot-glow-edge-fade-right),
+      var(--hero-heading-dot-glow-edge-fade),
+      radial-gradient(
+        circle at center,
+        #000 var(--hero-heading-dot-r),
+        transparent var(--hero-heading-dot-r)
+      ),
+      radial-gradient(
+        circle var(--hero-heading-dot-hover-radius, 360px) at
+          var(--hero-heading-glow-x, 50%) var(--hero-heading-glow-y, 50%),
+        #000 0%,
+        rgb(0 0 0 / 0.34) 30%,
+        rgb(0 0 0 / 0.14) 48%,
+        rgb(0 0 0 / 0.05) 62%,
+        transparent 80%
+      );
+    mask-image: var(--hero-heading-dot-glow-edge-fade-top),
+      var(--hero-heading-dot-glow-edge-fade-bottom),
+      var(--hero-heading-dot-glow-edge-fade-left),
+      var(--hero-heading-dot-glow-edge-fade-right),
+      var(--hero-heading-dot-glow-edge-fade),
+      radial-gradient(
+        circle at center,
+        #000 var(--hero-heading-dot-r),
+        transparent var(--hero-heading-dot-r)
+      ),
+      radial-gradient(
+        circle var(--hero-heading-dot-hover-radius, 360px) at
+          var(--hero-heading-glow-x, 50%) var(--hero-heading-glow-y, 50%),
+        #000 0%,
+        rgb(0 0 0 / 0.34) 30%,
+        rgb(0 0 0 / 0.14) 48%,
+        rgb(0 0 0 / 0.05) 62%,
+        transparent 80%
+      );
+    -webkit-mask-size:
+      100% 100%,
+      100% 100%,
+      100% 100%,
+      100% 100%,
+      100% 100%,
+      var(--hero-heading-dot-cell) var(--hero-heading-dot-cell),
+      100% 100%;
+    mask-size:
+      100% 100%,
+      100% 100%,
+      100% 100%,
+      100% 100%,
+      100% 100%,
+      var(--hero-heading-dot-cell) var(--hero-heading-dot-cell),
+      100% 100%;
+    -webkit-mask-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, repeat, no-repeat;
+    mask-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, repeat, no-repeat;
+    -webkit-mask-position:
+      center,
+      center,
+      center,
+      center,
+      center,
+      0 var(--hero-heading-dot-field-shift-y),
+      center;
+    mask-position:
+      center,
+      center,
+      center,
+      center,
+      center,
+      0 var(--hero-heading-dot-field-shift-y),
+      center;
+    mask-composite: intersect, intersect, intersect, intersect, intersect, intersect;
+    -webkit-mask-composite: source-in, source-in, source-in, source-in, source-in, source-in;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marketing-theme .hero-heading-dots:hover .hero-heading-dots-glow {
+      opacity: 0;
+    }
+  }
+
+  /* Hero “humans + agents”: honey → soft periwinkle (Figma linear stops). */
+  .marketing-theme .hero-headline-honey-periwinkle {
+    background-image: var(--hero-headline-honey-periwinkle-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
   /** TrustedBy grid cells: dot texture on hover (`TrustedBy.tsx`). */
@@ -1058,7 +1358,7 @@ pre.shiki.has-focused:hover .line {
   html[data-theme="dark"] .trusted-by-project-link::before {
     background-image: radial-gradient(
       circle,
-      hsl(var(--color-zinc-400) / 0.14) 1px,
+      hsl(var(--color-gray-400) / 0.14) 1px,
       transparent 1px
     );
   }
@@ -1087,24 +1387,24 @@ pre.shiki.has-focused:hover .line {
   }
 
   /**
-   * Marketing pill + Features: light Invertase canvas; dark uses zinc-800 with alpha.
+   * Marketing pill + Features: light Invertase canvas; dark uses gray-800 with alpha.
    */
   .marketing-surface-bg {
     background-color: hsl(var(--color-invertase-white));
   }
   html[data-theme="dark"] .marketing-surface-bg {
-    background-color: hsl(var(--color-zinc-800) / 0.26);
+    background-color: hsl(var(--color-gray-800) / 0.26);
   }
 
   .marketing-surface-pill-chrome {
     border-width: 1px;
     border-style: solid;
-    border-color: hsl(var(--color-zinc-300));
+    border-color: hsl(var(--color-gray-300));
     background-color: hsl(var(--color-invertase-white));
   }
   html[data-theme="dark"] .marketing-surface-pill-chrome {
-    border-color: hsl(var(--color-zinc-600) / 0.5);
-    background-color: hsl(var(--color-zinc-800) / 0.26);
+    border-color: hsl(var(--color-gray-600) / 0.5);
+    background-color: hsl(var(--color-gray-800) / 0.26);
   }
 
   /* Features strip: hide native bar; React draws the horizontal track.
@@ -1159,10 +1459,10 @@ pre.shiki.has-focused:hover .line {
   }
 
   .doc-h1 {
-    @apply !font-heading !text-2xl !font-medium !tracking-tight !text-foreground md:!text-3xl;
+    @apply !font-heading !text-2xl !font-medium !text-foreground md:!text-3xl;
   }
   .doc-h2 {
-    @apply !font-heading !text-xl !font-medium !tracking-tight !text-foreground md:!text-2xl;
+    @apply !font-heading !text-xl !font-medium !text-foreground md:!text-2xl;
   }
   .doc-h3 {
     @apply !font-heading !text-lg !font-medium !text-foreground;
@@ -1174,7 +1474,16 @@ pre.shiki.has-focused:hover .line {
     @apply !font-heading !text-sm !font-medium !text-foreground;
   }
   .doc-h6 {
-    @apply !font-heading !text-xs !font-medium !uppercase !tracking-wide !text-foreground;
+    @apply !font-heading !text-xs !font-medium !uppercase !text-foreground;
+  }
+
+  .doc-h1,
+  .doc-h2,
+  .doc-h3,
+  .doc-h4,
+  .doc-h5,
+  .doc-h6 {
+    letter-spacing: var(--heading-letter-spacing);
   }
 
   .marketing-theme .heading-h1,
@@ -1187,6 +1496,7 @@ pre.shiki.has-focused:hover .line {
   /* Prose: headings default to sans in typography plugin; match site heading stack. */
   .prose :where(h1, h2, h3, h4, h5, h6) {
     font-family: var(--font-heading);
+    letter-spacing: var(--heading-letter-spacing);
   }
 }
 

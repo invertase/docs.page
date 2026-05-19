@@ -9,18 +9,12 @@ export function EcosystemStatement() {
           id="ecosystem-statement-heading"
           className="text-center text-lg font-light leading-snug text-balance text-foreground sm:text-xl"
         >
-          <span className="font-marketing-heading text-2xl sm:text-3xl">
-            Engineering excellence for the <br />
-            <span className="font-mono text-marketing-accent">open-source</span>{" "}
-            ecosystem
+          <span className="font-marketing-heading text-xl sm:text-2xl">
+            Trusted by more than 75,000{" "}
+            <span className="text-marketing-accent">open-source</span>{" "}
+            developers
           </span>
         </h2>
-        <p
-          className="mx-auto mt-5 max-w-2xl text-center text-sm font-light leading-relaxed text-zinc-600 text-balance dark:text-zinc-300/80 sm:mt-6 sm:text-base"
-        >
-          Trusted by 75,000+ developers. Powering core Invertase packages with
-          1.18M+ monthly downloads.
-        </p>
       </div>
     </section>
   );

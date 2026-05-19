@@ -36,8 +36,8 @@ export function Homepage() {
             <Hero />
             <EcosystemStatement />
             <FeaturesSection />
-            <PricingCta />
             <TrustedBy />
+            <PricingCta />
             <Footer />
           </div>
           {/* Rails paint above main content (cards/sections) but below the header shell. */}
