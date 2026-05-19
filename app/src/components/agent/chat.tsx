@@ -15,6 +15,7 @@ import { code } from "@streamdown/code";
 import {
   RiArrowRightSLine,
   RiArrowUpLine,
+  RiDeleteBin2Line,
   RiLoaderLine,
   RiSparkling2Line,
   RiStopLine,
@@ -47,7 +48,15 @@ export function AgentChat({ setOpen }: { setOpen?: (open: boolean) => void }) {
   const agentAvailable = kind === "doc" && meta.hasAgent;
   const questions = bundle.config.agent?.questions ?? [];
 
-  const { messages, sendMessage, status, error, stop } = useChat({
+  const {
+    messages,
+    sendMessage,
+    status,
+    error,
+    stop,
+    setMessages,
+    clearError,
+  } = useChat({
     transport: new DefaultChatTransport({
       api: "/api/agent",
       credentials: "include",
@@ -64,6 +73,7 @@ export function AgentChat({ setOpen }: { setOpen?: (open: boolean) => void }) {
   });
 
   const hasSent = status === "submitted" || status === "streaming";
+  const canReset = messages.length > 0 || hasSent || Boolean(error);
   const showQuestions = messages.length === 0 && agentAvailable;
   const awaitingReply =
     hasSent && messages.length > 0 && messages.at(-1)?.role === "user";
@@ -108,6 +118,16 @@ export function AgentChat({ setOpen }: { setOpen?: (open: boolean) => void }) {
     }
   };
 
+  const resetChat = useCallback(() => {
+    if (hasSent) {
+      stop();
+    }
+
+    setMessages([]);
+    setInput("");
+    clearError();
+  }, [clearError, hasSent, setMessages, stop]);
+
   return (
     <div className="flex h-full min-h-0 w-full min-w-0 flex-col">
       <div className="flex h-12 shrink-0 items-center px-4">
@@ -115,13 +135,23 @@ export function AgentChat({ setOpen }: { setOpen?: (open: boolean) => void }) {
           <RiSparkling2Line className="size-4" />
           <span>Agent</span>
         </h2>
-        {setOpen && (
-          <div>
+        <div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className={cn(!setOpen && "relative top-px mr-6")}
+            disabled={!canReset}
+            onClick={resetChat}
+            title="Clear chat"
+          >
+            <RiDeleteBin2Line />
+          </Button>
+          {setOpen && (
             <Button variant="ghost" size="icon" onClick={() => setOpen(false)}>
               <RiArrowRightSLine />
             </Button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       <div
