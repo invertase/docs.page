@@ -6,10 +6,9 @@ export function Scripts() {
   const scripts = ctx.bundle.config.scripts;
 
   // We don't want to load the scripts in preview mode or in preview environments.
-  // TODO: Preview mode
-  // if (ctx.preview) {
-  //   return null;
-  // }
+  if (ctx.route.requestMode === "preview") {
+    return null;
+  }
 
   return (
     <>
