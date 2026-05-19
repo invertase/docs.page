@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
+import { getDocsEnvironment } from "@/lib/docs-environment";
 import {
   getVanityOwnerFromHost,
   isDocsLlmsFullTxtPath,
@@ -8,6 +9,10 @@ import {
   isPinnedCommitRef,
   isRawDocRequestPath,
 } from "@/lib/docs-routing";
+import {
+  resolvePlausibleOwnerRepo,
+  trackPageRequest,
+} from "@/lib/plausible";
 
 const SECONDS_PER_DAY = 24 * 60 * 60;
 /** Fastly edge: allow stale serve + async revalidate / error fallback for up to 7 days after freshness TTL. */
@@ -224,8 +229,32 @@ function withDocsCache(response: NextResponse, headers: DocsCacheHeaders | null)
   return response;
 }
 
+function maybeTrackPageRequest(request: NextRequest, vanityOwner: string | null) {
+  if (getDocsEnvironment() !== "production") {
+    return;
+  }
+
+  if (isBypassPath(request.nextUrl.pathname)) {
+    return;
+  }
+
+  const resolved = resolvePlausibleOwnerRepo(request.nextUrl.pathname, {
+    vanityOwner,
+    vanityDomain: Boolean(
+      vanityOwner || request.headers.get("x-docs-page-vanity-domain"),
+    ),
+  });
+
+  if (!resolved) {
+    return;
+  }
+
+  void trackPageRequest(request, resolved.owner, resolved.repository);
+}
+
 export function proxy(request: NextRequest) {
   const vanityOwner = getVanityOwnerFromHost(request.nextUrl.hostname);
+  maybeTrackPageRequest(request, vanityOwner);
   const cacheHeaders = shouldApplyDocsCache(request, vanityOwner)
     ? getDocsCacheHeaders(request.nextUrl.pathname)
     : null;
