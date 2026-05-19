@@ -9,6 +9,9 @@
   "theme": {
     "primary": "#E69135"
   },
+  "agent": {
+    "key": "69d48775-750d-479d-8740-aa2cff2287f4"
+  },
   "content": {
     "showPageTitle": true,
     "showPageImage": true

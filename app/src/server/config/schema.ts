@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import agent from "./models/agent";
 import anchors from "./models/anchors";
 import content from "./models/content";
 import favicon from "./models/favicon";
@@ -20,9 +21,9 @@ export const ConfigSchema = z
   .object({
     name: z.string().min(1).optional().catch(undefined),
     description: z.string().min(1).optional().catch(undefined),
-    agent: z.string().min(1).optional().catch(undefined),
     socialPreview: z.union([z.string().min(1), z.literal(false)]).optional().catch(undefined),
-    og: og,
+    agent,
+    og,
     favicon,
     logo,
     theme,
