@@ -50,7 +50,7 @@ export default function SearchDialog({ open, onOpenChange, searchUrl }: Props) {
   const { bundle, meta } = useDocPageContext();
   const displayResults = useMemo(() => dedupeSearchResults(results), [results]);
   const dialog = useMcpDialog();
-  
+
   useEffect(() => {
     const q = deferredQuery.trim();
     if (!q) {
@@ -135,25 +135,29 @@ export default function SearchDialog({ open, onOpenChange, searchUrl }: Props) {
                 />
               ))}
               {meta.hasAgent && (
-              <CommandItem
-                onSelect={() => {
-                  onOpenChange(false);
-                  setAgentPanelOpen(true);
-                }}
-              >
-                <RiSparkling2Fill className="text-muted-foreground" />
+                <CommandItem
+                  onSelect={() => {
+                    onOpenChange(false);
+                    setAgentPanelOpen(true);
+                  }}
+                >
+                  <RiSparkling2Fill className="text-muted-foreground" />
                   <span>Ask AI</span>
-                  <span className="text-muted-foreground">Open agent window</span>
+                  <span className="text-muted-foreground">
+                    Open agent window
+                  </span>
                 </CommandItem>
               )}
-              <CommandItem
-                onSelect={() => {
-                  dialog.setOpen(true);
-                }}
-              >
-                <RiCloudFill className="text-muted-foreground" />
-                <span>Install MCP</span>
-              </CommandItem>
+              {bundle.config.mcp.enabled && (
+                <CommandItem
+                  onSelect={() => {
+                    dialog.setOpen(true);
+                  }}
+                >
+                  <RiCloudFill className="text-muted-foreground" />
+                  <span>Install MCP</span>
+                </CommandItem>
+              )}
               <CommandItem
                 onSelect={() => {
                   window.open(
