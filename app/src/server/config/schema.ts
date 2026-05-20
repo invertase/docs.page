@@ -14,6 +14,7 @@ import social from "./models/social";
 import tabs from "./models/tabs";
 import theme from "./models/theme";
 import og from "./models/og";
+import mcp from "./models/mcp";
 
 export type { Sidebar } from "./models/sidebar";
 
@@ -23,6 +24,7 @@ export const ConfigSchema = z
     description: z.string().min(1).optional().catch(undefined),
     socialPreview: z.union([z.string().min(1), z.literal(false)]).optional().catch(undefined),
     agent,
+    mcp,
     og,
     favicon,
     logo,

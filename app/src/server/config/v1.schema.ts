@@ -75,6 +75,9 @@ export const V1ConfigSchema = z
       agent: {
         key: undefined,
       },
+      mcp: {
+        enabled: true,
+      },
       og: {
         logo: v1.logo,
         github: true,

@@ -1,4 +1,5 @@
 import { resolveDocsRoute } from "@/lib/docs-routing";
+import { loadDocsConfigForResolvedSha } from "@/server/docs/source-dataset";
 import { createMcpDescriptor, handleMcpDelete, handleMcpPost } from "@/server/mcp/server";
 import { listGitHubDocFiles } from "@/server/github/tree";
 
@@ -23,18 +24,28 @@ async function resolveRoute(req: Request, context: RouteContext) {
   });
 }
 
-async function ensureSourceExists(route: Awaited<ReturnType<typeof resolveRoute>>) {
+async function ensureMcpAvailable(route: Awaited<ReturnType<typeof resolveRoute>>) {
   if (!route) {
     return false;
   }
 
-  const source = await listGitHubDocFiles({
+  const docList = await listGitHubDocFiles({
     owner: route.owner,
     repository: route.repository,
     ref: route.ref ?? undefined,
   });
 
-  return Boolean(source);
+  if (!docList) {
+    return false;
+  }
+
+  const config = await loadDocsConfigForResolvedSha({
+    owner: docList.source.owner,
+    repository: docList.source.repository,
+    resolvedSha: docList.resolvedSha,
+  });
+
+  return config.mcp.enabled !== false;
 }
 
 export async function GET(req: Request, context: RouteContext) {
@@ -44,7 +55,7 @@ export async function GET(req: Request, context: RouteContext) {
     return Response.json({ error: "Missing owner or repo." }, { status: 400 });
   }
 
-  if (!(await ensureSourceExists(route))) {
+  if (!(await ensureMcpAvailable(route))) {
     return Response.json({ error: "Not found." }, { status: 404 });
   }
 
@@ -58,7 +69,7 @@ export async function POST(req: Request, context: RouteContext) {
     return Response.json({ error: "Missing owner or repo." }, { status: 400 });
   }
 
-  if (!(await ensureSourceExists(route))) {
+  if (!(await ensureMcpAvailable(route))) {
     return Response.json({ error: "Not found." }, { status: 404 });
   }
 
@@ -70,6 +81,10 @@ export async function DELETE(_req: Request, context: RouteContext) {
 
   if (!route) {
     return Response.json({ error: "Missing owner or repo." }, { status: 400 });
+  }
+
+  if (!(await ensureMcpAvailable(route))) {
+    return Response.json({ error: "Not found." }, { status: 404 });
   }
 
   return handleMcpDelete();
