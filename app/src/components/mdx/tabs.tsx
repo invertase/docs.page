@@ -212,6 +212,13 @@ export function Tabs(props: TabProps) {
 }
 
 
-export function TabItem({ children }: PropsWithChildren) {
+export function TabItem({
+  label: _label,
+  value: _value,
+  children,
+}: PropsWithChildren<{
+  label: string;
+  value: string;
+}>) {
   return <>{children}</>;
 }

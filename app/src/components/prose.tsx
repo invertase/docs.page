@@ -35,24 +35,6 @@ export function Prose() {
           </div>
         </CodeGroupProvider>
       </TabsProvider>
-      <Actions />
     </main>
-  );
-}
-
-function Actions() {
-  const source = useSourceUrl();
-
-  return (
-    <div className="flex justify-end gap-2 mb-2 mt-4">
-      {source ? (
-        <Button variant="ghost" asChild>
-          <a href={source} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
-            <RiGithubFill />
-            <span>Edit this page</span>
-          </a>
-        </Button>
-      ) : null}
-    </div>
   );
 }

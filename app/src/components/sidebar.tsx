@@ -48,7 +48,7 @@ function SidebarNavIcon(props: { icon: string }) {
     );
   }
   return (
-    <span className="inline-flex shrink-0 text-sm leading-none text-sidebar-foreground [&>div]:contents">
+    <span className="inline-flex shrink-0 text-sm leading-none text-sidebar-foreground [&>div]:contents opacity-80">
       <Icon name={props.icon} size={14} />
     </span>
   );
@@ -265,8 +265,8 @@ export function Sidebar() {
       className={cn(
         "sticky bottom-auto max-h-none will-change-transform border-none",
         hasTabs
-          ? "top-[calc(5.5rem+1px)] h-[calc(100svh-5.5rem-1px)]"
-          : "top-[calc(3.5rem+1px)] h-[calc(100svh-3.5rem-1px)]",
+          ? "top-[calc(6rem+1px)] h-[calc(100svh-6rem-1px)]"
+          : "top-[calc(4rem+1px)] h-[calc(100svh-4rem-1px)]",
       )}
     >
       <div className="relative flex min-h-0 flex-1 flex-col">
@@ -286,25 +286,25 @@ export function Sidebar() {
               key={`${group.group ?? "group"}-${gi}`}
               className="group-data-[collapsible=icon]:hidden"
             >
-              {group.group ? (
-                <SidebarGroupLabel
-                  className={cn(
-                    "flex items-center gap-2",
-                    !group.pages?.length && "sr-only",
-                  )}
-                >
-                  {group.icon ? <SidebarNavIcon icon={group.icon} /> : null}
-                  {group.group}
-                </SidebarGroupLabel>
-              ) : null}
-              <SidebarGroupContent>
-                <SidebarMenu className="text-muted-foreground">
-                  <SidebarPagesList pages={group.pages} depth={0} />
-                </SidebarMenu>
-              </SidebarGroupContent>
-              <Separator className="mt-4" />
-            </SidebarGroup>
-          ))}
+                {group.group ? (
+                  <SidebarGroupLabel
+                    className={cn(
+                      "flex items-center gap-2",
+                      !group.pages?.length && "sr-only",
+                    )}
+                  >
+                    {group.icon ? <SidebarNavIcon icon={group.icon} /> : null}
+                    {group.group}
+                  </SidebarGroupLabel>
+                ) : null}
+                <SidebarGroupContent>
+                  <SidebarMenu className="text-muted-foreground">
+                    <SidebarPagesList pages={group.pages} depth={0} />
+                  </SidebarMenu>
+                </SidebarGroupContent>
+                <Separator className="mt-4" />
+              </SidebarGroup>
+            ))}
         </SidebarContent>
       </div>
     </SidebarPrimitive>

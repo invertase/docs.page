@@ -204,14 +204,15 @@
 }
 
 .shiki .line {
-  display: block;
+  display: inline-flex;
+  align-items: center;
   min-height: 1.5rem;
   margin-inline: -1rem;
   padding-inline: 1rem;
 }
 
 .shiki .line.highlighted {
-  background-color: color-mix(in oklch, var(--color-sidebar-foreground) 20%, transparent);
+  background-color: color-mix(in oklch, var(--color-foreground) 10%, transparent);
 }
 
 .shiki.has-focused .line:not(.focused) {

@@ -13,16 +13,14 @@ type IconProps = ComponentProps<"i"> & {
 export function Icon({ className, name, size, style, ...other }: IconProps) {
   const base = brands.has(name) ? "fa-brands" : "fa-solid";
   return (
-    <div>
-      <i
-        {...other}
-        className={cn("fa-fw", base, `fa-${name}`, className)}
-        style={{
-          lineHeight: "inherit",
-          fontSize: size ? `${size}px` : undefined,
-          ...style,
-        }}
-      />
-    </div>
+    <i
+      {...other}
+      className={cn("fa-fw", base, `fa-${name}`, className)}
+      style={{
+        lineHeight: "inherit",
+        fontSize: size ? `${size}px` : undefined,
+        ...style,
+      }}
+    />
   );
 }

@@ -12,8 +12,8 @@ export type HeadingTagProps = ComponentProps<HeadingTag> & {
 };
 
 const styles = {
-  h1: "text-4xl",
-  h2: "text-3xl pt-10",
+  h1: "text-3xl md:text-4xl",
+  h2: "text-3xl pt-8",
   h3: "text-2xl pt-8",
   h4: "text-xl pt-3",
   h5: "text-lg pt-3",

@@ -1,11 +1,13 @@
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
+import { useDocTabs } from "@/hooks/use-doc-tabs";
 import { cn } from "@/lib/utils";
-import { RiListIndefinite } from "@remixicon/react"
+import { RiListUnordered } from "@remixicon/react"
 import { useEffect, useState } from "react";
 
 export function TableOfContents() {
   const [activeId, setActiveId] = useState("");
   const { bundle } = useDocPageContext();
+  const hasTabs = useDocTabs().length > 0;
   const headings = bundle.headings.filter((heading) => heading.includeInToc);
 
   useEffect(() => {
@@ -58,10 +60,17 @@ export function TableOfContents() {
   }, [headings]);
 
   return (
-    <div className="sticky top-30 px-4">
-      <h3 className="flex items-center gap-2 text-muted-foreground ">
-        <RiListIndefinite className="size-5" />
-        <span className="font-heading text-sm font-semibold">On this page</span>
+    <div
+      className={cn(
+        "sticky px-4 pt-10",
+        hasTabs
+          ? "top-[calc(6rem+1px)]"
+          : "top-[calc(4rem+1px)]",
+      )}
+    >
+      <h3 className="flex items-center gap-2 text-foreground ">
+        <RiListUnordered className="size-4.5" />
+        <span className="font-heading text-sm">On this page</span>
       </h3>
       <ul className="mt-4 space-y-2 border-l ml-1">
         {headings.map((heading) => {

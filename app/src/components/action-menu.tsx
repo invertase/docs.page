@@ -44,7 +44,7 @@ export function ActionMenu() {
     <ButtonGroup>
       <Button variant="outline" className="gap-2" onClick={handleCopy}>
         {copied ? <RiCheckLine /> : <RiFileCopyLine />}
-        <span>Copy page</span>
+        <span className="hidden md:inline">Copy page</span>
       </Button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>

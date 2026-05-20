@@ -38,8 +38,8 @@ export function Docs() {
                 <div className="relative mx-auto flex min-h-0 w-full max-w-8xl flex-1 flex-row">
                   <Sidebar />
                   <div className="min-w-0 flex-1 flex @container">
-                    <div className="min-w-0 flex-1 pt-8 ps-6 pe-6 @3xl:ps-14 @3xl:pe-14 @5xl:ps-16 @5xl:pe-16">
-                      <div className="space-y-12">
+                    <div className="min-w-0 flex-1 pt-10 ps-6 pe-6 @3xl:ps-14 @3xl:pe-14 @5xl:ps-16 @5xl:pe-16">
+                      <div className="space-y-8">
                         <PageMetadata />
                         <Prose />
                         <PreviousNext />

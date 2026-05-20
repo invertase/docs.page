@@ -32,12 +32,12 @@ export function Card({ title, icon, href, children }: CardProps) {
             </CardAction>
           ) : null}
           <CardTitle className="text-lg flex items-center gap-2">
-            {icon ? <Icon name={icon} /> : null}
+            {icon ? <Icon name={icon} size={16} className="opacity-80" /> : null}
             <span>{title}</span>
           </CardTitle>
         </CardHeader>
       ) : null}
-      <CardContent className="space-y-4">{children}</CardContent>
+      <CardContent className="space-y-4 text-foreground/90">{children}</CardContent>
     </CardPrimitive>
   );
 }

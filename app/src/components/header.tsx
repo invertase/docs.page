@@ -36,13 +36,13 @@ export function Header() {
   return (
     <header className="sticky top-0 z-30 bg-background">
       <div className="mx-auto w-full max-w-8xl px-4">
-        <div className="h-12 flex items-center justify-between">
+        <div className="h-14 flex items-center justify-between px-1">
           <Logo />
           <Actions />
         </div>
         {hasTabs && (
-          <div className="h-8 flex items-center">
-            <div className="md:hidden mr-1">
+          <div className="flex h-8 min-w-0 items-center gap-1">
+            <div className="shrink-0 md:hidden">
               <SidebarTrigger />
             </div>
             <Tabs />
@@ -203,10 +203,15 @@ function Tabs() {
   const activeTabId = resolveActiveTabId(route, tabs, bundle.config.locales);
 
   return (
-    <TabsRoot defaultValue={activeTabId ?? undefined} className="">
-      <TabsList className="dark:bg-background">
+    <TabsRoot defaultValue={activeTabId ?? undefined} className="min-w-0 flex-1">
+      <TabsList className="dark:bg-background max-md:no-scrollbar max-md:w-full max-md:max-w-full max-md:justify-start max-md:overflow-x-auto">
         {tabs.map((tab) => (
-          <TabsTrigger key={tab.id} value={tab.id} className="px-2.5" asChild>
+          <TabsTrigger
+            key={tab.id}
+            value={tab.id}
+            className="h-7 shrink-0 px-3 max-md:flex-none"
+            asChild
+          >
             <Link href={tab.href}>{tab.title}</Link>
           </TabsTrigger>
         ))}

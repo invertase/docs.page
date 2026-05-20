@@ -163,7 +163,15 @@ function renderComponent(
         {children}
       </Tabs>
     ),
-    TabItem: <TabItem key={key}>{children}</TabItem>,
+    TabItem: (
+      <TabItem
+        key={key}
+        label={stringProp(node.props.label) ?? ""}
+        value={stringProp(node.props.value) ?? ""}
+      >
+        {children}
+      </TabItem>
+    ),
     Tweet: (
       <Tweet
         key={key}

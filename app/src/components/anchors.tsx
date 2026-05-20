@@ -1,23 +1,11 @@
 import { useActiveTab } from "@/hooks/use-active-tab";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useLocale } from "@/hooks/use-locale";
-import { isExternalLink } from "@/lib/docs-links";
 import { Icon } from "./mdx/icon";
 import { Button } from "./ui/button";
+import { Separator } from "./ui/separator";
+import { Link } from "./doc-link";
 
-// TODO: Delete me once ready
-// const anchors = [
-//   {
-//     icon: "github",
-//     title: "GitHub",
-//     href: "https://github.com/docs-page/docs-page",
-//   },
-//   {
-//     icon: "twitter",
-//     title: "Twitter",
-//     href: "https://twitter.com/docs-page",
-//   },
-// ];
 
 export function Anchors() {
   const ctx = useDocPageContext();
@@ -40,28 +28,24 @@ export function Anchors() {
   }
 
   return (
-    <ul className="space-y-3 pl-2">
-      {anchors.map((anchor) => {
-        if (!anchor?.href) return null;
+    <>
+      <ul className="space-y-3 pl-2">
+        {anchors.map((anchor) => {
+          if (!anchor?.href) return null;
 
-        return (
-          <li key={anchor.href}>
-            <Button variant="outline" size="sm" className="w-full" asChild>
-              <a
-                rel="noopener noreferrer"
-                target={isExternalLink(anchor.href) ? "_blank" : ""}
-                href={anchor.href}
-              >
-                <Icon
-                  name={anchor.icon}
-                  className="text-xs opacity-75 group-hover:opacity-100"
-                />
-                <span className="font-semibold">{anchor.title}</span>
-              </a>
-            </Button>
-          </li>
-        );
-      })}
-    </ul>
+          return (
+            <li key={anchor.href}>
+              <Link href={anchor.href} className="flex items-center gap-2">
+                <Button variant="outline" size="icon-sm">
+                  <Icon name={anchor.icon} />
+                </Button>
+                <span className="text-sm">{anchor.title}</span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+      <Separator className="my-4" />
+    </>
   );
 }
