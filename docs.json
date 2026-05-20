@@ -7,6 +7,7 @@
   },
   "favicon": "https://static.invertase.io/assets/docs.page/docs-page-logo-v2.png",
   "theme": {
+    "preset": "b2CiBudTm",
     "primary": "#E69135"
   },
   "agent": {

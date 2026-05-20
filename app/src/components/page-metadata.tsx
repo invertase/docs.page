@@ -43,7 +43,7 @@ export function PageMetadata() {
         <ActionMenu />
       </div>
       {showMeta && !!description && (
-        <p className="text-lg">{String(description)}</p>
+        <p className="text-lg text-muted-foreground">{String(description)}</p>
       )}
       {showMeta && !!image && showPageImage && <Image zoom={false} src={String(image)} />}
     </div>

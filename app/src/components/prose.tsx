@@ -27,7 +27,7 @@ export function Prose() {
     <main className="max-w-none">
       <TabsProvider>
         <CodeGroupProvider>
-          <div className="space-y-4 text-secondary-foreground [&>p]:leading-7 [&>p]:opacity-90">
+          <div className="space-y-4 text-foreground/90 [&>p]:leading-7 [&>p]:opacity-90">
             <DocsIrRenderer
               root={bundle.docIr}
               takeNextHeadingId={takeNextHeadingId}

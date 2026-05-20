@@ -12,10 +12,10 @@ export type HeadingTagProps = ComponentProps<HeadingTag> & {
 };
 
 const styles = {
-  h1: "text-4xl font-semibold",
-  h2: "text-3xl font-medium pt-10",
-  h3: "text-2xl font-medium pt-8",
-  h4: "text-xl font-medium pt-3",
+  h1: "text-4xl",
+  h2: "text-3xl pt-10",
+  h3: "text-2xl pt-8",
+  h4: "text-xl pt-3",
   h5: "text-lg pt-3",
   h6: "text-base pt-2",
 } satisfies Record<HeadingTag, string>;
@@ -27,7 +27,7 @@ export function Heading(props: HeadingTagProps) {
   return (
     <div
       className={cn(
-        "group relative flex items-center gap-3 font-heading text-balance",
+        "group relative flex items-center gap-3 font-heading text-balance text-foreground",
         styles[type],
       )}
     >

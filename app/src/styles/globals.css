@@ -139,24 +139,27 @@
   margin: 0;
   --shiki-background: transparent;
   --shiki-foreground: var(--foreground);
-  --shiki-token-comment: var(--muted-foreground);
-  --shiki-token-constant: oklch(0.45 0.13 264);
-  --shiki-token-string: oklch(0.43 0.12 147);
-  --shiki-token-string-expression: oklch(0.43 0.12 147);
-  --shiki-token-keyword: orange;
-  --shiki-token-parameter: oklch(0.48 0.12 70);
-  --shiki-token-function: oklch(0.45 0.12 260);
-  --shiki-token-punctuation: var(--muted-foreground);
-  --shiki-token-link: var(--primary);
+  --shiki-token-comment: oklch(0.734 0.024 145);
+  --shiki-token-constant: oklch(0.630 0.094 66);
+  --shiki-token-string: oklch(0.602 0.101 33);
+  --shiki-token-string-expression: oklch(0.602 0.101 33);
+  --shiki-token-keyword: oklch(0.562 0.107 21);
+  --shiki-token-parameter: oklch(0.630 0.094 66);
+  --shiki-token-function: oklch(0.572 0.119 134);
+  --shiki-token-punctuation: oklch(0.62 0 0);
+  --shiki-token-link: oklch(0.572 0.119 134);
 }
 
 .dark .shiki {
-  --shiki-token-constant: oklch(0.75 0.12 264);
-  --shiki-token-string: oklch(0.78 0.11 147);
-  --shiki-token-string-expression: oklch(0.78 0.11 147);
-  --shiki-token-keyword: oklch(0.72 0.16 30);
-  --shiki-token-parameter: oklch(0.82 0.11 70);
-  --shiki-token-function: oklch(0.76 0.12 260);
+  --shiki-token-comment: oklch(0.599 0.030 145);
+  --shiki-token-constant: oklch(0.701 0.076 71);
+  --shiki-token-string: oklch(0.693 0.080 32);
+  --shiki-token-string-expression: oklch(0.693 0.080 32);
+  --shiki-token-keyword: oklch(0.659 0.107 20);
+  --shiki-token-parameter: oklch(0.701 0.076 71);
+  --shiki-token-function: oklch(0.681 0.100 133);
+  --shiki-token-punctuation: oklch(0.52 0 0);
+  --shiki-token-link: oklch(0.681 0.100 133);
 }
 
 .shiki code {
