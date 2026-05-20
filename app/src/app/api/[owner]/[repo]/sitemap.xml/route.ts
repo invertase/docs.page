@@ -1,7 +1,11 @@
 import { resolveDocsRoute } from "@/lib/docs-routing";
 import { SITEMAP_CACHE_HEADERS } from "@/proxy";
+import { BundlerError } from "@/server/docs/bundle";
 import { buildDocsRepoSitemapXml } from "@/server/docs/sitemap-xml";
-import { listGitHubDocFiles } from "@/server/github/tree";
+import {
+  listGitHubDocFiles,
+  type GitHubDocFileList,
+} from "@/server/github/tree";
 
 type RouteContext = {
   params: Promise<{
@@ -22,11 +26,21 @@ export async function GET(req: Request, context: RouteContext) {
     repoSegment: repo,
     headers: req.headers,
   });
-  const docList = await listGitHubDocFiles({
-    owner: route.owner,
-    repository: route.repository,
-    ref: route.ref ?? undefined,
-  });
+  let docList: GitHubDocFileList | undefined;
+
+  try {
+    docList = await listGitHubDocFiles({
+      owner: route.owner,
+      repository: route.repository,
+      ref: route.ref ?? undefined,
+    });
+  } catch (error) {
+    if (error instanceof BundlerError) {
+      return new Response(error.message, { status: error.code });
+    }
+
+    throw error;
+  }
 
   if (!docList || docList.files.length === 0) {
     return new Response("Not found", { status: 404 });

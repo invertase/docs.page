@@ -25,3 +25,6 @@ coverage
 
 # docs.page
 .db
+.agents/
+skills-lock.json
+cache-handler.cjs

@@ -74,3 +74,54 @@ export function getMcpEndpointPathname(route: DocsPathRoute) {
 export function getMcpEndpointUrl(route: DocsPathRoute, origin: string) {
   return new URL(getMcpEndpointPathname(route), origin).toString();
 }
+
+export class InvalidDocPathError extends Error {
+  readonly name = "INVALID_DOC_PATH";
+
+  constructor(message = "Invalid documentation path.") {
+    super(message);
+  }
+}
+
+/**
+ * Normalize a user-supplied docs page path and reject traversal attempts.
+ */
+export function normalizeDocPath(path: string): string {
+  if (!path || path.includes("\0")) {
+    throw new InvalidDocPathError();
+  }
+
+  if (/%2e/i.test(path)) {
+    throw new InvalidDocPathError();
+  }
+
+  let decoded = path;
+
+  try {
+    decoded = decodeURIComponent(path);
+  } catch {
+    throw new InvalidDocPathError();
+  }
+
+  if (decoded.includes("..")) {
+    throw new InvalidDocPathError();
+  }
+
+  if (decoded.startsWith("/") || decoded.includes("\\")) {
+    throw new InvalidDocPathError();
+  }
+
+  let normalized = decoded.replace(/\\/g, "/").replace(/^\/+/, "");
+
+  if (normalized.startsWith("docs/")) {
+    normalized = normalized.slice("docs/".length);
+  }
+
+  normalized = normalized.replace(/\/+/g, "/").replace(/\/$/, "");
+
+  if (!normalized || normalized.split("/").some((segment) => segment === "..")) {
+    throw new InvalidDocPathError();
+  }
+
+  return normalized;
+}

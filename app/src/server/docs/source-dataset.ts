@@ -133,7 +133,7 @@ export async function buildDocsSourceDataset(
   const blobs = await getGitHubFileSourcesBatch({
     owner: docList.source.owner,
     repository: docList.source.repository,
-    ref: docList.resolvedSha,
+    resolvedSha: docList.resolvedSha,
     paths,
   });
 
@@ -188,7 +188,7 @@ export async function loadDocsConfigForResolvedSha(args: {
   const blobs = await getGitHubFileSourcesBatch({
     owner: args.owner,
     repository: args.repository,
-    ref: args.resolvedSha,
+    resolvedSha: args.resolvedSha,
     paths: ["docs.json", "docs.yaml"],
   });
 

@@ -19,8 +19,13 @@ import {
 } from "@/server/agent/session";
 import { getRedisClient } from "@/server/redis";
 import type { InitialFiles } from "just-bash";
-import { getRawDocSource } from "@/server/docs/raw";
-import { listGitHubDocFiles } from "@/server/github/tree";
+import { getRequestClientIp } from "@/lib/request-client-ip";
+import { BundlerError } from "@/server/docs/bundle";
+import { getGitHubFileSourcesBatch } from "@/server/github/contents";
+import {
+  listGitHubDocFiles,
+  type GitHubDocFileList,
+} from "@/server/github/tree";
 
 const AgentRequestSchema = z.object({
   messages: z.array(z.any()),
@@ -82,7 +87,7 @@ export async function POST(req: Request) {
     return Response.json({ error: "Invalid request body." }, { status: 400 });
   }
 
-  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+  const ip = getRequestClientIp(req);
 
   if (!ip) {
     return Response.json(
@@ -138,10 +143,20 @@ export async function POST(req: Request) {
     return Response.json({ error: "Invalid provider." }, { status: 400 });
   }
 
-  const docList = await listGitHubDocFiles({
-    owner: session.owner,
-    repository: session.repo,
-  });
+  let docList: GitHubDocFileList | undefined;
+
+  try {
+    docList = await listGitHubDocFiles({
+      owner: session.owner,
+      repository: session.repo,
+    });
+  } catch (error) {
+    if (error instanceof BundlerError) {
+      return Response.json({ error: error.message }, { status: error.code });
+    }
+
+    throw error;
+  }
 
   if (!docList) {
     return Response.json(
@@ -150,18 +165,22 @@ export async function POST(req: Request) {
     );
   }
 
-  const fileEntries = await Promise.all(
-    docList.files.map(async (file) => {
-      const source = await getRawDocSource({
-        owner: docList.source.owner,
-        repository: docList.source.repository,
-        ref: docList.source.ref,
-        path: file.path,
-      });
+  const blobs = await getGitHubFileSourcesBatch({
+    owner: docList.source.owner,
+    repository: docList.source.repository,
+    resolvedSha: docList.resolvedSha,
+    paths: docList.files.map((file) => file.sourcePath),
+  });
 
-      return [`/${file.sourcePath}`, source.content] as const;
-    }),
-  );
+  const fileEntries = docList.files.flatMap((file) => {
+    const content = blobs.get(file.sourcePath);
+
+    if (content == null) {
+      return [];
+    }
+
+    return [[`/${file.sourcePath}`, content] as const];
+  });
   const files: InitialFiles = Object.fromEntries(fileEntries);
 
   const env = new Bash({
@@ -186,7 +205,7 @@ export async function POST(req: Request) {
     agent,
     uiMessages: messages,
     headers: {
-      "X-RateLimit-Limit": "1",
+      "X-RateLimit-Limit": "200",
       "X-RateLimit-Remaining": String(limiter?.remainingPoints ?? 0),
       "X-RateLimit-Reset": String(
         Math.round((Date.now() + (limiter?.msBeforeNext ?? 0)) / 1000),

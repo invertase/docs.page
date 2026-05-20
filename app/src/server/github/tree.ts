@@ -1,3 +1,5 @@
+import { assertPublicRepositoryAccess } from "@/lib/docs-access";
+import { BundlerError } from "@/server/docs/bundle";
 import { getGitHubRestClient } from "./client";
 import { type GitHubSource, resolveGitHubSource } from "./repo-source";
 
@@ -275,6 +277,13 @@ export async function listGitHubDocFiles(
 ): Promise<GitHubDocFileList | undefined> {
   try {
     const resolved = await resolvePinnedGitHubSource(args);
+
+    await assertPublicRepositoryAccess(
+      args.owner,
+      args.repository,
+      resolved.repositoryMetadata,
+    );
+
     const tree = await getGitHubRecursiveTreeBySha(
       resolved.source.owner,
       resolved.source.repository,
@@ -289,7 +298,11 @@ export async function listGitHubDocFiles(
       truncated: tree.truncated,
       files: filterDocFiles(tree),
     };
-  } catch {
+  } catch (error) {
+    if (error instanceof BundlerError) {
+      throw error;
+    }
+
     return;
   }
 }
@@ -299,6 +312,13 @@ export async function listGitHubSkillFiles(
 ): Promise<GitHubSkillFileList | undefined> {
   try {
     const resolved = await resolvePinnedGitHubSource(args);
+
+    await assertPublicRepositoryAccess(
+      args.owner,
+      args.repository,
+      resolved.repositoryMetadata,
+    );
+
     const tree = await getGitHubRecursiveTreeBySha(
       resolved.source.owner,
       resolved.source.repository,
@@ -320,7 +340,11 @@ export async function listGitHubSkillFiles(
         tree,
       ),
     };
-  } catch {
+  } catch (error) {
+    if (error instanceof BundlerError) {
+      throw error;
+    }
+
     return;
   }
 }

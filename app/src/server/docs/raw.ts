@@ -12,16 +12,23 @@ const RawDocSchema = z.object({
 
 export type GetRawDocArgs = z.input<typeof RawDocSchema>;
 
-export async function getRawDocSource(args: GetRawDocArgs) {
+export async function getRawDocSource(
+  args: GetRawDocArgs,
+  options?: { resolvedSha?: string; skipAccessCheck?: boolean },
+) {
   const input = RawDocSchema.parse(args);
   const normalizedPath = stripRawDocRequestSuffix(input.path);
 
-  const source = await getGitHubDocumentSource({
-    owner: input.owner,
-    repository: input.repository,
-    ref: input.ref,
-    path: normalizedPath,
-  });
+  const source = await getGitHubDocumentSource(
+    {
+      owner: input.owner,
+      repository: input.repository,
+      ref: input.ref,
+      path: normalizedPath,
+    },
+    undefined,
+    options,
+  );
 
   if (!source) {
     throw new BundlerError({

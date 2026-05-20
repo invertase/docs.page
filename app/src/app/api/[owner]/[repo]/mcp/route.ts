@@ -1,7 +1,17 @@
 import { resolveDocsRoute } from "@/lib/docs-routing";
+import { BundlerError } from "@/server/docs/bundle";
 import { loadDocsConfigForResolvedSha } from "@/server/docs/source-dataset";
-import { createMcpDescriptor, handleMcpDelete, handleMcpPost } from "@/server/mcp/server";
+import {
+  createMcpDescriptor,
+  handleMcpDelete,
+  handleMcpPost,
+  type McpRepoContext,
+} from "@/server/mcp/server";
 import { listGitHubDocFiles } from "@/server/github/tree";
+
+function privateRepoResponse(error: BundlerError) {
+  return Response.json({ error: error.message }, { status: error.code });
+}
 
 type RouteContext = {
   params: Promise<{
@@ -24,9 +34,11 @@ async function resolveRoute(req: Request, context: RouteContext) {
   });
 }
 
-async function ensureMcpAvailable(route: Awaited<ReturnType<typeof resolveRoute>>) {
+async function loadMcpRepoContext(
+  route: Awaited<ReturnType<typeof resolveRoute>>,
+): Promise<McpRepoContext | null> {
   if (!route) {
-    return false;
+    return null;
   }
 
   const docList = await listGitHubDocFiles({
@@ -36,7 +48,7 @@ async function ensureMcpAvailable(route: Awaited<ReturnType<typeof resolveRoute>
   });
 
   if (!docList) {
-    return false;
+    return null;
   }
 
   const config = await loadDocsConfigForResolvedSha({
@@ -45,7 +57,11 @@ async function ensureMcpAvailable(route: Awaited<ReturnType<typeof resolveRoute>
     resolvedSha: docList.resolvedSha,
   });
 
-  return config.mcp.enabled !== false;
+  if (config.mcp.enabled === false) {
+    return null;
+  }
+
+  return { route, docList, config };
 }
 
 export async function GET(req: Request, context: RouteContext) {
@@ -55,11 +71,21 @@ export async function GET(req: Request, context: RouteContext) {
     return Response.json({ error: "Missing owner or repo." }, { status: 400 });
   }
 
-  if (!(await ensureMcpAvailable(route))) {
-    return Response.json({ error: "Not found." }, { status: 404 });
-  }
+  try {
+    const context = await loadMcpRepoContext(route);
 
-  return Response.json(await createMcpDescriptor(route), { status: 200 });
+    if (!context) {
+      return Response.json({ error: "Not found." }, { status: 404 });
+    }
+
+    return Response.json(await createMcpDescriptor(context), { status: 200 });
+  } catch (error) {
+    if (error instanceof BundlerError) {
+      return privateRepoResponse(error);
+    }
+
+    throw error;
+  }
 }
 
 export async function POST(req: Request, context: RouteContext) {
@@ -69,11 +95,21 @@ export async function POST(req: Request, context: RouteContext) {
     return Response.json({ error: "Missing owner or repo." }, { status: 400 });
   }
 
-  if (!(await ensureMcpAvailable(route))) {
-    return Response.json({ error: "Not found." }, { status: 404 });
-  }
+  try {
+    const context = await loadMcpRepoContext(route);
 
-  return handleMcpPost(req, route);
+    if (!context) {
+      return Response.json({ error: "Not found." }, { status: 404 });
+    }
+
+    return handleMcpPost(req, context);
+  } catch (error) {
+    if (error instanceof BundlerError) {
+      return privateRepoResponse(error);
+    }
+
+    throw error;
+  }
 }
 
 export async function DELETE(_req: Request, context: RouteContext) {
@@ -83,9 +119,17 @@ export async function DELETE(_req: Request, context: RouteContext) {
     return Response.json({ error: "Missing owner or repo." }, { status: 400 });
   }
 
-  if (!(await ensureMcpAvailable(route))) {
-    return Response.json({ error: "Not found." }, { status: 404 });
-  }
+  try {
+    if (!(await loadMcpRepoContext(route))) {
+      return Response.json({ error: "Not found." }, { status: 404 });
+    }
 
-  return handleMcpDelete();
+    return handleMcpDelete();
+  } catch (error) {
+    if (error instanceof BundlerError) {
+      return privateRepoResponse(error);
+    }
+
+    throw error;
+  }
 }

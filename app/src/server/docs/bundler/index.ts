@@ -4,6 +4,7 @@ import { highlightCodeBlocksInIr } from "@/lib/docs-ir/highlight-code-blocks";
 import type { DocIrNode } from "@/lib/docs-ir/types";
 import { extractHeadingNodes, type HeadingNode } from "@/lib/docs-markdown";
 import { type Config, defaultConfig, parseConfig } from "@/server/config";
+import { assertPublicRepo } from "@/lib/docs-access";
 import { getGitHubContents, resolveGitHubSource, type GitHubSource } from "@/server/github/contents";
 import { replaceMoustacheVariables } from "@/server/docs/variables";
 import { BundlerError } from "./error";
@@ -13,6 +14,8 @@ export const ERROR_CODES = {
   REPO_NOT_FOUND: "REPO_NOT_FOUND",
   FILE_NOT_FOUND: "FILE_NOT_FOUND",
   BUNDLE_ERROR: "BUNDLE_ERROR",
+  PRIVATE_REPO_BLOCKED: "PRIVATE_REPO_BLOCKED",
+  INVALID_DOC_PATH: "INVALID_DOC_PATH",
 } as const;
 
 export type ErrorCodes = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];
@@ -86,6 +89,8 @@ export class Bundler {
         message: `The repository ${this.#source.owner}/${this.#source.repository} was not found.`,
       });
     }
+
+    assertPublicRepo(metadata, this.#source.owner, this.#source.repository);
 
     if (!metadata.config.configJson && !metadata.config.configYaml) {
       throw new BundlerError({

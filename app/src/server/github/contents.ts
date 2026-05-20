@@ -1,5 +1,42 @@
+import { assertPublicRepositoryAccess } from "@/lib/docs-access";
+import { InvalidDocPathError, normalizeDocPath } from "@/lib/docs-paths";
+import { BundlerError, ERROR_CODES } from "@/server/docs/bundle";
 import { getGitHubGraphQLClient } from "./client";
 import { resolvePinnedGitHubSource } from "./tree";
+
+function resolveDocPath(path: string) {
+  try {
+    return normalizeDocPath(path);
+  } catch (error) {
+    if (error instanceof InvalidDocPathError) {
+      throw new BundlerError({
+        code: 400,
+        name: ERROR_CODES.INVALID_DOC_PATH,
+        message: error.message,
+      });
+    }
+
+    throw error;
+  }
+}
+
+function assertSafeRepoPath(path: string) {
+  if (!path || path.includes("\0") || path.includes("..") || /%2e/i.test(path)) {
+    throw new BundlerError({
+      code: 400,
+      name: ERROR_CODES.INVALID_DOC_PATH,
+      message: "Invalid repository file path.",
+    });
+  }
+
+  if (path.startsWith("/") || path.includes("\\")) {
+    throw new BundlerError({
+      code: 400,
+      name: ERROR_CODES.INVALID_DOC_PATH,
+      message: "Invalid repository file path.",
+    });
+  }
+}
 
 export type {
   GitHubSource,
@@ -132,9 +169,10 @@ export async function getGitHubContents(
   metadata: MetaData,
   noDir?: boolean,
 ): Promise<Contents | undefined> {
+  const docPath = resolveDocPath(metadata.path);
   const base = noDir ? "" : "docs/";
-  const absolutePath = `${base}${metadata.path}`;
-  const indexPath = `${base}${metadata.path}/index`;
+  const absolutePath = `${base}${docPath}`;
+  const indexPath = `${base}${docPath}/index`;
 
   const ref = metadata.ref || "HEAD";
 
@@ -219,18 +257,65 @@ export async function getGitHubContents(
   }
 }
 
+type JsDelivrFetchTarget = {
+  owner: string;
+  repository: string;
+  resolvedSha: string;
+};
+
+async function resolveJsDelivrFetchTarget(args: {
+  owner: string;
+  repository: string;
+  ref?: string;
+  resolvedSha?: string;
+  skipAccessCheck?: boolean;
+}): Promise<JsDelivrFetchTarget> {
+  if (args.resolvedSha) {
+    return {
+      owner: args.owner,
+      repository: args.repository,
+      resolvedSha: args.resolvedSha,
+    };
+  }
+
+  const resolved = await resolvePinnedGitHubSource({
+    owner: args.owner,
+    repository: args.repository,
+    ref: args.ref,
+  });
+
+  if (!args.skipAccessCheck) {
+    await assertPublicRepositoryAccess(
+      resolved.source.owner,
+      resolved.source.repository,
+      resolved.repositoryMetadata,
+    );
+  }
+
+  return {
+    owner: resolved.source.owner,
+    repository: resolved.source.repository,
+    resolvedSha: resolved.resolvedSha,
+  };
+}
+
 export async function getGitHubDocumentSource(
   metadata: MetaData,
   noDir?: boolean,
+  options?: { resolvedSha?: string; skipAccessCheck?: boolean },
 ): Promise<DocumentSource | undefined> {
+  const docPath = resolveDocPath(metadata.path);
   const base = noDir ? "" : "docs/";
-  const absolutePath = `${base}${metadata.path}`;
-  const indexPath = `${base}${metadata.path}/index`;
-  const resolved = await resolvePinnedGitHubSource({
+  const absolutePath = `${base}${docPath}`;
+  const indexPath = `${base}${docPath}/index`;
+  const target = await resolveJsDelivrFetchTarget({
     owner: metadata.owner,
     repository: metadata.repository,
     ref: metadata.ref,
+    resolvedSha: options?.resolvedSha,
+    skipAccessCheck: options?.skipAccessCheck,
   });
+
   const candidates = [
     {
       path: `${indexPath}.mdx`,
@@ -252,9 +337,9 @@ export async function getGitHubDocumentSource(
 
   for (const candidate of candidates) {
     const content = await fetchTextFromJsDelivr({
-      owner: resolved.source.owner,
-      repository: resolved.source.repository,
-      ref: resolved.resolvedSha,
+      owner: target.owner,
+      repository: target.repository,
+      ref: target.resolvedSha,
       path: candidate.path,
     });
 
@@ -274,17 +359,21 @@ export async function getGitHubFileSource(metadata: {
   owner: string;
   repository: string;
   ref?: string;
+  resolvedSha?: string;
   path: string;
 }): Promise<FileSource | undefined> {
-  const resolved = await resolvePinnedGitHubSource({
+  assertSafeRepoPath(metadata.path);
+  const target = await resolveJsDelivrFetchTarget({
     owner: metadata.owner,
     repository: metadata.repository,
     ref: metadata.ref,
+    resolvedSha: metadata.resolvedSha,
+    skipAccessCheck: Boolean(metadata.resolvedSha),
   });
   const content = await fetchTextFromJsDelivr({
-    owner: resolved.source.owner,
-    repository: resolved.source.repository,
-    ref: resolved.resolvedSha,
+    owner: target.owner,
+    repository: target.repository,
+    ref: target.resolvedSha,
     path: metadata.path,
   });
 
@@ -305,6 +394,7 @@ export async function getGitHubFileSourcesBatch(args: {
   owner: string;
   repository: string;
   ref?: string;
+  resolvedSha?: string;
   paths: string[];
 }): Promise<Map<string, string | undefined>> {
   const out = new Map<string, string | undefined>();
@@ -313,19 +403,21 @@ export async function getGitHubFileSourcesBatch(args: {
     return out;
   }
 
-  const resolved = await resolvePinnedGitHubSource({
+  const target = await resolveJsDelivrFetchTarget({
     owner: args.owner,
     repository: args.repository,
     ref: args.ref,
+    resolvedSha: args.resolvedSha,
+    skipAccessCheck: Boolean(args.resolvedSha),
   });
   const results = await mapWithConcurrency(
     args.paths,
     JSDELIVR_FETCH_CONCURRENCY,
     async (path) => {
       const content = await fetchTextFromJsDelivr({
-        owner: resolved.source.owner,
-        repository: resolved.source.repository,
-        ref: resolved.resolvedSha,
+        owner: target.owner,
+        repository: target.repository,
+        ref: target.resolvedSha,
         path,
       });
 

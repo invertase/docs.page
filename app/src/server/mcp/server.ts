@@ -3,18 +3,15 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp";
 import * as z from "zod/v3";
 import type { ResolvedDocsRoute } from "@/lib/docs-routing";
-import { defaultConfig, parseConfig } from "@/server/config";
+import type { Config } from "@/server/config";
 import { ConfigSchema } from "@/server/config/schema";
 import { BundlerError } from "@/server/docs/bundle";
+import { getGitHubFileSource } from "@/server/github/contents";
 import {
-  getGitHubContents,
-  getGitHubFileSource,
-  resolveGitHubSource,
-} from "@/server/github/contents";
-import {
-  listGitHubDocFiles,
   listGitHubSkillFiles,
+  type GitHubDocFileList,
   type GitHubSkillFile,
+  type GitHubSkillFileList,
 } from "@/server/github/tree";
 import { getRawDocSource } from "@/server/docs/raw";
 
@@ -25,40 +22,22 @@ const ReadDocToolSchema = z.object({
 });
 const ListDocFilesToolSchema = z.object({});
 
+export type McpRepoContext = {
+  route: ResolvedDocsRoute;
+  docList: GitHubDocFileList;
+  config: Config;
+};
+
 type McpServerMetadata = {
   name: string;
   description: string;
 };
 
-async function getMcpServerMetadata(route: ResolvedDocsRoute): Promise<McpServerMetadata> {
-  const source = await resolveGitHubSource({
-    owner: route.owner,
-    repository: route.repository,
-    ref: route.ref ?? undefined,
-  });
-  const contents = await getGitHubContents({
-    owner: source.owner,
-    repository: source.repository,
-    ref: source.ref,
-    path: "index",
-  });
-
-  let config = defaultConfig;
-
-  if (contents?.config.configJson || contents?.config.configYaml) {
-    try {
-      config = parseConfig({
-        json: contents.config.configJson,
-        yaml: contents.config.configYaml,
-      });
-    } catch {
-      config = defaultConfig;
-    }
-  }
-
-  const name = config.name?.trim() || `${source.owner}/${source.repository}`;
+function getMcpServerMetadata(context: McpRepoContext): McpServerMetadata {
+  const { route, docList, config } = context;
+  const name = config.name?.trim() || `${docList.source.owner}/${docList.source.repository}`;
   const description = config.description?.trim()
-    || `Documentation for ${source.owner}/${source.repository}${source.ref ? ` at ref ${source.ref}` : ""}.`;
+    || `Documentation for ${docList.source.owner}/${docList.source.repository}${route.ref ? ` at ref ${route.ref}` : ""}.`;
 
   return {
     name,
@@ -66,21 +45,22 @@ async function getMcpServerMetadata(route: ResolvedDocsRoute): Promise<McpServer
   };
 }
 
-async function getMcpSkillResources(route: ResolvedDocsRoute): Promise<GitHubSkillFile[]> {
-  const skills = await listGitHubSkillFiles({
+async function getMcpSkillResources(
+  route: ResolvedDocsRoute,
+): Promise<GitHubSkillFileList | undefined> {
+  return listGitHubSkillFiles({
     owner: route.owner,
     repository: route.repository,
     ref: route.ref ?? undefined,
   });
-
-  return skills?.skills ?? [];
 }
 
-export async function createMcpDescriptor(route: ResolvedDocsRoute) {
-  const [metadata, skillResources] = await Promise.all([
-    getMcpServerMetadata(route),
-    getMcpSkillResources(route),
+export async function createMcpDescriptor(context: McpRepoContext) {
+  const [metadata, skillList] = await Promise.all([
+    Promise.resolve(getMcpServerMetadata(context)),
+    getMcpSkillResources(context.route),
   ]);
+  const skillResources = skillList?.skills ?? [];
   const readDocSchema = zodToJsonSchema(
     ReadDocToolSchema.describe("Read a docs.page markdown or MDX source file.") as unknown as Parameters<
       typeof zodToJsonSchema
@@ -100,10 +80,10 @@ export async function createMcpDescriptor(route: ResolvedDocsRoute) {
       transport: "http",
     },
     repoContext: {
-      owner: route.owner,
-      repository: route.repository,
-      ref: route.ref,
-      requestMode: route.requestMode,
+      owner: context.route.owner,
+      repository: context.route.repository,
+      ref: context.route.ref,
+      requestMode: context.route.requestMode,
     },
     capabilities: {
       tools: {
@@ -137,11 +117,14 @@ export async function createMcpDescriptor(route: ResolvedDocsRoute) {
   };
 }
 
-async function createMcpServer(route: ResolvedDocsRoute) {
-  const [metadata, skillResources] = await Promise.all([
-    getMcpServerMetadata(route),
+async function createMcpServer(context: McpRepoContext) {
+  const { route, docList } = context;
+  const [metadata, skillList] = await Promise.all([
+    Promise.resolve(getMcpServerMetadata(context)),
     getMcpSkillResources(route),
   ]);
+  const skillResources = skillList?.skills ?? [];
+  const resolvedSha = docList.resolvedSha;
   const server = new McpServer(
     {
       name: metadata.name,
@@ -191,7 +174,7 @@ async function createMcpServer(route: ResolvedDocsRoute) {
         const file = await getGitHubFileSource({
           owner: skill.owner,
           repository: skill.repository,
-          ref: skill.ref,
+          resolvedSha: skillList?.resolvedSha ?? resolvedSha,
           path: skill.sourcePath,
         });
 
@@ -232,12 +215,15 @@ async function createMcpServer(route: ResolvedDocsRoute) {
       const { path } = ReadDocToolSchema.parse(args);
 
       try {
-        const source = await getRawDocSource({
-          owner: route.owner,
-          repository: route.repository,
-          ref: route.ref ?? undefined,
-          path,
-        });
+        const source = await getRawDocSource(
+          {
+            owner: route.owner,
+            repository: route.repository,
+            ref: route.ref ?? undefined,
+            path,
+          },
+          { resolvedSha, skipAccessCheck: true },
+        );
 
         return {
           content: [
@@ -274,29 +260,11 @@ async function createMcpServer(route: ResolvedDocsRoute) {
     (async (args: unknown) => {
       ListDocFilesToolSchema.parse(args ?? {});
 
-      const files = await listGitHubDocFiles({
-        owner: route.owner,
-        repository: route.repository,
-        ref: route.ref ?? undefined,
-      });
-
-      if (!files) {
-        return {
-          content: [
-            {
-              type: "text",
-              text: `Unable to list docs pages for ${route.owner}/${route.repository}${route.ref ? ` at ref ${route.ref}` : ""}.`,
-            },
-          ],
-          isError: true,
-        };
-      }
-
       return {
         content: [
           {
             type: "text",
-            text: JSON.stringify(files, null, 2),
+            text: JSON.stringify(docList, null, 2),
           },
         ],
       };
@@ -327,9 +295,9 @@ function jsonRpcError(status: number, code: number, message: string) {
   );
 }
 
-export async function handleMcpPost(request: Request, route: ResolvedDocsRoute) {
+export async function handleMcpPost(request: Request, context: McpRepoContext) {
   const body = await request.json().catch(() => undefined);
-  const server = await createMcpServer(route);
+  const server = await createMcpServer(context);
   const transport = createTransport();
 
   try {
