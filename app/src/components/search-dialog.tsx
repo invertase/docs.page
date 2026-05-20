@@ -47,7 +47,7 @@ export default function SearchDialog({ open, onOpenChange, searchUrl }: Props) {
   const [results, setResults] = useState<SearchRow[]>([]);
   const tabs = useDocTabs();
   const { setOpen: setAgentPanelOpen } = useAgentPanel();
-  const { bundle } = useDocPageContext();
+  const { bundle, meta } = useDocPageContext();
   const displayResults = useMemo(() => dedupeSearchResults(results), [results]);
   const dialog = useMcpDialog();
   
@@ -134,6 +134,7 @@ export default function SearchDialog({ open, onOpenChange, searchUrl }: Props) {
                   onNavigate={() => onOpenChange(false)}
                 />
               ))}
+              {meta.hasAgent && (
               <CommandItem
                 onSelect={() => {
                   onOpenChange(false);
@@ -141,9 +142,10 @@ export default function SearchDialog({ open, onOpenChange, searchUrl }: Props) {
                 }}
               >
                 <RiSparkling2Fill className="text-muted-foreground" />
-                <span>Ask AI</span>
-                <span className="text-muted-foreground">Open agent window</span>
-              </CommandItem>
+                  <span>Ask AI</span>
+                  <span className="text-muted-foreground">Open agent window</span>
+                </CommandItem>
+              )}
               <CommandItem
                 onSelect={() => {
                   dialog.setOpen(true);
