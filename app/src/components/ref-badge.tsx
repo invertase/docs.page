@@ -9,10 +9,7 @@ export function RefBadge() {
   const url = useRefUrl();
 
   // If we're in preview mode or the page doesn't have a ref, don't show the badge.
-  if (
-    // ctx.meta.preview ||
-    !ctx.route.ref
-  ) {
+  if (ctx.route.requestMode === "preview" || !ctx.route.ref) {
     return null;
   }
 
