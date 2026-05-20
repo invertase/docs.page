@@ -24,6 +24,8 @@ import {
   Roboto_Slab,
   Source_Sans_3,
   Space_Grotesk,
+  EB_Garamond,
+  Instrument_Serif,
 } from "next/font/google";
 
 const lexend = Lexend({
@@ -151,6 +153,17 @@ const playfairDisplay = Playfair_Display({
   variable: "--font-playfair-display",
 });
 
+const ebGaramond = EB_Garamond({
+  subsets: ["latin"],
+  variable: "--font-eb-garamond",
+});
+
+const instrumentSerif = Instrument_Serif({
+  subsets: ["latin"],
+  weight: ["400"],
+  variable: "--font-instrument-serif",
+});
+
 export const fonts = {
   lexend: lexend,
   geist: geistSans,
@@ -177,4 +190,6 @@ export const fonts = {
   merriweather: merriweather,
   lora: lora,
   "playfair-display": playfairDisplay,
+  "eb-garamond": ebGaramond,
+  "instrument-serif": instrumentSerif,
 } as const;
