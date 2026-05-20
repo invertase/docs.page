@@ -1,5 +1,7 @@
 export type DocsEnvironment = "development" | "preview" | "production";
 
+const DEFAULT_DEV_PORT = "3000";
+
 export function getDocsEnvironment(): DocsEnvironment {
   if (!process.env.VERCEL) {
     return process.env.NODE_ENV === "production" ? "production" : "development";
@@ -10,7 +12,7 @@ export function getDocsEnvironment(): DocsEnvironment {
 
 export function getPublicDocsSiteBase() {
   const environment = getDocsEnvironment();
-  const port = process.env.PORT?.trim() || "3000";
+  const port = process.env.PORT?.trim() || DEFAULT_DEV_PORT;
 
   if (environment === "development") {
     return `http://localhost:${port}`;
@@ -23,8 +25,8 @@ export function getPublicDocsSiteBase() {
   return "https://docs.page";
 }
 
-export function getRequestOrigin() {
-  const port = process.env.PORT?.trim() || "3000";
+export function getDeploymentOrigin() {
+  const port = process.env.PORT?.trim() || DEFAULT_DEV_PORT;
 
   if (process.env.NODE_ENV !== "production") {
     return `http://localhost:${port}`;

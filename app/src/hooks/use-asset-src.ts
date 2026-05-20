@@ -1,5 +1,6 @@
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
-import { getAssetSrc, isExternalLink } from "@/lib/docs-assets";
+import { getAssetSrc } from "@/lib/docs-assets";
+import { isExternalLink } from "@/lib/docs-links";
 
 export function useAssetSrc(path: string) {
   const { bundle, route } = useDocPageContext();

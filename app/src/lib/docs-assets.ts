@@ -1,16 +1,5 @@
 import type { DocsBundlePayload } from "@/lib/docs-bundle-api";
-
-export function ensureLeadingSlash(path: string) {
-  return path.startsWith("/") ? path : `/${path}`;
-}
-
-export function isExternalLink(href: string) {
-  return (
-    href.startsWith("http://")
-    || href.startsWith("https://")
-    || href.startsWith("//")
-  );
-}
+import { ensureLeadingSlash, isExternalLink } from "@/lib/docs-links";
 
 export function getGithubRawAssetUrl(
   bundle: Pick<DocsBundlePayload, "source" | "baseBranch">,

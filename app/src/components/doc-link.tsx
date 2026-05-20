@@ -2,7 +2,7 @@ import NextLink from "next/link";
 import type { ComponentProps } from "react";
 
 import { useDocHref } from "@/hooks/use-doc-href";
-import { isExternalLink } from "@/lib/docs-assets";
+import { isExternalLink } from "@/lib/docs-links";
 
 export type LinkProps = Omit<ComponentProps<"a">, "href"> & {
   href: string;

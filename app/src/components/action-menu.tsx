@@ -22,7 +22,7 @@ import {
   RiPencilLine,
 } from "@remixicon/react";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
-import { getMcpEndpointUrl } from "@/lib/mcp-endpoint-url";
+import { getMcpEndpointUrl } from "@/lib/docs-paths";
 import { useSourceUrl } from "@/hooks/use-source-url";
 import { useMcpDialog } from "./mcp-dialog";
 

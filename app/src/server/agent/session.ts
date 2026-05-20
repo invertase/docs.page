@@ -1,6 +1,7 @@
 import { createHmac, randomUUID, timingSafeEqual } from "node:crypto";
 import { parse, serialize, type SerializeOptions } from "cookie";
 import { SignJWT, jwtVerify } from "jose";
+import { getDocsRepoScopedPath } from "@/lib/docs-paths";
 import type { ResolvedDocsRoute } from "@/lib/docs-routing";
 
 export const AGENT_SESSION_COOKIE_NAME = "agent_session";
@@ -131,21 +132,7 @@ export function getAgentCsrfCookiePath(route: Pick<
   ResolvedDocsRoute,
   "requestMode" | "owner" | "repository" | "ref"
 >) {
-  if (route.requestMode === "custom-domain") {
-    return "/";
-  }
-
-  if (route.requestMode === "preview") {
-    return "/preview";
-  }
-
-  const refSegment = route.ref ? `~${encodeURIComponent(route.ref)}` : "";
-
-  if (route.requestMode === "vanity") {
-    return `/${route.repository}${refSegment}`;
-  }
-
-  return `/${route.owner}/${route.repository}${refSegment}`;
+  return getDocsRepoScopedPath(route);
 }
 
 async function signAgentSession(claims: AgentSessionClaims) {

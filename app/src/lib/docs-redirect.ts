@@ -4,8 +4,9 @@ import {
   getDocsEnvironment,
   getPublicDocsSiteBase,
 } from "@/lib/docs-environment";
+import { formatRefPathSegment } from "@/lib/docs-paths";
 import type { ResolvedDocsRoute } from "@/lib/docs-routing";
-import { ensureLeadingSlash, isExternalLink } from "@/lib/docs-assets";
+import { ensureLeadingSlash, isExternalLink } from "@/lib/docs-links";
 
 function getRelativeRedirectBase(route: ResolvedDocsRoute, domain: string | null) {
   const environment = getDocsEnvironment();
@@ -50,7 +51,7 @@ export async function resolveFrontmatterRedirectDestination(
 
   if (route.ref) {
     destination += route.customDomain ? "/" : "";
-    destination += `~${encodeURIComponent(route.ref)}`;
+    destination += formatRefPathSegment(route.ref);
   }
 
   return `${destination}${ensureLeadingSlash(redirectTo)}`;

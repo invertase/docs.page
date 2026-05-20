@@ -1,6 +1,6 @@
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useDocTabs } from "@/hooks/use-doc-tabs";
-import { resolveActiveTabId } from "@/lib/docs-routing";
+import { resolveActiveTabId } from "@/lib/docs-nav";
 
 export function useActiveTab(): string | undefined {
   const { bundle, route } = useDocPageContext();

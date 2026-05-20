@@ -2,8 +2,8 @@ import type { SidebarGroup } from "@/server/config/models/sidebar";
 import { Link } from "./doc-link";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useSidebar } from "@/hooks/use-sidebar";
-import { isExternalLink } from "@/lib/docs-assets";
-import { docPathMatchesSidebarHref } from "@/lib/docs-routing";
+import { isExternalLink } from "@/lib/docs-links";
+import { docPathMatchesSidebarHref } from "@/lib/docs-nav";
 import { Button } from "./ui/button";
 import { RiArrowLeftLine, RiArrowRightLine } from "@remixicon/react";
 

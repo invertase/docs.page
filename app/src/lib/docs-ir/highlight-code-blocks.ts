@@ -7,6 +7,7 @@ import {
 } from "@shikijs/transformers";
 import * as shiki from "shiki";
 import type { DocIrNode } from "./types";
+import { mapIrChildren } from "./visit";
 
 let highlighter: shiki.Highlighter | undefined;
 let highlighterInit: Promise<shiki.Highlighter> | undefined;
@@ -45,15 +46,8 @@ export async function highlightCodeBlocksInIr(
 ): Promise<DocIrNode> {
   switch (node.kind) {
     case "root":
-      return {
-        ...node,
-        children: await Promise.all(node.children.map(highlightCodeBlocksInIr)),
-      };
     case "component":
-      return {
-        ...node,
-        children: await Promise.all(node.children.map(highlightCodeBlocksInIr)),
-      };
+      return mapIrChildren(node, highlightCodeBlocksInIr);
     case "code": {
       const highlighted = await highlightCode(node.value, node.lang, node.meta);
       return {

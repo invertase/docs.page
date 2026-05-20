@@ -21,8 +21,8 @@ import {
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useDocTabs } from "@/hooks/use-doc-tabs";
 import { useSidebar } from "@/hooks/use-sidebar";
-import { isExternalLink } from "@/lib/docs-assets";
-import { isDocHrefActive } from "@/lib/docs-routing";
+import { isExternalLink } from "@/lib/docs-links";
+import { isDocHrefActive } from "@/lib/docs-nav";
 import type { SidebarGroup as SidebarConfigGroup } from "@/server/config/models/sidebar";
 import { cn } from "@/lib/utils";
 import { Link } from "./doc-link";

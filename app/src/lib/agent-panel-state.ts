@@ -1,3 +1,4 @@
+import { getDocsRepoScopedPath } from "@/lib/docs-paths";
 import type { ResolvedDocsRoute } from "@/lib/docs-routing";
 
 const AGENT_PANEL_COOKIE_PREFIX = "dpa_open";
@@ -10,21 +11,7 @@ export function getAgentPanelCookiePath(route: Pick<
   ResolvedDocsRoute,
   "requestMode" | "owner" | "repository" | "ref"
 >) {
-  if (route.requestMode === "custom-domain") {
-    return "/";
-  }
-
-  if (route.requestMode === "preview") {
-    return "/preview";
-  }
-
-  const refSegment = route.ref ? `~${encodeURIComponent(route.ref)}` : "";
-
-  if (route.requestMode === "vanity") {
-    return `/${route.repository}${refSegment}`;
-  }
-
-  return `/${route.owner}/${route.repository}${refSegment}`;
+  return getDocsRepoScopedPath(route);
 }
 
 function toCookiePart(value: string) {

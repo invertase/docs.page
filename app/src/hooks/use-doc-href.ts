@@ -1,6 +1,6 @@
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
-import { resolveInternalDocHref } from "@/lib/docs-routing";
-import { isExternalLink } from "@/lib/docs-assets";
+import { isExternalLink } from "@/lib/docs-links";
+import { resolveInternalDocHref } from "@/lib/docs-nav";
 import { useRouter } from "next/router";
 
 export function useDocHref(href: string) {

@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
-import { getMcpEndpointUrl } from "@/lib/mcp-endpoint-url";
+import { getMcpEndpointUrl } from "@/lib/docs-paths";
 
 export function useMcpDialog() {
   const ctx = useContext(Context);

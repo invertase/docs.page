@@ -2,7 +2,7 @@ import { Link } from "@/components/doc-link";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useDocTabs } from "@/hooks/use-doc-tabs";
 import { getAssetSrc } from "@/lib/docs-assets";
-import { resolveActiveTabId } from "@/lib/docs-routing";
+import { resolveActiveTabId } from "@/lib/docs-nav";
 import { cn } from "@/lib/utils";
 import {
   RiSunFill,

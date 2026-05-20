@@ -28,7 +28,7 @@ import {
 } from "@remixicon/react";
 import { useDocTabs } from "@/hooks/use-doc-tabs";
 import { useDocHref } from "@/hooks/use-doc-href";
-import { ensureLeadingSlash, isExternalLink } from "@/lib/docs-assets";
+import { ensureLeadingSlash, isExternalLink } from "@/lib/docs-links";
 import { useAgentPanel } from "@/hooks/use-agent-panel";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { Badge } from "@/components/ui/badge";

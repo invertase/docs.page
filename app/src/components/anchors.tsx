@@ -1,7 +1,7 @@
 import { useActiveTab } from "@/hooks/use-active-tab";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useLocale } from "@/hooks/use-locale";
-import { isExternalLink } from "@/lib/docs-assets";
+import { isExternalLink } from "@/lib/docs-links";
 import { Icon } from "./mdx/icon";
 import { Button } from "./ui/button";
 

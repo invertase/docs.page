@@ -11,7 +11,7 @@ import {
   resolveRawDocsRoute,
 } from "@/lib/docs-routing";
 import { buildDocsBundleApiPath } from "@/lib/docs-bundle-api";
-import { getRequestOrigin as getInternalRequestOrigin } from "@/lib/docs-environment";
+import { getDeploymentOrigin } from "@/lib/docs-environment";
 import { resolveFrontmatterRedirectDestination } from "@/lib/docs-redirect";
 import {
   acceptPrefersMarkdown,
@@ -177,7 +177,7 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
   setDocsCacheHeaders(res, DOCS_HTML_CACHE_HEADERS);
 
   const bundleApiPath = buildDocsBundleApiPath(route);
-  const bundleResponse = await fetch(getInternalRequestOrigin() + bundleApiPath, {
+  const bundleResponse = await fetch(getDeploymentOrigin() + bundleApiPath, {
     method: "GET",
     headers: {
       Accept: "application/json",

@@ -1,5 +1,5 @@
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
-import { getRouteLocale } from "@/lib/docs-routing";
+import { getRouteLocale } from "@/lib/docs-nav";
 
 export function useDocTabs() {
   const { bundle, route } = useDocPageContext();

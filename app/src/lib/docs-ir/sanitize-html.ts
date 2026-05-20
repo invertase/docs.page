@@ -4,6 +4,7 @@ import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import rehypeStringify from "rehype-stringify";
 import { unified } from "unified";
 import type { DocIrNode } from "./types";
+import { mapIrChildren } from "./visit";
 
 /** Tailwind / utility classes used in docs HTML (badges, layout). */
 const classNamePattern = /^[\w\s#:./\[\]()%&=-]+$/;
@@ -41,10 +42,7 @@ export async function sanitizeHtmlInIr(node: DocIrNode): Promise<DocIrNode> {
       return { ...node, source: await sanitizeHtml(node.source) };
     case "root":
     case "component":
-      return {
-        ...node,
-        children: await Promise.all(node.children.map(sanitizeHtmlInIr)),
-      };
+      return mapIrChildren(node, sanitizeHtmlInIr);
     default:
       return node;
   }
