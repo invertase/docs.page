@@ -50,7 +50,7 @@ export function CodeFence({
       )}
       {...props}
     >
-      <figcaption className="flex h-9 items-center justify-between gap-3 border-b px-4 font-mono text-muted-foreground text-xs">
+      <figcaption className="flex h-9 items-center justify-between gap-3 px-4 font-mono text-muted-foreground text-xs">
         <div className="truncate">{label}</div>
         <div className="flex items-center gap-2">
           {title ? <span>{language}</span> : null}
@@ -59,7 +59,7 @@ export function CodeFence({
           </Button>
         </div>
       </figcaption>
-      <div className="overflow-x-auto p-4 text-sm">
+      <div className="overflow-x-auto px-4 py-2 text-sm">
         {highlighted ? (
           <div dangerouslySetInnerHTML={{ __html: highlighted }} />
         ) : null}

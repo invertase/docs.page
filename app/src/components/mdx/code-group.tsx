@@ -139,7 +139,7 @@ export function CodeGroup({
 
   return (
     <figure className="not-prose overflow-hidden rounded-lg border bg-card text-card-foreground">
-      <figcaption className="flex h-9 items-center gap-3 border-b px-4 font-mono text-muted-foreground text-xs">
+      <figcaption className="flex h-9 items-center gap-3 px-4 font-mono text-muted-foreground text-xs">
         {title ? (
           <div className="min-w-0 truncate font-medium">{title}</div>
         ) : null}
@@ -164,7 +164,7 @@ export function CodeGroup({
           </Button>
         </div>
       </figcaption>
-      <div className="overflow-x-auto p-4 text-sm">
+      <div className="overflow-x-auto px-4 py-2 text-sm">
         {blocks.map((block, index) => {
           const lang = block.lang || "text";
           return (
