@@ -1,4 +1,5 @@
 import { Readable } from "node:stream";
+import { getRequestOriginFromHeaders } from "@/lib/incoming-http-headers";
 import { resolveDocsRoute } from "@/lib/docs-routing";
 import type { GitHubDocFile } from "@/server/github/tree";
 import { SitemapStream, streamToPromise } from "sitemap";
@@ -12,14 +13,13 @@ function docFileToPathSegments(file: GitHubDocFile): string[] | undefined {
 }
 
 export async function buildDocsRepoSitemapXml(args: {
-  requestUrl: string;
   owner: string;
   repoSegment: string;
   headers: Headers;
   files: GitHubDocFile[];
 }): Promise<string> {
-  const { requestUrl, owner, repoSegment, headers, files } = args;
-  const hostname = new URL(requestUrl).origin;
+  const { owner, repoSegment, headers, files } = args;
+  const hostname = getRequestOriginFromHeaders(headers);
 
   const items = files.map((file) => {
     const route = resolveDocsRoute({

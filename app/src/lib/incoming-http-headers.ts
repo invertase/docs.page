@@ -14,21 +14,41 @@ export function incomingHttpHeadersToWebHeaders(
   return headers;
 }
 
+function firstHeaderValue(value: string | string[] | null | undefined) {
+  if (value == null) {
+    return undefined;
+  }
+
+  return Array.isArray(value) ? value[0] : value;
+}
+
+function isWebHeaders(headers: Headers | IncomingHttpHeaders): headers is Headers {
+  return "get" in headers && typeof headers.get === "function";
+}
+
+function getHeaderValue(headers: Headers | IncomingHttpHeaders, name: string) {
+  if (isWebHeaders(headers)) {
+    return headers.get(name) ?? undefined;
+  }
+
+  return firstHeaderValue(headers[name.toLowerCase() as keyof IncomingHttpHeaders]);
+}
+
+/** Public site origin, honoring reverse-proxy forwarding headers when present. */
+export function getRequestOriginFromHeaders(headers: Headers | IncomingHttpHeaders) {
+  const protocol = getHeaderValue(headers, "x-forwarded-proto") ?? "http";
+  const host =
+    getHeaderValue(headers, "x-forwarded-host")
+    ?? getHeaderValue(headers, "host")
+    ?? "localhost";
+
+  return `${protocol}://${host}`;
+}
+
 export function getRequestOrigin(
   request: Pick<IncomingMessage, "headers">,
 ): string {
-  const protocol = Array.isArray(request.headers["x-forwarded-proto"])
-    ? request.headers["x-forwarded-proto"][0]
-    : request.headers["x-forwarded-proto"] ?? "http";
-  const host = Array.isArray(request.headers["x-forwarded-host"])
-    ? request.headers["x-forwarded-host"][0]
-    : request.headers["x-forwarded-host"]
-      ?? (Array.isArray(request.headers.host)
-        ? request.headers.host[0]
-        : request.headers.host)
-      ?? "localhost";
-
-  return `${protocol}://${host}`;
+  return getRequestOriginFromHeaders(request.headers);
 }
 
 export function getAbsoluteRequestUrl(

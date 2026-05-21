@@ -47,7 +47,6 @@ export async function GET(req: Request, context: RouteContext) {
   }
 
   const xml = await buildDocsRepoSitemapXml({
-    requestUrl: req.url,
     owner: route.owner,
     repoSegment: repo,
     headers: req.headers,
