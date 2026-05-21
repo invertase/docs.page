@@ -113,6 +113,20 @@ export function getMcpEndpointPathname(route: DocsPathRoute) {
   return `/${route.owner}/${route.repository}${refSegment}/mcp`;
 }
 
+export function getSearchIndexPathname(route: DocsPathRoute) {
+  const refSegment = formatRefPathSegment(route.ref);
+
+  if (route.requestMode === "custom-domain") {
+    return route.ref ? `/${refSegment}/search.json` : "/search.json";
+  }
+
+  if (route.requestMode === "vanity") {
+    return `/${route.repository}${refSegment}/search.json`;
+  }
+
+  return `/${route.owner}/${route.repository}${refSegment}/search.json`;
+}
+
 export function getMcpEndpointUrl(route: DocsPathRoute, origin: string) {
   return new URL(getMcpEndpointPathname(route), origin).toString();
 }

@@ -5,6 +5,7 @@ import { RiSearch2Line } from "@remixicon/react";
 import { useHotkeys } from "react-hotkeys-hook";
 import { useCallback, useMemo, useState } from "react";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
+import { getSearchIndexPathname } from "@/lib/docs-paths";
 import { prewarmSearch } from "@/lib/search-client";
 import { Kbd } from "./ui/kbd";
 import { Button } from "./ui/button";
@@ -15,11 +16,7 @@ const SearchDialog = dynamic(() => import("./search-dialog"), {
 
 export function Search() {
   const { route } = useDocPageContext();
-  // TODO: This probably needs to work for custom domains + vanity domains
-  const searchUrl = useMemo(
-    () => `/${route.owner}/${route.repository}/search.json`,
-    [route.owner, route.repository],
-  );
+  const searchUrl = useMemo(() => getSearchIndexPathname(route), [route]);
   const [open, setOpen] = useState(false);
   const isPreview = route.requestMode === "preview";
 
