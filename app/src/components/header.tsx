@@ -2,7 +2,6 @@ import { Link } from "@/components/doc-link";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useDocTabs } from "@/hooks/use-doc-tabs";
 import { getAssetSrc } from "@/lib/docs-assets";
-import { resolveActiveTabId } from "@/lib/docs-nav";
 import { cn } from "@/lib/utils";
 import {
   RiSunFill,
@@ -15,10 +14,11 @@ import { Button } from "@/components/ui/button";
 import { Search } from "@/components/search";
 import { useAgentPanel } from "@/hooks/use-agent-panel";
 import { Kbd } from "@/components/ui/kbd";
-import { Tabs as TabsRoot, TabsList, TabsTrigger } from "./ui/tabs";
+import { tabsListVariants } from "./ui/tabs";
 import { useEffect, useState } from "react";
 import { RefBadge } from "./ref-badge";
 import { SidebarTrigger } from "./ui/sidebar";
+import { useActiveTab } from "@/hooks/use-active-tab";
 
 export function Header() {
   const hasTabs = useDocTabs().length > 0;
@@ -198,24 +198,39 @@ function HeaderLinks() {
 }
 
 function Tabs() {
-  const { bundle, route } = useDocPageContext();
   const tabs = useDocTabs();
-  const activeTabId = resolveActiveTabId(route, tabs, bundle.config.locales);
+  const activeTabId = useActiveTab();
 
   return (
-    <TabsRoot defaultValue={activeTabId ?? undefined} className="min-w-0 flex-1">
-      <TabsList className="dark:bg-background max-md:no-scrollbar max-md:w-full max-md:max-w-full max-md:justify-start max-md:overflow-x-auto">
-        {tabs.map((tab) => (
-          <TabsTrigger
-            key={tab.id}
-            value={tab.id}
-            className="h-7 shrink-0 px-3 max-md:flex-none"
-            asChild
-          >
-            <Link href={tab.href}>{tab.title}</Link>
-          </TabsTrigger>
-        ))}
-      </TabsList>
-    </TabsRoot>
+    <nav
+      aria-label="Documentation sections"
+      className="min-w-0 flex-1 max-md:overflow-x-auto max-md:no-scrollbar"
+    >
+      <div
+        className={cn(
+          tabsListVariants(),
+          "dark:bg-sidebar-background",
+        )}
+      >
+        {tabs.map((tab) => {
+          const isActive = tab.id === activeTabId;
+
+          return (
+            <Link
+              key={tab.id}
+              href={tab.href}
+              aria-current={isActive ? "page" : undefined}
+              data-active={isActive ? "" : undefined}
+              className={cn(
+                "relative inline-flex h-7 shrink-0 items-center justify-center rounded-lg border border-transparent px-3 text-sm font-medium whitespace-nowrap text-foreground/60 transition-all hover:text-foreground focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-1 focus-visible:outline-ring dark:text-muted-foreground dark:hover:text-foreground max-md:flex-none",
+                "data-active:bg-background data-active:text-foreground dark:data-active:border-input dark:data-active:bg-input/30 dark:data-active:text-foreground",
+              )}
+            >
+              {tab.title}
+            </Link>
+          );
+        })}
+      </div>
+    </nav>
   );
 }

@@ -99,11 +99,11 @@ export function resolveActiveTabId(
   if (tabs.length === 0) {
     return null;
   }
-  const current = normalizeDocPathSegment(route.publicPathname);
+  const current = normalizeDocPathSegment(route.docPath);
   let best: { id: string; len: number } | null = null;
   for (const tab of tabs) {
     const tabPath = normalizeDocPathSegment(
-      resolveInternalDocHref(route, tab.href, locales),
+      resolveLocalizedDocPath(route.docPath, tab.href, locales),
     );
     const matches =
       current === tabPath ||

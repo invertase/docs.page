@@ -27,6 +27,48 @@ export function getDocsRepoScopedPath(route: DocsPathRoute) {
   return `/${route.owner}/${route.repository}${refSegment}`;
 }
 
+function stripDocPathSegment(path: string): string {
+  const s = path.replace(/^\/+|\/+$/g, "");
+  if (s === "" || s === "index") {
+    return "";
+  }
+  return s;
+}
+
+/** Doc path segment for the current URL (without repo/ref prefix). */
+export function extractDocPathFromPathname(
+  pathname: string,
+  route: DocsPathRoute,
+): string {
+  const normalizedPath = pathname.split("?")[0]?.split("#")[0] || "/";
+
+  if (route.requestMode === "custom-domain") {
+    if (route.ref) {
+      const refPrefix = `/${formatRefPathSegment(route.ref)}`;
+      if (normalizedPath === refPrefix) {
+        return "";
+      }
+      if (normalizedPath.startsWith(`${refPrefix}/`)) {
+        return stripDocPathSegment(normalizedPath.slice(refPrefix.length));
+      }
+    }
+
+    return stripDocPathSegment(normalizedPath);
+  }
+
+  const scoped = getDocsRepoScopedPath(route);
+
+  if (normalizedPath === scoped) {
+    return "";
+  }
+
+  if (normalizedPath.startsWith(`${scoped}/`)) {
+    return stripDocPathSegment(normalizedPath.slice(scoped.length));
+  }
+
+  return stripDocPathSegment(normalizedPath);
+}
+
 export function buildPublicPathname(args: {
   requestMode: DocsRequestMode;
   owner: string;

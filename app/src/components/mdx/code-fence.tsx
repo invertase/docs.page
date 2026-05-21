@@ -21,7 +21,6 @@ export function CodeFence({
   ...props
 }: CodeFenceProps) {
   const language = lang || "text";
-  const label = title || language;
 
   const [copied, setCopied] = useState(false);
   const copyTimeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
@@ -51,9 +50,9 @@ export function CodeFence({
       {...props}
     >
       <figcaption className="flex h-9 items-center justify-between gap-3 px-4 font-mono text-muted-foreground text-xs">
-        <div className="truncate">{label}</div>
+        <div className="truncate">{title}</div>
         <div className="flex items-center gap-2">
-          {title ? <span>{language}</span> : null}
+          <span>{language}</span>
           <Button variant="ghost" size="icon-sm" onClick={onCopy}>
             {copied ? <RiCheckLine /> : <RiFileCopyLine />}
           </Button>
