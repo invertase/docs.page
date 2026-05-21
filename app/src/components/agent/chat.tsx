@@ -77,7 +77,7 @@ export function AgentChat({ setOpen }: { setOpen?: (open: boolean) => void }) {
   const showQuestions = messages.length === 0 && agentAvailable;
   const awaitingReply =
     hasSent && messages.length > 0 && messages.at(-1)?.role === "user";
-  const errorMessage = error?.message ?? null;
+  const errorMessage = getChatErrorMessage(error);
 
   const submitText = useCallback(
     (text: string) => {
@@ -371,6 +371,24 @@ function BashCalls({
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
+}
+
+function getChatErrorMessage(error: Error | undefined): string | null {
+  if (!error?.message) {
+    return null;
+  }
+
+  try {
+    const parsed: unknown = JSON.parse(error.message);
+
+    if (isRecord(parsed) && typeof parsed.error === "string") {
+      return parsed.error;
+    }
+  } catch {
+    // Not JSON — fall through to the raw message.
+  }
+
+  return error.message;
 }
 
 function getBashCommand(input: unknown): string | null {
