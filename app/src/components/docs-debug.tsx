@@ -36,6 +36,10 @@ export function DocsDebug() {
                 <TableCell className="w-[200px]">Canonical pathname</TableCell>
                 <TableCell>{route.canonicalPathname}</TableCell>
               </TableRow>
+              <TableRow>
+                <TableCell className="w-[200px]">Canonical URL</TableCell>
+                <TableCell>{route.canonicalUrl ?? "(none)"}</TableCell>
+              </TableRow>
             </TableBody>
           </Table>
           <pre className="overflow-x-auto rounded-lg border p-4 text-sm">

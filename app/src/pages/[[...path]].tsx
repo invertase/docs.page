@@ -11,6 +11,7 @@ import {
   resolveRawDocsRoute,
 } from "@/lib/docs-routing";
 import { buildDocsBundleApiPath } from "@/lib/docs-bundle-api";
+import { resolveDocsRouteWithCanonical } from "@/lib/docs-canonical";
 import { getDeploymentOrigin } from "@/lib/docs-environment";
 import { resolveFrontmatterRedirectDestination } from "@/lib/docs-redirect";
 import {
@@ -105,7 +106,7 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
     }
   }
 
-  const route = resolveDocsRoute({
+  const route = await resolveDocsRouteWithCanonical({
     owner,
     repoSegment: repo,
     path,

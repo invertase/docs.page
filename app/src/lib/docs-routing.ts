@@ -14,6 +14,7 @@ export type ResolvedDocsRoute = {
   customDomain: boolean;
   canonicalPathname: string;
   publicPathname: string;
+  canonicalUrl: string | null;
 };
 
 const RESERVED_VANITY_SUBDOMAINS = new Set(["docs", "www", "staging"]);
@@ -133,6 +134,7 @@ export function resolveDocsRoute(args: {
       ref,
       docPath,
     }),
+    canonicalUrl: null,
   };
 }
 

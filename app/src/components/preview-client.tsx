@@ -126,6 +126,7 @@ export function PreviewClient() {
         customDomain: false,
         canonicalPathname: docPath ? `/preview/${docPath}` : "/preview",
         publicPathname: docPath ? `/preview/${docPath}` : "/preview",
+        canonicalUrl: null,
       },
       bundle: {
         source: {

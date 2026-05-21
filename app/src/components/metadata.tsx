@@ -4,7 +4,7 @@ import { toBase64 } from "@/lib/utils";
 import Head from "next/head";
 
 export function Metadata() {
-  const { bundle } = useDocPageContext();
+  const { bundle, route } = useDocPageContext();
 
   // Get the page title, starting with page frontmatter, then the config, and finally defaulting to "Documentation".
   const title =
@@ -101,6 +101,10 @@ export function Metadata() {
           }
           href={getAssetSrc(bundle, bundle.config.favicon.dark)}
         />
+      ) : null}
+
+      {route.canonicalUrl ? (
+        <link rel="canonical" href={route.canonicalUrl} />
       ) : null}
 
       {noindex ? <meta name="robots" content="noindex" /> : null}
