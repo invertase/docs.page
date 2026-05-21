@@ -61,6 +61,14 @@ export function Metadata() {
       <meta property="og:title" content={String(title)} />
       <meta name="twitter:title" content={String(title)} />
 
+      {image ? (
+        <>
+          <meta property="og:image" content={image} />
+          <meta name="twitter:card" content="summary_large_image" />
+          <meta name="twitter:image" content={image} />
+        </>
+      ) : null}
+
       {description ? (
         <>
           <meta name="description" content={String(description)} />
