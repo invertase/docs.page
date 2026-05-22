@@ -1,5 +1,6 @@
 import { Readable } from "node:stream";
-import { resolvePublicDocsOriginForRoute } from "@/lib/docs-canonical";
+import { buildPublicPathname } from "@/lib/docs-paths";
+import { resolvePublicDocsPublishingContext } from "@/lib/docs-canonical";
 import { resolveDocsRoute } from "@/lib/docs-routing";
 import type { GitHubDocFile } from "@/server/github/tree";
 import { SitemapStream, streamToPromise } from "sitemap";
@@ -19,11 +20,12 @@ export async function buildDocsRepoSitemapXml(args: {
   files: GitHubDocFile[];
 }): Promise<string> {
   const { owner, repoSegment, headers, files } = args;
-  const hostname = await resolvePublicDocsOriginForRoute({
-    owner,
-    repoSegment,
-    headers,
-  });
+  const { origin: hostname, pathRoute } =
+    await resolvePublicDocsPublishingContext({
+      owner,
+      repoSegment,
+      headers,
+    });
 
   const items = files.map((file) => {
     const route = resolveDocsRoute({
@@ -33,7 +35,14 @@ export async function buildDocsRepoSitemapXml(args: {
       headers,
     });
 
-    const pathname = route.publicPathname || "/";
+    const pathname =
+      buildPublicPathname({
+        requestMode: pathRoute.requestMode,
+        owner: pathRoute.owner,
+        repository: pathRoute.repository,
+        ref: pathRoute.ref,
+        docPath: route.docPath,
+      }) || "/";
     const priority = file.path === "index" ? 1 : 0.8;
 
     return {

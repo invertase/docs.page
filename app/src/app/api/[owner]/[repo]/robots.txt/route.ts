@@ -1,4 +1,5 @@
-import { resolvePublicDocsOriginForRoute } from "@/lib/docs-canonical";
+import { resolvePublicSitemapUrl } from "@/lib/docs-canonical";
+import { getCustomDomain } from "@/lib/custom-domain";
 import { resolveDocsRoute } from "@/lib/docs-routing";
 import { ROBOTS_TXT_CACHE_HEADERS } from "@/proxy";
 import { BundlerError } from "@/server/docs/bundle";
@@ -48,12 +49,8 @@ export async function GET(req: Request, context: RouteContext) {
     return new Response("Not found", { status: 404 });
   }
 
-  const [origin, config] = await Promise.all([
-    resolvePublicDocsOriginForRoute({
-      owner,
-      repoSegment: repo,
-      headers: req.headers,
-    }),
+  const [customDomain, config] = await Promise.all([
+    getCustomDomain(route.owner, route.repository),
     loadDocsConfigForResolvedSha({
       owner: docList.source.owner,
       repository: docList.source.repository,
@@ -62,8 +59,7 @@ export async function GET(req: Request, context: RouteContext) {
   ]);
 
   const body = buildDocsRepoRobotsTxt({
-    route,
-    origin,
+    sitemapUrl: resolvePublicSitemapUrl(route, customDomain, req.headers),
     noindex: config.seo?.noindex === true,
   });
 

@@ -1,4 +1,5 @@
-import { resolvePublicDocsOriginForRoute } from "@/lib/docs-canonical";
+import { buildPublicPathname } from "@/lib/docs-paths";
+import { resolvePublicDocsPublishingContext } from "@/lib/docs-canonical";
 import { resolveDocsRoute } from "@/lib/docs-routing";
 import { LLMS_FULL_TXT_CACHE_HEADERS } from "@/proxy";
 import { BundlerError } from "@/server/docs/bundle";
@@ -52,7 +53,7 @@ export async function GET(req: Request, context: RouteContext) {
   }
 
   const { owner: ghOwner, repository: ghRepo } = docList.source;
-  const origin = await resolvePublicDocsOriginForRoute({
+  const { origin, pathRoute } = await resolvePublicDocsPublishingContext({
     owner,
     repoSegment: repo,
     headers: req.headers,
@@ -81,7 +82,14 @@ export async function GET(req: Request, context: RouteContext) {
       path: document.pathSegments,
       headers: req.headers,
     });
-    const pathname = docRoute.publicPathname || "/";
+    const pathname =
+      buildPublicPathname({
+        requestMode: pathRoute.requestMode,
+        owner: pathRoute.owner,
+        repository: pathRoute.repository,
+        ref: pathRoute.ref,
+        docPath: docRoute.docPath,
+      }) || "/";
     const href = `${origin}${pathname.startsWith("/") ? pathname : `/${pathname}`}`;
     const label = sanitizeMdLinkLabel(document.title);
 
