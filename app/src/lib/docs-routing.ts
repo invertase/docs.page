@@ -50,6 +50,11 @@ export function isDocsSitemapPath(pathname: string) {
   return isDocsRepoFilePath(pathname, "sitemap.xml");
 }
 
+/** Per-repo robots.txt at `/{owner}/{repo}/robots.txt` (or vanity / custom-domain equivalents). */
+export function isDocsRobotsPath(pathname: string) {
+  return isDocsRepoFilePath(pathname, "robots.txt");
+}
+
 /** Per-repo LLM-oriented doc index at `/{owner}/{repo}/llms.txt` (or vanity / custom-domain equivalents). */
 export function isDocsLlmsTxtPath(pathname: string) {
   return isDocsRepoFilePath(pathname, "llms.txt");

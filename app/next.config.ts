@@ -28,6 +28,10 @@ const nextConfig: NextConfig = {
           destination: "/api/:owner/:repo/sitemap.xml",
         },
         {
+          source: "/:owner/:repo/robots.txt",
+          destination: "/api/:owner/:repo/robots.txt",
+        },
+        {
           source: "/:owner/:repo/mcp",
           destination: "/api/:owner/:repo/mcp",
         },

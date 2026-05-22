@@ -114,17 +114,25 @@ export function getMcpEndpointPathname(route: DocsPathRoute) {
 }
 
 export function getSearchIndexPathname(route: DocsPathRoute) {
+  return getDocsRepoUtilityPathname(route, "search.json");
+}
+
+function getDocsRepoUtilityPathname(route: DocsPathRoute, filename: string) {
   const refSegment = formatRefPathSegment(route.ref);
 
   if (route.requestMode === "custom-domain") {
-    return route.ref ? `/${refSegment}/search.json` : "/search.json";
+    return route.ref ? `/${refSegment}/${filename}` : `/${filename}`;
   }
 
   if (route.requestMode === "vanity") {
-    return `/${route.repository}${refSegment}/search.json`;
+    return `/${route.repository}${refSegment}/${filename}`;
   }
 
-  return `/${route.owner}/${route.repository}${refSegment}/search.json`;
+  return `/${route.owner}/${route.repository}${refSegment}/${filename}`;
+}
+
+export function getSitemapPathname(route: DocsPathRoute) {
+  return getDocsRepoUtilityPathname(route, "sitemap.xml");
 }
 
 export function getMcpEndpointUrl(route: DocsPathRoute, origin: string) {

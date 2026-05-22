@@ -5,6 +5,7 @@ import {
   getVanityOwnerFromHost,
   isDocsLlmsFullTxtPath,
   isDocsLlmsTxtPath,
+  isDocsRobotsPath,
   isDocsSitemapPath,
   isPinnedCommitRef,
   isRawDocRequestPath,
@@ -103,6 +104,11 @@ export const SITEMAP_CACHE_HEADERS = buildDocsCacheHeaders({
   staleWhileRevalidate: CDN_STALE_SECONDS,
   staleIfError: CDN_STALE_SECONDS,
 });
+export const ROBOTS_TXT_CACHE_HEADERS = buildDocsCacheHeaders({
+  edgeMaxAgeSeconds: 3600,
+  staleWhileRevalidate: CDN_STALE_SECONDS,
+  staleIfError: CDN_STALE_SECONDS,
+});
 
 const MUTABLE_BUNDLE_EDGE_MAX_AGE = 60;
 const PINNED_BUNDLE_EDGE_MAX_AGE = CDN_STALE_SECONDS;
@@ -153,6 +159,7 @@ function isBypassPath(pathname: string) {
       !isRawDocRequestPath(pathname) &&
       !isDocsSearchPath(pathname) &&
       !isDocsSitemapPath(pathname) &&
+      !isDocsRobotsPath(pathname) &&
       !isDocsLlmsTxtPath(pathname) &&
       !isDocsLlmsFullTxtPath(pathname))
   );
@@ -209,6 +216,10 @@ function getDocsCacheHeaders(pathname: string): DocsCacheHeaders | null {
 
   if (isDocsSitemapPath(pathname)) {
     return SITEMAP_CACHE_HEADERS;
+  }
+
+  if (isDocsRobotsPath(pathname)) {
+    return ROBOTS_TXT_CACHE_HEADERS;
   }
 
   const segments = getPathSegments(pathname);
