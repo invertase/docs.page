@@ -286,6 +286,7 @@ export function Sidebar() {
               key={`${group.group ?? "group"}-${gi}`}
               className="group-data-[collapsible=icon]:hidden"
             >
+                {group.group && gi > 0 ? <Separator className="mb-4" /> : null}
                 {group.group ? (
                   <SidebarGroupLabel
                     className={cn(
@@ -302,7 +303,6 @@ export function Sidebar() {
                     <SidebarPagesList pages={group.pages} depth={0} />
                   </SidebarMenu>
                 </SidebarGroupContent>
-                <Separator className="mt-4" />
               </SidebarGroup>
             ))}
         </SidebarContent>

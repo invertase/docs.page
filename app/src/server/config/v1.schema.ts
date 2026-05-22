@@ -170,12 +170,44 @@ export const V1ConfigSchema = z
       return { group: "", pages: [] };
     }
 
+    function isSingleTopLevelPage(group: Sidebar): boolean {
+      const page = group.pages[0];
+      return !group.group && group.pages.length === 1 && page != null && "title" in page;
+    }
+
+    function compactSidebarGroups(groups: Sidebar[]): Sidebar[] {
+      const compacted: Sidebar[] = [];
+      let mergedPages: Sidebar["pages"] = [];
+
+      const flushMergedPages = () => {
+        if (mergedPages.length === 0) {
+          return;
+        }
+
+        compacted.push({ group: "", pages: mergedPages });
+        mergedPages = [];
+      };
+
+      for (const group of groups) {
+        if (isSingleTopLevelPage(group)) {
+          mergedPages.push(group.pages[0]);
+          continue;
+        }
+
+        flushMergedPages();
+        compacted.push(group);
+      }
+
+      flushMergedPages();
+      return compacted;
+    }
+
     if (Array.isArray(v1.sidebar)) {
-      config.sidebar = v1.sidebar.map(transformSidebarItem);
+      config.sidebar = compactSidebarGroups(v1.sidebar.map(transformSidebarItem));
     } else {
       const sidebar: Record<string, Sidebar[]> = {};
       Object.entries(v1.sidebar).map(([locale, sidebarItems]) => {
-        sidebar[locale] = sidebarItems.map(transformSidebarItem);
+        sidebar[locale] = compactSidebarGroups(sidebarItems.map(transformSidebarItem));
       });
       config.sidebar = sidebar;
     }
