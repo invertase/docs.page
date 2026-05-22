@@ -1,4 +1,4 @@
-import { getRequestOriginFromHeaders } from "@/lib/incoming-http-headers";
+import { resolvePublicDocsOriginForRoute } from "@/lib/docs-canonical";
 import { resolveDocsRoute } from "@/lib/docs-routing";
 import { LLMS_FULL_TXT_CACHE_HEADERS } from "@/proxy";
 import { BundlerError } from "@/server/docs/bundle";
@@ -52,7 +52,11 @@ export async function GET(req: Request, context: RouteContext) {
   }
 
   const { owner: ghOwner, repository: ghRepo } = docList.source;
-  const origin = getRequestOriginFromHeaders(req.headers);
+  const origin = await resolvePublicDocsOriginForRoute({
+    owner,
+    repoSegment: repo,
+    headers: req.headers,
+  });
 
   const [config, dataset] = await Promise.all([
     loadDocsConfigForResolvedSha({

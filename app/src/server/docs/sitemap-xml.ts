@@ -1,5 +1,5 @@
 import { Readable } from "node:stream";
-import { getRequestOriginFromHeaders } from "@/lib/incoming-http-headers";
+import { resolvePublicDocsOriginForRoute } from "@/lib/docs-canonical";
 import { resolveDocsRoute } from "@/lib/docs-routing";
 import type { GitHubDocFile } from "@/server/github/tree";
 import { SitemapStream, streamToPromise } from "sitemap";
@@ -19,7 +19,11 @@ export async function buildDocsRepoSitemapXml(args: {
   files: GitHubDocFile[];
 }): Promise<string> {
   const { owner, repoSegment, headers, files } = args;
-  const hostname = getRequestOriginFromHeaders(headers);
+  const hostname = await resolvePublicDocsOriginForRoute({
+    owner,
+    repoSegment,
+    headers,
+  });
 
   const items = files.map((file) => {
     const route = resolveDocsRoute({

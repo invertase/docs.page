@@ -1,3 +1,4 @@
+import type { IncomingHttpHeaders } from "node:http";
 import { getCustomDomain } from "@/lib/custom-domain";
 import {
   getDocsEnvironment,
@@ -8,6 +9,7 @@ import {
   resolveDocsRoute,
   type ResolvedDocsRoute,
 } from "@/lib/docs-routing";
+import { getRequestOriginFromHeaders } from "@/lib/incoming-http-headers";
 
 export function resolveCanonicalUrl(
   route: ResolvedDocsRoute,
@@ -35,6 +37,42 @@ export function resolveCanonicalUrl(
     route.canonicalPathname,
     getPublicDocsSiteBase(),
   ).toString();
+}
+
+/** Public site origin for absolute URLs in sitemaps, llms.txt, etc. */
+export function resolvePublicDocsOrigin(
+  route: ResolvedDocsRoute,
+  customDomain: string | null,
+  headers?: Headers | IncomingHttpHeaders,
+): string {
+  const environment = getDocsEnvironment();
+
+  if (
+    headers
+    && (route.requestMode === "preview" || environment === "development")
+  ) {
+    return getRequestOriginFromHeaders(headers);
+  }
+
+  if (customDomain && environment === "production") {
+    return `https://${customDomain}`;
+  }
+
+  return getPublicDocsSiteBase();
+}
+
+export async function resolvePublicDocsOriginForRoute(
+  args: Parameters<typeof resolveDocsRoute>[0],
+): Promise<string> {
+  const route = resolveDocsRoute(args);
+
+  if (route.requestMode === "preview") {
+    return getRequestOriginFromHeaders(args.headers);
+  }
+
+  const customDomain = await getCustomDomain(route.owner, route.repository);
+
+  return resolvePublicDocsOrigin(route, customDomain, args.headers);
 }
 
 export async function resolveDocsRouteWithCanonical(
