@@ -43,20 +43,20 @@ export function McpDialog(props: PropsWithChildren) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{props.children}</DialogTrigger>
-      <DialogContent className="sm:max-w-2xl">
-        <DialogHeader>
+      <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-2xl">
+        <DialogHeader className="min-w-0">
           <DialogTitle>Install MCP</DialogTitle>
           <DialogDescription>
             Install MCP server this documentation.
           </DialogDescription>
-          <Tabs>
+          <Tabs className="min-w-0">
             <TabsList className="mt-2">
               <TabsTrigger value="cursor">Cursor</TabsTrigger>
               <TabsTrigger value="claude">Claude Code</TabsTrigger>
               <TabsTrigger value="vscode">VSCode</TabsTrigger>
               <TabsTrigger value="antigravity">Antigravity</TabsTrigger>
             </TabsList>
-            <TabsContent value="cursor" className="mt-2 px-1 text-sm space-y-4">
+            <TabsContent value="cursor" className="mt-2 min-w-0 space-y-4 px-1 text-sm">
               <p>
                 Create a <code>.cursor/mcp.json</code> file with the following
                 entry:
@@ -69,7 +69,7 @@ export function McpDialog(props: PropsWithChildren) {
   }
 }`}</Code>
             </TabsContent>
-            <TabsContent value="claude" className="mt-2 px-1 text-sm space-y-4">
+            <TabsContent value="claude" className="mt-2 min-w-0 space-y-4 px-1 text-sm">
               <p>
                 Use the <code>claude mcp</code> command to authenticate and add
                 the following entry:
@@ -77,7 +77,7 @@ export function McpDialog(props: PropsWithChildren) {
               <Code>{`claude mcp add --transport http \\
 ${mcpEndpointUrl}`}</Code>
             </TabsContent>
-            <TabsContent value="vscode" className="mt-2 px-1 text-sm space-y-4">
+            <TabsContent value="vscode" className="mt-2 min-w-0 space-y-4 px-1 text-sm">
               <ul className="list-disc list-inside">
                 <li>
                   Open the Command Palette (Cmd+Shift+P) and type “MCP: Add
@@ -105,7 +105,7 @@ ${mcpEndpointUrl}`}</Code>
   }
 }`}</Code>
             </TabsContent>
-            <TabsContent value="antigravity" className="mt-2 px-1 text-sm space-y-4">
+            <TabsContent value="antigravity" className="mt-2 min-w-0 space-y-4 px-1 text-sm">
               <p>
                 In the Agent Panel, click the three dots in the top right and
                 select MCP Servers. Click, Manage MCP Servers. Select “View raw
@@ -128,7 +128,7 @@ ${mcpEndpointUrl}`}</Code>
 
 function Code(props: { children: string }) {
   return (
-    <pre className="bg-muted p-4 rounded-md overflow-x-auto">
+    <pre className="max-w-full min-w-0 overflow-x-auto rounded-md bg-muted p-4 font-mono text-sm">
       <code>{props.children}</code>
     </pre>
   );
