@@ -1,11 +1,11 @@
-import { z } from "zod";
 import type {
   DocsBundleApiErrorResponse,
   DocsBundleApiResponse,
 } from "@/lib/docs-bundle-api";
 import { getBundleJsonCacheHeaders } from "@/proxy";
-import { checkRepositoryAgentConfig } from "@/server/agent/repository";
+import { isAgentEnabledForRepository } from "@/server/agent/repository";
 import { BundlerError, getDocBundle } from "@/server/docs/bundle";
+import { z } from "zod";
 
 const QuerySchema = z.object({
   owner: z.string().trim().min(1),
@@ -34,19 +34,15 @@ export async function GET(req: Request) {
   }
 
   try {
-    const [bundle, agent] = await Promise.all([
+    const [bundle, hasAgent] = await Promise.all([
       getDocBundle(input.data),
-      checkRepositoryAgentConfig({
+      isAgentEnabledForRepository({
         owner: input.data.owner,
         repository: input.data.repository,
+        ref: input.data.ref,
       }),
     ]);
 
-    const hasAgent = Boolean(
-      bundle.config.agent?.key &&
-        agent?.id &&
-        bundle.config.agent.key === agent.id,
-    );
     const response = Response.json(
       {
         code: "OK",

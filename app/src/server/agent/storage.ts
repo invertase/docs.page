@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { getRedisClient } from "@/server/redis";
 import type { EncryptedAgentPayload } from "./encryption";
@@ -13,6 +13,7 @@ export interface AgentRecord {
 interface AgentStore {
   getByRepo(repo: string): Promise<AgentRecord | null>;
   set(record: AgentRecord): Promise<void>;
+  deleteByRepo(repo: string): Promise<void>;
 }
 
 const FILE_STORAGE_DIR = path.join(process.cwd(), ".db", "agents");
@@ -23,12 +24,14 @@ export function getAgentStore(): AgentStore {
     return {
       getByRepo: getRedisRecordByRepo,
       set: setRedisRecord,
+      deleteByRepo: deleteRedisRecordByRepo,
     };
   }
 
   return {
     getByRepo: getFileRecordByRepo,
     set: setFileRecord,
+    deleteByRepo: deleteFileRecordByRepo,
   };
 }
 
@@ -64,6 +67,16 @@ async function setRedisRecord(record: AgentRecord) {
   await client.set(getRedisKey(record.repo), JSON.stringify(record));
 }
 
+async function deleteRedisRecordByRepo(repo: string) {
+  const client = await getRedisClient();
+
+  if (!client) {
+    throw new Error("REDIS_URL is not configured.");
+  }
+
+  await client.del(getRedisKey(repo));
+}
+
 async function getFileRecordByRepo(repo: string) {
   try {
     const value = await readFile(getFilePath(repo), "utf8");
@@ -86,6 +99,18 @@ async function getFileRecordByRepo(repo: string) {
 async function setFileRecord(record: AgentRecord) {
   await mkdir(FILE_STORAGE_DIR, { recursive: true });
   await writeFile(getFilePath(record.repo), JSON.stringify(record, null, 2));
+}
+
+async function deleteFileRecordByRepo(repo: string) {
+  try {
+    await unlink(getFilePath(repo));
+  } catch (error) {
+    if (isNodeError(error) && error.code === "ENOENT") {
+      return;
+    }
+
+    throw error;
+  }
 }
 
 function getRedisKey(repo: string) {

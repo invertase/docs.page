@@ -11,6 +11,11 @@ type CreateAgentOptions = {
   force?: boolean;
 };
 
+type DeleteAgentOptions = {
+  repo: string;
+  auth?: string;
+};
+
 type GlobalCliOptions = {
   apiUrl?: string;
 };
@@ -61,6 +66,36 @@ export function registerAgentCommand(program: Command) {
         });
 
         console.log(agentId);
+      } catch (error) {
+        console.error(chalk.red(getErrorMessage(error)));
+        process.exit(1);
+      }
+    });
+
+  agents
+    .command("delete")
+    .description("Delete a docs.page agent")
+    .requiredOption(
+      "--repo <org/name>",
+      "GitHub repository in the form org/name",
+    )
+    .option(
+      "--auth <string>",
+      "GitHub auth token to use instead of `gh auth token`",
+    )
+    .action(async (options: DeleteAgentOptions, command: Command) => {
+      try {
+        const repo = validateRepo(options.repo);
+        const githubToken = await resolveGitHubToken(options.auth);
+        const globalOptions = command.optsWithGlobals() as GlobalCliOptions;
+
+        await deleteAgent({
+          apiBase: getApiBase(globalOptions.apiUrl),
+          repo,
+          githubToken,
+        });
+
+        console.log(`Deleted agent for ${repo}`);
       } catch (error) {
         console.error(chalk.red(getErrorMessage(error)));
         process.exit(1);
@@ -195,6 +230,40 @@ async function createAgent({
   }
 
   throw new Error("Agent creation failed: response did not include an `id`.");
+}
+
+async function deleteAgent({
+  apiBase,
+  repo,
+  githubToken,
+}: {
+  apiBase: string;
+  repo: string;
+  githubToken: string;
+}) {
+  const response = await fetch(`${apiBase}/api/agent`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      repo,
+      githubToken,
+    }),
+  });
+
+  const responseText = await response.text();
+  const json = parseJson(responseText);
+
+  if (isRecord(json) && typeof json.error === "string") {
+    throw new Error(json.error);
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      `Agent deletion failed (${response.status} ${response.statusText}).`,
+    );
+  }
 }
 
 function parseJson(value: string) {

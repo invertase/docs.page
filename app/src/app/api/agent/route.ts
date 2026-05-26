@@ -1,15 +1,8 @@
-import { z } from "zod";
-import {
-  RateLimiterMemory,
-  RateLimiterRedis,
-  RateLimiterRes,
-} from "rate-limiter-flexible";
-import { createBashTool } from "bash-tool";
-import { Bash } from "just-bash";
-import { ToolLoopAgent, createAgentUIStreamResponse, stepCountIs } from "ai";
-import { getAgentStore } from "@/server/agent/storage";
+import { getRequestClientIp } from "@/lib/request-client-ip";
 import { decryptAgentPayload } from "@/server/agent/encryption";
+import { checkAdminAccess, parseRepo } from "@/server/agent/github-admin";
 import { getProvider } from "@/server/agent/providers";
+import { isAgentEnabledForRepository } from "@/server/agent/repository";
 import {
   AGENT_SESSION_COOKIE_NAME,
   AGENT_SESSION_HEADER_NAME,
@@ -17,18 +10,32 @@ import {
   verifyAgentCsrfToken,
   verifyAgentSession,
 } from "@/server/agent/session";
-import { getRedisClient } from "@/server/redis";
-import type { InitialFiles } from "just-bash";
-import { getRequestClientIp } from "@/lib/request-client-ip";
+import { getAgentStore } from "@/server/agent/storage";
 import { BundlerError } from "@/server/docs/bundle";
 import { getGitHubFileSourcesBatch } from "@/server/github/contents";
 import {
-  listGitHubDocFiles,
   type GitHubDocFileList,
+  listGitHubDocFiles,
 } from "@/server/github/tree";
+import { getRedisClient } from "@/server/redis";
+import { ToolLoopAgent, createAgentUIStreamResponse, stepCountIs } from "ai";
+import { createBashTool } from "bash-tool";
+import { Bash } from "just-bash";
+import type { InitialFiles } from "just-bash";
+import {
+  RateLimiterMemory,
+  RateLimiterRedis,
+  RateLimiterRes,
+} from "rate-limiter-flexible";
+import { z } from "zod";
 
 const AgentRequestSchema = z.object({
   messages: z.array(z.any()),
+});
+
+const DeleteAgentSchema = z.object({
+  repo: z.string().trim().min(1),
+  githubToken: z.string().trim().min(1),
 });
 
 const SYSTEM_INSTRUCTIONS = (
@@ -54,6 +61,56 @@ When referencing files, always provide the relative URL to the file as markdown 
 1. /docs/index.mdx -> [Documentation](/)
 2. /docs/getting-started/index.mdx -> [Getting Started](/getting-started)
 `;
+
+export async function DELETE(req: Request) {
+  try {
+    const parsed = DeleteAgentSchema.safeParse(await req.json());
+
+    if (!parsed.success) {
+      return Response.json({ error: "Invalid request body." }, { status: 400 });
+    }
+
+    const { repo, githubToken } = parsed.data;
+    const repoParts = parseRepo(repo);
+
+    if (!repoParts) {
+      return Response.json(
+        { error: "`repo` must be in the form `org/name`." },
+        { status: 400 },
+      );
+    }
+
+    const adminCheck = await checkAdminAccess({
+      owner: repoParts.owner,
+      repo: repoParts.repo,
+      githubToken,
+    });
+
+    if (!adminCheck.ok) {
+      return Response.json(
+        { error: adminCheck.error },
+        { status: adminCheck.status },
+      );
+    }
+
+    const store = getAgentStore();
+    const existingRecord = await store.getByRepo(repo);
+
+    if (!existingRecord) {
+      return Response.json({ error: "Agent not found." }, { status: 404 });
+    }
+
+    await store.deleteByRepo(repo);
+
+    return Response.json({ ok: true }, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return Response.json(
+      { error: "Failed to delete the agent API key." },
+      { status: 500 },
+    );
+  }
+}
 
 export async function POST(req: Request) {
   const cookies = parseCookies(req.headers.get("cookie") ?? undefined);
@@ -126,6 +183,17 @@ export async function POST(req: Request) {
 
   const { messages } = parsedBody.data;
   const repoSlug = `${session.owner}/${session.repo}`;
+  const enabled = await isAgentEnabledForRepository({
+    owner: session.owner,
+    repository: session.repo,
+  });
+
+  if (!enabled) {
+    return Response.json(
+      { error: "Agent is not enabled for this repository." },
+      { status: 403 },
+    );
+  }
 
   const config = await getAgentStore()
     .getByRepo(repoSlug)
