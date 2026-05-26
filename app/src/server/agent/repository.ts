@@ -42,5 +42,5 @@ export async function isAgentEnabledForRepository(args: {
 
   const config = await getDefaultBranchDocsConfig(args);
 
-  return config.agent?.key === agent.id;
+  return config.agent.key === agent.id;
 }

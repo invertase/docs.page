@@ -40,7 +40,9 @@ export const V1ConfigSchema = z
     automaticallyDisplayName: z.boolean().catch(true),
     automaticallyInferNextPrevious: z.boolean().catch(true),
     plausibleAnalytics: z.boolean().catch(false),
-    plausibleAnalyticsScript: z.string().catch("https://plausible.io/js/script.js"),
+    plausibleAnalyticsScript: z
+      .string()
+      .catch("https://plausible.io/js/script.js"),
     anchors: z
       .array(
         z
@@ -62,7 +64,12 @@ export const V1ConfigSchema = z
       })
       .optional()
       .catch(undefined),
-    sidebar: z.union([z.record(z.string(), z.array(V1SidebarItem)), z.array(V1SidebarItem)]).catch([]),
+    sidebar: z
+      .union([
+        z.record(z.string(), z.array(V1SidebarItem)),
+        z.array(V1SidebarItem),
+      ])
+      .catch([]),
   })
   .transform((v1) => {
     const config: Config = {
@@ -74,6 +81,10 @@ export const V1ConfigSchema = z
       },
       agent: {
         key: undefined,
+        limits: {
+          ip: 200,
+          repo: 10_000,
+        },
       },
       mcp: {
         enabled: true,
@@ -137,7 +148,9 @@ export const V1ConfigSchema = z
       locales: [],
     };
 
-    function transformSidebarItem(item: z.infer<typeof V1SidebarItem>): Sidebar {
+    function transformSidebarItem(
+      item: z.infer<typeof V1SidebarItem>,
+    ): Sidebar {
       const [title, hrefOrChildren] = item;
 
       if (typeof hrefOrChildren === "string") {
@@ -172,7 +185,12 @@ export const V1ConfigSchema = z
 
     function isSingleTopLevelPage(group: Sidebar): boolean {
       const page = group.pages[0];
-      return !group.group && group.pages.length === 1 && page != null && "title" in page;
+      return (
+        !group.group &&
+        group.pages.length === 1 &&
+        page != null &&
+        "title" in page
+      );
     }
 
     function compactSidebarGroups(groups: Sidebar[]): Sidebar[] {
@@ -203,11 +221,15 @@ export const V1ConfigSchema = z
     }
 
     if (Array.isArray(v1.sidebar)) {
-      config.sidebar = compactSidebarGroups(v1.sidebar.map(transformSidebarItem));
+      config.sidebar = compactSidebarGroups(
+        v1.sidebar.map(transformSidebarItem),
+      );
     } else {
       const sidebar: Record<string, Sidebar[]> = {};
       Object.entries(v1.sidebar).map(([locale, sidebarItems]) => {
-        sidebar[locale] = compactSidebarGroups(sidebarItems.map(transformSidebarItem));
+        sidebar[locale] = compactSidebarGroups(
+          sidebarItems.map(transformSidebarItem),
+        );
       });
       config.sidebar = sidebar;
     }

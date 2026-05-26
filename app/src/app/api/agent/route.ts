@@ -2,7 +2,7 @@ import { getRequestClientIp } from "@/lib/request-client-ip";
 import { decryptAgentPayload } from "@/server/agent/encryption";
 import { checkAdminAccess, parseRepo } from "@/server/agent/github-admin";
 import { getProvider } from "@/server/agent/providers";
-import { isAgentEnabledForRepository } from "@/server/agent/repository";
+import { getDefaultBranchDocsConfig } from "@/server/agent/repository";
 import {
   AGENT_SESSION_COOKIE_NAME,
   AGENT_SESSION_HEADER_NAME,
@@ -37,6 +37,9 @@ const DeleteAgentSchema = z.object({
   repo: z.string().trim().min(1),
   githubToken: z.string().trim().min(1),
 });
+
+const AGENT_RATE_LIMIT_DURATION_SECONDS = 60 * 60;
+const REPO_RATE_LIMIT_KEY_PREFIX = "repo:";
 
 const SYSTEM_INSTRUCTIONS = (
   repo: string,
@@ -153,46 +156,45 @@ export async function POST(req: Request) {
     );
   }
 
-  const redisClient = await getRedisClient();
-  const rateLimiter = redisClient
-    ? new RateLimiterRedis({
-        storeClient: redisClient,
-        useRedisPackage: true,
-        points: 200,
-        duration: 3600,
-      })
-    : new RateLimiterMemory({
-        points: 200,
-        duration: 3600,
-      });
-
-  let limiter: RateLimiterRes | null = null;
-
-  try {
-    limiter = await rateLimiter.consume(ip, 1);
-  } catch (error) {
-    if (error instanceof RateLimiterRes) {
-      return Response.json({ error: "Rate limit exceeded." }, { status: 429 });
-    }
-
-    return Response.json(
-      { error: "Unable to rate limit request." },
-      { status: 500 },
-    );
-  }
-
   const { messages } = parsedBody.data;
   const repoSlug = `${session.owner}/${session.repo}`;
-  const enabled = await isAgentEnabledForRepository({
+  const defaultBranchConfig = await getDefaultBranchDocsConfig({
     owner: session.owner,
     repository: session.repo,
   });
+  const redisClient = await getRedisClient();
 
-  if (!enabled) {
-    return Response.json(
-      { error: "Agent is not enabled for this repository." },
-      { status: 403 },
-    );
+  const ipLimiter = createAgentRateLimiter({
+    redisClient,
+    points: defaultBranchConfig.agent.limits.ip,
+    duration: AGENT_RATE_LIMIT_DURATION_SECONDS,
+  });
+  const repoLimiter = createAgentRateLimiter({
+    redisClient,
+    points: defaultBranchConfig.agent.limits.repo,
+    duration: AGENT_RATE_LIMIT_DURATION_SECONDS,
+  });
+
+  const ipLimit = await consumeAgentRateLimit({
+    limiter: ipLimiter,
+    key: ip,
+    exceededMessage: "Rate limit exceeded.",
+    failureMessage: "Unable to rate limit request.",
+  });
+
+  if (ipLimit.response) {
+    return ipLimit.response;
+  }
+
+  const repoLimit = await consumeAgentRateLimit({
+    limiter: repoLimiter,
+    key: `${REPO_RATE_LIMIT_KEY_PREFIX}${repoSlug}:hourly`,
+    exceededMessage: "Repository agent hourly rate limit exceeded.",
+    failureMessage: "Unable to rate limit request.",
+  });
+
+  if (repoLimit.response) {
+    return repoLimit.response;
   }
 
   const config = await getAgentStore()
@@ -201,6 +203,13 @@ export async function POST(req: Request) {
 
   if (!config) {
     return Response.json({ error: "Agent not found." }, { status: 404 });
+  }
+
+  if (defaultBranchConfig.agent.key !== config.id) {
+    return Response.json(
+      { error: "Agent is not enabled for this repository." },
+      { status: 403 },
+    );
   }
 
   const { provider, modelName, apikey } = decryptAgentPayload(config.encrypted);
@@ -273,11 +282,81 @@ export async function POST(req: Request) {
     agent,
     uiMessages: messages,
     headers: {
-      "X-RateLimit-Limit": "200",
-      "X-RateLimit-Remaining": String(limiter?.remainingPoints ?? 0),
-      "X-RateLimit-Reset": String(
-        Math.round((Date.now() + (limiter?.msBeforeNext ?? 0)) / 1000),
+      "X-RateLimit-Limit": String(defaultBranchConfig.agent.limits.ip),
+      "X-RateLimit-Remaining": String(ipLimit.limiter.remainingPoints),
+      "X-RateLimit-Reset": String(getRateLimitReset(ipLimit.limiter)),
+      "X-Repo-RateLimit-Hourly-Limit": String(
+        defaultBranchConfig.agent.limits.repo,
+      ),
+      "X-Repo-RateLimit-Hourly-Remaining": String(
+        repoLimit.limiter.remainingPoints,
+      ),
+      "X-Repo-RateLimit-Hourly-Reset": String(
+        getRateLimitReset(repoLimit.limiter),
       ),
     },
   });
+}
+
+function createAgentRateLimiter({
+  redisClient,
+  points,
+  duration,
+}: {
+  redisClient: Awaited<ReturnType<typeof getRedisClient>>;
+  points: number;
+  duration: number;
+}) {
+  return redisClient
+    ? new RateLimiterRedis({
+        storeClient: redisClient,
+        useRedisPackage: true,
+        points,
+        duration,
+      })
+    : new RateLimiterMemory({
+        points,
+        duration,
+      });
+}
+
+async function consumeAgentRateLimit({
+  limiter,
+  key,
+  exceededMessage,
+  failureMessage,
+}: {
+  limiter: RateLimiterRedis | RateLimiterMemory;
+  key: string;
+  exceededMessage: string;
+  failureMessage: string;
+}): Promise<
+  | {
+      limiter: RateLimiterRes;
+      response?: undefined;
+    }
+  | {
+      limiter?: undefined;
+      response: Response;
+    }
+> {
+  try {
+    return {
+      limiter: await limiter.consume(key, 1),
+    };
+  } catch (error) {
+    if (error instanceof RateLimiterRes) {
+      return {
+        response: Response.json({ error: exceededMessage }, { status: 429 }),
+      };
+    }
+
+    return {
+      response: Response.json({ error: failureMessage }, { status: 500 }),
+    };
+  }
+}
+
+function getRateLimitReset(limiter: RateLimiterRes) {
+  return Math.round((Date.now() + limiter.msBeforeNext) / 1000);
 }
