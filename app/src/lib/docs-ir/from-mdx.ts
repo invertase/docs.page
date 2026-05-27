@@ -88,8 +88,74 @@ function parseToMdast(source: string): Root {
   }
 }
 
+const PHRASING_NODE_TYPES = new Set([
+  "text",
+  "emphasis",
+  "strong",
+  "delete",
+  "inlineCode",
+  "link",
+  "image",
+  "break",
+  "mdxJsxTextElement",
+]);
+
 function childrenToIr(children: MdastNode[], source: string): DocIrNode[] {
-  return children.flatMap((child) => safeNodeToIr(child, source));
+  const result: DocIrNode[] = [];
+  let phrasingBatch: MdastNode[] = [];
+
+  const flushPhrasingBatch = () => {
+    if (phrasingBatch.length === 0) {
+      return;
+    }
+
+    const markdown = markdownFromNodeRange(phrasingBatch, source);
+    if (markdown.trim().length > 0) {
+      result.push({
+        kind: "markdown",
+        source: normalizeMarkdownLeaf(markdown),
+      });
+    }
+
+    phrasingBatch = [];
+  };
+
+  for (const child of children) {
+    if (isPhrasingContent(child)) {
+      phrasingBatch.push(child);
+      continue;
+    }
+
+    flushPhrasingBatch();
+    result.push(...safeNodeToIr(child, source));
+  }
+
+  flushPhrasingBatch();
+  return result;
+}
+
+function isPhrasingContent(node: MdastNode): boolean {
+  return node.type !== undefined && PHRASING_NODE_TYPES.has(node.type);
+}
+
+function markdownFromNodeRange(nodes: MdastNode[], source: string): string {
+  if (nodes.length === 0) {
+    return "";
+  }
+
+  const start = nodes[0]?.position?.start?.offset;
+  const end = nodes[nodes.length - 1]?.position?.end?.offset;
+
+  if (
+    typeof start === "number" &&
+    typeof end === "number" &&
+    start >= 0 &&
+    end >= start
+  ) {
+    return source.slice(start, end);
+  }
+
+  return nodes.map((node) => sourceForNode(node, source)).join("");
 }
 
 function safeNodeToIr(node: MdastNode, source: string): DocIrNode[] {

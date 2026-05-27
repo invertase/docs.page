@@ -34,6 +34,24 @@ describe("mdxToDocIr", () => {
     }
   });
 
+  test("keeps inline links in a single markdown leaf inside components", async () => {
+    const ir = await mdxToDocIr(
+      "<Info>Supports all [Melos filtering](/filters) flags.</Info>",
+    );
+    const component = ir.children.find((child) => child.kind === "component");
+    expect(component?.kind).toBe("component");
+    if (component?.kind === "component") {
+      expect(component.children).toHaveLength(1);
+      const leaf = component.children[0];
+      expect(leaf?.kind).toBe("markdown");
+      if (leaf?.kind === "markdown") {
+        expect(leaf.source).toBe(
+          "Supports all [Melos filtering](/filters) flags.",
+        );
+      }
+    }
+  });
+
   test("renders lowercase HTML tags as html IR nodes", async () => {
     const ir = await mdxToDocIr('<p align="center">badges</p>');
     const html = ir.children.find((child) => child.kind === "html");
