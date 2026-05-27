@@ -32,7 +32,7 @@ export function Link({ className, variant, ...props }: LinkProps) {
       ? cn(
           buttonVariants({ variant: "ghost", size: "default" }),
           "font-mono",
-          "text-marketing-link hover:text-marketing-nav-link-hover",
+          "text-marketing-link hover:text-honey-600 dark:hover:text-honey-500",
           "hover:bg-transparent aria-expanded:bg-transparent dark:hover:bg-transparent dark:aria-expanded:bg-transparent",
           className,
         )

@@ -54,7 +54,7 @@ export function Tweet(props: TweetProps) {
   return (
     <div
       ref={ref}
-      className="[&>div]:mx-auto [&>div]:overflow-hidden [&>div]:rounded-[14px] [&>div]:border-[1px] [&>div]:border-solid [&>div]:border-gray-200 [&>div]:shadow [&>div]:hover:shadow-lg [&>div]:dark:border-gray-800 my-6 mx-auto"
+      className="[&>div]:mx-auto [&>div]:overflow-hidden [&>div]:rounded-[14px] [&>div]:border-[1px] [&>div]:border-solid [&>div]:border-neutral-200 [&>div]:shadow [&>div]:hover:shadow-lg [&>div]:dark:border-neutral-800 my-6 mx-auto"
       data-tweet={props.id}
     />
   );

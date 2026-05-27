@@ -22,12 +22,13 @@ export function HeroHeadingDots({
   className?: string;
 }) {
   const wrapRef = useRef<HTMLDivElement>(null);
+  const glowRef = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState({ x: 50, y: 50 });
 
   const updateFromEvent = useCallback((clientX: number, clientY: number) => {
-    const el = wrapRef.current;
-    if (!el) return;
-    const rect = el.getBoundingClientRect();
+    const glow = glowRef.current;
+    if (!glow) return;
+    const rect = glow.getBoundingClientRect();
     const w = rect.width || 1;
     const h = rect.height || 1;
     setPos({
@@ -58,6 +59,7 @@ export function HeroHeadingDots({
       )}
     >
       <div
+        ref={glowRef}
         aria-hidden
         className="hero-heading-dots-glow pointer-events-none absolute motion-reduce:hidden"
         style={

@@ -7,6 +7,10 @@ const config: Config = {
   darkMode: ["class", '[data-theme="dark"]'],
   theme: {
     extend: {
+      screens: {
+        /** Burger menu breakpoint — keep in sync with `MARKETING_NAV_MIN_WIDTH_PX`. */
+        marketingNav: "813px",
+      },
       maxWidth: {
         "8xl": "90rem",
       },
@@ -21,19 +25,19 @@ const config: Config = {
         sm: "calc(var(--radius) - 4px)",
       },
       colors: {
-        /* Neutrals: canonical Tailwind `gray` ramp from tokens; `white` / `black` match design (#E7E8E9 / #040406). */
-        gray: {
-          50: "hsl(var(--color-gray-50) / <alpha-value>)",
-          100: "hsl(var(--color-gray-100) / <alpha-value>)",
-          200: "hsl(var(--color-gray-200) / <alpha-value>)",
-          300: "hsl(var(--color-gray-300) / <alpha-value>)",
-          400: "hsl(var(--color-gray-400) / <alpha-value>)",
-          500: "hsl(var(--color-gray-500) / <alpha-value>)",
-          600: "hsl(var(--color-gray-600) / <alpha-value>)",
-          700: "hsl(var(--color-gray-700) / <alpha-value>)",
-          800: "hsl(var(--color-gray-800) / <alpha-value>)",
-          900: "hsl(var(--color-gray-900) / <alpha-value>)",
-          950: "hsl(var(--color-gray-950) / <alpha-value>)",
+        /* Neutrals: canonical Tailwind `neutral` ramp from tokens; `white` / `black` match design (#E7E8E9 / #040406). */
+        neutral: {
+          50: "hsl(var(--color-neutral-50) / <alpha-value>)",
+          100: "hsl(var(--color-neutral-100) / <alpha-value>)",
+          200: "hsl(var(--color-neutral-200) / <alpha-value>)",
+          300: "hsl(var(--color-neutral-300) / <alpha-value>)",
+          400: "hsl(var(--color-neutral-400) / <alpha-value>)",
+          500: "hsl(var(--color-neutral-500) / <alpha-value>)",
+          600: "hsl(var(--color-neutral-600) / <alpha-value>)",
+          700: "hsl(var(--color-neutral-700) / <alpha-value>)",
+          800: "hsl(var(--color-neutral-800) / <alpha-value>)",
+          900: "hsl(var(--color-neutral-900) / <alpha-value>)",
+          950: "hsl(var(--color-neutral-950) / <alpha-value>)",
         },
         white: "hsl(var(--color-invertase-white) / <alpha-value>)",
         black: "hsl(var(--color-design-black) / <alpha-value>)",
@@ -85,88 +89,60 @@ const config: Config = {
           900: "hsl(var(--color-soft-periwinkle-900) / <alpha-value>)",
           950: "hsl(var(--color-soft-periwinkle-950) / <alpha-value>)",
         },
-        marketing: {
-          accent: "hsl(var(--marketing-accent) / <alpha-value>)",
-          "accent-bright":
-            "hsl(var(--marketing-accent-bright) / <alpha-value>)",
-          "accent-emphasis":
-            "hsl(var(--marketing-accent-emphasis) / <alpha-value>)",
-          "hero-glow": "hsl(var(--marketing-hero-glow) / <alpha-value>)",
-          "hero-frame-border":
-            "hsl(var(--marketing-hero-frame-border) / <alpha-value>)",
-          "hero-video-tint":
-            "hsl(var(--marketing-hero-video-tint) / <alpha-value>)",
-          "hero-video-tint-dark":
-            "hsl(var(--marketing-hero-video-tint-dark) / <alpha-value>)",
-          "pill-foreground":
-            "hsl(var(--marketing-pill-foreground) / <alpha-value>)",
-          "pill-foreground-dark":
-            "hsl(var(--marketing-pill-foreground-dark) / <alpha-value>)",
-          "feature-divider":
-            "hsl(var(--marketing-feature-divider) / <alpha-value>)",
-          "feature-divider-dark":
-            "hsl(var(--marketing-feature-divider-dark) / <alpha-value>)",
-          "cell-hover": "hsl(var(--marketing-cell-hover) / <alpha-value>)",
-          "cell-ring-offset":
-            "hsl(var(--marketing-cell-ring-offset) / <alpha-value>)",
-          "feature-icon": "hsl(var(--marketing-feature-icon) / <alpha-value>)",
-          "feature-icon-bright":
-            "hsl(var(--marketing-feature-icon-bright) / <alpha-value>)",
-          "platform-border":
-            "hsl(var(--marketing-platform-border) / <alpha-value>)",
-          "platform-border-dark":
-            "hsl(var(--marketing-platform-border-dark) / <alpha-value>)",
-          "platform-title":
-            "hsl(var(--marketing-platform-title) / <alpha-value>)",
-          "platform-desc":
-            "hsl(var(--marketing-platform-desc) / <alpha-value>)",
-          "platform-gradient-from":
-            "hsl(var(--marketing-platform-gradient-from) / <alpha-value>)",
-          "platform-gradient-via":
-            "hsl(var(--marketing-platform-gradient-via) / <alpha-value>)",
-          "platform-inner-dark":
-            "hsl(var(--marketing-platform-inner-dark) / <alpha-value>)",
-          "testimonial-avatar-bg":
-            "hsl(var(--marketing-testimonial-avatar-bg) / <alpha-value>)",
-          "testimonial-avatar-text":
-            "hsl(var(--marketing-testimonial-avatar-text) / <alpha-value>)",
-          "step-rail": "hsl(var(--marketing-step-rail) / <alpha-value>)",
-          "step-badge-border":
-            "hsl(var(--marketing-step-badge-border) / <alpha-value>)",
-          "step-badge-fill-dark":
-            "hsl(var(--marketing-step-badge-fill-dark) / <alpha-value>)",
-          success: "hsl(var(--marketing-success) / <alpha-value>)",
-          "success-bright":
-            "hsl(var(--marketing-success-bright) / <alpha-value>)",
-          "button-cta": "hsl(var(--marketing-button-cta) / <alpha-value>)",
-          "button-cta-hover":
-            "hsl(var(--marketing-button-cta-hover) / <alpha-value>)",
-          "ghost-hover-foreground":
-            "hsl(var(--marketing-ghost-hover-foreground) / <alpha-value>)",
-          "nav-link-hover":
-            "hsl(var(--marketing-nav-link-hover) / <alpha-value>)",
-          "surface-muted":
-            "hsl(var(--marketing-surface-muted) / <alpha-value>)",
-          "surface-muted-hover":
-            "hsl(var(--marketing-surface-muted-hover) / <alpha-value>)",
+        honey: {
+          50: "hsl(var(--color-honey-50) / <alpha-value>)",
+          100: "hsl(var(--color-honey-100) / <alpha-value>)",
+          200: "hsl(var(--color-honey-200) / <alpha-value>)",
+          300: "hsl(var(--color-honey-300) / <alpha-value>)",
+          400: "hsl(var(--color-honey-400) / <alpha-value>)",
+          500: "hsl(var(--color-honey-500) / <alpha-value>)",
+          600: "hsl(var(--color-honey-600) / <alpha-value>)",
+          700: "hsl(var(--color-honey-700) / <alpha-value>)",
+          800: "hsl(var(--color-honey-800) / <alpha-value>)",
+          900: "hsl(var(--color-honey-900) / <alpha-value>)",
+          950: "hsl(var(--color-honey-950) / <alpha-value>)",
         },
-        brand: {
-          0: "#FFFFFF",
-          50: "#FDFAE8",
-          100: "#FBF4D1",
-          150: "#F9EFBA",
-          200: "#F7E9A3",
-          300: "#F4DF74",
-          400: "#F0D446",
-          500: "#ECC918",
-          600: "#BFA213",
-          700: "#917C0F",
-          800: "#64550A",
-          850: "#4D4208",
-          900: "#362F06",
-          950: "#201B03",
-          1000: "#090801",
+        lavender: {
+          50: "hsl(var(--color-lavender-50) / <alpha-value>)",
+          100: "hsl(var(--color-lavender-100) / <alpha-value>)",
+          200: "hsl(var(--color-lavender-200) / <alpha-value>)",
+          300: "hsl(var(--color-lavender-300) / <alpha-value>)",
+          400: "hsl(var(--color-lavender-400) / <alpha-value>)",
+          500: "hsl(var(--color-lavender-500) / <alpha-value>)",
+          600: "hsl(var(--color-lavender-600) / <alpha-value>)",
+          700: "hsl(var(--color-lavender-700) / <alpha-value>)",
+          800: "hsl(var(--color-lavender-800) / <alpha-value>)",
+          900: "hsl(var(--color-lavender-900) / <alpha-value>)",
+          950: "hsl(var(--color-lavender-950) / <alpha-value>)",
         },
+        teal: {
+          50: "hsl(var(--color-emerald-50) / <alpha-value>)",
+          100: "hsl(var(--color-emerald-100) / <alpha-value>)",
+          200: "hsl(var(--color-emerald-200) / <alpha-value>)",
+          300: "hsl(var(--color-emerald-300) / <alpha-value>)",
+          400: "hsl(var(--color-emerald-400) / <alpha-value>)",
+          500: "hsl(var(--color-emerald-500) / <alpha-value>)",
+          600: "hsl(var(--color-emerald-600) / <alpha-value>)",
+          700: "hsl(var(--color-emerald-700) / <alpha-value>)",
+          800: "hsl(var(--color-emerald-800) / <alpha-value>)",
+          900: "hsl(var(--color-emerald-900) / <alpha-value>)",
+          950: "hsl(var(--color-emerald-950) / <alpha-value>)",
+        },
+        red: {
+          50: "hsl(var(--color-red-50) / <alpha-value>)",
+          100: "hsl(var(--color-red-100) / <alpha-value>)",
+          200: "hsl(var(--color-red-200) / <alpha-value>)",
+          300: "hsl(var(--color-red-300) / <alpha-value>)",
+          400: "hsl(var(--color-red-400) / <alpha-value>)",
+          500: "hsl(var(--color-red-500) / <alpha-value>)",
+          600: "hsl(var(--color-red-600) / <alpha-value>)",
+          700: "hsl(var(--color-red-700) / <alpha-value>)",
+          800: "hsl(var(--color-red-800) / <alpha-value>)",
+          900: "hsl(var(--color-red-900) / <alpha-value>)",
+          950: "hsl(var(--color-red-950) / <alpha-value>)",
+        },
+        coral: "hsl(var(--color-brand-coral-red) / <alpha-value>)",
+        "warm-orange": "hsl(var(--color-brand-warm-orange) / <alpha-value>)",
       },
     },
   },

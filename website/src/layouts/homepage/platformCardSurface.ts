@@ -4,8 +4,8 @@ import { cva } from "class-variance-authority";
 export const platformCardVariants = cva(
   [
     "group gap-0 rounded-none py-0 !ring-0",
-    "bg-card shadow-[inset_0_0_0_9999px_hsl(var(--foreground)/0.04)]",
-    "dark:bg-marketing-platform-inner-dark dark:shadow-none",
+    "bg-transparent shadow-none",
+    "dark:bg-transparent dark:shadow-none",
   ].join(" "),
   {
     variants: {

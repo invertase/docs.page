@@ -1,38 +1,23 @@
 "use client";
 
-import {
-  type CSSProperties,
-  type ReactNode,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { type CSSProperties, type ReactNode, useEffect, useState } from "react";
+
+import { cn } from "~/lib/utils";
 
 /**
  * Dot-only glow: sets `--homepage-glow-x/y` for `.homepage-spot-glow`, which is
  * masked to the same dot grid as `::before` (see global.css).
  */
 export function HomepageSpotGridShell({ children }: { children: ReactNode }) {
-  const gridRef = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState({ x: 50, y: 35 });
+  /** Viewport px — matches `background-attachment: fixed` on `.homepage-spot-grid::before`. */
+  const [pos, setPos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
-    const grid = gridRef.current;
-    if (!grid) return;
-
     let raf = 0;
     const onMove = (e: MouseEvent) => {
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => {
-        const rect = grid.getBoundingClientRect();
-        const w = rect.width || 1;
-        const h = rect.height || 1;
-        const x = ((e.clientX - rect.left) / w) * 100;
-        const y = ((e.clientY - rect.top) / h) * 100;
-        setPos({
-          x: Math.min(100, Math.max(0, x)),
-          y: Math.min(100, Math.max(0, y)),
-        });
+        setPos({ x: e.clientX, y: e.clientY });
       });
     };
 
@@ -44,13 +29,13 @@ export function HomepageSpotGridShell({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <div ref={gridRef} className="homepage-spot-grid min-h-screen">
+    <div className="homepage-spot-grid min-h-screen">
       <div
-        className="homepage-spot-glow pointer-events-none absolute inset-0 motion-reduce:hidden"
+        className={cn("homepage-spot-glow pointer-events-none motion-reduce:hidden")}
         style={
           {
-            "--homepage-glow-x": `${pos.x}%`,
-            "--homepage-glow-y": `${pos.y}%`,
+            "--homepage-glow-x": `${pos.x}px`,
+            "--homepage-glow-y": `${pos.y}px`,
           } as CSSProperties
         }
         aria-hidden

@@ -1,88 +1,71 @@
-import Image from "next/image";
+import Link from "next/link";
 
+import { ButtonChevron, buttonVariants } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
+import { LINKS } from "~/constants/links";
 import { cn } from "~/lib/utils";
 
-import heroBgGlow from "../../../public/_docs.page/assets/v4/hero-bg-glow.svg";
-import hexagonBg from "../../../public/_docs.page/assets/v4/hexagon-bg.svg";
+import { FeatureCardPaperCorner } from "./FeatureCardPaperCorner";
 import { HeroHeadingDots } from "./HeroHeadingDots";
 import { HeroInitCommand } from "./HeroInitCommand";
-import { HeroPreview } from "./HeroPreview";
-import { platformCardVariants } from "./platformCardSurface";
 
 export function Hero() {
   return (
-    <section className="mx-auto min-w-0 w-full max-w-8xl overflow-visible px-4">
-      <Card
-        className={cn(
-          platformCardVariants({ clip: "visible" }),
-          "relative",
-          "border-b-0 border-t-0",
-          "py-0 px-6 sm:px-8 md:px-10",
-          "text-foreground",
-          "!overflow-visible",
-        )}
-      >
-        <div
-          className="pointer-events-none absolute inset-0 z-0 overflow-hidden"
-          aria-hidden
-        >
-          <Image
-            src={hexagonBg}
-            alt=""
-            width={1373}
-            height={1514}
-            className="absolute right-0 top-[26%] h-[min(32.2rem,69vw)] w-auto max-w-none translate-x-[24%] opacity-[0.78] sm:top-[24%] sm:h-[min(34.5rem,74.75vw)] sm:translate-x-[26%] md:top-[21%] lg:top-[19%] lg:h-[36.8rem] lg:translate-x-[28%]"
-          />
-        </div>
-        <div
-          className="hero-bg-glow pointer-events-none absolute inset-x-0 z-[1]"
-          aria-hidden
-        >
-          <Image
-            src={heroBgGlow}
-            alt=""
-            width={5033}
-            height={1896}
-            className="hero-bg-glow__image"
-            sizes="(min-width: 1280px) 1152px, 100vw"
-          />
-        </div>
-        <div className="relative z-[2] w-full min-w-0 text-center pt-14 pb-5 sm:pt-16 sm:pb-6 md:pt-18 md:pb-8">
-          <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 overflow-visible sm:gap-6 md:gap-7">
-            <p className="hero-tagline-gray-fade mx-auto max-w-[38rem] text-base font-light leading-relaxed">
-              The easiest way to ship agent-ready docs for free
-            </p>
-            <HeroHeadingDots className="w-full">
-            <div className="relative z-[2] mx-auto max-w-3xl overflow-visible">
-              <h1 className="heading-h1 mx-auto flex w-max max-w-full flex-col items-center gap-0 overflow-visible text-center text-4xl font-light leading-none md:text-5xl lg:text-6xl">
-                <span className="inline-block max-w-full leading-none text-gray-950 dark:text-white lg:whitespace-nowrap">
-                  Docs for
-                </span>
-                <span className="block max-w-full overflow-visible font-normal leading-none text-gray-950 dark:text-white [line-height:1.22] -mt-[0.08em] md:[line-height:1.23] lg:whitespace-nowrap lg:[line-height:1.26]">
-                  humans<span className="px-[0.2em]">+</span>agents
-                </span>
-              </h1>
+    <div className="relative w-full overflow-visible">
+      <section className="relative z-[2] mx-auto min-w-0 w-full max-w-8xl overflow-visible px-4">
+        <div className="relative">
+          <Card
+            className={cn(
+              "group gap-0 rounded-none py-0 !ring-0",
+              "relative !overflow-visible !bg-transparent !shadow-none",
+              "border-0 !ring-0",
+              "py-0 px-6 sm:px-8 md:px-10",
+              "text-foreground",
+            )}
+          >
+            <FeatureCardPaperCorner corner="bottom-left" />
+            <div className="relative z-[2] w-full min-w-0 text-center px-0 py-14 sm:py-16 md:py-18">
+              <div className="mx-auto flex max-w-3xl flex-col items-center gap-5 overflow-visible sm:gap-6 md:gap-7">
+                <div className="hero-tagline-pill mx-auto w-max max-w-[38rem]">
+                  <p className="hero-tagline-neutral-fade px-2.5 py-0.5 text-base font-light leading-relaxed sm:px-3.5 sm:py-1">
+                    Free and open-source
+                  </p>
+                </div>
+                <HeroHeadingDots className="w-full">
+                  <div className="relative z-[2] mx-auto max-w-3xl overflow-visible">
+                    <h1 className="heading-h1-hero mx-auto flex w-max max-w-full flex-col items-center gap-0 overflow-visible text-center max-marketingNav:text-5xl sm:max-marketingNav:text-6xl">
+                      <span className="inline-block max-w-full font-light leading-none text-neutral-950 dark:text-white lg:whitespace-nowrap">
+                        Docs for
+                      </span>
+                      <span className="block max-w-full overflow-visible font-normal leading-none text-neutral-950 dark:text-white [line-height:1.22] -mt-[0.08em] md:[line-height:1.23] lg:whitespace-nowrap lg:[line-height:1.26]">
+                        humans<span className="px-[0.2em]">+</span>agents
+                      </span>
+                    </h1>
+                  </div>
+                </HeroHeadingDots>
+                <p className="mx-auto max-w-[38rem] text-base font-light leading-relaxed text-neutral-500 dark:text-neutral-400">
+                  Instantly{" "}
+                  <span className="text-honey-500">serve markdown</span>{" "}
+                  from any GitHub branch as modern, agent-ready docs, with AI chat,
+                  MCP, and llms.txt.
+                </p>
+                <div className="mx-auto mt-4 flex w-max max-w-full flex-row flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:mt-5 md:mt-6">
+                  <Link
+                    href={LINKS.getStarted}
+                    className={buttonVariants({ variant: "primary", size: "lg" })}
+                  >
+                    Get started
+                    <ButtonChevron size="lg" />
+                  </Link>
+                  <div className="flex h-12 min-h-12 items-center rounded-xl border border-honey-500 bg-black/70 px-3 pr-2.5">
+                    <HeroInitCommand />
+                  </div>
+                </div>
+              </div>
             </div>
-            </HeroHeadingDots>
-            <p className="mx-auto max-w-[38rem] text-base font-light leading-relaxed text-gray-500 dark:text-gray-400">
-              A <span className="text-marketing-accent">free</span> and{" "}
-              <span className="text-marketing-accent">open-source</span> service
-              for publishing public GitHub repository markdown documentation as
-              a modern themed docs site.
-            </p>
-            <div className="mx-auto flex w-max max-w-full flex-row flex-wrap items-center justify-center gap-x-4 gap-y-2 rounded-2xl border border-marketing-accent p-2">
-            <p className="shrink-0 text-left font-mono text-base font-light leading-relaxed text-gray-500 dark:text-gray-400">
-              Get started now:
-            </p>
-            <HeroInitCommand />
-            </div>
-          </div>
+          </Card>
         </div>
-        <div className="relative z-[2] mt-8 md:mt-12">
-          <HeroPreview />
-        </div>
-      </Card>
-    </section>
+      </section>
+    </div>
   );
 }

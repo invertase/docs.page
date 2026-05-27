@@ -11,7 +11,7 @@ export function EcosystemStatement() {
         >
           <span className="font-marketing-heading text-xl sm:text-2xl">
             Trusted by more than 75,000{" "}
-            <span className="text-marketing-accent">open-source</span>{" "}
+            <span className="text-honey-500">open-source</span>{" "}
             developers
           </span>
         </h2>

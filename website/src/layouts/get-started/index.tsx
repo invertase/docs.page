@@ -27,7 +27,7 @@ export default function GetStartedRoute() {
           <div>
             <h1 className="heading-h1 text-center">
               Publish docs in{" "}
-              <span className="font-mono text-marketing-accent-bright dark:text-marketing-accent-emphasis">
+              <span className="font-mono text-honey-400 dark:text-honey-600">
                 four
               </span>{" "}
               steps
@@ -96,7 +96,7 @@ function Install() {
           <>
             <CheckIcon
               size={16}
-              className="text-marketing-success dark:text-marketing-success-bright"
+              className="text-teal-500 dark:text-teal-400"
             />
             <span>Copied!</span>
           </>

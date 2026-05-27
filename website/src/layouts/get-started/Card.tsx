@@ -5,15 +5,15 @@ import { Card as UICard } from "~/components/ui/card";
 import { cn } from "~/lib/utils";
 
 const getStartedCardSurface = cva(
-  "ring-0 !ring-0 border bg-transparent shadow-none border-marketing-step-badge-border/45 dark:border-marketing-step-badge-border-dark dark:!bg-marketing-step-badge-fill-dark",
+  "ring-0 !ring-0 border bg-transparent shadow-none border-honey-600/45 dark:border-neutral-800 dark:!bg-neutral-950",
 );
 
 const stepBadgeVariants = cva(
-  "absolute -left-10 top-5 z-10 hidden size-9 items-center justify-center rounded-full border bg-background font-mono text-sm font-semibold text-foreground shadow-sm border-marketing-step-badge-border/45 dark:border-marketing-step-badge-border-dark dark:bg-marketing-step-badge-fill-dark lg:flex",
+  "absolute -left-10 top-5 z-10 hidden size-9 items-center justify-center rounded-full border bg-background font-mono text-sm font-semibold text-foreground shadow-sm border-honey-600/45 dark:border-neutral-800 dark:bg-neutral-950 lg:flex",
 );
 
 const stepConnectorVariants = cva(
-  "pointer-events-none absolute -left-[1.375rem] top-[2.375rem] z-0 hidden h-[calc(100%+1.5rem)] w-px bg-marketing-step-rail/35 dark:bg-marketing-step-rail-dark lg:block",
+  "pointer-events-none absolute -left-[1.375rem] top-[2.375rem] z-0 hidden h-[calc(100%+1.5rem)] w-px bg-honey-600/35 dark:bg-neutral-600 lg:block",
 );
 
 type Props = {

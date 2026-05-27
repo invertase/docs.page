@@ -2,10 +2,12 @@ import { Footer } from "~/layouts/Footer";
 import { Header } from "~/layouts/Header";
 import { Site } from "~/layouts/Site";
 
+import { AgentChatWidget } from "./AgentChatWidget";
 import { EcosystemStatement } from "./EcosystemStatement";
 import { FeaturesSection } from "./FeaturesSection";
 import { HomepageSpotGridShell } from "./HomepageSpotGridShell";
 import { Hero } from "./Hero";
+import { HeroPreview } from "./HeroPreview";
 import { PricingCta } from "./PricingCta";
 import { TrustedBy } from "./TrustedBy";
 
@@ -13,32 +15,26 @@ export function Homepage() {
   return (
     <Site>
       <HomepageSpotGridShell>
-        <div className="relative">
-          {/*
-            Solid centre column (above the dot grid, below page content + rails).
-            Inset matches the scaffold: rails sit at `left-4` / `right-4` inside `max-w-8xl`,
-            while content sections use `px-4` — the fill must use the same inset or the dark
-            surface reads as a “black edge” past the vertical lines.
-          */}
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 z-[1] flex justify-center"
-          >
-            <div className="relative h-full w-full max-w-8xl">
-              <div className="absolute inset-x-4 top-0 bottom-0 bg-background" />
-            </div>
-          </div>
+        <div className="relative overflow-visible">
           {/* Header above the gutter rails so nav/chrome stays unobstructed. */}
           <div className="relative z-30">
             <Header />
           </div>
-          <div className="relative z-10">
-            <Hero />
-            <EcosystemStatement />
-            <FeaturesSection />
-            <TrustedBy />
-            <PricingCta />
-            <Footer />
+          <div className="relative z-10 overflow-visible">
+            <div className="relative z-[1]">
+              <Hero />
+              <div className="relative z-[2] mx-auto mt-8 min-w-0 w-full max-w-8xl overflow-visible px-4 sm:mt-12 sm:px-8 md:px-10">
+                <HeroPreview />
+              </div>
+              <EcosystemStatement />
+              <FeaturesSection />
+              <div className="homepage-hexagon-lower">
+                <div className="homepage-hexagon-lower__graphic" aria-hidden />
+                <TrustedBy />
+                <PricingCta />
+              </div>
+              <Footer />
+            </div>
           </div>
           {/* Rails paint above main content (cards/sections) but below the header shell. */}
           <div
@@ -52,6 +48,7 @@ export function Homepage() {
           </div>
         </div>
       </HomepageSpotGridShell>
+      <AgentChatWidget />
     </Site>
   );
 }

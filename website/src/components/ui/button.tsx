@@ -1,5 +1,7 @@
 import { Button as ButtonPrimitive } from "@base-ui/react/button";
 import { cva, type VariantProps } from "class-variance-authority";
+import { ChevronRightIcon } from "lucide-react";
+import type { ComponentProps } from "react";
 
 import { cn } from "~/lib/utils";
 
@@ -62,4 +64,31 @@ function Button({
   );
 }
 
-export { Button, buttonVariants };
+const buttonChevronVariants = cva("shrink-0", {
+  variants: {
+    size: {
+      default: "size-4",
+      lg: "size-5",
+    },
+  },
+  defaultVariants: {
+    size: "default",
+  },
+});
+
+function ButtonChevron({
+  className,
+  size,
+  ...props
+}: ComponentProps<typeof ChevronRightIcon> &
+  VariantProps<typeof buttonChevronVariants>) {
+  return (
+    <ChevronRightIcon
+      aria-hidden
+      className={cn(buttonChevronVariants({ size }), className)}
+      {...props}
+    />
+  );
+}
+
+export { Button, ButtonChevron, buttonVariants };

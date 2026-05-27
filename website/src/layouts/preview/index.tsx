@@ -54,7 +54,7 @@ function Preview() {
         <Header />
         <div className="p-6 text-center max-w-2xl w-full mx-auto my-24">
           <h1 className="heading-h1 mb-3">No Configuration File Found</h1>
-          <div className="text-brand-100 space-y-3">
+          <div className="text-honey-100 space-y-3">
             <p>
               The selected directory does not contain a docs.json configuration
               file.
@@ -90,7 +90,7 @@ function Preview() {
         <Header />
         <div className="p-6 text-center max-w-5xl w-full mx-auto my-24">
           <h1 className="heading-h1 mb-3">File Not Found</h1>
-          <div className="text-brand-100 space-y-3">
+          <div className="text-honey-100 space-y-3">
             <p>The file you are trying to preview could not be found.</p>
             <p>
               To get started, please add a new MDX file to one of the following
