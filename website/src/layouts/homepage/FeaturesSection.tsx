@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, type ReactNode } from "react";
+import { type ReactNode, useEffect, useRef } from "react";
 
 import { ButtonChevron, buttonVariants } from "~/components/ui/button";
 import { landingAssetPath } from "~/constants/assets";
@@ -165,8 +165,7 @@ const FEATURES: Feature[] = [
 const FEATURE_ROW_CLASS =
   "grid w-full min-w-0 grid-cols-1 overflow-visible py-8 marketingNav:grid-cols-2 marketingNav:items-stretch marketingNav:gap-0 marketingNav:py-0";
 
-const FEATURE_COL_BASE =
-  "min-h-full min-w-0 self-stretch overflow-visible";
+const FEATURE_COL_BASE = "min-h-full min-w-0 self-stretch overflow-visible";
 
 const FEATURE_IMAGE_COL = cn(
   FEATURE_COL_BASE,
@@ -200,8 +199,7 @@ const FEATURE_BODY_MONO_CLASS =
 
 const FEATURE_BODY_MUTED_CLASS = "text-neutral-400 dark:text-neutral-400";
 
-const FEATURE_BODY_LIST_CLASS =
-  "marketing-feature-copy-list space-y-1.5";
+const FEATURE_BODY_LIST_CLASS = "marketing-feature-copy-list space-y-1.5";
 
 const FEATURE_MEDIA_FRAME_CLASS = "relative w-[90%] max-w-full";
 
@@ -291,7 +289,8 @@ function FeatureMediaGlow({
 const FEATURE_STACK_TOP_BASE_REM = 1.5;
 /** Peek overlap between stack tabs — keep below fold height so corners stay readable. */
 const FEATURE_STACK_OVERLAP_REM = 1;
-const FEATURE_STACK_STEP_REM = FEATURE_PAPER_FOLD_REM - FEATURE_STACK_OVERLAP_REM;
+const FEATURE_STACK_STEP_REM =
+  FEATURE_PAPER_FOLD_REM - FEATURE_STACK_OVERLAP_REM;
 
 function featureStackTop(index: number) {
   return `calc(${FEATURE_STACK_TOP_BASE_REM}rem + ${index * FEATURE_STACK_STEP_REM}rem)`;
@@ -477,9 +476,9 @@ export function FeaturesSection() {
       >
         {FEATURES.map((feature, index) => {
           const honeyStart =
-            feature.honeySubstring && feature.honeySubstring.length > 0 ?
-              feature.title.indexOf(feature.honeySubstring)
-            : -1;
+            feature.honeySubstring && feature.honeySubstring.length > 0
+              ? feature.title.indexOf(feature.honeySubstring)
+              : -1;
 
           const hasHoneyHighlight =
             Boolean(feature.ecosystemTitle) &&
@@ -691,7 +690,9 @@ export function FeaturesSection() {
                   ) : (
                     <>
                       <div className={FEATURE_COL_BASE}>{copyColumn}</div>
-                      <div className="mt-8 marketingNav:mt-0">{imageColumn}</div>
+                      <div className="mt-8 marketingNav:mt-0">
+                        {imageColumn}
+                      </div>
                     </>
                   )}
                 </div>

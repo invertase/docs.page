@@ -2,10 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { ButtonChevron, buttonVariants } from "~/components/ui/button";
-import logoIcon from "../../../public/_docs.page/assets/docs.page-update-2026/logo-icon.svg";
 import { LINKS } from "~/constants/links";
 import { platformCardVariants } from "~/layouts/homepage/platformCardSurface";
 import { cn } from "~/lib/utils";
+import logoIcon from "../../../public/_docs.page/assets/docs.page-update-2026/logo-icon.svg";
 
 export function PricingCta({ embedded = false }: { embedded?: boolean }) {
   return (

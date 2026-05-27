@@ -11,7 +11,8 @@ const buttonVariants = cva(
     variants: {
       variant: {
         /* Semibold is visually heavier; other variants keep default `font-medium` from the base. */
-        primary: "font-semibold bg-primary text-primary-foreground hover:bg-primary/90",
+        primary:
+          "font-semibold bg-primary text-primary-foreground hover:bg-primary/90",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80 aria-expanded:bg-secondary aria-expanded:text-secondary-foreground dark:hover:bg-secondary/90",
         outline:

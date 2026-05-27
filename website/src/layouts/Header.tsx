@@ -1,20 +1,11 @@
-import {
-  ChevronRightIcon,
-  Github,
-  MenuIcon,
-  XIcon,
-} from "lucide-react";
+import { ChevronRightIcon, Github, MenuIcon, XIcon } from "lucide-react";
 import { useState } from "react";
 
 import { DocsPageLogo } from "~/components/DocsPageLogo";
 import { Link } from "~/components/Link";
 import { Button } from "~/components/ui/button";
 import { Card } from "~/components/ui/card";
-import {
-  Sheet,
-  SheetContent,
-  SheetTitle,
-} from "~/components/ui/sheet";
+import { Sheet, SheetContent, SheetTitle } from "~/components/ui/sheet";
 import { LINKS } from "~/constants/links";
 import { platformCardVariants } from "~/layouts/homepage/platformCardSurface";
 import { cn } from "~/lib/utils";
@@ -94,7 +85,10 @@ export function Header() {
                       onClick={() => setMenuOpen(false)}
                     >
                       GitHub
-                      <ChevronRightIcon className="size-4 shrink-0" aria-hidden />
+                      <ChevronRightIcon
+                        className="size-4 shrink-0"
+                        aria-hidden
+                      />
                     </Link>
                     <Link
                       variant="marketingNav"
@@ -103,7 +97,10 @@ export function Header() {
                       onClick={() => setMenuOpen(false)}
                     >
                       Docs
-                      <ChevronRightIcon className="size-4 shrink-0" aria-hidden />
+                      <ChevronRightIcon
+                        className="size-4 shrink-0"
+                        aria-hidden
+                      />
                     </Link>
                   </nav>
                 </SheetContent>

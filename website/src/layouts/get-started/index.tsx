@@ -94,10 +94,7 @@ function Install() {
       >
         {copied ? (
           <>
-            <CheckIcon
-              size={16}
-              className="text-teal-500 dark:text-teal-400"
-            />
+            <CheckIcon size={16} className="text-teal-500 dark:text-teal-400" />
             <span>Copied!</span>
           </>
         ) : (

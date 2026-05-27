@@ -67,7 +67,9 @@ export function Footer() {
                 >
                   Privacy Policy
                 </a>
-                <span className="font-sans">© {year} docs.page. All rights reserved.</span>
+                <span className="font-sans">
+                  © {year} docs.page. All rights reserved.
+                </span>
                 <span className="inline-flex flex-wrap items-center justify-center gap-2 marketingNav:justify-end">
                   <a
                     href={LINKS.twitter}

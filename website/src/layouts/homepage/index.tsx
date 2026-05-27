@@ -5,9 +5,9 @@ import { Site } from "~/layouts/Site";
 import { AgentChatWidget } from "./AgentChatWidget";
 import { EcosystemStatement } from "./EcosystemStatement";
 import { FeaturesSection } from "./FeaturesSection";
-import { HomepageSpotGridShell } from "./HomepageSpotGridShell";
 import { Hero } from "./Hero";
 import { HeroPreview } from "./HeroPreview";
+import { HomepageSpotGridShell } from "./HomepageSpotGridShell";
 import { PricingCta } from "./PricingCta";
 import { TrustedBy } from "./TrustedBy";
 

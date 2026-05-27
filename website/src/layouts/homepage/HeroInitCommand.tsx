@@ -55,12 +55,12 @@ export function HeroInitCommand({ className }: HeroInitCommandProps) {
         aria-label={copied ? "Copied" : "Copy command"}
       >
         {copied ? (
-            <RiCheckLine
-              className="size-5 text-teal-600 dark:text-teal-400/90"
-              aria-hidden
-            />
-          ) : (
-            <RiFileCopyLine className="size-5" aria-hidden />
+          <RiCheckLine
+            className="size-5 text-teal-600 dark:text-teal-400/90"
+            aria-hidden
+          />
+        ) : (
+          <RiFileCopyLine className="size-5" aria-hidden />
         )}
       </button>
     </div>

@@ -5,8 +5,7 @@ const nextConfig = {
   reactStrictMode: true,
   images: {
     // In dev, avoid serving stale optimized PNGs after replacing files in `public/`.
-    minimumCacheTTL:
-      process.env.NODE_ENV === "development" ? 0 : undefined,
+    minimumCacheTTL: process.env.NODE_ENV === "development" ? 0 : undefined,
     dangerouslyAllowSVG: true,
     remotePatterns: [
       {

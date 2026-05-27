@@ -110,10 +110,7 @@ function SheetTitle({ className, ...props }: Dialog.Title.Props) {
   );
 }
 
-function SheetDescription({
-  className,
-  ...props
-}: Dialog.Description.Props) {
+function SheetDescription({ className, ...props }: Dialog.Description.Props) {
   return (
     <Dialog.Description
       data-slot="sheet-description"

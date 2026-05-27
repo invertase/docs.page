@@ -311,7 +311,6 @@ html[data-theme="dark"] {
   --sidebar-accent-foreground: 210 12% 96%;
   --sidebar-border: 240 10% 18%;
   --sidebar-ring: var(--color-soft-periwinkle-400);
-
 }
 
 /* Marketing-only primary remap (keeps docs app semantic primary intact). */
@@ -678,6 +677,9 @@ pre.shiki.has-focused:hover .line {
   .text-marketing-link {
     color: hsl(var(--color-neutral-950));
   }
+  .text-marketing-link:hover {
+    color: hsl(var(--color-honey-600));
+  }
   .dark .text-marketing-link,
   html[data-theme="dark"] .text-marketing-link {
     color: hsl(var(--color-neutral-100));
@@ -685,10 +687,6 @@ pre.shiki.has-focused:hover .line {
   .dark .text-marketing-link:hover,
   html[data-theme="dark"] .text-marketing-link:hover {
     color: hsl(var(--color-honey-500));
-  }
-
-  .text-marketing-link:hover {
-    color: hsl(var(--color-honey-600));
   }
 }
 
@@ -746,7 +744,8 @@ pre.shiki.has-focused:hover .line {
     isolation: isolate;
     overflow-x: visible;
     background-color: var(--homepage-bg-base);
-    background-image: radial-gradient(
+    background-image:
+      radial-gradient(
         ellipse 100% 48% at 0% 0%,
         hsl(var(--color-soft-periwinkle-500) / 0.08),
         transparent 58%
@@ -1125,8 +1124,12 @@ pre.shiki.has-focused:hover .line {
       rgb(255 255 255 / 0.04) 92%,
       transparent 100%
     );
-    --hero-heading-dot-glow-edge-fade-left: var(--hero-heading-dot-edge-fade-left);
-    --hero-heading-dot-glow-edge-fade-right: var(--hero-heading-dot-edge-fade-right);
+    --hero-heading-dot-glow-edge-fade-left: var(
+      --hero-heading-dot-edge-fade-left
+    );
+    --hero-heading-dot-glow-edge-fade-right: var(
+      --hero-heading-dot-edge-fade-right
+    );
     --hero-heading-dot-glow-edge-fade: radial-gradient(
       ellipse 440% 76% at 50% 46%,
       #fff 0%,
@@ -1147,10 +1150,14 @@ pre.shiki.has-focused:hover .line {
     left: 0;
     right: 0;
     top: calc(
-      -1 * var(--hero-heading-dot-field-extend-top) + var(--hero-heading-dot-field-offset-y)
+      -1 *
+      var(--hero-heading-dot-field-extend-top) +
+      var(--hero-heading-dot-field-offset-y)
     );
     bottom: calc(
-      -1 * var(--hero-heading-dot-field-extend-bottom) - var(--hero-heading-dot-field-offset-y)
+      -1 *
+      var(--hero-heading-dot-field-extend-bottom) -
+      var(--hero-heading-dot-field-offset-y)
     );
     z-index: 0;
     pointer-events: none;
@@ -1164,14 +1171,24 @@ pre.shiki.has-focused:hover .line {
     background-size: var(--hero-heading-dot-cell) var(--hero-heading-dot-cell);
     background-position: 0 var(--hero-heading-dot-field-shift-y);
     background-repeat: repeat;
-    -webkit-mask-image: var(--hero-heading-dot-edge-fade-top),
-      var(--hero-heading-dot-edge-fade-bottom), var(--hero-heading-dot-edge-fade);
-    mask-image: var(--hero-heading-dot-edge-fade-top),
-      var(--hero-heading-dot-edge-fade-bottom), var(--hero-heading-dot-edge-fade);
+    -webkit-mask-image:
+      var(--hero-heading-dot-edge-fade-top),
+      var(--hero-heading-dot-edge-fade-bottom),
+      var(--hero-heading-dot-edge-fade);
+    mask-image:
+      var(--hero-heading-dot-edge-fade-top),
+      var(--hero-heading-dot-edge-fade-bottom),
+      var(--hero-heading-dot-edge-fade);
     -webkit-mask-repeat: no-repeat, no-repeat, no-repeat;
     mask-repeat: no-repeat, no-repeat, no-repeat;
-    -webkit-mask-size: 100% 100%, 100% 100%, 100% 100%;
-    mask-size: 100% 100%, 100% 100%, 100% 100%;
+    -webkit-mask-size:
+      100% 100%,
+      100% 100%,
+      100% 100%;
+    mask-size:
+      100% 100%,
+      100% 100%,
+      100% 100%;
     -webkit-mask-position: center, center, center;
     mask-position: center, center, center;
     mask-composite: intersect, intersect;
@@ -1192,20 +1209,30 @@ pre.shiki.has-focused:hover .line {
   }
 
   .marketing-theme .hero-heading-dots--wide::before {
-    -webkit-mask-image: var(--hero-heading-dot-edge-fade-top),
+    -webkit-mask-image:
+      var(--hero-heading-dot-edge-fade-top),
       var(--hero-heading-dot-edge-fade-bottom),
       var(--hero-heading-dot-edge-fade-left),
-      var(--hero-heading-dot-edge-fade-right),
-      var(--hero-heading-dot-edge-fade);
-    mask-image: var(--hero-heading-dot-edge-fade-top),
+      var(--hero-heading-dot-edge-fade-right), var(--hero-heading-dot-edge-fade);
+    mask-image:
+      var(--hero-heading-dot-edge-fade-top),
       var(--hero-heading-dot-edge-fade-bottom),
       var(--hero-heading-dot-edge-fade-left),
-      var(--hero-heading-dot-edge-fade-right),
-      var(--hero-heading-dot-edge-fade);
+      var(--hero-heading-dot-edge-fade-right), var(--hero-heading-dot-edge-fade);
     -webkit-mask-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
     mask-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
-    -webkit-mask-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
-    mask-size: 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
+    -webkit-mask-size:
+      100% 100%,
+      100% 100%,
+      100% 100%,
+      100% 100%,
+      100% 100%;
+    mask-size:
+      100% 100%,
+      100% 100%,
+      100% 100%,
+      100% 100%,
+      100% 100%;
     -webkit-mask-position: center, center, center, center, center;
     mask-position: center, center, center, center, center;
     mask-composite: intersect, intersect, intersect, intersect;
@@ -1225,17 +1252,22 @@ pre.shiki.has-focused:hover .line {
     left: 0;
     right: 0;
     top: calc(
-      -1 * var(--hero-heading-dot-field-extend-top) + var(--hero-heading-dot-field-offset-y)
+      -1 *
+      var(--hero-heading-dot-field-extend-top) +
+      var(--hero-heading-dot-field-offset-y)
     );
     bottom: calc(
-      -1 * var(--hero-heading-dot-field-extend-bottom) - var(--hero-heading-dot-field-offset-y)
+      -1 *
+      var(--hero-heading-dot-field-extend-bottom) -
+      var(--hero-heading-dot-field-offset-y)
     );
     /* Honey → periwinkle matches headline; radial mask below limits it to the cursor. */
     background-image: var(--hero-headline-honey-periwinkle-gradient);
     background-size: 100% 100%;
     background-position: center;
     background-repeat: no-repeat;
-    -webkit-mask-image: var(--hero-heading-dot-glow-edge-fade-top),
+    -webkit-mask-image:
+      var(--hero-heading-dot-glow-edge-fade-top),
       var(--hero-heading-dot-glow-edge-fade-bottom),
       var(--hero-heading-dot-glow-edge-fade),
       radial-gradient(
@@ -1252,7 +1284,8 @@ pre.shiki.has-focused:hover .line {
         rgb(0 0 0 / 0.05) 62%,
         transparent 80%
       );
-    mask-image: var(--hero-heading-dot-glow-edge-fade-top),
+    mask-image:
+      var(--hero-heading-dot-glow-edge-fade-top),
       var(--hero-heading-dot-glow-edge-fade-bottom),
       var(--hero-heading-dot-glow-edge-fade),
       radial-gradient(
@@ -1304,7 +1337,8 @@ pre.shiki.has-focused:hover .line {
   }
 
   .marketing-theme .hero-heading-dots--wide .hero-heading-dots-glow {
-    -webkit-mask-image: var(--hero-heading-dot-glow-edge-fade-top),
+    -webkit-mask-image:
+      var(--hero-heading-dot-glow-edge-fade-top),
       var(--hero-heading-dot-glow-edge-fade-bottom),
       var(--hero-heading-dot-glow-edge-fade-left),
       var(--hero-heading-dot-glow-edge-fade-right),
@@ -1323,7 +1357,8 @@ pre.shiki.has-focused:hover .line {
         rgb(0 0 0 / 0.05) 62%,
         transparent 80%
       );
-    mask-image: var(--hero-heading-dot-glow-edge-fade-top),
+    mask-image:
+      var(--hero-heading-dot-glow-edge-fade-top),
       var(--hero-heading-dot-glow-edge-fade-bottom),
       var(--hero-heading-dot-glow-edge-fade-left),
       var(--hero-heading-dot-glow-edge-fade-right),
@@ -1358,8 +1393,10 @@ pre.shiki.has-focused:hover .line {
       100% 100%,
       var(--hero-heading-dot-cell) var(--hero-heading-dot-cell),
       100% 100%;
-    -webkit-mask-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, repeat, no-repeat;
-    mask-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, repeat, no-repeat;
+    -webkit-mask-repeat:
+      no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, repeat, no-repeat;
+    mask-repeat:
+      no-repeat, no-repeat, no-repeat, no-repeat, no-repeat, repeat, no-repeat;
     -webkit-mask-position:
       center,
       center,
@@ -1376,8 +1413,10 @@ pre.shiki.has-focused:hover .line {
       center,
       0 var(--hero-heading-dot-field-shift-y),
       center;
-    mask-composite: intersect, intersect, intersect, intersect, intersect, intersect;
-    -webkit-mask-composite: source-in, source-in, source-in, source-in, source-in, source-in;
+    mask-composite:
+      intersect, intersect, intersect, intersect, intersect, intersect;
+    -webkit-mask-composite:
+      source-in, source-in, source-in, source-in, source-in, source-in;
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -1446,7 +1485,10 @@ pre.shiki.has-focused:hover .line {
   }
 
   .dark .marketing-theme .hero-tagline-pill:hover .hero-tagline-neutral-fade,
-  html[data-theme="dark"] .marketing-theme .hero-tagline-pill:hover .hero-tagline-neutral-fade {
+  html[data-theme="dark"]
+    .marketing-theme
+    .hero-tagline-pill:hover
+    .hero-tagline-neutral-fade {
     filter: brightness(1.14);
   }
 
@@ -1482,7 +1524,8 @@ pre.shiki.has-focused:hover .line {
     --homepage-bg-base: hsl(var(--color-design-black));
     --homepage-hexagon-opacity: 0.64;
     /* Slightly brighter, more visible corner glow on the black canvas. */
-    background-image: radial-gradient(
+    background-image:
+      radial-gradient(
         ellipse 95% 45% at 0% 0%,
         hsl(var(--color-soft-periwinkle-500) / 0.22),
         transparent 56%

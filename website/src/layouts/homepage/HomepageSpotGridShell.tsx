@@ -31,7 +31,9 @@ export function HomepageSpotGridShell({ children }: { children: ReactNode }) {
   return (
     <div className="homepage-spot-grid min-h-screen">
       <div
-        className={cn("homepage-spot-glow pointer-events-none motion-reduce:hidden")}
+        className={cn(
+          "homepage-spot-glow pointer-events-none motion-reduce:hidden",
+        )}
         style={
           {
             "--homepage-glow-x": `${pos.x}px`,

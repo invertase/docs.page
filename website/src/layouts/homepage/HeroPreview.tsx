@@ -47,7 +47,8 @@ export function HeroPreview() {
 
   const containerRefCallback = useCallback(
     (node: HTMLDivElement | null) => {
-      (containerRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+      (containerRef as React.MutableRefObject<HTMLDivElement | null>).current =
+        node;
       if (node) {
         requestAnimationFrame(() => updateIndicator(activeTab));
       }
@@ -55,15 +56,23 @@ export function HeroPreview() {
     [activeTab, updateIndicator],
   );
   const active =
-    HERO_PREVIEW_TABS.find((tab) => tab.id === activeTab) ?? HERO_PREVIEW_TABS[0];
+    HERO_PREVIEW_TABS.find((tab) => tab.id === activeTab) ??
+    HERO_PREVIEW_TABS[0];
 
   return (
     <section
       aria-label="docs.page preview"
       className="hero-preview-unit mx-auto flex w-full min-w-0 max-w-6xl flex-col items-stretch gap-3 sm:gap-4"
     >
-      <div role="tablist" aria-label="Preview mode" className="flex justify-center">
-        <div ref={containerRefCallback} className="relative flex w-fit gap-1 rounded-lg border border-border bg-black/70 p-1">
+      <div
+        role="tablist"
+        aria-label="Preview mode"
+        className="flex justify-center"
+      >
+        <div
+          ref={containerRefCallback}
+          className="relative flex w-fit gap-1 rounded-lg border border-border bg-black/70 p-1"
+        >
           <span
             aria-hidden
             className="pointer-events-none absolute inset-y-1 z-0 rounded-md border border-border bg-periwinkle-500/[0.18] transition-[left,width] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] dark:bg-periwinkle-400/[0.18]"

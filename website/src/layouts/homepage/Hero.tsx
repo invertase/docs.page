@@ -45,14 +45,17 @@ export function Hero() {
                 </HeroHeadingDots>
                 <p className="mx-auto max-w-[38rem] text-base font-light leading-relaxed text-neutral-500 dark:text-neutral-400">
                   Instantly{" "}
-                  <span className="text-honey-500">serve markdown</span>{" "}
-                  from any GitHub branch as modern, agent-ready docs, with AI chat,
+                  <span className="text-honey-500">serve markdown</span> from
+                  any GitHub branch as modern, agent-ready docs, with AI chat,
                   MCP, and llms.txt.
                 </p>
                 <div className="mx-auto mt-4 flex w-max max-w-full flex-row flex-wrap items-center justify-center gap-x-4 gap-y-2 sm:mt-5 md:mt-6">
                   <Link
                     href={LINKS.getStarted}
-                    className={buttonVariants({ variant: "primary", size: "lg" })}
+                    className={buttonVariants({
+                      variant: "primary",
+                      size: "lg",
+                    })}
                   >
                     Get started
                     <ButtonChevron size="lg" />
