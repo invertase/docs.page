@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState, type ComponentProps } from "react";
-import { cn } from "@/lib/utils";
-import { Button } from "../ui/button";
 import { RiCheckLine, RiFileCopyLine } from "@remixicon/react";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 
 type CodeFenceProps = ComponentProps<"figure"> & {
   lang?: string;
@@ -50,13 +51,20 @@ export function CodeFence({
       {...props}
     >
       <figcaption className="flex h-9 items-center justify-between gap-3 px-4 font-mono text-muted-foreground text-xs">
-        <div className="truncate">{title}</div>
-        <div className="flex items-center gap-2">
-          <span>{language}</span>
-          <Button variant="ghost" size="icon-sm" onClick={onCopy}>
-            {copied ? <RiCheckLine /> : <RiFileCopyLine />}
-          </Button>
+        <div className="truncate">
+          {title ? (
+            <>
+              {language}
+              <Separator orientation="vertical" />
+              {title}
+            </>
+          ) : (
+            language
+          )}
         </div>
+        <Button variant="ghost" size="icon-sm" onClick={onCopy}>
+          {copied ? <RiCheckLine /> : <RiFileCopyLine />}
+        </Button>
       </figcaption>
       <div className="overflow-x-auto px-4 py-2 text-sm">
         {highlighted ? (
