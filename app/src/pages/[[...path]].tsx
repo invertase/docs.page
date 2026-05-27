@@ -11,12 +11,14 @@ import {
   resolveRawDocsRoute,
 } from "@/lib/docs-routing";
 import { buildDocsBundleApiPath } from "@/lib/docs-bundle-api";
-import { resolveDocsRouteWithCanonical } from "@/lib/docs-canonical";
+import {
+  resolveCanonicalUrl,
+  resolvePublicDocsPublishingContext,
+} from "@/lib/docs-canonical";
 import { getDeploymentOrigin } from "@/lib/docs-environment";
 import { resolveFrontmatterRedirectDestination } from "@/lib/docs-redirect";
 import {
   acceptPrefersMarkdown,
-  getRequestOrigin,
   incomingHttpHeadersToWebHeaders,
 } from "@/lib/incoming-http-headers";
 import {
@@ -106,12 +108,21 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
     }
   }
 
-  const route = await resolveDocsRouteWithCanonical({
+  const {
+    route: resolvedRoute,
+    customDomain,
+    origin: requestOrigin,
+    pathRoute: publicPathRoute,
+  } = await resolvePublicDocsPublishingContext({
     owner,
     repoSegment: repo,
     path,
     headers: requestHeaders,
   });
+  const route = {
+    ...resolvedRoute,
+    canonicalUrl: resolveCanonicalUrl(resolvedRoute, customDomain),
+  };
   const csrfCookiePath = getAgentCsrfCookiePath(route);
   const cookies = parseCookies(req.headers.cookie);
   const panelCookieName = getAgentPanelCookieName(
@@ -247,7 +258,8 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
       meta: {
         hasAgent: successResponse.hasAgent,
         initialAgentPanelOpen,
-        requestOrigin: getRequestOrigin(req),
+        requestOrigin,
+        publicPathRoute,
       },
     } satisfies DocPageProps,
   };

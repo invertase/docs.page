@@ -122,7 +122,7 @@ export function ActionMenu() {
                   name:
                     bundle.config.name?.trim() ||
                     `${route.owner}/${route.repository}`,
-                  url: getMcpEndpointUrl(route, meta.requestOrigin),
+                  url: getMcpEndpointUrl(meta.publicPathRoute, meta.requestOrigin),
                 };
                 const url = new URL(
                   `vscode:mcp/install?${encodeURIComponent(JSON.stringify(config))}`,
@@ -141,7 +141,7 @@ export function ActionMenu() {
               className="gap-4"
               onClick={() => {
                 const config = {
-                  url: getMcpEndpointUrl(route, meta.requestOrigin),
+                  url: getMcpEndpointUrl(meta.publicPathRoute, meta.requestOrigin),
                 };
                 const encodedConfig = btoa(JSON.stringify(config));
                 const serverName =

@@ -157,6 +157,12 @@ export function PreviewClient() {
           typeof window !== "undefined"
             ? window.location.origin
             : `http://localhost:${process.env.PORT?.trim() || "3000"}`,
+        publicPathRoute: {
+          requestMode: "preview",
+          owner: "local",
+          repository,
+          ref: null,
+        },
       },
     };
   }, [previewPath, response]);

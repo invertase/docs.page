@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState, type ComponentProps } from "react";
+import { type ComponentProps } from "react";
 import { RiCheckLine, RiFileCopyLine } from "@remixicon/react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import { useCopy } from "@/hooks/use-copy";
 
 type CodeFenceProps = ComponentProps<"figure"> & {
   lang?: string;
@@ -22,25 +23,7 @@ export function CodeFence({
   ...props
 }: CodeFenceProps) {
   const language = lang || "text";
-
-  const [copied, setCopied] = useState(false);
-  const copyTimeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
-
-  useEffect(() => {
-    return () => {
-      if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
-    };
-  }, []);
-
-  const onCopy = () => {
-    void navigator.clipboard.writeText(value);
-    if (copyTimeoutRef.current) clearTimeout(copyTimeoutRef.current);
-    setCopied(true);
-    copyTimeoutRef.current = setTimeout(() => {
-      copyTimeoutRef.current = null;
-      setCopied(false);
-    }, 2000);
-  };
+  const { copied, copy: onCopy } = useCopy(value);
 
   return (
     <figure

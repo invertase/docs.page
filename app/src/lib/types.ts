@@ -1,3 +1,4 @@
+import type { PublicDocsPathRoute } from "./docs-canonical";
 import type { DocsBundlePayload } from "./docs-bundle-api";
 import type { ResolvedDocsRoute } from "./docs-routing";
 
@@ -9,6 +10,7 @@ export type DocPageProps = {
     hasAgent: boolean;
     initialAgentPanelOpen: boolean;
     requestOrigin: string;
+    publicPathRoute: PublicDocsPathRoute;
   }
 };
 

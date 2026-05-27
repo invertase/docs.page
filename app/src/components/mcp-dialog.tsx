@@ -14,8 +14,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useCopy } from "@/hooks/use-copy";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { getMcpEndpointUrl } from "@/lib/docs-paths";
+import { Button } from "./ui/button";
+import { RiCheckLine, RiFileCopyLine } from "@remixicon/react";
 
 export function useMcpDialog() {
   const ctx = useContext(Context);
@@ -36,8 +39,8 @@ export function McpDialog(props: PropsWithChildren) {
   }, [ctx.route.owner, ctx.route.repository]);
 
   const mcpEndpointUrl = useMemo(
-    () => getMcpEndpointUrl(ctx.route, ctx.meta.requestOrigin),
-    [ctx.route, ctx.meta.requestOrigin],
+    () => getMcpEndpointUrl(ctx.meta.publicPathRoute, ctx.meta.requestOrigin),
+    [ctx.meta.publicPathRoute, ctx.meta.requestOrigin],
   );
 
   return (
@@ -56,7 +59,10 @@ export function McpDialog(props: PropsWithChildren) {
               <TabsTrigger value="vscode">VSCode</TabsTrigger>
               <TabsTrigger value="antigravity">Antigravity</TabsTrigger>
             </TabsList>
-            <TabsContent value="cursor" className="mt-2 min-w-0 space-y-4 px-1 text-sm">
+            <TabsContent
+              value="cursor"
+              className="mt-2 min-w-0 space-y-4 px-1 text-sm"
+            >
               <p>
                 Create a <code>.cursor/mcp.json</code> file with the following
                 entry:
@@ -69,7 +75,10 @@ export function McpDialog(props: PropsWithChildren) {
   }
 }`}</Code>
             </TabsContent>
-            <TabsContent value="claude" className="mt-2 min-w-0 space-y-4 px-1 text-sm">
+            <TabsContent
+              value="claude"
+              className="mt-2 min-w-0 space-y-4 px-1 text-sm"
+            >
               <p>
                 Use the <code>claude mcp</code> command to authenticate and add
                 the following entry:
@@ -77,24 +86,19 @@ export function McpDialog(props: PropsWithChildren) {
               <Code>{`claude mcp add --transport http \\
 ${mcpEndpointUrl}`}</Code>
             </TabsContent>
-            <TabsContent value="vscode" className="mt-2 min-w-0 space-y-4 px-1 text-sm">
+            <TabsContent
+              value="vscode"
+              className="mt-2 min-w-0 space-y-4 px-1 text-sm"
+            >
               <ul className="list-disc list-inside">
                 <li>
                   Open the Command Palette (Cmd+Shift+P) and type “MCP: Add
                   Server”.
                 </li>
-                <li>
-                  Select “Add MCP Server”.
-                </li>
-                <li>
-                  Select HTTP to add a remote MCP server.
-                </li>
-                <li>
-                  Enter the MCP URL, {mcpEndpointUrl}.
-                </li>
-                <li>
-                  Set the name to “${serverName}” and confirm.
-                </li>
+                <li>Select “Add MCP Server”.</li>
+                <li>Select HTTP to add a remote MCP server.</li>
+                <li>Enter the MCP URL, {mcpEndpointUrl}.</li>
+                <li>Set the name to “${serverName}” and confirm.</li>
               </ul>
               <Code>{`{
   "servers": {
@@ -105,7 +109,10 @@ ${mcpEndpointUrl}`}</Code>
   }
 }`}</Code>
             </TabsContent>
-            <TabsContent value="antigravity" className="mt-2 min-w-0 space-y-4 px-1 text-sm">
+            <TabsContent
+              value="antigravity"
+              className="mt-2 min-w-0 space-y-4 px-1 text-sm"
+            >
               <p>
                 In the Agent Panel, click the three dots in the top right and
                 select MCP Servers. Click, Manage MCP Servers. Select “View raw
@@ -127,10 +134,22 @@ ${mcpEndpointUrl}`}</Code>
 }
 
 function Code(props: { children: string }) {
+  const { copied, copy } = useCopy(props.children);
+
   return (
-    <pre className="max-w-full min-w-0 overflow-x-auto rounded-md bg-muted p-4 font-mono text-sm">
-      <code>{props.children}</code>
-    </pre>
+    <div className="relative">
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        className="absolute right-2 top-2"
+        onClick={copy}
+      >
+        {copied ? <RiCheckLine /> : <RiFileCopyLine />}
+      </Button>
+      <pre className="max-w-full min-w-0 overflow-x-auto rounded-md bg-muted p-4 font-mono text-sm">
+        <code>{props.children}</code>
+      </pre>
+    </div>
   );
 }
 

@@ -39,7 +39,7 @@ export function resolveCanonicalUrl(
   ).toString();
 }
 
-type PublicDocsPathRoute = Pick<
+export type PublicDocsPathRoute = Pick<
   ResolvedDocsRoute,
   "requestMode" | "owner" | "repository" | "ref"
 >;
