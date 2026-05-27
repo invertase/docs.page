@@ -158,16 +158,6 @@
           "title": "Video",
           "href": "/components/video",
           "icon": "video"
-        },
-        {
-          "title": "Zapp!",
-          "href": "/components/zapp",
-          "icon": "bolt"
-        },
-        {
-          "title": "Custom Components",
-          "href": "/components/custom",
-          "icon": "square-pen"
         }
       ]
     },
