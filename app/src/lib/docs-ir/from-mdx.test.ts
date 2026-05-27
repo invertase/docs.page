@@ -66,4 +66,26 @@ describe("mdxToDocIr", () => {
     expect(ir.kind).toBe("root");
     expect(ir.children.some((child) => child.kind === "markdown")).toBe(true);
   });
+
+  test("parses inline TabItem siblings inside Tabs as components", async () => {
+    const ir = await mdxToDocIr(`<Tabs>
+  <TabItem label="First Tab" value="first">👋 This is the content for the first tab.</TabItem>
+  <TabItem label="Second Tab" value="second">...and this is the content for the second tab!</TabItem>
+</Tabs>`);
+
+    const tabs = ir.children.find(
+      (child): child is Extract<typeof child, { kind: "component" }> =>
+        child.kind === "component" && child.name === "Tabs",
+    );
+    expect(tabs).toBeDefined();
+    expect(tabs?.children).toHaveLength(2);
+    expect(tabs?.children.every((child) => child.kind === "component")).toBe(
+      true,
+    );
+    if (tabs?.children[0]?.kind === "component") {
+      expect(tabs.children[0].name).toBe("TabItem");
+      expect(tabs.children[0].props.label).toBe("First Tab");
+      expect(tabs.children[0].props.value).toBe("first");
+    }
+  });
 });

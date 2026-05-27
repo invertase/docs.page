@@ -180,10 +180,32 @@ function nodeToIr(node: MdastNode, source: string): DocIrNode[] {
         return jsxElementToIr(node.children[0], source);
       }
 
-      // MDX often wraps indented JSX (e.g. <TabItem> under <Tabs>) in a paragraph with
-      // multiple mdxJsxTextElement siblings; recurse so each becomes a component IR node.
+      // Inline JSX on one line (e.g. <TabItem>...</TabItem>) is wrapped in a paragraph
+      // with mdxJsxTextElement siblings. Convert each element directly — childrenToIr
+      // would batch mdxJsxTextElement as phrasing content into a single markdown leaf.
       if (node.children?.some((c) => c.type === "mdxJsxTextElement")) {
-        return childrenToIr(node.children ?? [], source);
+        const result: DocIrNode[] = [];
+
+        for (const child of node.children ?? []) {
+          if (child.type === "mdxJsxTextElement") {
+            result.push(...jsxElementToIr(child, source));
+            continue;
+          }
+
+          if (child.type === "text") {
+            const text = child.value ?? "";
+            if (text.trim().length === 0) {
+              continue;
+            }
+
+            result.push(...markdownLeafFromNode(child, source));
+            continue;
+          }
+
+          result.push(...safeNodeToIr(child, source));
+        }
+
+        return result;
       }
 
       return markdownLeafOrChildren(node, source);
