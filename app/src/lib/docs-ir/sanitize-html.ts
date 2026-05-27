@@ -1,6 +1,5 @@
-import type { Schema } from "hast-util-sanitize";
 import rehypeParse from "rehype-parse";
-import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
+import rehypeSanitize, { defaultSchema, type Options as SanitizeSchema } from "rehype-sanitize";
 import rehypeStringify from "rehype-stringify";
 import { unified } from "unified";
 import type { DocIrNode } from "./types";
@@ -9,7 +8,7 @@ import { mapIrChildren } from "./visit";
 /** Tailwind / utility classes used in docs HTML (badges, layout). */
 const classNamePattern = /^[\w\s#:./\[\]()%&=-]+$/;
 
-const docsHtmlSchema: Schema = {
+const docsHtmlSchema: SanitizeSchema = {
   ...defaultSchema,
   attributes: {
     ...defaultSchema.attributes,
