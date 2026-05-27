@@ -179,29 +179,16 @@ export default function SearchDialog({ open, onOpenChange, searchUrl }: Props) {
           {displayResults.length > 0 ? (
             <CommandGroup heading={titleOnly ? "Pages" : "Results"}>
               {displayResults.map((doc) => (
-                <CommandItem
+                <SearchResultCommandItem
                   key={doc.path}
-                  value={doc.path}
-                  className="flex flex-col items-start gap-1"
-                >
-                  <span
-                    className="text-sm font-medium [&_mark]:rounded-sm [&_mark]:bg-primary/15 [&_mark]:text-primary"
-                    dangerouslySetInnerHTML={{ __html: doc.titleHtml }}
-                  />
-                  <span className="text-muted-foreground text-xs font-mono">
-                    {formatDisplayPath(doc.path)}
-                  </span>
-                  {!titleOnly && (
-                    <span
-                      className="text-muted-foreground text-xs line-clamp-2 [&_mark]:rounded-sm [&_mark]:bg-primary/15 [&_mark]:text-primary"
-                      dangerouslySetInnerHTML={{ __html: doc.snippetHtml }}
-                    />
-                  )}
-                </CommandItem>
+                  doc={doc}
+                  titleOnly={titleOnly}
+                  onNavigate={() => onOpenChange(false)}
+                />
               ))}
             </CommandGroup>
           ) : showLoading ? (
-            <CommandEmpty>Loading...</CommandEmpty>
+            <CommandEmpty className="text-muted-foreground">Loading...</CommandEmpty>
           ) : titleOnly && !hasQuery ? (
             <CommandEmpty>Type to search page titles.</CommandEmpty>
           ) : (
@@ -220,6 +207,49 @@ type TabCommandItemProps = {
   title: string;
   onNavigate?: () => void;
 } & Omit<ComponentProps<typeof CommandItem>, "onSelect" | "value" | "children">;
+
+function SearchResultCommandItem({
+  doc,
+  titleOnly,
+  onNavigate,
+}: {
+  doc: SearchRow;
+  titleOnly: boolean;
+  onNavigate: () => void;
+}) {
+  const router = useRouter();
+  const resolvedHref = useDocHref(doc.path);
+  const external = isExternalLink(doc.path);
+
+  return (
+    <CommandItem
+      value={doc.path}
+      className="flex flex-col items-start gap-1"
+      onSelect={() => {
+        if (external) {
+          window.open(resolvedHref, "_blank", "noopener,noreferrer");
+        } else {
+          router.push(resolvedHref);
+        }
+        onNavigate();
+      }}
+    >
+      <span
+        className="text-sm font-medium [&_mark]:rounded-sm [&_mark]:bg-primary/15 [&_mark]:text-primary"
+        dangerouslySetInnerHTML={{ __html: doc.titleHtml }}
+      />
+      <span className="text-muted-foreground text-xs font-mono">
+        {formatDisplayPath(doc.path)}
+      </span>
+      {!titleOnly && (
+        <span
+          className="text-muted-foreground text-xs line-clamp-2 [&_mark]:rounded-sm [&_mark]:bg-primary/15 [&_mark]:text-primary"
+          dangerouslySetInnerHTML={{ __html: doc.snippetHtml }}
+        />
+      )}
+    </CommandItem>
+  );
+}
 
 function TabCommandItem({
   href,
