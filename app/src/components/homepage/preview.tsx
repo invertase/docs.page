@@ -51,9 +51,7 @@ export function Preview() {
           <div style={{ display: tab === "embedded" ? undefined : "none" }}>
             <Embedded />
           </div>
-          <div style={{ display: tab === "source" ? undefined : "none" }}>
-            {client && <Source />}
-          </div>
+          {tab === "source" && client && <Source />}
         </div>
    
       </div>
@@ -72,7 +70,7 @@ function Embedded() {
     <div className="h-[800px] bg-neutral-950 rounded-md overflow-hidden border">
       <iframe
         title="docs.page"
-        src="https://use.docs.page"
+        src="https://use.docs.page/~ai"
         className="w-full h-full"
       />
     </div>
