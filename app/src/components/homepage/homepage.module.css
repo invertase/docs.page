@@ -1,0 +1,138 @@
+.site {
+  --primary: var(--color-honey-500);
+}
+
+.homepage-spot-grid {
+  --homepage-dot-cell: 22px;
+  --homepage-dot-r: 1px;
+  --homepage-bg-base: var(--color-white);
+  --homepage-hexagon-opacity: 0.35;
+  --homepage-hexagon-size: clamp(22.4rem, 41.6vw, 44.8rem);
+
+  background-color: var(--color-black);
+  background-image:
+    radial-gradient(
+      ellipse 100% 48% at 0% 0%,
+      color-mix(in srgb, var(--color-periwinkle-500) 8%, transparent),
+      transparent 58%
+    ),
+    radial-gradient(
+      ellipse 100% 85% at 100% 100%,
+      color-mix(in srgb, var(--color-periwinkle-500) 7%, transparent),
+      transparent 58%
+    );
+  background-repeat: no-repeat;
+  background-size: auto;
+
+  &::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image: radial-gradient(
+      circle,
+      color-mix(in srgb, white 12%, transparent) var(--homepage-dot-r),
+      transparent var(--homepage-dot-r)
+    );
+    background-size: var(--homepage-dot-cell) var(--homepage-dot-cell);
+    background-position: 0 0;
+    background-repeat: repeat;
+    background-attachment: fixed;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    opacity: var(--homepage-hexagon-opacity);
+    /* background-image: url("/_docs.page/assets/docs.page-update-2026/hexagon-bg.svg"); */
+    background-repeat: no-repeat;
+    background-position: calc(100% - 1rem) 32vh;
+    background-size: var(--homepage-hexagon-size) auto;
+  }
+}
+
+.homepage-spot-grid-card {
+  --homepage-dot-cell: 22px;
+  --homepage-dot-r: 1px;
+  pointer-events: none;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background-image: radial-gradient(
+      circle,
+      color-mix(in srgb, white 12%, transparent) var(--homepage-dot-r),
+      transparent var(--homepage-dot-r)
+    );
+    background-size: var(--homepage-dot-cell) var(--homepage-dot-cell);
+    background-repeat: repeat;
+  }
+}
+
+.homepage-spot-glow {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(
+    circle 320px at var(--homepage-glow-x, 50vw) var(--homepage-glow-y, 35vh),
+    color-mix(in srgb, var(--homepage-glow-color, var(--color-honey-500)) 38%, transparent),
+    color-mix(in srgb, var(--homepage-glow-color, var(--color-honey-500)) 14%, transparent) 22%,
+    transparent 48%
+  );
+  mask-image: radial-gradient(
+    circle at center,
+    #000 var(--homepage-dot-r),
+    transparent var(--homepage-dot-r)
+  );
+  mask-size: var(--homepage-dot-cell) var(--homepage-dot-cell);
+  mask-repeat: repeat;
+  mask-position: 0 0;
+  -webkit-mask-image: radial-gradient(
+    circle at center,
+    #000 var(--homepage-dot-r),
+    transparent var(--homepage-dot-r)
+  );
+  -webkit-mask-size: var(--homepage-dot-cell) var(--homepage-dot-cell);
+  -webkit-mask-repeat: repeat;
+  -webkit-mask-position: 0 0;
+}
+
+.homepage-spot-glow-card {
+  --homepage-dot-cell: 22px;
+  --homepage-dot-r: 1px;
+
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(
+    circle 140px at var(--homepage-glow-x, 50%) var(--homepage-glow-y, 50%),
+    color-mix(in srgb, var(--homepage-glow-color) 38%, transparent),
+    color-mix(in srgb, var(--homepage-glow-color) 14%, transparent) 22%,
+    transparent 48%
+  );
+  mask-image: radial-gradient(
+    circle at center,
+    #000 var(--homepage-dot-r),
+    transparent var(--homepage-dot-r)
+  );
+  mask-size: var(--homepage-dot-cell) var(--homepage-dot-cell);
+  mask-repeat: repeat;
+  mask-position: 0 0;
+  -webkit-mask-image: radial-gradient(
+    circle at center,
+    #000 var(--homepage-dot-r),
+    transparent var(--homepage-dot-r)
+  );
+  -webkit-mask-size: var(--homepage-dot-cell) var(--homepage-dot-cell);
+  -webkit-mask-repeat: repeat;
+  -webkit-mask-position: 0 0;
+}
