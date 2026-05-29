@@ -30,6 +30,24 @@ export const PAPER_FOLD_REM = 5;
 /** Overlap between stacked paper sections; must match PAPER_FOLD_REM (size-20 / left-20). */
 export const PAPER_SECTION_OVERLAP_CLASS = "-mt-20" as const;
 
+/** Section shell for dog-ear blocks — no border-x (clip-path borders duplicate PaperCorner). */
+export const PAPER_SECTION_SHELL_CLASS =
+  "relative overflow-visible border-border" as const;
+
+/** Vertical rails below the fold; side borders start at top-20 to avoid hero/overlap doubling. */
+export function PaperSectionSideRails({ className }: { className?: string }) {
+  const rail = cn(
+    "pointer-events-none absolute top-20 bottom-0 w-px bg-border z-10",
+    className,
+  );
+  return (
+    <>
+      <div aria-hidden className={cn(rail, "left-0")} />
+      <div aria-hidden className={cn(rail, "right-0")} />
+    </>
+  );
+}
+
 const FOLD_SIZE_CLASS = "size-20";
 const FOLD_VIEW = 80;
 const FOLD_INNER_RADIUS = 14;
@@ -42,13 +60,6 @@ const STROKE_PROPS = {
   vectorEffect: "non-scaling-stroke" as const,
 };
 
-function edgeConnectorPaths(v: number, isRight: boolean): string[] {
-  if (isRight) {
-    return [`M 0 0 H ${v}`, `M ${v} 0 V ${v}`];
-  }
-  return [`M 0 0 H ${v}`, `M 0 ${v} V 0`];
-}
-
 const PLACEMENT_LAYOUT: Record<
   PaperCornerPlacement,
   { anchor: string; border: string; isRight: boolean }
@@ -60,7 +71,8 @@ const PLACEMENT_LAYOUT: Record<
   },
   "top-left": {
     anchor: "top-0 left-0",
-    border: "top-0 left-20 right-0",
+    // +1px skips the fold tip where SVG strokes already meet the edge
+    border: "top-0 left-[calc(5rem+1px)] right-0",
     isRight: false,
   },
   "bottom-left": {
@@ -102,9 +114,6 @@ export function PaperCorner({ corner, className }: PaperCornerProps) {
           role="presentation"
           xmlns="http://www.w3.org/2000/svg"
         >
-          {edgeConnectorPaths(v, isRight).map((d) => (
-            <path key={d} d={d} {...STROKE_PROPS} />
-          ))}
           {isRight ? (
             <>
               <path d={`M 0 0 L ${v} ${v}`} {...STROKE_PROPS} />
@@ -117,9 +126,9 @@ export function PaperCorner({ corner, className }: PaperCornerProps) {
             </>
           ) : (
             <>
-              <path d={`M ${v} 0 L 0 ${v}`} {...STROKE_PROPS} />
+              <path d={`M ${v} 0 L 0 ${v}`} {...STROKE_PROPS} strokeLinecap="square" />
               <path
-                d={`M ${v} 0 V ${v - r} C ${v} ${v - r + k} ${v - r + k} ${v} ${v - r} ${v} H 0`}
+                d={`M ${v} ${r} V ${v - r} C ${v} ${v - r + k} ${v - r + k} ${v} ${v - r} ${v} H 0`}
                 {...STROKE_PROPS}
                 strokeLinecap="round"
                 strokeLinejoin="round"

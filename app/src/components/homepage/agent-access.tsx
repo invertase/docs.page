@@ -1,23 +1,30 @@
 import Link from "next/link";
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import {
   PaperCorner,
   PAPER_SECTION_OVERLAP_CLASS,
+  PAPER_SECTION_SHELL_CLASS,
+  PaperSectionSideRails,
   paperCornerClipPath,
 } from "./paper-corner";
 import { RiArrowRightSLine } from "@remixicon/react";
+
+import gif from './assets/agent-ready.gif';
 
 export function AgentAccess() {
   return (
     <div
       className={cn(
-        "relative overflow-visible border-x border-border bg-neutral-950 pb-40",
+        PAPER_SECTION_SHELL_CLASS,
         PAPER_SECTION_OVERLAP_CLASS,
+        "bg-neutral-950 pb-40",
       )}
       style={{ clipPath: paperCornerClipPath("top-left") }}
     >
       <PaperCorner corner="top-left" />
+      <PaperSectionSideRails />
       <div className="mx-auto flex flex-col max-w-8xl space-y-8">
         <div className="pl-26 pt-8">
           <h3 className="text-sm uppercase text-neutral-400">
@@ -42,6 +49,17 @@ export function AgentAccess() {
                 </Link>
               </Button>
             </div>
+          </div>
+          <div className="relative px-20">
+            <div
+              className="pointer-events-none absolute left-1/2 top-1/2 h-[108%] w-[108%] -translate-x-1/2 -translate-y-1/2 blur-2xl"
+              style={{
+                background:
+                  "radial-gradient(circle at center, color-mix(in srgb, var(--color-periwinkle-400) 45%, transparent), color-mix(in srgb, var(--color-periwinkle-500) 24%, transparent) 40%, color-mix(in srgb, var(--color-periwinkle-500) 8%, transparent) 58%, transparent 75%)",
+              }}
+              aria-hidden
+            />
+            <Image src={gif} alt="Agent ready" className="relative z-1 w-full h-full rounded-md object-cover border border-border/50 shadow-lg" />
           </div>
         </div>
       </div>

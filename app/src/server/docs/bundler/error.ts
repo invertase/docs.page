@@ -21,3 +21,19 @@ export class BundlerError extends Error {
     this.source = source;
   }
 }
+
+export function logBundlerError(error: BundlerError) {
+  const payload = {
+    name: error.name,
+    code: error.code,
+    source: error.source,
+    message: error.message,
+  };
+
+  if (error.code === 404) {
+    console.warn(payload);
+    return;
+  }
+
+  console.error(error);
+}

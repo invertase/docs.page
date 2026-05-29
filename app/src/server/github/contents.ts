@@ -2,6 +2,7 @@ import { assertPublicRepositoryAccess } from "@/lib/docs-access";
 import { InvalidDocPathError, normalizeDocPath } from "@/lib/docs-paths";
 import { BundlerError, ERROR_CODES } from "@/server/docs/bundle";
 import { getGitHubGraphQLClient } from "./client";
+import { logGitHubApiError } from "./errors";
 import { resolvePinnedGitHubSource } from "./tree";
 
 function resolveDocPath(path: string) {
@@ -252,7 +253,7 @@ export async function getGitHubContents(
       path: mdxIndex ? indexPath : absolutePath,
     };
   } catch (e) {
-    console.error(e);
+    logGitHubApiError(e, "getGitHubContents");
     return;
   }
 }

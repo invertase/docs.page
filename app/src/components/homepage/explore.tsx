@@ -69,12 +69,15 @@ function Project(props: {
       ref={ref}
       href={props.href}
       target="_blank"
-      className="relative isolate flex overflow-hidden bg-neutral-950"
+      className="group relative isolate flex overflow-hidden bg-neutral-950"
       onMouseMove={onMove}
       onMouseLeave={onLeave}
     >
       <div
-        className={cn(styles["homepage-spot-grid-card"], "absolute inset-0 z-0")}
+        className={cn(
+          styles["homepage-spot-grid-card"],
+          "absolute inset-0 z-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100",
+        )}
         aria-hidden
       >
         <div

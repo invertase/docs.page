@@ -1,4 +1,5 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 import { prepareFileTreeInput } from "@pierre/trees";
 import {
   FileTree,
@@ -6,7 +7,13 @@ import {
   useFileTreeSelection,
 } from "@pierre/trees/react";
 import { File, Virtualizer } from "@pierre/diffs/react";
-import { PaperCorner, paperCornerClipPath } from "./paper-corner";
+import {
+  PaperCorner,
+  PAPER_SECTION_OVERLAP_CLASS,
+  PAPER_SECTION_SHELL_CLASS,
+  PaperSectionSideRails,
+  paperCornerClipPath,
+} from "./paper-corner";
 import { Button } from "@/components/ui/button";
 import sourcePaths from "./source-files.json";
 
@@ -26,10 +33,15 @@ export function Preview() {
 
   return (
     <div
-      className="relative overflow-visible border-x border-border bg-transparent -mt-22 pb-32"
+      className={cn(
+        PAPER_SECTION_SHELL_CLASS,
+        PAPER_SECTION_OVERLAP_CLASS,
+        "bg-transparent pb-32",
+      )}
       style={{ clipPath: paperCornerClipPath("top-left") }}
     >
       <PaperCorner corner="top-left" />
+      <PaperSectionSideRails />
       <div className="mx-auto flex max-w-8xl flex-col items-center justify-center py-16 space-y-8">
         <div className="border rounded-md p-px bg-periwinkle-950 flex items-center gap-1">
           <Button

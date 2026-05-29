@@ -5,6 +5,7 @@ import type {
 import { getBundleJsonCacheHeaders } from "@/proxy";
 import { isAgentEnabledForRepository } from "@/server/agent/repository";
 import { BundlerError, getDocBundle } from "@/server/docs/bundle";
+import { logBundlerError } from "@/server/docs/bundler/error";
 import { z } from "zod";
 
 const QuerySchema = z.object({
@@ -57,7 +58,7 @@ export async function GET(req: Request) {
     return response;
   } catch (error) {
     if (error instanceof BundlerError) {
-      console.error(error);
+      logBundlerError(error);
       return Response.json(
         {
           code: error.code,

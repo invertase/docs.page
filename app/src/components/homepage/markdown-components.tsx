@@ -4,6 +4,8 @@ import { Button } from "../ui/button";
 import {
   PaperCorner,
   PAPER_SECTION_OVERLAP_CLASS,
+  PAPER_SECTION_SHELL_CLASS,
+  PaperSectionSideRails,
   paperCornerClipPath,
 } from "./paper-corner";
 import { RiArrowRightSLine } from "@remixicon/react";
@@ -12,12 +14,14 @@ export function MarkdownComponents() {
   return (
     <div
       className={cn(
-        "relative overflow-visible border-x border-border bg-neutral-950 pb-40",
+        PAPER_SECTION_SHELL_CLASS,
         PAPER_SECTION_OVERLAP_CLASS,
+        "bg-neutral-950 pb-40",
       )}
       style={{ clipPath: paperCornerClipPath("top-left") }}
     >
       <PaperCorner corner="top-left" />
+      <PaperSectionSideRails />
       <div className="mx-auto flex flex-col max-w-8xl space-y-8">
         <div className="pl-26 pt-8">
           <h3 className="text-sm uppercase text-neutral-400">
