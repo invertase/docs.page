@@ -15,7 +15,7 @@ import { Footer } from "./footer";
 
 export function Homepage() {
   return (
-    <div className={cn(styles.site, "relative min-h-svh w-full")}>
+    <div className={cn(styles.site, "dark relative min-h-svh w-full")}>
       <Background />
       <div className="relative z-10 mx-auto w-full min-w-0 max-w-8xl px-4 font-mono">
         <Header />
