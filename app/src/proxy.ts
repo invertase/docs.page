@@ -1,3 +1,5 @@
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { getDocsEnvironment } from "@/lib/docs-environment";
 import {
   getVanityOwnerFromHost,
@@ -9,8 +11,6 @@ import {
   isRawDocRequestPath,
 } from "@/lib/docs-routing";
 import { resolvePlausibleOwnerRepo, trackPageRequest } from "@/lib/plausible";
-import type { NextRequest } from "next/server";
-import { NextResponse } from "next/server";
 
 const SECONDS_PER_DAY = 24 * 60 * 60;
 /** Fastly edge: allow stale serve + async revalidate / error fallback for up to 7 days after freshness TTL. */

@@ -1,3 +1,7 @@
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp";
+import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp";
+import * as z from "zod/v3";
+import { zodToJsonSchema } from "zod-to-json-schema";
 import type { ResolvedDocsRoute } from "@/lib/docs-routing";
 import type { Config } from "@/server/config";
 import { ConfigSchema } from "@/server/config/schema";
@@ -6,14 +10,9 @@ import { getRawDocSource } from "@/server/docs/raw";
 import { getGitHubFileSource } from "@/server/github/contents";
 import {
   type GitHubDocFileList,
-  type GitHubSkillFile,
   type GitHubSkillFileList,
   listGitHubSkillFiles,
 } from "@/server/github/tree";
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp";
-import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp";
-import { zodToJsonSchema } from "zod-to-json-schema";
-import * as z from "zod/v3";
 
 const MCP_SERVER_VERSION = "1.0.0";
 const CONFIG_SCHEMA_URI = "docs-page://schema/config";

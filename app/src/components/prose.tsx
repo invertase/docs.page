@@ -1,11 +1,8 @@
+import { useCallback, useMemo, useRef } from "react";
 import { DocsIrRenderer } from "@/components/docs-ir-renderer";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
-import { useSourceUrl } from "@/hooks/use-source-url";
-import { RiGithubFill } from "@remixicon/react";
-import { useCallback, useMemo, useRef } from "react";
 import { CodeGroupProvider } from "./mdx/code-group";
 import { TabsProvider } from "./mdx/tabs";
-import { Button } from "./ui/button";
 
 export function Prose() {
   const { bundle } = useDocPageContext();

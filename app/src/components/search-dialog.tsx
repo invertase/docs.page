@@ -1,5 +1,20 @@
 "use client";
 
+import {
+  RiArrowRightLine,
+  RiCloudFill,
+  RiGithubFill,
+  RiSparkling2Fill,
+} from "@remixicon/react";
+import { useRouter } from "next/router";
+import type { ComponentProps } from "react";
+import {
+  startTransition,
+  useDeferredValue,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { Badge } from "@/components/ui/badge";
 import {
   Command,
@@ -17,21 +32,6 @@ import { useDocTabs } from "@/hooks/use-doc-tabs";
 import { ensureLeadingSlash, isExternalLink } from "@/lib/docs-links";
 import { isSearchReady, searchDocs } from "@/lib/search-client";
 import type { SearchRow } from "@/workers/search.worker";
-import {
-  RiArrowRightLine,
-  RiCloudFill,
-  RiGithubFill,
-  RiSparkling2Fill,
-} from "@remixicon/react";
-import { useRouter } from "next/router";
-import {
-  startTransition,
-  useDeferredValue,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
-import type { ComponentProps } from "react";
 import { useMcpDialog } from "./mcp-dialog";
 
 type Props = {

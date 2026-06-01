@@ -1,3 +1,5 @@
+import { RiExternalLinkLine } from "@remixicon/react";
+import type { PropsWithChildren } from "react";
 import {
   CardAction,
   CardContent,
@@ -5,8 +7,6 @@ import {
   Card as CardPrimitive,
   CardTitle,
 } from "@/components/ui/card";
-import { RiExternalLinkLine } from "@remixicon/react";
-import type { PropsWithChildren } from "react";
 import { Link } from "../doc-link";
 import { Button } from "../ui/button";
 import { Icon } from "./icon";

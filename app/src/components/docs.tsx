@@ -1,6 +1,6 @@
+import dynamic from "next/dynamic";
 import { AgentPanel } from "@/components/agent/panel";
 import { AgentPanelProvider } from "@/components/agent/provider";
-import dynamic from "next/dynamic";
 import { Footer } from "./footer";
 import { Header } from "./header";
 import { McpDialogProvider } from "./mcp-dialog";

@@ -1,4 +1,13 @@
 import { useChat } from "@ai-sdk/react";
+import {
+  RiArrowRightSLine,
+  RiArrowUpLine,
+  RiDeleteBin2Line,
+  RiLoaderLine,
+  RiSparkling2Line,
+  RiStopLine,
+  RiToolsLine,
+} from "@remixicon/react";
 import { code } from "@streamdown/code";
 import { DefaultChatTransport } from "ai";
 import Cookies from "js-cookie";
@@ -11,7 +20,6 @@ import {
   useState,
 } from "react";
 import { Streamdown } from "streamdown";
-
 import { Button } from "@/components/ui/button";
 import {
   Collapsible,
@@ -25,15 +33,6 @@ import {
 } from "@/components/ui/input-group";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { cn } from "@/lib/utils";
-import {
-  RiArrowRightSLine,
-  RiArrowUpLine,
-  RiDeleteBin2Line,
-  RiLoaderLine,
-  RiSparkling2Line,
-  RiStopLine,
-  RiToolsLine,
-} from "@remixicon/react";
 import { Link } from "../doc-link";
 import { Kbd } from "../ui/kbd";
 
@@ -281,7 +280,7 @@ export function AgentChat({ setOpen }: { setOpen?: (open: boolean) => void }) {
             className="max-h-30 min-h-16 bg-transparent transition-none dark:bg-transparent"
             placeholder={
               agentAvailable
-                ? bundle.config.agent?.placeholder ?? "Ask a question..."
+                ? (bundle.config.agent?.placeholder ?? "Ask a question...")
                 : "Agent unavailable for this page"
             }
             value={input}

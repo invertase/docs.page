@@ -1,3 +1,11 @@
+import {
+  RiGithubFill,
+  RiMoonFill,
+  RiSparkling2Fill,
+  RiSunFill,
+} from "@remixicon/react";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 import { Link } from "@/components/doc-link";
 import { Search } from "@/components/search";
 import { Button } from "@/components/ui/button";
@@ -8,14 +16,6 @@ import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useDocTabs } from "@/hooks/use-doc-tabs";
 import { getAssetSrc } from "@/lib/docs-assets";
 import { cn } from "@/lib/utils";
-import {
-  RiGithubFill,
-  RiMoonFill,
-  RiSparkling2Fill,
-  RiSunFill,
-} from "@remixicon/react";
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
 import { RefBadge } from "./ref-badge";
 import { SidebarTrigger } from "./ui/sidebar";
 import { tabsListVariants } from "./ui/tabs";
@@ -181,7 +181,7 @@ function HeaderLinks() {
   const { config } = bundle;
   const links = config.header?.links;
 
-  if (!links || !links.length) {
+  if (!links?.length) {
     return null;
   }
 

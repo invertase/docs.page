@@ -1,5 +1,3 @@
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { File, Virtualizer } from "@pierre/diffs/react";
 import { prepareFileTreeInput } from "@pierre/trees";
 import {
@@ -8,6 +6,8 @@ import {
   useFileTreeSelection,
 } from "@pierre/trees/react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   PAPER_SECTION_OVERLAP_CLASS,
   PAPER_SECTION_SHELL_CLASS,

@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/router";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Docs } from "@/components/docs";
 import {
   Empty,
@@ -13,8 +15,6 @@ import { DocPageContext } from "@/hooks/use-doc-page-context";
 import type { DocIrNode } from "@/lib/docs-ir/types";
 import type { DocPageProps } from "@/lib/types";
 import { defaultConfig, parseConfig } from "@/server/config";
-import { useRouter } from "next/router";
-import { useEffect, useMemo, useRef, useState } from "react";
 import { Preset } from "./preset";
 
 type PreviewBundle = {

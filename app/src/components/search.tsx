@@ -1,12 +1,12 @@
 "use client";
 
-import { useDocPageContext } from "@/hooks/use-doc-page-context";
-import { getSearchIndexPathname } from "@/lib/docs-paths";
-import { prewarmSearch } from "@/lib/search-client";
 import { RiSearch2Line } from "@remixicon/react";
 import dynamic from "next/dynamic";
 import { useCallback, useMemo, useState } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
+import { useDocPageContext } from "@/hooks/use-doc-page-context";
+import { getSearchIndexPathname } from "@/lib/docs-paths";
+import { prewarmSearch } from "@/lib/search-client";
 import { Button } from "./ui/button";
 import { Kbd } from "./ui/kbd";
 

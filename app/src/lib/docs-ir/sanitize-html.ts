@@ -9,7 +9,7 @@ import type { DocIrNode } from "./types";
 import { mapIrChildren } from "./visit";
 
 /** Tailwind / utility classes used in docs HTML (badges, layout). */
-const classNamePattern = /^[\w\s#:./\[\]()%&=-]+$/;
+const classNamePattern = /^[\w\s#:./[\]()%&=-]+$/;
 
 const docsHtmlSchema: SanitizeSchema = {
   ...defaultSchema,

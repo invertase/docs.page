@@ -1,5 +1,5 @@
-import { stripRawDocRequestSuffix } from "@/lib/docs-routing";
 import { z } from "zod";
+import { stripRawDocRequestSuffix } from "@/lib/docs-routing";
 import { getGitHubDocumentSource } from "../github/contents";
 import { BundlerError, ERROR_CODES } from "./bundle";
 

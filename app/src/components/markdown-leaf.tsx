@@ -1,9 +1,9 @@
-import { Heading, type HeadingTag } from "@/components/mdx/heading";
-import { Image } from "@/components/mdx/image";
-import { cn } from "@/lib/utils";
 import type { ComponentProps } from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { Heading, type HeadingTag } from "@/components/mdx/heading";
+import { Image } from "@/components/mdx/image";
+import { cn } from "@/lib/utils";
 import { Link } from "./doc-link";
 
 type MarkdownLeafProps = {

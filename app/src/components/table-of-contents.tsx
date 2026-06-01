@@ -1,8 +1,8 @@
+import { RiListUnordered } from "@remixicon/react";
+import { useEffect, useState } from "react";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useDocTabs } from "@/hooks/use-doc-tabs";
 import { cn } from "@/lib/utils";
-import { RiListUnordered } from "@remixicon/react";
-import { useEffect, useState } from "react";
 
 export function TableOfContents() {
   const [activeId, setActiveId] = useState("");

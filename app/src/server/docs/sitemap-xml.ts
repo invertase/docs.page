@@ -1,9 +1,9 @@
 import { Readable } from "node:stream";
+import { SitemapStream, streamToPromise } from "sitemap";
 import { resolvePublicDocsPublishingContext } from "@/lib/docs-canonical";
 import { buildPublicPathname } from "@/lib/docs-paths";
 import { resolveDocsRoute } from "@/lib/docs-routing";
 import type { GitHubDocFile } from "@/server/github/tree";
-import { SitemapStream, streamToPromise } from "sitemap";
 
 function docFileToPathSegments(file: GitHubDocFile): string[] | undefined {
   if (!file.path || file.path === "index") {

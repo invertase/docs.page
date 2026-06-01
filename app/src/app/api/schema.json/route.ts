@@ -1,5 +1,5 @@
-import { ConfigSchema } from "@/server/config/schema";
 import { zodToJsonSchema } from "zod-to-json-schema";
+import { ConfigSchema } from "@/server/config/schema";
 
 export async function GET() {
   return Response.json(

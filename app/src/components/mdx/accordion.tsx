@@ -1,16 +1,16 @@
 import {
+  Children,
+  isValidElement,
+  type PropsWithChildren,
+  type ReactElement,
+  type ReactNode,
+} from "react";
+import {
   AccordionContent,
   AccordionItem,
   Accordion as AccordionPrimitive,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {
-  Children,
-  type PropsWithChildren,
-  type ReactElement,
-  type ReactNode,
-  isValidElement,
-} from "react";
 
 type AccordionProps = PropsWithChildren<{
   title?: string;

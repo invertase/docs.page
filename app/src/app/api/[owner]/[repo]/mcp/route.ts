@@ -3,10 +3,10 @@ import { BundlerError } from "@/server/docs/bundle";
 import { loadDocsConfigForResolvedSha } from "@/server/docs/source-dataset";
 import { listGitHubDocFiles } from "@/server/github/tree";
 import {
-  type McpRepoContext,
   createMcpDescriptor,
   handleMcpDelete,
   handleMcpPost,
+  type McpRepoContext,
 } from "@/server/mcp/server";
 
 function privateRepoResponse(error: BundlerError) {

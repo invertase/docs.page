@@ -1,3 +1,5 @@
+import { useRouter } from "next/router";
+import { useMemo } from "react";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useDocTabs } from "@/hooks/use-doc-tabs";
 import { resolveActiveTabId } from "@/lib/docs-nav";
@@ -5,8 +7,6 @@ import {
   buildPublicPathname,
   extractDocPathFromPathname,
 } from "@/lib/docs-paths";
-import { useRouter } from "next/router";
-import { useMemo } from "react";
 
 export function useActiveTab(): string | undefined {
   const { bundle, route } = useDocPageContext();

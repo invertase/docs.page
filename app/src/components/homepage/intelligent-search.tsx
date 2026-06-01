@@ -1,6 +1,6 @@
-import { cn } from "@/lib/utils";
 import { RiArrowRightSLine } from "@remixicon/react";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 import {
   PAPER_SECTION_OVERLAP_CLASS,

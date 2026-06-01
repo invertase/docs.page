@@ -1,3 +1,4 @@
+import { RiArrowRightSLine, RiExternalLinkLine } from "@remixicon/react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -24,7 +25,6 @@ import { isExternalLink } from "@/lib/docs-links";
 import { isDocHrefActive } from "@/lib/docs-nav";
 import { cn } from "@/lib/utils";
 import type { SidebarGroup as SidebarConfigGroup } from "@/server/config/models/sidebar";
-import { RiArrowRightSLine, RiExternalLinkLine } from "@remixicon/react";
 import { Anchors } from "./anchors";
 import { Link } from "./doc-link";
 import { LocaleSwitcher } from "./locale-switcher";

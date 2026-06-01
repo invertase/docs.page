@@ -1,8 +1,8 @@
 import { createHmac, randomUUID, timingSafeEqual } from "node:crypto";
+import { parse, type SerializeOptions, serialize } from "cookie";
+import { jwtVerify, SignJWT } from "jose";
 import { getDocsRepoScopedPath } from "@/lib/docs-paths";
 import type { ResolvedDocsRoute } from "@/lib/docs-routing";
-import { type SerializeOptions, parse, serialize } from "cookie";
-import { SignJWT, jwtVerify } from "jose";
 
 export const AGENT_SESSION_COOKIE_NAME = "agent_session";
 export const AGENT_CSRF_COOKIE_NAME = "agent_session_csrf";

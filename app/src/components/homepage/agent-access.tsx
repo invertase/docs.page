@@ -1,8 +1,9 @@
-import { cn } from "@/lib/utils";
 import { RiArrowRightSLine } from "@remixicon/react";
 import Image from "next/image";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
+import gif from "./assets/agent-ready.gif";
 import {
   PAPER_SECTION_OVERLAP_CLASS,
   PAPER_SECTION_SHELL_CLASS,
@@ -10,8 +11,6 @@ import {
   PaperSectionSideRails,
   paperCornerClipPath,
 } from "./paper-corner";
-
-import gif from "./assets/agent-ready.gif";
 
 export function AgentAccess() {
   return (

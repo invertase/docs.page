@@ -1,5 +1,5 @@
-import { AgentPanelContext } from "@/components/agent/provider";
 import { useContext } from "react";
+import { AgentPanelContext } from "@/components/agent/provider";
 
 export function useAgentPanel() {
   const context = useContext(AgentPanelContext);

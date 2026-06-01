@@ -1,8 +1,9 @@
+import frontmatter from "gray-matter";
 import { assertPublicRepo } from "@/lib/docs-access";
 import { mdxToDocIr } from "@/lib/docs-ir/from-mdx";
 import { highlightCodeBlocksInIr } from "@/lib/docs-ir/highlight-code-blocks";
 import type { DocIrNode } from "@/lib/docs-ir/types";
-import { type HeadingNode, extractHeadingNodes } from "@/lib/docs-markdown";
+import { extractHeadingNodes, type HeadingNode } from "@/lib/docs-markdown";
 import { type Config, defaultConfig, parseConfig } from "@/server/config";
 import { replaceMoustacheVariables } from "@/server/docs/variables";
 import {
@@ -10,7 +11,6 @@ import {
   getGitHubContents,
   resolveGitHubSource,
 } from "@/server/github/contents";
-import frontmatter from "gray-matter";
 import { BundlerError } from "./error";
 
 export const ERROR_CODES = {

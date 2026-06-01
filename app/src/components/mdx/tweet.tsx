@@ -1,6 +1,6 @@
-import { useExternalScript } from "@/hooks/use-external-script";
 import { useTheme } from "next-themes";
 import { useEffect, useRef } from "react";
+import { useExternalScript } from "@/hooks/use-external-script";
 
 declare global {
   interface Window {

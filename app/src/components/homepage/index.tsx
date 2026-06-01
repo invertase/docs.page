@@ -1,12 +1,11 @@
 import { cn } from "@/lib/utils";
-import { Background } from "./background";
-import { Header } from "./header";
-import { Hero } from "./hero";
-
 import { AgentAccess } from "./agent-access";
+import { Background } from "./background";
 import { Explore } from "./explore";
 import { Footer } from "./footer";
 import { GitPublishing } from "./git-publishing";
+import { Header } from "./header";
+import { Hero } from "./hero";
 import styles from "./homepage.module.css";
 import { IntelligentSearch } from "./intelligent-search";
 import { MarkdownComponents } from "./markdown-components";

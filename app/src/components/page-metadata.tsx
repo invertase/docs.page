@@ -1,22 +1,7 @@
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
-import {
-  RiArrowDownLine,
-  RiArrowDownSLine,
-  RiFileCopyLine,
-} from "@remixicon/react";
 import { ActionMenu } from "./action-menu";
 import { Heading } from "./mdx/heading";
 import { Image } from "./mdx/image";
-import { Button } from "./ui/button";
-import { ButtonGroup } from "./ui/button-group";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
 
 export function PageMetadata() {
   const { bundle } = useDocPageContext();

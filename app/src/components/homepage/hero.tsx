@@ -1,11 +1,11 @@
-import { Button } from "@/components/ui/button";
-import { useCopy } from "@/hooks/use-copy";
 import {
   RiArrowRightSLine,
   RiCheckLine,
   RiFileCopyLine,
 } from "@remixicon/react";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { useCopy } from "@/hooks/use-copy";
 
 export function Hero() {
   return (

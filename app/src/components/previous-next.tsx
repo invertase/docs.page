@@ -1,9 +1,9 @@
+import { RiArrowLeftLine, RiArrowRightLine } from "@remixicon/react";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useSidebar } from "@/hooks/use-sidebar";
 import { isExternalLink } from "@/lib/docs-links";
 import { docPathMatchesSidebarHref } from "@/lib/docs-nav";
 import type { SidebarGroup } from "@/server/config/models/sidebar";
-import { RiArrowLeftLine, RiArrowRightLine } from "@remixicon/react";
 import { Link } from "./doc-link";
 import { Button } from "./ui/button";
 
@@ -81,7 +81,7 @@ export function PreviousNext() {
     previous = {
       title: frontmatter.previousTitle
         ? String(frontmatter.previousTitle)
-        : findAnchor(previousHref)?.title ?? "",
+        : (findAnchor(previousHref)?.title ?? ""),
       href: previousHref,
     };
   }
@@ -91,7 +91,7 @@ export function PreviousNext() {
     next = {
       title: frontmatter.nextTitle
         ? String(frontmatter.nextTitle)
-        : findAnchor(nextHref)?.title ?? "",
+        : (findAnchor(nextHref)?.title ?? ""),
       href: nextHref,
     };
   }

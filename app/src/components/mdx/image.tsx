@@ -1,7 +1,7 @@
-import { useDocPageContext } from "@/hooks/use-doc-page-context";
-import { getAssetSrc } from "@/lib/docs-assets";
 import type { ComponentProps, ReactElement } from "react";
 import Zoom from "react-medium-image-zoom";
+import { useDocPageContext } from "@/hooks/use-doc-page-context";
+import { getAssetSrc } from "@/lib/docs-assets";
 
 import "react-medium-image-zoom/dist/styles.css";
 import { cn } from "@/lib/utils";
@@ -49,8 +49,8 @@ export function Image(props: ImageProps) {
             "mb-1": props.caption,
           })}
           style={{
-            width: width ? Number.parseInt(width.toString()) : "inherit",
-            height: height ? Number.parseInt(height.toString()) : "inherit",
+            width: width ? Number.parseInt(width.toString(), 10) : "inherit",
+            height: height ? Number.parseInt(height.toString(), 10) : "inherit",
           }}
         />,
       )}

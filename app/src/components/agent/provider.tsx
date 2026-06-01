@@ -1,20 +1,20 @@
-import { useDocPageContext } from "@/hooks/use-doc-page-context";
-import {
-  getAgentPanelCookieName,
-  getAgentPanelCookiePath,
-} from "@/lib/agent-panel-state";
 import Cookies from "js-cookie";
 import {
+  createContext,
   type Dispatch,
   type ReactNode,
   type SetStateAction,
-  createContext,
   useCallback,
   useLayoutEffect,
   useMemo,
   useState,
 } from "react";
 import { useHotkeys } from "react-hotkeys-hook";
+import { useDocPageContext } from "@/hooks/use-doc-page-context";
+import {
+  getAgentPanelCookieName,
+  getAgentPanelCookiePath,
+} from "@/lib/agent-panel-state";
 
 type AgentPanelContextValue = {
   open: boolean;

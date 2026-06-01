@@ -1,6 +1,6 @@
-import { cn } from "@/lib/utils";
 import { RiHashtag } from "@remixicon/react";
 import type { ComponentProps } from "react";
+import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 
 export type HeadingTag = "h1" | "h2" | "h3" | "h4" | "h5" | "h6";

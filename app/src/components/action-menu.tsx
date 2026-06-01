@@ -1,6 +1,3 @@
-import { useDocPageContext } from "@/hooks/use-doc-page-context";
-import { useSourceUrl } from "@/hooks/use-source-url";
-import { getMcpEndpointUrl } from "@/lib/docs-paths";
 import {
   RiArrowDownSLine,
   RiArrowRightUpLine,
@@ -12,9 +9,11 @@ import {
   RiFileCopyLine,
   RiGithubLine,
   RiMarkdownLine,
-  RiPencilLine,
 } from "@remixicon/react";
 import { useCallback, useState } from "react";
+import { useDocPageContext } from "@/hooks/use-doc-page-context";
+import { useSourceUrl } from "@/hooks/use-source-url";
+import { getMcpEndpointUrl } from "@/lib/docs-paths";
 import { useMcpDialog } from "./mcp-dialog";
 import { Button } from "./ui/button";
 import { ButtonGroup } from "./ui/button-group";

@@ -1,5 +1,5 @@
-import { cn } from "@/lib/utils";
 import { type CSSProperties, useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
 
 import styles from "./homepage.module.css";
 

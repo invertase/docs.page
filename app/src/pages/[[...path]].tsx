@@ -18,11 +18,7 @@ import {
 } from "@/lib/docs-canonical";
 import { getDeploymentOrigin } from "@/lib/docs-environment";
 import { resolveFrontmatterRedirectDestination } from "@/lib/docs-redirect";
-import {
-  isRawDocRequestPath,
-  resolveDocsRoute,
-  resolveRawDocsRoute,
-} from "@/lib/docs-routing";
+import { isRawDocRequestPath, resolveRawDocsRoute } from "@/lib/docs-routing";
 import {
   acceptPrefersMarkdown,
   incomingHttpHeadersToWebHeaders,
