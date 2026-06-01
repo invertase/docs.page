@@ -134,7 +134,7 @@ function ThemeToggle() {
   return (
     <Button
       variant="ghost"
-      size="lg"
+      size="icon"
       aria-label="Toggle theme"
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
     >
@@ -156,13 +156,7 @@ function GitHubLink() {
   }
 
   return (
-    <Button
-      variant="ghost"
-      size="lg"
-      aria-label="Toggle theme"
-      className="gap-2"
-      asChild
-    >
+    <Button variant="ghost" size="default" asChild>
       <Link
         href={`https://github.com/${bundle.source.owner}/${bundle.source.repository}`}
         target="_blank"
@@ -189,7 +183,6 @@ function HeaderLinks() {
     <Button
       key={link.href}
       variant={link.cta ? "default" : "outline"}
-      className="px-3"
       asChild
     >
       <Link href={link.href}>{link.title}</Link>

@@ -8,11 +8,9 @@ import {
 } from "@pierre/trees/react";
 import { File, Virtualizer } from "@pierre/diffs/react";
 import {
-  PaperCorner,
+  PaperClippedPanel,
   PAPER_SECTION_OVERLAP_CLASS,
   PAPER_SECTION_SHELL_CLASS,
-  PaperSectionSideRails,
-  paperCornerClipPath,
 } from "./paper-corner";
 import { Button } from "@/components/ui/button";
 import sourcePaths from "./source-files.json";
@@ -32,29 +30,25 @@ export function Preview() {
   }, []);
 
   return (
-    <div
-      className={cn(
-        PAPER_SECTION_SHELL_CLASS,
-        PAPER_SECTION_OVERLAP_CLASS,
-        "bg-transparent pb-32",
-      )}
-      style={{ clipPath: paperCornerClipPath("top-left") }}
+    <PaperClippedPanel
+      corner="top-left"
+      frosted={false}
+      borderGradient
+      className={cn(PAPER_SECTION_SHELL_CLASS, PAPER_SECTION_OVERLAP_CLASS, "pb-32")}
     >
-      <PaperCorner corner="top-left" />
-      <PaperSectionSideRails />
-      <div className="mx-auto flex max-w-8xl flex-col items-center justify-center py-16 space-y-8">
-        <div className="border rounded-md p-px bg-periwinkle-950 flex items-center gap-1">
+      <div className="mx-auto flex max-w-8xl flex-col items-center justify-center py-16 space-y-5">
+        <div className="flex items-center gap-2 rounded-full border bg-periwinkle-950 p-2">
           <Button
-            variant={tab === "embedded" ? "default" : "ghost"}
+            variant={tab === "embedded" ? "outline" : "ghost"}
             onClick={() => setTab("embedded")}
-            size="lg"
+            size="default"
           >
             Documentation
           </Button>
           <Button
-            variant={tab === "source" ? "default" : "ghost"}
+            variant={tab === "source" ? "outline" : "ghost"}
             onClick={() => setTab("source")}
-            size="lg"
+            size="default"
           >
             Source Code
           </Button>
@@ -67,19 +61,19 @@ export function Preview() {
         </div>
    
       </div>
-      <div>
-        <h2 className="text-center text-xl font-light">
+      <div className="py-12">
+        <h2 className="text-center text-3xl font-light font-heading text-neutral-300">
           Trusted by more than 75,000{" "}
           <span className="text-primary">open-source</span> developers
         </h2>
       </div>
-    </div>
+    </PaperClippedPanel>
   );
 }
 
 function Embedded() {
   return (
-    <div className="h-[800px] bg-neutral-950 rounded-md overflow-hidden border">
+    <div className="h-[800px] bg-black rounded-3xl overflow-hidden border">
       <iframe
         title="docs.page"
         src="https://use.docs.page/~ai"
@@ -241,12 +235,12 @@ function Source() {
   }, [openPath]);
 
   return (
-    <div className="h-[800px] overflow-hidden bg-neutral-950 p-2 grid grid-cols-[300px_minmax(0,1fr)] gap-2 border rounded-lg">
+    <div className="h-[800px] overflow-hidden bg-black p-2 grid grid-cols-[300px_minmax(0,1fr)] gap-2 border rounded-3xl">
       <FileTree
         model={model}
-        className="min-h-0 h-full overflow-hidden rounded-lg border py-2"
+        className="min-h-0 h-full overflow-hidden rounded-2xl border py-2"
       />
-      <div className="min-h-0 h-full overflow-hidden rounded-lg border">
+      <div className="min-h-0 h-full overflow-hidden rounded-2xl border">
         {fileContent && (
           <SourceFilePanel
             key={fileContent.path}

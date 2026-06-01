@@ -1,10 +1,58 @@
+"use client";
+
 import Link from "next/link";
-import { Button } from "../ui/button";
-import { RiArrowRightSLine, RiGithubLine } from "@remixicon/react";
+import { useState } from "react";
+import { MenuIcon, XIcon } from "lucide-react";
+import { RiArrowRightSLine } from "@remixicon/react";
+
+import { cn } from "@/lib/utils";
+import { Button, buttonTrailingIconClass } from "../ui/button";
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+} from "../ui/sheet";
+import styles from "./homepage.module.css";
+
+const NAV_LINKS = [
+  { href: "https://use.docs.page", label: "GitHub" },
+  { href: "https://use.docs.page", label: "Docs" },
+] as const;
+
+function NavLink({
+  href,
+  label,
+  className,
+  onNavigate,
+}: {
+  href: string;
+  label: string;
+  className?: string;
+  onNavigate?: () => void;
+}) {
+  return (
+    <Button asChild variant="nav" size="default" className={className}>
+      <Link href={href} onClick={onNavigate}>
+        <span>{label}</span>
+        <RiArrowRightSLine
+          data-icon="inline-end"
+          className={buttonTrailingIconClass}
+        />
+      </Link>
+    </Button>
+  );
+}
 
 export function Header() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
-    <header className="border-x border-b py-4 px-4 sm:px-6 flex items-center">
+    <header
+      className={cn(
+        "flex items-center px-4 py-4 sm:px-6",
+        styles.homepageBorderBGradient,
+      )}
+    >
       <Link href="/" className="inline-flex min-w-0 items-center gap-3">
         <img
           src="/_docs.page/logo.svg"
@@ -12,18 +60,52 @@ export function Header() {
           className="h-7 w-auto shrink-0"
         />
       </Link>
-      <div className="flex-1 flex items-center justify-end gap-3">
-        <Button asChild variant="outline">
-          <Link href="https://use.docs.page">
-            <RiGithubLine />
-          </Link>
-        </Button>
-        <Button asChild variant="outline">
-          <Link href="https://use.docs.page">
-            <span>Docs</span>
-            <RiArrowRightSLine />
-          </Link>
-        </Button>
+
+      <div className="hidden flex-1 items-center justify-end gap-1 md:flex">
+        {NAV_LINKS.map((link) => (
+          <NavLink key={link.label} href={link.href} label={link.label} />
+        ))}
+      </div>
+
+      <div className="flex flex-1 items-center justify-end md:hidden">
+        <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon-lg"
+            className="text-foreground hover:text-foreground aria-expanded:text-foreground dark:hover:text-foreground dark:aria-expanded:text-foreground"
+            aria-expanded={menuOpen}
+            aria-controls="homepage-header-menu"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            onClick={() => setMenuOpen((open) => !open)}
+          >
+            {menuOpen ? (
+              <XIcon className="size-5" aria-hidden />
+            ) : (
+              <MenuIcon className="size-5" aria-hidden />
+            )}
+          </Button>
+          <SheetContent
+            id="homepage-header-menu"
+            side="right"
+            showCloseButton={false}
+            className="w-[min(100vw,18rem)] gap-0 p-0 sm:max-w-xs"
+            aria-describedby={undefined}
+          >
+            <SheetTitle className="sr-only">Navigation menu</SheetTitle>
+            <nav className="flex flex-col items-stretch gap-1 p-4 pt-6">
+              {NAV_LINKS.map((link) => (
+                <NavLink
+                  key={link.label}
+                  href={link.href}
+                  label={link.label}
+                  className="w-full justify-start"
+                  onNavigate={() => setMenuOpen(false)}
+                />
+              ))}
+            </nav>
+          </SheetContent>
+        </Sheet>
       </div>
     </header>
   );

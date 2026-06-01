@@ -1,13 +1,184 @@
-.site {
+/* :global(.dark) — `.dark` must not be hashed by CSS modules */
+.site:global(.dark) {
   --primary: var(--color-honey-500);
+  /* Solid structural lines (rails, sections, paper folds) — not the default 10% white mix. */
+  --border: var(--color-neutral-800);
+  --homepage-border-muted: var(--color-neutral-800);
+  --homepage-border-bright: color-mix(
+    in srgb,
+    var(--color-periwinkle-400) 18%,
+    var(--color-neutral-700)
+  );
+  /* Paper fold (preview): softer top edge, stronger crease at the dog-ear. */
+  --homepage-border-bright-soft: color-mix(
+    in srgb,
+    var(--color-periwinkle-400) 8%,
+    var(--color-neutral-700)
+  );
+  --homepage-border-bright-fold: color-mix(
+    in srgb,
+    var(--color-periwinkle-400) 22%,
+    var(--color-neutral-700)
+  );
+  --homepage-border-fold-mid: color-mix(
+    in srgb,
+    var(--color-periwinkle-400) 6%,
+    var(--color-neutral-800)
+  );
+  --homepage-border-gradient-fold-top: linear-gradient(
+    90deg,
+    var(--homepage-border-bright-soft) 0%,
+    var(--homepage-border-muted) 14%,
+    var(--homepage-border-muted) 100%
+  );
+  --homepage-border-gradient-x: linear-gradient(
+    90deg,
+    var(--homepage-border-bright) 0%,
+    var(--homepage-border-muted) 28%,
+    var(--homepage-border-muted) 100%
+  );
+  --homepage-border-gradient-x-reverse: linear-gradient(
+    90deg,
+    var(--homepage-border-muted) 0%,
+    var(--homepage-border-muted) 72%,
+    var(--homepage-border-bright) 100%
+  );
+  /* Narrow bright band on verticals — top-left / bottom-right glow only. */
+  --homepage-border-gradient-y: linear-gradient(
+    180deg,
+    var(--homepage-border-bright) 0%,
+    var(--homepage-border-muted) 12%,
+    var(--homepage-border-muted) 100%
+  );
+  --homepage-border-gradient-y-reverse: linear-gradient(
+    180deg,
+    var(--homepage-border-muted) 0%,
+    var(--homepage-border-muted) 90%,
+    var(--homepage-border-bright) 100%
+  );
+  /* Pills / chips toward the top-left page glow. */
+  --homepage-border-gradient-pill: linear-gradient(
+    135deg,
+    var(--homepage-border-bright-soft) 0%,
+    var(--homepage-border-muted) 22%,
+    var(--homepage-border-muted) 100%
+  );
+  /* Structural lines: rails, section borders, paper-corner SVG. */
+  --homepage-border-width: 1px;
+  --homepage-hexagon-opacity: 0.35;
+  --homepage-hexagon-size: clamp(22.4rem, 41.6vw, 44.8rem);
+}
+
+.homepageLineH {
+  height: var(--homepage-border-width);
+}
+
+.homepageLineHGradient {
+  background: var(--homepage-border-gradient-x);
+}
+
+.homepageLineHGradientFold {
+  background: var(--homepage-border-gradient-fold-top);
+}
+
+.homepageLineV {
+  width: var(--homepage-border-width);
+}
+
+.homepageRailLeft {
+  background: var(--homepage-border-gradient-y);
+}
+
+.homepageRailRight {
+  background: var(--homepage-border-gradient-y-reverse);
+}
+
+.homepageBorderB {
+  border-bottom-width: var(--homepage-border-width);
+}
+
+.homepageBorderBGradient {
+  position: relative;
+}
+
+.homepageBorderBGradient::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: var(--homepage-border-width);
+  background: var(--homepage-border-gradient-x);
+  pointer-events: none;
+}
+
+.homepageBorderT {
+  border-top-width: var(--homepage-border-width);
+}
+
+.homepageBorderTGradient {
+  position: relative;
+}
+
+.homepageBorderTGradient::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: var(--homepage-border-width);
+  background: var(--homepage-border-gradient-x-reverse);
+  pointer-events: none;
+}
+
+/** Hero eyebrow — gradient ring only (mask); fill must not stack on the border gradient. */
+.homepageEyebrow {
+  position: relative;
+  display: inline-flex;
+  border-radius: 9999px;
+}
+
+.homepageEyebrow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  padding: var(--homepage-border-width);
+  background: var(--homepage-border-gradient-pill);
+  pointer-events: none;
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+.homepageEyebrowInner {
+  position: relative;
+  z-index: 0;
+  border-radius: inherit;
+  /* Same base as preview tab switcher — opaque so it reads on the black page. */
+  background: color-mix(
+    in srgb,
+    var(--color-neutral-800) 22%,
+    var(--color-periwinkle-950)
+  );
+}
+
+.homepageDivideX > :not(:last-child) {
+  border-inline-end-width: var(--homepage-border-width);
+  border-inline-end-style: solid;
+  border-color: var(--border);
 }
 
 .homepage-spot-grid {
   --homepage-dot-cell: 22px;
   --homepage-dot-r: 1px;
   --homepage-bg-base: var(--color-white);
-  --homepage-hexagon-opacity: 0.35;
-  --homepage-hexagon-size: clamp(22.4rem, 41.6vw, 44.8rem);
 
   background-color: var(--color-black);
   background-image:
@@ -32,7 +203,7 @@
     pointer-events: none;
     background-image: radial-gradient(
       circle,
-      color-mix(in srgb, white 12%, transparent) var(--homepage-dot-r),
+      color-mix(in srgb, var(--color-white) 8%, transparent) var(--homepage-dot-r),
       transparent var(--homepage-dot-r)
     );
     background-size: var(--homepage-dot-cell) var(--homepage-dot-cell);
@@ -41,17 +212,37 @@
     background-attachment: fixed;
   }
 
-  &::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 0;
-    pointer-events: none;
-    opacity: var(--homepage-hexagon-opacity);
-    /* background-image: url("/_docs.page/assets/docs.page-update-2026/hexagon-bg.svg"); */
-    background-repeat: no-repeat;
-    background-position: calc(100% - 1rem) 32vh;
-    background-size: var(--homepage-hexagon-size) auto;
+}
+
+/** Soft periwinkle hexagon glow — scrolls with page (hero right, footer CTA left). */
+.homepageHexagon {
+  position: absolute;
+  pointer-events: none;
+  width: var(--homepage-hexagon-size);
+  aspect-ratio: 1373 / 1514;
+  opacity: var(--homepage-hexagon-opacity);
+  background-image: url("/_docs.page/assets/docs.page-update-2026/hexagon-bg.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+/* ~hero / preview zone on initial load */
+.homepageHexagonRight {
+  top: 18rem;
+  right: calc(1rem - 8%);
+  translate: 0 -12%;
+}
+
+/* ~footer “agentic age” band */
+.homepageHexagonLeft {
+  top: 82%;
+  left: calc(1rem - 10%);
+  translate: 0 -8%;
+}
+
+@media (max-width: 767.98px) {
+  .homepageHexagon {
+    display: none;
   }
 }
 
@@ -68,10 +259,34 @@
     pointer-events: none;
     background-image: radial-gradient(
       circle,
-      color-mix(in srgb, white 12%, transparent) var(--homepage-dot-r),
+      color-mix(in srgb, var(--color-white) 8%, transparent) var(--homepage-dot-r),
       transparent var(--homepage-dot-r)
     );
     background-size: var(--homepage-dot-cell) var(--homepage-dot-cell);
+    background-repeat: repeat;
+  }
+}
+
+/** Explore project tiles: title-coloured dots on hover (no cursor glow). */
+.homepage-explore-dot-hover {
+  --homepage-dot-cell: 22px;
+  --homepage-dot-r: 1px;
+  pointer-events: none;
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-color: var(--color-black);
+    background-image: radial-gradient(
+      circle,
+      color-mix(in srgb, var(--homepage-dot-color) 28%, transparent) var(--homepage-dot-r),
+      transparent var(--homepage-dot-r)
+    );
+    background-size: var(--homepage-dot-cell) var(--homepage-dot-cell);
+    background-position: 0 0;
     background-repeat: repeat;
   }
 }
@@ -89,7 +304,7 @@
   );
   mask-image: radial-gradient(
     circle at center,
-    #000 var(--homepage-dot-r),
+    var(--color-black) var(--homepage-dot-r),
     transparent var(--homepage-dot-r)
   );
   mask-size: var(--homepage-dot-cell) var(--homepage-dot-cell);
@@ -97,12 +312,66 @@
   mask-position: 0 0;
   -webkit-mask-image: radial-gradient(
     circle at center,
-    #000 var(--homepage-dot-r),
+    var(--color-black) var(--homepage-dot-r),
     transparent var(--homepage-dot-r)
   );
   -webkit-mask-size: var(--homepage-dot-cell) var(--homepage-dot-cell);
   -webkit-mask-repeat: repeat;
   -webkit-mask-position: 0 0;
+}
+
+/** Soft periwinkle halo behind feature images / videos / theme picker. */
+.homepageFeatureMediaGlow {
+  position: relative;
+  isolation: isolate;
+}
+
+.homepageFeatureMediaGlow::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  top: 50%;
+  left: 50%;
+  width: min(100%, 36rem);
+  height: 75%;
+  pointer-events: none;
+  translate: -50% -48%;
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse 100% 100% at 50% 50%,
+    color-mix(in srgb, var(--color-periwinkle-500) 24%, transparent) 0%,
+    color-mix(in srgb, var(--color-periwinkle-500) 10%, transparent) 42%,
+    transparent 72%
+  );
+  filter: blur(44px);
+}
+
+/* Static images align to top of the column — shift halo up behind the asset. */
+.homepageFeatureMediaGlowImage::before {
+  top: 38%;
+  translate: -50% -58%;
+}
+
+.homepageFeatureMediaGlowSubtle::before {
+  background: radial-gradient(
+    ellipse 100% 100% at 50% 50%,
+    color-mix(in srgb, var(--color-periwinkle-500) 16%, transparent) 0%,
+    color-mix(in srgb, var(--color-periwinkle-500) 6%, transparent) 42%,
+    transparent 68%
+  );
+  filter: blur(36px);
+}
+
+/* Git publishing — terminal asset sits high-right in the frame. */
+.homepageFeatureMediaGlowGitPublishing::before {
+  top: 46%;
+  left: 48%;
+  translate: -52% -46%;
+}
+
+.homepageFeatureMediaGlowVideo::before {
+  height: 100%;
+  width: min(110%, 40rem);
 }
 
 .homepage-spot-glow-card {
@@ -121,7 +390,7 @@
   );
   mask-image: radial-gradient(
     circle at center,
-    #000 var(--homepage-dot-r),
+    var(--color-black) var(--homepage-dot-r),
     transparent var(--homepage-dot-r)
   );
   mask-size: var(--homepage-dot-cell) var(--homepage-dot-cell);
@@ -129,10 +398,26 @@
   mask-position: 0 0;
   -webkit-mask-image: radial-gradient(
     circle at center,
-    #000 var(--homepage-dot-r),
+    var(--color-black) var(--homepage-dot-r),
     transparent var(--homepage-dot-r)
   );
   -webkit-mask-size: var(--homepage-dot-cell) var(--homepage-dot-cell);
   -webkit-mask-repeat: repeat;
   -webkit-mask-position: 0 0;
+}
+
+/* Swatch-only layout — toggled via ResizeObserver on each button (see theme picker). */
+.themePresetBtnCompact .themePresetBtnLabel {
+  display: none;
+}
+
+.themePresetBtnCompact {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  padding-inline: 0.5rem;
+}
+
+.themePresetBtnCompact .themePresetBtnSwatches {
+  width: auto;
+  justify-content: center;
 }

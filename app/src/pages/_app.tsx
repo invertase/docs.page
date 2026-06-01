@@ -17,7 +17,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <SidebarProvider className="w-full">
             <div
               className={cn(
-                "flex min-h-svh w-full flex-1 flex-col items-stretch overflow-x-clip font-sans",
+                "flex min-h-svh w-full flex-1 flex-col items-stretch overflow-x-clip font-sans [--font-heading:var(--font-lexend)]",
                 fontVariableClasses,
               )}
             >
