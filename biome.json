@@ -25,7 +25,8 @@
       },
       "suspicious": {
         "noShadowRestrictedNames": "off",
-        "noArrayIndexKey": "off"
+        "noArrayIndexKey": "off",
+        "noDocumentCookie": "off"
       },
       "security": {
         "noDangerouslySetInnerHtml": "off"
@@ -36,6 +37,9 @@
       "a11y": {
         "useSemanticElements": "off",
         "useKeyWithClickEvents": "off"
+      },
+      "performance": {
+        "noImgElement": "off"
       }
     }
   }

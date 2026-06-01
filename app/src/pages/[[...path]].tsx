@@ -1,4 +1,5 @@
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
+
 import { Docs } from "@/components/docs";
 import { DocsBundleErrorCard, DocsDebug } from "@/components/docs-debug";
 import { Homepage } from "@/components/homepage";
