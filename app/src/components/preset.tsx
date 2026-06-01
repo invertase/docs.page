@@ -1,5 +1,5 @@
-import Head from "next/head";
 import Color from "color";
+import Head from "next/head";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 
 function parseColor(color?: string) {

@@ -1,6 +1,6 @@
+import { isExternalLink } from "@/lib/docs-links";
 import { buildPublicPathname } from "@/lib/docs-paths";
 import type { ResolvedDocsRoute } from "@/lib/docs-routing";
-import { isExternalLink } from "@/lib/docs-links";
 
 /** Normalizes a route doc path or sidebar href segment for comparison (root ↔ `/`, `index`). */
 export function normalizeDocPathSegment(path: string): string {
@@ -12,7 +12,10 @@ export function normalizeDocPathSegment(path: string): string {
 }
 
 export function getRouteLocale(routeDocPath: string, locales: string[] = []) {
-  const locale = normalizeDocPathSegment(routeDocPath).split("/").filter(Boolean).at(0);
+  const locale = normalizeDocPathSegment(routeDocPath)
+    .split("/")
+    .filter(Boolean)
+    .at(0);
   return locale && locales.includes(locale) ? locale : undefined;
 }
 
@@ -71,8 +74,10 @@ export function docPathMatchesSidebarHref(
   }
 
   return (
-    normalizeDocPathSegment(routeDocPath)
-    === normalizeDocPathSegment(resolveLocalizedDocPath(routeDocPath, sidebarHref, locales))
+    normalizeDocPathSegment(routeDocPath) ===
+    normalizeDocPathSegment(
+      resolveLocalizedDocPath(routeDocPath, sidebarHref, locales),
+    )
   );
 }
 
@@ -107,7 +112,8 @@ export function resolveActiveTabId(
     );
     const matches =
       current === tabPath ||
-      (tabPath !== "" && (current === tabPath || current.startsWith(`${tabPath}/`)));
+      (tabPath !== "" &&
+        (current === tabPath || current.startsWith(`${tabPath}/`)));
     if (matches && (!best || tabPath.length >= best.len)) {
       best = { id: tab.id, len: tabPath.length };
     }

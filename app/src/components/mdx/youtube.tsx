@@ -6,7 +6,11 @@ type YouTubeProps = {
   allow?: string;
 };
 
-export function YouTube({ id, allowFullScreen = true, allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" }: YouTubeProps) {
+export function YouTube({
+  id,
+  allowFullScreen = true,
+  allow = "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture",
+}: YouTubeProps) {
   if (!id) {
     return null;
   }

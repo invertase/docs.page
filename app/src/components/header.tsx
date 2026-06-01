@@ -1,24 +1,24 @@
+import {
+  RiGithubFill,
+  RiMoonFill,
+  RiSparkling2Fill,
+  RiSunFill,
+} from "@remixicon/react";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 import { Link } from "@/components/doc-link";
+import { Search } from "@/components/search";
+import { Button } from "@/components/ui/button";
+import { Kbd } from "@/components/ui/kbd";
+import { useActiveTab } from "@/hooks/use-active-tab";
+import { useAgentPanel } from "@/hooks/use-agent-panel";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useDocTabs } from "@/hooks/use-doc-tabs";
 import { getAssetSrc } from "@/lib/docs-assets";
 import { cn } from "@/lib/utils";
-import {
-  RiSunFill,
-  RiMoonFill,
-  RiSparkling2Fill,
-  RiGithubFill,
-} from "@remixicon/react";
-import { useTheme } from "next-themes";
-import { Button } from "@/components/ui/button";
-import { Search } from "@/components/search";
-import { useAgentPanel } from "@/hooks/use-agent-panel";
-import { Kbd } from "@/components/ui/kbd";
-import { tabsListVariants } from "./ui/tabs";
-import { useEffect, useState } from "react";
 import { RefBadge } from "./ref-badge";
 import { SidebarTrigger } from "./ui/sidebar";
-import { useActiveTab } from "@/hooks/use-active-tab";
+import { tabsListVariants } from "./ui/tabs";
 
 export function Header() {
   const hasTabs = useDocTabs().length > 0;
@@ -175,16 +175,12 @@ function HeaderLinks() {
   const { config } = bundle;
   const links = config.header?.links;
 
-  if (!links || !links.length) {
+  if (!links?.length) {
     return null;
   }
 
   return links.map((link) => (
-    <Button
-      key={link.href}
-      variant={link.cta ? "default" : "outline"}
-      asChild
-    >
+    <Button key={link.href} variant={link.cta ? "default" : "outline"} asChild>
       <Link href={link.href}>{link.title}</Link>
     </Button>
   ));
@@ -199,12 +195,7 @@ function Tabs() {
       aria-label="Documentation sections"
       className="min-w-0 flex-1 max-md:overflow-x-auto max-md:no-scrollbar"
     >
-      <div
-        className={cn(
-          tabsListVariants(),
-          "dark:bg-sidebar-background",
-        )}
-      >
+      <div className={cn(tabsListVariants(), "dark:bg-sidebar-background")}>
         {tabs.map((tab) => {
           const isActive = tab.id === activeTabId;
 

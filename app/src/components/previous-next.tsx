@@ -1,11 +1,11 @@
-import type { SidebarGroup } from "@/server/config/models/sidebar";
-import { Link } from "./doc-link";
+import { RiArrowLeftLine, RiArrowRightLine } from "@remixicon/react";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useSidebar } from "@/hooks/use-sidebar";
 import { isExternalLink } from "@/lib/docs-links";
 import { docPathMatchesSidebarHref } from "@/lib/docs-nav";
+import type { SidebarGroup } from "@/server/config/models/sidebar";
+import { Link } from "./doc-link";
 import { Button } from "./ui/button";
-import { RiArrowLeftLine, RiArrowRightLine } from "@remixicon/react";
 
 type AnchorSource = { title: string; href: string };
 
@@ -27,7 +27,12 @@ export function PreviousNext() {
 
   // Recursively flatten the sidebar (internal doc links only).
   function flattenGroup(group: SidebarGroup) {
-    if ("href" in group && group.href && !isExternalLink(group.href) && group.group) {
+    if (
+      "href" in group &&
+      group.href &&
+      !isExternalLink(group.href) &&
+      group.group
+    ) {
       flattened.push({ href: group.href, title: group.group });
     }
 

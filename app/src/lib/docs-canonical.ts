@@ -5,10 +5,7 @@ import {
   getPublicDocsSiteBase,
 } from "@/lib/docs-environment";
 import { buildPublicPathname, getSitemapPathname } from "@/lib/docs-paths";
-import {
-  resolveDocsRoute,
-  type ResolvedDocsRoute,
-} from "@/lib/docs-routing";
+import { type ResolvedDocsRoute, resolveDocsRoute } from "@/lib/docs-routing";
 import { getRequestOriginFromHeaders } from "@/lib/incoming-http-headers";
 
 export function resolveCanonicalUrl(
@@ -33,10 +30,7 @@ export function resolveCanonicalUrl(
     return new URL(path || "/", `https://${customDomain}`).toString();
   }
 
-  return new URL(
-    route.canonicalPathname,
-    getPublicDocsSiteBase(),
-  ).toString();
+  return new URL(route.canonicalPathname, getPublicDocsSiteBase()).toString();
 }
 
 export type PublicDocsPathRoute = Pick<
@@ -52,9 +46,9 @@ export function getPublicDocsPathRoute(
   const environment = getDocsEnvironment();
 
   if (
-    customDomain
-    && environment === "production"
-    && route.requestMode !== "preview"
+    customDomain &&
+    environment === "production" &&
+    route.requestMode !== "preview"
   ) {
     return {
       requestMode: "custom-domain",
@@ -96,8 +90,8 @@ export function resolvePublicDocsOrigin(
   const environment = getDocsEnvironment();
 
   if (
-    headers
-    && (route.requestMode === "preview" || environment === "development")
+    headers &&
+    (route.requestMode === "preview" || environment === "development")
   ) {
     return getRequestOriginFromHeaders(headers);
   }
@@ -121,8 +115,8 @@ export function resolvePublicSitemapUrl(
   const environment = getDocsEnvironment();
 
   if (
-    headers
-    && (route.requestMode === "preview" || environment === "development")
+    headers &&
+    (route.requestMode === "preview" || environment === "development")
   ) {
     return new URL(
       getSitemapPathname(route),
@@ -139,10 +133,7 @@ export function resolvePublicSitemapUrl(
     ).toString();
   }
 
-  return new URL(
-    getSitemapPathname(route),
-    getPublicDocsSiteBase(),
-  ).toString();
+  return new URL(getSitemapPathname(route), getPublicDocsSiteBase()).toString();
 }
 
 export async function resolvePublicDocsPublishingContext(

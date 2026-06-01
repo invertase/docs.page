@@ -1,6 +1,6 @@
 import frontmatter from "gray-matter";
 
-import { defaultConfig, parseConfig, type Config } from "@/server/config";
+import { type Config, defaultConfig, parseConfig } from "@/server/config";
 import { getGitHubFileSourcesBatch } from "@/server/github/contents";
 import type { GitHubDocFileList } from "@/server/github/tree";
 
@@ -54,7 +54,9 @@ function stripMarkdown(input: string): string {
 
 function collapseWhitespace(text: string) {
   const singleLine = text.replace(/\s+/g, " ").trim();
-  return singleLine.length > 240 ? `${singleLine.slice(0, 237)}...` : singleLine;
+  return singleLine.length > 240
+    ? `${singleLine.slice(0, 237)}...`
+    : singleLine;
 }
 
 function pageDescriptionFromMatterAndBody(
@@ -66,13 +68,17 @@ function pageDescriptionFromMatterAndBody(
   }
 
   const text = body.replace(/\r\n/g, "\n").replace(/^#.*$/gm, "").trim();
-  const firstBlock = text.split(/\n\n+/).find((block) => block.trim().length > 0);
+  const firstBlock = text
+    .split(/\n\n+/)
+    .find((block) => block.trim().length > 0);
   if (!firstBlock) {
     return "";
   }
 
   const singleLine = firstBlock.replace(/\s+/g, " ").trim();
-  return singleLine.length > 240 ? `${singleLine.slice(0, 237)}...` : singleLine;
+  return singleLine.length > 240
+    ? `${singleLine.slice(0, 237)}...`
+    : singleLine;
 }
 
 function docPathToSegments(path: string): string[] {
@@ -162,7 +168,10 @@ export async function buildDocsSourceDataset(
       pathSegments: getDocPathSegments(file.path),
       sourcePath: file.sourcePath,
       title: titleFromMatterAndBody(parsed.data, parsed.content, file.path),
-      description: pageDescriptionFromMatterAndBody(parsed.data, parsed.content),
+      description: pageDescriptionFromMatterAndBody(
+        parsed.data,
+        parsed.content,
+      ),
       sourceContent,
       content,
       searchContent,

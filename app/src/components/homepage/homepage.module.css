@@ -203,7 +203,8 @@
     pointer-events: none;
     background-image: radial-gradient(
       circle,
-      color-mix(in srgb, var(--color-white) 8%, transparent) var(--homepage-dot-r),
+      color-mix(in srgb, var(--color-white) 8%, transparent)
+        var(--homepage-dot-r),
       transparent var(--homepage-dot-r)
     );
     background-size: var(--homepage-dot-cell) var(--homepage-dot-cell);
@@ -211,7 +212,6 @@
     background-repeat: repeat;
     background-attachment: fixed;
   }
-
 }
 
 /** Soft periwinkle hexagon glow — scrolls with page (hero right, footer CTA left). */
@@ -259,7 +259,8 @@
     pointer-events: none;
     background-image: radial-gradient(
       circle,
-      color-mix(in srgb, var(--color-white) 8%, transparent) var(--homepage-dot-r),
+      color-mix(in srgb, var(--color-white) 8%, transparent)
+        var(--homepage-dot-r),
       transparent var(--homepage-dot-r)
     );
     background-size: var(--homepage-dot-cell) var(--homepage-dot-cell);
@@ -282,7 +283,8 @@
     background-color: var(--color-black);
     background-image: radial-gradient(
       circle,
-      color-mix(in srgb, var(--homepage-dot-color) 28%, transparent) var(--homepage-dot-r),
+      color-mix(in srgb, var(--homepage-dot-color) 28%, transparent)
+        var(--homepage-dot-r),
       transparent var(--homepage-dot-r)
     );
     background-size: var(--homepage-dot-cell) var(--homepage-dot-cell);
@@ -298,8 +300,17 @@
   pointer-events: none;
   background: radial-gradient(
     circle 320px at var(--homepage-glow-x, 50vw) var(--homepage-glow-y, 35vh),
-    color-mix(in srgb, var(--homepage-glow-color, var(--color-honey-500)) 38%, transparent),
-    color-mix(in srgb, var(--homepage-glow-color, var(--color-honey-500)) 14%, transparent) 22%,
+    color-mix(
+      in srgb,
+      var(--homepage-glow-color, var(--color-honey-500)) 38%,
+      transparent
+    ),
+    color-mix(
+        in srgb,
+        var(--homepage-glow-color, var(--color-honey-500)) 14%,
+        transparent
+      )
+      22%,
     transparent 48%
   );
   mask-image: radial-gradient(

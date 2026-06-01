@@ -22,7 +22,9 @@ function firstHeaderValue(value: string | string[] | null | undefined) {
   return Array.isArray(value) ? value[0] : value;
 }
 
-function isWebHeaders(headers: Headers | IncomingHttpHeaders): headers is Headers {
+function isWebHeaders(
+  headers: Headers | IncomingHttpHeaders,
+): headers is Headers {
   return "get" in headers && typeof headers.get === "function";
 }
 
@@ -31,16 +33,20 @@ function getHeaderValue(headers: Headers | IncomingHttpHeaders, name: string) {
     return headers.get(name) ?? undefined;
   }
 
-  return firstHeaderValue(headers[name.toLowerCase() as keyof IncomingHttpHeaders]);
+  return firstHeaderValue(
+    headers[name.toLowerCase() as keyof IncomingHttpHeaders],
+  );
 }
 
 /** Public site origin, honoring reverse-proxy forwarding headers when present. */
-export function getRequestOriginFromHeaders(headers: Headers | IncomingHttpHeaders) {
+export function getRequestOriginFromHeaders(
+  headers: Headers | IncomingHttpHeaders,
+) {
   const protocol = getHeaderValue(headers, "x-forwarded-proto") ?? "http";
   const host =
-    getHeaderValue(headers, "x-forwarded-host")
-    ?? getHeaderValue(headers, "host")
-    ?? "localhost";
+    getHeaderValue(headers, "x-forwarded-host") ??
+    getHeaderValue(headers, "host") ??
+    "localhost";
 
   return `${protocol}://${host}`;
 }

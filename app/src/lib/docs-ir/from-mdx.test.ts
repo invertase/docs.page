@@ -7,7 +7,9 @@ describe("preprocessMdxSource", () => {
   });
 
   test("escapes angle brackets that cannot start JSX", () => {
-    expect(preprocessMdxSource("Use <*> for wildcard")).toBe("Use &lt;*> for wildcard");
+    expect(preprocessMdxSource("Use <*> for wildcard")).toBe(
+      "Use &lt;*> for wildcard",
+    );
   });
 });
 
@@ -22,7 +24,9 @@ describe("mdxToDocIr", () => {
     const ir = await mdxToDocIr("Use <*> for wildcard");
     expect(ir.kind).toBe("root");
     const markdown = ir.children.find((child) => child.kind === "markdown");
-    expect(markdown?.kind === "markdown" && markdown.source).toContain("&lt;*>");
+    expect(markdown?.kind === "markdown" && markdown.source).toContain(
+      "&lt;*>",
+    );
   });
 
   test("parses known MDX components", async () => {

@@ -1,17 +1,4 @@
-import {
-  type FormEvent,
-  type KeyboardEvent,
-  useCallback,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
-import { DefaultChatTransport } from "ai";
 import { useChat } from "@ai-sdk/react";
-import Cookies from "js-cookie";
-import { Streamdown } from "streamdown";
-import { code } from "@streamdown/code";
-
 import {
   RiArrowRightSLine,
   RiArrowUpLine,
@@ -21,18 +8,30 @@ import {
   RiStopLine,
   RiToolsLine,
 } from "@remixicon/react";
+import { code } from "@streamdown/code";
+import { DefaultChatTransport } from "ai";
+import Cookies from "js-cookie";
+import {
+  type FormEvent,
+  type KeyboardEvent,
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
+import { Streamdown } from "streamdown";
 import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupTextarea,
 } from "@/components/ui/input-group";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 import { Link } from "../doc-link";
 import { Kbd } from "../ui/kbd";

@@ -1,8 +1,8 @@
 "use client";
 
+import { RiArrowRightSLine } from "@remixicon/react";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
-import { RiArrowRightSLine } from "@remixicon/react";
 
 import { cn } from "@/lib/utils";
 import { Button, buttonTrailingIconClass } from "../ui/button";
@@ -11,8 +11,8 @@ import {
   FeatureSectionMedia,
 } from "./feature-section-media";
 import { FEATURES } from "./features-data";
-import { HOMEPAGE_FEATURE_STACK_MEDIA_QUERY } from "./homepage-breakpoints";
 import styles from "./homepage.module.css";
+import { HOMEPAGE_FEATURE_STACK_MEDIA_QUERY } from "./homepage-breakpoints";
 import { ModernInterfaceThemePicker } from "./modern-interface-theme-picker";
 import {
   PAPER_FOLD_REM,

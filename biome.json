@@ -1,15 +1,17 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.4.16/schema.json",
   "files": {
-    "ignore": [
-      "node_modules",
-      ".git",
-      "dist/**"
+    "includes": [
+      "**",
+      "!**/node_modules",
+      "!**/.git",
+      "!**/dist",
+      "!**/.next",
+      "!**/*.css",
+      "!**/app/public"
     ]
   },
-  "organizeImports": {
-    "enabled": true
-  },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "formatter": {
     "enabled": true,
     "indentStyle": "space"
@@ -30,6 +32,10 @@
       },
       "complexity": {
         "noUselessFragments": "off"
+      },
+      "a11y": {
+        "useSemanticElements": "off",
+        "useKeyWithClickEvents": "off"
       }
     }
   }

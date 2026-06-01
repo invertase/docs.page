@@ -72,7 +72,10 @@ export async function mdxToDocIr(source: string): Promise<DocIrNode> {
 
   const root: DocIrNode = {
     kind: "root",
-    children: childrenToIr((tree as Root as MdastNode).children ?? [], preprocessed),
+    children: childrenToIr(
+      (tree as Root as MdastNode).children ?? [],
+      preprocessed,
+    ),
   };
 
   return sanitizeHtmlInIr(root);
@@ -176,7 +179,10 @@ function nodeToIr(node: MdastNode, source: string): DocIrNode[] {
     case "mdxJsxTextElement":
       return jsxElementToIr(node, source);
     case "paragraph":
-      if (node.children?.length === 1 && node.children[0]?.type === "mdxJsxTextElement") {
+      if (
+        node.children?.length === 1 &&
+        node.children[0]?.type === "mdxJsxTextElement"
+      ) {
         return jsxElementToIr(node.children[0], source);
       }
 
@@ -359,8 +365,15 @@ function estreeExpressionToProp(
     case "ObjectExpression": {
       const out: Record<string, DocIrPropValue> = {};
       for (const property of expression.properties ?? []) {
-        if (property.type !== "Property" || property.computed || !property.key || !property.value) {
-          throw new Error(`Unsupported MDX JSX expression attribute: ${attrName}`);
+        if (
+          property.type !== "Property" ||
+          property.computed ||
+          !property.key ||
+          !property.value
+        ) {
+          throw new Error(
+            `Unsupported MDX JSX expression attribute: ${attrName}`,
+          );
         }
         const key = estreePropertyKey(property.key);
         out[key] = estreeExpressionToProp(attrName, property.value);
@@ -372,7 +385,9 @@ function estreeExpressionToProp(
   throw new Error(`Unsupported MDX JSX expression attribute: ${attrName}`);
 }
 
-function estreePropertyKey(key: NonNullable<EstreeExpression["properties"]>[number]["key"]): string {
+function estreePropertyKey(
+  key: NonNullable<EstreeExpression["properties"]>[number]["key"],
+): string {
   if (key?.type === "Identifier" && typeof key.name === "string") {
     return key.name;
   }
@@ -415,7 +430,10 @@ function normalizeMarkdownLeaf(markdown: string): string {
   }
 
   let lastContent = lines.length - 1;
-  while (lastContent >= firstContent && lines[lastContent]?.trim().length === 0) {
+  while (
+    lastContent >= firstContent &&
+    lines[lastContent]?.trim().length === 0
+  ) {
     lastContent -= 1;
   }
 

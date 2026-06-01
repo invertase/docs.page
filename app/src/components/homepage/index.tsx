@@ -1,13 +1,12 @@
 import { cn } from "@/lib/utils";
 import { Background } from "./background";
+import { Explore } from "./explore";
+import { FeatureStack } from "./feature-stack";
+import { Footer } from "./footer";
 import { Header } from "./header";
 import { Hero } from "./hero";
-
 import styles from "./homepage.module.css";
 import { Preview } from "./preview";
-import { FeatureStack } from "./feature-stack";
-import { Explore } from "./explore";
-import { Footer } from "./footer";
 
 export function Homepage() {
   return (
@@ -43,10 +42,7 @@ export function Homepage() {
           </div>
         </div>
         {/* Continuous side rails (px-4 inset) — sole vertical borders for the homepage column. */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-0 z-20"
-        >
+        <div aria-hidden className="pointer-events-none absolute inset-0 z-20">
           <div className="relative mx-auto h-full min-h-full w-full max-w-8xl">
             <div
               className={cn(

@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, type ReactNode } from "react";
+import { type ReactNode, useId } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -169,9 +169,18 @@ export function PaperCorner({
                 x2={isRight ? v : 0}
                 y2={v}
               >
-                <stop offset="0%" stopColor="var(--homepage-border-bright-fold)" />
-                <stop offset="78%" stopColor="var(--homepage-border-bright-fold)" />
-                <stop offset="100%" stopColor="var(--homepage-border-bright-soft)" />
+                <stop
+                  offset="0%"
+                  stopColor="var(--homepage-border-bright-fold)"
+                />
+                <stop
+                  offset="78%"
+                  stopColor="var(--homepage-border-bright-fold)"
+                />
+                <stop
+                  offset="100%"
+                  stopColor="var(--homepage-border-bright-soft)"
+                />
               </linearGradient>
               <linearGradient
                 id={gradCurve}
@@ -181,9 +190,18 @@ export function PaperCorner({
                 x2={isRight ? v : 0}
                 y2={v}
               >
-                <stop offset="0%" stopColor="var(--homepage-border-bright-fold)" />
-                <stop offset="22%" stopColor="var(--homepage-border-bright-soft)" />
-                <stop offset="48%" stopColor="var(--homepage-border-fold-mid)" />
+                <stop
+                  offset="0%"
+                  stopColor="var(--homepage-border-bright-fold)"
+                />
+                <stop
+                  offset="22%"
+                  stopColor="var(--homepage-border-bright-soft)"
+                />
+                <stop
+                  offset="48%"
+                  stopColor="var(--homepage-border-fold-mid)"
+                />
                 <stop offset="72%" stopColor="var(--homepage-border-muted)" />
                 <stop offset="100%" stopColor="var(--homepage-border-muted)" />
               </linearGradient>

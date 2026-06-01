@@ -1,18 +1,13 @@
 "use client";
 
+import { RiArrowRightSLine } from "@remixicon/react";
+import { MenuIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { Fragment, useState } from "react";
-import { MenuIcon, XIcon } from "lucide-react";
-import { RiArrowRightSLine } from "@remixicon/react";
-
-import { cn } from "@/lib/utils";
 import { fonts } from "@/lib/fonts";
+import { cn } from "@/lib/utils";
 import { Button, buttonTrailingIconClass } from "../ui/button";
-import {
-  Sheet,
-  SheetContent,
-  SheetTitle,
-} from "../ui/sheet";
+import { Sheet, SheetContent, SheetTitle } from "../ui/sheet";
 import styles from "./homepage.module.css";
 
 const NAV_LINKS = [

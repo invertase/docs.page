@@ -8,10 +8,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useDocHref } from "@/hooks/use-doc-href";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useLocale } from "@/hooks/use-locale";
-import { Link } from "./doc-link";
-import { useDocHref } from "@/hooks/use-doc-href";
 
 export function LocaleSwitcher() {
   const ctx = useDocPageContext();

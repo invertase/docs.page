@@ -10,10 +10,7 @@ import {
   isPinnedCommitRef,
   isRawDocRequestPath,
 } from "@/lib/docs-routing";
-import {
-  resolvePlausibleOwnerRepo,
-  trackPageRequest,
-} from "@/lib/plausible";
+import { resolvePlausibleOwnerRepo, trackPageRequest } from "@/lib/plausible";
 
 const SECONDS_PER_DAY = 24 * 60 * 60;
 /** Fastly edge: allow stale serve + async revalidate / error fallback for up to 7 days after freshness TTL. */
@@ -169,7 +166,10 @@ function getPathSegments(pathname: string) {
   return pathname.split("/").filter(Boolean);
 }
 
-function shouldApplyDocsCache(request: NextRequest, vanityOwner: string | null) {
+function shouldApplyDocsCache(
+  request: NextRequest,
+  vanityOwner: string | null,
+) {
   if (!getDocsCacheHeaders(request.nextUrl.pathname)) {
     return false;
   }
@@ -231,7 +231,10 @@ function getDocsCacheHeaders(pathname: string): DocsCacheHeaders | null {
   return null;
 }
 
-function withDocsCache(response: NextResponse, headers: DocsCacheHeaders | null) {
+function withDocsCache(
+  response: NextResponse,
+  headers: DocsCacheHeaders | null,
+) {
   if (headers) {
     response.headers.set("Cache-Control", headers.cacheControl);
     response.headers.set("Surrogate-Control", headers.surrogateControl);
@@ -240,7 +243,10 @@ function withDocsCache(response: NextResponse, headers: DocsCacheHeaders | null)
   return response;
 }
 
-function maybeTrackPageRequest(request: NextRequest, vanityOwner: string | null) {
+function maybeTrackPageRequest(
+  request: NextRequest,
+  vanityOwner: string | null,
+) {
   if (getDocsEnvironment() !== "production") {
     return;
   }
@@ -281,7 +287,10 @@ export function proxy(request: NextRequest) {
     return withDocsCache(NextResponse.next(), cacheHeaders);
   }
 
-  const firstSegment = request.nextUrl.pathname.split("/").filter(Boolean).at(0);
+  const firstSegment = request.nextUrl.pathname
+    .split("/")
+    .filter(Boolean)
+    .at(0);
 
   if (firstSegment === vanityOwner) {
     return withDocsCache(NextResponse.next(), cacheHeaders);

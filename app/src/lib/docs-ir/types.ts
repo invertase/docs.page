@@ -25,4 +25,3 @@ export type DocIrPropValue =
   | null
   | { [key: string]: DocIrPropValue }
   | DocIrPropValue[];
-

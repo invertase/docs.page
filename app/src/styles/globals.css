@@ -225,8 +225,7 @@
 }
 
 /* Sticky action bar breaks inside scroll containers — pin copy to top-right. */
-.agent-chat-markdown
-  [data-streamdown="code-block"]
+.agent-chat-markdown [data-streamdown="code-block"]
   > div:has([data-streamdown="code-block-actions"]) {
   position: absolute;
   top: 0.5rem;
@@ -317,7 +316,8 @@
   font-weight: 300;
 }
 
-.font-mono :is(button, a, [data-slot="button"], input, textarea, select):not(
+.font-mono
+  :is(button, a, [data-slot="button"], input, textarea, select):not(
     [data-size="lg"]
   ) {
   font-weight: 300;

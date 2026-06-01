@@ -6,9 +6,9 @@ import {
   type ReactNode,
 } from "react";
 import {
-  Accordion as AccordionPrimitive,
   AccordionContent,
   AccordionItem,
+  Accordion as AccordionPrimitive,
   AccordionTrigger,
 } from "@/components/ui/accordion";
 
@@ -22,8 +22,7 @@ function isAccordionElement(
   child: ReactNode,
 ): child is ReactElement<AccordionProps> {
   return (
-    isValidElement<Partial<AccordionProps>>(child) &&
-    child.type === Accordion
+    isValidElement<Partial<AccordionProps>>(child) && child.type === Accordion
   );
 }
 

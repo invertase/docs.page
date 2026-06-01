@@ -1,7 +1,7 @@
+import Head from "next/head";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { getAssetSrc } from "@/lib/docs-assets";
 import { toBase64 } from "@/lib/utils";
-import Head from "next/head";
 
 export function Metadata() {
   const { bundle, route } = useDocPageContext();

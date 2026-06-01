@@ -1,9 +1,10 @@
+import { RiCheckLine, RiFileCopyLine } from "@remixicon/react";
 import {
   createContext,
+  type PropsWithChildren,
   useContext,
   useMemo,
   useState,
-  type PropsWithChildren,
 } from "react";
 import {
   Dialog,
@@ -18,7 +19,6 @@ import { useCopy } from "@/hooks/use-copy";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { getMcpEndpointUrl } from "@/lib/docs-paths";
 import { Button } from "./ui/button";
-import { RiCheckLine, RiFileCopyLine } from "@remixicon/react";
 
 export function useMcpDialog() {
   const ctx = useContext(Context);

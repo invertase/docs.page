@@ -13,8 +13,7 @@ const MEDIA_GLOW_POSITION_CLASS: Record<
 };
 
 /** Shared with theme picker so stacked media widths match. */
-export const FEATURE_MEDIA_FRAME_CLASS =
-  "relative mx-auto w-[90%] max-w-full";
+export const FEATURE_MEDIA_FRAME_CLASS = "relative mx-auto w-[90%] max-w-full";
 
 type FeatureSectionMediaProps = {
   alt: string;

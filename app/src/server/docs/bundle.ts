@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 import { Bundler, type BundlerOutput } from "./bundler";
-import { BundlerError } from "./bundler/error";
 
 const QuerySchema = z.object({
   owner: z.string().min(1),
@@ -15,8 +14,8 @@ type ParsedDocBundleArgs = z.infer<typeof QuerySchema>;
 
 export type GetDocBundleArgs = z.input<typeof QuerySchema>;
 export type { BundlerOutput } from "./bundler";
-export { BundlerError } from "./bundler/error";
 export { ERROR_CODES } from "./bundler";
+export { BundlerError } from "./bundler/error";
 
 async function buildDocBundleInternal(
   input: ParsedDocBundleArgs,

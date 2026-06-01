@@ -1,6 +1,6 @@
 import { createHmac, randomUUID, timingSafeEqual } from "node:crypto";
-import { parse, serialize, type SerializeOptions } from "cookie";
-import { SignJWT, jwtVerify } from "jose";
+import { parse, type SerializeOptions, serialize } from "cookie";
+import { jwtVerify, SignJWT } from "jose";
 import { getDocsRepoScopedPath } from "@/lib/docs-paths";
 import type { ResolvedDocsRoute } from "@/lib/docs-routing";
 
@@ -50,9 +50,13 @@ export async function createAgentSession({
 
 export async function verifyAgentSession(token: string) {
   try {
-    const { payload, protectedHeader } = await jwtVerify(token, getAgentSessionKey(), {
-      audience: AGENT_SESSION_AUDIENCE,
-    });
+    const { payload, protectedHeader } = await jwtVerify(
+      token,
+      getAgentSessionKey(),
+      {
+        audience: AGENT_SESSION_AUDIENCE,
+      },
+    );
 
     if (
       protectedHeader.alg !== "HS256" ||
@@ -128,10 +132,12 @@ export function parseCookies(cookieHeader: string | undefined) {
   return cookieHeader ? parse(cookieHeader) : {};
 }
 
-export function getAgentCsrfCookiePath(route: Pick<
-  ResolvedDocsRoute,
-  "requestMode" | "owner" | "repository" | "ref"
->) {
+export function getAgentCsrfCookiePath(
+  route: Pick<
+    ResolvedDocsRoute,
+    "requestMode" | "owner" | "repository" | "ref"
+  >,
+) {
   return getDocsRepoScopedPath(route);
 }
 

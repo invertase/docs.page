@@ -3,7 +3,9 @@ import { ConfigSchema } from "@/server/config/schema";
 
 export async function GET() {
   return Response.json(
-    zodToJsonSchema(ConfigSchema as unknown as Parameters<typeof zodToJsonSchema>[0]),
+    zodToJsonSchema(
+      ConfigSchema as unknown as Parameters<typeof zodToJsonSchema>[0],
+    ),
     { status: 200 },
   );
 }

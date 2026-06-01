@@ -1,13 +1,3 @@
-import { useCallback, useState } from "react";
-import { Button } from "./ui/button";
-import { ButtonGroup } from "./ui/button-group";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
 import {
   RiArrowDownSLine,
   RiArrowRightUpLine,
@@ -19,12 +9,21 @@ import {
   RiFileCopyLine,
   RiGithubLine,
   RiMarkdownLine,
-  RiPencilLine,
 } from "@remixicon/react";
+import { useCallback, useState } from "react";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
-import { getMcpEndpointUrl } from "@/lib/docs-paths";
 import { useSourceUrl } from "@/hooks/use-source-url";
+import { getMcpEndpointUrl } from "@/lib/docs-paths";
 import { useMcpDialog } from "./mcp-dialog";
+import { Button } from "./ui/button";
+import { ButtonGroup } from "./ui/button-group";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 export function ActionMenu() {
   const { bundle, route, meta } = useDocPageContext();
@@ -122,7 +121,10 @@ export function ActionMenu() {
                   name:
                     bundle.config.name?.trim() ||
                     `${route.owner}/${route.repository}`,
-                  url: getMcpEndpointUrl(meta.publicPathRoute, meta.requestOrigin),
+                  url: getMcpEndpointUrl(
+                    meta.publicPathRoute,
+                    meta.requestOrigin,
+                  ),
                 };
                 const url = new URL(
                   `vscode:mcp/install?${encodeURIComponent(JSON.stringify(config))}`,
@@ -141,7 +143,10 @@ export function ActionMenu() {
               className="gap-4"
               onClick={() => {
                 const config = {
-                  url: getMcpEndpointUrl(meta.publicPathRoute, meta.requestOrigin),
+                  url: getMcpEndpointUrl(
+                    meta.publicPathRoute,
+                    meta.requestOrigin,
+                  ),
                 };
                 const encodedConfig = btoa(JSON.stringify(config));
                 const serverName =

@@ -1,13 +1,13 @@
 import { resolveDocsRoute } from "@/lib/docs-routing";
 import { BundlerError } from "@/server/docs/bundle";
 import { loadDocsConfigForResolvedSha } from "@/server/docs/source-dataset";
+import { listGitHubDocFiles } from "@/server/github/tree";
 import {
   createMcpDescriptor,
   handleMcpDelete,
   handleMcpPost,
   type McpRepoContext,
 } from "@/server/mcp/server";
-import { listGitHubDocFiles } from "@/server/github/tree";
 
 function privateRepoResponse(error: BundlerError) {
   return Response.json({ error: error.message }, { status: error.code });

@@ -1,9 +1,9 @@
 import { assertPublicRepositoryAccess } from "@/lib/docs-access";
 import { BundlerError, ERROR_CODES } from "@/server/docs/bundle";
 import {
+  GITHUB_CACHE_TTLS,
   getGitHubCache,
   githubCacheKey,
-  GITHUB_CACHE_TTLS,
   putGitHubCache,
   withGitHubCache,
 } from "./cache";

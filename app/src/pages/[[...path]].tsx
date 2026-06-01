@@ -1,15 +1,15 @@
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
-
+import { Docs } from "@/components/docs";
+import { DocsBundleErrorCard, DocsDebug } from "@/components/docs-debug";
+import { Homepage } from "@/components/homepage";
+import { Preset } from "@/components/preset";
+import { DocPageContext } from "@/hooks/use-doc-page-context";
+import { getAgentPanelCookieName } from "@/lib/agent-panel-state";
 import type {
   DocsBundleApiErrorResponse,
   DocsBundleApiResponse,
   DocsBundleApiSuccessResponse,
 } from "@/lib/docs-bundle-api";
-import {
-  isRawDocRequestPath,
-  resolveDocsRoute,
-  resolveRawDocsRoute,
-} from "@/lib/docs-routing";
 import { buildDocsBundleApiPath } from "@/lib/docs-bundle-api";
 import {
   resolveCanonicalUrl,
@@ -17,28 +17,23 @@ import {
 } from "@/lib/docs-canonical";
 import { getDeploymentOrigin } from "@/lib/docs-environment";
 import { resolveFrontmatterRedirectDestination } from "@/lib/docs-redirect";
+import { isRawDocRequestPath, resolveRawDocsRoute } from "@/lib/docs-routing";
 import {
   acceptPrefersMarkdown,
   incomingHttpHeadersToWebHeaders,
 } from "@/lib/incoming-http-headers";
+import type { DocPageProps, ErrorPageProps, PageProps } from "@/lib/types";
 import {
   DOCS_HTML_CACHE_HEADERS,
   RAW_DOC_CACHE_HEADERS,
   setDocsCacheHeaders,
 } from "@/proxy";
-import type { DocPageProps, ErrorPageProps, PageProps } from "@/lib/types";
-import { DocsBundleErrorCard, DocsDebug } from "@/components/docs-debug";
-import { Docs } from "@/components/docs";
-import { DocPageContext } from "@/hooks/use-doc-page-context";
-import { getAgentPanelCookieName } from "@/lib/agent-panel-state";
 import {
   createAgentSession,
   createAgentSessionCookies,
   getAgentCsrfCookiePath,
   parseCookies,
 } from "@/server/agent/session";
-import { Preset } from "@/components/preset";
-import { Homepage } from "@/components/homepage";
 
 export const getServerSideProps = (async ({ params, req, res, query }) => {
   const raw = params?.path;
@@ -274,9 +269,7 @@ export default function RepoDocsCatchAllPage(
   }
 
   if (props.kind === "home") {
-    return (
-      <Homepage />
-    );
+    return <Homepage />;
   }
 
   if (props.kind === "error") {

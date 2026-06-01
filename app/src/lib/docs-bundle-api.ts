@@ -1,5 +1,5 @@
-import type { BundlerOutput } from "@/server/docs/bundle";
 import type { ResolvedDocsRoute } from "@/lib/docs-routing";
+import type { BundlerOutput } from "@/server/docs/bundle";
 
 /** JSON body shape for `code: "OK"` responses from `/api/bundle` (matches `getDocBundle`). */
 export type DocsBundlePayload = BundlerOutput;

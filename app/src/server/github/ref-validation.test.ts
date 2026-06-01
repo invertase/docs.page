@@ -11,6 +11,8 @@ describe("isUnresolvedNumericRef", () => {
   });
 
   test("allows non-numeric branch names", () => {
-    expect(isUnresolvedNumericRef("release-816", { type: "branch" })).toBe(false);
+    expect(isUnresolvedNumericRef("release-816", { type: "branch" })).toBe(
+      false,
+    );
   });
 });

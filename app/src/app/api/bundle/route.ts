@@ -1,3 +1,4 @@
+import { z } from "zod";
 import type {
   DocsBundleApiErrorResponse,
   DocsBundleApiResponse,
@@ -6,7 +7,6 @@ import { getBundleJsonCacheHeaders } from "@/proxy";
 import { isAgentEnabledForRepository } from "@/server/agent/repository";
 import { BundlerError, getDocBundle } from "@/server/docs/bundle";
 import { logBundlerError } from "@/server/docs/bundler/error";
-import { z } from "zod";
 
 const QuerySchema = z.object({
   owner: z.string().trim().min(1),

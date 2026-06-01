@@ -33,7 +33,7 @@ export function Image(props: ImageProps) {
 
   return (
     <figure
-      className={cn('', {
+      className={cn("", {
         "hidden dark:block": props.theme === "dark",
         "dark:hidden": props.theme === "light",
       })}
@@ -49,13 +49,15 @@ export function Image(props: ImageProps) {
             "mb-1": props.caption,
           })}
           style={{
-            width: width ? Number.parseInt(width.toString()) : "inherit",
-            height: height ? Number.parseInt(height.toString()) : "inherit",
+            width: width ? Number.parseInt(width.toString(), 10) : "inherit",
+            height: height ? Number.parseInt(height.toString(), 10) : "inherit",
           }}
         />,
       )}
       {!!props.caption && (
-        <figcaption className="text-center text-muted-foreground text-sm pt-2">{props.caption}</figcaption>
+        <figcaption className="text-center text-muted-foreground text-sm pt-2">
+          {props.caption}
+        </figcaption>
       )}
     </figure>
   );

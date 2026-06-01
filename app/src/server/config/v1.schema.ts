@@ -1,6 +1,6 @@
 import { z } from "zod";
-import { ConfigSchema } from "./schema";
 import type { Config, Sidebar } from "./schema";
+import { ConfigSchema } from "./schema";
 
 const V1SidebarItem = z.tuple([
   z.coerce.string(),
@@ -226,11 +226,11 @@ export const V1ConfigSchema = z
       );
     } else {
       const sidebar: Record<string, Sidebar[]> = {};
-      Object.entries(v1.sidebar).map(([locale, sidebarItems]) => {
+      for (const [locale, sidebarItems] of Object.entries(v1.sidebar)) {
         sidebar[locale] = compactSidebarGroups(
           sidebarItems.map(transformSidebarItem),
         );
-      });
+      }
       config.sidebar = sidebar;
     }
 

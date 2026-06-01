@@ -1,8 +1,8 @@
+import { RiListUnordered } from "@remixicon/react";
+import { useEffect, useState } from "react";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useDocTabs } from "@/hooks/use-doc-tabs";
 import { cn } from "@/lib/utils";
-import { RiListUnordered } from "@remixicon/react"
-import { useEffect, useState } from "react";
 
 export function TableOfContents() {
   const [activeId, setActiveId] = useState("");
@@ -13,9 +13,7 @@ export function TableOfContents() {
   useEffect(() => {
     const headingIds = new Set(headings.map((heading) => heading.id));
     const sections = Array.from(
-      document.querySelectorAll<HTMLElement>(
-        'main [data-heading="true"][id]',
-      ),
+      document.querySelectorAll<HTMLElement>('main [data-heading="true"][id]'),
     ).filter((heading) => headingIds.has(heading.id));
     if (sections.length === 0) {
       setActiveId("");
@@ -63,9 +61,7 @@ export function TableOfContents() {
     <div
       className={cn(
         "sticky px-4 pt-10",
-        hasTabs
-          ? "top-[calc(6rem+1px)]"
-          : "top-[calc(4rem+1px)]",
+        hasTabs ? "top-[calc(6rem+1px)]" : "top-[calc(4rem+1px)]",
       )}
     >
       <h3 className="flex items-center gap-2 text-foreground ">

@@ -1,6 +1,6 @@
-import { Fragment, type CSSProperties, type ReactNode } from "react";
-import { Error, Info, Success, Warning } from "@/components/mdx/callout";
+import { type CSSProperties, Fragment, type ReactNode } from "react";
 import { Accordion, AccordionGroup } from "@/components/mdx/accordion";
+import { Error, Info, Success, Warning } from "@/components/mdx/callout";
 import { Property } from "@/components/mdx/property";
 import { TabItem, Tabs } from "@/components/mdx/tabs";
 import { Tweet } from "@/components/mdx/tweet";
@@ -12,9 +12,9 @@ import { CodeFence } from "./mdx/code-fence";
 import { CodeGroup, type CodeGroupBlock } from "./mdx/code-group";
 import { Icon } from "./mdx/icon";
 import { Image } from "./mdx/image";
-import { Vimeo } from "./mdx/vimeo";
-import { Video } from "./mdx/video";
 import { Step, Steps } from "./mdx/steps";
+import { Video } from "./mdx/video";
+import { Vimeo } from "./mdx/vimeo";
 
 type DocsIrRendererProps = {
   root: DocIrNode;
@@ -242,9 +242,7 @@ function InvalidDocComponent({ name }: { name: string }) {
   );
 }
 
-function codeBlocksFromChildren(
-  children: DocIrNode[],
-): CodeGroupBlock[] {
+function codeBlocksFromChildren(children: DocIrNode[]): CodeGroupBlock[] {
   return children
     .filter(
       (child): child is Extract<DocIrNode, { kind: "code" }> =>

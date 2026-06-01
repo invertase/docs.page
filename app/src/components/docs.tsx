@@ -1,17 +1,17 @@
 import dynamic from "next/dynamic";
 import { AgentPanel } from "@/components/agent/panel";
 import { AgentPanelProvider } from "@/components/agent/provider";
+import { Footer } from "./footer";
 import { Header } from "./header";
-import { Sidebar } from "./sidebar";
+import { McpDialogProvider } from "./mcp-dialog";
+import { Metadata } from "./metadata";
+import { PageMetadata } from "./page-metadata";
+import { PreviousNext } from "./previous-next";
 import { Prose } from "./prose";
+import { Scripts } from "./scripts";
+import { Sidebar } from "./sidebar";
 import { TableOfContents } from "./table-of-contents";
 import { ResizablePanel, ResizablePanelGroup } from "./ui/resizable";
-import { PageMetadata } from "./page-metadata";
-import { Footer } from "./footer";
-import { Metadata } from "./metadata";
-import { Scripts } from "./scripts";
-import { PreviousNext } from "./previous-next";
-import { McpDialogProvider } from "./mcp-dialog";
 
 const NProgress = dynamic(() => import("@/components/nprogress"), {
   ssr: false,

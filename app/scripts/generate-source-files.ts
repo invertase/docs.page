@@ -14,7 +14,10 @@ import Bun from "bun";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const appRoot = path.join(__dirname, "..");
 const repoRoot = path.join(appRoot, "..");
-const defaultOut = path.join(appRoot, "src/components/homepage/source-files.json");
+const defaultOut = path.join(
+  appRoot,
+  "src/components/homepage/source-files.json",
+);
 
 const outPath = process.argv[2] ? path.resolve(process.argv[2]) : defaultOut;
 

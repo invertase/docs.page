@@ -1,7 +1,11 @@
+import {
+  RiArrowRightSLine,
+  RiCheckLine,
+  RiFileCopyLine,
+} from "@remixicon/react";
 import Link from "next/link";
-import { RiArrowRightSLine, RiCheckLine, RiFileCopyLine } from "@remixicon/react";
-import { useCopy } from "@/hooks/use-copy";
 import { Button, buttonTrailingIconClass } from "@/components/ui/button";
+import { useCopy } from "@/hooks/use-copy";
 import { cn } from "@/lib/utils";
 
 import styles from "./homepage.module.css";
@@ -16,8 +20,9 @@ export function Hero() {
           <span className="font-normal">humans + agents</span>
         </h1>
         <p className="text-center font-light text-neutral-400">
-          Instantly <span className="text-primary">serve markdown</span> from any GitHub branch as modern, agent-ready
-          docs, with AI chat, MCP, and llms.txt.
+          Instantly <span className="text-primary">serve markdown</span> from
+          any GitHub branch as modern, agent-ready docs, with AI chat, MCP, and
+          llms.txt.
         </p>
         <div className="flex items-center justify-center gap-4">
           <Button asChild size="lg">
@@ -42,7 +47,7 @@ function Eyebrow() {
       <div
         className={cn(
           styles.homepageEyebrowInner,
-          "px-4 py-2 text-base text-neutral-400/80 transition-colors group-hover/eyebrow:text-neutral-300"
+          "px-4 py-2 text-base text-neutral-400/80 transition-colors group-hover/eyebrow:text-neutral-300",
         )}
       >
         Free and open-source
@@ -62,7 +67,11 @@ function Terminal() {
         {command}
       </span>
       <Button variant="ghost" size="icon-sm" onClick={copy}>
-        {copied ? <RiCheckLine className="text-green-500" /> : <RiFileCopyLine />}
+        {copied ? (
+          <RiCheckLine className="text-green-500" />
+        ) : (
+          <RiFileCopyLine />
+        )}
       </Button>
     </div>
   );

@@ -1,5 +1,5 @@
-import type { PublicDocsPathRoute } from "./docs-canonical";
 import type { DocsBundlePayload } from "./docs-bundle-api";
+import type { PublicDocsPathRoute } from "./docs-canonical";
 import type { ResolvedDocsRoute } from "./docs-routing";
 
 export type DocPageProps = {
@@ -11,7 +11,7 @@ export type DocPageProps = {
     initialAgentPanelOpen: boolean;
     requestOrigin: string;
     publicPathRoute: PublicDocsPathRoute;
-  }
+  };
 };
 
 export type ErrorPageProps = {
@@ -31,4 +31,8 @@ export type HomePageProps = {
   kind: "home";
 };
 
-export type PageProps = DocPageProps | ErrorPageProps | RawPageProps | HomePageProps;
+export type PageProps =
+  | DocPageProps
+  | ErrorPageProps
+  | RawPageProps
+  | HomePageProps;
