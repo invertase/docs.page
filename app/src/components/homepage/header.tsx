@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { MenuIcon, XIcon } from "lucide-react";
 import { RiArrowRightSLine } from "@remixicon/react";
 
 import { cn } from "@/lib/utils";
+import { fonts } from "@/lib/fonts";
 import { Button, buttonTrailingIconClass } from "../ui/button";
 import {
   Sheet,
@@ -89,19 +90,33 @@ export function Header() {
             id="homepage-header-menu"
             side="right"
             showCloseButton={false}
-            className="w-[min(100vw,18rem)] gap-0 p-0 sm:max-w-xs"
+            className={cn(
+              styles.site,
+              fonts["jetbrains-mono"].variable,
+              "dark font-mono w-[min(100vw,18rem)] gap-0 border-border bg-black p-0 text-foreground sm:max-w-xs",
+            )}
             aria-describedby={undefined}
           >
             <SheetTitle className="sr-only">Navigation menu</SheetTitle>
-            <nav className="flex flex-col items-stretch gap-1 p-4 pt-6">
-              {NAV_LINKS.map((link) => (
-                <NavLink
-                  key={link.label}
-                  href={link.href}
-                  label={link.label}
-                  className="w-full justify-start"
-                  onNavigate={() => setMenuOpen(false)}
-                />
+            <nav className="flex w-full flex-col items-start gap-3 p-4 pt-6">
+              {NAV_LINKS.map((link, index) => (
+                <Fragment key={link.label}>
+                  <NavLink
+                    href={link.href}
+                    label={link.label}
+                    onNavigate={() => setMenuOpen(false)}
+                  />
+                  {index < NAV_LINKS.length - 1 ? (
+                    <div
+                      aria-hidden
+                      className={cn(
+                        "w-full",
+                        styles.homepageLineH,
+                        styles.homepageLineHGradient,
+                      )}
+                    />
+                  ) : null}
+                </Fragment>
               ))}
             </nav>
           </SheetContent>
