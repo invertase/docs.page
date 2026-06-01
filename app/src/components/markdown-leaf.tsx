@@ -1,9 +1,9 @@
-import type { ComponentProps } from "react";
-import ReactMarkdown, { type Components } from "react-markdown";
-import remarkGfm from "remark-gfm";
 import { Heading, type HeadingTag } from "@/components/mdx/heading";
 import { Image } from "@/components/mdx/image";
 import { cn } from "@/lib/utils";
+import type { ComponentProps } from "react";
+import ReactMarkdown, { type Components } from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Link } from "./doc-link";
 
 type MarkdownLeafProps = {
@@ -28,10 +28,7 @@ function hastSubtreeHasTag(node: unknown, tagName: string): boolean {
   return false;
 }
 
-export function MarkdownLeaf({
-  source,
-  takeNextHeadingId,
-}: MarkdownLeafProps) {
+export function MarkdownLeaf({ source, takeNextHeadingId }: MarkdownLeafProps) {
   const components: Components = {
     h1: (props) => renderHeading("h1", props, takeNextHeadingId),
     h2: (props) => renderHeading("h2", props, takeNextHeadingId),
@@ -42,7 +39,9 @@ export function MarkdownLeaf({
     p: ({ node, className, ...props }) => {
       const useDiv = hastSubtreeHasTag(node, "img");
       const Tag = useDiv ? "div" : "p";
-      return <Tag className={cn("leading-7 opacity-90", className)} {...props} />;
+      return (
+        <Tag className={cn("leading-7 opacity-90", className)} {...props} />
+      );
     },
     a: ({ node: _node, className, ...props }) => (
       <Link
@@ -55,16 +54,25 @@ export function MarkdownLeaf({
       />
     ),
     strong: ({ node: _node, className, ...props }) => (
-      <strong className={cn("font-semibold text-foreground", className)} {...props} />
+      <strong
+        className={cn("font-semibold text-foreground", className)}
+        {...props}
+      />
     ),
     em: ({ node: _node, className, ...props }) => (
       <em className={cn("italic", className)} {...props} />
     ),
     ul: ({ node: _node, className, ...props }) => (
-      <ul className={cn("my-4 ms-6 list-disc space-y-2", className)} {...props} />
+      <ul
+        className={cn("my-4 ms-6 list-disc space-y-2", className)}
+        {...props}
+      />
     ),
     ol: ({ node: _node, className, ...props }) => (
-      <ol className={cn("my-4 ms-6 list-decimal space-y-2", className)} {...props} />
+      <ol
+        className={cn("my-4 ms-6 list-decimal space-y-2", className)}
+        {...props}
+      />
     ),
     li: ({ node: _node, className, ...props }) => (
       <li className={cn("leading-7 ps-1", className)} {...props} />
@@ -98,7 +106,10 @@ export function MarkdownLeaf({
     ),
     table: ({ node: _node, className, ...props }) => (
       <div className="my-6 overflow-x-auto rounded-lg border">
-        <table className={cn("w-full border-collapse text-sm", className)} {...props} />
+        <table
+          className={cn("w-full border-collapse text-sm", className)}
+          {...props}
+        />
       </div>
     ),
     thead: ({ node: _node, className, ...props }) => (
@@ -139,4 +150,3 @@ function renderHeading(
 ) {
   return <Heading {...props} id={takeNextHeadingId()} type={tag} />;
 }
-

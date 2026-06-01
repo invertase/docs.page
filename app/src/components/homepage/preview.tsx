@@ -1,20 +1,20 @@
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { File, Virtualizer } from "@pierre/diffs/react";
 import { prepareFileTreeInput } from "@pierre/trees";
 import {
   FileTree,
   useFileTree,
   useFileTreeSelection,
 } from "@pierre/trees/react";
-import { File, Virtualizer } from "@pierre/diffs/react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import {
-  PaperCorner,
   PAPER_SECTION_OVERLAP_CLASS,
   PAPER_SECTION_SHELL_CLASS,
+  PaperCorner,
   PaperSectionSideRails,
   paperCornerClipPath,
 } from "./paper-corner";
-import { Button } from "@/components/ui/button";
 import sourcePaths from "./source-files.json";
 
 const preparedSourceInput = prepareFileTreeInput(sourcePaths, {
@@ -65,7 +65,6 @@ export function Preview() {
           </div>
           {tab === "source" && client && <Source />}
         </div>
-   
       </div>
       <div>
         <h2 className="text-center text-xl font-light">

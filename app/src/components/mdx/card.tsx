@@ -1,14 +1,14 @@
-import type { PropsWithChildren } from "react";
 import {
-  Card as CardPrimitive,
-  CardHeader,
-  CardTitle,
-  CardContent,
   CardAction,
+  CardContent,
+  CardHeader,
+  Card as CardPrimitive,
+  CardTitle,
 } from "@/components/ui/card";
 import { RiExternalLinkLine } from "@remixicon/react";
-import { Button } from "../ui/button";
+import type { PropsWithChildren } from "react";
 import { Link } from "../doc-link";
+import { Button } from "../ui/button";
 import { Icon } from "./icon";
 
 type CardProps = PropsWithChildren<{
@@ -32,12 +32,16 @@ export function Card({ title, icon, href, children }: CardProps) {
             </CardAction>
           ) : null}
           <CardTitle className="text-lg flex items-center gap-2">
-            {icon ? <Icon name={icon} size={16} className="opacity-80" /> : null}
+            {icon ? (
+              <Icon name={icon} size={16} className="opacity-80" />
+            ) : null}
             <span>{title}</span>
           </CardTitle>
         </CardHeader>
       ) : null}
-      <CardContent className="space-y-4 text-foreground/90">{children}</CardContent>
+      <CardContent className="space-y-4 text-foreground/90">
+        {children}
+      </CardContent>
     </CardPrimitive>
   );
 }

@@ -1,7 +1,7 @@
-import { type CSSProperties, useCallback, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 import { RiGithubLine, RiStarLine } from "@remixicon/react";
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { type CSSProperties, useCallback, useRef, useState } from "react";
 
 import styles from "./homepage.module.css";
 

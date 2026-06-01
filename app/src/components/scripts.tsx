@@ -1,5 +1,5 @@
-import Script from "next/script";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
+import Script from "next/script";
 
 export function Scripts() {
   const ctx = useDocPageContext();

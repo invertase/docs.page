@@ -59,62 +59,67 @@ const docsByPath = new Map<string, SearchDoc>();
 
 const ctx = self as unknown as DedicatedWorkerGlobalScope;
 
-ctx.addEventListener("message", (event: MessageEvent<SearchWorkerInMessage>) => {
-  const msg = event.data;
+ctx.addEventListener(
+  "message",
+  (event: MessageEvent<SearchWorkerInMessage>) => {
+    const msg = event.data;
 
-  if (msg.type === "init") {
-    void initFromUrl(msg.url);
-    return;
-  }
-
-  if (msg.type === "search") {
-    if (!index) {
-      post({ type: "result", id: msg.id, rows: [] });
+    if (msg.type === "init") {
+      void initFromUrl(msg.url);
       return;
     }
 
-    const q = msg.query.trim();
-    const scope = msg.scope ?? "all";
-    if (!q) {
-      post({ type: "result", id: msg.id, rows: [] });
-      return;
+    if (msg.type === "search") {
+      if (!index) {
+        post({ type: "result", id: msg.id, rows: [] });
+        return;
+      }
+
+      const q = msg.query.trim();
+      const scope = msg.scope ?? "all";
+      if (!q) {
+        post({ type: "result", id: msg.id, rows: [] });
+        return;
+      }
+
+      const lookupLimit =
+        scope === "title" ? Math.max(msg.limit * 5, msg.limit) : msg.limit;
+      const raw = index.search(q, { merge: true, limit: lookupLimit });
+
+      const rows: SearchRow[] = [];
+      const seen = new Set<string>();
+      for (const hit of raw) {
+        if (seen.has(hit.id)) continue;
+        seen.add(hit.id);
+
+        const doc = docsByPath.get(hit.id);
+        if (!doc) continue;
+        if (scope === "title" && !matchesTitle(doc.title, q)) continue;
+
+        rows.push({
+          path: doc.path,
+          title: doc.title,
+          titleHtml: highlightInline(doc.title, q),
+          snippetHtml: buildSnippet(doc.content, q),
+        });
+        if (rows.length >= msg.limit) break;
+      }
+
+      post({ type: "result", id: msg.id, rows });
     }
-
-    const lookupLimit =
-      scope === "title" ? Math.max(msg.limit * 5, msg.limit) : msg.limit;
-    const raw = index.search(q, { merge: true, limit: lookupLimit });
-
-    const rows: SearchRow[] = [];
-    const seen = new Set<string>();
-    for (const hit of raw) {
-      if (seen.has(hit.id)) continue;
-      seen.add(hit.id);
-
-      const doc = docsByPath.get(hit.id);
-      if (!doc) continue;
-      if (scope === "title" && !matchesTitle(doc.title, q)) continue;
-
-      rows.push({
-        path: doc.path,
-        title: doc.title,
-        titleHtml: highlightInline(doc.title, q),
-        snippetHtml: buildSnippet(doc.content, q),
-      });
-      if (rows.length >= msg.limit) break;
-    }
-
-    post({ type: "result", id: msg.id, rows });
-  }
-});
+  },
+);
 
 async function initFromUrl(url: string) {
   try {
     const res = await fetch(url);
     const data = (await res.json()) as { documents?: SearchDoc[] };
 
-    const instance = new (Document as unknown as new (
-      options: unknown,
-    ) => FlexDocument)(DOCUMENT_OPTIONS);
+    const instance = new (
+      Document as unknown as new (
+        options: unknown,
+      ) => FlexDocument
+    )(DOCUMENT_OPTIONS);
 
     docsByPath.clear();
     for (const doc of data.documents ?? []) {

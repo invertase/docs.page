@@ -1,5 +1,5 @@
-import type { GitHubDocFileList } from "@/server/github/tree";
 import { buildDocsSourceDataset } from "@/server/docs/source-dataset";
+import type { GitHubDocFileList } from "@/server/github/tree";
 
 export type DocsFlexSearchDoc = {
   path: string;

@@ -1,11 +1,10 @@
 import { useActiveTab } from "@/hooks/use-active-tab";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useLocale } from "@/hooks/use-locale";
+import { Link } from "./doc-link";
 import { Icon } from "./mdx/icon";
 import { Button } from "./ui/button";
 import { Separator } from "./ui/separator";
-import { Link } from "./doc-link";
-
 
 export function Anchors() {
   const ctx = useDocPageContext();

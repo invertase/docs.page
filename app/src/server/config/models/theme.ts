@@ -1,6 +1,6 @@
-import { z } from "zod";
-import { presetToShadcnThemeCss } from "shadcn-presets";
 import { fonts } from "@/lib/fonts";
+import { presetToShadcnThemeCss } from "shadcn-presets";
+import { z } from "zod";
 
 const mapping = Object.fromEntries(
   Object.entries(fonts).map(([key, value]) => [key, `var(--font-${key})`]),
@@ -21,7 +21,9 @@ const shadcnPreset = z
   .string()
   .optional()
   .transform((value) => {
-    return value ? presetToShadcnThemeCss(value, mapping) ?? undefined : undefined;
+    return value
+      ? presetToShadcnThemeCss(value, mapping) ?? undefined
+      : undefined;
   });
 
 export default z

@@ -1,4 +1,3 @@
-import { useRouter } from "next/router";
 import {
   Select,
   SelectContent,
@@ -8,10 +7,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useDocHref } from "@/hooks/use-doc-href";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useLocale } from "@/hooks/use-locale";
+import { useRouter } from "next/router";
 import { Link } from "./doc-link";
-import { useDocHref } from "@/hooks/use-doc-href";
 
 export function LocaleSwitcher() {
   const ctx = useDocPageContext();

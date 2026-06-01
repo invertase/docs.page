@@ -1,14 +1,14 @@
-import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { RiArrowRightSLine } from "@remixicon/react";
+import Link from "next/link";
 import { Button } from "../ui/button";
 import {
-  PaperCorner,
   PAPER_SECTION_OVERLAP_CLASS,
   PAPER_SECTION_SHELL_CLASS,
+  PaperCorner,
   PaperSectionSideRails,
   paperCornerClipPath,
 } from "./paper-corner";
-import { RiArrowRightSLine } from "@remixicon/react";
 
 export function GitPublishing() {
   return (
@@ -34,9 +34,9 @@ export function GitPublishing() {
               Git publishing
             </h4>
             <p className="text-neutral-400">
-            Deploy updates directly from your software repository. Eliminate build pipelines, hosting configuration, or infrastructure maintenance.
-
-
+              Deploy updates directly from your software repository. Eliminate
+              build pipelines, hosting configuration, or infrastructure
+              maintenance.
             </p>
             <div>
               <Button variant="default" asChild size="lg">

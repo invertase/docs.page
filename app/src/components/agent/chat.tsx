@@ -1,3 +1,7 @@
+import { useChat } from "@ai-sdk/react";
+import { code } from "@streamdown/code";
+import { DefaultChatTransport } from "ai";
+import Cookies from "js-cookie";
 import {
   type FormEvent,
   type KeyboardEvent,
@@ -6,12 +10,21 @@ import {
   useRef,
   useState,
 } from "react";
-import { DefaultChatTransport } from "ai";
-import { useChat } from "@ai-sdk/react";
-import Cookies from "js-cookie";
 import { Streamdown } from "streamdown";
-import { code } from "@streamdown/code";
 
+import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupTextarea,
+} from "@/components/ui/input-group";
+import { useDocPageContext } from "@/hooks/use-doc-page-context";
+import { cn } from "@/lib/utils";
 import {
   RiArrowRightSLine,
   RiArrowUpLine,
@@ -21,19 +34,6 @@ import {
   RiStopLine,
   RiToolsLine,
 } from "@remixicon/react";
-import { Button } from "@/components/ui/button";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupTextarea,
-} from "@/components/ui/input-group";
-import { useDocPageContext } from "@/hooks/use-doc-page-context";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
-import { cn } from "@/lib/utils";
 import { Link } from "../doc-link";
 import { Kbd } from "../ui/kbd";
 
@@ -281,7 +281,7 @@ export function AgentChat({ setOpen }: { setOpen?: (open: boolean) => void }) {
             className="max-h-30 min-h-16 bg-transparent transition-none dark:bg-transparent"
             placeholder={
               agentAvailable
-                ? (bundle.config.agent?.placeholder ?? "Ask a question...")
+                ? bundle.config.agent?.placeholder ?? "Ask a question..."
                 : "Agent unavailable for this page"
             }
             value={input}

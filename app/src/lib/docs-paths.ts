@@ -183,7 +183,10 @@ export function normalizeDocPath(path: string): string {
 
   normalized = normalized.replace(/\/+/g, "/").replace(/\/$/, "");
 
-  if (!normalized || normalized.split("/").some((segment) => segment === "..")) {
+  if (
+    !normalized ||
+    normalized.split("/").some((segment) => segment === "..")
+  ) {
     throw new InvalidDocPathError();
   }
 

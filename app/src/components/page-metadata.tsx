@@ -1,11 +1,22 @@
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
+import {
+  RiArrowDownLine,
+  RiArrowDownSLine,
+  RiFileCopyLine,
+} from "@remixicon/react";
+import { ActionMenu } from "./action-menu";
 import { Heading } from "./mdx/heading";
+import { Image } from "./mdx/image";
 import { Button } from "./ui/button";
 import { ButtonGroup } from "./ui/button-group";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "./ui/dropdown-menu";
-import { RiArrowDownLine, RiArrowDownSLine, RiFileCopyLine } from "@remixicon/react";
-import { ActionMenu } from "./action-menu";
-import { Image } from "./mdx/image";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 export function PageMetadata() {
   const { bundle } = useDocPageContext();
@@ -24,7 +35,10 @@ export function PageMetadata() {
         Boolean(bundle.config.content?.showPageImage) ||
         false;
 
-  const title = typeof bundle.frontmatter.title === "string" ? bundle.frontmatter.title : null;
+  const title =
+    typeof bundle.frontmatter.title === "string"
+      ? bundle.frontmatter.title
+      : null;
   const description = bundle.frontmatter.description;
   const image = bundle.frontmatter.image;
 
@@ -34,19 +48,16 @@ export function PageMetadata() {
     <div className="space-y-2">
       <div className="flex items-center gap-4">
         <div className="flex-1">
-          {showMeta && title && (
-            <Heading type="h1">
-              {title}
-            </Heading>
-          )}
+          {showMeta && title && <Heading type="h1">{title}</Heading>}
         </div>
         <ActionMenu />
       </div>
       {showMeta && !!description && (
         <p className="text-lg text-muted-foreground">{String(description)}</p>
       )}
-      {showMeta && !!image && showPageImage && <Image zoom={false} src={String(image)} />}
+      {showMeta && !!image && showPageImage && (
+        <Image zoom={false} src={String(image)} />
+      )}
     </div>
   );
 }
-

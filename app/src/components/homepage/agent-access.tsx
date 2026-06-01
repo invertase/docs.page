@@ -1,17 +1,17 @@
-import Link from "next/link";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { RiArrowRightSLine } from "@remixicon/react";
+import Image from "next/image";
+import Link from "next/link";
 import { Button } from "../ui/button";
 import {
-  PaperCorner,
   PAPER_SECTION_OVERLAP_CLASS,
   PAPER_SECTION_SHELL_CLASS,
+  PaperCorner,
   PaperSectionSideRails,
   paperCornerClipPath,
 } from "./paper-corner";
-import { RiArrowRightSLine } from "@remixicon/react";
 
-import gif from './assets/agent-ready.gif';
+import gif from "./assets/agent-ready.gif";
 
 export function AgentAccess() {
   return (
@@ -59,7 +59,11 @@ export function AgentAccess() {
               }}
               aria-hidden
             />
-            <Image src={gif} alt="Agent ready" className="relative z-1 w-full h-full rounded-md object-cover border border-border/50 shadow-lg" />
+            <Image
+              src={gif}
+              alt="Agent ready"
+              className="relative z-1 w-full h-full rounded-md object-cover border border-border/50 shadow-lg"
+            />
           </div>
         </div>
       </div>

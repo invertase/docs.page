@@ -1,6 +1,6 @@
+import { RiArrowRightSLine, RiGithubLine } from "@remixicon/react";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { RiArrowRightSLine, RiGithubLine } from "@remixicon/react";
 
 export function Header() {
   return (

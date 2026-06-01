@@ -1,14 +1,14 @@
-import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { RiArrowRightSLine } from "@remixicon/react";
+import Link from "next/link";
 import { Button } from "../ui/button";
 import {
-  PaperCorner,
   PAPER_SECTION_OVERLAP_CLASS,
   PAPER_SECTION_SHELL_CLASS,
+  PaperCorner,
   PaperSectionSideRails,
   paperCornerClipPath,
 } from "./paper-corner";
-import { RiArrowRightSLine } from "@remixicon/react";
 
 export function IntelligentSearch() {
   return (

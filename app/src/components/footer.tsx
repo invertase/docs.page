@@ -31,9 +31,12 @@ export function Footer() {
   const socials = Object.entries(ctx.bundle.config?.social || {});
 
   const params = new URLSearchParams();
-  params.set('utm_source', `${ctx.route.owner}-${ctx.route.repository}`.toLowerCase());
-  params.set('utm_medium', 'footer');
-  params.set('utm_campaign', 'docs.page');
+  params.set(
+    "utm_source",
+    `${ctx.route.owner}-${ctx.route.repository}`.toLowerCase(),
+  );
+  params.set("utm_medium", "footer");
+  params.set("utm_campaign", "docs.page");
 
   // Sorting here ensures that the socials are always displayed in the same order,
   // on client and server side.
@@ -59,7 +62,11 @@ export function Footer() {
       <div className="flex-1 flex items-center justify-end gap-0.5">
         {sorted.map(([name, url]) => (
           <Button key={name} variant="ghost" size="icon-sm" asChild>
-            <a href={links[name](url)} target="_blank" rel="noopener noreferrer">
+            <a
+              href={links[name](url)}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <i className={cn(icons[name], "text-[16px]")} />
             </a>
           </Button>

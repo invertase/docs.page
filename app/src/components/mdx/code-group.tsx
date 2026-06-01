@@ -1,4 +1,7 @@
+import { cn } from "@/lib/utils";
+import { RiCheckLine, RiFileCopyLine } from "@remixicon/react";
 import {
+  type PropsWithChildren,
   createContext,
   useCallback,
   useContext,
@@ -6,10 +9,7 @@ import {
   useMemo,
   useRef,
   useState,
-  type PropsWithChildren,
 } from "react";
-import { RiCheckLine, RiFileCopyLine } from "@remixicon/react";
-import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
 
 export type CodeGroupBlock = {

@@ -15,7 +15,11 @@ export function Footer() {
           </Button>
         </div>
         <div className="flex items-center justify-center">
-          <img src="/_docs.page/logo-icon.svg" alt="Logo" className="h-[300px] w-auto" />
+          <img
+            src="/_docs.page/logo-icon.svg"
+            alt="Logo"
+            className="h-[300px] w-auto"
+          />
         </div>
       </div>
       <footer className="border-x border-t">
@@ -26,10 +30,19 @@ export function Footer() {
         </div>
         <div className="flex items-center justify-between p-6">
           <div className="flex items-center gap-4">
-            <a href="https://invertase.io" target="_blank" rel="noopener noreferrer" className="text-sm text-neutral-400 hover:text-foreground">Built by Invertase</a>
+            <a
+              href="https://invertase.io"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm text-neutral-400 hover:text-foreground"
+            >
+              Built by Invertase
+            </a>
           </div>
           <div>
-            <div className="text-sm text-neutral-400">&copy; {new Date().getFullYear()} Invertase</div>
+            <div className="text-sm text-neutral-400">
+              &copy; {new Date().getFullYear()} Invertase
+            </div>
           </div>
         </div>
       </footer>

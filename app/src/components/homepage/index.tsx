@@ -3,15 +3,15 @@ import { Background } from "./background";
 import { Header } from "./header";
 import { Hero } from "./hero";
 
-import styles from "./homepage.module.css";
-import { Preview } from "./preview";
 import { AgentAccess } from "./agent-access";
+import { Explore } from "./explore";
+import { Footer } from "./footer";
 import { GitPublishing } from "./git-publishing";
+import styles from "./homepage.module.css";
 import { IntelligentSearch } from "./intelligent-search";
 import { MarkdownComponents } from "./markdown-components";
 import { ModernInterface } from "./modern-interface";
-import { Explore } from "./explore";
-import { Footer } from "./footer";
+import { Preview } from "./preview";
 
 export function Homepage() {
   return (

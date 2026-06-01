@@ -1,6 +1,10 @@
 import { buildPublicPathname, formatRefPathSegment } from "@/lib/docs-paths";
 
-export type DocsRequestMode = "canonical" | "vanity" | "custom-domain" | "preview";
+export type DocsRequestMode =
+  | "canonical"
+  | "vanity"
+  | "custom-domain"
+  | "preview";
 const RAW_DOC_SUFFIX_REGEX = /\.(md|mdx)$/i;
 const ROOT_RAW_DOC_FALLBACK = "index.md";
 
@@ -169,7 +173,11 @@ export function getVanityOwnerFromHost(hostname: string): string | null {
 
   const subdomain = hostname.slice(0, -".docs.page".length);
 
-  if (!subdomain || subdomain.includes(".") || RESERVED_VANITY_SUBDOMAINS.has(subdomain)) {
+  if (
+    !subdomain ||
+    subdomain.includes(".") ||
+    RESERVED_VANITY_SUBDOMAINS.has(subdomain)
+  ) {
     return null;
   }
 

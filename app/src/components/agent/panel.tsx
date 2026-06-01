@@ -1,11 +1,11 @@
 "use client";
 
+import { AgentChat } from "@/components/agent/chat";
+import { ResizableHandle, ResizablePanel } from "@/components/ui/resizable";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { useAgentPanel } from "@/hooks/use-agent-panel";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
-import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
-import { ResizableHandle, ResizablePanel } from "@/components/ui/resizable";
-import { useAgentPanel } from "@/hooks/use-agent-panel";
-import { AgentChat } from "@/components/agent/chat";
 
 export function AgentPanel() {
   const { open, setOpen } = useAgentPanel();

@@ -126,7 +126,11 @@ export function PaperCorner({ corner, className }: PaperCornerProps) {
             </>
           ) : (
             <>
-              <path d={`M ${v} 0 L 0 ${v}`} {...STROKE_PROPS} strokeLinecap="square" />
+              <path
+                d={`M ${v} 0 L 0 ${v}`}
+                {...STROKE_PROPS}
+                strokeLinecap="square"
+              />
               <path
                 d={`M ${v} ${r} V ${v - r} C ${v} ${v - r + k} ${v - r + k} ${v} ${v - r} ${v} H 0`}
                 {...STROKE_PROPS}

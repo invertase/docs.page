@@ -1,7 +1,7 @@
-import type { ComponentProps, ReactElement } from "react";
-import Zoom from "react-medium-image-zoom";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { getAssetSrc } from "@/lib/docs-assets";
+import type { ComponentProps, ReactElement } from "react";
+import Zoom from "react-medium-image-zoom";
 
 import "react-medium-image-zoom/dist/styles.css";
 import { cn } from "@/lib/utils";
@@ -33,7 +33,7 @@ export function Image(props: ImageProps) {
 
   return (
     <figure
-      className={cn('', {
+      className={cn("", {
         "hidden dark:block": props.theme === "dark",
         "dark:hidden": props.theme === "light",
       })}
@@ -55,7 +55,9 @@ export function Image(props: ImageProps) {
         />,
       )}
       {!!props.caption && (
-        <figcaption className="text-center text-muted-foreground text-sm pt-2">{props.caption}</figcaption>
+        <figcaption className="text-center text-muted-foreground text-sm pt-2">
+          {props.caption}
+        </figcaption>
       )}
     </figure>
   );

@@ -1,9 +1,9 @@
-import { type ComponentProps } from "react";
-import { RiCheckLine, RiFileCopyLine } from "@remixicon/react";
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useCopy } from "@/hooks/use-copy";
+import { cn } from "@/lib/utils";
+import { RiCheckLine, RiFileCopyLine } from "@remixicon/react";
+import type { ComponentProps } from "react";
 
 type CodeFenceProps = ComponentProps<"figure"> & {
   lang?: string;

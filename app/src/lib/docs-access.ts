@@ -1,7 +1,7 @@
 import { BundlerError, ERROR_CODES } from "@/server/docs/bundle";
 import {
-  getRepositoryMetadata,
   type GitHubRepositoryMetadata,
+  getRepositoryMetadata,
 } from "@/server/github/tree";
 
 export function assertPublicRepo(

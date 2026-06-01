@@ -1,11 +1,4 @@
 import {
-  createContext,
-  useContext,
-  useMemo,
-  useState,
-  type PropsWithChildren,
-} from "react";
-import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -17,8 +10,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useCopy } from "@/hooks/use-copy";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { getMcpEndpointUrl } from "@/lib/docs-paths";
-import { Button } from "./ui/button";
 import { RiCheckLine, RiFileCopyLine } from "@remixicon/react";
+import {
+  type PropsWithChildren,
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+} from "react";
+import { Button } from "./ui/button";
 
 export function useMcpDialog() {
   const ctx = useContext(Context);

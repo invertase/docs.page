@@ -1,13 +1,15 @@
 import {
-  Lexend,
   DM_Sans,
+  EB_Garamond,
   Figtree,
   Geist,
   Geist_Mono,
   IBM_Plex_Sans,
   Instrument_Sans,
+  Instrument_Serif,
   Inter,
   JetBrains_Mono,
+  Lexend,
   Lora,
   Manrope,
   Merriweather,
@@ -24,8 +26,6 @@ import {
   Roboto_Slab,
   Source_Sans_3,
   Space_Grotesk,
-  EB_Garamond,
-  Instrument_Serif,
 } from "next/font/google";
 
 const lexend = Lexend({

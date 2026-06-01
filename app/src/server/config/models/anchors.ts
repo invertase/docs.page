@@ -12,5 +12,7 @@ export default z
   .array(anchor.optional().catch(undefined))
   .catch([])
   .transform((value) => {
-    return value.filter((item) => Boolean(item)) as Array<z.infer<typeof anchor>>;
+    return value.filter((item) => Boolean(item)) as Array<
+      z.infer<typeof anchor>
+    >;
   });

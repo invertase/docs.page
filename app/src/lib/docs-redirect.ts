@@ -1,14 +1,17 @@
-import type { DocsBundlePayload } from "@/lib/docs-bundle-api";
 import { getCustomDomain } from "@/lib/custom-domain";
+import type { DocsBundlePayload } from "@/lib/docs-bundle-api";
 import {
   getDocsEnvironment,
   getPublicDocsSiteBase,
 } from "@/lib/docs-environment";
+import { ensureLeadingSlash, isExternalLink } from "@/lib/docs-links";
 import { formatRefPathSegment } from "@/lib/docs-paths";
 import type { ResolvedDocsRoute } from "@/lib/docs-routing";
-import { ensureLeadingSlash, isExternalLink } from "@/lib/docs-links";
 
-function getRelativeRedirectBase(route: ResolvedDocsRoute, domain: string | null) {
+function getRelativeRedirectBase(
+  route: ResolvedDocsRoute,
+  domain: string | null,
+) {
   const environment = getDocsEnvironment();
 
   if (route.vanity) {
@@ -32,9 +35,10 @@ export async function resolveFrontmatterRedirectDestination(
   route: ResolvedDocsRoute,
   bundle: Pick<DocsBundlePayload, "frontmatter">,
 ) {
-  const redirectTo = typeof bundle.frontmatter.redirect === "string"
-    ? bundle.frontmatter.redirect.trim()
-    : "";
+  const redirectTo =
+    typeof bundle.frontmatter.redirect === "string"
+      ? bundle.frontmatter.redirect.trim()
+      : "";
 
   if (!redirectTo) {
     return null;

@@ -3,8 +3,8 @@ import { SITEMAP_CACHE_HEADERS } from "@/proxy";
 import { BundlerError } from "@/server/docs/bundle";
 import { buildDocsRepoSitemapXml } from "@/server/docs/sitemap-xml";
 import {
-  listGitHubDocFiles,
   type GitHubDocFileList,
+  listGitHubDocFiles,
 } from "@/server/github/tree";
 
 type RouteContext = {
@@ -60,7 +60,10 @@ export async function GET(req: Request, context: RouteContext) {
     },
   });
   response.headers.set("Cache-Control", SITEMAP_CACHE_HEADERS.cacheControl);
-  response.headers.set("Surrogate-Control", SITEMAP_CACHE_HEADERS.surrogateControl);
+  response.headers.set(
+    "Surrogate-Control",
+    SITEMAP_CACHE_HEADERS.surrogateControl,
+  );
 
   if (docList.truncated) {
     response.headers.set("x-docs-page-tree-truncated", "1");

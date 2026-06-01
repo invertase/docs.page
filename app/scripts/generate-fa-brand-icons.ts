@@ -16,14 +16,8 @@ import { fileURLToPath } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const appRoot = path.join(__dirname, "..");
-const defaultCss = path.join(
-  appRoot,
-  "public/_docs.page/fa/brands.min.css",
-);
-const defaultOut = path.join(
-  appRoot,
-  "src/components/mdx/fa-brand-icons.json",
-);
+const defaultCss = path.join(appRoot, "public/_docs.page/fa/brands.min.css");
+const defaultOut = path.join(appRoot, "src/components/mdx/fa-brand-icons.json");
 
 const cssPath = process.argv[2] ? path.resolve(process.argv[2]) : defaultCss;
 const outPath = process.argv[3] ? path.resolve(process.argv[3]) : defaultOut;

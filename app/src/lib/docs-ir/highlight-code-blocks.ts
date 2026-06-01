@@ -83,7 +83,11 @@ async function highlightCode(
   }
 }
 
-async function codeToHtml(code: string, lang: string, meta: string | undefined) {
+async function codeToHtml(
+  code: string,
+  lang: string,
+  meta: string | undefined,
+) {
   const currentHighlighter = await getHighlighter();
 
   return currentHighlighter.codeToHtml(code, {

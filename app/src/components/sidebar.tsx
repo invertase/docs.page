@@ -1,11 +1,9 @@
-import { RiArrowRightSLine, RiExternalLinkLine } from "@remixicon/react";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import {
-  Sidebar as SidebarPrimitive,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
@@ -17,18 +15,20 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  Sidebar as SidebarPrimitive,
 } from "@/components/ui/sidebar";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useDocTabs } from "@/hooks/use-doc-tabs";
 import { useSidebar } from "@/hooks/use-sidebar";
 import { isExternalLink } from "@/lib/docs-links";
 import { isDocHrefActive } from "@/lib/docs-nav";
-import type { SidebarGroup as SidebarConfigGroup } from "@/server/config/models/sidebar";
 import { cn } from "@/lib/utils";
-import { Link } from "./doc-link";
-import { Icon } from "./mdx/icon";
-import { LocaleSwitcher } from "./locale-switcher";
+import type { SidebarGroup as SidebarConfigGroup } from "@/server/config/models/sidebar";
+import { RiArrowRightSLine, RiExternalLinkLine } from "@remixicon/react";
 import { Anchors } from "./anchors";
+import { Link } from "./doc-link";
+import { LocaleSwitcher } from "./locale-switcher";
+import { Icon } from "./mdx/icon";
 import { Separator } from "./ui/separator";
 
 type SidebarPageLink = Extract<
@@ -150,8 +150,7 @@ function SidebarNestedGroup(props: {
   const locales = bundle.config.locales;
   const hasActive = subtreeHasActivePage(route, props.node.pages, locales);
   const groupHrefActive =
-    props.node.href != null &&
-    isDocHrefActive(route, props.node.href, locales);
+    props.node.href != null && isDocHrefActive(route, props.node.href, locales);
 
   const isActive = hasActive || groupHrefActive;
 
@@ -161,7 +160,9 @@ function SidebarNestedGroup(props: {
         <SidebarMenuItem className="pb-1">
           <CollapsibleTrigger asChild>
             <SidebarMenuButton tooltip={label} isActive={isActive}>
-              {props.node.icon ? <SidebarNavIcon icon={props.node.icon} /> : null}
+              {props.node.icon ? (
+                <SidebarNavIcon icon={props.node.icon} />
+              ) : null}
               <span className="truncate">{label}</span>
               <RiArrowRightSLine className="ml-auto size-4 shrink-0 transition-transform duration-200 [[data-state=open]>&]:rotate-90" />
             </SidebarMenuButton>
@@ -183,7 +184,10 @@ function SidebarNestedGroup(props: {
     <Collapsible defaultOpen={isActive}>
       <SidebarMenuSubItem className="pb-1">
         <CollapsibleTrigger asChild>
-          <SidebarMenuSubButton isActive={isActive} className="text-muted-foreground">
+          <SidebarMenuSubButton
+            isActive={isActive}
+            className="text-muted-foreground"
+          >
             {props.node.icon ? <SidebarNavIcon icon={props.node.icon} /> : null}
             <span className="truncate">{label}</span>
             <RiArrowRightSLine className="ml-auto size-4 shrink-0 transition-transform duration-200 [[data-state=open]>&]:rotate-90" />
@@ -219,7 +223,10 @@ function SidebarPagesList(props: {
           const active = isDocHrefActive(route, link.href, locales);
           if (props.depth > 0) {
             return (
-              <SidebarMenuSubItem key={key} className="pb-1 text-muted-foreground">
+              <SidebarMenuSubItem
+                key={key}
+                className="pb-1 text-muted-foreground"
+              >
                 <SidebarPageRow
                   title={link.title}
                   href={link.href}
@@ -286,25 +293,25 @@ export function Sidebar() {
               key={`${group.group ?? "group"}-${gi}`}
               className="group-data-[collapsible=icon]:hidden"
             >
-                {group.group && gi > 0 ? <Separator className="mb-4" /> : null}
-                {group.group ? (
-                  <SidebarGroupLabel
-                    className={cn(
-                      "flex items-center gap-2",
-                      !group.pages?.length && "sr-only",
-                    )}
-                  >
-                    {group.icon ? <SidebarNavIcon icon={group.icon} /> : null}
-                    {group.group}
-                  </SidebarGroupLabel>
-                ) : null}
-                <SidebarGroupContent>
-                  <SidebarMenu className="text-muted-foreground">
-                    <SidebarPagesList pages={group.pages} depth={0} />
-                  </SidebarMenu>
-                </SidebarGroupContent>
-              </SidebarGroup>
-            ))}
+              {group.group && gi > 0 ? <Separator className="mb-4" /> : null}
+              {group.group ? (
+                <SidebarGroupLabel
+                  className={cn(
+                    "flex items-center gap-2",
+                    !group.pages?.length && "sr-only",
+                  )}
+                >
+                  {group.icon ? <SidebarNavIcon icon={group.icon} /> : null}
+                  {group.group}
+                </SidebarGroupLabel>
+              ) : null}
+              <SidebarGroupContent>
+                <SidebarMenu className="text-muted-foreground">
+                  <SidebarPagesList pages={group.pages} depth={0} />
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          ))}
         </SidebarContent>
       </div>
     </SidebarPrimitive>

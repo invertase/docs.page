@@ -1,5 +1,5 @@
-import { useContext } from "react";
 import { AgentPanelContext } from "@/components/agent/provider";
+import { useContext } from "react";
 
 export function useAgentPanel() {
   const context = useContext(AgentPanelContext);
@@ -7,6 +7,6 @@ export function useAgentPanel() {
   if (!context) {
     throw new Error("useAgentPanel must be used within an AgentPanelProvider");
   }
-  
+
   return context;
 }

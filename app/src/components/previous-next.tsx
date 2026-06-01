@@ -1,11 +1,11 @@
-import type { SidebarGroup } from "@/server/config/models/sidebar";
-import { Link } from "./doc-link";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useSidebar } from "@/hooks/use-sidebar";
 import { isExternalLink } from "@/lib/docs-links";
 import { docPathMatchesSidebarHref } from "@/lib/docs-nav";
-import { Button } from "./ui/button";
+import type { SidebarGroup } from "@/server/config/models/sidebar";
 import { RiArrowLeftLine, RiArrowRightLine } from "@remixicon/react";
+import { Link } from "./doc-link";
+import { Button } from "./ui/button";
 
 type AnchorSource = { title: string; href: string };
 
@@ -27,7 +27,12 @@ export function PreviousNext() {
 
   // Recursively flatten the sidebar (internal doc links only).
   function flattenGroup(group: SidebarGroup) {
-    if ("href" in group && group.href && !isExternalLink(group.href) && group.group) {
+    if (
+      "href" in group &&
+      group.href &&
+      !isExternalLink(group.href) &&
+      group.group
+    ) {
       flattened.push({ href: group.href, title: group.group });
     }
 
@@ -76,7 +81,7 @@ export function PreviousNext() {
     previous = {
       title: frontmatter.previousTitle
         ? String(frontmatter.previousTitle)
-        : (findAnchor(previousHref)?.title ?? ""),
+        : findAnchor(previousHref)?.title ?? "",
       href: previousHref,
     };
   }
@@ -86,7 +91,7 @@ export function PreviousNext() {
     next = {
       title: frontmatter.nextTitle
         ? String(frontmatter.nextTitle)
-        : (findAnchor(nextHref)?.title ?? ""),
+        : findAnchor(nextHref)?.title ?? "",
       href: nextHref,
     };
   }

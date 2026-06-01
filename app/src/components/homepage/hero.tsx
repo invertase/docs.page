@@ -1,7 +1,11 @@
-import Link from "next/link";
-import { RiArrowRightSLine, RiCheckLine, RiFileCopyLine } from "@remixicon/react";
-import { useCopy } from "@/hooks/use-copy";
 import { Button } from "@/components/ui/button";
+import { useCopy } from "@/hooks/use-copy";
+import {
+  RiArrowRightSLine,
+  RiCheckLine,
+  RiFileCopyLine,
+} from "@remixicon/react";
+import Link from "next/link";
 
 export function Hero() {
   return (
@@ -13,8 +17,9 @@ export function Hero() {
           <span>humans + agents</span>
         </h1>
         <p className="text-center font-light text-neutral-400">
-          Instantly <span className="text-primary">serve markdown</span> from any GitHub branch as modern, agent-ready
-          docs, with AI chat, MCP, and llms.txt.
+          Instantly <span className="text-primary">serve markdown</span> from
+          any GitHub branch as modern, agent-ready docs, with AI chat, MCP, and
+          llms.txt.
         </p>
         <div className="flex items-center justify-center gap-4">
           <Button asChild size="lg" className="px-6 py-6 text-lg">
@@ -47,7 +52,11 @@ function Terminal() {
       <span className="text-neutral-500">$</span>
       <span className="text-neutral-200">{command}</span>
       <Button variant="ghost" size="icon-sm" onClick={copy}>
-        {copied ? <RiCheckLine className="text-green-500" /> : <RiFileCopyLine />}
+        {copied ? (
+          <RiCheckLine className="text-green-500" />
+        ) : (
+          <RiFileCopyLine />
+        )}
       </Button>
     </div>
   );

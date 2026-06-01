@@ -4,10 +4,14 @@ import { ENV } from "../env";
 
 const getGitHubToken = (() => {
   let index = 0;
-  const tokens = ENV.GITHUB_PAT.split(",").map((token) => token.trim()).filter(Boolean);
+  const tokens = ENV.GITHUB_PAT.split(",")
+    .map((token) => token.trim())
+    .filter(Boolean);
 
   if (!tokens.length) {
-    throw new Error("Environment variable GITHUB_PAT is not defined or contains no valid tokens.");
+    throw new Error(
+      "Environment variable GITHUB_PAT is not defined or contains no valid tokens.",
+    );
   }
 
   return () => {

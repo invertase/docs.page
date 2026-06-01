@@ -22,7 +22,12 @@ function resolveDocPath(path: string) {
 }
 
 function assertSafeRepoPath(path: string) {
-  if (!path || path.includes("\0") || path.includes("..") || /%2e/i.test(path)) {
+  if (
+    !path ||
+    path.includes("\0") ||
+    path.includes("..") ||
+    /%2e/i.test(path)
+  ) {
     throw new BundlerError({
       code: 400,
       name: ERROR_CODES.INVALID_DOC_PATH,

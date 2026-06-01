@@ -1,5 +1,5 @@
-import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
+import type { ComponentProps } from "react";
 import faBrandIconNames from "./fa-brand-icons.json";
 
 /** Slugs synced from `public/_docs.page/fa/brands.min.css` — run `bun run generate:fa-brand-icons`. */

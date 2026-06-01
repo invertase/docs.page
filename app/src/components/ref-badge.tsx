@@ -1,8 +1,8 @@
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useRefUrl } from "@/hooks/use-ref-url";
 import { cn } from "@/lib/utils";
-import { Badge } from "./ui/badge";
 import { RiGitBranchLine } from "@remixicon/react";
+import { Badge } from "./ui/badge";
 
 export function RefBadge() {
   const ctx = useDocPageContext();

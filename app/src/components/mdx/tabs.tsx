@@ -1,13 +1,21 @@
 "use client";
 
 import {
+  TabsContent,
+  TabsList,
+  Tabs as TabsRoot,
+  TabsTrigger,
+} from "@/components/ui/tabs";
+import { useDocPageContext } from "@/hooks/use-doc-page-context";
+import type { DocsRequestMode } from "@/lib/docs-routing";
+import {
   Children,
-  createContext,
-  isValidElement,
   type ComponentProps,
   type PropsWithChildren,
   type ReactElement,
   type ReactNode,
+  createContext,
+  isValidElement,
   useCallback,
   useContext,
   useEffect,
@@ -15,14 +23,6 @@ import {
   useRef,
   useState,
 } from "react";
-import { useDocPageContext } from "@/hooks/use-doc-page-context";
-import type { DocsRequestMode } from "@/lib/docs-routing";
-import {
-  Tabs as TabsRoot,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
 
 type TabProps = PropsWithChildren<{
   groupId?: string;
@@ -142,7 +142,7 @@ export function Tabs(props: TabProps) {
       : false;
     const fallbackValue = hasDefaultValue
       ? defaultValue
-      : (values[0]?.value ?? "");
+      : values[0]?.value ?? "";
     if (fallbackValue && fallbackValue !== selected) {
       setSelected(fallbackValue);
     }
@@ -210,7 +210,6 @@ export function Tabs(props: TabProps) {
     </TabsRoot>
   );
 }
-
 
 export function TabItem({
   label: _label,

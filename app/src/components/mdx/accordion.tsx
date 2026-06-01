@@ -1,16 +1,16 @@
 import {
+  AccordionContent,
+  AccordionItem,
+  Accordion as AccordionPrimitive,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import {
   Children,
-  isValidElement,
   type PropsWithChildren,
   type ReactElement,
   type ReactNode,
+  isValidElement,
 } from "react";
-import {
-  Accordion as AccordionPrimitive,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
 
 type AccordionProps = PropsWithChildren<{
   title?: string;
@@ -22,8 +22,7 @@ function isAccordionElement(
   child: ReactNode,
 ): child is ReactElement<AccordionProps> {
   return (
-    isValidElement<Partial<AccordionProps>>(child) &&
-    child.type === Accordion
+    isValidElement<Partial<AccordionProps>>(child) && child.type === Accordion
   );
 }
 
