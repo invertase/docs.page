@@ -1,6 +1,8 @@
 import { RiGithubLine, RiStarLine } from "@remixicon/react";
 import Link from "next/link";
+
 import type { CSSProperties } from "react";
+
 import { cn } from "@/lib/utils";
 
 import styles from "./homepage.module.css";
