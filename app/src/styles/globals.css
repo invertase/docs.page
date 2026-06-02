@@ -51,7 +51,7 @@
   --container-8xl: 90rem;
   --max-width-8xl: var(--container-8xl);
 
-  /* Primitive neutrals — override Tailwind defaults; see app/DESIGN.md */
+  /* Primitive neutrals — override Tailwind defaults */
   --color-black: #040406;
   --color-white: #e7e8e9;
 

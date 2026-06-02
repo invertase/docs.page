@@ -12,7 +12,7 @@ const MEDIA_GLOW_POSITION_CLASS: Record<
   gitPublishing: styles.homepageFeatureMediaGlowGitPublishing,
 };
 
-/** Shared with theme picker so stacked media widths match. */
+/** Shared with theme picker so feature media widths match. */
 export const FEATURE_MEDIA_FRAME_CLASS = "relative mx-auto w-[90%] max-w-full";
 
 type FeatureSectionMediaProps = {

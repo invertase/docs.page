@@ -16,9 +16,9 @@ export type FeatureItem = {
   id: string;
   /** Heading in the card body (sentence case). */
   title: string;
-  /** First word highlighted in stack tab (must match start of stackTitle). */
+  /** First word highlighted in tab header (must match start of stackTitle). */
   honeySubstring: string;
-  /** Uppercase stack tab label, e.g. "Agent access". */
+  /** Uppercase tab label, e.g. "Agent access". */
   stackTitle: string;
   description: string;
   ctaHref: string;
@@ -26,8 +26,6 @@ export type FeatureItem = {
   imageAlt: string;
   video?: string;
   customMedia?: FeatureCustomMedia;
-  /** Taller card on desktop for even stack heights. */
-  tallOnDesktop?: boolean;
   /** Slightly larger static image in the media column. */
   mediaEnlarged?: boolean;
   /** Per-card halo placement override. */
@@ -46,7 +44,6 @@ export const FEATURES: FeatureItem[] = [
     image: agentReadyPoster,
     imageAlt: "Agent-accessible documentation with MCP and llms.txt",
     video: homepageVideos.agentAccess,
-    tallOnDesktop: true,
   },
   {
     id: "git-publishing",
@@ -58,7 +55,6 @@ export const FEATURES: FeatureItem[] = [
     ctaHref: "/get-started",
     image: gitPublishingImage,
     imageAlt: "Publishing documentation directly from a Git repository",
-    tallOnDesktop: true,
     mediaGlowPosition: "gitPublishing",
   },
   {
@@ -72,7 +68,6 @@ export const FEATURES: FeatureItem[] = [
     image: intelligentSearchPoster,
     imageAlt: "Built-in documentation search in the docs interface",
     video: homepageVideos.intelligentSearch,
-    tallOnDesktop: true,
   },
   {
     id: "markdown-components",
@@ -85,7 +80,6 @@ export const FEATURES: FeatureItem[] = [
     image: markdownComponentsPoster,
     imageAlt: "Interactive documentation components embedded in markdown",
     video: homepageVideos.markdownComponents,
-    tallOnDesktop: true,
   },
   {
     id: "version-management",
@@ -97,7 +91,6 @@ export const FEATURES: FeatureItem[] = [
     ctaHref: "/get-started",
     image: versionManagementImage,
     imageAlt: "Managing multiple documentation versions and translations",
-    tallOnDesktop: true,
     mediaEnlarged: true,
   },
   {
@@ -111,6 +104,5 @@ export const FEATURES: FeatureItem[] = [
     image: preset1Image,
     imageAlt: "Interactive theme preset preview for documentation styling",
     customMedia: "themePresets",
-    tallOnDesktop: true,
   },
 ];

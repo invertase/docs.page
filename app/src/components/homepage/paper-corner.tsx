@@ -35,7 +35,7 @@ export function paperCornerClipPath(
 /** Corner overlay size — must stay in sync with clip-path inset. */
 export const PAPER_FOLD_REM = 5;
 
-/** Overlap between stacked paper sections; must match PAPER_FOLD_REM (size-20 / left-20). */
+/** Overlap between adjacent paper sections; must match PAPER_FOLD_REM (size-20 / left-20). */
 export const PAPER_SECTION_OVERLAP_CLASS = "-mt-20" as const;
 
 /** Section shell for dog-ear blocks; vertical sides come from homepage gutter rails. */
