@@ -5,7 +5,7 @@ import gitPublishingImage from "./assets/git-publishing.png";
 import intelligentSearchPoster from "./assets/intelligent-search.png";
 import markdownComponentsPoster from "./assets/markdown-components.png";
 import preset1Image from "./assets/preset-1.png";
-import versionManagementImage from "./assets/version-management.png";
+import branchesVersionsImage from "./assets/branches-versions.png";
 import { homepageVideos } from "./homepage-videos";
 
 export type FeatureCustomMedia = "themePresets";
@@ -34,13 +34,13 @@ export type FeatureItem = {
 
 export const FEATURES: FeatureItem[] = [
   {
-    id: "agent-access",
+    id: "agent-ready",
     title: "Agent-ready",
-    stackTitle: "Agent access",
+    stackTitle: "Agent-ready",
     honeySubstring: "Agent",
     description:
       "Let users' AI agents query your documentation. Built-in MCP servers alongside llms.txt files allow LLMs to ingest your product context instantly.",
-    ctaHref: "/agent-access",
+    ctaHref: "/agent-ready",
     image: agentReadyPoster,
     imageAlt: "Agent-accessible documentation with MCP and llms.txt",
     video: homepageVideos.agentAccess,
@@ -82,15 +82,15 @@ export const FEATURES: FeatureItem[] = [
     video: homepageVideos.markdownComponents,
   },
   {
-    id: "version-management",
-    title: "Version management",
-    stackTitle: "Version management",
-    honeySubstring: "Version",
+    id: "branches-versions",
+    title: "Branches & versions",
+    stackTitle: "Branches & versions",
+    honeySubstring: "Branches",
     description:
-      "Support multiple software versions simultaneously. Keep legacy guides or localised translations organised for your users.",
+      "Serve any Git branch, tag, or release as a distinct documentation site. Seamlessly organise versions and live staging previews on the fly.",
     ctaHref: "/get-started",
-    image: versionManagementImage,
-    imageAlt: "Managing multiple documentation versions and translations",
+    image: branchesVersionsImage,
+    imageAlt: "Serving any Git branch, tag, or release as a distinct documentation site",
     mediaEnlarged: true,
   },
   {

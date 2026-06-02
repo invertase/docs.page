@@ -12,8 +12,17 @@ const MEDIA_GLOW_POSITION_CLASS: Record<
   gitPublishing: styles.homepageFeatureMediaGlowGitPublishing,
 };
 
-/** Shared with theme picker so feature media widths match. */
-export const FEATURE_MEDIA_FRAME_CLASS = "relative mx-auto w-[90%] max-w-full";
+/** Video / theme picker — slight bleed past column width. */
+export const FEATURE_MEDIA_FRAME_CLASS =
+  "relative mx-auto w-[155%] max-w-full";
+
+/** Static screenshots — stay inside column; no radius (avoids clipping mockup corners). */
+export const FEATURE_MEDIA_IMAGE_FRAME_CLASS =
+  "relative mx-auto w-full max-w-full overflow-visible";
+
+/** Horizontal inset for feature media columns (wider asset + right gutter). */
+export const FEATURE_MEDIA_PADDING_CLASS =
+  "px-4 sm:px-6 lg:pl-2 lg:pr-12";
 
 type FeatureSectionMediaProps = {
   alt: string;
@@ -29,7 +38,7 @@ const VIDEO_FRAME_CLASS =
   "relative w-full overflow-hidden rounded-lg border border-neutral-700 shadow-lg";
 
 const imageClassName =
-  "relative z-1 h-auto w-full rounded-xl object-cover shadow-lg";
+  "relative z-1 block h-auto w-full max-w-full object-contain shadow-lg";
 
 const videoClassName = "relative z-1 h-auto w-full object-cover";
 
@@ -50,11 +59,14 @@ export function FeatureSectionMedia({
           : styles.homepageFeatureMediaGlowImage,
         mediaEnlarged && styles.homepageFeatureMediaGlowSubtle,
         mediaGlowPosition && MEDIA_GLOW_POSITION_CLASS[mediaGlowPosition],
-        "relative flex w-full justify-center px-4 sm:px-6 lg:px-0",
+        "relative flex w-full justify-center overflow-visible",
+        FEATURE_MEDIA_PADDING_CLASS,
         className,
       )}
     >
-      <div className={FEATURE_MEDIA_FRAME_CLASS}>
+      <div
+        className={video ? FEATURE_MEDIA_FRAME_CLASS : FEATURE_MEDIA_IMAGE_FRAME_CLASS}
+      >
         {video ? (
           <div className={VIDEO_FRAME_CLASS}>
             <video
@@ -72,11 +84,8 @@ export function FeatureSectionMedia({
           <Image
             src={image}
             alt={alt}
-            sizes="(max-width: 1023px) 90vw, 50vw"
-            className={cn(
-              imageClassName,
-              mediaEnlarged && "origin-top lg:scale-[1.1]",
-            )}
+            sizes="(max-width: 1023px) 100vw, 58vw"
+            className={imageClassName}
           />
         )}
       </div>

@@ -382,7 +382,7 @@
 
 .homepageFeatureMediaGlowVideo::before {
   height: 100%;
-  width: min(110%, 40rem);
+  width: min(125%, 48rem);
 }
 
 .homepage-spot-glow-card {

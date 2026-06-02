@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { Button, buttonTrailingIconClass } from "../ui/button";
 import {
   FEATURE_MEDIA_FRAME_CLASS,
+  FEATURE_MEDIA_PADDING_CLASS,
   FeatureSectionMedia,
 } from "./feature-section-media";
 import { FEATURES } from "./features-data";
@@ -26,14 +27,17 @@ const FEATURE_HEADER_TITLE_CLASS =
   "min-w-0 truncate font-mono text-xs font-medium tracking-wide uppercase text-neutral-400 sm:text-sm";
 
 const FEATURE_ROW_CLASS = cn(
-  "grid w-full min-w-0 grid-cols-1 overflow-visible py-8",
-  "lg:grid-cols-2 lg:items-stretch lg:gap-0 lg:py-0",
+  "grid w-full min-w-0 grid-cols-1 overflow-visible py-10",
+  "lg:grid-cols-[minmax(0,2.5fr)_minmax(0,3.5fr)] lg:min-h-[30rem] lg:items-stretch lg:gap-0 lg:py-0",
 );
 
 const FEATURE_COPY_CLASS = cn(
-  "flex h-full min-h-full min-w-0 flex-col justify-start p-8 pt-12 text-left sm:p-10 sm:pt-12",
-  "lg:px-16 lg:pt-20 lg:pb-32",
+  "flex h-full min-h-full min-w-0 flex-col justify-start p-8 pt-12 text-left sm:p-10 sm:pt-14",
+  "lg:px-16 lg:pt-24 lg:pb-40",
 );
+
+const FEATURE_COPY_CONTENT_CLASS =
+  "flex w-full flex-col gap-6 lg:max-w-md lg:gap-7";
 
 function FeatureHeaderTitle({
   stackTitle,
@@ -79,7 +83,7 @@ export function FeatureStack() {
               </div>
               <div className={FEATURE_ROW_CLASS}>
                 <div className={FEATURE_COPY_CLASS}>
-                  <div className="flex flex-col gap-6 lg:gap-7">
+                  <div className={FEATURE_COPY_CONTENT_CLASS}>
                     <h4 className="text-3xl font-light font-heading text-neutral-300">
                       {feature.title}
                     </h4>
@@ -101,15 +105,16 @@ export function FeatureStack() {
                   {feature.customMedia === "themePresets" ? (
                     <div
                       className={cn(
-                        "flex min-h-full min-w-0 flex-col items-center justify-center py-6",
-                        "lg:justify-start lg:py-0 lg:pt-8",
+                        "flex min-h-full min-w-0 flex-col items-center justify-center py-8",
+                        "lg:justify-start lg:py-0 lg:pt-12 lg:pb-12",
                       )}
                     >
                       <div
                         className={cn(
                           styles.homepageFeatureMediaGlow,
                           styles.homepageFeatureMediaGlowImage,
-                          "relative z-[1] w-full px-4 sm:px-6 lg:px-16",
+                          "relative z-1 w-full",
+                          FEATURE_MEDIA_PADDING_CLASS,
                         )}
                       >
                         <div className={FEATURE_MEDIA_FRAME_CLASS}>
@@ -120,10 +125,10 @@ export function FeatureStack() {
                   ) : (
                     <div
                       className={cn(
-                        "flex min-h-full min-w-0 flex-col items-center justify-center py-6",
+                        "flex min-h-full min-w-0 flex-col items-center justify-center overflow-visible py-8",
                         feature.video
-                          ? "lg:justify-center lg:py-0"
-                          : "lg:items-start lg:justify-start lg:py-0 lg:pt-20",
+                          ? "lg:justify-center lg:py-0 lg:pb-12"
+                          : "lg:items-start lg:justify-start lg:py-0 lg:pt-24 lg:pb-12",
                       )}
                     >
                       <FeatureSectionMedia
@@ -132,7 +137,7 @@ export function FeatureStack() {
                         video={feature.video}
                         mediaEnlarged={feature.mediaEnlarged}
                         mediaGlowPosition={feature.mediaGlowPosition}
-                        className="w-full lg:px-16"
+                        className="w-full"
                       />
                     </div>
                   )}

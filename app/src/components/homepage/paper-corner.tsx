@@ -137,7 +137,7 @@ export function PaperCorner({
       <div
         aria-hidden
         className={cn(
-          "pointer-events-none absolute z-20",
+          "pointer-events-none absolute z-30",
           styles.homepageLineH,
           borderGradient ? styles.homepageLineHGradientFold : "bg-border",
           border,
@@ -147,7 +147,7 @@ export function PaperCorner({
       <div
         aria-hidden
         className={cn(
-          "pointer-events-none absolute z-20",
+          "pointer-events-none absolute z-30",
           FOLD_SIZE_CLASS,
           anchor,
           className,
