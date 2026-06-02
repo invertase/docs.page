@@ -35,7 +35,7 @@ export type FeatureItem = {
 export const FEATURES: FeatureItem[] = [
   {
     id: "agent-access",
-    title: "Agent access",
+    title: "Agent-ready",
     stackTitle: "Agent access",
     honeySubstring: "Agent",
     description:
