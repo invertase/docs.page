@@ -14,6 +14,15 @@
     "showPageTitle": true,
     "showPageImage": true
   },
+  "agent": {
+    "key": "1a070e07-dd4f-4d56-b8f5-35537e58c0c0",
+    "questions": [
+      "How do I setup docs.page?",
+      "Is it free to use?",
+      "How do I customize the theme?",
+      "How is docs.page agent ready?"
+    ]
+  },
   "social": {
     "x": "invertaseio",
     "github": "invertase/docs.page",
