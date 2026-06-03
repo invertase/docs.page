@@ -51,7 +51,7 @@ export const FEATURES: FeatureItem[] = [
     stackTitle: "Git publishing",
     honeySubstring: "Git",
     description:
-      "Deploy updates directly from your software repository. Eliminate build pipelines, hosting configuration, or infrastructure maintenance.",
+      "Deploy updates directly from your public GitHub repository. Eliminate build pipelines, hosting configuration, or infrastructure maintenance.",
     ctaHref: "/get-started",
     image: gitPublishingImage,
     imageAlt: "Publishing documentation directly from a Git repository",
