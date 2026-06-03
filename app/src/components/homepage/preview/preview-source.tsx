@@ -6,7 +6,7 @@ import {
   useFileTreeSelection,
 } from "@pierre/trees/react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import sourcePaths from "./source-files.json";
+import sourcePaths from "../source-files.json";
 
 const preparedSourceInput = prepareFileTreeInput(sourcePaths, {
   sort: "default",

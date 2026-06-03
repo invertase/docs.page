@@ -6,7 +6,13 @@ import {
   PAPER_SECTION_OVERLAP_CLASS,
   PAPER_SECTION_SHELL_CLASS,
   PaperClippedPanel,
-} from "./paper-corner";
+} from "../paper-corner";
+
+const PreviewEmbedded = dynamic(
+  () =>
+    import("./preview-embedded").then((mod) => ({ default: mod.PreviewEmbedded })),
+  { ssr: false },
+);
 
 const PreviewSource = dynamic(
   () =>
@@ -39,7 +45,11 @@ export function Preview() {
             variant={tab === "embedded" ? "outline" : "ghost"}
             onClick={() => setTab("embedded")}
             size="default"
-            className="font-light"
+            className={cn(
+              "rounded-full font-light",
+              tab === "embedded" &&
+                "border-primary bg-transparent text-primary hover:bg-primary/10 hover:text-primary aria-expanded:bg-primary/10 aria-expanded:text-primary dark:border-primary dark:bg-transparent dark:hover:bg-primary/10",
+            )}
           >
             Documentation
           </Button>
@@ -47,7 +57,11 @@ export function Preview() {
             variant={tab === "source" ? "outline" : "ghost"}
             onClick={() => setTab("source")}
             size="default"
-            className="font-light"
+            className={cn(
+              "rounded-full font-light",
+              tab === "source" &&
+                "border-primary bg-transparent text-primary hover:bg-primary/10 hover:text-primary aria-expanded:bg-primary/10 aria-expanded:text-primary dark:border-primary dark:bg-transparent dark:hover:bg-primary/10",
+            )}
           >
             Source Code
           </Button>
@@ -72,11 +86,7 @@ export function Preview() {
 function Embedded() {
   return (
     <div className="h-[800px] bg-black rounded-3xl overflow-hidden border">
-      <iframe
-        title="docs.page"
-        src="https://use.docs.page/~ai"
-        className="w-full h-full"
-      />
+      <PreviewEmbedded />
     </div>
   );
 }

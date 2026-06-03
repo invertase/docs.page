@@ -26,7 +26,11 @@ export function Hero() {
           llms.txt.
         </p>
         <div className="flex items-center justify-center gap-4">
-          <Button asChild size="lg">
+          <Button
+            asChild
+            size="lg"
+            className="rounded-full h-12 min-h-12 gap-2 px-6 font-mono text-base font-medium has-data-[icon=inline-end]:pr-5 has-data-[icon=inline-start]:pl-5 [&_svg:not([class*='size-'])]:size-6"
+          >
             <Link href="/get-started">
               <span>Get started</span>
               <RiArrowRightSLine
@@ -70,7 +74,7 @@ function Terminal() {
       <Button
         variant="ghost"
         size="icon-sm"
-        className="font-light"
+        className="rounded-full font-light"
         onClick={copy}
       >
         {copied ? (

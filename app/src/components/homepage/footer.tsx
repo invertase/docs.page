@@ -19,7 +19,10 @@ export function Footer() {
             Bring your docs <br /> into the <b>agentic</b> age
           </h3>
 
-          <Button size="lg">
+          <Button
+            size="lg"
+            className="rounded-full h-12 min-h-12 gap-2 px-6 font-mono text-base font-medium has-data-[icon=inline-end]:pr-5 has-data-[icon=inline-start]:pl-5 [&_svg:not([class*='size-'])]:size-6"
+          >
             Get started{" "}
             <RiArrowRightSLine
               data-icon="inline-end"

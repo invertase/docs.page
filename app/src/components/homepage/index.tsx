@@ -5,8 +5,8 @@ import { FeatureStack } from "./feature-stack";
 import { Footer } from "./footer";
 import { Header } from "./header";
 import { Hero } from "./hero";
+import { Preview } from "./preview/preview";
 import styles from "./homepage.module.css";
-import { Preview } from "./preview";
 
 export function Homepage() {
   return (

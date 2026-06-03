@@ -27,7 +27,15 @@ function NavLink({
   onNavigate?: () => void;
 }) {
   return (
-    <Button asChild variant="nav" size="default" className={className}>
+    <Button
+      asChild
+      variant="ghost"
+      size="default"
+      className={cn(
+        "rounded-full border-0 bg-transparent font-light text-foreground hover:bg-transparent hover:text-primary dark:bg-transparent dark:hover:bg-transparent dark:hover:text-primary",
+        className,
+      )}
+    >
       <Link href={href} onClick={onNavigate}>
         <span>{label}</span>
         <RiArrowRightSLine
@@ -69,7 +77,7 @@ export function Header() {
             type="button"
             variant="ghost"
             size="icon-lg"
-            className="font-light text-foreground hover:text-foreground aria-expanded:text-foreground dark:hover:text-foreground dark:aria-expanded:text-foreground"
+            className="rounded-full size-12 font-light text-foreground hover:text-foreground aria-expanded:text-foreground dark:hover:text-foreground dark:aria-expanded:text-foreground [&_svg:not([class*='size-'])]:size-6"
             aria-expanded={menuOpen}
             aria-controls="homepage-header-menu"
             aria-label={menuOpen ? "Close menu" : "Open menu"}
