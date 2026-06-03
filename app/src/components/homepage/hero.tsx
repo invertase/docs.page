@@ -67,7 +67,12 @@ function Terminal() {
       <span className="text-neutral-200/75 transition-colors group-hover/terminal:text-neutral-200">
         {command}
       </span>
-      <Button variant="ghost" size="icon-sm" onClick={copy}>
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        className="font-light"
+        onClick={copy}
+      >
         {copied ? (
           <RiCheckLine className="text-green-500" />
         ) : (

@@ -69,7 +69,7 @@ export function Header() {
             type="button"
             variant="ghost"
             size="icon-lg"
-            className="text-foreground hover:text-foreground aria-expanded:text-foreground dark:hover:text-foreground dark:aria-expanded:text-foreground"
+            className="font-light text-foreground hover:text-foreground aria-expanded:text-foreground dark:hover:text-foreground dark:aria-expanded:text-foreground"
             aria-expanded={menuOpen}
             aria-controls="homepage-header-menu"
             aria-label={menuOpen ? "Close menu" : "Open menu"}

@@ -316,17 +316,6 @@
   font-weight: 300;
 }
 
-.font-mono
-  :is(button, a, [data-slot="button"], input, textarea, select):not(
-    [data-size="lg"]
-  ) {
-  font-weight: 300;
-}
-
-.font-mono [data-slot="button"][data-size="lg"] {
-  font-weight: 500;
-}
-
 /* Trailing chevron nudge on hover (transform only — button width unchanged). */
 [data-slot="button"] .button-trailing-icon {
   transition: transform 200ms ease-out;

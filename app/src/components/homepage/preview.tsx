@@ -39,6 +39,7 @@ export function Preview() {
             variant={tab === "embedded" ? "outline" : "ghost"}
             onClick={() => setTab("embedded")}
             size="default"
+            className="font-light"
           >
             Documentation
           </Button>
@@ -46,6 +47,7 @@ export function Preview() {
             variant={tab === "source" ? "outline" : "ghost"}
             onClick={() => setTab("source")}
             size="default"
+            className="font-light"
           >
             Source Code
           </Button>

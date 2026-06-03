@@ -89,7 +89,7 @@ export function FeatureStack() {
                     </h4>
                     <p className="text-neutral-400">{feature.description}</p>
                     <div>
-                      <Button variant="outline" asChild>
+                      <Button variant="outline" className="font-light" asChild>
                         <Link href={feature.ctaHref}>
                           <span>Learn more</span>
                           <RiArrowRightSLine
