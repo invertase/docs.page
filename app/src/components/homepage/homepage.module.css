@@ -1,5 +1,6 @@
 /* :global(.dark) — `.dark` must not be hashed by CSS modules */
 .site:global(.dark) {
+  --font-heading: var(--font-lexend);
   --primary: var(--color-honey-500);
   /* Solid structural lines (rails, sections, paper folds) — not the default 10% white mix. */
   --border: var(--color-neutral-800);
