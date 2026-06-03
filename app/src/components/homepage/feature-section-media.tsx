@@ -33,15 +33,6 @@ type FeatureSectionMediaProps = {
   mediaGlowPosition?: FeatureMediaGlowPosition;
 };
 
-/** Matches `ModernInterfaceThemePicker` preset preview frame. */
-const VIDEO_FRAME_CLASS =
-  "relative w-full overflow-hidden rounded-lg border border-neutral-700 shadow-lg";
-
-const imageClassName =
-  "relative z-1 block h-auto w-full max-w-full object-contain shadow-lg";
-
-const videoClassName = "relative z-1 h-auto w-full object-cover";
-
 export function FeatureSectionMedia({
   alt,
   image,
@@ -68,7 +59,7 @@ export function FeatureSectionMedia({
         className={video ? FEATURE_MEDIA_FRAME_CLASS : FEATURE_MEDIA_IMAGE_FRAME_CLASS}
       >
         {video ? (
-          <div className={VIDEO_FRAME_CLASS}>
+          <div className="relative w-full overflow-hidden rounded-lg border border-neutral-700 shadow-lg">
             <video
               src={video}
               poster={image.src}
@@ -77,7 +68,7 @@ export function FeatureSectionMedia({
               muted
               playsInline
               aria-label={alt}
-              className={videoClassName}
+              className="relative z-1 h-auto w-full object-cover"
             />
           </div>
         ) : (
@@ -85,7 +76,7 @@ export function FeatureSectionMedia({
             src={image}
             alt={alt}
             sizes="(max-width: 1023px) 100vw, 58vw"
-            className={imageClassName}
+            className="relative z-1 block h-auto w-full max-w-full object-contain shadow-lg"
           />
         )}
       </div>
