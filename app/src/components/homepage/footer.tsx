@@ -1,6 +1,6 @@
 import { RiArrowRightSLine } from "@remixicon/react";
-import { Button } from "../ui/button";
 import Link from "next/link";
+import { Button } from "../ui/button";
 
 export function Footer() {
   return (
@@ -11,9 +11,15 @@ export function Footer() {
             Bring your docs <br /> into the <b>agentic</b> age
           </h3>
 
-          <Button variant="default" size="lg" className="rounded-full px-4 py-5 group" asChild>
+          <Button
+            variant="default"
+            size="lg"
+            className="rounded-full px-4 py-5 group"
+            asChild
+          >
             <Link href="/get-started">
-              Get started <RiArrowRightSLine className="size-5 group-hover:translate-x-1 transition-transform" />
+              Get started{" "}
+              <RiArrowRightSLine className="size-5 group-hover:translate-x-1 transition-transform" />
             </Link>
           </Button>
         </div>

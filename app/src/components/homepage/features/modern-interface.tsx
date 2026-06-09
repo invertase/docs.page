@@ -1,10 +1,10 @@
 import Image from "next/image";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import preset1Image from "../assets/preset-1.png";
 import preset2Image from "../assets/preset-2.png";
 import preset3Image from "../assets/preset-3.png";
 import preset4Image from "../assets/preset-4.png";
-import { useState } from "react";
 
 const THEME_PRESETS = [
   {
@@ -60,7 +60,10 @@ export function ModernInterface() {
             key={i}
             type="button"
             onClick={() => setActivePreset(i)}
-            className={cn("flex items-center justify-center gap-3 border h-12 rounded-lg", activePreset === i && "bg-muted/50")}
+            className={cn(
+              "flex items-center justify-center gap-3 border h-12 rounded-lg",
+              activePreset === i && "bg-muted/50",
+            )}
           >
             <div className="hidden lg:block">
               <span className="text-[10px] font-medium">{preset.label}</span>
@@ -69,7 +72,10 @@ export function ModernInterface() {
               {preset.swatches.map((swatch, j) => (
                 <div
                   key={j}
-                  className={cn("size-2 rounded-full", 'bordered' in swatch && "border")}
+                  className={cn(
+                    "size-2 rounded-full",
+                    "bordered" in swatch && "border",
+                  )}
                   style={{ background: swatch.background }}
                 />
               ))}

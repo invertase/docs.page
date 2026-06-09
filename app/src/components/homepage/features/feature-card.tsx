@@ -1,5 +1,6 @@
 import { RiArrowRightSLine } from "@remixicon/react";
 import Link from "next/link";
+import type { PropsWithChildren } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "../../ui/button";
 import {
@@ -8,7 +9,6 @@ import {
   PaperCorner,
   paperCornerClipPath,
 } from "../paper-corner";
-import type { PropsWithChildren } from "react";
 
 type FeatureCardProps = PropsWithChildren<{
   header: React.ReactNode;
@@ -36,7 +36,9 @@ export function FeatureCard({
       <PaperCorner />
       <div className="mx-auto flex flex-col max-w-8xl space-y-8">
         <div className="px-6 pt-8 lg:pl-26 lg:pr-0">
-          <h3 className="hidden lg:block text-sm uppercase text-neutral-400">{header}</h3>
+          <h3 className="hidden lg:block text-sm uppercase text-neutral-400">
+            {header}
+          </h3>
         </div>
         <div className="mt-8 lg:mt-0 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,2.5fr)_minmax(0,3.5fr)] lg:gap-0">
           <div className="flex flex-col gap-4 px-6 space-y-6 lg:mt-12 lg:px-20">
@@ -45,7 +47,11 @@ export function FeatureCard({
             </h4>
             <p className="text-neutral-400">{description}</p>
             <div>
-              <Button variant="outline" asChild className="group rounded-full dark:border-primary bg-transparent font-light text-primary hover:text-primary hover:bg-primary/10">
+              <Button
+                variant="outline"
+                asChild
+                className="group rounded-full dark:border-primary bg-transparent font-light text-primary hover:text-primary hover:bg-primary/10"
+              >
                 <Link href={link}>
                   <span>Learn more</span>
                   <RiArrowRightSLine className="size-5 group-hover:translate-x-1 transition-transform" />

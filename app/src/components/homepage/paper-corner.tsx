@@ -11,9 +11,7 @@ type PaperCornerProps = {
 };
 
 /** Card surface clip matching the top-left dog-ear cutout. */
-export function paperCornerClipPath(
-  foldRem: number = PAPER_FOLD_REM,
-): string {
+export function paperCornerClipPath(foldRem: number = PAPER_FOLD_REM): string {
   const f = `${foldRem}rem`;
   return `polygon(${f} 0, 100% 0, 100% 100%, 0 100%, 0 ${f})`;
 }

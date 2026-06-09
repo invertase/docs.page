@@ -24,11 +24,7 @@ export function Features() {
             />
           ) : null}
           {feature.image ? (
-            <Image
-              src={feature.image}
-              alt={feature.title}
-              className=""
-            />
+            <Image src={feature.image} alt={feature.title} className="" />
           ) : null}
           {feature.component ? feature.component : null}
         </FeatureCard>

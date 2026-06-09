@@ -127,7 +127,10 @@ function MobileViewTabs({
         variant={view === "tree" ? "outline" : "ghost"}
         size="sm"
         onClick={() => onViewChange("tree")}
-        className={cn("rounded-full font-light", view === "tree" && activeTabClass)}
+        className={cn(
+          "rounded-full font-light",
+          view === "tree" && activeTabClass,
+        )}
       >
         Tree
       </Button>
@@ -136,7 +139,10 @@ function MobileViewTabs({
         variant={view === "file" ? "outline" : "ghost"}
         size="sm"
         onClick={() => onViewChange("file")}
-        className={cn("rounded-full font-light", view === "file" && activeTabClass)}
+        className={cn(
+          "rounded-full font-light",
+          view === "file" && activeTabClass,
+        )}
       >
         Files
       </Button>
@@ -221,9 +227,7 @@ export function PreviewSource() {
   const showFile = !isMobile || mobileView === "file";
 
   return (
-    <div
-      className="flex h-[min(680px,75dvh)] flex-col overflow-hidden rounded-2xl border bg-black p-1.5 sm:h-[800px] sm:rounded-3xl sm:p-2 md:grid md:grid-cols-[minmax(0,300px)_minmax(0,1fr)] md:gap-2"
-    >
+    <div className="flex h-[min(680px,75dvh)] flex-col overflow-hidden rounded-2xl border bg-black p-1.5 sm:h-[800px] sm:rounded-3xl sm:p-2 md:grid md:grid-cols-[minmax(0,300px)_minmax(0,1fr)] md:gap-2">
       <div className="shrink-0 border-b px-2 py-1.5 md:hidden">
         <MobileViewTabs view={mobileView} onViewChange={setMobileView} />
       </div>
