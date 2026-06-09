@@ -31,7 +31,12 @@ export function Homepage() {
         <meta name="twitter:image" content={image} />
         <meta name="twitter:site" content="@invertaseio" />
       </Head>
-      <div className={cn(styles.site, "dark relative min-h-svh w-full")}>
+      <div
+        className={cn(
+          styles.site,
+          "dark relative min-h-svh w-full text-foreground",
+        )}
+      >
         <Background />
         <div className="relative z-10 mx-auto w-full min-w-0 max-w-8xl px-4 font-mono">
           <div

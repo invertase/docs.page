@@ -1,5 +1,7 @@
 .site {
   --primary: var(--color-honey-500);
+  --font-heading: var(--font-lexend);
+  --border: var(--color-neutral-800);
 }
 
 .homepage-spot-grid {
