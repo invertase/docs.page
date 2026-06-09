@@ -9,7 +9,7 @@ import { useCopy } from "@/hooks/use-copy";
 
 export function Hero() {
   return (
-    <div className="mx-auto flex w-full max-w-xl flex-col items-center justify-center space-y-6 px-2 pt-12 pb-20 sm:space-y-8 sm:px-0 sm:pt-16 sm:pb-32">
+    <div className="mx-auto flex w-full max-w-xl flex-col items-center justify-center space-y-6 px-2 pt-12 pb-32 sm:space-y-8 sm:px-0 sm:pt-16 sm:pb-44">
       <Eyebrow />
       <h1 className="flex flex-col items-center justify-center text-center font-heading text-4xl sm:text-5xl md:text-6xl">
         <span className="font-extralight">Docs for</span>
