@@ -13,7 +13,7 @@ import { Preview } from "./preview/preview";
 const title = "docs.page | Docs for humans + agents";
 const description =
   "Instantly serve markdown from any GitHub branch as modern, agent-ready docs, with AI chat, MCP, and llms.txt.";
-const image = "https://docs.page/_docs.page/social-preview.png";
+const image = "https://docs.page/_docs.page/social-image.png";
 
 export function Homepage() {
   return (
