@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import { AgentAccess } from "./agent-access";
+import { AgentReady } from "./agent-ready";
 import { Background } from "./background";
 import { Explore } from "./explore";
 import { Footer } from "./footer";
@@ -20,7 +20,7 @@ export function Homepage() {
         <Header />
         <Hero />
         <Preview />
-        <AgentAccess />
+        <AgentReady />
         <GitPublishing />
         <IntelligentSearch />
         <MarkdownComponents />

@@ -12,7 +12,7 @@ import {
   paperCornerClipPath,
 } from "./paper-corner";
 
-export function AgentAccess() {
+export function AgentReady() {
   return (
     <div
       className={cn(
