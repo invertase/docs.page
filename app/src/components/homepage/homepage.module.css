@@ -68,7 +68,11 @@
     pointer-events: none;
     background-image: radial-gradient(
       circle,
-      color-mix(in srgb, white 12%, transparent) var(--homepage-dot-r),
+      color-mix(
+        in srgb,
+        var(--homepage-dot-color, white) 35%,
+        transparent
+      ) var(--homepage-dot-r),
       transparent var(--homepage-dot-r)
     );
     background-size: var(--homepage-dot-cell) var(--homepage-dot-cell);

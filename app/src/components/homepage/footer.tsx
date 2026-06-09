@@ -1,28 +1,31 @@
 import { RiArrowRightSLine } from "@remixicon/react";
 import { Button } from "../ui/button";
+import Link from "next/link";
 
 export function Footer() {
   return (
     <>
-      <div className="grid grid-cols-2 border-x px-20 py-32">
-        <div className="space-y-8">
-          <h3 className="text-5xl leading-[65px] font-heading font-light tracking-loose">
+      <div className="flex flex-col items-center gap-10 px-6 py-16 text-center lg:grid lg:grid-cols-2 lg:items-center lg:gap-0 lg:px-20 lg:py-32 lg:text-left">
+        <div className="order-2 flex flex-col items-center gap-8 lg:order-1 lg:items-start">
+          <h3 className="text-4xl leading-snug font-heading font-light tracking-loose lg:text-5xl">
             Bring your docs <br /> into the <b>agentic</b> age
           </h3>
 
-          <Button variant="default" size="lg">
-            Get started <RiArrowRightSLine className="size-5" />
+          <Button variant="default" size="lg" className="rounded-full px-4 py-5 group" asChild>
+            <Link href="/get-started">
+              Get started <RiArrowRightSLine className="size-5 group-hover:translate-x-1 transition-transform" />
+            </Link>
           </Button>
         </div>
-        <div className="flex items-center justify-center">
+        <div className="order-1 flex items-center justify-center lg:order-2">
           <img
             src="/_docs.page/logo-icon.svg"
             alt="Logo"
-            className="h-[300px] w-auto"
+            className="h-40 w-auto lg:h-60"
           />
         </div>
       </div>
-      <footer className="border-x border-t">
+      <footer className="border-t">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4 p-6">
             <img src="/_docs.page/logo.svg" alt="Logo" className="h-8 w-auto" />

@@ -7,86 +7,17 @@ import {
 } from "@pierre/trees/react";
 import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
-import {
-  PAPER_SECTION_OVERLAP_CLASS,
-  PAPER_SECTION_SHELL_CLASS,
-  PaperCorner,
-  PaperSectionSideRails,
-  paperCornerClipPath,
-} from "./paper-corner";
-import sourcePaths from "./source-files.json";
+import sourcePaths from "../source-files.json";
+
+type MobileView = "tree" | "file";
 
 const preparedSourceInput = prepareFileTreeInput(sourcePaths, {
   sort: "default",
 });
 
 const sourcePathSet = new Set<string>(sourcePaths);
-
-export function Preview() {
-  const [tab, setTab] = useState<"embedded" | "source">("embedded");
-  const [client, setClient] = useState<boolean>(false);
-
-  useEffect(() => {
-    setClient(true);
-  }, []);
-
-  return (
-    <div
-      className={cn(
-        PAPER_SECTION_SHELL_CLASS,
-        PAPER_SECTION_OVERLAP_CLASS,
-        "bg-transparent pb-32",
-      )}
-      style={{ clipPath: paperCornerClipPath("top-left") }}
-    >
-      <PaperCorner corner="top-left" />
-      <PaperSectionSideRails />
-      <div className="mx-auto flex max-w-8xl flex-col items-center justify-center py-16 space-y-8">
-        <div className="border rounded-md p-px bg-periwinkle-950 flex items-center gap-1">
-          <Button
-            variant={tab === "embedded" ? "default" : "ghost"}
-            onClick={() => setTab("embedded")}
-            size="lg"
-          >
-            Documentation
-          </Button>
-          <Button
-            variant={tab === "source" ? "default" : "ghost"}
-            onClick={() => setTab("source")}
-            size="lg"
-          >
-            Source Code
-          </Button>
-        </div>
-        <div className="px-8 w-full">
-          <div style={{ display: tab === "embedded" ? undefined : "none" }}>
-            <Embedded />
-          </div>
-          {tab === "source" && client && <Source />}
-        </div>
-      </div>
-      <div>
-        <h2 className="text-center text-xl font-light">
-          Trusted by more than 75,000{" "}
-          <span className="text-primary">open-source</span> developers
-        </h2>
-      </div>
-    </div>
-  );
-}
-
-function Embedded() {
-  return (
-    <div className="h-[800px] bg-neutral-950 rounded-md overflow-hidden border">
-      <iframe
-        title="docs.page"
-        src="https://use.docs.page/~ai"
-        className="w-full h-full"
-      />
-    </div>
-  );
-}
 
 const DEFAULT_FILE = "docs.json";
 
@@ -179,7 +110,44 @@ function SourceFilePanel({
   );
 }
 
-function Source() {
+function MobileViewTabs({
+  view,
+  onViewChange,
+}: {
+  view: MobileView;
+  onViewChange: (view: MobileView) => void;
+}) {
+  const activeTabClass =
+    "border-primary bg-transparent text-primary hover:bg-primary/10 hover:text-primary aria-expanded:bg-primary/10 aria-expanded:text-primary dark:border-primary dark:bg-transparent dark:hover:bg-primary/10";
+
+  return (
+    <div className="flex items-center gap-2">
+      <Button
+        type="button"
+        variant={view === "tree" ? "outline" : "ghost"}
+        size="sm"
+        onClick={() => onViewChange("tree")}
+        className={cn("rounded-full font-light", view === "tree" && activeTabClass)}
+      >
+        Tree
+      </Button>
+      <Button
+        type="button"
+        variant={view === "file" ? "outline" : "ghost"}
+        size="sm"
+        onClick={() => onViewChange("file")}
+        className={cn("rounded-full font-light", view === "file" && activeTabClass)}
+      >
+        Files
+      </Button>
+    </div>
+  );
+}
+
+export function PreviewSource() {
+  const isMobile = useIsMobile();
+  const [mobileView, setMobileView] = useState<MobileView>("file");
+  const previousOpenPathRef = useRef<string | null>(null);
   const [fileContent, setFileContent] = useState<{
     path: string;
     contents: string;
@@ -196,6 +164,16 @@ function Source() {
 
   const selectedPaths = useFileTreeSelection(model);
   const openPath = resolveOpenPath(selectedPaths);
+
+  useEffect(() => {
+    if (
+      previousOpenPathRef.current !== null &&
+      previousOpenPathRef.current !== openPath
+    ) {
+      setMobileView("file");
+    }
+    previousOpenPathRef.current = openPath;
+  }, [openPath]);
 
   useEffect(() => {
     const cached = cache.current[openPath];
@@ -239,21 +217,35 @@ function Source() {
     };
   }, [openPath]);
 
+  const showTree = !isMobile || mobileView === "tree";
+  const showFile = !isMobile || mobileView === "file";
+
   return (
-    <div className="h-[800px] overflow-hidden bg-neutral-950 p-2 grid grid-cols-[300px_minmax(0,1fr)] gap-2 border rounded-lg">
-      <FileTree
-        model={model}
-        className="min-h-0 h-full overflow-hidden rounded-lg border py-2"
-      />
-      <div className="min-h-0 h-full overflow-hidden rounded-lg border">
-        {fileContent && (
-          <SourceFilePanel
-            key={fileContent.path}
-            path={fileContent.path}
-            contents={fileContent.contents}
-          />
-        )}
+    <div
+      className="flex h-[min(680px,75dvh)] flex-col overflow-hidden rounded-2xl border bg-black p-1.5 sm:h-[800px] sm:rounded-3xl sm:p-2 md:grid md:grid-cols-[minmax(0,300px)_minmax(0,1fr)] md:gap-2"
+    >
+      <div className="shrink-0 border-b px-2 py-1.5 md:hidden">
+        <MobileViewTabs view={mobileView} onViewChange={setMobileView} />
       </div>
+      {showTree && (
+        <div className="min-h-0 flex-1 overflow-hidden rounded-2xl border md:h-full md:flex-none">
+          <FileTree
+            model={model}
+            className="min-h-0 h-full overflow-hidden py-2"
+          />
+        </div>
+      )}
+      {showFile && (
+        <div className="min-h-0 flex-1 overflow-hidden rounded-2xl border md:h-full">
+          {fileContent && (
+            <SourceFilePanel
+              key={fileContent.path}
+              path={fileContent.path}
+              contents={fileContent.contents}
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 }
