@@ -14,16 +14,21 @@
     "build": "rm -rf dist && bun build ./src/cli.ts --outdir ./dist --target node --format esm --minify"
   },
   "dependencies": {
-    "@inquirer/prompts": "^5.3.8",
+    "@clack/prompts": "^1.5.1",
     "chalk": "^5.3.0",
-    "chokidar": "^5.0.0",
     "commander": "^12.1.0",
+    "fast-glob": "^3.3.3",
     "gray-matter": "^4.0.3",
-    "js-yaml": "^4.1.1"
+    "handlebars": "^4.7.9",
+    "js-yaml": "^4.1.1",
+    "remark-frontmatter": "^5.0.0",
+    "remark-mdx": "^3.1.1",
+    "remark-parse": "^11.0.0",
+    "unified": "^11.0.5"
   },
   "devDependencies": {
-    "@types/bun": "latest",
-    "@types/js-yaml": "^4.0.9"
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^25.9.2"
   },
   "peerDependencies": {
     "typescript": "^5"

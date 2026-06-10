@@ -1,24 +1,24 @@
-#!/usr/bin/env bun
+#!/usr/bin/env node
 
-import { Option, program } from "commander";
+import { Command, Option } from "commander";
 
 import { registerAgentCommand } from "./commands/agent";
+import { registerCheckCommand } from "./commands/check";
 import { registerInitCommand } from "./commands/init";
+import { DEFAULT_API_BASE_URL } from "./lib/api";
+import { handleCliError } from "./lib/errors";
 
-// import { registerPreviewCommand } from "./commands/preview";
+const program = new Command();
 
-program.name("docs.page").version("0.1.0").description("docs.page CLI");
+program.name("docs").version("2.0.0").description("docs.page CLI");
 program.addOption(
-  new Option("--api-url <url>")
-    .default(
-      process.env.DOCS_PAGE_API_BASE?.trim() ||
-        "https://docspage-production.up.railway.app",
-    )
-    .hideHelp(),
+  new Option("--api-url <url>", "Base docs.page API URL").default(
+    process.env.DOCS_PAGE_API_BASE?.trim() || DEFAULT_API_BASE_URL,
+  ),
 );
 
 registerInitCommand(program);
-// registerPreviewCommand(program);
+registerCheckCommand(program);
 registerAgentCommand(program);
 
-program.parse(process.argv);
+program.parseAsync(process.argv).catch(handleCliError);
