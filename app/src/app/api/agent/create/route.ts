@@ -1,14 +1,16 @@
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
+import {
+  AgentCredentialsDecryptionError,
+  decryptAgentCredentialsJwe,
+} from "@/server/agent/credentials-jwe";
 import { encryptAgentPayload } from "@/server/agent/encryption";
 import { checkAdminAccess, parseRepo } from "@/server/agent/github-admin";
-import { PROVIDERS } from "@/server/agent/providers";
 import { getAgentStore } from "@/server/agent/storage";
 
 const CreateAgentSchema = z.object({
   repo: z.string().trim().min(1),
-  provider: z.enum(PROVIDERS),
-  apikey: z.string().trim().min(2),
+  credentials: z.string().trim().min(1),
   githubToken: z.string().trim().min(1),
   force: z.boolean().optional().default(false),
 });
@@ -21,7 +23,7 @@ export async function POST(req: Request) {
       return Response.json({ error: "Invalid request body." }, { status: 400 });
     }
 
-    const { repo, provider, apikey, githubToken, force } = parsed.data;
+    const { repo, credentials, githubToken, force } = parsed.data;
     const repoParts = parseRepo(repo);
 
     if (!repoParts) {
@@ -30,6 +32,8 @@ export async function POST(req: Request) {
         { status: 400 },
       );
     }
+
+    const { provider, apikey } = await decryptAgentCredentialsJwe(credentials);
 
     const adminCheck = await checkAdminAccess({
       owner: repoParts.owner,
@@ -69,6 +73,10 @@ export async function POST(req: Request) {
 
     return Response.json({ id }, { status: 200 });
   } catch (error) {
+    if (error instanceof AgentCredentialsDecryptionError) {
+      return Response.json({ error: error.message }, { status: 400 });
+    }
+
     console.error(error);
     return Response.json(
       { error: "Failed to create an agent API key." },

@@ -1,6 +1,7 @@
 import chalk from "chalk";
 import type { Command } from "commander";
 
+import { encryptAgentCredentials } from "../lib/agent-credentials";
 import { getApiBase, isRecord, parseJson } from "../lib/api";
 import { getGlobalOptions } from "../lib/command";
 import { CliError } from "../lib/errors";
@@ -194,6 +195,11 @@ async function createAgent({
   githubToken: string;
   force: boolean;
 }) {
+  const credentials = await encryptAgentCredentials(apiBase, {
+    provider,
+    apikey,
+  });
+
   const response = await fetch(`${apiBase}/api/agent/create`, {
     method: "POST",
     headers: {
@@ -201,10 +207,9 @@ async function createAgent({
     },
     body: JSON.stringify({
       repo,
-      provider,
-      apikey,
       githubToken,
       force,
+      credentials,
     }),
   });
 

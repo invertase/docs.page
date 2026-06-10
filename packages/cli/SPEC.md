@@ -100,7 +100,13 @@ Options:
 4. `--gh-auth` (string, optional) - the github auth token used to validate the user (see below).
 5. `--force` (bool = false) - if the configuration for this repo is already provided, whether to force overwrite. If false, throw an error.
 
+The provider API key is encrypted locally before the create request is sent. The CLI fetches the API public key from `/.well-known/jwks.json`, selects the agent credentials key by its agent-specific `kid`, encrypts `{ provider, apikey }` as a compact JWE using `RSA-OAEP-256` and `A256GCM`, then posts that JWE as `credentials`. The API decrypts the JWE, validates the payload, and then stores the provider API key using the server-side at-rest encryption.
+
 The `gh-token` is used on the server to validate that the user has admin permissions on the `repo` specified. If they do not, they can't add an agent. This token should by default attempt to resolve from the `gh` cli locally. See `resolveGitHubToken` in CLI currently for implementation.
+
+The GitHub token is not stored server-side. It is sent in the create request only for the admin permission check.
+
+Production deployments must set `AGENT_CREDENTIALS_PRIVATE_KEY` to a PKCS#8 RSA private key. The app exposes the corresponding public key through `/.well-known/jwks.json`.
 
 Upon success from the API, a `token` is returned. This should show the user a message on how to use it, something like:
 

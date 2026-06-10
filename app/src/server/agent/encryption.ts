@@ -11,7 +11,7 @@ import { PROVIDERS } from "./providers";
 const AGENT_ENCRYPTION_ALGORITHM = "aes-256-gcm";
 export const AGENT_ENCRYPTION_VERSION = 1;
 
-const AgentSecretPayloadSchema = z.object({
+export const AgentSecretPayloadSchema = z.object({
   provider: z.enum(PROVIDERS),
   apikey: z.string().min(2),
 });
