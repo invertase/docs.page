@@ -11,7 +11,7 @@ import { z } from "zod";
 import { getRequestClientIp } from "@/lib/request-client-ip";
 import { decryptAgentPayload } from "@/server/agent/encryption";
 import { checkAdminAccess, parseRepo } from "@/server/agent/github-admin";
-import { getProvider } from "@/server/agent/providers";
+import { getModelForProvider, getProvider } from "@/server/agent/providers";
 import { getDefaultBranchDocsConfig } from "@/server/agent/repository";
 import {
   AGENT_SESSION_COOKIE_NAME,
@@ -212,12 +212,21 @@ export async function POST(req: Request) {
     );
   }
 
-  const { provider, modelName, apikey } = decryptAgentPayload(config.encrypted);
+  const { provider, apikey } = decryptAgentPayload(config.encrypted);
 
   const instance = getProvider(provider, apikey);
 
   if (!instance) {
     return Response.json({ error: "Invalid provider." }, { status: 400 });
+  }
+
+  const modelName = getModelForProvider(provider);
+
+  if (!modelName) {
+    return Response.json(
+      { error: "No model configured for provider." },
+      { status: 400 },
+    );
   }
 
   let docList: GitHubDocFileList | undefined;

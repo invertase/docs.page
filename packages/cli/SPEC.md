@@ -94,7 +94,6 @@ Options:
 2. `--provider` (string, required) - The provider to use, one of:
  - xai
  - openai
- - azure
  - anthropic
  - google
 3. `--apikey` (string, required) - the API key to use for the chosen provider.

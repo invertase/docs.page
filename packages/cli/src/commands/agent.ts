@@ -12,7 +12,7 @@ import {
   promptText,
 } from "../lib/prompts";
 
-const PROVIDERS = ["xai", "openai", "azure", "anthropic", "google"] as const;
+const PROVIDERS = ["xai", "openai", "anthropic", "google"] as const;
 
 type Provider = (typeof PROVIDERS)[number];
 
@@ -33,16 +33,6 @@ const PROVIDER_OPTIONS = PROVIDERS.map((provider) => ({
   value: provider,
   label: provider,
 }));
-
-// The public CLI spec only asks for a provider. This value preserves
-// compatibility with the current API route, which still expects provider/model.
-const DEFAULT_MODEL_BY_PROVIDER: Record<Provider, string> = {
-  xai: "grok-3-mini",
-  openai: "gpt-4.1-mini",
-  azure: "gpt-4.1-mini",
-  anthropic: "claude-3-5-sonnet-latest",
-  google: "gemini-2.0-flash",
-};
 
 export function registerAgentCommand(program: Command) {
   const agents = program
@@ -212,7 +202,6 @@ async function createAgent({
     body: JSON.stringify({
       repo,
       provider,
-      model: `${provider}/${DEFAULT_MODEL_BY_PROVIDER[provider]}`,
       apikey,
       githubToken,
       force,

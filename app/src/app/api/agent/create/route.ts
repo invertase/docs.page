@@ -7,7 +7,7 @@ import { getAgentStore } from "@/server/agent/storage";
 
 const CreateAgentSchema = z.object({
   repo: z.string().trim().min(1),
-  model: z.string().trim().min(1),
+  provider: z.enum(PROVIDERS),
   apikey: z.string().trim().min(2),
   githubToken: z.string().trim().min(1),
   force: z.boolean().optional().default(false),
@@ -21,21 +21,12 @@ export async function POST(req: Request) {
       return Response.json({ error: "Invalid request body." }, { status: 400 });
     }
 
-    const { repo, model, apikey, githubToken, force } = parsed.data;
+    const { repo, provider, apikey, githubToken, force } = parsed.data;
     const repoParts = parseRepo(repo);
 
     if (!repoParts) {
       return Response.json(
         { error: "`repo` must be in the form `org/name`." },
-        { status: 400 },
-      );
-    }
-
-    const [provider, modelName] = model.split("/");
-
-    if (!PROVIDERS.includes(provider)) {
-      return Response.json(
-        { error: "Invalid model provider." },
         { status: 400 },
       );
     }
@@ -67,7 +58,7 @@ export async function POST(req: Request) {
     }
 
     const id = existingRecord?.id ?? randomUUID();
-    const payload = encryptAgentPayload({ provider, modelName, apikey });
+    const payload = encryptAgentPayload({ provider, apikey });
 
     await store.set({
       repo,

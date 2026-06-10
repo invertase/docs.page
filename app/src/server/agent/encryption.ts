@@ -13,7 +13,6 @@ export const AGENT_ENCRYPTION_VERSION = 1;
 
 const AgentSecretPayloadSchema = z.object({
   provider: z.enum(PROVIDERS),
-  modelName: z.string().min(1),
   apikey: z.string().min(2),
 });
 
