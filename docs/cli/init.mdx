@@ -1,25 +1,60 @@
 ---
-title: init
-description: The `init` command initializes a new project. It creates a new directory with a basic project structure and configuration file.
+title: docs init
+description: Scaffold docs.json and optional starter docs/ MDX files in a project.
 ---
 
+`docs init` creates a `docs.json` configuration file and optional starter pages under `docs/` using Handlebars templates.
 
 ## Usage
 
 ```bash
-@docs.page/cli init [path]
+docs init [path] [options]
 ```
 
-The init command will fail if a `docs.json` file already exists in the specified directory.
+## Options
 
-If the `docs/` directory exists, the command will not output example `.mdx` files.
+| Flag | Description |
+| --- | --- |
+| `--name <name>` | Project name for `docs.json` |
+| `--docs` | Create starter `docs/` MDX files (default) |
+| `--no-docs` | Create `docs.json` only |
+| `--overwrite` | Overwrite existing files |
 
-## Arguments
+## Examples
 
-<Property name="path" type="string" optional>
-  The path to the directory to initialize the project in. Defaults to the current directory.
+Scaffold in the current directory:
 
-  ```
-  @docs.page/cli init my-project
-  ```
-</Property>
+```bash
+npx @docs.page/cli init
+```
+
+Scaffold with a custom name, config only:
+
+```bash
+npx @docs.page/cli init --name "My API" --no-docs
+```
+
+Scaffold in a subdirectory:
+
+```bash
+npx @docs.page/cli init ./my-project
+```
+
+## Output
+
+With `--docs` (default), the command creates:
+
+- `docs.json`
+- `docs/index.mdx`
+- `docs/usage.mdx`
+
+## Verify
+
+```bash
+npx @docs.page/cli check
+```
+
+## Next steps
+
+- [Getting Started](/getting-started) — publish your scaffolded site
+- [docs check](/cli/check) — validate configuration and links

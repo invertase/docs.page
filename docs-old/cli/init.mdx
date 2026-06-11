@@ -1,0 +1,25 @@
+---
+title: init
+description: The `init` command initializes a new project. It creates a new directory with a basic project structure and configuration file.
+---
+
+
+## Usage
+
+```bash
+@docs.page/cli init [path]
+```
+
+The init command will fail if a `docs.json` file already exists in the specified directory.
+
+If the `docs/` directory exists, the command will not output example `.mdx` files.
+
+## Arguments
+
+<Property name="path" type="string" optional>
+  The path to the directory to initialize the project in. Defaults to the current directory.
+
+  ```
+  @docs.page/cli init my-project
+  ```
+</Property>

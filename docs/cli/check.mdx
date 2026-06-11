@@ -1,27 +1,56 @@
 ---
-title: check
-description: The `check` command scans the current project for errors and warnings which need fixing.
+title: docs check
+description: Validate docs.json and scan MDX for broken links and missing assets.
 ---
+
+`docs check` validates `docs.json` (or `docs.yaml`) and scans MDX files for broken internal links, missing local assets, and unreachable external links.
 
 ## Usage
 
 ```bash
-@docs.page/cli check [path]
+docs check [path] [options]
 ```
 
-The command current performs the following checks:
+## Options
 
-- Broken Links: Checks markdown content for any broken relative links.
-- Missing Assets: Checks markdown content for any local [assets](/assets) that are missing.
+| Flag | Values | Default | Description |
+| --- | --- | --- | --- |
+| `--external-links` | `off`, `warn`, `error` | `warn` | Check external URL reachability |
+| `--internal-links` | `off`, `warn`, `error` | `error` | Check internal `href` targets |
+| `--assets` | `off`, `warn`, `error` | `error` | Check local asset file existence |
 
-## Arguments
+## Examples
 
-<Property name="path" type="string" optional>
-  The path to the directory to check for issues. This should be the path to the root of the project.
+Validate the current project with defaults:
 
-  Defaults to the current directory.
+```bash
+npx @docs.page/cli check
+```
 
-  ```
-  @docs.page/cli check my-project
-  ```
-</Property>
+Skip external link checks in CI:
+
+```bash
+npx @docs.page/cli check --external-links off
+```
+
+Treat asset issues as warnings:
+
+```bash
+npx @docs.page/cli check --assets warn
+```
+
+## What it checks
+
+1. **Configuration** — `docs.json` or `docs.yaml` parses against the current schema (including v1 migration)
+2. **Internal links** — `href` values in MDX resolve to existing pages or valid anchors
+3. **Assets** — relative image and file paths exist on disk
+4. **External links** — HTTP HEAD requests to external URLs (when enabled)
+
+## Verify
+
+A successful run exits with code 0 and reports no errors at the configured severity levels.
+
+## Next steps
+
+- [docs init](/cli/init) — scaffold a new project
+- [Writing Content](/writing-content) — MDX authoring conventions

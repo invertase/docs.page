@@ -1,0 +1,35 @@
+---
+title: Publishing
+description: Learn how to publish your documentation to the web.
+---
+
+Once you've finished writing your documentation, you'll want to expose it to the world. Just like conventional development using GitHub, this is done via version control.
+
+## Publishing to GitHub
+
+When ready, commit your documentation changes to your repository using Git, and push the changes, for example:
+
+```bash
+git add .
+git commit -m "Add new documentation"
+git push origin main
+```
+
+Once complete, your documentation will immediatley available on the docs.page domain. For example, if your GitHub repository is `acme/my-repository`, your documentation will be available at `https://docs.page/acme/my-repository`.
+
+docs.page uses the base branch of your repository to determine which version of your documentation to display (in most cases, this is either `main` or `master`). Pushing new changes to this branch will automatically update your documentation.
+
+## Publishing changes
+
+Just like your development experience, you may want to push new documentation changes to a different branch before merging them into your main branch. This can be done by pushing to a different branch, for example:
+
+```bash
+git checkout -b new-feature
+git add .
+git commit -m "Add docs for new feature"
+git push origin new-feature
+```
+
+Once pushed, you can preview your changes by visiting `https://docs.page/acme/my-repository~new-feature`. Once you're happy with the changes, you can merge the branch into your main branch.
+
+To learn more about branching, view the [Live Previews](/live-previews) documentation.

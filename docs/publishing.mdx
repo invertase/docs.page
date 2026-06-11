@@ -1,35 +1,79 @@
 ---
 title: Publishing
-description: Learn how to publish your documentation to the web.
+description: Publish docs from a public GitHub repo with vanity subdomains, custom domains, and ref routing.
 ---
 
-Once you've finished writing your documentation, you'll want to expose it to the world. Just like conventional development using GitHub, this is done via version control.
+docs.page publishes documentation from **public** GitHub repositories. Configure your URL strategy with vanity subdomains, custom domains, or ref-based previews.
 
-## Publishing to GitHub
+## Public repository requirement
 
-When ready, commit your documentation changes to your repository using Git, and push the changes, for example:
+docs.page blocks private repositories with a **403** error during bundling. Your documentation source must be publicly accessible on GitHub.
 
-```bash
-git add .
-git commit -m "Add new documentation"
-git push origin main
+## Canonical URLs
+
+The default published URL is:
+
+```
+https://docs.page/{owner}/{repo}/{path}
 ```
 
-Once complete, your documentation will immediatley available on the docs.page domain. For example, if your GitHub repository is `acme/my-repository`, your documentation will be available at `https://docs.page/acme/my-repository`.
+- `{owner}` — GitHub user or organization
+- `{repo}` — repository name
+- `{path}` — page path under `docs/` (omit for the index page)
 
-docs.page uses the base branch of your repository to determine which version of your documentation to display (in most cases, this is either `main` or `master`). Pushing new changes to this branch will automatically update your documentation.
+## Branch, PR, and commit previews
 
-## Publishing changes
+Append `~{ref}` after the repository name to pin documentation to a specific ref:
 
-Just like your development experience, you may want to push new documentation changes to a different branch before merging them into your main branch. This can be done by pushing to a different branch, for example:
+| Ref type | URL pattern | Example |
+| --- | --- | --- |
+| Branch | `/{owner}/{repo}~{branch}/{path}` | `/invertase/docs.page~main/configuration` |
+| Pull request | `/{owner}/{repo}~{pr-number}/{path}` | `/invertase/docs.page~42/getting-started` |
+| Commit SHA | `/{owner}/{repo}~{sha}/{path}` | `/invertase/docs.page~abc123f/index` |
 
-```bash
-git checkout -b new-feature
-git add .
-git commit -m "Add docs for new feature"
-git push origin new-feature
+A ref badge appears in the UI when viewing non-default refs.
+
+Pinned commit refs receive longer CDN cache TTLs for bundle JSON than mutable branches.
+
+## Vanity subdomains
+
+Serve docs at `{owner}.docs.page` by rewriting requests to the canonical `docs.page/{owner}/{repo}` path.
+
+```
+https://invertase.docs.page/docs.page/getting-started
 ```
 
-Once pushed, you can preview your changes by visiting `https://docs.page/acme/my-repository~new-feature`. Once you're happy with the changes, you can merge the branch into your main branch.
+Reserved subdomains (`docs`, `www`, `staging`) cannot be used as vanity owners.
 
-To learn more about branching, view the [Live Previews](/live-previews) documentation.
+## Custom domains
+
+Map a custom hostname to an owner/repo pair via an external lookup service. docs.page serves the site in custom-domain request mode and sets canonical URLs accordingly.
+
+Custom domain setup is managed outside the repository. Contact docs.page support or your account dashboard to configure DNS.
+
+## Raw markdown export
+
+Request unrendered source by appending `.md` or `.mdx` to any page path:
+
+```
+https://docs.page/{owner}/{repo}/getting-started.md
+```
+
+Content negotiation supports markdown clients.
+
+## SEO exports
+
+Each site exposes machine-readable indexes:
+
+| Endpoint | Purpose |
+| --- | --- |
+| `/{owner}/{repo}/sitemap.xml` | Sitemap with canonical URLs |
+| `/{owner}/{repo}/robots.txt` | Robots file referencing the sitemap |
+
+Sitemap URLs respect vanity and custom domain publishing context.
+
+## Next steps
+
+- [Navigation](/navigation) — sidebar, tabs, and locales
+- [Social & SEO](/configuration#social-seo) — Open Graph and metadata in `docs.json`
+- [Architecture](/architecture) — CDN and GitHub API caching

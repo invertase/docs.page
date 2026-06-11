@@ -1,45 +1,45 @@
 ---
-title: Overview
-description: Instant Open Source docs with zero configuration.
+title: docs.page Overview
+description: Publish documentation from a public GitHub repository with zero build step.
 ---
 
-<Image
-  src="https://static.invertase.io/assets/docs.page/docs-page-logo-v2.png"
-  alt="docs.page"
-  height="100"
-/>
+docs.page serves documentation directly from your GitHub repository. Add a `docs.json` config and `.mdx` files under `docs/`, push to a public repo, and your site is live.
 
-docs.page is a free Open Source project, allowing you to create instant, fast, beautiful documentation with zero configuration.
+## How it works
 
-Documentation is an important aspect for many projects, however creating a custom documentation website
-for each project is time consuming. Many common solutions to problems have to be duplicated, along with
-dealing with overheads such as website maintenance & hosting.
+docs.page fetches content at request time using the GitHub API and raw content URLs. There is no separate build pipeline or CMS — your repo is the source of truth.
 
-Solutions such as [Jekyll](https://jekyllrb.com/docs/github-pages/), [Docusaurus](https://docusaurus.io/),
-[docsify](https://docsify.js.org/#/) and many others are great projects, however still require custom setup for each project
-and regular maintenance.
+| Layer | What happens |
+| --- | --- |
+| **Source** | `docs.json`, `docs/**/*.mdx`, and assets live in a public GitHub repo |
+| **Runtime** | docs.page resolves the repo, ref, and page path, then compiles MDX to a document IR |
+| **Delivery** | Rendered pages, search indexes, MCP tools, and LLM exports are served over HTTP |
 
-docs.page is designed to deliver instant documentation websites, with the content sourced directly from any public
-GitHub repository. Features include:
+<Callout type="info">
+Private repositories are not supported. docs.page returns a 403 when bundling documentation from a private repo.
+</Callout>
 
-- [Configurable](/configuration): Add your own logo, theme, analytics, navigation and more with a config file.
-- [Previewing](/previews): View the documentation of any branch, pull request or specific commit,.
-- [GitHub Bot](/github-bot): Install our [GitHub bot](https://github.com/apps/docs-page) to automatically get a URL to pull request documentation previews.
-- [Components](/components/accordion): Powered by [MDX](https://github.com/mdx-js/mdx), use React components such as Tabs (useful for projects with multiple languages) directly in your docs.
-- [Search](/search): Easily add full search support powered by [DocSearch](https://docsearch.algolia.com/).
-- [Custom Domains](/custom-domains): Serve your documentation using your own domain.
+## Core requirements
 
-Other useful features include:
+Every docs.page site needs:
 
-- Global variable injection (for managing common variables across the project).
-- Displaying assets using GitHub.
-- Dark/Light mode.
-- Responsive.
-- Code block highlighting and content copying.
-- Page redirects.
-- Per-page metadata support via Frontmatter.
+- A **`docs.json`** (or `docs.yaml`) file at the repository root
+- A **`docs/`** directory containing `.mdx` pages
 
-## Should I use docs.page?
+Optional capabilities include vanity subdomains, custom domains, branch/PR/commit previews, built-in search, an in-docs AI agent, and MCP server exposure.
 
-docs.page is a simple way to generate a documentation website with zero effort. It generally works for documentation websites with a lot of Markdown based content.
-If you require features which are more specific to your own project a custom solution might work better.
+## URL patterns
+
+| Pattern | Purpose |
+| --- | --- |
+| `https://docs.page/{owner}/{repo}` | Default published docs |
+| `https://docs.page/{owner}/{repo}~{ref}/{path}` | Branch, PR, or commit preview |
+| `https://{owner}.docs.page/{repo}/{path}` | Vanity subdomain |
+| `https://your-domain.com/{path}` | Custom domain |
+
+## Next steps
+
+- [Getting Started](/getting-started) — scaffold your first site
+- [Publishing](/publishing) — vanity subdomains, custom domains, and ref routing
+- [docs.json Reference](/configuration) — full configuration lookup
+- [Architecture](/architecture) — caching, compilation, and request flow

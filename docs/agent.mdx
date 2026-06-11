@@ -1,0 +1,93 @@
+---
+title: Documentation Agent
+description: Configure and provision the in-docs AI chat agent with rate limiting.
+---
+
+docs.page provides an in-docs AI chat agent that searches repository MDX via a sandboxed bash tool and streams responses from configured LLM providers.
+
+## Before you begin
+
+- GitHub **admin** access to the repository
+- An LLM provider API key (xAI, OpenAI, Anthropic, or Google)
+- A provisioned `agent.key` in `docs.json`
+
+## Configure the agent UI
+
+Add agent settings to `docs.json`:
+
+```json
+{
+  "agent": {
+    "key": "your-provisioned-key",
+    "placeholder": "Ask about this documentation…",
+    "questions": [
+      "How do I get started?",
+      "What configuration options are available?"
+    ],
+    "limits": {
+      "ip": 200,
+      "repo": 10000
+    }
+  }
+}
+```
+
+| Field | Default | Description |
+| --- | --- | --- |
+| `key` | — | Provisioning key from agent creation |
+| `placeholder` | — | Input placeholder text |
+| `questions` | — | Suggested starter questions |
+| `limits.ip` | `200` | Requests per client IP per window |
+| `limits.repo` | `10000` | Requests per repository per window |
+
+Rate limiting uses Redis when available, falling back to in-memory limiters.
+
+## Provision an agent
+
+Use the CLI to encrypt provider credentials and call the provisioning API:
+
+```bash
+docs agent create \
+  --repo org/name \
+  --provider openai \
+  --apikey sk-...
+```
+
+The CLI:
+
+1. Fetches the public JWKS from `GET /.well-known/jwks.json`
+2. Encrypts the API key client-side with JWE
+3. Calls `POST /api/agent/create` with GitHub admin verification
+
+Set `DOCS_PAGE_API_BASE` to target a non-production API host.
+
+### Delete an agent
+
+```bash
+docs agent delete --repo org/name
+```
+
+Calls `DELETE /api/agent` after GitHub admin verification.
+
+## Agent API
+
+| Method | Endpoint | Description |
+| --- | --- | --- |
+| `POST` | `/api/agent` | Stream agent chat responses |
+| `POST` | `/api/agent/create` | Provision agent for a repository |
+| `DELETE` | `/api/agent` | Remove agent for a repository |
+| `GET` | `/.well-known/jwks.json` | Public JWKS for credential encryption |
+
+## Troubleshooting
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| Agent panel missing | No `agent.key` in config | Run `docs agent create` and add the key |
+| 429 responses | Rate limit exceeded | Adjust `agent.limits` or wait for window reset |
+| Create fails | Insufficient GitHub permissions | Use a token with admin access to the repo |
+
+## Next steps
+
+- [CLI agent command](/cli/agent) — full flag reference
+- [API Reference](/api-reference#agent) — HTTP endpoint details
+- [MCP & LLM Exports](/mcp-and-llms) — programmatic doc access for AI tools

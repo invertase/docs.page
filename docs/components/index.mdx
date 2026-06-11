@@ -1,38 +1,93 @@
 ---
-title: Components
-description: Enhance your documentation with components powered by MDX.
+title: MDX Components
+description: Built-in shortcode components for Accordion, Callout, Steps, Tabs, and more.
 ---
 
-Alongside regular Markdown, docs.page supports [MDX](https://mdxjs.com/), a format that allows you to use JSX components within your documentation.
+docs.page registers built-in MDX shortcode components during compilation. Use them in any `.mdx` file under `docs/`.
 
-Components enable you to enhance your documentation, providing a more interactive and engaging experience for your readers over what is possible with standard Markdown.
+## Available components
 
-## Using Components
+| Component | Purpose |
+| --- | --- |
+| `Accordion` | Collapsible content sections |
+| `Callout` | Info, warning, and error callouts |
+| `Card` / `Cards` | Linked content cards |
+| `CodeGroup` | Tabbed code examples |
+| `Image` | Documentation images with optional zoom |
+| `Icon` | Inline icons |
+| `Property` | Configuration field reference blocks |
+| `Steps` / `Step` | Sequential procedure steps |
+| `Tabs` / `TabItem` | Tabbed content panels |
+| `Tweet` | Embedded tweets |
+| `Video` | Generic video embed |
+| `YouTube` | YouTube embed |
+| `Vimeo` | Vimeo embed |
 
-To use components in your documentation, you can either use standard Markdown syntax, or the `<Component>` syntax. For example, the `<Info>` component can be used to display an informational message more visible to users:
+## Accordion
 
-<Info>This draws attention to useful page information.</Info>
-
-```jsx
-<Info>This draws attention to useful page information.</Info>
+```mdx
+<Accordion title="Advanced options">
+  Content hidden until expanded.
+</Accordion>
 ```
 
-Components also take "props", which are attributes that can be passed to the component to customize its behavior, for example:
+## Callout
 
-```jsx
-<Tweet id="1513662173796605958" />
+```mdx
+<Callout type="info">
+  Informational note for readers.
+</Callout>
+
+<Callout type="warning">
+  Important caution before proceeding.
+</Callout>
 ```
 
-## HTML Overrides
+## Steps
 
-Typical markdown syntax supports both markdown tags and also HTML tags. In some scenarios, docs.page will override the HTML tags to render the component instead. For example image markup in markdown (e.g. `![alt text](image.png)`) will be overridden to render the `<Image>` component instead.
+```mdx
+<Steps>
+  <Step title="Install dependencies">
+    Run `npm install`.
+  </Step>
+  <Step title="Start the server">
+    Run `npm run dev`.
+  </Step>
+</Steps>
+```
 
-Please note that rendering HTML directly in your markdown will not be overridden, and will be rendered as standard HTML. For example an `<img>` tag will not be overridden to render the `<Image>` component.
+## CodeGroup
 
-## Invalid Components
+Wrap equivalent commands in a `CodeGroup` with labeled fenced code blocks for tabbed switching.
 
-If you attempt to use a component that does not exist, or has a required property which is missing, docs.page will render a red block with a message informing you to take action.
-For example:
+## Property
 
-<ComponentWhichDoesNotExist />
+For reference pages, document configuration fields:
 
+```mdx
+<Property name="theme.primary" type="hex color">
+  Custom primary brand color.
+</Property>
+```
+
+## Tabs
+
+```mdx
+<Tabs>
+  <TabItem label="npm" value="npm">
+    ```bash
+    npm install
+    ```
+  </TabItem>
+  <TabItem label="pnpm" value="pnpm">
+    ```bash
+    pnpm install
+    ```
+  </TabItem>
+</Tabs>
+```
+
+## Next steps
+
+- [Writing Content](/writing-content) — frontmatter, variables, and assets
+- [docs.json Reference](/configuration) — site-wide configuration

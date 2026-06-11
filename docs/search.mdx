@@ -1,30 +1,43 @@
 ---
 title: Search
-description: Add powerful documentation search using DocSearch
+description: Built-in FlexSearch indexing with keyboard shortcut access and search.json API.
 ---
 
-docs.page uses [DocSearch](https://docsearch.algolia.com/) by Algolia to provide full, in-depth rich search
-to your documentation for free.
+docs.page builds a per-repository search index from MDX content and serves it for client-side FlexSearch. Readers open search with **⌘K** (or the search dialog UI).
 
-## Join the program
+## How it works
 
-To get started, [join the DocSearch](https://docsearch.algolia.com/apply/) program by providing the URL to your
-documentation and email address.
+1. At bundle time, docs.page extracts searchable text from all MDX pages.
+2. The index is published at `GET /{owner}/{repo}/search.json`.
+3. The client loads the index into a Web Worker and queries via FlexSearch.
 
-## Configuration
+No additional configuration is required — search is enabled by default for all sites.
 
-Once accepted, you will be provided with an API Key and Index Name used to connect to the DocSearch service.
+## Search index API
 
-Within your project configuration file, add these credentials to the `docsearch` object:
+Integrators can fetch the raw index:
 
-```json
-{
-  "docsearch": {
-    "appId": "...",
-    "apiKey": "...",
-    "indexName": "..."
-  }
-}
+```
+GET /{owner}/{repo}/search.json
 ```
 
-Once committed, a search bar will appear in the header of the documentation with the search connected.
+The payload is FlexSearch-compatible JSON built by `buildDocsFlexSearchIndex`.
+
+Ref-aware URLs apply when viewing branch, PR, or commit previews:
+
+```
+GET /{owner}/{repo}~{ref}/search.json
+```
+
+## Algolia DocSearch
+
+The `search.docsearch` field in `docs.json` accepts Algolia credentials (`appId`, `apiKey`, `indexName`).
+
+<Callout type="warning">
+**Schema only.** DocSearch configuration is defined in the schema and migrated from v1 configs, but the search UI implements FlexSearch only. Algolia credentials in `docs.json` have no effect on the built-in search dialog today.
+</Callout>
+
+## Next steps
+
+- [API Reference](/api-reference#search-index) — search.json endpoint details
+- [docs.json Reference](/configuration#search) — search configuration fields
