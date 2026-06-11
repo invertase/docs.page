@@ -1,30 +1,29 @@
 ---
 title: Search
-description: Add powerful documentation search using DocSearch
+description: Integrates Algolia DocSearch when search.docsearch appId, apiKey, and indexName are set in docs.json, rendering a search modal in the documentation header.
 ---
 
-docs.page uses [DocSearch](https://docsearch.algolia.com/) by Algolia to provide full, in-depth rich search
-to your documentation for free.
+Integrates Algolia DocSearch when search.docsearch appId, apiKey, and indexName are set in docs.json, rendering a search modal in the documentation header.
 
-## Join the program
+## Setup
 
-To get started, [join the DocSearch](https://docsearch.algolia.com/apply/) program by providing the URL to your
-documentation and email address.
-
-## Configuration
-
-Once accepted, you will be provided with an API Key and Index Name used to connect to the DocSearch service.
-
-Within your project configuration file, add these credentials to the `docsearch` object:
+1. Apply for [Algolia DocSearch](https://docsearch.algolia.com/)
+2. Add credentials to `docs.json`:
 
 ```json
 {
-  "docsearch": {
-    "appId": "...",
-    "apiKey": "...",
-    "indexName": "..."
+  "search": {
+    "docsearch": {
+      "appId": "YOUR_APP_ID",
+      "apiKey": "YOUR_SEARCH_KEY",
+      "indexName": "YOUR_INDEX"
+    }
   }
 }
 ```
 
-Once committed, a search bar will appear in the header of the documentation with the search connected.
+A search button appears in the documentation header when configured.
+## Implementation
+
+- `website/src/components/DocSearch.tsx` — UI integration
+- `api/src/config/models/search.ts` — config schema

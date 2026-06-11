@@ -1,25 +1,31 @@
 ---
-title: init
-description: The `init` command initializes a new project. It creates a new directory with a basic project structure and configuration file.
+title: Init
+description: Scaffolds a new docs.page project with docs.json, docs/index.mdx, and docs/next-steps.mdx in the target directory, prompting before overwriting existing files.
 ---
 
+Scaffolds a new docs.page project with docs.json, docs/index.mdx, and docs/next-steps.mdx in the target directory, prompting before overwriting existing files.
 
 ## Usage
 
 ```bash
-@docs.page/cli init [path]
+docs.page init [path]
 ```
 
-The init command will fail if a `docs.json` file already exists in the specified directory.
+| Argument | Description |
+|----------|-------------|
+| `path` | Directory to initialize (defaults to `.`) |
 
-If the `docs/` directory exists, the command will not output example `.mdx` files.
+## Files created
 
-## Arguments
+- `docs.json` — configuration file
+- `docs/index.mdx` — home page
+- `docs/next-steps.mdx` — getting started guide
 
-<Property name="path" type="string" optional>
-  The path to the directory to initialize the project in. Defaults to the current directory.
+Prompts before overwriting existing files.
+## Surface
 
-  ```
-  @docs.page/cli init my-project
-  ```
-</Property>
+- **cli**: `docs.page init [path]`
+## Implementation
+
+- `packages/cli/src/commands/init.ts` — command
+- `packages/cli/src/cli.ts` — registration

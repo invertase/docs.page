@@ -1,16 +1,27 @@
 ---
-title: GitHub Bot
-description: Install our GitHub bot on repositories using docs.page
+title: Github Bot
+description: On pull_request.opened webhook events, posts a comment on the PR with a link to the documentation preview URL, using a custom domain when configured in domains.json.
 ---
 
-When pull requests are made to your repository, being able to visually view how changes within the pull request
-impact your documentation is extremely valuable. The docs.page GitHub bot comments on new pull requests
-with a dedicated URL allowing anyone to view the documentation for the specific pull request.
+On pull_request.opened webhook events, posts a comment on the PR with a link to the documentation preview URL, using a custom domain when configured in domains.json.
 
-![GitHub Bot comment](/assets/github-bot-comment.png)
+## Install
 
-To get started, visit the [GitHub page](https://github.com/apps/docs-page) and install the application on
-any repository using docs.page.
+1. Install the [docs-page GitHub App](https://github.com/apps/docs-page)
+2. Grant access to your documentation repository
+3. Open a pull request — a comment with the preview URL is posted automatically
 
-If you have a [Custom Domain](/custom-domains) configured, the bot will display a URL using the custom domain
-rather than the default `docs.page` domain.
+<Warning>
+
+GitHub check runs for documentation builds are implemented but not yet enabled in production.
+
+</Warning>
+<Warning>
+
+- pull_request.synchronize handler and GitHub check runs are implemented but commented out in the webhook router.
+
+</Warning>
+## Implementation
+
+- `api/src/events/pull_request.opened.ts` — handler
+- `api/src/routes/webhooks.github.ts` — event dispatch

@@ -1,93 +1,29 @@
 ---
 title: Frontmatter
-description: Learn about configuring your documentation pages with frontmatter.
+description: Frontmatter
 ---
 
-Frontmatter is a way to customize metadata of a page directly within your Markdown files. The metadata properties can
-be added to Markdown pages by adding frontmatter blocks to the top of any page.
+YAML frontmatter at the top of each MDX file controls page metadata.
 
-```text title=Example Frontmatter
+## Supported fields
+
+| Field | Purpose |
+|-------|---------|
+| `title` | Page title (overrides config default) |
+| `description` | Meta description |
+| `image` | Social preview image for this page |
+| `redirect` | Redirect to another URL — see [Redirects](/redirects) |
+| `previous` | Override previous page link |
+| `next` | Override next page link |
+| `noindex` | Exclude from search engine indexing |
+
+## Example
+
+```mdx
 ---
-title: Welcome to Awesome Project
-description: Some awesome docs!
+title: My Page
+description: A short summary
 ---
 
-# Welcome!
+Page content here.
 ```
-
-Frontmatter overrides any default properties set in the [project configuration file](/configuration). This allows you to customize each page with unique metadata.
-
-## Properties
-
-Below is a list of all available frontmatter properties, their type and default values.
-
-<Property name="title" type="string">
-  The title of the page used in metadata, and social cards and as a page heading title.
-</Property>
-
----
-
-<Property name="description" type="string">
-  The description of the page used in metadata.
-</Property>
-
----
-
-<Property name="image" type="string">
-  An [Asset URL](/assets) to an image used in social cards and shown at the top of the page if `showPageImage` is `true`.
-</Property>
-
----
-
-<Property name="redirect" type="string">
-  A URL to redirect to when the page is visited. Setting this value overrides the page content.
-</Property>
-
----
-
-<Property name="showPageTitle" type="boolean">
-  Whether to show the `title` as a heading title at the top of the page. 
-</Property>
-
----
-
-<Property name="showPageImage" type="boolean">
-  Whether to show the `image` at the top of the page. 
-</Property>
-
----
-
-<Property name="noindex" type="boolean">
-  If true, the page will be excluded from search engines.
-</Property>
-
----
-
-<Property name="previous" type="string">
-A path which if set, will show a link to the previous page at the bottom of the page.
-Use with `previousTitle`:
-
-```
----
-previous: /getting-started
-previousTitle: Getting started
----
-```
-
-</Property>
-
----
-
-<Property name="next" type="string">
-A path which if set, will show a link to the next page at the bottom of the page.
-Use with `nextTitle`:
-
-```
----
-next: /getting-started
-nextTitle: Getting started
----
-```
-
-</Property>
-

@@ -1,0 +1,29 @@
+---
+title: Redirects
+description: Redirects visitors when a page frontmatter redirect field is set, supporting absolute URLs or relative paths resolved against the current domain or docs.page.
+---
+
+Redirects visitors when a page frontmatter redirect field is set, supporting absolute URLs or relative paths resolved against the current domain or docs.page.
+
+## Frontmatter redirect
+
+```mdx
+---
+title: Old page
+redirect: /new-page
+---
+```
+
+## Absolute URLs
+
+```mdx
+---
+redirect: https://example.com/docs
+---
+```
+
+Relative paths resolve against your custom domain or `docs.page/{owner}/{repo}`.
+## Implementation
+
+- `website/src/context.ts` — redirect logic
+- `website/src/pages/[[...path]].tsx` — Next.js redirect response

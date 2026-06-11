@@ -1,0 +1,25 @@
+---
+title: How it works
+description: Resolves a GitHub repository ref (branch, 40-char commit SHA, or numeric PR number), fetches docs.json or docs.yaml plus the target MDX file via GraphQL, parses config, and compiles MDX into renderable code.
+---
+
+Resolves a GitHub repository ref (branch, 40-char commit SHA, or numeric PR number), fetches docs.json or docs.yaml plus the target MDX file via GraphQL, parses config, and compiles MDX into renderable code.
+
+## Request flow
+
+1. Visitor requests `docs.page/{owner}/{repo}/{path}`
+2. The website calls `GET /bundle` on the API
+3. `Bundler` resolves the ref (branch, commit, or PR number)
+4. GitHub GraphQL fetches `docs.json` and the target MDX file
+5. Config is parsed and MDX is compiled server-side
+6. The page is server-rendered with sidebar, tabs, and components
+
+```
+bundle.ts → Bundler → getGitHubContents → parseConfig → parseMdx → Content.tsx
+```
+
+See [API reference](/api) for endpoint details.
+## Implementation
+
+- `api/src/bundler/index.ts` `Bundler`
+- `api/src/utils/github.ts` `getGitHubContents` — GitHub fetch

@@ -1,39 +1,22 @@
 ---
 title: Assets
-description: Learn how to add assets to your project.
+description: Assets
 ---
 
-Assets such as images and videos are a common requirement for documentation.
+Reference images and other static files with paths relative to your GitHub repository.
 
-## Remote Assets
+## Relative paths
 
-To use remote assets in your documentation, you can reference them directly in your markdown files.
-
-For example, to include an image from a URL:
-
-```md
-![Description](https://example.com/image.png)
+```mdx
+<Image src="/assets/screenshot.png" alt="Screenshot" />
 ```
 
-## Local Assets
+## External URLs
 
-To use assets with your documentation, you can add them to your repository within the `docs/` directory and reference them in your markdown files.
+Absolute URLs are used as-is:
 
-For example, consider the following directory structure:
-
-```
-docs/
-  assets/
-    image.png
-  index.mdx
+```mdx
+<Image src="https://example.com/logo.png" alt="Logo" />
 ```
 
-Within your markdown file, you can reference the image using a relative path:
-
-```md
-![Description](/assets/image.png)
-```
-
-<Info>
-  You can place assets where you wish - whether in a root `docs/assets` directory or co-located next to your markdown.
-</Info>
+Logo and favicon paths in `docs.json` follow the same rules. See [Configuration](/configuration).

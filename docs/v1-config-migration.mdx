@@ -1,0 +1,20 @@
+---
+title: V1 Config Migration
+description: Automatically detects legacy docs.yaml configuration (string logo or theme fields) and migrates it to the current Config shape via V1ConfigSchema parsing.
+---
+
+Automatically detects legacy docs.yaml configuration (string logo or theme fields) and migrates it to the current Config shape via V1ConfigSchema parsing.
+
+docs.page detects legacy `docs.yaml` files automatically when `logo` or `theme` are plain strings.
+
+## Migrate to docs.json
+
+1. Rename `docs.yaml` → `docs.json`
+2. Convert YAML syntax to JSON
+3. Update nested fields to the current schema (see [Configuration](/configuration))
+
+The API applies `V1ConfigSchema` parsing as a fallback when v1 format is detected.
+## Implementation
+
+- `api/src/config/v1.schema.ts` `V1ConfigSchema`
+- `api/src/config/index.ts` `parseConfig` — detection and routing

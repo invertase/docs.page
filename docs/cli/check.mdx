@@ -1,27 +1,36 @@
 ---
-title: check
-description: The `check` command scans the current project for errors and warnings which need fixing.
+title: Check
+description: Validates a docs.page directory for a docs.json or docs.yaml file, route clashes among docs/**/*.mdx files, and broken relative links in MDX content.
 ---
+
+Validates a docs.page directory for a docs.json or docs.yaml file, route clashes among docs/**/*.mdx files, and broken relative links in MDX content.
 
 ## Usage
 
 ```bash
-@docs.page/cli check [path]
+docs.page check [path]
 ```
 
-The command current performs the following checks:
+## Checks performed
 
-- Broken Links: Checks markdown content for any broken relative links.
-- Missing Assets: Checks markdown content for any local [assets](/assets) that are missing.
+- `docs.json` or `docs.yaml` exists
+- No duplicate routes among `docs/**/*.mdx` files
+- Relative links in MDX resolve to existing pages
 
-## Arguments
+Exits with code `1` on errors.
 
-<Property name="path" type="string" optional>
-  The path to the directory to check for issues. This should be the path to the root of the project.
+<Info>
 
-  Defaults to the current directory.
+The same validation runs in [local preview](/local-previewing) via the exported `check()` function.
 
-  ```
-  @docs.page/cli check my-project
-  ```
-</Property>
+</Info>
+<Warning>
+
+- checkConfiguration in packages/cli/src/check/configuration.ts is currently a no-op stub.
+
+</Warning>
+## Implementation
+
+- `packages/cli/src/commands/check.ts` — command
+- `packages/cli/src/check/index.ts` `check` — validation logic
+- `packages/cli/src/check/relative-links.ts` — link checker

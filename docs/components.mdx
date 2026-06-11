@@ -1,0 +1,16 @@
+---
+title: Components
+description: Built-in React components available in documentation MDX: Accordion, Callout, Card, CodeBlock, CodeGroup, Image, Property, Section, Steps, Tabs, Tweet, Video, Vimeo, YouTube, Zapp, and Icon.
+---
+
+Built-in React components available in documentation MDX: Accordion, Callout, Card, CodeBlock, CodeGroup, Image, Property, Section, Steps, Tabs, Tweet, Video, Vimeo, YouTube, Zapp, and Icon.
+
+Built-in components are registered in `website/src/components/Content.tsx`.
+
+Unknown JSX components are converted to plain text at compile time unless declared in the same MDX file.
+
+Browse components by category in the sidebar.
+## Implementation
+
+- `website/src/components/Content.tsx` `COMPONENTS` — component registry
+- `api/src/bundler/plugins/remark-component-check.ts` — undeclared component guard

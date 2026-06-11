@@ -1,0 +1,34 @@
+---
+title: Api
+description: Fetches docs.json and MDX content from a public GitHub repository at a given owner, repository, ref, and path, then returns compiled MDX output with config, headings, and frontmatter.
+---
+
+HTTP API for bundling and previewing documentation.
+
+## GET /bundle
+
+Fetches and compiles documentation from GitHub.
+
+```
+GET /bundle?owner={owner}&repository={repo}&ref={ref}&path={path}
+```
+
+Fetches docs.json and MDX content from a public GitHub repository at a given owner, repository, ref, and path, then returns compiled MDX output with config, headings, and frontmatter.
+
+## POST /preview
+
+Bundles inline markdown and config without fetching from GitHub. Used by [local preview](/local-previewing).
+
+Accepts raw markdown and inline docs.json or docs.yaml config in the request body and returns a BundlerOutput payload without fetching from GitHub, used by local preview mode.
+
+## GET /schema.json
+
+Returns the JSON Schema for `docs.json`.
+
+## GET /api/og
+
+Generates Open Graph images for social sharing.
+## Implementation
+
+- `api/src/routes/bundle.ts` — handler
+- `api/src/bundler/index.ts` `Bundler` — implementation

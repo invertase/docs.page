@@ -1,0 +1,32 @@
+---
+title: Variables
+description: Replaces {{ variable.path }} placeholders in compiled MDX code using values from the docs.json variables object before rendering.
+---
+
+Replaces {{ variable.path }} placeholders in compiled MDX code using values from the docs.json variables object before rendering.
+
+## Syntax
+
+Use double curly braces in MDX content:
+
+```mdx
+Welcome to {{ project.name }}!
+```
+
+## Configuration
+
+```json
+{
+  "variables": {
+    "project": {
+      "name": "My Docs"
+    }
+  }
+}
+```
+
+Unresolved variables are left unchanged in the compiled output.
+## Implementation
+
+- `api/src/utils/variables.ts` `replaceMoustacheVariables`
+- `api/src/bundler/index.ts` — application point

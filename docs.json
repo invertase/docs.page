@@ -14,13 +14,6 @@
     "showPageTitle": true,
     "showPageImage": true
   },
-  "agent": {
-    "key": "1a070e07-dd4f-4d56-b8f5-35537e58c0c0",
-    "questions": [
-      "How do I setup docs.page?",
-      "Is it free to use?"
-    ]
-  },
   "social": {
     "x": "invertaseio",
     "github": "invertase/docs.page",
@@ -47,34 +40,22 @@
     {
       "group": "Getting Started",
       "tab": "root",
+      "icon": "rocket",
       "pages": [
-        { "title": "Overview", "href": "/", "icon": "book" },
+        {
+          "title": "Overview",
+          "href": "/",
+          "icon": "house"
+        },
         {
           "title": "Getting Started",
           "href": "/getting-started",
-          "icon": "rocket"
-        },
-        { "title": "Configuration", "href": "/configuration", "icon": "gear" },
-        { "title": "Navigation", "href": "/navigation", "icon": "map" },
-        {
-          "title": "Writing Content",
-          "href": "/writing-content",
-          "icon": "pencil"
+          "icon": "play"
         },
         {
-          "title": "Frontmatter",
-          "href": "/frontmatter",
+          "title": "How it works",
+          "href": "/how-it-works",
           "icon": "circle-info"
-        },
-        {
-          "title": "Local Previewing",
-          "href": "/local-previewing",
-          "icon": "eye"
-        },
-        {
-          "title": "Live Previews",
-          "href": "/live-previews",
-          "icon": "code-branch"
         },
         {
           "title": "Publishing",
@@ -84,154 +65,287 @@
       ]
     },
     {
-      "group": "Components",
-      "tab": "components",
+      "group": "Configuration",
+      "tab": "root",
+      "icon": "gear",
       "pages": [
         {
-          "title": "Getting Started",
-          "href": "/components"
+          "title": "Overview",
+          "href": "/configuration",
+          "icon": "sliders"
         },
         {
-          "title": "Accordion",
-          "href": "/components/accordion",
-          "icon": "square-caret-down"
+          "group": "Appearance",
+          "icon": "palette",
+          "pages": [
+            {
+              "title": "Theme",
+              "href": "/theme",
+              "icon": "palette"
+            },
+            {
+              "title": "Assets",
+              "href": "/assets",
+              "icon": "image"
+            }
+          ]
         },
         {
-          "title": "Callouts",
-          "href": "/components/callouts",
-          "icon": "bullhorn"
+          "group": "Navigation",
+          "icon": "bars",
+          "pages": [
+            {
+              "title": "Sidebar & tabs",
+              "href": "/navigation",
+              "icon": "map"
+            },
+            {
+              "title": "Locales",
+              "href": "/locales",
+              "icon": "language"
+            }
+          ]
         },
         {
-          "title": "Cards",
-          "href": "/components/cards",
-          "icon": "square-full"
-        },
-        {
-          "title": "Code Blocks",
-          "href": "/components/code-blocks",
+          "title": "Variables",
+          "href": "/variables",
           "icon": "code"
         },
         {
-          "title": "Code Group",
-          "href": "/components/code-group",
-          "icon": "laptop-code"
+          "group": "Integrations",
+          "icon": "plug",
+          "pages": [
+            {
+              "title": "Search",
+              "href": "/search",
+              "icon": "magnifying-glass"
+            },
+            {
+              "title": "Analytics",
+              "href": "/analytics",
+              "icon": "chart-line"
+            }
+          ]
         },
         {
-          "title": "Headings",
-          "href": "/components/headings",
-          "icon": "heading"
+          "title": "v1 YAML migration",
+          "href": "/v1-config-migration",
+          "icon": "arrow-right-arrow-left"
+        }
+      ]
+    },
+    {
+      "group": "Writing Content",
+      "tab": "root",
+      "icon": "pen",
+      "pages": [
+        {
+          "title": "Writing content",
+          "href": "/writing-content",
+          "icon": "file-lines"
         },
         {
-          "title": "Tweet",
-          "href": "/components/tweet",
-          "icon": "twitter"
+          "title": "Frontmatter",
+          "href": "/frontmatter",
+          "icon": "circle-info"
         },
         {
-          "title": "Tabs",
-          "href": "/components/tabs",
-          "icon": "table-columns"
+          "title": "Redirects",
+          "href": "/redirects",
+          "icon": "arrow-turn-up"
         },
         {
-          "title": "Icons",
-          "href": "/components/icons",
-          "icon": "icons"
+          "title": "Previous & next",
+          "href": "/previous-next",
+          "icon": "angles-left"
+        }
+      ]
+    },
+    {
+      "group": "Previewing",
+      "tab": "root",
+      "icon": "eye",
+      "pages": [
+        {
+          "title": "Local previewing",
+          "href": "/local-previewing",
+          "icon": "laptop"
         },
         {
-          "title": "Images",
-          "href": "/components/images",
-          "icon": "image"
-        },
-        {
-          "title": "Property",
-          "href": "/components/property",
-          "icon": "signature"
-        },
-        {
-          "title": "Steps",
-          "href": "/components/steps",
-          "icon": "list-ol"
-        },
-        {
-          "title": "YouTube",
-          "href": "/components/youtube",
-          "icon": "youtube"
-        },
-        {
-          "title": "Vimeo",
-          "href": "/components/vimeo",
-          "icon": "vimeo"
-        },
-        {
-          "title": "Video",
-          "href": "/components/video",
-          "icon": "video"
+          "title": "Live previews",
+          "href": "/live-previews",
+          "icon": "code-branch"
         }
       ]
     },
     {
       "group": "Advanced",
       "tab": "root",
+      "icon": "wrench",
       "pages": [
         {
-          "title": "Assets",
-          "href": "/assets",
-          "icon": "image"
-        },
-        {
-          "title": "Components",
-          "href": "/components",
-          "icon": "shapes"
-        },
-        {
-          "title": "Custom Domains",
+          "title": "Custom domains",
           "href": "/custom-domains",
           "icon": "globe"
         },
         {
-          "title": "Search",
-          "href": "/search",
-          "icon": "magnifying-glass"
-        },
-
-        {
-          "title": "Locales",
-          "href": "/locales",
-          "icon": "language"
-        },
-        {
-          "title": "GitHub Bot",
+          "title": "GitHub bot",
           "href": "/github-bot",
-          "icon": "github"
+          "icon": "robot"
         },
         {
-          "title": "Command Line Interface",
-          "href": "/cli",
-          "icon": "terminal"
-        }
-      ]
-    },
-    {
-      "tab": "cli",
-      "group": "CLI",
-      "pages": [
-        { "title": "Overview", "href": "/cli" },
-        {
-          "group": "Commands",
-          "pages": [
-            { "title": "init", "href": "/cli/init" },
-            { "title": "check", "href": "/cli/check" }
-          ]
-        }
-      ]
-    },
-    {
-      "tab": "root",
-      "group": "Misc.",
-      "pages": [
+          "title": "API reference",
+          "href": "/api",
+          "icon": "book"
+        },
         {
           "title": "Contributing",
           "href": "/contributing",
           "icon": "heart"
+        }
+      ]
+    },
+    {
+      "group": "Components",
+      "tab": "components",
+      "icon": "puzzle-piece",
+      "pages": [
+        {
+          "title": "Overview",
+          "href": "/components",
+          "icon": "grid"
+        },
+        {
+          "group": "Layout",
+          "pages": [
+            {
+              "title": "Accordion",
+              "href": "/components/accordion",
+              "icon": "square-caret-down"
+            },
+            {
+              "title": "Cards",
+              "href": "/components/cards",
+              "icon": "square-full"
+            },
+            {
+              "title": "Steps",
+              "href": "/components/steps",
+              "icon": "list-ol"
+            },
+            {
+              "title": "Tabs",
+              "href": "/components/tabs",
+              "icon": "table-columns"
+            },
+            {
+              "title": "Property",
+              "href": "/components/property",
+              "icon": "signature"
+            }
+          ]
+        },
+        {
+          "group": "Content",
+          "pages": [
+            {
+              "title": "Callouts",
+              "href": "/components/callouts",
+              "icon": "bullhorn"
+            },
+            {
+              "title": "Headings",
+              "href": "/components/headings",
+              "icon": "heading"
+            },
+            {
+              "title": "Icons",
+              "href": "/components/icons",
+              "icon": "icons"
+            }
+          ]
+        },
+        {
+          "group": "Code",
+          "pages": [
+            {
+              "title": "Code blocks",
+              "href": "/components/code-blocks",
+              "icon": "code"
+            },
+            {
+              "title": "Code group",
+              "href": "/components/code-group",
+              "icon": "laptop-code"
+            }
+          ]
+        },
+        {
+          "group": "Media",
+          "pages": [
+            {
+              "title": "Images",
+              "href": "/components/images",
+              "icon": "image"
+            },
+            {
+              "title": "Video",
+              "href": "/components/video",
+              "icon": "video"
+            },
+            {
+              "title": "YouTube",
+              "href": "/components/youtube",
+              "icon": "youtube"
+            },
+            {
+              "title": "Vimeo",
+              "href": "/components/vimeo",
+              "icon": "vimeo"
+            },
+            {
+              "title": "Tweet",
+              "href": "/components/tweet",
+              "icon": "twitter"
+            },
+            {
+              "title": "Zapp",
+              "href": "/components/zapp",
+              "icon": "bolt"
+            }
+          ]
+        },
+        {
+          "title": "Custom components",
+          "href": "/components/custom",
+          "icon": "wand-magic-sparkles"
+        }
+      ]
+    },
+    {
+      "group": "CLI",
+      "tab": "cli",
+      "icon": "terminal",
+      "pages": [
+        {
+          "title": "Overview",
+          "href": "/cli",
+          "icon": "terminal"
+        },
+        {
+          "group": "Commands",
+          "pages": [
+            {
+              "title": "init",
+              "href": "/cli/init",
+              "icon": "plus"
+            },
+            {
+              "title": "check",
+              "href": "/cli/check",
+              "icon": "check"
+            }
+          ]
         }
       ]
     }
@@ -245,5 +359,12 @@
   },
   "scripts": {
     "googleTagManager": "GTM-W89J6BX"
+  },
+  "agent": {
+    "key": "1a070e07-dd4f-4d56-b8f5-35537e58c0c0",
+    "questions": [
+      "How do I setup docs.page?",
+      "Is it free to use?"
+    ]
   }
 }

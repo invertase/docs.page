@@ -1,9 +1,19 @@
 ---
 title: Custom Domains
-description: Learn how to set up a custom domain for your project.
+description: Maps vanity domains to GitHub repositories via a domains.json file in the main docs.page repository, used when generating PR preview URLs and page redirects.
 ---
 
-Custom domains for new docs.page projects are currently disabled whilst we implement a more robust
-and sustainable solution.
+Maps vanity domains to GitHub repositories via a domains.json file in the main docs.page repository, used when generating PR preview URLs and page redirects.
 
-Existing projects with custom domains will continue to work as normal.
+## Setup
+
+Custom domains are mapped in the `domains.json` file in the [invertase/docs.page](https://github.com/invertase/docs.page) repository.
+
+Once configured, your docs are served at your domain instead of `docs.page/{owner}/{repo}`.
+
+PR preview URLs and [redirects](/redirects) respect the configured domain.
+## Implementation
+
+- `api/src/octokit.ts` `getDomains` — domain lookup
+- `api/src/events/pull_request.opened.ts` — PR URL generation
+- `website/src/context.ts` — redirect domain resolution

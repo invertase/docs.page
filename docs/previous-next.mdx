@@ -1,0 +1,33 @@
+---
+title: Previous Next
+description: Displays previous and next navigation links inferred from sidebar order, overridable via frontmatter previous and next fields or disabled via content.automaticallyInferNextPrevious.
+---
+
+Displays previous and next navigation links inferred from sidebar order, overridable via frontmatter previous and next fields or disabled via content.automaticallyInferNextPrevious.
+
+## Automatic inference
+
+By default, previous and next links are inferred from sidebar order.
+
+Disable globally:
+
+```json
+{
+  "content": {
+    "automaticallyInferNextPrevious": false
+  }
+}
+```
+
+## Frontmatter overrides
+
+```mdx
+---
+previous: /getting-started
+next: /configuration
+---
+```
+## Implementation
+
+- `website/src/components/PreviousNext.tsx` — component
+- `api/src/config/models/content.ts` — config toggle
