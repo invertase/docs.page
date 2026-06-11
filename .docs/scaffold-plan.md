@@ -102,13 +102,13 @@ Components (/components) [catalogue]
 
 Use **top-level sidebar sections** on the Components tab (`group` + `tab: components`), not nested `{ group, pages }` inside one group — nested groups render as collapsible accordions (closed unless active).
 
-**Icons:** all-or-nothing — no `icon` on sidebar leaves or `outline.pages` (mixed/invalid FA slugs break the rule).
+**Icons:** section headings only — `icon` on top-level sidebar `group` objects, not on page leaves or `outline.pages`.
 
 ## Sidebar titles
 
 Per headline-style: **action-first** sidebar labels; bare nouns only for component lookup and neutral comparisons.
 
-No sidebar icons — all-or-nothing policy (see Nav note). H1 overrides:
+No icons on page leaves. **Section heading icons** on top-level sidebar groups only (Font Awesome slug on the `group` object). H1 overrides:
 
 | href | Sidebar title | H1 (when different) |
 | --- | --- | --- |
@@ -167,7 +167,7 @@ Group labels: **Publishing docs** / **Using docs** (sentence case, task framing)
 - **Using docs:** three pages — search, chat, connect. Nav/theme/locales = site chrome; owners configure under Publishing.
 - **Agent split:** consume → Using docs; enable/publish → Publishing docs.
 - **Components sections:** category groups are top-level sidebar sections on the Components tab — always expanded, not nested accordions.
-- **Icons:** none on sidebar or outline (all-or-nothing; catalogue pages have no meaningful distinct icons).
+- **Icons:** section headings only (`Getting Started` → `rocket`, `Layout & structure` → `layer-group`, etc.). No leaf icons.
 - Getting Started stays **2 pages**. Config = 4 how-tos + 1 reference hub.
 
 ## Pairs

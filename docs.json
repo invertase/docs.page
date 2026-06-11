@@ -27,7 +27,8 @@
           "title": "Quickstart",
           "href": "/quickstart"
         }
-      ]
+      ],
+      "icon": "rocket"
     },
     {
       "group": "Guides",
@@ -66,7 +67,8 @@
             }
           ]
         }
-      ]
+      ],
+      "icon": "pen-to-square"
     },
     {
       "group": "Publishing docs",
@@ -135,7 +137,8 @@
             }
           ]
         }
-      ]
+      ],
+      "icon": "cloud-arrow-up"
     },
     {
       "group": "Using docs",
@@ -153,7 +156,8 @@
           "title": "Connect AI tools",
           "href": "/using/connect"
         }
-      ]
+      ],
+      "icon": "book-open-reader"
     },
     {
       "group": "Comparisons",
@@ -183,7 +187,8 @@
           "title": "Migrate from Jekyll",
           "href": "/comparisons/migrate-jekyll"
         }
-      ]
+      ],
+      "icon": "code-compare"
     },
     {
       "group": "Components",
@@ -193,7 +198,8 @@
           "title": "Overview",
           "href": "/components"
         }
-      ]
+      ],
+      "icon": "cubes"
     },
     {
       "group": "Layout & structure",
@@ -215,7 +221,8 @@
           "title": "Heading",
           "href": "/components/heading"
         }
-      ]
+      ],
+      "icon": "layer-group"
     },
     {
       "group": "Content blocks",
@@ -233,7 +240,8 @@
           "title": "Property",
           "href": "/components/property"
         }
-      ]
+      ],
+      "icon": "shapes"
     },
     {
       "group": "Code & media",
@@ -255,7 +263,8 @@
           "title": "Icon",
           "href": "/components/icon"
         }
-      ]
+      ],
+      "icon": "code"
     },
     {
       "group": "Embeds",
@@ -277,7 +286,8 @@
           "title": "YouTube",
           "href": "/components/youtube"
         }
-      ]
+      ],
+      "icon": "photo-film"
     }
   ],
   "outline": {
