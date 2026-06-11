@@ -282,6 +282,22 @@ Search systematically. Adapt paths to the stack; do not assume a specific framew
 
 **Granularity:** One entry per distinct user-facing, integrator-facing, or operator-facing capability. Split when behavior, audience, or configuration differ meaningfully. Merge when differences are implementation detail.
 
+**Component registries:** When a product exposes many named UI widgets, shortcodes, or MDX components from a registry, prefer **one `kind: component` entry per named component** — not one umbrella catalog entry. Populate `surface.ui` with the single component name. Link siblings via `related`. If the registry is large and homogeneous, a parent entry plus per-component children is acceptable only when each child has its own `sources` file; downstream [docs-scaffolder](../docs-scaffolder/SKILL.md) expects one doc page per component.
+
+Example split:
+
+```json
+{
+  "id": "component-steps",
+  "kind": "component",
+  "title": "Steps",
+  "summary": "Renders a numbered sequence of procedural steps in documentation.",
+  "surface": { "ui": ["Steps"] },
+  "sources": [{ "path": "src/components/mdx/steps.tsx" }],
+  "related": ["component-tabs"]
+}
+```
+
 **ID rules**
 - kebab-case, descriptive, stable: `branch-ref-routing`, not `feature-12`
 - Reuse existing IDs on update; never delete IDs without confirming removal from codebase

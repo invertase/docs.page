@@ -93,7 +93,7 @@ Write priority:
 3. `status: existing` (revisions)
 4. Skip `status: retire` unless user asks for redirect stub
 
-When replacing a stub, read the existing file first; preserve frontmatter `title`/`description` from the outline.
+When replacing a stub, read the existing file first. Use the **documentation plan** block for scope, then **remove it** from the delivered page.
 
 ## Step 2: Load page context
 
@@ -102,12 +102,26 @@ For each target entry in `outline.pages`:
 | Field | Use for |
 | --- | --- |
 | `docType` | Template selection — do not override without user approval |
+| `userGoal` | Scope and tone — prioritize task outcome over internal architecture |
 | `title`, `description` | Frontmatter |
+| `icon` | Confirms nav entry; not used in MDX body |
 | `file` | Output path |
 | `capabilityIds` | Pull detail from `features.json` |
-| `relatedHrefs` | Next steps / See also links |
-| `rationale` | Scope guard |
+| `audience` | Vocabulary and depth (beginner vs integrator) |
 | `status` | `existing` → read current file first |
+
+Also read the stub's **documentation plan** block and **section index** table (if present) for rationale, related pages, and merged capability context. That content lives on the page during scaffold review — not in `docs.json`.
+
+## Remove scaffold blocks
+
+Before delivering final content, strip all scaffold-only markup:
+
+1. Delete everything between `{/* docs-scaffold-plan-start */}` and `{/* docs-scaffold-plan-end */}` (inclusive)
+2. On section landing pages, remove the **Pages in this section** traceability table — replace with real overview prose
+3. Do not leave "Documentation plan", "Section index", or "remove this block" copy in output
+4. Do not leave `_TBD_` placeholders — replace with real content or delete empty sections
+
+If the user asks to **refresh stubs only**, leave plan blocks intact (docs-scaffolder scope).
 
 ## Step 3–5: Write and lint
 
@@ -142,6 +156,7 @@ Honor `docType` from outline. Templates: [templates.md](templates.md). Lint: [st
 Summarize:
 
 - Pages written (`href`, `file`)
+- Scaffold plan blocks removed (yes/no per page)
 - `docType` followed per outline
 - `capabilityIds` covered
 - Lint fixes applied

@@ -4,6 +4,7 @@
   "description": "Async job orchestration for product teams",
   "tabs": [
     { "id": "root", "title": "Documentation", "href": "/" },
+    { "id": "ui", "title": "UI SDK", "href": "/ui" },
     { "id": "api", "title": "API", "href": "/api" }
   ],
   "sidebar": [
@@ -12,7 +13,8 @@
       "tab": "root",
       "pages": [
         { "title": "Overview", "href": "/", "icon": "book" },
-        { "title": "Quickstart", "href": "/quickstart", "icon": "rocket" }
+        { "title": "Quickstart", "href": "/quickstart", "icon": "rocket" },
+        { "title": "Authoring Dashboard Views", "href": "/guides/dashboard-views", "icon": "file-text" }
       ]
     },
     {
@@ -24,9 +26,31 @@
       ]
     },
     {
+      "group": "Core Concepts",
+      "tab": "root",
+      "pages": [
+        { "title": "Job Lifecycle", "href": "/concepts/job-lifecycle", "icon": "layers" }
+      ]
+    },
+    {
+      "group": "UI SDK",
+      "tab": "ui",
+      "pages": [
+        { "title": "Overview", "href": "/ui", "icon": "component" },
+        {
+          "group": "Display",
+          "pages": [
+            { "title": "StatusBadge", "href": "/ui/status-badge", "icon": "badge" },
+            { "title": "JobTimeline", "href": "/ui/job-timeline", "icon": "list" }
+          ]
+        }
+      ]
+    },
+    {
       "group": "REST API",
       "tab": "api",
       "pages": [
+        { "title": "Overview", "href": "/api", "icon": "api" },
         { "title": "Authentication", "href": "/api/auth", "icon": "key" },
         { "title": "Jobs", "href": "/api/jobs", "icon": "list" },
         { "title": "Webhooks", "href": "/api/webhooks", "icon": "webhook" }
@@ -34,7 +58,7 @@
     }
   ],
   "outline": {
-    "version": "1.0.0",
+    "version": "2.0.0",
     "updatedAt": "2026-06-11",
     "sourceFeatures": "features.json",
     "pages": [
@@ -42,107 +66,165 @@
         "href": "/",
         "title": "Overview",
         "description": "What Taskflow does and core concepts for new users.",
+        "icon": "book",
         "docType": "explanation",
+        "userGoal": "orient",
         "status": "existing",
         "file": "docs/index.mdx",
         "capabilityIds": [],
-        "audience": ["end-user"],
-        "rationale": "Editorial landing page; orients readers before hands-on guides."
+        "audience": ["end-user"]
       },
       {
         "href": "/quickstart",
         "title": "Quickstart",
         "description": "Create and run your first job in under five minutes.",
+        "icon": "rocket",
         "docType": "tutorial",
+        "userGoal": "first-success",
         "status": "stub",
         "file": "docs/quickstart.mdx",
         "capabilityIds": ["job-submission", "job-execution"],
-        "audience": ["end-user"],
-        "rationale": "First-run learning path; single successful outcome with minimal theory.",
-        "relatedHrefs": ["/guides/deploy", "/api/jobs"]
+        "audience": ["end-user", "integrator"]
+      },
+      {
+        "href": "/guides/dashboard-views",
+        "title": "Authoring Dashboard Views",
+        "description": "Compose dashboard screens with Taskflow UI SDK components.",
+        "icon": "file-text",
+        "docType": "how-to",
+        "userGoal": "author-content",
+        "status": "stub",
+        "file": "docs/guides/dashboard-views.mdx",
+        "capabilityIds": ["ui-sdk"],
+        "audience": ["contributor", "integrator"]
       },
       {
         "href": "/guides/deploy",
         "title": "Deploy to Production",
         "description": "Configure Taskflow for a production environment with secrets and scaling.",
+        "icon": "globe",
         "docType": "how-to",
+        "userGoal": "operate",
         "status": "stub",
         "file": "docs/guides/deploy.mdx",
         "capabilityIds": ["env-configuration", "worker-scaling"],
-        "audience": ["operator"],
-        "rationale": "Task-oriented recipe for operators who already understand the product."
+        "audience": ["operator"]
       },
       {
         "href": "/guides/webhook-retries",
         "title": "Webhook Retries",
         "description": "Tune retry policy and inspect failed webhook deliveries.",
+        "icon": "refresh",
         "docType": "how-to",
+        "userGoal": "operate",
         "status": "new",
         "file": "docs/guides/webhook-retries.mdx",
         "capabilityIds": ["webhook-delivery"],
-        "audience": ["integrator"],
-        "rationale": "Focused troubleshooting guide for a single operational problem."
+        "audience": ["integrator"]
+      },
+      {
+        "href": "/concepts/job-lifecycle",
+        "title": "Job Lifecycle",
+        "description": "How jobs move from submission through execution to completion.",
+        "icon": "layers",
+        "docType": "explanation",
+        "userGoal": "understand",
+        "status": "stub",
+        "file": "docs/concepts/job-lifecycle.mdx",
+        "capabilityIds": ["job-submission", "job-execution", "job-status"],
+        "audience": ["integrator"]
+      },
+      {
+        "href": "/ui",
+        "title": "Overview",
+        "description": "Taskflow UI SDK components for dashboard and job views.",
+        "icon": "component",
+        "docType": "explanation",
+        "userGoal": "orient",
+        "status": "stub",
+        "file": "docs/ui/index.mdx",
+        "capabilityIds": ["ui-sdk"],
+        "audience": ["integrator", "contributor"]
+      },
+      {
+        "href": "/ui/status-badge",
+        "title": "StatusBadge",
+        "description": "Props and examples for the StatusBadge UI component.",
+        "icon": "badge",
+        "docType": "reference",
+        "userGoal": "lookup",
+        "status": "stub",
+        "file": "docs/ui/status-badge.mdx",
+        "capabilityIds": ["ui-sdk"],
+        "audience": ["integrator", "contributor"]
+      },
+      {
+        "href": "/ui/job-timeline",
+        "title": "JobTimeline",
+        "description": "Props and examples for the JobTimeline UI component.",
+        "icon": "list",
+        "docType": "reference",
+        "userGoal": "lookup",
+        "status": "stub",
+        "file": "docs/ui/job-timeline.mdx",
+        "capabilityIds": ["ui-sdk"],
+        "audience": ["integrator", "contributor"]
+      },
+      {
+        "href": "/api",
+        "title": "Overview",
+        "description": "REST API surface for jobs, webhooks, and authentication.",
+        "icon": "api",
+        "docType": "explanation",
+        "userGoal": "orient",
+        "status": "stub",
+        "file": "docs/api/index.mdx",
+        "capabilityIds": [],
+        "audience": ["integrator"]
       },
       {
         "href": "/api/auth",
         "title": "Authentication",
         "description": "API keys, scopes, and request signing for the Taskflow REST API.",
+        "icon": "key",
         "docType": "reference",
+        "userGoal": "lookup",
         "status": "stub",
         "file": "docs/api/auth.mdx",
         "capabilityIds": ["api-authentication"],
-        "audience": ["integrator"],
-        "rationale": "Lookup table for auth headers and token formats; no narrative."
+        "audience": ["integrator"]
       },
       {
         "href": "/api/jobs",
         "title": "Jobs",
         "description": "Endpoints, request bodies, and response schemas for job resources.",
+        "icon": "list",
         "docType": "reference",
+        "userGoal": "lookup",
         "status": "stub",
         "file": "docs/api/jobs.mdx",
         "capabilityIds": ["job-submission", "job-execution", "job-status"],
-        "audience": ["integrator"],
-        "rationale": "Merged API surface for related job endpoints on one reference page.",
-        "relatedHrefs": ["/quickstart"]
+        "audience": ["integrator"]
       },
       {
         "href": "/api/webhooks",
         "title": "Webhooks",
         "description": "Webhook event types, payload schemas, and verification headers.",
+        "icon": "webhook",
         "docType": "reference",
+        "userGoal": "lookup",
         "status": "stub",
         "file": "docs/api/webhooks.mdx",
         "capabilityIds": ["webhook-delivery"],
-        "audience": ["integrator"],
-        "rationale": "Schema reference separated from the retry how-to guide.",
-        "splits": ["/guides/webhook-retries"]
+        "audience": ["integrator"]
       }
     ],
     "coverage": {
-      "mappedCapabilityIds": [
-        "job-submission",
-        "job-execution",
-        "job-status",
-        "webhook-delivery",
-        "api-authentication",
-        "env-configuration",
-        "worker-scaling"
-      ],
-      "unmappedCapabilityIds": ["internal-metrics"],
-      "mergedInto": {
-        "/api/jobs": ["job-submission", "job-execution", "job-status"]
-      }
+      "unmappedCapabilityIds": ["internal-metrics"]
     },
     "validation": {
       "passed": true,
-      "issues": [
-        {
-          "rule": "unmapped-capability",
-          "severity": "warning",
-          "message": "internal-metrics has no public doc page; omit or add to Advanced group."
-        }
-      ],
+      "issues": [],
       "cliCheck": {
         "passed": true,
         "command": "docs check . --external-links off",
@@ -151,14 +233,9 @@
         "warnings": 0
       },
       "stats": {
-        "pageCount": 7,
-        "stubPages": 5,
-        "byDocType": {
-          "tutorial": 1,
-          "how-to": 2,
-          "reference": 3,
-          "explanation": 1
-        }
+        "pageCount": 13,
+        "stubPages": 10,
+        "componentPages": 2
       }
     }
   }

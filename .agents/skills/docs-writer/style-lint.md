@@ -4,6 +4,16 @@ Run this checklist **after** drafting, **before** delivering files. Fix every fa
 
 ---
 
+## Scaffold cleanup (required for final content)
+
+- [ ] No `docs-scaffold-plan-start` / `docs-scaffold-plan-end` markers remain
+- [ ] No "Documentation plan" or "Section index" `<Info>` blocks
+- [ ] No "remove this block when writing final content" copy
+- [ ] No **Pages in this section** traceability tables (section landings)
+- [ ] No `_TBD_` placeholders
+
+---
+
 ## Diátaxis purity
 
 | Check | Pass criteria |

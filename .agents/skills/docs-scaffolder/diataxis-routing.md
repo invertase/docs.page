@@ -2,6 +2,8 @@
 
 Assign exactly one `docType` per `outline.pages` entry in `docs.json`. Routing happens at scaffold time so the user can validate structure before any prose is written.
 
+`docType` and `userGoal` work together: a `first-success` page is almost always a `tutorial`; `lookup` is almost always `reference`. See [user-journeys.md](user-journeys.md).
+
 ---
 
 ## Classification matrix

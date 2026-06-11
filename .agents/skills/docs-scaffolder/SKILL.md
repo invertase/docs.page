@@ -1,19 +1,19 @@
 ---
 name: docs-scaffolder
 description: >-
-  Builds a previewable documentation site from features.json. Produces docs.json
-  with an outline block, scaffolds stub MDX pages, and runs docs.page CLI check
-  to validate the site compiles. Use when planning doc structure, scaffolding a
-  docs site, or when the user mentions docs-scaffolder, doc outline, or IA.
+  Builds a previewable documentation site from features.json. Produces slim
+  docs.json, grouped component nav, stub MDX with on-page planning blocks, and
+  docs.page CLI check. Use when planning doc structure, scaffolding a docs site,
+  or when the user mentions docs-scaffolder, doc outline, or IA.
 ---
 
 # Docs Scaffolder
 
-Plan **where** documentation lives, scaffold **stub pages** for preview, and **validate** the site compiles.
+Plan **where** documentation lives around **user goals**, scaffold **stub pages** with **visible planning context**, and **validate** the site compiles.
 
 **Upstream:** `features.json` from [feature-finder](../feature-finder/SKILL.md). Read existing `docs.json` and `docs/**/*.mdx` when updating.
 
-**Output:** `docs.json` + stub `.mdx` files + passing `docs check`.
+**Output:** slim `docs.json` + stub `.mdx` files + passing `docs check`.
 
 **Out of scope:** Full documentation prose (use [docs-writer](../docs-writer/SKILL.md)) or re-scanning source code.
 
@@ -32,32 +32,13 @@ docs-writer     →  full .mdx content
 
 When updating, **merge** into existing `docs.json` — preserve `name`, `logo`, `theme`, `agent`, `social`, and other non-nav keys.
 
-## Output shape
+## Slim `docs.json` principle
 
-`docs.json` is two layers in one file:
+`outline` is a **machine index** for agents and validation — not a prose document. Traceability and rationale are **rendered on stub pages** (see [stub-templates.md](stub-templates.md)), not stored in JSON.
 
-| Layer | Keys | Purpose |
-| --- | --- | --- |
-| **Site config** | `$schema`, `name`, `description`, `tabs`, `sidebar`, … | Valid docs.page config; drives navigation |
-| **Planning** | `outline` | Agent metadata; ignored by docs.page at runtime |
+**Do not persist:** `rationale`, `relatedHrefs`, `splits`, `mappedCapabilityIds`, `mergedInto`, or per-capability traceability arrays.
 
-```json
-{
-  "$schema": "https://docs.page/schema.json",
-  "name": "my-product",
-  "description": "Short site description",
-  "tabs": [],
-  "sidebar": [],
-  "outline": {
-    "version": "1.0.0",
-    "updatedAt": "YYYY-MM-DD",
-    "sourceFeatures": "path/to/features.json",
-    "pages": [],
-    "coverage": {},
-    "validation": {}
-  }
-}
-```
+**Do persist:** `pages[]` with fields below, `coverage.unmappedCapabilityIds` only, and `validation`.
 
 ### `outline.pages` entry
 
@@ -66,130 +47,122 @@ When updating, **merge** into existing `docs.json` — preserve `name`, `logo`, 
 | `href` | yes | Same as sidebar leaf; unique |
 | `title` | yes | Sidebar / page title |
 | `description` | yes | Frontmatter description |
+| `icon` | yes | Same as sidebar leaf `icon` |
 | `docType` | yes | `tutorial`, `how-to`, `reference`, or `explanation` |
+| `userGoal` | yes | See [user-journeys.md](user-journeys.md) |
 | `status` | yes | `existing`, `new`, `stub`, or `retire` |
 | `file` | yes | `docs/navigation.mdx` (`/` → `docs/index.mdx`) |
 | `capabilityIds` | yes | `features.json` ids (`[]` for editorial) |
-| `audience` | no | Persona tags |
-| `rationale` | yes | Why this doc type and placement |
-| `relatedHrefs` | no | Cross-links by `href` |
-| `splits` | no | Other `href`s from same capability cluster |
+| `audience` | yes | `end-user`, `integrator`, `operator`, `contributor` |
 
-### `status` values
-
-| Status | Meaning | Scaffolder action |
-| --- | --- | --- |
-| `existing` | `.mdx` exists with content | Do not overwrite |
-| `new` | Planned; no file yet | Create stub → set `stub` |
-| `stub` | Placeholder `.mdx` exists | Skip unless file missing |
-| `retire` | Mark for removal | Do not create stub |
-
-### `outline.validation`
-
-Includes IA checks **and** CLI result:
+### `outline.coverage`
 
 ```json
 {
-  "passed": true,
-  "issues": [],
-  "cliCheck": {
-    "passed": true,
-    "command": "npx @docs.page/cli check . --external-links off",
-    "ranAt": "YYYY-MM-DD",
-    "errors": 0,
-    "warnings": 0
-  },
-  "stats": { "pageCount": 42, "stubPages": 12 }
+  "unmappedCapabilityIds": ["internal-metrics"]
 }
 ```
 
-Set `passed: true` only when IA errors are resolved **and** `cliCheck.passed` is true.
+Compute mapped coverage at report time from `pages[].capabilityIds`. List unmapped ids in the **user report** with suggested action. Do not store reverse maps in JSON.
+
+### `status` values
+
+| Status | Scaffolder action |
+| --- | --- |
+| `existing` | Do not overwrite `.mdx` |
+| `new` | Create stub → set `stub` |
+| `stub` | Skip unless file missing |
+| `retire` | Do not create stub |
+
+Set `outline.validation.passed: true` only when IA errors are resolved **and** `cliCheck.passed` is true.
 
 ## Execution protocol
 
 ```
 Docs Scaffolder Progress:
 - [ ] 1. Ingest — read features.json, docs.json, scan docs/**/*.mdx
-- [ ] 2. Inventory — list existing pages and hrefs
-- [ ] 3. Cluster — group capabilities into pages (merge/split)
-- [ ] 4. Route — assign docType (read diataxis-routing.md)
-- [ ] 5. Place — build tabs + sidebar (read sidebar-ia.md)
-- [ ] 6. Sync — build outline.pages; populate coverage
-- [ ] 7. Validate IA — run IA checks; populate validation.issues
-- [ ] 8. Write — save docs.json
-- [ ] 9. Stub — create missing .mdx files (read stub-templates.md)
-- [ ] 10. CLI — resolve CLI, run docs check (read cli.md); fix until pass
-- [ ] 11. Report — summarize; remind user to preview and run docs-writer
+- [ ] 2. Journeys — map user goals (read user-journeys.md)
+- [ ] 3. Inventory — list existing pages and hrefs
+- [ ] 4. Cluster — group/split capabilities by user goal (not kind alone)
+- [ ] 5. Components — split + categorize (read component-grouping.md)
+- [ ] 6. Route — assign docType (read diataxis-routing.md)
+- [ ] 7. Place — tabs + sidebar with icons (read sidebar-ia.md)
+- [ ] 8. Sync — slim outline.pages (no rationale in JSON)
+- [ ] 9. Validate IA — populate validation.issues
+- [ ] 10. Write — save docs.json
+- [ ] 11. Stub — MDX with plan blocks (read stub-templates.md)
+- [ ] 12. CLI — docs check (read cli.md); fix until pass
+- [ ] 13. Report — unmapped capabilities + preview reminder
 ```
 
-## Step 9: Scaffold stub MDX
+## Step 5: Components
 
-Read [stub-templates.md](stub-templates.md) before creating files.
+1. **Split** — one page per `surface.ui` entry ([sidebar-ia.md](sidebar-ia.md))
+2. **Categorize** — nest into sub-groups when > 7 component leaves ([component-grouping.md](component-grouping.md))
+3. Section overview at `tab.href` uses **section index** stub with child traceability table
 
-For each `outline.pages` entry with `status: new` (or `stub` when file is missing):
+## Step 7: Tab bar
 
-1. Resolve `file` path; create parent directories
-2. Write stub using matching `docType` template
-3. Set `status: stub` in `outline.pages`
-4. Re-save `docs.json`
+Section root `href` on every tab; landing page + section index stub. See [sidebar-ia.md](sidebar-ia.md).
 
-**Never overwrite** files for `status: existing`. Skip `retire`.
+## Step 11: Stub MDX
 
-Also validate every sidebar leaf `href` resolves to an on-disk `.mdx` file. If a sidebar entry lacks a file, create a stub and add/update its `outline.pages` entry.
+Read [stub-templates.md](stub-templates.md).
 
-## Step 10: CLI validation
+| Page type | Template |
+| --- | --- |
+| Section landing (`href` = tab `href`) | Section index + traceability table |
+| All other stubs | Documentation plan `<Info>` block + docType body |
 
-Read [cli.md](cli.md). Resolve and run:
+Compose rationale and related links **in the plan block only**. Pull capability titles from `features.json`.
 
-```bash
-docs check . --external-links off
-```
-
-Use the monorepo or `npx` fallback from `cli.md` when `docs` is not on PATH.
-
-If check fails:
-
-1. Read error output
-2. Fix JSON syntax, MDX parse errors, or broken internal links in stubs
-3. Re-run until exit code `0` or report unfixable blockers
-
-Record result in `outline.validation.cliCheck`. IA `passed` requires CLI pass.
+When re-stubbing `status: stub` pages, replace entire file (plan block + placeholders).
 
 ## IA validation rules
 
 | Rule | Severity | Check |
 | --- | --- | --- |
 | `max-groups-per-tab` | error | ≤ 7 top-level sidebar groups per tab |
+| `max-siblings-per-group` | error | ≤ 7 leaf pages per group; nest if more |
+| `component-flat-list` | warning | > 7 component leaves in one flat group |
 | `max-depth` | error | Nesting ≤ 3 levels |
 | `unique-href` | error | No duplicate `href` in `outline.pages` |
 | `sidebar-outline-sync` | error | Every sidebar leaf has `outline.pages` entry |
 | `outline-sidebar-sync` | error | Every non-`retire` page appears in sidebar |
-| `missing-mdx` | error | Every sidebar `href` has on-disk `.mdx` after step 9 |
+| `missing-icon` | error | Every sidebar leaf and `outline.pages` entry has `icon` |
+| `icon-sync` | error | `outline.pages.icon` matches sidebar leaf |
+| `missing-user-goal` | error | Every page has `userGoal` |
+| `missing-audience` | error | Every page has `audience` |
+| `missing-first-success` | error | Getting Started includes a `first-success` tutorial |
+| `tab-href-not-section-root` | error | Tab `href` must be section root |
+| `tab-missing-landing` | error | Non-root tab has page at `tab.href` |
+| `missing-mdx` | error | Every sidebar `href` has `.mdx` after stub step |
+| `missing-plan-block` | warning | Stub `.mdx` lacks `docs-scaffold-plan` markers |
+| `component-merged` | error | Multiple UI components on one page |
+| `architecture-before-action` | warning | Core Concepts before Guides with no tutorial |
+| `missing-author-content` | warning | Authoring capabilities but no `author-content` page |
 | `orphan-mdx` | warning | `.mdx` not in sidebar |
-| `unmapped-capability` | warning | Capability not in coverage |
+| `unmapped-capability` | warning | Capability not in any `capabilityIds` |
 | `doc-type-mismatch` | warning | e.g. `reference` top-level in Getting Started |
 
 ## Reporting to the user
 
 Summarize:
 
-- `docs.json` path
-- Stubs created (list `file` paths)
-- Pages skipped (`existing`) and not created (`retire`)
-- `outline.validation.issues` and `cliCheck` result
-- CLI command used
-- Preview: open [docs.page/preview](https://docs.page/preview) and select project directory
-- Next step: run **docs-writer** for pages with `status: stub`
-
-## Downstream
-
-[docs-writer](../docs-writer/SKILL.md) replaces stub content for `status: stub` pages. `tabs` and `sidebar` are already in place.
+- `docs.json` path (note slim outline — plan blocks are on pages)
+- Journey spine and component sub-groups
+- Stubs created; point to **section index pages** for traceability tables
+- **`unmappedCapabilityIds`** with recommended action
+- `validation.issues` and `cliCheck` result
+- Next: preview site, then **docs-writer** (strips plan blocks)
 
 ## Additional resources
 
-- Example artifact: [docs.example.json](docs.example.json) — fictional **Taskflow** product; illustrates schema shape only, not a template to copy
-- Stub MDX templates: [stub-templates.md](stub-templates.md)
-- CLI install & check: [cli.md](cli.md)
-- Diátaxis routing: [diataxis-routing.md](diataxis-routing.md)
+- User journeys: [user-journeys.md](user-journeys.md)
+- Component grouping: [component-grouping.md](component-grouping.md)
+- Example: [docs.example.json](docs.example.json) — fictional Taskflow; schema only
+- Stub MDX: [stub-templates.md](stub-templates.md)
+- CLI: [cli.md](cli.md)
+- Diátaxis: [diataxis-routing.md](diataxis-routing.md)
 - Sidebar IA: [sidebar-ia.md](sidebar-ia.md)
 - Capability inventory: [feature-finder](../feature-finder/SKILL.md)
