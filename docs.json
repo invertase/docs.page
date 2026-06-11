@@ -42,11 +42,6 @@
       "tab": "root",
       "pages": [
         {
-          "title": "Overview",
-          "href": "/",
-          "icon": "house"
-        },
-        {
           "title": "Getting Started",
           "href": "/getting-started",
           "icon": "play"
@@ -68,39 +63,29 @@
       "tab": "root",
       "pages": [
         {
-          "title": "Overview",
+          "title": "Configuration",
           "href": "/configuration",
           "icon": "sliders"
         },
         {
-          "group": "Appearance",
-          "pages": [
-            {
-              "title": "Theme",
-              "href": "/theme",
-              "icon": "palette"
-            },
-            {
-              "title": "Assets",
-              "href": "/assets",
-              "icon": "image"
-            }
-          ]
+          "title": "Theme",
+          "href": "/theme",
+          "icon": "palette"
         },
         {
-          "group": "Navigation",
-          "pages": [
-            {
-              "title": "Sidebar & tabs",
-              "href": "/navigation",
-              "icon": "map"
-            },
-            {
-              "title": "Locales",
-              "href": "/locales",
-              "icon": "language"
-            }
-          ]
+          "title": "Assets",
+          "href": "/assets",
+          "icon": "image"
+        },
+        {
+          "title": "Sidebar & tabs",
+          "href": "/navigation",
+          "icon": "map"
+        },
+        {
+          "title": "Locales",
+          "href": "/locales",
+          "icon": "language"
         },
         {
           "title": "Variables",
@@ -108,19 +93,14 @@
           "icon": "code"
         },
         {
-          "group": "Integrations",
-          "pages": [
-            {
-              "title": "Search",
-              "href": "/search",
-              "icon": "magnifying-glass"
-            },
-            {
-              "title": "Analytics",
-              "href": "/analytics",
-              "icon": "chart-line"
-            }
-          ]
+          "title": "Search",
+          "href": "/search",
+          "icon": "magnifying-glass"
+        },
+        {
+          "title": "Analytics",
+          "href": "/analytics",
+          "icon": "chart-line"
         },
         {
           "title": "v1 YAML migration",
@@ -130,7 +110,7 @@
       ]
     },
     {
-      "group": "Writing Content",
+      "group": "Writing",
       "tab": "root",
       "pages": [
         {
@@ -201,109 +181,89 @@
       "tab": "components",
       "pages": [
         {
-          "group": "Layout",
-          "pages": [
-            {
-              "title": "Accordion",
-              "href": "/components/accordion",
-              "icon": "square-caret-down"
-            },
-            {
-              "title": "Cards",
-              "href": "/components/cards",
-              "icon": "square-full"
-            },
-            {
-              "title": "Steps",
-              "href": "/components/steps",
-              "icon": "list-ol"
-            },
-            {
-              "title": "Tabs",
-              "href": "/components/tabs",
-              "icon": "table-columns"
-            },
-            {
-              "title": "Property",
-              "href": "/components/property",
-              "icon": "signature"
-            }
-          ]
+          "title": "Accordion",
+          "href": "/components/accordion",
+          "icon": "square-caret-down"
         },
         {
-          "group": "Content",
-          "pages": [
-            {
-              "title": "Callouts",
-              "href": "/components/callouts",
-              "icon": "bullhorn"
-            },
-            {
-              "title": "Headings",
-              "href": "/components/headings",
-              "icon": "heading"
-            },
-            {
-              "title": "Icons",
-              "href": "/components/icons",
-              "icon": "icons"
-            }
-          ]
+          "title": "Callouts",
+          "href": "/components/callouts",
+          "icon": "bullhorn"
         },
         {
-          "group": "Code",
-          "pages": [
-            {
-              "title": "Code blocks",
-              "href": "/components/code-blocks",
-              "icon": "code"
-            },
-            {
-              "title": "Code group",
-              "href": "/components/code-group",
-              "icon": "laptop-code"
-            }
-          ]
+          "title": "Cards",
+          "href": "/components/cards",
+          "icon": "square-full"
         },
         {
-          "group": "Media",
-          "pages": [
-            {
-              "title": "Images",
-              "href": "/components/images",
-              "icon": "image"
-            },
-            {
-              "title": "Video",
-              "href": "/components/video",
-              "icon": "video"
-            },
-            {
-              "title": "YouTube",
-              "href": "/components/youtube",
-              "icon": "youtube"
-            },
-            {
-              "title": "Vimeo",
-              "href": "/components/vimeo",
-              "icon": "vimeo"
-            },
-            {
-              "title": "Tweet",
-              "href": "/components/tweet",
-              "icon": "twitter"
-            },
-            {
-              "title": "Zapp",
-              "href": "/components/zapp",
-              "icon": "bolt"
-            }
-          ]
+          "title": "Code blocks",
+          "href": "/components/code-blocks",
+          "icon": "code"
+        },
+        {
+          "title": "Code group",
+          "href": "/components/code-group",
+          "icon": "laptop-code"
         },
         {
           "title": "Custom components",
           "href": "/components/custom",
           "icon": "wand-magic-sparkles"
+        },
+        {
+          "title": "Headings",
+          "href": "/components/headings",
+          "icon": "heading"
+        },
+        {
+          "title": "Icons",
+          "href": "/components/icons",
+          "icon": "icons"
+        },
+        {
+          "title": "Images",
+          "href": "/components/images",
+          "icon": "image"
+        },
+        {
+          "title": "Property",
+          "href": "/components/property",
+          "icon": "signature"
+        },
+        {
+          "title": "Steps",
+          "href": "/components/steps",
+          "icon": "list-ol"
+        },
+        {
+          "title": "Tabs",
+          "href": "/components/tabs",
+          "icon": "table-columns"
+        },
+        {
+          "title": "Tweet",
+          "href": "/components/tweet",
+          "icon": "twitter"
+        },
+        {
+          "title": "Video",
+          "href": "/components/video",
+          "icon": "video"
+        },
+        {
+          "title": "Vimeo",
+          "href": "/components/vimeo",
+          "icon": "vimeo"
+        },
+        {
+          "title": "YouTube",
+          "href": "/components/youtube",
+          "icon": "youtube"
+        },
+        {
+          "title": "Zapp",
+          "href": "/components/zapp",
+          "icon": "bolt"
         }
       ]
     },
