@@ -40,7 +40,6 @@
     {
       "group": "Getting Started",
       "tab": "root",
-      "icon": "rocket",
       "pages": [
         {
           "title": "Overview",
@@ -67,7 +66,6 @@
     {
       "group": "Configuration",
       "tab": "root",
-      "icon": "gear",
       "pages": [
         {
           "title": "Overview",
@@ -76,7 +74,6 @@
         },
         {
           "group": "Appearance",
-          "icon": "palette",
           "pages": [
             {
               "title": "Theme",
@@ -92,7 +89,6 @@
         },
         {
           "group": "Navigation",
-          "icon": "bars",
           "pages": [
             {
               "title": "Sidebar & tabs",
@@ -113,7 +109,6 @@
         },
         {
           "group": "Integrations",
-          "icon": "plug",
           "pages": [
             {
               "title": "Search",
@@ -137,7 +132,6 @@
     {
       "group": "Writing Content",
       "tab": "root",
-      "icon": "pen",
       "pages": [
         {
           "title": "Writing content",
@@ -164,7 +158,6 @@
     {
       "group": "Previewing",
       "tab": "root",
-      "icon": "eye",
       "pages": [
         {
           "title": "Local previewing",
@@ -181,7 +174,6 @@
     {
       "group": "Advanced",
       "tab": "root",
-      "icon": "wrench",
       "pages": [
         {
           "title": "Custom domains",
@@ -208,7 +200,6 @@
     {
       "group": "Components",
       "tab": "components",
-      "icon": "puzzle-piece",
       "pages": [
         {
           "title": "Overview",
@@ -325,7 +316,6 @@
     {
       "group": "CLI",
       "tab": "cli",
-      "icon": "terminal",
       "pages": [
         {
           "title": "Overview",
