@@ -10,7 +10,7 @@ docs.page registers built-in MDX shortcode components during compilation. Use th
 | Component | Purpose |
 | --- | --- |
 | `Accordion` | Collapsible content sections |
-| `Callout` | Info, warning, and error callouts |
+| `Info`, `Warning`, `Error`, `Success` | Callout blocks for notes and cautions |
 | `Card` / `Cards` | Linked content cards |
 | `CodeGroup` | Tabbed code examples |
 | `Image` | Documentation images with optional zoom |
@@ -31,16 +31,16 @@ docs.page registers built-in MDX shortcode components during compilation. Use th
 </Accordion>
 ```
 
-## Callout
+## Callouts
 
 ```mdx
-<Callout type="info">
+<Info>
   Informational note for readers.
-</Callout>
+</Info>
 
-<Callout type="warning">
+<Warning>
   Important caution before proceeding.
-</Callout>
+</Warning>
 ```
 
 ## Steps

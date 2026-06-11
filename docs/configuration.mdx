@@ -65,16 +65,16 @@ Legacy v1 `docs.json` shapes are accepted and transformed into the current schem
 
 ## Header, logo, and favicon
 
-<Property name="header.showName" type="boolean" default="true">
-  Show the project name in the site header.
+<Property name="header.showName" type="boolean">
+  Show the project name in the site header. Default: `true`.
 </Property>
 
-<Property name="header.showThemeToggle" type="boolean" default="true">
-  Show the light/dark theme toggle.
+<Property name="header.showThemeToggle" type="boolean">
+  Show the light/dark theme toggle. Default: `true`.
 </Property>
 
-<Property name="header.showGitHubCard" type="boolean" default="true">
-  Show the GitHub repository card in the header.
+<Property name="header.showGitHubCard" type="boolean">
+  Show the GitHub repository card in the header. Default: `true`.
 </Property>
 
 <Property name="header.links" type="array">
@@ -97,24 +97,24 @@ Legacy v1 `docs.json` shapes are accepted and transformed into the current schem
 
 ## Content display
 
-<Property name="content.headerDepth" type="number" default="3">
-  Maximum heading depth included in the table of contents.
+<Property name="content.headerDepth" type="number">
+  Maximum heading depth included in the table of contents. Default: `3`.
 </Property>
 
-<Property name="content.zoomImages" type="boolean" default="false">
-  Enable click-to-zoom on documentation images.
+<Property name="content.zoomImages" type="boolean">
+  Enable click-to-zoom on documentation images. Default: `false`.
 </Property>
 
-<Property name="content.automaticallyInferNextPrevious" type="boolean" default="true">
-  Infer previous/next links from sidebar order when frontmatter does not override.
+<Property name="content.automaticallyInferNextPrevious" type="boolean">
+  Infer previous/next links from sidebar order when frontmatter does not override. Default: `true`.
 </Property>
 
-<Property name="content.showPageTitle" type="boolean" default="true">
-  Show the page title above content.
+<Property name="content.showPageTitle" type="boolean">
+  Show the page title above content. Default: `true`.
 </Property>
 
-<Property name="content.showPageImage" type="boolean" default="true">
-  Show the page `image` frontmatter field when set.
+<Property name="content.showPageImage" type="boolean">
+  Show the page `image` frontmatter field when set. Default: `true`.
 </Property>
 
 ---
@@ -123,11 +123,11 @@ Legacy v1 `docs.json` shapes are accepted and transformed into the current schem
 
 <Property name="search.docsearch" type="object">
   Algolia DocSearch credentials (`appId`, `apiKey`, `indexName`).
-
-  <Callout type="warning">
-  **Schema only.** DocSearch fields are defined in the configuration schema but no client-side Algolia integration is implemented. Built-in search uses FlexSearch. See [Search](/search).
-  </Callout>
 </Property>
+
+<Warning>
+**Schema only.** DocSearch fields are defined in the configuration schema but no client-side Algolia integration is implemented. Built-in search uses FlexSearch. See [Search](/search).
+</Warning>
 
 ---
 
@@ -145,12 +145,12 @@ Legacy v1 `docs.json` shapes are accepted and transformed into the current schem
   Suggested starter questions shown in the agent panel.
 </Property>
 
-<Property name="agent.limits.ip" type="number" default="200">
-  Maximum agent API requests per client IP per window.
+<Property name="agent.limits.ip" type="number">
+  Maximum agent API requests per client IP per window. Default: `200`.
 </Property>
 
-<Property name="agent.limits.repo" type="number" default="10000">
-  Maximum agent API requests per repository per window.
+<Property name="agent.limits.repo" type="number">
+  Maximum agent API requests per repository per window. Default: `10000`.
 </Property>
 
 See [Documentation Agent](/agent) for setup.
@@ -159,8 +159,8 @@ See [Documentation Agent](/agent) for setup.
 
 ## MCP
 
-<Property name="mcp.enabled" type="boolean" default="true">
-  Enable the per-repository MCP HTTP server at `/{owner}/{repo}/mcp`.
+<Property name="mcp.enabled" type="boolean">
+  Enable the per-repository MCP HTTP server at `/{owner}/{repo}/mcp`. Default: `true`.
 </Property>
 
 See [MCP & LLM Exports](/mcp-and-llms).
