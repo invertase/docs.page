@@ -3,7 +3,7 @@ title: API Reference
 description: HTTP endpoints for bundles, search, agents, MCP, LLM exports, and configuration schema.
 ---
 
-docs.page exposes HTTP endpoints for integrators, operators, and AI tooling. All per-repo paths support ref segments (`~{branch|pr|sha}`) and vanity/custom-domain equivalents.
+docs.page exposes HTTP endpoints for integrators, operators, and AI tooling. All per-repo paths support ref segments (for example `~main` or `~42`) and vanity/custom-domain equivalents.
 
 ## Document bundle
 
@@ -29,7 +29,7 @@ GET /api/schema.json
 GET /schema.json
 ```
 
-## Search index {#search-index}
+## Search index
 
 FlexSearch-compatible search payload for a repository.
 
@@ -73,7 +73,7 @@ GET  /{owner}/{repo}/mcp
 
 Tools: `read_doc_page`, `list_doc_files`. Resources: config schema, agent skill files.
 
-## Agent {#agent}
+## Agent
 
 | Method | Endpoint | Description |
 | --- | --- | --- |

@@ -38,9 +38,9 @@ docs.page renders built-in shortcode components:
 
 See the [Components](/components) tab for usage examples.
 
-## Variables {#variables}
+## Variables
 
-Inject values from `docs.json` into MDX with `{{ dotted.path }}` placeholders:
+Inject values from `docs.json` into MDX with double-brace placeholders (for example `vars.api.baseUrl`):
 
 ```json
 {
@@ -52,8 +52,10 @@ Inject values from `docs.json` into MDX with `{{ dotted.path }}` placeholders:
 }
 ```
 
-```mdx
-Call `{{ api.baseUrl }}/v1/users` to list users.
+In MDX, reference a nested value with the dotted path inside double braces:
+
+```text
+Call {{ api.baseUrl }}/v1/users to list users.
 ```
 
 Substitution runs at bundle time using the `variables` object from your configuration.

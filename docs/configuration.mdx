@@ -17,7 +17,7 @@ Legacy v1 `docs.json` shapes are accepted and transformed into the current schem
   Site description used in metadata and MCP server descriptors.
 </Property>
 
-<Property name="sidebar" type="SidebarGroup[] | Record&lt;locale, SidebarGroup[]&gt;">
+<Property name="sidebar" type="array or locale map">
   Navigation tree. Use an array for a single locale, or a locale-keyed object for multi-locale sites. See [Navigation](/navigation).
 </Property>
 
@@ -25,15 +25,15 @@ Legacy v1 `docs.json` shapes are accepted and transformed into the current schem
   Top-level documentation tabs with optional locale scoping. See [Navigation](/navigation#tabs).
 </Property>
 
-<Property name="variables" type="Record&lt;string, unknown&gt;">
-  Key-value map for `{{ dotted.path }}` substitution in MDX content. See [Writing Content](/writing-content#variables).
+<Property name="variables" type="record">
+  Key-value map for double-brace variable substitution in MDX content. See [Writing Content](/writing-content#variables).
 </Property>
 
 ---
 
 ## Theme
 
-<Property name="theme.defaultTheme" type="&quot;light&quot; | &quot;dark&quot;">
+<Property name="theme.defaultTheme" type="light or dark">
   Default color mode for first-time visitors.
 </Property>
 
@@ -167,7 +167,7 @@ See [MCP & LLM Exports](/mcp-and-llms).
 
 ---
 
-## Social & SEO {#social-seo}
+## Social & SEO
 
 <Property name="social" type="object">
   Social profile links (e.g. `github`, `x`, `discord`).

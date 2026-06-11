@@ -72,17 +72,15 @@ For reference pages, document configuration fields:
 
 ## Tabs
 
+Use `Tabs` and `TabItem` for tabbed panels. Put fenced code blocks inside each tab item:
+
 ```mdx
 <Tabs>
   <TabItem label="npm" value="npm">
-    ```bash
-    npm install
-    ```
+    npm install command here
   </TabItem>
   <TabItem label="pnpm" value="pnpm">
-    ```bash
-    pnpm install
-    ```
+    pnpm install command here
   </TabItem>
 </Tabs>
 ```
