@@ -198,14 +198,8 @@
       ]
     },
     {
-      "group": "Components",
       "tab": "components",
       "pages": [
-        {
-          "title": "Overview",
-          "href": "/components",
-          "icon": "grid"
-        },
         {
           "group": "Layout",
           "pages": [
@@ -314,28 +308,17 @@
       ]
     },
     {
-      "group": "CLI",
       "tab": "cli",
       "pages": [
         {
-          "title": "Overview",
-          "href": "/cli",
-          "icon": "terminal"
+          "title": "init",
+          "href": "/cli/init",
+          "icon": "plus"
         },
         {
-          "group": "Commands",
-          "pages": [
-            {
-              "title": "init",
-              "href": "/cli/init",
-              "icon": "plus"
-            },
-            {
-              "title": "check",
-              "href": "/cli/check",
-              "icon": "check"
-            }
-          ]
+          "title": "check",
+          "href": "/cli/check",
+          "icon": "check"
         }
       ]
     }
