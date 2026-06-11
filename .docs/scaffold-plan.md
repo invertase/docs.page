@@ -79,30 +79,36 @@ Documentation (/) [ref]
 
 Components (/components) [catalogue]
 ├── Overview  /components
-├── Layout & structure [catalogue]
+├── Layout & structure  (sidebar section — not nested accordion)
 │   ├── Accordion  /components/accordion
 │   ├── Tabs  /components/tabs
 │   ├── Steps  /components/steps
 │   └── Heading  /components/heading
-├── Content blocks [catalogue]
+├── Content blocks  (sidebar section)
 │   ├── Callout  /components/callout
 │   ├── Card  /components/card
 │   └── Property  /components/property
-├── Code & media [catalogue]
+├── Code & media  (sidebar section)
 │   ├── Code blocks  /components/code-fence
 │   ├── Code group  /components/code-group
 │   ├── Image  /components/image
 │   └── Icon  /components/icon
-└── Embeds [catalogue]
+└── Embeds  (sidebar section)
     ├── Tweet  /components/tweet
     ├── Video  /components/video
     ├── Vimeo  /components/vimeo
     └── YouTube  /components/youtube
 ```
 
+Use **top-level sidebar sections** on the Components tab (`group` + `tab: components`), not nested `{ group, pages }` inside one group — nested groups render as collapsible accordions (closed unless active).
+
+**Icons:** all-or-nothing — no `icon` on sidebar leaves or `outline.pages` (mixed/invalid FA slugs break the rule).
+
 ## Sidebar titles
 
 Per headline-style: **action-first** sidebar labels; bare nouns only for component lookup and neutral comparisons.
+
+No sidebar icons — all-or-nothing policy (see Nav note). H1 overrides:
 
 | href | Sidebar title | H1 (when different) |
 | --- | --- | --- |
@@ -160,7 +166,8 @@ Group labels: **Publishing docs** / **Using docs** (sentence case, task framing)
 - **Two tabs:** Documentation + Components catalogue. No API tab — endpoints inline on `/using/search`, `/using/connect`, `/using/chat`. CLI = `/cli` in Publishing, not a tab.
 - **Using docs:** three pages — search, chat, connect. Nav/theme/locales = site chrome; owners configure under Publishing.
 - **Agent split:** consume → Using docs; enable/publish → Publishing docs.
-- **Components:** Mintlify catalogue — card grid index, preview → example → usage → props (`docType: catalogue`).
+- **Components sections:** category groups are top-level sidebar sections on the Components tab — always expanded, not nested accordions.
+- **Icons:** none on sidebar or outline (all-or-nothing; catalogue pages have no meaningful distinct icons).
 - Getting Started stays **2 pages**. Config = 4 how-tos + 1 reference hub.
 
 ## Pairs
