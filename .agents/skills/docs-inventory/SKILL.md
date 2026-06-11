@@ -399,6 +399,7 @@ A poor entry cites README text, guesses behavior, or duplicates documentation st
 
 - Editorial spec (optional upstream): [docs-spec](../docs-spec/SKILL.md)
 - Project layout: [docs-scaffold](../docs-scaffold/SKILL.md#project-layout)
+- Next: [docs-scaffold Phase 1](../docs-scaffold/phases/1-plan.md) reads inventory for merge clusters
 
 ## Reporting to the user
 

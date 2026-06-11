@@ -131,7 +131,7 @@ Show the full draft `docs-spec.md` (from [docs-spec.template.md](docs-spec.templ
 
 - Set `updatedAt` to today (`YYYY-MM-DD`)
 - Write the file
-- Tell the user the next step: run [docs-inventory](../docs-inventory/SKILL.md) if `docs-inventory.json` is missing or stale, then [docs-scaffold](../docs-scaffold/SKILL.md)
+- Tell the user the next step: run [docs-inventory](../docs-inventory/SKILL.md) if `docs-inventory.json` is missing or stale, then [docs-scaffold](../docs-scaffold/SKILL.md) Phase 1 (plan → `.docs/scaffold-plan.md`)
 
 ## Output format
 
@@ -174,7 +174,7 @@ After writing:
 - `primaryPersona` and `firstSuccess.outcome`
 - Journey spine (ordered goal ids)
 - Omit/advanced counts
-- Next steps: docs-inventory → docs-scaffold
+- Next steps: docs-inventory → docs-scaffold Phase 1 (`.docs/scaffold-plan.md`)
 
 ## Additional resources
 

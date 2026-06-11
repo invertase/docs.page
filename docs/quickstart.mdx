@@ -1,6 +1,6 @@
 ---
-title: Quickstart
-description: Publish a live docs site — add docs.json, push Markdown to a public GitHub repo, and open your docs.page URL.
+title: Publish a live docs site
+description: Scaffold docs.json, optionally preview locally and run docs check, push to a public GitHub repo, and open your docs.page URL.
 ---
 
 {/* docs-scaffold-plan-start */}
@@ -14,14 +14,21 @@ description: Publish a live docs site — add docs.json, push Markdown to a publ
 | **User goal** | first-success |
 | **Audience** | contributor |
 
-First-success tutorial matching the spec outcome: publish a live site with docs.json and a public GitHub repo.
+Spec first-success tutorial: one walkthrough from scaffold to live URL. Merges GitHub hosting, docs.json setup, `docs init`, public-repo requirement, optional local preview, and `docs check` before push. Sidebar title is **Quickstart**; H1 is outcome-focused. Pairs with CLI commands reference (Phase 4).
 
 **Capabilities covered**
 
-- `github-hosting` — GitHub hosting
-- `docs-json-config` — Configuration
-- `cli-init` — docs init
-- `public-repos-only` — Public repos only
+- **GitHub hosting** — Serves documentation sites from public GitHub repositories by reading docs.json and docs/**/*.mdx from the default branch or a pinned ref.
+- **Configuration** — Validates site configuration from docs.json or docs.yaml using a Zod schema, with automatic migration from legacy v1 config shapes when detected.
+- **docs init** — Scaffolds docs.json and optional starter docs/**/*.mdx files from Handlebars templates with interactive overwrite prompts.
+- **Public repos only** — Blocks hosting for private GitHub repositories with a 403 BundlerError before docs are bundled or served.
+- **docs check** — Validates docs.json or docs.yaml and scans docs/**/*.mdx for broken internal links, missing assets, and unreachable external links.
+- **Local preview** — Live-previews a local docs project in the browser at docs.page/preview by connecting to a local preview websocket server via the url query parameter and rendering bundled MDX in preview request mode.
+
+**Related (Phase 4)**
+
+- CLI commands reference — `/cli/commands`
+
 </Info>
 
 {/* docs-scaffold-plan-end */}

@@ -1,22 +1,28 @@
 ---
 name: docs-scaffold
 description: >-
-  Builds a previewable documentation site from docs-spec.md and docs-inventory.json.
-  Produces slim docs.json, grouped component nav, stub MDX with on-page planning
-  blocks, and docs.page CLI check. Use after docs-spec and docs-inventory when
-  planning doc structure, scaffolding a docs site, or when the user mentions
-  docs-scaffold, docs-scaffolder, doc outline, or IA.
+  Builds a previewable docs.page site from docs-spec.md and docs-inventory.json
+  through a phased, review-gated workflow. Produces slim docs.json, grouped nav,
+  and stub MDX with planning blocks. Use after docs-spec and docs-inventory when
+  scaffolding documentation IA, or when the user mentions docs-scaffold.
 ---
 
 # Docs Scaffold
 
-Plan **where** documentation lives around **user goals**, scaffold **stub pages** with **visible planning context**, and **validate** the site compiles.
+Plan **where** documentation lives around **reader goals**, not code layout. Scaffold **stub pages** with **visible planning context**, and **validate** the site compiles.
 
-**Upstream (required):** `.docs/docs-spec.md` from [docs-spec](../docs-spec/SKILL.md) and `.docs/docs-inventory.json` from [docs-inventory](../docs-inventory/SKILL.md). Read existing `docs.json` and `docs/**/*.mdx` when updating.
+Build iteratively with **user review between phases**. Do not one-shot 60+ pages.
 
-**Output:** slim `docs.json` + stub `.mdx` files + passing `docs check`.
+## Core principles
 
-**Out of scope:** Full documentation prose (use [docs-write](../docs-write/SKILL.md)) or re-scanning source code.
+Hold these over every checklist item.
+
+1. **Spec is supreme for editorial intent.** `.docs/docs-spec.md` sets persona, journeys, first success, omit/defer policy. [docs-spec](../docs-spec/SKILL.md) already ran — do not re-interview. When spec and heuristics conflict, spec wins.
+2. **Reader mental model over inventory layout.** Group by what the reader is trying to do. `docs-inventory.json` describes machinery; navigation describes tasks. **Default is merge; split only when `userGoal` or `docType` differ.**
+3. **Progressive disclosure.** Spine first (Getting Started + core Guides), then depth (Configuration, comparisons), then reference tabs (API, CLI, Components). The contributor should have a short path to first success before wading through lookup pages.
+4. **Iterate with checkpoints.** Each phase ends in user review. Do not proceed until the user approves. Artifacts on disk are the durable handoff.
+5. **Slim `docs.json`, rich stubs.** Traceability and merge rationale live in **stub plan blocks** — never in `outline.pages` as `_rationale`, `splits`, or similar.
+6. **Guide + reference pairing.** Integrator features get a **how-to in Guides** and **grouped reference** in API/CLI — not duplicate one-page-per-endpoint trees with no relationship.
 
 ## Pipeline position
 
@@ -27,221 +33,109 @@ docs-scaffold    →  docs.json + stub .mdx + docs check   ← you are here
 docs-write       →  full .mdx content
 ```
 
-## Project layout
+**Upstream (required):** `.docs/docs-spec.md`, `.docs/docs-inventory.json`. Path resolution: [Project layout](#project-layout).
 
-Default layout at the **project root** (directory containing `docs.json`):
+**Downstream:** [docs-write](../docs-write/SKILL.md) strips `{/* docs-scaffold-plan-* */}` blocks.
+
+## Project layout
 
 ```
 project-root/
-  docs.json                      # site config + outline (docs.page requirement)
-  docs/                          # published MDX pages only
-    index.mdx
-    ...
-  .docs/                         # pipeline inputs (not published)
+  docs.json
+  docs/**/*.mdx
+  .docs/
     docs-spec.md
     docs-inventory.json
+    scaffold-plan.md          # written in Phase 1; durable handoff
 ```
 
-### Path resolution
+Resolve `.docs/` paths per: user override → `.docs/` → repo-root legacy.
 
-When any pipeline skill needs `docs-spec.md` or `docs-inventory.json`, resolve in order:
+## Output artifacts
 
-1. **User-specified path** — if the user names a file or directory
-2. **`.docs/` default** — `.docs/docs-spec.md` or `.docs/docs-inventory.json`
-3. **Repo-root legacy** — `docs-spec.md` or `docs-inventory.json` at project root (backward compat)
-
-Create `.docs/` when writing new artifacts. Set `outline.sourceInventory` in `docs.json` to the resolved inventory path (typically `.docs/docs-inventory.json`).
-
-## Output location
-
-1. If the user specifies a path, use it as the project root (where `docs.json` lives).
-2. Else use the repo root.
-
-`docs.json` stays at the project root (docs.page requirement). Pipeline inputs live in `.docs/`.
-
-When updating, **merge** into existing `docs.json` — preserve `name`, `logo`, `theme`, `agent`, `social`, and other non-nav keys.
-
-## Slim `docs.json` principle
-
-`outline` is a **machine index** for agents and validation — not a prose document. Traceability and rationale are **rendered on stub pages** (see [stub-templates.md](stub-templates.md)), not stored in JSON.
-
-**Do not persist:** `rationale`, `relatedHrefs`, `splits`, `mappedCapabilityIds`, `mergedInto`, or per-capability traceability arrays.
-
-**Do persist:** `version`, `updatedAt`, `sourceInventory`, `pages[]`, `coverage.unmappedCapabilityIds`, and `validation`.
-
-### `outline` top-level
-
-| Field | Required | Notes |
+| Artifact | When | Purpose |
 | --- | --- | --- |
-| `version` | yes | Outline schema version (e.g. `2.0.0`) |
-| `updatedAt` | yes | ISO date when scaffold last ran |
-| `sourceInventory` | yes | Path to inventory used for this scaffold (typically `.docs/docs-inventory.json`) |
+| `.docs/scaffold-plan.md` | Phase 1 | Topic inventory, merges, deferrals, tab strategy — **user approves before nav** |
+| `docs.json` | Phases 2–4 | Site config + slim `outline` |
+| `docs/**/*.mdx` | Phases 2–4 | Preview stubs with plan blocks |
 
-### `outline.pages` entry
+### Slim `outline` (required fields only)
 
-| Field | Required | Notes |
-| --- | --- | --- |
-| `href` | yes | Same as sidebar leaf; unique |
-| `title` | yes | Sidebar / page title |
-| `description` | yes | Frontmatter description |
-| `icon` | yes | Same as sidebar leaf `icon` |
-| `docType` | yes | `tutorial`, `how-to`, `reference`, or `explanation` |
-| `userGoal` | yes | See [user-journeys.md](user-journeys.md) |
-| `status` | yes | `existing`, `new`, `stub`, or `retire` |
-| `file` | yes | `docs/navigation.mdx` (`/` → `docs/index.mdx`) |
-| `capabilityIds` | yes | `docs-inventory.json` ids (`[]` for editorial) |
-| `audience` | yes | `end-user`, `integrator`, `operator`, `contributor` |
+**Top-level:** `version`, `updatedAt`, `sourceInventory`, `pages[]`, `coverage.unmappedCapabilityIds`, `validation`
 
-### `outline.coverage`
+**Per page:** `href`, `title`, `description`, `icon`, `docType`, `userGoal`, `status`, `file`, `capabilityIds`, `audience`
 
-```json
-{
-  "unmappedCapabilityIds": ["internal-metrics"]
-}
-```
+**Never persist:** `_rationale`, `rationale`, `relatedHrefs`, `splits`, `mappedCapabilityIds`, `mergedInto`
 
-Compute mapped coverage at report time from `pages[].capabilityIds`. List unmapped ids in the **user report** with suggested action. Do not store reverse maps in JSON.
-
-### `status` values
-
-| Status | Scaffold action |
-| --- | --- |
-| `existing` | Do not overwrite `.mdx` |
-| `new` | Create stub → set `stub` |
-| `stub` | Skip unless file missing |
-| `retire` | Do not create stub |
-
-Set `outline.validation.passed: true` only when IA errors are resolved **and** `cliCheck.passed` is true.
-
-## Execution protocol
+## Workflow overview
 
 ```
-Docs Scaffold Progress:
-- [ ] 0. Spec — read `.docs/docs-spec.md` (or run docs-spec interview first)
-- [ ] 1. Ingest — read `.docs/docs-inventory.json`, `docs.json`, scan `docs/**/*.mdx`
-- [ ] 2. Journeys — apply spec spine + user-journeys.md
-- [ ] 3. Inventory — list existing pages and hrefs
-- [ ] 4. Cluster — group/split capabilities by user goal (not kind alone)
-- [ ] 5. Components — split + categorize (read component-grouping.md)
-- [ ] 6. Route — assign docType (read diataxis-routing.md)
-- [ ] 7. Place — tabs + sidebar with icons (read sidebar-ia.md)
-- [ ] 7b. Nest — semantic sub-groups per section (read semantic-grouping.md)
-- [ ] 8. Sync — slim outline.pages (no rationale in JSON)
-- [ ] 9. Validate IA — populate validation.issues
-- [ ] 10. Write — save docs.json
-- [ ] 11. Stub — MDX with plan blocks (read stub-templates.md)
-- [ ] 12. CLI — docs check (read cli.md); fix until pass
-- [ ] 13. Report — unmapped capabilities + preview reminder
+Phase 1: Plan structure           → phases/1-plan.md           → .docs/scaffold-plan.md     [USER REVIEW]
+Phase 2: Build spine              → phases/2-spine.md           → docs.json (spine pages)    [USER REVIEW]
+Phase 3: Add depth                → phases/3-depth.md           → docs.json (+ depth pages)  [USER REVIEW]
+Phase 4: Add reference + validate → phases/4-reference.md      → docs.json + stubs + check  [USER REVIEW]
 ```
 
-## Step 0: Docs spec
+**Load only the phase file you are working on.** Each phase lists files to read when resuming from cold context.
 
-Before clustering:
+## Reference files (load when signaled)
 
-1. Resolve and read `docs-spec.md` per **Project layout** above.
-2. If **missing** at both `.docs/` and repo root, stop and run [docs-spec](../docs-spec/SKILL.md) — conduct the interview, write `.docs/docs-spec.md`, then resume docs-scaffold. Do not infer persona or journey order from `docs-inventory.json` alone.
-3. If **present**, treat these sections as authoritative:
-
-| Section | Scaffold use |
+| File | Use |
 | --- | --- |
-| `Audience` → primary persona | Default `audience` on pages; weight Getting Started for that reader |
-| `First success` | Must produce a `first-success` tutorial matching the stated outcome |
-| `Journeys` | Order sidebar groups and page priority within Getting Started / Guides |
-| `Policy` → Omit | Leave capability ids out of all `capabilityIds`; list in `coverage.unmappedCapabilityIds` with reason `omit` |
-| `Policy` → Advanced only | Route to Core Concepts or nested Advanced; never Getting Started |
-| `Notes` | Honor constraints when merging/splitting pages |
+| [references/topic-buckets.md](references/topic-buckets.md) | Tag topics spine / depth / reference / omit / defer |
+| [references/merge-rules.md](references/merge-rules.md) | Merge-first clustering; anti-patterns |
+| [references/audience-check.md](references/audience-check.md) | Primary persona from spec; spine decisions |
+| [references/headline-style.md](references/headline-style.md) | Name pages by reader action |
+| [stub-templates.md](stub-templates.md) | MDX plan blocks and section indexes |
+| [sidebar-ia.md](sidebar-ia.md) | Tabs, href roots, icons, nesting |
+| [cli.md](cli.md) | `docs check` validation |
 
-**Tabs are not in the spec.** Derive top-level tabs from `docs-inventory.json` surface area and [sidebar-ia.md](sidebar-ia.md) (step 7).
+## Execution rules
 
-When spec and [user-journeys.md](user-journeys.md) conflict, **spec wins**.
+- **Show file paths** when saving artifacts.
+- **Do not skip checkpoints** — even if the user seems eager.
+- **Do not advance phases on your own** after a checkpoint. Wait for explicit approval.
+- **Do not one-shot all pages.** Phase 2 typically yields 8–15 spine pages; Phase 4 adds reference bulk.
+- **Ban generic stub plans.** Every plan block needs a concrete merge/split sentence (see [stub-templates.md](stub-templates.md)).
+- **Preserve** existing `docs.json` keys (`name`, `logo`, `theme`, `agent`, `social`) when updating.
+- **Do not overwrite** `status: existing` MDX unless the user requests it.
 
-## Step 5: Components
+## Phase summary
 
-1. **Split** — one page per `surface.ui` entry ([sidebar-ia.md](sidebar-ia.md))
-2. **Categorize** — always use category sub-groups when ≥ 3 components ([component-grouping.md](component-grouping.md))
-3. Section overview at `tab.href` uses **section index** stub with child traceability table
+### Phase 1 — Plan
 
-## Step 7b: Semantic nesting
+Read spec + inventory. Inventory topics, tag buckets, propose **merged page clusters**. Write `.docs/scaffold-plan.md`. **Stop for review.**
 
-Read [semantic-grouping.md](semantic-grouping.md) after initial sidebar placement.
+### Phase 2 — Spine
 
-For **each** top-level group (Getting Started, Guides, CLI, API, Configuration, …):
+Implement approved **spine** and **guide** clusters only: Overview, Quickstart (`first-success`), author-content, core integrate how-tos. Write `docs.json` sidebar + `outline.pages` + stubs. **Stop for review.**
 
-1. Tag every page with a **category** (`userGoal`, task theme, or domain)
-2. If ≥ 2 categories with ≥ 3 pages total → create nested `group` nodes
-3. Keep journey starters (Overview, Quickstart) at the **top level** of Getting Started
-4. **CLI:** nest **Commands** vs **Programmatic** when both exist
-5. **Guides:** nest by theme (Publish, Integrations, Search) when ≥ 2 themes
-6. Re-validate 7-leaf cap and 3-level depth after nesting
+### Phase 3 — Depth
 
-## Step 7: Tab bar
+Add **depth** clusters: Configuration (merged customize pages), comparisons from spec Notes, Core Concepts (advanced-only). Extend `docs.json` + stubs. **Stop for review.**
 
-Section root `href` on every tab; landing page + section index stub. See [sidebar-ia.md](sidebar-ia.md).
+### Phase 4 — Reference
 
-## Step 11: Stub MDX
+Add **reference** tabs (API, CLI, Components) as **grouped** pages — not one leaf per inventory entry. Run `docs check`. **Stop for final review.**
 
-Read [stub-templates.md](stub-templates.md).
+## Reporting
 
-| Page type | Template |
-| --- | --- |
-| Section landing (`href` = tab `href`) | Section index + traceability table |
-| All other stubs | Documentation plan `<Info>` block + docType body |
+After each phase, summarize:
 
-Compose rationale and related links **in the plan block only**. Pull capability titles from `docs-inventory.json`.
+- Artifacts written (paths)
+- Page count added this phase vs deferred
+- Merge decisions (clusters, not inventory ids)
+- `unmappedCapabilityIds` and why (omit policy vs defer)
+- Open questions for the user
 
-When re-stubbing `status: stub` pages, replace entire file (plan block + placeholders).
-
-## IA validation rules
-
-| Rule | Severity | Check |
-| --- | --- | --- |
-| `max-groups-per-tab` | error | ≤ 7 top-level sidebar groups per tab |
-| `missing-semantic-nest` | error | ≥ 2 categories, ≥ 3 pages, no sub-groups |
-| `max-siblings-per-group` | error | > 7 leaf pages per group or sub-group |
-| `component-flat-list` | error | ≥ 3 component leaves without category sub-groups |
-| `single-child-subgroup` | warning | Sub-group with only one leaf — merge up |
-| `max-depth` | error | Nesting ≤ 3 levels |
-| `unique-href` | error | No duplicate `href` in `outline.pages` |
-| `sidebar-outline-sync` | error | Every sidebar leaf has `outline.pages` entry |
-| `outline-sidebar-sync` | error | Every non-`retire` page appears in sidebar |
-| `missing-icon` | error | Every sidebar leaf and `outline.pages` entry has `icon` |
-| `icon-sync` | error | `outline.pages.icon` matches sidebar leaf |
-| `missing-user-goal` | error | Every page has `userGoal` |
-| `missing-audience` | error | Every page has `audience` |
-| `missing-first-success` | error | Getting Started includes a `first-success` tutorial |
-| `tab-href-not-section-root` | error | Tab `href` must be section root |
-| `tab-missing-landing` | error | Non-root tab has page at `tab.href` |
-| `missing-mdx` | error | Every sidebar `href` has `.mdx` after stub step |
-| `missing-plan-block` | warning | Stub `.mdx` lacks `docs-scaffold-plan` markers |
-| `component-merged` | error | Multiple UI components on one page |
-| `architecture-before-action` | warning | Core Concepts before Guides with no tutorial |
-| `missing-author-content` | warning | Authoring capabilities but no `author-content` page |
-| `orphan-mdx` | warning | `.mdx` not in sidebar |
-| `unmapped-capability` | warning | Capability not in any `capabilityIds` (expected when in spec `Policy.omit`) |
-| `missing-docs-spec` | error | `docs-spec.md` not found in `.docs/` or repo root at scaffold start |
-| `first-success-mismatch` | warning | Getting Started tutorial does not reflect spec `First success` outcome |
-| `doc-type-mismatch` | warning | e.g. `reference` top-level in Getting Started |
-
-## Reporting to the user
-
-Summarize:
-
-- `docs.json` path (note slim outline — plan blocks are on pages)
-- Journey spine and **nested sub-groups** per section (list structure)
-- Stubs created; point to **section index pages** for traceability tables
-- **`unmappedCapabilityIds`** with recommended action
-- `validation.issues` and `cliCheck` result
-- Next: preview site, then **docs-write** (strips plan blocks)
+After Phase 4, also report `validation.issues`, `cliCheck`, and next step: **docs-write**.
 
 ## Additional resources
 
-- Editorial spec: [docs-spec](../docs-spec/SKILL.md)
-- User journeys: [user-journeys.md](user-journeys.md)
-- Semantic nesting: [semantic-grouping.md](semantic-grouping.md)
-- Component grouping: [component-grouping.md](component-grouping.md)
-- Example: [docs.example.json](docs.example.json) — fictional Taskflow; schema only
-- Stub MDX: [stub-templates.md](stub-templates.md)
-- CLI: [cli.md](cli.md)
-- Diátaxis: [diataxis-routing.md](diataxis-routing.md)
-- Sidebar IA: [sidebar-ia.md](sidebar-ia.md)
-- Capability inventory: [docs-inventory](../docs-inventory/SKILL.md)
+- Phase 1: [phases/1-plan.md](phases/1-plan.md)
+- Phase 2: [phases/2-spine.md](phases/2-spine.md)
+- Phase 3: [phases/3-depth.md](phases/3-depth.md)
+- Phase 4: [phases/4-reference.md](phases/4-reference.md)
+- Plan template: [scaffold-plan.template.md](scaffold-plan.template.md)
+- Example plan shape: [docs.example.json](docs.example.json) (Taskflow — schema only)
+- Upstream: [docs-spec](../docs-spec/SKILL.md), [docs-inventory](../docs-inventory/SKILL.md)
