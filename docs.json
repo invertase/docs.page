@@ -1,7 +1,7 @@
 {
   "$schema": "https://docs.page/schema.json",
   "name": "docs.page",
-  "description": "Documentation for docs.page — GitHub-sourced documentation hosting with MDX, search, AI agent, and MCP.",
+  "description": "Publish and author documentation from a public GitHub repository — no build step required.",
   "tabs": [
     {
       "id": "root",
@@ -11,17 +11,12 @@
     {
       "id": "components",
       "title": "Components",
-      "href": "/components/mdx"
+      "href": "/components"
     },
     {
       "id": "cli",
       "title": "CLI",
       "href": "/cli/init"
-    },
-    {
-      "id": "api",
-      "title": "API",
-      "href": "/api/documentation"
     }
   ],
   "sidebar": [
@@ -35,30 +30,24 @@
           "icon": "book"
         },
         {
-          "title": "Quickstart",
-          "href": "/quickstart",
+          "title": "Getting Started",
+          "href": "/getting-started",
           "icon": "rocket"
-        }
-      ]
-    },
-    {
-      "group": "Core Concepts",
-      "tab": "root",
-      "pages": [
-        {
-          "title": "Platform Architecture",
-          "href": "/concepts/architecture",
-          "icon": "layers"
         },
         {
-          "title": "Content Pipeline",
-          "href": "/concepts/content-pipeline",
-          "icon": "file-text"
+          "title": "Writing Content",
+          "href": "/writing-content",
+          "icon": "pen-to-square"
         },
         {
-          "title": "Navigation Model",
-          "href": "/concepts/navigation",
-          "icon": "menu"
+          "title": "Local Preview",
+          "href": "/local-preview",
+          "icon": "eye"
+        },
+        {
+          "title": "Publishing",
+          "href": "/publishing",
+          "icon": "globe"
         }
       ]
     },
@@ -69,67 +58,58 @@
         {
           "title": "docs.json Reference",
           "href": "/configuration/docs-json",
-          "icon": "settings"
+          "icon": "gear"
         },
         {
           "title": "Navigation",
           "href": "/configuration/navigation",
-          "icon": "sidebar"
+          "icon": "sitemap"
         },
         {
           "title": "Search",
           "href": "/configuration/search",
           "icon": "search"
-        },
-        {
-          "title": "AI Agent",
-          "href": "/configuration/agent",
-          "icon": "bot"
-        },
-        {
-          "title": "MCP Server",
-          "href": "/configuration/mcp",
-          "icon": "plug"
         }
       ]
     },
     {
-      "group": "Guides",
+      "group": "Agent & Integrations",
       "tab": "root",
       "pages": [
         {
-          "title": "Local Preview",
-          "href": "/guides/local-preview",
-          "icon": "eye"
+          "title": "Documentation Agent",
+          "href": "/integrations/agent",
+          "icon": "robot"
         },
         {
-          "title": "Publishing & Domains",
-          "href": "/guides/publishing",
-          "icon": "globe"
+          "title": "MCP & LLM Exports",
+          "href": "/integrations/mcp-llms",
+          "icon": "plug"
         },
         {
-          "title": "Branch & Ref Versions",
-          "href": "/guides/branch-refs",
-          "icon": "git-branch"
-        },
+          "title": "API Reference",
+          "href": "/integrations/api-reference",
+          "icon": "terminal"
+        }
+      ]
+    },
+    {
+      "group": "Advanced",
+      "tab": "root",
+      "pages": [
         {
-          "title": "Search Setup",
-          "href": "/guides/search",
-          "icon": "search"
+          "title": "Architecture",
+          "href": "/advanced/architecture",
+          "icon": "diagram-project"
         },
         {
           "title": "Analytics",
-          "href": "/guides/analytics",
-          "icon": "bar-chart"
-        },
-        {
-          "title": "AI Agent Setup",
-          "href": "/guides/ai-agent",
-          "icon": "sparkles"
+          "href": "/advanced/analytics",
+          "icon": "chart-bar"
         },
         {
           "title": "Migrate v1 Config",
-          "href": "/guides/migrate-v1",
+          "href": "/advanced/migrate-v1",
           "icon": "arrow-right"
         }
       ]
@@ -139,9 +119,74 @@
       "tab": "components",
       "pages": [
         {
-          "title": "Component Reference",
-          "href": "/components/mdx",
-          "icon": "component"
+          "title": "Overview",
+          "href": "/components",
+          "icon": "cubes"
+        },
+        {
+          "title": "Accordion",
+          "href": "/components/accordion",
+          "icon": "grip-lines"
+        },
+        {
+          "title": "Callout",
+          "href": "/components/callout",
+          "icon": "circle-info"
+        },
+        {
+          "title": "Card",
+          "href": "/components/card",
+          "icon": "table-cells"
+        },
+        {
+          "title": "CodeGroup",
+          "href": "/components/code-group",
+          "icon": "code"
+        },
+        {
+          "title": "Image",
+          "href": "/components/image",
+          "icon": "image"
+        },
+        {
+          "title": "Icon",
+          "href": "/components/icon",
+          "icon": "icons"
+        },
+        {
+          "title": "Property",
+          "href": "/components/property",
+          "icon": "list-ul"
+        },
+        {
+          "title": "Steps",
+          "href": "/components/steps",
+          "icon": "list-ol"
+        },
+        {
+          "title": "Tabs",
+          "href": "/components/tabs",
+          "icon": "table-columns"
+        },
+        {
+          "title": "Tweet",
+          "href": "/components/tweet",
+          "icon": "x-twitter"
+        },
+        {
+          "title": "Video",
+          "href": "/components/video",
+          "icon": "video"
+        },
+        {
+          "title": "YouTube",
+          "href": "/components/youtube",
+          "icon": "youtube"
+        },
+        {
+          "title": "Vimeo",
+          "href": "/components/vimeo",
+          "icon": "vimeo"
         }
       ]
     },
@@ -162,7 +207,7 @@
         {
           "title": "docs agent create",
           "href": "/cli/agent-create",
-          "icon": "bot"
+          "icon": "robot"
         },
         {
           "title": "docs agent delete",
@@ -181,76 +226,10 @@
           "icon": "code"
         }
       ]
-    },
-    {
-      "group": "Documentation",
-      "tab": "api",
-      "pages": [
-        {
-          "title": "Bundle & Raw Export",
-          "href": "/api/documentation",
-          "icon": "file-json"
-        }
-      ]
-    },
-    {
-      "group": "Search & Discovery",
-      "tab": "api",
-      "pages": [
-        {
-          "title": "Search & LLM Exports",
-          "href": "/api/search-discovery",
-          "icon": "search"
-        }
-      ]
-    },
-    {
-      "group": "Agent",
-      "tab": "api",
-      "pages": [
-        {
-          "title": "Agent Provisioning",
-          "href": "/api/agent",
-          "icon": "bot"
-        }
-      ]
-    },
-    {
-      "group": "MCP",
-      "tab": "api",
-      "pages": [
-        {
-          "title": "MCP HTTP Server",
-          "href": "/api/mcp",
-          "icon": "plug"
-        }
-      ]
-    },
-    {
-      "group": "SEO",
-      "tab": "api",
-      "pages": [
-        {
-          "title": "Open Graph Images",
-          "href": "/api/seo",
-          "icon": "image"
-        }
-      ]
-    },
-    {
-      "group": "Platform",
-      "tab": "api",
-      "pages": [
-        {
-          "title": "Schema & Health",
-          "href": "/api/platform",
-          "icon": "server"
-        }
-      ]
     }
   ],
   "outline": {
-    "version": "1.0.0",
+    "version": "1.1.0",
     "updatedAt": "2026-06-11",
     "sourceFeatures": ".agents/skills/feature-finder/features.json",
     "pages": [
@@ -266,15 +245,20 @@
           "end-user",
           "integrator"
         ],
-        "rationale": "Editorial landing page; orients readers before quickstart and configuration reference."
+        "rationale": "Orients new authors and integrators on the zero-build publishing model before hands-on setup.",
+        "relatedHrefs": [
+          "/getting-started",
+          "/writing-content"
+        ],
+        "icon": "book"
       },
       {
-        "href": "/quickstart",
-        "title": "Quickstart",
-        "description": "Publish documentation from a public GitHub repository in minutes.",
+        "href": "/getting-started",
+        "title": "Getting Started",
+        "description": "Create docs.json, add MDX pages, and publish your first docs site from GitHub.",
         "docType": "tutorial",
         "status": "stub",
-        "file": "docs/quickstart.mdx",
+        "file": "docs/getting-started.mdx",
         "capabilityIds": [
           "github-sourced-documentation",
           "docs-json-configuration",
@@ -284,76 +268,82 @@
           "integrator",
           "contributor"
         ],
-        "rationale": "First-run learning path; single successful outcome with minimal theory.",
+        "rationale": "Primary onboarding path: one successful publish with minimal theory.",
         "relatedHrefs": [
-          "/configuration/docs-json",
-          "/cli/init",
-          "/guides/local-preview"
-        ]
+          "/writing-content",
+          "/local-preview",
+          "/publishing",
+          "/cli/init"
+        ],
+        "icon": "rocket"
       },
       {
-        "href": "/concepts/architecture",
-        "title": "Platform Architecture",
-        "description": "How docs.page loads, caches, and serves documentation from GitHub.",
-        "docType": "explanation",
+        "href": "/writing-content",
+        "title": "Writing Content",
+        "description": "Author MDX pages with frontmatter, assets, variables, and redirects.",
+        "docType": "how-to",
         "status": "stub",
-        "file": "docs/concepts/architecture.mdx",
+        "file": "docs/writing-content.mdx",
         "capabilityIds": [
-          "github-sourced-documentation",
-          "private-repo-enforcement",
-          "edge-cdn-caching",
-          "github-api-caching",
-          "marketing-homepage"
+          "mdx-compilation",
+          "github-asset-urls",
+          "config-variable-substitution",
+          "frontmatter-redirects"
+        ],
+        "audience": [
+          "contributor",
+          "integrator"
+        ],
+        "rationale": "Day-to-day authoring tasks after the site is live; links out to per-component reference.",
+        "relatedHrefs": [
+          "/components",
+          "/configuration/docs-json"
+        ],
+        "icon": "pen-to-square"
+      },
+      {
+        "href": "/local-preview",
+        "title": "Local Preview",
+        "description": "Edit MDX locally with live preview and hot reload before pushing to GitHub.",
+        "docType": "how-to",
+        "status": "stub",
+        "file": "docs/local-preview.mdx",
+        "capabilityIds": [
+          "local-preview-mode"
+        ],
+        "audience": [
+          "contributor",
+          "integrator"
+        ],
+        "rationale": "Shortens the author feedback loop during content work.",
+        "relatedHrefs": [
+          "/getting-started",
+          "/writing-content"
+        ],
+        "icon": "eye"
+      },
+      {
+        "href": "/publishing",
+        "title": "Publishing",
+        "description": "Go live with vanity subdomains, custom domains, and branch or PR previews.",
+        "docType": "how-to",
+        "status": "stub",
+        "file": "docs/publishing.mdx",
+        "capabilityIds": [
+          "vanity-subdomains",
+          "custom-domains",
+          "branch-pr-commit-routing"
         ],
         "audience": [
           "integrator",
           "operator"
         ],
-        "rationale": "Architecture and mental model for operators and integrators; no step-by-step setup."
-      },
-      {
-        "href": "/concepts/content-pipeline",
-        "title": "Content Pipeline",
-        "description": "How MDX source becomes rendered documentation with assets and variables.",
-        "docType": "explanation",
-        "status": "stub",
-        "file": "docs/concepts/content-pipeline.mdx",
-        "capabilityIds": [
-          "mdx-compilation",
-          "github-asset-urls",
-          "config-variable-substitution",
-          "raw-markdown-export"
-        ],
-        "audience": [
-          "integrator"
-        ],
-        "rationale": "Explains the compile-and-serve pipeline; complements MDX component reference.",
+        "rationale": "Publishing and sharing docs is a distinct goal from initial setup and daily authoring.",
         "relatedHrefs": [
-          "/components/mdx",
-          "/api/documentation"
-        ]
-      },
-      {
-        "href": "/concepts/navigation",
-        "title": "Navigation Model",
-        "description": "How tabs, sidebars, locales, and previous/next links shape the reading experience.",
-        "docType": "explanation",
-        "status": "stub",
-        "file": "docs/concepts/navigation.mdx",
-        "capabilityIds": [
-          "sidebar-navigation",
-          "tabbed-navigation",
-          "locale-based-navigation",
-          "previous-next-navigation"
+          "/getting-started",
+          "/configuration/docs-json"
         ],
-        "audience": [
-          "integrator",
-          "end-user"
-        ],
-        "rationale": "Conceptual overview before configuration reference pages.",
-        "relatedHrefs": [
-          "/configuration/navigation"
-        ]
+        "icon": "globe"
       },
       {
         "href": "/configuration/docs-json",
@@ -375,12 +365,12 @@
         "audience": [
           "integrator"
         ],
-        "rationale": "Merged configuration surface for core docs.json fields; lookup tables, not narrative.",
+        "rationale": "Lookup for site-wide configuration after the getting-started flow.",
         "relatedHrefs": [
-          "/configuration/navigation",
-          "/configuration/search",
-          "/api/platform"
-        ]
+          "/getting-started",
+          "/configuration/navigation"
+        ],
+        "icon": "gear"
       },
       {
         "href": "/configuration/navigation",
@@ -398,10 +388,11 @@
         "audience": [
           "integrator"
         ],
-        "rationale": "Navigation-specific schema reference separated from general docs.json fields.",
+        "rationale": "Authors configuring site structure need field-level navigation reference.",
         "relatedHrefs": [
-          "/concepts/navigation"
-        ]
+          "/writing-content"
+        ],
+        "icon": "sitemap"
       },
       {
         "href": "/configuration/search",
@@ -417,126 +408,119 @@
         "audience": [
           "integrator"
         ],
-        "rationale": "Search config lookup; Algolia is schema-only per feature inventory.",
+        "rationale": "Search is configured after content exists; kept as focused reference.",
         "relatedHrefs": [
-          "/guides/search",
-          "/api/search-discovery"
-        ]
+          "/integrations/api-reference"
+        ],
+        "icon": "search"
       },
       {
-        "href": "/configuration/agent",
-        "title": "AI Agent",
-        "description": "Agent provider, limits, and UI configuration in docs.json.",
-        "docType": "reference",
+        "href": "/integrations/agent",
+        "title": "Documentation Agent",
+        "description": "Enable, configure, and provision the in-docs AI agent for your repository.",
+        "docType": "how-to",
         "status": "stub",
-        "file": "docs/configuration/agent.mdx",
+        "file": "docs/integrations/agent.mdx",
         "capabilityIds": [
           "documentation-ai-agent",
-          "agent-rate-limiting"
+          "agent-rate-limiting",
+          "cli-agent-create",
+          "cli-agent-delete",
+          "api-agent-create",
+          "api-agent-delete",
+          "agent-credentials-jwks"
         ],
         "audience": [
           "integrator",
           "operator"
         ],
-        "rationale": "Agent configuration reference separated from setup how-to.",
+        "rationale": "Optional power feature grouped for teams adding AI assistance after core publishing works.",
         "relatedHrefs": [
-          "/guides/ai-agent",
-          "/api/agent"
-        ]
+          "/cli/agent-create",
+          "/integrations/api-reference"
+        ],
+        "icon": "robot"
       },
       {
-        "href": "/configuration/mcp",
-        "title": "MCP Server",
-        "description": "Enable and configure the per-repository Model Context Protocol server.",
-        "docType": "reference",
+        "href": "/integrations/mcp-llms",
+        "title": "MCP & LLM Exports",
+        "description": "Expose docs to AI tools via MCP, llms.txt, and full-text exports.",
+        "docType": "how-to",
         "status": "stub",
-        "file": "docs/configuration/mcp.mdx",
+        "file": "docs/integrations/mcp-llms.mdx",
         "capabilityIds": [
           "mcp-documentation-server",
-          "mcp-skill-resources"
+          "mcp-skill-resources",
+          "llms-txt-index",
+          "llms-full-txt-export",
+          "per-repo-sitemap",
+          "per-repo-robots-txt"
         ],
         "audience": [
           "integrator"
         ],
-        "rationale": "MCP config and skill resource discovery; HTTP surface documented separately.",
+        "rationale": "Integrators connecting docs to AI workflows; separated from day-one authoring goals.",
         "relatedHrefs": [
-          "/api/mcp"
-        ]
+          "/integrations/api-reference"
+        ],
+        "icon": "plug"
       },
       {
-        "href": "/guides/local-preview",
-        "title": "Local Preview",
-        "description": "Preview documentation locally with live MDX editing and hot reload.",
-        "docType": "how-to",
+        "href": "/integrations/api-reference",
+        "title": "API Reference",
+        "description": "HTTP endpoints for bundles, raw export, search, schema, health, and OG images.",
+        "docType": "reference",
         "status": "stub",
-        "file": "docs/guides/local-preview.mdx",
+        "file": "docs/integrations/api-reference.mdx",
         "capabilityIds": [
-          "local-preview-mode"
-        ],
-        "audience": [
-          "integrator",
-          "contributor"
-        ],
-        "rationale": "Task-oriented recipe for local authoring without GitHub round-trips."
-      },
-      {
-        "href": "/guides/publishing",
-        "title": "Publishing & Domains",
-        "description": "Configure vanity subdomains and custom domains for your documentation site.",
-        "docType": "how-to",
-        "status": "stub",
-        "file": "docs/guides/publishing.mdx",
-        "capabilityIds": [
-          "vanity-subdomains",
-          "custom-domains"
-        ],
-        "audience": [
-          "integrator",
-          "operator"
-        ],
-        "rationale": "Domain setup is a focused operational task, not a schema lookup."
-      },
-      {
-        "href": "/guides/branch-refs",
-        "title": "Branch & Ref Versions",
-        "description": "Serve documentation from branches, pull requests, or pinned commits.",
-        "docType": "how-to",
-        "status": "stub",
-        "file": "docs/guides/branch-refs.mdx",
-        "capabilityIds": [
-          "branch-pr-commit-routing"
-        ],
-        "audience": [
-          "end-user",
-          "integrator"
-        ],
-        "rationale": "URL ref routing is a common integrator task with verification steps."
-      },
-      {
-        "href": "/guides/search",
-        "title": "Search Setup",
-        "description": "Enable and tune built-in FlexSearch for your documentation site.",
-        "docType": "how-to",
-        "status": "stub",
-        "file": "docs/guides/search.mdx",
-        "capabilityIds": [
-          "flexsearch-local-search"
+          "api-bundle",
+          "raw-markdown-export",
+          "api-search-index",
+          "api-schema-json",
+          "api-health",
+          "og-image-generation"
         ],
         "audience": [
           "integrator"
         ],
-        "rationale": "Practical search enablement guide; defers field tables to configuration reference.",
+        "rationale": "Machine-facing API surface consolidated for integrators building on docs.page.",
         "relatedHrefs": [
-          "/configuration/search"
-        ]
+          "/integrations/mcp-llms"
+        ],
+        "icon": "terminal"
       },
       {
-        "href": "/guides/analytics",
+        "href": "/advanced/architecture",
+        "title": "Architecture",
+        "description": "How docs.page loads, compiles, caches, and serves documentation from GitHub.",
+        "docType": "explanation",
+        "status": "stub",
+        "file": "docs/advanced/architecture.mdx",
+        "capabilityIds": [
+          "github-sourced-documentation",
+          "private-repo-enforcement",
+          "mdx-compilation",
+          "edge-cdn-caching",
+          "github-api-caching",
+          "marketing-homepage"
+        ],
+        "audience": [
+          "operator",
+          "integrator"
+        ],
+        "rationale": "Deep platform mental model for operators; not required for first publish.",
+        "relatedHrefs": [
+          "/getting-started"
+        ],
+        "icon": "diagram-project"
+      },
+      {
+        "href": "/advanced/analytics",
         "title": "Analytics",
         "description": "Add Google Tag Manager, Google Analytics, or Plausible to your docs site.",
         "docType": "how-to",
         "status": "stub",
-        "file": "docs/guides/analytics.mdx",
+        "file": "docs/advanced/analytics.mdx",
         "capabilityIds": [
           "analytics-scripts"
         ],
@@ -544,63 +528,514 @@
           "integrator",
           "operator"
         ],
-        "rationale": "Third-party analytics integration is a task-oriented setup flow."
-      },
-      {
-        "href": "/guides/ai-agent",
-        "title": "AI Agent Setup",
-        "description": "Create and manage a documentation AI agent for your repository.",
-        "docType": "how-to",
-        "status": "stub",
-        "file": "docs/guides/ai-agent.mdx",
-        "capabilityIds": [
-          "documentation-ai-agent",
-          "cli-agent-create",
-          "cli-agent-delete",
-          "api-agent-create",
-          "api-agent-delete"
-        ],
-        "audience": [
-          "integrator",
-          "operator"
-        ],
-        "rationale": "End-to-end agent provisioning workflow spanning CLI and API.",
+        "rationale": "Optional post-launch instrumentation; advanced group avoids cluttering Getting Started.",
         "relatedHrefs": [
-          "/configuration/agent",
-          "/cli/agent-create",
-          "/api/agent"
-        ]
+          "/configuration/docs-json"
+        ],
+        "icon": "chart-bar"
       },
       {
-        "href": "/guides/migrate-v1",
+        "href": "/advanced/migrate-v1",
         "title": "Migrate v1 Config",
         "description": "Upgrade a legacy v1 docs.json to the current configuration schema.",
         "docType": "how-to",
         "status": "stub",
-        "file": "docs/guides/migrate-v1.mdx",
+        "file": "docs/advanced/migrate-v1.mdx",
         "capabilityIds": [
           "v1-config-compatibility"
         ],
         "audience": [
           "integrator"
         ],
-        "rationale": "Migration is a one-off task with verification, not a field reference."
+        "rationale": "One-off migration task for existing users only.",
+        "icon": "arrow-right"
       },
       {
-        "href": "/components/mdx",
-        "title": "Component Reference",
-        "description": "Complete list of built-in MDX shortcode components and their props.",
+        "href": "/components",
+        "title": "MDX Components",
+        "description": "Built-in shortcode components available in every docs.page MDX file.",
         "docType": "reference",
         "status": "stub",
-        "file": "docs/components/mdx.mdx",
+        "file": "docs/components/index.mdx",
         "capabilityIds": [
           "mdx-components"
         ],
         "audience": [
-          "integrator",
-          "contributor"
+          "contributor",
+          "integrator"
         ],
-        "rationale": "Component props belong on a dedicated reference page, not in Getting Started."
+        "rationale": "Component hub for authors writing content; links to per-component reference pages.",
+        "relatedHrefs": [
+          "/components/accordion",
+          "/components/callout",
+          "/components/card",
+          "/components/code-group",
+          "/components/image",
+          "/components/icon",
+          "/components/property",
+          "/components/steps",
+          "/components/tabs",
+          "/components/tweet",
+          "/components/video",
+          "/components/youtube",
+          "/components/vimeo"
+        ],
+        "icon": "cubes"
+      },
+      {
+        "href": "/components/accordion",
+        "title": "Accordion",
+        "description": "Accordion component props and usage for MDX authors.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/components/accordion.mdx",
+        "capabilityIds": [
+          "mdx-components"
+        ],
+        "audience": [
+          "contributor",
+          "integrator"
+        ],
+        "rationale": "Per-component reference so authors can look up Accordion while writing content.",
+        "relatedHrefs": [
+          "/components",
+          "/writing-content"
+        ],
+        "splits": [
+          "/components/callout",
+          "/components/card",
+          "/components/code-group",
+          "/components/image",
+          "/components/icon",
+          "/components/property",
+          "/components/steps",
+          "/components/tabs",
+          "/components/tweet",
+          "/components/video",
+          "/components/youtube",
+          "/components/vimeo"
+        ],
+        "icon": "grip-lines"
+      },
+      {
+        "href": "/components/callout",
+        "title": "Callout",
+        "description": "Callout component props and usage for MDX authors.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/components/callout.mdx",
+        "capabilityIds": [
+          "mdx-components"
+        ],
+        "audience": [
+          "contributor",
+          "integrator"
+        ],
+        "rationale": "Per-component reference so authors can look up Callout while writing content.",
+        "relatedHrefs": [
+          "/components",
+          "/writing-content"
+        ],
+        "splits": [
+          "/components/accordion",
+          "/components/card",
+          "/components/code-group",
+          "/components/image",
+          "/components/icon",
+          "/components/property",
+          "/components/steps",
+          "/components/tabs",
+          "/components/tweet",
+          "/components/video",
+          "/components/youtube",
+          "/components/vimeo"
+        ],
+        "icon": "circle-info"
+      },
+      {
+        "href": "/components/card",
+        "title": "Card",
+        "description": "Card component props and usage for MDX authors.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/components/card.mdx",
+        "capabilityIds": [
+          "mdx-components"
+        ],
+        "audience": [
+          "contributor",
+          "integrator"
+        ],
+        "rationale": "Per-component reference so authors can look up Card while writing content.",
+        "relatedHrefs": [
+          "/components",
+          "/writing-content"
+        ],
+        "splits": [
+          "/components/accordion",
+          "/components/callout",
+          "/components/code-group",
+          "/components/image",
+          "/components/icon",
+          "/components/property",
+          "/components/steps",
+          "/components/tabs",
+          "/components/tweet",
+          "/components/video",
+          "/components/youtube",
+          "/components/vimeo"
+        ],
+        "icon": "table-cells"
+      },
+      {
+        "href": "/components/code-group",
+        "title": "CodeGroup",
+        "description": "CodeGroup component props and usage for MDX authors.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/components/code-group.mdx",
+        "capabilityIds": [
+          "mdx-components"
+        ],
+        "audience": [
+          "contributor",
+          "integrator"
+        ],
+        "rationale": "Per-component reference so authors can look up CodeGroup while writing content.",
+        "relatedHrefs": [
+          "/components",
+          "/writing-content"
+        ],
+        "splits": [
+          "/components/accordion",
+          "/components/callout",
+          "/components/card",
+          "/components/image",
+          "/components/icon",
+          "/components/property",
+          "/components/steps",
+          "/components/tabs",
+          "/components/tweet",
+          "/components/video",
+          "/components/youtube",
+          "/components/vimeo"
+        ],
+        "icon": "code"
+      },
+      {
+        "href": "/components/image",
+        "title": "Image",
+        "description": "Image component props and usage for MDX authors.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/components/image.mdx",
+        "capabilityIds": [
+          "mdx-components"
+        ],
+        "audience": [
+          "contributor",
+          "integrator"
+        ],
+        "rationale": "Per-component reference so authors can look up Image while writing content.",
+        "relatedHrefs": [
+          "/components",
+          "/writing-content"
+        ],
+        "splits": [
+          "/components/accordion",
+          "/components/callout",
+          "/components/card",
+          "/components/code-group",
+          "/components/icon",
+          "/components/property",
+          "/components/steps",
+          "/components/tabs",
+          "/components/tweet",
+          "/components/video",
+          "/components/youtube",
+          "/components/vimeo"
+        ],
+        "icon": "image"
+      },
+      {
+        "href": "/components/icon",
+        "title": "Icon",
+        "description": "Icon component props and usage for MDX authors.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/components/icon.mdx",
+        "capabilityIds": [
+          "mdx-components"
+        ],
+        "audience": [
+          "contributor",
+          "integrator"
+        ],
+        "rationale": "Per-component reference so authors can look up Icon while writing content.",
+        "relatedHrefs": [
+          "/components",
+          "/writing-content"
+        ],
+        "splits": [
+          "/components/accordion",
+          "/components/callout",
+          "/components/card",
+          "/components/code-group",
+          "/components/image",
+          "/components/property",
+          "/components/steps",
+          "/components/tabs",
+          "/components/tweet",
+          "/components/video",
+          "/components/youtube",
+          "/components/vimeo"
+        ],
+        "icon": "icons"
+      },
+      {
+        "href": "/components/property",
+        "title": "Property",
+        "description": "Property component props and usage for MDX authors.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/components/property.mdx",
+        "capabilityIds": [
+          "mdx-components"
+        ],
+        "audience": [
+          "contributor",
+          "integrator"
+        ],
+        "rationale": "Per-component reference so authors can look up Property while writing content.",
+        "relatedHrefs": [
+          "/components",
+          "/writing-content"
+        ],
+        "splits": [
+          "/components/accordion",
+          "/components/callout",
+          "/components/card",
+          "/components/code-group",
+          "/components/image",
+          "/components/icon",
+          "/components/steps",
+          "/components/tabs",
+          "/components/tweet",
+          "/components/video",
+          "/components/youtube",
+          "/components/vimeo"
+        ],
+        "icon": "list-ul"
+      },
+      {
+        "href": "/components/steps",
+        "title": "Steps",
+        "description": "Steps component props and usage for MDX authors.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/components/steps.mdx",
+        "capabilityIds": [
+          "mdx-components"
+        ],
+        "audience": [
+          "contributor",
+          "integrator"
+        ],
+        "rationale": "Per-component reference so authors can look up Steps while writing content.",
+        "relatedHrefs": [
+          "/components",
+          "/writing-content"
+        ],
+        "splits": [
+          "/components/accordion",
+          "/components/callout",
+          "/components/card",
+          "/components/code-group",
+          "/components/image",
+          "/components/icon",
+          "/components/property",
+          "/components/tabs",
+          "/components/tweet",
+          "/components/video",
+          "/components/youtube",
+          "/components/vimeo"
+        ],
+        "icon": "list-ol"
+      },
+      {
+        "href": "/components/tabs",
+        "title": "Tabs",
+        "description": "Tabs component props and usage for MDX authors.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/components/tabs.mdx",
+        "capabilityIds": [
+          "mdx-components"
+        ],
+        "audience": [
+          "contributor",
+          "integrator"
+        ],
+        "rationale": "Per-component reference so authors can look up Tabs while writing content.",
+        "relatedHrefs": [
+          "/components",
+          "/writing-content"
+        ],
+        "splits": [
+          "/components/accordion",
+          "/components/callout",
+          "/components/card",
+          "/components/code-group",
+          "/components/image",
+          "/components/icon",
+          "/components/property",
+          "/components/steps",
+          "/components/tweet",
+          "/components/video",
+          "/components/youtube",
+          "/components/vimeo"
+        ],
+        "icon": "table-columns"
+      },
+      {
+        "href": "/components/tweet",
+        "title": "Tweet",
+        "description": "Tweet component props and usage for MDX authors.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/components/tweet.mdx",
+        "capabilityIds": [
+          "mdx-components"
+        ],
+        "audience": [
+          "contributor",
+          "integrator"
+        ],
+        "rationale": "Per-component reference so authors can look up Tweet while writing content.",
+        "relatedHrefs": [
+          "/components",
+          "/writing-content"
+        ],
+        "splits": [
+          "/components/accordion",
+          "/components/callout",
+          "/components/card",
+          "/components/code-group",
+          "/components/image",
+          "/components/icon",
+          "/components/property",
+          "/components/steps",
+          "/components/tabs",
+          "/components/video",
+          "/components/youtube",
+          "/components/vimeo"
+        ],
+        "icon": "x-twitter"
+      },
+      {
+        "href": "/components/video",
+        "title": "Video",
+        "description": "Video component props and usage for MDX authors.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/components/video.mdx",
+        "capabilityIds": [
+          "mdx-components"
+        ],
+        "audience": [
+          "contributor",
+          "integrator"
+        ],
+        "rationale": "Per-component reference so authors can look up Video while writing content.",
+        "relatedHrefs": [
+          "/components",
+          "/writing-content"
+        ],
+        "splits": [
+          "/components/accordion",
+          "/components/callout",
+          "/components/card",
+          "/components/code-group",
+          "/components/image",
+          "/components/icon",
+          "/components/property",
+          "/components/steps",
+          "/components/tabs",
+          "/components/tweet",
+          "/components/youtube",
+          "/components/vimeo"
+        ],
+        "icon": "video"
+      },
+      {
+        "href": "/components/youtube",
+        "title": "YouTube",
+        "description": "YouTube component props and usage for MDX authors.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/components/youtube.mdx",
+        "capabilityIds": [
+          "mdx-components"
+        ],
+        "audience": [
+          "contributor",
+          "integrator"
+        ],
+        "rationale": "Per-component reference so authors can look up YouTube while writing content.",
+        "relatedHrefs": [
+          "/components",
+          "/writing-content"
+        ],
+        "splits": [
+          "/components/accordion",
+          "/components/callout",
+          "/components/card",
+          "/components/code-group",
+          "/components/image",
+          "/components/icon",
+          "/components/property",
+          "/components/steps",
+          "/components/tabs",
+          "/components/tweet",
+          "/components/video",
+          "/components/vimeo"
+        ],
+        "icon": "youtube"
+      },
+      {
+        "href": "/components/vimeo",
+        "title": "Vimeo",
+        "description": "Vimeo component props and usage for MDX authors.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/components/vimeo.mdx",
+        "capabilityIds": [
+          "mdx-components"
+        ],
+        "audience": [
+          "contributor",
+          "integrator"
+        ],
+        "rationale": "Per-component reference so authors can look up Vimeo while writing content.",
+        "relatedHrefs": [
+          "/components",
+          "/writing-content"
+        ],
+        "splits": [
+          "/components/accordion",
+          "/components/callout",
+          "/components/card",
+          "/components/code-group",
+          "/components/image",
+          "/components/icon",
+          "/components/property",
+          "/components/steps",
+          "/components/tabs",
+          "/components/tweet",
+          "/components/video",
+          "/components/youtube"
+        ],
+        "icon": "vimeo"
       },
       {
         "href": "/cli/init",
@@ -616,10 +1051,11 @@
           "integrator",
           "contributor"
         ],
-        "rationale": "CLI flags and options are lookup material.",
+        "rationale": "CLI lookup for the init command used during getting started.",
         "relatedHrefs": [
-          "/quickstart"
-        ]
+          "/getting-started"
+        ],
+        "icon": "plus"
       },
       {
         "href": "/cli/check",
@@ -635,7 +1071,11 @@
           "integrator",
           "contributor"
         ],
-        "rationale": "CLI command reference with flags and exit codes."
+        "rationale": "Authors run check before push; flags documented as reference.",
+        "relatedHrefs": [
+          "/writing-content"
+        ],
+        "icon": "check"
       },
       {
         "href": "/cli/agent-create",
@@ -651,10 +1091,11 @@
           "integrator",
           "operator"
         ],
-        "rationale": "CLI surface reference; workflow covered in AI agent guide.",
+        "rationale": "CLI reference for agent provisioning.",
         "relatedHrefs": [
-          "/guides/ai-agent"
-        ]
+          "/integrations/agent"
+        ],
+        "icon": "robot"
       },
       {
         "href": "/cli/agent-delete",
@@ -670,10 +1111,11 @@
           "integrator",
           "operator"
         ],
-        "rationale": "CLI surface reference paired with agent create.",
+        "rationale": "CLI reference paired with agent create.",
         "relatedHrefs": [
-          "/guides/ai-agent"
-        ]
+          "/integrations/agent"
+        ],
+        "icon": "trash"
       },
       {
         "href": "/cli/programmatic",
@@ -688,122 +1130,8 @@
         "audience": [
           "integrator"
         ],
-        "rationale": "SDK export surface is information-oriented reference."
-      },
-      {
-        "href": "/api/documentation",
-        "title": "Bundle & Raw Export",
-        "description": "HTTP endpoints for document bundles and raw markdown export.",
-        "docType": "reference",
-        "status": "stub",
-        "file": "docs/api/documentation.mdx",
-        "capabilityIds": [
-          "api-bundle",
-          "raw-markdown-export"
-        ],
-        "audience": [
-          "integrator"
-        ],
-        "rationale": "Merged API reference for document content retrieval endpoints.",
-        "relatedHrefs": [
-          "/concepts/content-pipeline"
-        ]
-      },
-      {
-        "href": "/api/search-discovery",
-        "title": "Search & LLM Exports",
-        "description": "Search index, llms.txt, sitemap, and robots.txt HTTP endpoints.",
-        "docType": "reference",
-        "status": "stub",
-        "file": "docs/api/search-discovery.mdx",
-        "capabilityIds": [
-          "api-search-index",
-          "llms-txt-index",
-          "llms-full-txt-export",
-          "per-repo-sitemap",
-          "per-repo-robots-txt"
-        ],
-        "audience": [
-          "integrator"
-        ],
-        "rationale": "Discovery and indexing APIs grouped to avoid micro-pages."
-      },
-      {
-        "href": "/api/agent",
-        "title": "Agent Provisioning",
-        "description": "HTTP endpoints for creating agents, deleting agents, and JWKS credentials.",
-        "docType": "reference",
-        "status": "stub",
-        "file": "docs/api/agent.mdx",
-        "capabilityIds": [
-          "api-agent-create",
-          "api-agent-delete",
-          "agent-credentials-jwks"
-        ],
-        "audience": [
-          "integrator",
-          "operator"
-        ],
-        "rationale": "Agent lifecycle API reference separated from configuration and CLI.",
-        "relatedHrefs": [
-          "/guides/ai-agent"
-        ]
-      },
-      {
-        "href": "/api/mcp",
-        "title": "MCP HTTP Server",
-        "description": "Per-repository Model Context Protocol HTTP endpoint and tools.",
-        "docType": "reference",
-        "status": "stub",
-        "file": "docs/api/mcp.mdx",
-        "capabilityIds": [
-          "mcp-documentation-server"
-        ],
-        "audience": [
-          "integrator"
-        ],
-        "rationale": "HTTP surface for MCP; config fields documented on configuration page.",
-        "relatedHrefs": [
-          "/configuration/mcp"
-        ],
-        "splits": [
-          "/configuration/mcp"
-        ]
-      },
-      {
-        "href": "/api/seo",
-        "title": "Open Graph Images",
-        "description": "Dynamic social preview image generation endpoint.",
-        "docType": "reference",
-        "status": "stub",
-        "file": "docs/api/seo.mdx",
-        "capabilityIds": [
-          "og-image-generation"
-        ],
-        "audience": [
-          "integrator"
-        ],
-        "rationale": "OG image API parameters are lookup material.",
-        "relatedHrefs": [
-          "/configuration/docs-json"
-        ]
-      },
-      {
-        "href": "/api/platform",
-        "title": "Schema & Health",
-        "description": "Configuration JSON Schema and service health check endpoints.",
-        "docType": "reference",
-        "status": "stub",
-        "file": "docs/api/platform.mdx",
-        "capabilityIds": [
-          "api-schema-json",
-          "api-health"
-        ],
-        "audience": [
-          "integrator",
-          "operator"
-        ],
-        "rationale": "Platform utility endpoints merged into one reference page."
+        "rationale": "SDK export surface for tooling authors.",
+        "icon": "code"
       }
     ],
     "coverage": {
@@ -871,24 +1199,41 @@
           "frontmatter-redirects",
           "config-variable-substitution"
         ],
-        "/api/search-discovery": [
-          "api-search-index",
+        "/integrations/agent": [
+          "documentation-ai-agent",
+          "agent-rate-limiting",
+          "cli-agent-create",
+          "cli-agent-delete",
+          "api-agent-create",
+          "api-agent-delete",
+          "agent-credentials-jwks"
+        ],
+        "/integrations/mcp-llms": [
+          "mcp-documentation-server",
+          "mcp-skill-resources",
           "llms-txt-index",
           "llms-full-txt-export",
           "per-repo-sitemap",
           "per-repo-robots-txt"
         ],
-        "/api/agent": [
-          "api-agent-create",
-          "api-agent-delete",
-          "agent-credentials-jwks"
+        "/integrations/api-reference": [
+          "api-bundle",
+          "raw-markdown-export",
+          "api-search-index",
+          "api-schema-json",
+          "api-health",
+          "og-image-generation"
         ],
-        "/guides/ai-agent": [
-          "documentation-ai-agent",
-          "cli-agent-create",
-          "cli-agent-delete",
-          "api-agent-create",
-          "api-agent-delete"
+        "/publishing": [
+          "vanity-subdomains",
+          "custom-domains",
+          "branch-pr-commit-routing"
+        ],
+        "/writing-content": [
+          "mdx-compilation",
+          "github-asset-urls",
+          "config-variable-substitution",
+          "frontmatter-redirects"
         ]
       }
     },
@@ -903,13 +1248,13 @@
         "warnings": 0
       },
       "stats": {
-        "pageCount": 29,
-        "stubPages": 29,
+        "pageCount": 33,
+        "stubPages": 33,
         "byDocType": {
+          "explanation": 2,
           "tutorial": 1,
           "how-to": 7,
-          "reference": 17,
-          "explanation": 4
+          "reference": 23
         }
       }
     }
