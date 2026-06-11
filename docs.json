@@ -79,31 +79,6 @@
           "href": "/publishing/urls"
         },
         {
-          "group": "Configure your site",
-          "pages": [
-            {
-              "title": "Customize theme and branding",
-              "href": "/configuration/theme-and-branding"
-            },
-            {
-              "title": "Add analytics and SEO",
-              "href": "/configuration/analytics-and-seo"
-            },
-            {
-              "title": "Configure content display",
-              "href": "/configuration/content-display"
-            },
-            {
-              "title": "Set up a custom domain",
-              "href": "/configuration/custom-domains"
-            },
-            {
-              "title": "docs.json reference",
-              "href": "/configuration/reference"
-            }
-          ]
-        },
-        {
           "group": "Enable agent features",
           "pages": [
             {
@@ -139,6 +114,37 @@
         }
       ],
       "icon": "cloud-arrow-up"
+    },
+    {
+      "group": "Configure your site",
+      "tab": "root",
+      "icon": "sliders",
+      "pages": [
+        {
+          "title": "Configure your site",
+          "href": "/configuration"
+        },
+        {
+          "title": "Customize theme and branding",
+          "href": "/configuration/theme-and-branding"
+        },
+        {
+          "title": "Add analytics and SEO",
+          "href": "/configuration/analytics-and-seo"
+        },
+        {
+          "title": "Configure content display",
+          "href": "/configuration/content-display"
+        },
+        {
+          "title": "Set up a custom domain",
+          "href": "/configuration/custom-domains"
+        },
+        {
+          "title": "docs.json reference",
+          "href": "/configuration/reference"
+        }
+      ]
     },
     {
       "group": "Using docs",
@@ -438,6 +444,21 @@
           "vanity-subdomains",
           "ref-previews",
           "github-hosting"
+        ],
+        "audience": [
+          "contributor"
+        ]
+      },
+      {
+        "href": "/configuration",
+        "title": "Configure your site",
+        "description": "Customize theme, analytics, navigation, and domains with docs.json.",
+        "docType": "explanation",
+        "userGoal": "customize",
+        "status": "stub",
+        "file": "docs/configuration/index.mdx",
+        "capabilityIds": [
+          "docs-json-config"
         ],
         "audience": [
           "contributor"
@@ -988,8 +1009,8 @@
         "warnings": 0
       },
       "stats": {
-        "pageCount": 43,
-        "stubPages": 43,
+        "pageCount": 44,
+        "stubPages": 44,
         "componentPages": 15
       }
     }
