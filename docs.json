@@ -68,24 +68,36 @@
           "icon": "sliders"
         },
         {
-          "title": "Theme",
-          "href": "/theme",
-          "icon": "palette"
+          "group": "Appearance",
+          "icon": "palette",
+          "pages": [
+            {
+              "title": "Theme",
+              "href": "/theme",
+              "icon": "palette"
+            },
+            {
+              "title": "Assets",
+              "href": "/assets",
+              "icon": "image"
+            }
+          ]
         },
         {
-          "title": "Assets",
-          "href": "/assets",
-          "icon": "image"
-        },
-        {
-          "title": "Sidebar & tabs",
-          "href": "/navigation",
-          "icon": "map"
-        },
-        {
-          "title": "Locales",
-          "href": "/locales",
-          "icon": "language"
+          "group": "Navigation",
+          "icon": "bars",
+          "pages": [
+            {
+              "title": "Sidebar & tabs",
+              "href": "/navigation",
+              "icon": "map"
+            },
+            {
+              "title": "Locales",
+              "href": "/locales",
+              "icon": "language"
+            }
+          ]
         },
         {
           "title": "Variables",
@@ -93,14 +105,20 @@
           "icon": "code"
         },
         {
-          "title": "Search",
-          "href": "/search",
-          "icon": "magnifying-glass"
-        },
-        {
-          "title": "Analytics",
-          "href": "/analytics",
-          "icon": "chart-line"
+          "group": "Integrations",
+          "icon": "plug",
+          "pages": [
+            {
+              "title": "Search",
+              "href": "/search",
+              "icon": "magnifying-glass"
+            },
+            {
+              "title": "Analytics",
+              "href": "/analytics",
+              "icon": "chart-line"
+            }
+          ]
         },
         {
           "title": "v1 YAML migration",
@@ -181,89 +199,113 @@
       "tab": "components",
       "pages": [
         {
-          "title": "Accordion",
-          "href": "/components/accordion",
-          "icon": "square-caret-down"
+          "group": "Layout",
+          "icon": "object-group",
+          "pages": [
+            {
+              "title": "Accordion",
+              "href": "/components/accordion",
+              "icon": "square-caret-down"
+            },
+            {
+              "title": "Cards",
+              "href": "/components/cards",
+              "icon": "square-full"
+            },
+            {
+              "title": "Steps",
+              "href": "/components/steps",
+              "icon": "list-ol"
+            },
+            {
+              "title": "Tabs",
+              "href": "/components/tabs",
+              "icon": "table-columns"
+            },
+            {
+              "title": "Property",
+              "href": "/components/property",
+              "icon": "signature"
+            }
+          ]
         },
         {
-          "title": "Callouts",
-          "href": "/components/callouts",
-          "icon": "bullhorn"
+          "group": "Content",
+          "icon": "file-lines",
+          "pages": [
+            {
+              "title": "Callouts",
+              "href": "/components/callouts",
+              "icon": "bullhorn"
+            },
+            {
+              "title": "Headings",
+              "href": "/components/headings",
+              "icon": "heading"
+            },
+            {
+              "title": "Icons",
+              "href": "/components/icons",
+              "icon": "icons"
+            }
+          ]
         },
         {
-          "title": "Cards",
-          "href": "/components/cards",
-          "icon": "square-full"
+          "group": "Code",
+          "icon": "code",
+          "pages": [
+            {
+              "title": "Code blocks",
+              "href": "/components/code-blocks",
+              "icon": "code"
+            },
+            {
+              "title": "Code group",
+              "href": "/components/code-group",
+              "icon": "laptop-code"
+            }
+          ]
         },
         {
-          "title": "Code blocks",
-          "href": "/components/code-blocks",
-          "icon": "code"
-        },
-        {
-          "title": "Code group",
-          "href": "/components/code-group",
-          "icon": "laptop-code"
+          "group": "Media",
+          "icon": "photo-film",
+          "pages": [
+            {
+              "title": "Images",
+              "href": "/components/images",
+              "icon": "image"
+            },
+            {
+              "title": "Video",
+              "href": "/components/video",
+              "icon": "video"
+            },
+            {
+              "title": "YouTube",
+              "href": "/components/youtube",
+              "icon": "youtube"
+            },
+            {
+              "title": "Vimeo",
+              "href": "/components/vimeo",
+              "icon": "vimeo"
+            },
+            {
+              "title": "Tweet",
+              "href": "/components/tweet",
+              "icon": "twitter"
+            },
+            {
+              "title": "Zapp",
+              "href": "/components/zapp",
+              "icon": "bolt"
+            }
+          ]
         },
         {
           "title": "Custom components",
           "href": "/components/custom",
           "icon": "wand-magic-sparkles"
-        },
-        {
-          "title": "Headings",
-          "href": "/components/headings",
-          "icon": "heading"
-        },
-        {
-          "title": "Icons",
-          "href": "/components/icons",
-          "icon": "icons"
-        },
-        {
-          "title": "Images",
-          "href": "/components/images",
-          "icon": "image"
-        },
-        {
-          "title": "Property",
-          "href": "/components/property",
-          "icon": "signature"
-        },
-        {
-          "title": "Steps",
-          "href": "/components/steps",
-          "icon": "list-ol"
-        },
-        {
-          "title": "Tabs",
-          "href": "/components/tabs",
-          "icon": "table-columns"
-        },
-        {
-          "title": "Tweet",
-          "href": "/components/tweet",
-          "icon": "twitter"
-        },
-        {
-          "title": "Video",
-          "href": "/components/video",
-          "icon": "video"
-        },
-        {
-          "title": "Vimeo",
-          "href": "/components/vimeo",
-          "icon": "vimeo"
-        },
-        {
-          "title": "YouTube",
-          "href": "/components/youtube",
-          "icon": "youtube"
-        },
-        {
-          "title": "Zapp",
-          "href": "/components/zapp",
-          "icon": "bolt"
         }
       ]
     },
@@ -271,14 +313,20 @@
       "tab": "cli",
       "pages": [
         {
-          "title": "init",
-          "href": "/cli/init",
-          "icon": "plus"
-        },
-        {
-          "title": "check",
-          "href": "/cli/check",
-          "icon": "check"
+          "group": "Commands",
+          "icon": "terminal",
+          "pages": [
+            {
+              "title": "init",
+              "href": "/cli/init",
+              "icon": "plus"
+            },
+            {
+              "title": "check",
+              "href": "/cli/check",
+              "icon": "check"
+            }
+          ]
         }
       ]
     }
