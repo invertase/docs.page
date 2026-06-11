@@ -69,7 +69,7 @@ When a topic serves `integrate` **and** `lookup`:
 | `spine` or `depth` | Guides how-to | "Enable AI chat" |
 | `reference` | API grouped page | "Agent & MCP APIs" |
 
-Link in stub plan blocks — do not duplicate unlinked leaves.
+Record in scaffold-plan **Pairs** table — do not duplicate unlinked leaves in nav.
 
 ## Anti-patterns
 

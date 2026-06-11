@@ -4,8 +4,8 @@
 
 Read before starting:
 
-- `.docs/docs-spec.md` — persona, journeys, first success, policy, notes
-- `.docs/docs-inventory.json` — capabilities (do not mirror 1:1 into pages)
+- `.docs/docs-spec.md` — persona, journeys, first success, policy (link only in plan)
+- `.docs/docs-inventory.json` — capabilities (merge, do not mirror 1:1)
 - [references/topic-buckets.md](../references/topic-buckets.md)
 - [references/merge-rules.md](../references/merge-rules.md)
 - [scaffold-plan.template.md](../scaffold-plan.template.md)
@@ -14,116 +14,75 @@ If `.docs/scaffold-plan.md` exists **and** the user has approved it, Phase 1 is 
 
 ## Goal
 
-Produce `.docs/scaffold-plan.md` — a **human-reviewable IA plan** before writing `docs.json` or stubs.
+Produce a **lean** `.docs/scaffold-plan.md` — nav preview + merge map — before writing `docs.json` or stubs.
 
-The plan answers: *what pages exist, what got merged, what's deferred, what tabs we need* — not *every capability gets a page*.
+**Target length:** ~80–150 lines. If the plan exceeds ~200 lines, you are writing too much.
 
-## Step 1a. Ingest spec
+## What belongs in the plan
 
-Extract from `.docs/docs-spec.md`:
-
-| Section | Record |
+| Section | Purpose |
 | --- | --- |
-| Positioning | One-line product purpose |
-| Audience | `primaryPersona`, secondaries |
-| First success | Outcome + hints |
-| Journeys | Ordered `userGoal` spine |
-| Policy → Omit | Themes/ids to exclude from `capabilityIds` |
-| Policy → Advanced only | Defer to Core Concepts / nested Advanced |
-| Notes | Editorial constraints (comparisons, tone, etc.) |
+| **Nav** | Indented tree — primary human review surface |
+| **Budget** | Page counts by phase |
+| **Merge map** | `href` → capability ids (machine handoff) |
+| **Decisions** | Non-obvious merges/splits only (~10 bullets max) |
+| **Pairs** | Guide/concept → reference links for stubs |
+| **Omit / Defer** | Compact tables |
 
-If spec is missing, stop → run [docs-spec](../../docs-spec/SKILL.md).
+## What does NOT belong
 
-## Step 1b. Scan inventory (do not page yet)
+Do **not** include in `scaffold-plan.md`:
 
-Read `.docs/docs-inventory.json`. For each capability, note `id`, `kind`, `title`, `audience` — **do not create a page list yet**.
+- Audiences, journeys, first-success prose (already in `docs-spec.md`)
+- Per-page `docType`, `userGoal`, `audience`, `description` (→ `outline.pages` in Phase 2+)
+- Per-page "Why merged" paragraphs (→ **Decisions** bullets in scaffold-plan only)
+- Feature classification audits, archetype essays, IA principle essays
+- "Resolved from review" changelogs (→ chat / PR comment)
+- Editorial briefs for docs-write (→ spec Notes or stub plans)
 
-Group mentally by **reader task**, not `kind`:
+Keep agent reasoning in the conversation; keep the artifact scannable.
 
-- What does a contributor need to publish?
-- What does an integrator need to connect?
-- What is lookup-only machinery?
+## Steps
 
-## Step 1c. Inventory topics and tag buckets
+### 1a. Ingest spec
 
-Enumerate **topics** the docs could cover (fewer than capabilities). Tag each:
+Read `.docs/docs-spec.md`. If missing, stop → [docs-spec](../../docs-spec/SKILL.md).
 
-| Tag | Meaning | Typical `docType` |
-| --- | --- | --- |
-| `spine` | Phase 2 — journey starters | `tutorial`, `how-to`, `explanation` |
-| `depth` | Phase 3 — customize, comparisons, concepts | `how-to`, `explanation` |
-| `reference` | Phase 4 — lookup surfaces | `reference` |
-| `omit` | Spec policy — no page | — |
-| `defer` | Valid later; not in initial scaffold | — |
+Use spec for clustering decisions only — **do not copy** into the plan.
 
-Read [references/topic-buckets.md](../references/topic-buckets.md) before tagging.
+### 1b. Scan inventory
 
-Apply [references/audience-check.md](../references/audience-check.md) with spec's **primary persona**.
+Read `.docs/docs-inventory.json`. Group by **reader task**, not `kind`.
 
-## Step 1d. Propose merged page clusters
+### 1c. Tag topics
 
-**Default: merge.** Apply [references/merge-rules.md](../references/merge-rules.md).
+Tag each topic: `spine` | `depth` | `reference` | `omit` | `defer`. See [topic-buckets.md](../references/topic-buckets.md).
 
-For each proposed page, define a **cluster**:
+### 1d. Merge clusters
 
-```markdown
-### Quickstart: Publish from GitHub
-- **Bucket:** spine
-- **docType:** tutorial
-- **userGoal:** first-success
-- **audience:** contributor
-- **Merges:** github-hosting, docs-json-config, cli-init, public-repos-only
-- **Why merged:** Single first-success path per spec outcome
-```
+Apply [merge-rules.md](../references/merge-rules.md). Name pages with [headline-style.md](../references/headline-style.md).
 
-**Targets for this repo shape:**
+Build:
 
-| Area | Merge target | Anti-pattern |
-| --- | --- | --- |
-| Configuration | 3–5 customize how-tos + 1 `docs.json` reference hub | 1 page per config schema section |
-| API | 3–5 grouped reference pages | 1 page per HTTP route |
-| CLI | 1 commands overview + 1 programmatic page | 1 page per subcommand (unless distinct workflows) |
-| Components | Category groups + per-component pages (exception) | Single mega-page |
-| Integrate | How-tos in Guides paired with API reference groups | Duplicate leaves in Guides and API with no link |
+1. **Nav tree** with phase tags `[spine]`, `[depth]`, `[ref]`
+2. **Merge map** rows — one per leaf `href`
+3. **Decisions** — only surprises (e.g. "13 config keys → 1 reference hub")
+4. **Pairs** — integrate guide ↔ API group
 
-Name clusters using [references/headline-style.md](../references/headline-style.md) — reader action, not bare nouns.
+### 1e. Tabs
 
-## Step 1e. Tab strategy
+Record in nav tree roots only: `/`, `/api`, `/cli`, `/components`. Section-root `href` — see [sidebar-ia.md](../sidebar-ia.md).
 
-Derive tabs from **approved clusters**, not inventory kinds alone:
+### 1f. Write scaffold-plan.md
 
-| Signal | Tab |
-| --- | --- |
-| `reference` clusters for HTTP/agent routes | API |
-| `reference` clusters for CLI | CLI |
-| `kind: component` pages (always split) | Components |
-| Everything else | Documentation (root) |
-
-Record tab list in plan. Tab `href` must be section roots — see [sidebar-ia.md](../sidebar-ia.md).
-
-## Step 1f. Write scaffold-plan.md
-
-Write `.docs/scaffold-plan.md` from [scaffold-plan.template.md](../scaffold-plan.template.md).
-
-Include:
-
-- Audiences (from spec)
-- First success outcome
-- Journey spine (ordered goals)
-- **Page clusters** grouped by phase (spine / depth / reference)
-- Tab strategy
-- Omit and defer lists with capability ids
-- Page budget: spine (~8–15), depth (~5–12), reference (variable)
+Use [scaffold-plan.template.md](../scaffold-plan.template.md) exactly. No extra sections.
 
 ## CHECKPOINT
 
-Save `.docs/scaffold-plan.md`, show path, and ask the user to review:
+Save `.docs/scaffold-plan.md`. Ask the user to review **only the nav tree** and **decisions** bullets.
 
-- Are merges right? (too many pages vs too few)
-- Is the spine short enough for a new contributor?
-- Which `defer` topics should move to spine?
-- Tab strategy OK?
+- Too many pages?
+- Spine short enough?
+- Merges right?
 
-**Do not write `docs.json` or stubs until approved.**
-
-Suggest clearing context before Phase 2 if the conversation is long.
+**Do not write `docs.json` until approved.**

@@ -64,7 +64,7 @@ When ≥2 categories with ≥3 pages in a group, nest sub-groups:
 
 ## Components — always split
 
-One page per `surface.ui` component. Nest under category sub-groups. Overview + traceability table at `/components`.
+One page per `surface.ui` component. Nest under category sub-groups. Section overview stub at `/components`.
 
 ## Icons
 

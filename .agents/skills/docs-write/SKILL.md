@@ -95,7 +95,7 @@ Write priority:
 3. `status: existing` (revisions)
 4. Skip `status: retire` unless user asks for redirect stub
 
-When replacing a stub, read the existing file first. Use the **documentation plan** block for scope, then **remove it** from the delivered page.
+When replacing a stub, read the existing file first. Scope from `outline.pages`, `.docs/scaffold-plan.md` merge map, and `capabilityIds`.
 
 ## Step 2: Load page context
 
@@ -112,18 +112,15 @@ For each target entry in `outline.pages`:
 | `audience` | Vocabulary and depth (beginner vs integrator) |
 | `status` | `existing` → read current file first |
 
-Also read the stub's **documentation plan** block and **section index** table (if present) for rationale, related pages, and merged capability context. That content lives on the page during scaffold review — not in `docs.json`.
+Also read `.docs/scaffold-plan.md` **Decisions** and **Pairs** for merge context and cross-links.
 
-## Remove scaffold blocks
+## Clean up stubs
 
-Before delivering final content, strip all scaffold-only markup:
+Before delivering final content:
 
-1. Delete everything between `{/* docs-scaffold-plan-start */}` and `{/* docs-scaffold-plan-end */}` (inclusive)
-2. On section landing pages, remove the **Pages in this section** traceability table — replace with real overview prose
-3. Do not leave "Documentation plan", "Section index", or "remove this block" copy in output
-4. Do not leave `_TBD_` placeholders — replace with real content or delete empty sections
-
-If the user asks to **refresh stubs only**, leave plan blocks intact (docs-scaffold scope).
+1. Replace all `_TBD_` placeholders with real content or delete empty sections
+2. **Legacy stubs only:** if `{/* docs-scaffold-plan-start */}` markers exist, delete that block and any "Documentation plan" / "Section index" `<Info>` callouts
+3. **Legacy stubs only:** remove **Pages in this section** traceability tables on section landings
 
 ## Step 3–5: Write and lint
 
@@ -158,7 +155,7 @@ Honor `docType` from outline. Templates: [templates.md](templates.md). Lint: [st
 Summarize:
 
 - Pages written (`href`, `file`)
-- Scaffold plan blocks removed (yes/no per page)
+- `_TBD_` placeholders replaced
 - `docType` followed per outline
 - `capabilityIds` covered
 - Lint fixes applied

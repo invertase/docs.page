@@ -4,95 +4,53 @@
 
 Read before starting:
 
-- `.docs/scaffold-plan.md` — **approved** page clusters tagged `spine`
-- `.docs/docs-spec.md` — first success, journeys
-- `.docs/docs-inventory.json` — capability detail for clusters
-- Existing `docs.json` and `docs/**/*.mdx` (preserve `status: existing`)
+- `.docs/scaffold-plan.md` — **approved**; implement `[spine]` leaves from **Nav** + **Merge map**
+- `.docs/docs-spec.md` — first success outcome, primary persona
+- `.docs/docs-inventory.json` — titles for stubs
+- Existing `docs.json` and `docs/**/*.mdx`
+- [references/topic-buckets.md](../references/topic-buckets.md)
 - [sidebar-ia.md](../sidebar-ia.md)
 - [stub-templates.md](../stub-templates.md)
 
 ## Goal
 
-Implement **spine + core guide** clusters from the approved plan. Typical output: **8–15 pages**.
+Implement **`[spine]` pages** from the plan nav tree only.
 
-## Scope (in)
+## Scope
 
-Clusters tagged `spine` in scaffold-plan, usually:
+**In:** Nav entries tagged `[spine]` (typically Getting Started — Overview + Quickstart).
 
-- Overview (`orient`)
-- Quickstart (`first-success`) — **must match spec outcome**
-- Author-content how-tos (writing, navigation, preview, GitHub bot)
-- Core integrate how-tos (AI chat, llms.txt, MCP) when in spine section of plan
+**Out:** `[depth]` and `[ref]` entries → Phases 3–4.
 
-## Scope (out)
+If the approved plan puts only 2 pages in spine, implement only those — do not add pages not in the nav tree.
 
-- Configuration reference bulk → Phase 3
-- Comparisons, Core Concepts → Phase 3
-- API / CLI / Components tabs → Phase 4
+## Steps
 
-## Step 2a. Build sidebar (root tab only)
+### 2a. Sidebar (root tab)
 
-For spine pages only:
+Build sidebar for `[spine]` hrefs only. Icons and nesting per [sidebar-ia.md](../sidebar-ia.md).
 
-1. **Getting Started** group — Overview + Quickstart first; nest author-content sub-group if ≥3 pages
-2. **Guides** group — integrate how-tos from spine clusters; nest by theme if ≥2 categories with ≥3 pages
+### 2b. outline.pages
 
-Read [sidebar-ia.md](../sidebar-ia.md) for icons, href slugs, nesting.
-
-Do **not** add API/CLI/Components tabs yet.
-
-## Step 2b. Sync outline.pages
-
-For each sidebar leaf, add `outline.pages` entry:
+For each spine leaf:
 
 | Field | Source |
 | --- | --- |
-| `docType`, `userGoal`, `audience` | From cluster in scaffold-plan |
-| `capabilityIds` | Merged ids from cluster |
-| `status` | `existing` if MDX exists and user didn't request overwrite; else `stub` |
-| `icon` | Match sidebar leaf exactly |
+| `capabilityIds` | **Merge map** row for `href` |
+| `docType`, `userGoal`, `audience` | [topic-buckets.md](../references/topic-buckets.md) + `docs-spec.md` |
+| `title`, `description` | Nav label; one-line from inventory/spec |
+| `status` | `existing` if MDX present; else `stub` |
 
-**Never add `_rationale` or other forbidden fields.**
+No `_rationale` in JSON.
 
-## Step 2c. Write docs.json
+### 2c. docs.json
 
-- Merge into existing `docs.json` — preserve branding keys
-- Set `outline.sourceInventory` to `.docs/docs-inventory.json`
-- Set `outline.version`, `outline.updatedAt`
-- `tabs`: root tab only for now (unless plan puts a spine page elsewhere)
-- `outline.coverage.unmappedCapabilityIds`: ids from omit policy + not-yet-scaffolded phases
+Root tab only (unless plan shows otherwise). Set `outline.sourceInventory`.
 
-## Step 2d. Write stubs
+### 2d. Stubs
 
-Create/update stubs for new `status: stub` pages only.
-
-Every plan block **must** include:
-
-- Concrete `$RATIONALE` — why merged, where in journey (not "Scaffold stub — replace…")
-- Full `capabilityIds` list with titles from inventory
-
-See [stub-templates.md](../stub-templates.md).
-
-## Step 2e. Validate (light)
-
-Check locally — do not require full `docs check` yet if reference tabs are missing:
-
-- `missing-first-success` — error if no tutorial in Getting Started
-- `missing-user-goal`, `missing-audience`, `missing-icon` — errors
-- `sidebar-outline-sync` — errors
-- No `_rationale` in outline
-
-Record issues in `outline.validation.issues`; `passed` may be `false` until Phase 4.
+Minimal stubs per [stub-templates.md](../stub-templates.md) — frontmatter + `_TBD_` section headings only. No planning blocks in MDX.
 
 ## CHECKPOINT
 
-Show:
-
-- Sidebar tree (spine only)
-- Page count
-- Quickstart cluster ↔ spec first-success mapping
-- Sample plan block from Quickstart stub
-
-Ask: *Approve spine before adding Configuration and reference tabs?*
-
-**Do not proceed to Phase 3 until approved.**
+Show spine nav subtree and page count. Approve before Phase 3.

@@ -3,13 +3,13 @@ name: docs-scaffold
 description: >-
   Builds a previewable docs.page site from docs-spec.md and docs-inventory.json
   through a phased, review-gated workflow. Produces slim docs.json, grouped nav,
-  and stub MDX with planning blocks. Use after docs-spec and docs-inventory when
+  and minimal MDX stubs. Use after docs-spec and docs-inventory when
   scaffolding documentation IA, or when the user mentions docs-scaffold.
 ---
 
 # Docs Scaffold
 
-Plan **where** documentation lives around **reader goals**, not code layout. Scaffold **stub pages** with **visible planning context**, and **validate** the site compiles.
+Plan **where** documentation lives around **reader goals**, not code layout. Write **minimal MDX stubs** for preview and **validate** the site compiles. Planning for review lives in `.docs/scaffold-plan.md` and `docs.json` `outline` only.
 
 Build iteratively with **user review between phases**. Do not one-shot 60+ pages.
 
@@ -21,7 +21,7 @@ Hold these over every checklist item.
 2. **Reader mental model over inventory layout.** Group by what the reader is trying to do. `docs-inventory.json` describes machinery; navigation describes tasks. **Default is merge; split only when `userGoal` or `docType` differ.**
 3. **Progressive disclosure.** Spine first (Getting Started + core Guides), then depth (Configuration, comparisons), then reference tabs (API, CLI, Components). The contributor should have a short path to first success before wading through lookup pages.
 4. **Iterate with checkpoints.** Each phase ends in user review. Do not proceed until the user approves. Artifacts on disk are the durable handoff.
-5. **Slim `docs.json`, rich stubs.** Traceability and merge rationale live in **stub plan blocks** — never in `outline.pages` as `_rationale`, `splits`, or similar.
+5. **Slim artifacts.** Traceability in `outline.pages` + `.docs/scaffold-plan.md` merge map — never `_rationale` in JSON, never planning blocks in MDX.
 6. **Guide + reference pairing.** Integrator features get a **how-to in Guides** and **grouped reference** in API/CLI — not duplicate one-page-per-endpoint trees with no relationship.
 
 ## Pipeline position
@@ -35,7 +35,7 @@ docs-write       →  full .mdx content
 
 **Upstream (required):** `.docs/docs-spec.md`, `.docs/docs-inventory.json`. Path resolution: [Project layout](#project-layout).
 
-**Downstream:** [docs-write](../docs-write/SKILL.md) strips `{/* docs-scaffold-plan-* */}` blocks.
+**Downstream:** [docs-write](../docs-write/SKILL.md) fills stub placeholders.
 
 ## Project layout
 
@@ -55,9 +55,9 @@ Resolve `.docs/` paths per: user override → `.docs/` → repo-root legacy.
 
 | Artifact | When | Purpose |
 | --- | --- | --- |
-| `.docs/scaffold-plan.md` | Phase 1 | Topic inventory, merges, deferrals, tab strategy — **user approves before nav** |
+| `.docs/scaffold-plan.md` | Phase 1 | Lean nav tree + merge map (~80–150 lines) — **user approves before `docs.json`** |
 | `docs.json` | Phases 2–4 | Site config + slim `outline` |
-| `docs/**/*.mdx` | Phases 2–4 | Preview stubs with plan blocks |
+| `docs/**/*.mdx` | Phases 2–4 | Minimal preview stubs (frontmatter + `_TBD_` sections) |
 
 ### Slim `outline` (required fields only)
 
@@ -86,7 +86,7 @@ Phase 4: Add reference + validate → phases/4-reference.md      → docs.json +
 | [references/merge-rules.md](references/merge-rules.md) | Merge-first clustering; anti-patterns |
 | [references/audience-check.md](references/audience-check.md) | Primary persona from spec; spine decisions |
 | [references/headline-style.md](references/headline-style.md) | Name pages by reader action |
-| [stub-templates.md](stub-templates.md) | MDX plan blocks and section indexes |
+| [stub-templates.md](stub-templates.md) | Minimal MDX stub shape |
 | [sidebar-ia.md](sidebar-ia.md) | Tabs, href roots, icons, nesting |
 | [cli.md](cli.md) | `docs check` validation |
 
@@ -96,7 +96,7 @@ Phase 4: Add reference + validate → phases/4-reference.md      → docs.json +
 - **Do not skip checkpoints** — even if the user seems eager.
 - **Do not advance phases on your own** after a checkpoint. Wait for explicit approval.
 - **Do not one-shot all pages.** Phase 2 typically yields 8–15 spine pages; Phase 4 adds reference bulk.
-- **Ban generic stub plans.** Every plan block needs a concrete merge/split sentence (see [stub-templates.md](stub-templates.md)).
+- **No planning prose in stubs.** Merge rationale stays in `scaffold-plan.md` Decisions; metadata in `outline.pages`.
 - **Preserve** existing `docs.json` keys (`name`, `logo`, `theme`, `agent`, `social`) when updating.
 - **Do not overwrite** `status: existing` MDX unless the user requests it.
 
@@ -104,7 +104,7 @@ Phase 4: Add reference + validate → phases/4-reference.md      → docs.json +
 
 ### Phase 1 — Plan
 
-Read spec + inventory. Inventory topics, tag buckets, propose **merged page clusters**. Write `.docs/scaffold-plan.md`. **Stop for review.**
+Read spec + inventory. Write **lean** `.docs/scaffold-plan.md` (nav tree, merge map, decisions). **Stop for review.** Do not duplicate `docs-spec.md`.
 
 ### Phase 2 — Spine
 
@@ -137,5 +137,6 @@ After Phase 4, also report `validation.issues`, `cliCheck`, and next step: **doc
 - Phase 3: [phases/3-depth.md](phases/3-depth.md)
 - Phase 4: [phases/4-reference.md](phases/4-reference.md)
 - Plan template: [scaffold-plan.template.md](scaffold-plan.template.md)
-- Example plan shape: [docs.example.json](docs.example.json) (Taskflow — schema only)
+- Example plan: [scaffold-plan.example.md](scaffold-plan.example.md) (Taskflow — lean nav only)
+- Example `docs.json`: [docs.example.json](docs.example.json) (Taskflow — schema only)
 - Upstream: [docs-spec](../docs-spec/SKILL.md), [docs-inventory](../docs-inventory/SKILL.md)

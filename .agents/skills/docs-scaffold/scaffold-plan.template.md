@@ -1,5 +1,5 @@
 ---
-version: "1.0.0"
+version: "2.0.0"
 updatedAt: YYYY-MM-DD
 sourceSpec: .docs/docs-spec.md
 sourceInventory: .docs/docs-inventory.json
@@ -7,84 +7,74 @@ sourceInventory: .docs/docs-inventory.json
 
 # Scaffold plan
 
-Human-reviewable IA plan. **Approve before Phases 2–4 write `docs.json`.**
+Approve the **nav tree** and **merge map** before Phases 2–4. Persona, journeys, and policy live in `docs-spec.md` — do not repeat them here.
 
-## Audiences
+## Nav
 
-**Primary:** <!-- from spec -->
-**Secondary:** <!-- from spec -->
+<!-- Primary review surface. Indent = sidebar nesting. Phase tag: [spine|depth|ref] -->
 
-## First success
+```
+Documentation (/)
+├── Getting Started [spine]
+│   ├── Overview  /
+│   └── Quickstart  /quickstart
+├── Guides [depth]
+│   └── …
+…
 
-**Outcome:** <!-- from spec -->
-**Quickstart cluster:** <!-- page title → capability ids -->
+API (/api) [ref]
+├── …
 
-## Journey spine
+CLI (/cli) [ref]
+├── …
 
-Ordered `userGoal` ids from spec:
+Components (/components) [ref]
+├── …
+```
 
-1. 
-2. 
+## Budget
 
-## Tab strategy
-
-| Tab | `href` | Rationale |
-| --- | --- | --- |
-| Documentation | `/` | Spine + depth |
-| <!-- CLI, API, Components --> | | |
-
-## Page clusters
-
-### Phase 2 — Spine
-
-<!-- Repeat per cluster -->
-
-#### <!-- Page title -->
-
-- **Bucket:** spine
-- **docType:** tutorial | how-to | explanation
-- **userGoal:** 
-- **audience:** 
-- **href:** 
-- **Merges:** `id-1`, `id-2`, …
-- **Why merged:** 
-
-### Phase 3 — Depth
-
-#### <!-- Page title -->
-
-- **Bucket:** depth
-- **docType:** 
-- **userGoal:** 
-- **href:** 
-- **Merges:** 
-- **Why merged:** 
-
-### Phase 4 — Reference
-
-#### <!-- Grouped reference title -->
-
-- **Bucket:** reference
-- **docType:** reference
-- **userGoal:** lookup
-- **tab:** api | cli | components
-- **href:** 
-- **Merges:** 
-- **Pairs with:** <!-- guide href if integrate -->
-
-## Omit
-
-<!-- capability ids — spec policy -->
-
-## Defer
-
-<!-- capability ids — valid later, not initial scaffold -->
-
-## Page budget
-
-| Phase | Planned pages |
+| Phase | Pages |
 | --- | --- |
 | Spine | |
 | Depth | |
 | Reference | |
 | **Total** | |
+
+## Merge map
+
+<!-- href → capability ids. Editorial pages: _(editorial)_. Component leaves: one id each. -->
+
+| href | capabilities |
+| --- | --- |
+| `/quickstart` | `id-1`, `id-2` |
+| `/configuration/reference` | `config-theme`, … |
+
+## Decisions
+
+<!-- Non-obvious merges/splits only — max ~10 bullets. No per-page prose. -->
+
+- Quickstart merges publish + preview + validate (spec: one first-success tutorial).
+- Config: 4 how-tos + `/configuration/reference` hub — not per-schema-section pages.
+- API: 5 grouped reference pages — not one page per route.
+
+## Pairs
+
+<!-- guide/concept href → reference href (for docs-write cross-links later) -->
+
+| guide | reference |
+| --- | --- |
+| `/quickstart` | `/cli/commands` |
+| `/concepts/mcp` | `/api/agent-and-mcp` |
+
+## Omit
+
+| id | reason |
+| --- | --- |
+| | spec policy |
+
+## Defer
+
+| id | reason |
+| --- | --- |
+| | optional later scaffold |
