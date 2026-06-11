@@ -1,70 +1,917 @@
 {
   "$schema": "https://docs.page/schema.json",
   "name": "docs.page",
-  "description": "Ship documentation, like you ship code",
+  "description": "Documentation for docs.page — GitHub-sourced documentation hosting with MDX, search, AI agent, and MCP.",
   "tabs": [
-    { "id": "root", "title": "Documentation", "href": "/" },
-    { "id": "cli", "title": "CLI", "href": "/cli" },
-    { "id": "components", "title": "Components", "href": "/components" }
+    {
+      "id": "root",
+      "title": "Documentation",
+      "href": "/"
+    },
+    {
+      "id": "components",
+      "title": "Components",
+      "href": "/components/mdx"
+    },
+    {
+      "id": "cli",
+      "title": "CLI",
+      "href": "/cli/init"
+    },
+    {
+      "id": "api",
+      "title": "API",
+      "href": "/api/documentation"
+    }
   ],
   "sidebar": [
     {
       "group": "Getting Started",
       "tab": "root",
       "pages": [
-        { "title": "Overview", "href": "/", "icon": "book" },
-        { "title": "Getting Started", "href": "/getting-started", "icon": "rocket" },
-        { "title": "Local Preview", "href": "/local-preview", "icon": "eye" },
-        { "title": "Publishing", "href": "/publishing", "icon": "globe" }
+        {
+          "title": "Overview",
+          "href": "/",
+          "icon": "book"
+        },
+        {
+          "title": "Quickstart",
+          "href": "/quickstart",
+          "icon": "rocket"
+        }
+      ]
+    },
+    {
+      "group": "Core Concepts",
+      "tab": "root",
+      "pages": [
+        {
+          "title": "Platform Architecture",
+          "href": "/concepts/architecture",
+          "icon": "layers"
+        },
+        {
+          "title": "Content Pipeline",
+          "href": "/concepts/content-pipeline",
+          "icon": "file-text"
+        },
+        {
+          "title": "Navigation Model",
+          "href": "/concepts/navigation",
+          "icon": "menu"
+        }
       ]
     },
     {
       "group": "Configuration",
       "tab": "root",
       "pages": [
-        { "title": "docs.json Reference", "href": "/configuration", "icon": "gear" },
-        { "title": "Navigation", "href": "/navigation", "icon": "map" },
-        { "title": "Writing Content", "href": "/writing-content", "icon": "pencil" },
-        { "title": "Search", "href": "/search", "icon": "magnifying-glass" }
-      ]
-    },
-    {
-      "group": "Agent & Integrations",
-      "tab": "root",
-      "pages": [
-        { "title": "Documentation Agent", "href": "/agent", "icon": "robot" },
-        { "title": "MCP & LLM Exports", "href": "/mcp-and-llms", "icon": "plug" },
-        { "title": "API Reference", "href": "/api-reference", "icon": "code" }
-      ]
-    },
-    {
-      "group": "Advanced",
-      "tab": "root",
-      "pages": [
-        { "title": "Architecture", "href": "/architecture", "icon": "sitemap" }
-      ]
-    },
-    {
-      "group": "CLI",
-      "tab": "cli",
-      "pages": [
-        { "title": "Overview", "href": "/cli" },
         {
-          "group": "Commands",
-          "pages": [
-            { "title": "init", "href": "/cli/init" },
-            { "title": "check", "href": "/cli/check" },
-            { "title": "agent", "href": "/cli/agent" }
-          ]
+          "title": "docs.json Reference",
+          "href": "/configuration/docs-json",
+          "icon": "settings"
+        },
+        {
+          "title": "Navigation",
+          "href": "/configuration/navigation",
+          "icon": "sidebar"
+        },
+        {
+          "title": "Search",
+          "href": "/configuration/search",
+          "icon": "search"
+        },
+        {
+          "title": "AI Agent",
+          "href": "/configuration/agent",
+          "icon": "bot"
+        },
+        {
+          "title": "MCP Server",
+          "href": "/configuration/mcp",
+          "icon": "plug"
         }
       ]
     },
     {
-      "group": "Components",
+      "group": "Guides",
+      "tab": "root",
+      "pages": [
+        {
+          "title": "Local Preview",
+          "href": "/guides/local-preview",
+          "icon": "eye"
+        },
+        {
+          "title": "Publishing & Domains",
+          "href": "/guides/publishing",
+          "icon": "globe"
+        },
+        {
+          "title": "Branch & Ref Versions",
+          "href": "/guides/branch-refs",
+          "icon": "git-branch"
+        },
+        {
+          "title": "Search Setup",
+          "href": "/guides/search",
+          "icon": "search"
+        },
+        {
+          "title": "Analytics",
+          "href": "/guides/analytics",
+          "icon": "bar-chart"
+        },
+        {
+          "title": "AI Agent Setup",
+          "href": "/guides/ai-agent",
+          "icon": "sparkles"
+        },
+        {
+          "title": "Migrate v1 Config",
+          "href": "/guides/migrate-v1",
+          "icon": "arrow-right"
+        }
+      ]
+    },
+    {
+      "group": "MDX Components",
       "tab": "components",
       "pages": [
-        { "title": "Overview", "href": "/components" }
+        {
+          "title": "Component Reference",
+          "href": "/components/mdx",
+          "icon": "component"
+        }
+      ]
+    },
+    {
+      "group": "Commands",
+      "tab": "cli",
+      "pages": [
+        {
+          "title": "docs init",
+          "href": "/cli/init",
+          "icon": "plus"
+        },
+        {
+          "title": "docs check",
+          "href": "/cli/check",
+          "icon": "check"
+        },
+        {
+          "title": "docs agent create",
+          "href": "/cli/agent-create",
+          "icon": "bot"
+        },
+        {
+          "title": "docs agent delete",
+          "href": "/cli/agent-delete",
+          "icon": "trash"
+        }
+      ]
+    },
+    {
+      "group": "Programmatic API",
+      "tab": "cli",
+      "pages": [
+        {
+          "title": "CLI Exports",
+          "href": "/cli/programmatic",
+          "icon": "code"
+        }
+      ]
+    },
+    {
+      "group": "Documentation",
+      "tab": "api",
+      "pages": [
+        {
+          "title": "Bundle & Raw Export",
+          "href": "/api/documentation",
+          "icon": "file-json"
+        }
+      ]
+    },
+    {
+      "group": "Search & Discovery",
+      "tab": "api",
+      "pages": [
+        {
+          "title": "Search & LLM Exports",
+          "href": "/api/search-discovery",
+          "icon": "search"
+        }
+      ]
+    },
+    {
+      "group": "Agent",
+      "tab": "api",
+      "pages": [
+        {
+          "title": "Agent Provisioning",
+          "href": "/api/agent",
+          "icon": "bot"
+        }
+      ]
+    },
+    {
+      "group": "MCP",
+      "tab": "api",
+      "pages": [
+        {
+          "title": "MCP HTTP Server",
+          "href": "/api/mcp",
+          "icon": "plug"
+        }
+      ]
+    },
+    {
+      "group": "SEO",
+      "tab": "api",
+      "pages": [
+        {
+          "title": "Open Graph Images",
+          "href": "/api/seo",
+          "icon": "image"
+        }
+      ]
+    },
+    {
+      "group": "Platform",
+      "tab": "api",
+      "pages": [
+        {
+          "title": "Schema & Health",
+          "href": "/api/platform",
+          "icon": "server"
+        }
       ]
     }
-  ]
+  ],
+  "outline": {
+    "version": "1.0.0",
+    "updatedAt": "2026-06-11",
+    "sourceFeatures": ".agents/skills/feature-finder/features.json",
+    "pages": [
+      {
+        "href": "/",
+        "title": "Overview",
+        "description": "What docs.page does and how GitHub-sourced documentation works.",
+        "docType": "explanation",
+        "status": "stub",
+        "file": "docs/index.mdx",
+        "capabilityIds": [],
+        "audience": [
+          "end-user",
+          "integrator"
+        ],
+        "rationale": "Editorial landing page; orients readers before quickstart and configuration reference."
+      },
+      {
+        "href": "/quickstart",
+        "title": "Quickstart",
+        "description": "Publish documentation from a public GitHub repository in minutes.",
+        "docType": "tutorial",
+        "status": "stub",
+        "file": "docs/quickstart.mdx",
+        "capabilityIds": [
+          "github-sourced-documentation",
+          "docs-json-configuration",
+          "cli-init"
+        ],
+        "audience": [
+          "integrator",
+          "contributor"
+        ],
+        "rationale": "First-run learning path; single successful outcome with minimal theory.",
+        "relatedHrefs": [
+          "/configuration/docs-json",
+          "/cli/init",
+          "/guides/local-preview"
+        ]
+      },
+      {
+        "href": "/concepts/architecture",
+        "title": "Platform Architecture",
+        "description": "How docs.page loads, caches, and serves documentation from GitHub.",
+        "docType": "explanation",
+        "status": "stub",
+        "file": "docs/concepts/architecture.mdx",
+        "capabilityIds": [
+          "github-sourced-documentation",
+          "private-repo-enforcement",
+          "edge-cdn-caching",
+          "github-api-caching",
+          "marketing-homepage"
+        ],
+        "audience": [
+          "integrator",
+          "operator"
+        ],
+        "rationale": "Architecture and mental model for operators and integrators; no step-by-step setup."
+      },
+      {
+        "href": "/concepts/content-pipeline",
+        "title": "Content Pipeline",
+        "description": "How MDX source becomes rendered documentation with assets and variables.",
+        "docType": "explanation",
+        "status": "stub",
+        "file": "docs/concepts/content-pipeline.mdx",
+        "capabilityIds": [
+          "mdx-compilation",
+          "github-asset-urls",
+          "config-variable-substitution",
+          "raw-markdown-export"
+        ],
+        "audience": [
+          "integrator"
+        ],
+        "rationale": "Explains the compile-and-serve pipeline; complements MDX component reference.",
+        "relatedHrefs": [
+          "/components/mdx",
+          "/api/documentation"
+        ]
+      },
+      {
+        "href": "/concepts/navigation",
+        "title": "Navigation Model",
+        "description": "How tabs, sidebars, locales, and previous/next links shape the reading experience.",
+        "docType": "explanation",
+        "status": "stub",
+        "file": "docs/concepts/navigation.mdx",
+        "capabilityIds": [
+          "sidebar-navigation",
+          "tabbed-navigation",
+          "locale-based-navigation",
+          "previous-next-navigation"
+        ],
+        "audience": [
+          "integrator",
+          "end-user"
+        ],
+        "rationale": "Conceptual overview before configuration reference pages.",
+        "relatedHrefs": [
+          "/configuration/navigation"
+        ]
+      },
+      {
+        "href": "/configuration/docs-json",
+        "title": "docs.json Reference",
+        "description": "Complete list of docs.json fields for theme, branding, content, and site behavior.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/configuration/docs-json.mdx",
+        "capabilityIds": [
+          "docs-json-configuration",
+          "theme-customization",
+          "header-and-branding",
+          "anchor-links",
+          "social-and-seo-metadata",
+          "content-display-options",
+          "frontmatter-redirects",
+          "config-variable-substitution"
+        ],
+        "audience": [
+          "integrator"
+        ],
+        "rationale": "Merged configuration surface for core docs.json fields; lookup tables, not narrative.",
+        "relatedHrefs": [
+          "/configuration/navigation",
+          "/configuration/search",
+          "/api/platform"
+        ]
+      },
+      {
+        "href": "/configuration/navigation",
+        "title": "Navigation",
+        "description": "Sidebar, tabs, locales, and previous/next configuration in docs.json.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/configuration/navigation.mdx",
+        "capabilityIds": [
+          "sidebar-navigation",
+          "tabbed-navigation",
+          "locale-based-navigation",
+          "previous-next-navigation"
+        ],
+        "audience": [
+          "integrator"
+        ],
+        "rationale": "Navigation-specific schema reference separated from general docs.json fields.",
+        "relatedHrefs": [
+          "/concepts/navigation"
+        ]
+      },
+      {
+        "href": "/configuration/search",
+        "title": "Search",
+        "description": "FlexSearch and Algolia DocSearch configuration fields in docs.json.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/configuration/search.mdx",
+        "capabilityIds": [
+          "flexsearch-local-search",
+          "algolia-docsearch"
+        ],
+        "audience": [
+          "integrator"
+        ],
+        "rationale": "Search config lookup; Algolia is schema-only per feature inventory.",
+        "relatedHrefs": [
+          "/guides/search",
+          "/api/search-discovery"
+        ]
+      },
+      {
+        "href": "/configuration/agent",
+        "title": "AI Agent",
+        "description": "Agent provider, limits, and UI configuration in docs.json.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/configuration/agent.mdx",
+        "capabilityIds": [
+          "documentation-ai-agent",
+          "agent-rate-limiting"
+        ],
+        "audience": [
+          "integrator",
+          "operator"
+        ],
+        "rationale": "Agent configuration reference separated from setup how-to.",
+        "relatedHrefs": [
+          "/guides/ai-agent",
+          "/api/agent"
+        ]
+      },
+      {
+        "href": "/configuration/mcp",
+        "title": "MCP Server",
+        "description": "Enable and configure the per-repository Model Context Protocol server.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/configuration/mcp.mdx",
+        "capabilityIds": [
+          "mcp-documentation-server",
+          "mcp-skill-resources"
+        ],
+        "audience": [
+          "integrator"
+        ],
+        "rationale": "MCP config and skill resource discovery; HTTP surface documented separately.",
+        "relatedHrefs": [
+          "/api/mcp"
+        ]
+      },
+      {
+        "href": "/guides/local-preview",
+        "title": "Local Preview",
+        "description": "Preview documentation locally with live MDX editing and hot reload.",
+        "docType": "how-to",
+        "status": "stub",
+        "file": "docs/guides/local-preview.mdx",
+        "capabilityIds": [
+          "local-preview-mode"
+        ],
+        "audience": [
+          "integrator",
+          "contributor"
+        ],
+        "rationale": "Task-oriented recipe for local authoring without GitHub round-trips."
+      },
+      {
+        "href": "/guides/publishing",
+        "title": "Publishing & Domains",
+        "description": "Configure vanity subdomains and custom domains for your documentation site.",
+        "docType": "how-to",
+        "status": "stub",
+        "file": "docs/guides/publishing.mdx",
+        "capabilityIds": [
+          "vanity-subdomains",
+          "custom-domains"
+        ],
+        "audience": [
+          "integrator",
+          "operator"
+        ],
+        "rationale": "Domain setup is a focused operational task, not a schema lookup."
+      },
+      {
+        "href": "/guides/branch-refs",
+        "title": "Branch & Ref Versions",
+        "description": "Serve documentation from branches, pull requests, or pinned commits.",
+        "docType": "how-to",
+        "status": "stub",
+        "file": "docs/guides/branch-refs.mdx",
+        "capabilityIds": [
+          "branch-pr-commit-routing"
+        ],
+        "audience": [
+          "end-user",
+          "integrator"
+        ],
+        "rationale": "URL ref routing is a common integrator task with verification steps."
+      },
+      {
+        "href": "/guides/search",
+        "title": "Search Setup",
+        "description": "Enable and tune built-in FlexSearch for your documentation site.",
+        "docType": "how-to",
+        "status": "stub",
+        "file": "docs/guides/search.mdx",
+        "capabilityIds": [
+          "flexsearch-local-search"
+        ],
+        "audience": [
+          "integrator"
+        ],
+        "rationale": "Practical search enablement guide; defers field tables to configuration reference.",
+        "relatedHrefs": [
+          "/configuration/search"
+        ]
+      },
+      {
+        "href": "/guides/analytics",
+        "title": "Analytics",
+        "description": "Add Google Tag Manager, Google Analytics, or Plausible to your docs site.",
+        "docType": "how-to",
+        "status": "stub",
+        "file": "docs/guides/analytics.mdx",
+        "capabilityIds": [
+          "analytics-scripts"
+        ],
+        "audience": [
+          "integrator",
+          "operator"
+        ],
+        "rationale": "Third-party analytics integration is a task-oriented setup flow."
+      },
+      {
+        "href": "/guides/ai-agent",
+        "title": "AI Agent Setup",
+        "description": "Create and manage a documentation AI agent for your repository.",
+        "docType": "how-to",
+        "status": "stub",
+        "file": "docs/guides/ai-agent.mdx",
+        "capabilityIds": [
+          "documentation-ai-agent",
+          "cli-agent-create",
+          "cli-agent-delete",
+          "api-agent-create",
+          "api-agent-delete"
+        ],
+        "audience": [
+          "integrator",
+          "operator"
+        ],
+        "rationale": "End-to-end agent provisioning workflow spanning CLI and API.",
+        "relatedHrefs": [
+          "/configuration/agent",
+          "/cli/agent-create",
+          "/api/agent"
+        ]
+      },
+      {
+        "href": "/guides/migrate-v1",
+        "title": "Migrate v1 Config",
+        "description": "Upgrade a legacy v1 docs.json to the current configuration schema.",
+        "docType": "how-to",
+        "status": "stub",
+        "file": "docs/guides/migrate-v1.mdx",
+        "capabilityIds": [
+          "v1-config-compatibility"
+        ],
+        "audience": [
+          "integrator"
+        ],
+        "rationale": "Migration is a one-off task with verification, not a field reference."
+      },
+      {
+        "href": "/components/mdx",
+        "title": "Component Reference",
+        "description": "Complete list of built-in MDX shortcode components and their props.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/components/mdx.mdx",
+        "capabilityIds": [
+          "mdx-components"
+        ],
+        "audience": [
+          "integrator",
+          "contributor"
+        ],
+        "rationale": "Component props belong on a dedicated reference page, not in Getting Started."
+      },
+      {
+        "href": "/cli/init",
+        "title": "docs init",
+        "description": "Scaffold docs.json and starter MDX files in a project.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/cli/init.mdx",
+        "capabilityIds": [
+          "cli-init"
+        ],
+        "audience": [
+          "integrator",
+          "contributor"
+        ],
+        "rationale": "CLI flags and options are lookup material.",
+        "relatedHrefs": [
+          "/quickstart"
+        ]
+      },
+      {
+        "href": "/cli/check",
+        "title": "docs check",
+        "description": "Validate docs.json and MDX files for parse errors and broken links.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/cli/check.mdx",
+        "capabilityIds": [
+          "cli-check"
+        ],
+        "audience": [
+          "integrator",
+          "contributor"
+        ],
+        "rationale": "CLI command reference with flags and exit codes."
+      },
+      {
+        "href": "/cli/agent-create",
+        "title": "docs agent create",
+        "description": "Create a documentation agent via the CLI with encrypted provider credentials.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/cli/agent-create.mdx",
+        "capabilityIds": [
+          "cli-agent-create"
+        ],
+        "audience": [
+          "integrator",
+          "operator"
+        ],
+        "rationale": "CLI surface reference; workflow covered in AI agent guide.",
+        "relatedHrefs": [
+          "/guides/ai-agent"
+        ]
+      },
+      {
+        "href": "/cli/agent-delete",
+        "title": "docs agent delete",
+        "description": "Delete a repository documentation agent via the CLI.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/cli/agent-delete.mdx",
+        "capabilityIds": [
+          "cli-agent-delete"
+        ],
+        "audience": [
+          "integrator",
+          "operator"
+        ],
+        "rationale": "CLI surface reference paired with agent create.",
+        "relatedHrefs": [
+          "/guides/ai-agent"
+        ]
+      },
+      {
+        "href": "/cli/programmatic",
+        "title": "CLI Exports",
+        "description": "Embed docs.page CLI commands in other Node.js tools.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/cli/programmatic.mdx",
+        "capabilityIds": [
+          "cli-programmatic-exports"
+        ],
+        "audience": [
+          "integrator"
+        ],
+        "rationale": "SDK export surface is information-oriented reference."
+      },
+      {
+        "href": "/api/documentation",
+        "title": "Bundle & Raw Export",
+        "description": "HTTP endpoints for document bundles and raw markdown export.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/api/documentation.mdx",
+        "capabilityIds": [
+          "api-bundle",
+          "raw-markdown-export"
+        ],
+        "audience": [
+          "integrator"
+        ],
+        "rationale": "Merged API reference for document content retrieval endpoints.",
+        "relatedHrefs": [
+          "/concepts/content-pipeline"
+        ]
+      },
+      {
+        "href": "/api/search-discovery",
+        "title": "Search & LLM Exports",
+        "description": "Search index, llms.txt, sitemap, and robots.txt HTTP endpoints.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/api/search-discovery.mdx",
+        "capabilityIds": [
+          "api-search-index",
+          "llms-txt-index",
+          "llms-full-txt-export",
+          "per-repo-sitemap",
+          "per-repo-robots-txt"
+        ],
+        "audience": [
+          "integrator"
+        ],
+        "rationale": "Discovery and indexing APIs grouped to avoid micro-pages."
+      },
+      {
+        "href": "/api/agent",
+        "title": "Agent Provisioning",
+        "description": "HTTP endpoints for creating agents, deleting agents, and JWKS credentials.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/api/agent.mdx",
+        "capabilityIds": [
+          "api-agent-create",
+          "api-agent-delete",
+          "agent-credentials-jwks"
+        ],
+        "audience": [
+          "integrator",
+          "operator"
+        ],
+        "rationale": "Agent lifecycle API reference separated from configuration and CLI.",
+        "relatedHrefs": [
+          "/guides/ai-agent"
+        ]
+      },
+      {
+        "href": "/api/mcp",
+        "title": "MCP HTTP Server",
+        "description": "Per-repository Model Context Protocol HTTP endpoint and tools.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/api/mcp.mdx",
+        "capabilityIds": [
+          "mcp-documentation-server"
+        ],
+        "audience": [
+          "integrator"
+        ],
+        "rationale": "HTTP surface for MCP; config fields documented on configuration page.",
+        "relatedHrefs": [
+          "/configuration/mcp"
+        ],
+        "splits": [
+          "/configuration/mcp"
+        ]
+      },
+      {
+        "href": "/api/seo",
+        "title": "Open Graph Images",
+        "description": "Dynamic social preview image generation endpoint.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/api/seo.mdx",
+        "capabilityIds": [
+          "og-image-generation"
+        ],
+        "audience": [
+          "integrator"
+        ],
+        "rationale": "OG image API parameters are lookup material.",
+        "relatedHrefs": [
+          "/configuration/docs-json"
+        ]
+      },
+      {
+        "href": "/api/platform",
+        "title": "Schema & Health",
+        "description": "Configuration JSON Schema and service health check endpoints.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/api/platform.mdx",
+        "capabilityIds": [
+          "api-schema-json",
+          "api-health"
+        ],
+        "audience": [
+          "integrator",
+          "operator"
+        ],
+        "rationale": "Platform utility endpoints merged into one reference page."
+      }
+    ],
+    "coverage": {
+      "mappedCapabilityIds": [
+        "github-sourced-documentation",
+        "docs-json-configuration",
+        "v1-config-compatibility",
+        "branch-pr-commit-routing",
+        "vanity-subdomains",
+        "custom-domains",
+        "raw-markdown-export",
+        "mdx-compilation",
+        "mdx-components",
+        "config-variable-substitution",
+        "frontmatter-redirects",
+        "private-repo-enforcement",
+        "github-asset-urls",
+        "sidebar-navigation",
+        "locale-based-navigation",
+        "tabbed-navigation",
+        "previous-next-navigation",
+        "theme-customization",
+        "header-and-branding",
+        "anchor-links",
+        "social-and-seo-metadata",
+        "analytics-scripts",
+        "content-display-options",
+        "flexsearch-local-search",
+        "algolia-docsearch",
+        "documentation-ai-agent",
+        "agent-rate-limiting",
+        "mcp-documentation-server",
+        "mcp-skill-resources",
+        "llms-txt-index",
+        "llms-full-txt-export",
+        "per-repo-sitemap",
+        "per-repo-robots-txt",
+        "edge-cdn-caching",
+        "github-api-caching",
+        "local-preview-mode",
+        "marketing-homepage",
+        "api-bundle",
+        "api-agent-create",
+        "api-agent-delete",
+        "api-search-index",
+        "api-schema-json",
+        "api-health",
+        "og-image-generation",
+        "agent-credentials-jwks",
+        "cli-init",
+        "cli-check",
+        "cli-agent-create",
+        "cli-agent-delete",
+        "cli-programmatic-exports"
+      ],
+      "unmappedCapabilityIds": [],
+      "mergedInto": {
+        "/configuration/docs-json": [
+          "docs-json-configuration",
+          "theme-customization",
+          "header-and-branding",
+          "anchor-links",
+          "social-and-seo-metadata",
+          "content-display-options",
+          "frontmatter-redirects",
+          "config-variable-substitution"
+        ],
+        "/api/search-discovery": [
+          "api-search-index",
+          "llms-txt-index",
+          "llms-full-txt-export",
+          "per-repo-sitemap",
+          "per-repo-robots-txt"
+        ],
+        "/api/agent": [
+          "api-agent-create",
+          "api-agent-delete",
+          "agent-credentials-jwks"
+        ],
+        "/guides/ai-agent": [
+          "documentation-ai-agent",
+          "cli-agent-create",
+          "cli-agent-delete",
+          "api-agent-create",
+          "api-agent-delete"
+        ]
+      }
+    },
+    "validation": {
+      "passed": true,
+      "issues": [],
+      "cliCheck": {
+        "passed": true,
+        "command": "bun packages/cli/src/cli.ts check . --external-links off",
+        "ranAt": "2026-06-11",
+        "errors": 0,
+        "warnings": 0
+      },
+      "stats": {
+        "pageCount": 29,
+        "stubPages": 29,
+        "byDocType": {
+          "tutorial": 1,
+          "how-to": 7,
+          "reference": 17,
+          "explanation": 4
+        }
+      }
+    }
+  }
 }

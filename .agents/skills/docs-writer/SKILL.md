@@ -1,234 +1,156 @@
 ---
 name: docs-writer
 description: >-
-  Transforms raw product inputs into structured user-facing documentation using
-  the Diátaxis framework. Routes requests to Tutorial, How-To, Reference, or
-  Explanation; places pages in the sidebar IA; applies writing and style
-  guardrails. Use when writing docs, creating doc pages, updating docs.json
-  navigation, outlining documentation, or when the user mentions docs-writer,
-  Diátaxis, technical writing, or documentation architecture.
+  Writes or revises MDX documentation pages from an approved docs.json outline.
+  Applies Diátaxis templates, tone rules, and style linting. Use when drafting
+  doc page content, writing .mdx files, or when the user mentions docs-writer
+  after approving a docs.json scaffold. Does not build features.json or site IA.
 ---
 
 # Documentation Writer
 
-Transform raw engineering inputs into pristine, user-facing documentation. This skill decides **what kind** of doc to write, **where** it lives in navigation, and **how** to write it.
+Write **prose** for pages that are already planned in `docs.json`. Routing and navigation belong to upstream skills.
 
-**Upstream input:** Prefer `features.json` from [feature-finder](../feature-finder/SKILL.md). Read cited `sources` in code when behavior is unclear. Do not invent capabilities not grounded in code or user-provided notes.
+## Pipeline position
 
-**Downstream output:** `.mdx` pages, `docs.json` sidebar updates, and placement recommendations.
+```
+feature-finder  →  features.json
+docs-scaffolder →  docs.json + stub .mdx + docs check
+docs-writer     →  full .mdx content   ← you are here
+```
+
+**Upstream (required):** Approved `docs.json` with an `outline` block from [docs-scaffolder](../docs-scaffolder/SKILL.md). If no `outline.pages` exists, stop and run docs-scaffolder first — unless the user explicitly scopes a single page edit.
+
+**Secondary input:** `features.json` for capability detail; read `sources` in code when `writingNotes` or `summary` is insufficient.
+
+**Output:** `.mdx` files at paths defined in `outline.pages[].file`.
 
 ## Scope
 
 **In scope**
-
-- Classify doc type (Diátaxis router)
-- Propose or update sidebar placement (`docs.json`)
-- Write or revise `.mdx` content with correct tone and structure
-- Run a self-correction pass before delivering
+- Draft or revise `.mdx` for pages listed in `docs.json` `outline.pages`
+- Match `docType`, `title`, and `description` from the outline entry
+- Run style self-correction before delivering
 
 **Out of scope**
-
-- Building `features.json` (use feature-finder)
+- Building `features.json` → [feature-finder](../feature-finder/SKILL.md)
+- Planning site structure → [docs-scaffolder](../docs-scaffolder/SKILL.md)
 - Marketing copy, changelogs, or release notes unless explicitly requested
-- Translating entire doc sets (handle one locale at a time)
+
+## Reading the outline
+
+Page metadata lives in `docs.json`:
+
+```json
+{
+  "sidebar": [ "..." ],
+  "outline": {
+    "pages": [
+      {
+        "href": "/navigation",
+        "title": "Navigation",
+        "description": "...",
+        "docType": "how-to",
+        "status": "new",
+        "file": "docs/navigation.mdx",
+        "capabilityIds": ["sidebar-navigation"]
+      }
+    ]
+  }
+}
+```
+
+Find target pages by `href`, `status`, or user-specified list. The `sidebar` is already production-ready — no separate apply step.
 
 ## Execution protocol
 
-Copy and track progress:
-
 ```
 Docs Writer Progress:
-- [ ] 1. Ingest — gather inputs (features.json, user notes, existing docs)
-- [ ] 2. Route — classify Diátaxis doc type; reject mixed modes
-- [ ] 3. Place — read sidebar-ia.md now; Global IA Sync against docs.json sidebar
-- [ ] 4. Outline — read templates.md now; generate page skeleton for the doc type
-- [ ] 5. Draft — write content with tone and formatting rules
-- [ ] 6. Lint — read style-lint.md now; run self-correction pass
-- [ ] 7. Deliver — write files; summarize changes to user
+- [ ] 1. Confirm — outline approved; identify target hrefs or statuses
+- [ ] 2. Load — read outline.pages entries + capabilityIds from features.json
+- [ ] 3. Template — read templates.md; pick skeleton for docType
+- [ ] 4. Draft — write .mdx with tone and formatting rules
+- [ ] 5. Lint — read style-lint.md; run self-correction pass
+- [ ] 6. Deliver — write files; summarize changes
 ```
 
-**Mandatory sub-module reads:** At steps 3, 4, and 6, read the linked file before continuing. Do not skip or substitute from memory.
+**Mandatory reads:** `templates.md` at step 3, `style-lint.md` at step 5.
 
----
+## Step 1: Confirm scope
 
-## 1. Diátaxis routing engine
+Accept work only when:
 
-**System guardrail:** Analyze incoming raw feature notes. If the notes contain API payloads, route to **Reference**. If they describe a multi-step user workflow, route to **How-To**. Never mix reference material into a tutorial.
+- User has reviewed `docs.json` `outline`, or
+- User specifies `href`s or `status: new` / `stub` pages to write, or
+- User requests a targeted edit to an **existing** `.mdx` file
 
-### Intent classification matrix
+If the user asks to "document the product" without an outline, respond: run **docs-scaffolder** first.
 
-| Doc type        | Orientation            | Goal                                                         | Agent focus                                                                                |
-| --------------- | ---------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------ |
-| **Tutorial**    | Learning-oriented      | Help a beginner achieve a small, successful outcome          | "Show, don't explain." Strict step-by-step, safe sandbox, zero conceptual deep-dives       |
-| **How-To**      | Task-oriented          | Help an experienced user solve a specific real-world problem | "Problem-solution." Practical, assumes basic product knowledge, focuses on the recipe      |
-| **Reference**   | Information-oriented   | Describe the machinery (APIs, schemas, UI elements)          | "Truth and completeness." Austere, highly structured (tables, exact types), zero narrative |
-| **Explanation** | Understanding-oriented | Clarify background, architecture, or philosophy              | "Context and clarity." Discursive, uses analogies, answers _why_                           |
+Write priority:
 
-### Routing decision tree
+1. `status: stub` (placeholder from docs-scaffolder)
+2. `status: new` (outline entry without a file — create full page)
+3. `status: existing` (revisions)
+4. Skip `status: retire` unless user asks for redirect stub
 
-1. **User says "learn", "first time", "onboarding", "try it"** → Tutorial
-2. **User says "how do I", "configure", "fix", "migrate", "set up X for Y"** → How-To
-3. **Input is schemas, endpoints, config keys, CLI flags, component props** → Reference
-4. **User asks "why", "how does it work", "architecture", "concepts"** → Explanation
-5. **Ambiguous** → Ask once: learning path, task recipe, lookup table, or conceptual overview?
+When replacing a stub, read the existing file first; preserve frontmatter `title`/`description` from the outline.
 
-### Mixed-input rules
+## Step 2: Load page context
 
-| Signal in input                                | Action                                                              |
-| ---------------------------------------------- | ------------------------------------------------------------------- |
-| API payload + workflow steps                   | Split: Reference page + How-To page (or link Reference from How-To) |
-| Architecture + setup steps                     | Split: Explanation page + Tutorial/How-To                           |
-| Single capability, multiple audiences          | One primary doc type; link others in **Next Steps**                 |
-| `kind: api` or `kind: export` in features.json | Default to Reference unless user requests How-To                    |
-| `kind: workflow` or `kind: cli` with steps     | Default to How-To unless audience is first-time                     |
+For each target entry in `outline.pages`:
 
-### Router output (state before writing)
+| Field | Use for |
+| --- | --- |
+| `docType` | Template selection — do not override without user approval |
+| `title`, `description` | Frontmatter |
+| `file` | Output path |
+| `capabilityIds` | Pull detail from `features.json` |
+| `relatedHrefs` | Next steps / See also links |
+| `rationale` | Scope guard |
+| `status` | `existing` → read current file first |
 
-Emit internally (or show user when unclear):
-
-```yaml
-docType: how-to # tutorial | how-to | reference | explanation
-audience: integrator # from features.json audience tags or user context
-capabilityIds: [rate-limiting]
-rationale: "Multi-step config task for experienced operators"
-splits: [] # other doc types needed as separate pages
-```
-
----
-
-## 2. Information architecture engine
-
-Goal: **answers in under 30 seconds** — users find the right page fast.
-
-### 30-second sidebar heuristics
-
-- **Rule of 7±2:** Top-level sidebar groups per tab must not exceed 7 items
-- **Three-click max:** No document deeper than 3 levels (`Category → Sub-category → Article`)
-- **Progressive disclosure:** Hide advanced config behind nested groups or link to Reference pages so beginners are not overwhelmed
-
-### Global IA Sync workflow
-
-**Read [sidebar-ia.md](sidebar-ia.md) now** before placing or updating any page.
-
-When placing a new or updated page:
-
-1. **Scan** — Read `docs.json` `sidebar` (and `tabs` if multi-tab). Build a mental tree of groups → pages → nested groups.
-2. **Match persona** — Map `audience` tags to the best parent group:
-
-   | Audience      | Typical parent groups          |
-   | ------------- | ------------------------------ |
-   | `end-user`    | Getting Started, Guides        |
-   | `integrator`  | Configuration, API, Components |
-   | `operator`    | Publishing, CLI, Advanced      |
-   | `contributor` | Contributing, Development      |
-
-3. **Propose placement** — Single best parent group + `href` slug. Prefer existing groups over creating new ones.
-4. **Validate** — Check depth ≤ 3, group size ≤ 7, no duplicate `href`, tab `id` matches sibling pages.
-5. **Update** — Patch `docs.json` sidebar entry; create `.mdx` file at matching path under `docs/`.
-
-### Page outline anchors
-
-**Read [templates.md](templates.md) now** before outlining or drafting.
-
-After routing, pick a skeleton from `templates.md`. Every page includes frontmatter:
-
-```yaml
----
-title: Human-readable title
-description: One sentence for search and social cards
----
-```
-
-Use doc-type-specific sections (e.g. Tutorial: no API tables; Reference: no "In this tutorial").
-
----
-
-## 3. Content execution engine
-
-### Role
-
-Senior Technical Writer & Docs Architect. Transform raw engineering inputs into pristine, user-facing documentation strictly following the Diátaxis framework.
+## Step 3–5: Write and lint
 
 ### Writing rules
 
-- **Imperative & active voice:** Start steps with strong verbs. Write _"Click **Submit**"_ not _"The user should then click the submit button"_.
-- **Cognitive load:** Break any paragraph longer than 3 lines into bullets or smaller chunks.
-- **Why before how:** Never tell a user to toggle a setting without stating the outcome. _"To reduce latency, toggle **Edge Caching** to ON."_
-- **Semantic UI formatting:** Bold UI elements as they appear (`Settings > Billing`). Wrap code, paths, env vars, and keys in backticks.
-- **Truthfulness:** Every behavioral claim must trace to `features.json` sources or code you read. Mark `beta`/`schema-only`/`deprecated` status explicitly.
+- **Imperative & active voice:** *"Click **Submit**"* not *"The user should click submit"*
+- **Cognitive load:** Paragraphs ≤ 3 lines; use bullets
+- **Why before how:** State outcome before each setting change
+- **Semantic UI formatting:** Bold UI labels; backtick code, paths, env vars
+- **Truthfulness:** Match `features.json` and code; flag `beta` / `deprecated` / `schema-only`
 
-### docs.page format conventions
+### docs.page conventions
 
-- Content files: `docs/**/*.mdx` (GFM + MDX)
-- Config: `docs.json` at repo root (`sidebar`, `tabs`, `anchors`)
-- **Tutorials / How-Tos:** Use `<Steps>` / `<Step>` for sequential procedures ([steps component](/docs/components/steps.mdx))
-- **Reference:** Use `<Property>` for config fields and API params; nest `<Accordion>` for large schemas
-- **Callouts:** Use `<Info>`, `<Warning>`, `<Error>`, or `<Success>` — not `<Callout>` (unsupported)
-- **Code:** Fenced blocks with language tags; use `<CodeGroup>` when showing equivalent commands
+- Frontmatter: `title`, `description` from outline
+- **tutorial / how-to:** `<Steps>` / `<Step>`
+- **reference:** `<Property>`, nested `<Accordion>`
+- **Callouts:** `<Info>`, `<Warning>`, `<Error>`, `<Success>` — not `<Callout>`
+- **Code:** Fenced blocks with language tags; `<CodeGroup>` for equivalents
 
-### Self-correction pass
-
-**Read [style-lint.md](style-lint.md) now** before delivering. Run every checklist item. Strip fluff phrases, fix voice, verify Diátaxis purity (no tutorial tone in reference pages).
-
----
-
-## Working from features.json
-
-For each capability (or user-selected subset):
-
-1. Read `title`, `summary`, `kind`, `audience`, `status`, `surface`, `configuration`, `writingNotes`
-2. Route by `kind` + user intent (see matrix above)
-3. Pull implementation detail from `sources` paths when `writingNotes` or `summary` is insufficient
-4. Cross-link `related` capabilities in **Next Steps** or **See also**
-
-| kind          | Default doc type      | Typical placement        |
-| ------------- | --------------------- | ------------------------ |
-| `feature`     | How-To or Explanation | Guides                   |
-| `api`         | Reference             | API / Configuration      |
-| `cli`         | How-To + Reference    | CLI tab                  |
-| `export`      | Reference             | API / SDK                |
-| `component`   | Reference + How-To    | Components tab           |
-| `integration` | How-To                | Guides                   |
-| `workflow`    | How-To or Tutorial    | Getting Started / Guides |
-
----
+Honor `docType` from outline. Templates: [templates.md](templates.md). Lint: [style-lint.md](style-lint.md).
 
 ## Create vs update
 
-**New page**
+**New page (`status: new` | `stub`):** Write full `.mdx` from template.
 
-1. Run full protocol (route → place → outline → draft → lint)
-2. Create `docs/{slug}.mdx` and add sidebar entry in `docs.json`
+**Existing page (`status: existing`):** Read current file; preserve accurate user-edited sections; align structure to `docType`.
 
-**Update existing page**
-
-1. Read current `.mdx` and sidebar entry
-2. Re-route: confirm doc type still fits; if not, propose split or refactor
-3. Preserve stable `href`; change `title`/`description` only when accuracy requires it
-4. Lint diff mentally: no new fluff, no scope creep into wrong Diátaxis mode
-
-**Batch (many capabilities)**
-
-1. Group by proposed doc type and sidebar parent
-2. Prefer one How-To per task and one Reference per surface area over dozens of micro-pages
-3. Report a placement table before writing when &gt; 3 pages
-
----
+**Batch:** For &gt; 3 pages, list queue and confirm before drafting all.
 
 ## Reporting to the user
 
-After completing the task, summarize:
+Summarize:
 
-- Doc type(s) chosen and routing rationale
-- Files created or updated (`docs/...`, `docs.json`)
-- Sidebar placement (group, tab, depth)
-- Capabilities covered (`id`s from features.json)
-- Intentional splits or follow-up pages recommended
-- Anything left `schema-only` or unverified in code
+- Pages written (`href`, `file`)
+- `docType` followed per outline
+- `capabilityIds` covered
+- Lint fixes applied
+- Outline pages not yet written
+- Anything `schema-only` or unverified in code
 
 ## Additional resources
 
-- Page skeletons by doc type: [templates.md](templates.md)
-- IA and docs.json patterns: [sidebar-ia.md](sidebar-ia.md)
-- Style lint and banned phrases: [style-lint.md](style-lint.md)
-- Capability inventory: [feature-finder](../feature-finder/SKILL.md)
+- Page skeletons: [templates.md](templates.md)
+- Style lint: [style-lint.md](style-lint.md)
+- Site outline (upstream): [docs-scaffolder](../docs-scaffolder/SKILL.md)
+- Capability detail (upstream): [feature-finder](../feature-finder/SKILL.md)

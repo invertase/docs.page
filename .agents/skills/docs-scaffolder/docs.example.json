@@ -1,0 +1,165 @@
+{
+  "$schema": "https://docs.page/schema.json",
+  "name": "Taskflow",
+  "description": "Async job orchestration for product teams",
+  "tabs": [
+    { "id": "root", "title": "Documentation", "href": "/" },
+    { "id": "api", "title": "API", "href": "/api" }
+  ],
+  "sidebar": [
+    {
+      "group": "Getting Started",
+      "tab": "root",
+      "pages": [
+        { "title": "Overview", "href": "/", "icon": "book" },
+        { "title": "Quickstart", "href": "/quickstart", "icon": "rocket" }
+      ]
+    },
+    {
+      "group": "Guides",
+      "tab": "root",
+      "pages": [
+        { "title": "Deploy to Production", "href": "/guides/deploy", "icon": "globe" },
+        { "title": "Webhook Retries", "href": "/guides/webhook-retries", "icon": "refresh" }
+      ]
+    },
+    {
+      "group": "REST API",
+      "tab": "api",
+      "pages": [
+        { "title": "Authentication", "href": "/api/auth", "icon": "key" },
+        { "title": "Jobs", "href": "/api/jobs", "icon": "list" },
+        { "title": "Webhooks", "href": "/api/webhooks", "icon": "webhook" }
+      ]
+    }
+  ],
+  "outline": {
+    "version": "1.0.0",
+    "updatedAt": "2026-06-11",
+    "sourceFeatures": "features.json",
+    "pages": [
+      {
+        "href": "/",
+        "title": "Overview",
+        "description": "What Taskflow does and core concepts for new users.",
+        "docType": "explanation",
+        "status": "existing",
+        "file": "docs/index.mdx",
+        "capabilityIds": [],
+        "audience": ["end-user"],
+        "rationale": "Editorial landing page; orients readers before hands-on guides."
+      },
+      {
+        "href": "/quickstart",
+        "title": "Quickstart",
+        "description": "Create and run your first job in under five minutes.",
+        "docType": "tutorial",
+        "status": "stub",
+        "file": "docs/quickstart.mdx",
+        "capabilityIds": ["job-submission", "job-execution"],
+        "audience": ["end-user"],
+        "rationale": "First-run learning path; single successful outcome with minimal theory.",
+        "relatedHrefs": ["/guides/deploy", "/api/jobs"]
+      },
+      {
+        "href": "/guides/deploy",
+        "title": "Deploy to Production",
+        "description": "Configure Taskflow for a production environment with secrets and scaling.",
+        "docType": "how-to",
+        "status": "stub",
+        "file": "docs/guides/deploy.mdx",
+        "capabilityIds": ["env-configuration", "worker-scaling"],
+        "audience": ["operator"],
+        "rationale": "Task-oriented recipe for operators who already understand the product."
+      },
+      {
+        "href": "/guides/webhook-retries",
+        "title": "Webhook Retries",
+        "description": "Tune retry policy and inspect failed webhook deliveries.",
+        "docType": "how-to",
+        "status": "new",
+        "file": "docs/guides/webhook-retries.mdx",
+        "capabilityIds": ["webhook-delivery"],
+        "audience": ["integrator"],
+        "rationale": "Focused troubleshooting guide for a single operational problem."
+      },
+      {
+        "href": "/api/auth",
+        "title": "Authentication",
+        "description": "API keys, scopes, and request signing for the Taskflow REST API.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/api/auth.mdx",
+        "capabilityIds": ["api-authentication"],
+        "audience": ["integrator"],
+        "rationale": "Lookup table for auth headers and token formats; no narrative."
+      },
+      {
+        "href": "/api/jobs",
+        "title": "Jobs",
+        "description": "Endpoints, request bodies, and response schemas for job resources.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/api/jobs.mdx",
+        "capabilityIds": ["job-submission", "job-execution", "job-status"],
+        "audience": ["integrator"],
+        "rationale": "Merged API surface for related job endpoints on one reference page.",
+        "relatedHrefs": ["/quickstart"]
+      },
+      {
+        "href": "/api/webhooks",
+        "title": "Webhooks",
+        "description": "Webhook event types, payload schemas, and verification headers.",
+        "docType": "reference",
+        "status": "stub",
+        "file": "docs/api/webhooks.mdx",
+        "capabilityIds": ["webhook-delivery"],
+        "audience": ["integrator"],
+        "rationale": "Schema reference separated from the retry how-to guide.",
+        "splits": ["/guides/webhook-retries"]
+      }
+    ],
+    "coverage": {
+      "mappedCapabilityIds": [
+        "job-submission",
+        "job-execution",
+        "job-status",
+        "webhook-delivery",
+        "api-authentication",
+        "env-configuration",
+        "worker-scaling"
+      ],
+      "unmappedCapabilityIds": ["internal-metrics"],
+      "mergedInto": {
+        "/api/jobs": ["job-submission", "job-execution", "job-status"]
+      }
+    },
+    "validation": {
+      "passed": true,
+      "issues": [
+        {
+          "rule": "unmapped-capability",
+          "severity": "warning",
+          "message": "internal-metrics has no public doc page; omit or add to Advanced group."
+        }
+      ],
+      "cliCheck": {
+        "passed": true,
+        "command": "docs check . --external-links off",
+        "ranAt": "2026-06-11",
+        "errors": 0,
+        "warnings": 0
+      },
+      "stats": {
+        "pageCount": 7,
+        "stubPages": 5,
+        "byDocType": {
+          "tutorial": 1,
+          "how-to": 2,
+          "reference": 3,
+          "explanation": 1
+        }
+      }
+    }
+  }
+}

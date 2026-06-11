@@ -1,45 +1,16 @@
 ---
-title: docs.page Overview
-description: Publish documentation from a public GitHub repository with zero build step.
+title: Overview
+description: What docs.page does and how GitHub-sourced documentation works.
 ---
 
-docs.page serves documentation directly from your GitHub repository. Add a `docs.json` config and `.mdx` files under `docs/`, push to a public repo, and your site is live.
+## Overview
+
+_TBD_
 
 ## How it works
 
-docs.page fetches content at request time using the GitHub API and raw content URLs. There is no separate build pipeline or CMS — your repo is the source of truth.
+_TBD_
 
-| Layer | What happens |
-| --- | --- |
-| **Source** | `docs.json`, `docs/**/*.mdx`, and assets live in a public GitHub repo |
-| **Runtime** | docs.page resolves the repo, ref, and page path, then compiles MDX to a document IR |
-| **Delivery** | Rendered pages, search indexes, MCP tools, and LLM exports are served over HTTP |
+## Related
 
-<Info>
-Private repositories are not supported. docs.page returns a 403 when bundling documentation from a private repo.
-</Info>
-
-## Core requirements
-
-Every docs.page site needs:
-
-- A **`docs.json`** (or `docs.yaml`) file at the repository root
-- A **`docs/`** directory containing `.mdx` pages
-
-Optional capabilities include vanity subdomains, custom domains, branch/PR/commit previews, built-in search, an in-docs AI agent, and MCP server exposure.
-
-## URL patterns
-
-| Pattern | Purpose |
-| --- | --- |
-| `https://docs.page/{owner}/{repo}` | Default published docs |
-| `https://docs.page/{owner}/{repo}~{ref}/{path}` | Branch, PR, or commit preview |
-| `https://{owner}.docs.page/{repo}/{path}` | Vanity subdomain |
-| `https://your-domain.com/{path}` | Custom domain |
-
-## Next steps
-
-- [Getting Started](/getting-started) — scaffold your first site
-- [Publishing](/publishing) — vanity subdomains, custom domains, and ref routing
-- [docs.json Reference](/configuration) — full configuration lookup
-- [Architecture](/architecture) — caching, compilation, and request flow
+_TBD_
