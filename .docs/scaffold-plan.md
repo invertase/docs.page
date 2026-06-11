@@ -67,12 +67,9 @@ Documentation (/)
 │   ├── Chat with docs  /using/chat
 │   └── Connect AI tools  /using/connect
 └── Comparisons [depth]
-    ├── docs.page vs Docusaurus  /comparisons/docusaurus
-    ├── docs.page vs docsify  /comparisons/docsify
-    ├── docs.page vs Jekyll  /comparisons/jekyll
-    ├── Migrate from Docusaurus  /comparisons/migrate-docusaurus
-    ├── Migrate from docsify  /comparisons/migrate-docsify
-    └── Migrate from Jekyll  /comparisons/migrate-jekyll
+    ├── Docusaurus  /comparisons/docusaurus     → H1: Compare and migrate from Docusaurus
+    ├── docsify  /comparisons/docsify
+    └── Jekyll  /comparisons/jekyll
 
 Documentation (/) [ref]
 └── docs.json reference  /configuration/reference
@@ -128,9 +125,9 @@ Group labels: **Publishing docs** / **Using docs** (sentence case, task framing)
 | Phase | Pages |
 | --- | --- |
 | Spine | 2 |
-| Depth | 30 |
+| Depth | 24 |
 | Reference | 17 |
-| **Total** | **47** |
+| **Total** | **43** |
 
 ## Merge map
 
@@ -155,7 +152,9 @@ Group labels: **Publishing docs** / **Using docs** (sentence case, task framing)
 | `/using/search` | `docs-search`, `search-json` |
 | `/using/chat` | `ai-chat`, `agent-chat-api` |
 | `/using/connect` | `mcp-server`, `mcp-skills`, `llms-txt`, `llms-full-txt`, `bundle-api`, `raw-markdown` |
-| `/comparisons/*` | _(editorial)_ |
+| `/comparisons/docusaurus` | _(editorial — compare + migrate)_ |
+| `/comparisons/docsify` | _(editorial — compare + migrate)_ |
+| `/comparisons/jekyll` | _(editorial — compare + migrate)_ |
 | `/configuration/reference` | all `config-*`, `docs-json-config`, `config-schema` |
 | `/components/*` | `component-*` |
 
@@ -168,6 +167,8 @@ Group labels: **Publishing docs** / **Using docs** (sentence case, task framing)
 - **Agent split:** consume → Using docs; enable/publish → Publishing docs.
 - **Components sections:** category groups are top-level sidebar sections on the Components tab — always expanded, not nested accordions.
 - **Icons:** section headings only (`Getting Started` → `rocket`, `Layout & structure` → `layer-group`, etc.). No leaf icons.
+- **Comparisons (v3.1):** one page per competitor — **Compare** + **Migrate** sections. Keeps competitor SEO (`/comparisons/docusaurus`) without duplicate nav leaves.
+- Getting Started stays **2 pages**. Config = 4 how-tos + 1 reference hub.
 - Getting Started stays **2 pages**. Config = 4 how-tos + 1 reference hub.
 
 ## Pairs

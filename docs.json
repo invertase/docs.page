@@ -164,28 +164,16 @@
       "tab": "root",
       "pages": [
         {
-          "title": "docs.page vs Docusaurus",
+          "title": "Docusaurus",
           "href": "/comparisons/docusaurus"
         },
         {
-          "title": "docs.page vs docsify",
+          "title": "docsify",
           "href": "/comparisons/docsify"
         },
         {
-          "title": "docs.page vs Jekyll",
+          "title": "Jekyll",
           "href": "/comparisons/jekyll"
-        },
-        {
-          "title": "Migrate from Docusaurus",
-          "href": "/comparisons/migrate-docusaurus"
-        },
-        {
-          "title": "Migrate from docsify",
-          "href": "/comparisons/migrate-docsify"
-        },
-        {
-          "title": "Migrate from Jekyll",
-          "href": "/comparisons/migrate-jekyll"
         }
       ],
       "icon": "code-compare"
@@ -681,8 +669,8 @@
       },
       {
         "href": "/comparisons/docusaurus",
-        "title": "docs.page vs Docusaurus",
-        "description": "Compare docs.page and Docusaurus for documentation sites.",
+        "title": "Docusaurus",
+        "description": "How docs.page compares to Docusaurus and how to move your docs site over.",
         "docType": "explanation",
         "userGoal": "orient",
         "status": "stub",
@@ -694,8 +682,8 @@
       },
       {
         "href": "/comparisons/docsify",
-        "title": "docs.page vs docsify",
-        "description": "Compare docs.page and docsify for documentation sites.",
+        "title": "docsify",
+        "description": "How docs.page compares to docsify and how to move your docs site over.",
         "docType": "explanation",
         "userGoal": "orient",
         "status": "stub",
@@ -707,51 +695,12 @@
       },
       {
         "href": "/comparisons/jekyll",
-        "title": "docs.page vs Jekyll",
-        "description": "Compare docs.page and Jekyll for documentation sites.",
+        "title": "Jekyll",
+        "description": "How docs.page compares to Jekyll and how to move your docs site over.",
         "docType": "explanation",
         "userGoal": "orient",
         "status": "stub",
         "file": "docs/comparisons/jekyll.mdx",
-        "capabilityIds": [],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/comparisons/migrate-docusaurus",
-        "title": "Migrate from Docusaurus",
-        "description": "Move a Docusaurus site to docs.page.",
-        "docType": "how-to",
-        "userGoal": "first-success",
-        "status": "stub",
-        "file": "docs/comparisons/migrate-docusaurus.mdx",
-        "capabilityIds": [],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/comparisons/migrate-docsify",
-        "title": "Migrate from docsify",
-        "description": "Move a docsify site to docs.page.",
-        "docType": "how-to",
-        "userGoal": "first-success",
-        "status": "stub",
-        "file": "docs/comparisons/migrate-docsify.mdx",
-        "capabilityIds": [],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/comparisons/migrate-jekyll",
-        "title": "Migrate from Jekyll",
-        "description": "Move a Jekyll docs site to docs.page.",
-        "docType": "how-to",
-        "userGoal": "first-success",
-        "status": "stub",
-        "file": "docs/comparisons/migrate-jekyll.mdx",
         "capabilityIds": [],
         "audience": [
           "contributor"
@@ -1039,8 +988,8 @@
         "warnings": 0
       },
       "stats": {
-        "pageCount": 46,
-        "stubPages": 46,
+        "pageCount": 43,
+        "stubPages": 43,
         "componentPages": 15
       }
     }
