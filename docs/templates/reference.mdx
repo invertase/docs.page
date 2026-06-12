@@ -3,26 +3,95 @@ title: Reference template
 description: A lookup-oriented layout for APIs, configuration keys, commands, and syntax.
 ---
 
-Use this layout when readers need facts on demand — not a story or a walkthrough.
+Use this layout when readers need facts on demand — not a story or a walkthrough. Reference pages are for scanning, copying exact syntax, and confirming allowed values.
+
+<Info>
+  Examples on the **Templates** pages share a fictional **Coffee Shop Ordering API** so you can compare how the same product reads across documentation types.
+</Info>
+
+## When to use it
+
+Pick the reference layout for surfaces where accuracy and completeness matter more than narrative.
+
+| Use reference when… | Use something else when… |
+| --- | --- |
+| The reader knows *what* they need to look up | They need a first success path → [Tutorial](/templates/tutorial) |
+| Fields, types, defaults, and errors must be exhaustive | They need steps for one task → [How-to](/templates/how-to) |
+| Prose should stay minimal | They need architecture and tradeoffs → [Explanation](/templates/explanation) |
 
 ## The goal
 
-Provide a strict, lookup-oriented directory of facts, API specs, configuration keys, or command syntax. This is for quick scanning, not casual reading.
+Provide a strict, lookup-oriented directory of facts: API specs, configuration keys, command syntax, or component props.
 
 ## The tone
 
-Stark, literal, objective, and dense. Exhaustive technical details belong entirely in this quadrant.
+Stark, literal, objective, and dense. No welcome paragraphs, analogies, or marketing language.
 
 ## Recommended layout
 
-### Syntax or blueprint
+Structure every reference page with these sections:
 
-The exact format of the code, command, or file structure.
+1. **Syntax or blueprint** — The exact format: endpoint, command, or file shape.
+2. **Parameters or options** — Tables or `<Property>` blocks for fields, types, defaults, and constraints.
+3. **Examples** — Valid snippets only; link out for walkthroughs.
+4. **Errors** — Status codes or failure conditions when applicable.
+5. **See also** — Links to how-to and explanation pages.
 
-### Parameters or options table
+## Example: Create order (`POST /v1/orders`)
 
-A clear table mapping fields, types, default values, and descriptions.
+Below is how a reference page might read for our fictional coffee API. Notice the absence of onboarding prose and the emphasis on allowed values.
 
-### Examples
+### Syntax
 
-Pure code blocks or configuration snippets showing valid implementations.
+```http
+POST /v1/orders
+Authorization: Bearer <api_key>
+Content-Type: application/json
+```
+
+### Request parameters
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `item` | `string` | Yes | Base beverage. Allowed values: `espresso`, `americano`, `latte`, `cappuccino`. |
+| `size` | `string` | Yes | Drink size. Allowed values: `single`, `double`, `twelve_oz`, `sixteen_oz`. |
+| `temperature` | `string` | No | Defaults to `hot`. Allowed values: `hot`, `iced`. |
+
+### Example request
+
+```json
+{
+  "item": "latte",
+  "size": "twelve_oz",
+  "temperature": "iced"
+}
+```
+
+### Example response
+
+```json
+{
+  "order_id": "ord_123",
+  "status": "received",
+  "total_cents": 525
+}
+```
+
+### Errors
+
+| Status | Condition |
+| --- | --- |
+| `401 Unauthorized` | Missing or invalid API key. |
+| `422 Unprocessable Entity` | Invalid combination — for example, `single` size with an `iced` latte. |
+
+## How reference treats code
+
+In reference, code blocks are **data definitions** — request shapes, config snippets, and response samples. Do not embed numbered procedures; link to [Tutorial](/templates/tutorial) or [How-to](/templates/how-to) instead.
+
+Use `<Property>` and `<Accordion>` when you have nested or grouped fields. Use tables when a flat parameter list is enough.
+
+## See also
+
+- [Tutorial template](/templates/tutorial) — First coffee order walkthrough
+- [How-to template](/templates/how-to) — Modify an order with milk alternatives
+- [Explanation template](/templates/explanation) — Order fulfillment lifecycle and state machine

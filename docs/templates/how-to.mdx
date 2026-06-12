@@ -3,7 +3,21 @@ title: How-to template
 description: A task-oriented layout for solving a specific problem with clear, scannable steps.
 ---
 
-Use this layout when the reader already knows the basics and needs to accomplish one distinct objective.
+Use this layout when the reader already knows the basics and needs to accomplish one distinct objective. Headings should name the action and the benefit so the page stays scannable under time pressure.
+
+<Info>
+  Examples on the **Templates** pages share a fictional **Coffee Shop Ordering API** so you can compare how the same product reads across documentation types.
+</Info>
+
+## When to use it
+
+Pick the how-to layout when someone can use your product but is stuck on one real-world task.
+
+| Use a how-to when… | Use something else when… |
+| --- | --- |
+| The reader knows the product but not this task | They have never tried the product → [Tutorial](/templates/tutorial) |
+| You can state a problem and a verification step | They need every field and error code → [Reference](/templates/reference) |
+| Steps are actions, not architecture | They need *why* the system works this way → [Explanation](/templates/explanation) |
 
 ## The goal
 
@@ -11,18 +25,68 @@ Help a user who already knows the basics solve a specific, real-world problem or
 
 ## The tone
 
-Practical, direct, and action-driven. Headings should focus on the action and the benefit to make them easily scannable.
+Practical, direct, and action-driven. Headings focus on the action and the benefit. Keep conceptual fluff out of the steps.
 
 ## Recommended layout
 
-### The goal or scenario
+Structure every how-to with these sections:
 
-This guide shows you how to [achieve X task] in order to [get Y benefit].
+1. **The goal or scenario** — One sentence: this guide shows you how to [task] so you can [benefit].
+2. **Before you begin** — Short prerequisites or links to reference material.
+3. **Implementation steps** — Numbered actions. State **why** before each change when it is not obvious.
+4. **Verification** — How the reader confirms the task worked.
+5. **Next steps** — Related how-tos or deeper reading.
+
+## Example: Customize drinks with milk alternatives
+
+Below is how a how-to page might read for our fictional coffee API. Notice the specific scenario, surgical request edit, and explicit verification.
+
+### The goal
+
+This guide shows you how to modify an existing order to include milk alternatives — like oat or almond milk — so you can accommodate dietary preferences without canceling and reordering.
+
+### Before you begin
+
+- An active order ID with status `pending`
+- Your Barista API key
+- [Orders API reference](/templates/reference) for field names
 
 ### Implementation steps
 
-A series of numbered steps focused entirely on action. Keep conceptual fluff out of this section.
+1. **Find the pending order ID.** List recent orders or copy the `order_id` from your original `POST` response. You can only modify orders while status is `pending`.
+
+2. **Add a modifications array.** Include the milk substitute in the request body:
+
+   ```json
+   {
+     "modifications": [
+       {
+         "type": "milk",
+         "substitute": "oat_milk"
+       }
+     ]
+   }
+   ```
+
+3. **Update the order.** Send a `PATCH` request to the order endpoint:
+
+   ```bash
+   curl -X PATCH https://api.coffeeshop.dev/v1/orders/ord_123 \
+     -H "Authorization: Bearer YOUR_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"modifications": [{"type": "milk", "substitute": "oat_milk"}]}'
+   ```
 
 ### Verification
 
-A quick way for the reader to test and confirm that the guide worked — for example, "Run this command, and you should see this output."
+Check the response payload. The `total_cents` field should increase to reflect the milk alternative upcharge, and `modifications` should list `oat_milk`.
+
+## How how-tos treat code
+
+In a how-to, code blocks are **surgical edits** — a payload fragment, a config change, or one command. The reader already knows where the snippet goes. Full end-to-end scripts belong in tutorials; exhaustive field lists belong in reference.
+
+## Next steps
+
+- [Tutorial template](/templates/tutorial) — Onboarding pages with a guaranteed first win
+- [Reference template](/templates/reference) — Lookup pages for endpoints and parameters
+- [Explanation template](/templates/explanation) — Why the order lifecycle works asynchronously
