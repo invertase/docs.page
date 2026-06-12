@@ -3,4 +3,99 @@ title: Publish your first site
 description: Scaffold, push to GitHub, and open your live docs.page URL.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+This tutorial walks you through your first publish: scaffold the required files, push them to a public GitHub repository, and open your live docs.page URL. When you finish, your documentation site is on the web — no build step or hosting setup required.
+
+## Prerequisites
+
+- A [GitHub](https://github.com) account
+- [Git](https://git-scm.com/downloads) installed locally
+- [Node.js](https://nodejs.org/) (to run the CLI via `npx`)
+
+If you have not read it yet, skim [Introduction](/) for how docs.page hosting works.
+
+## Steps
+
+<Steps>
+  <Step title="Scaffold your docs files">
+    Open a terminal at your project root — an empty folder or an existing repository — and run:
+
+    ```bash
+    npx @docs.page/cli init
+    ```
+
+    The CLI asks for your project name and whether to create starter pages. Accept the defaults unless you already have a `docs/` directory you want to keep.
+
+    When init finishes, your project contains:
+
+    ```
+    docs.json
+    docs/
+      index.mdx
+      next-steps.mdx
+    ```
+
+    - **`docs.json`** — site configuration: name, description, sidebar, and theme
+    - **`docs/index.mdx`** — your home page (served at `/`)
+    - **`docs/next-steps.mdx`** — a second page (served at `/next-steps`)
+
+    Open `docs/index.mdx` and change the title or add a sentence so you can confirm your changes later on the live site.
+  </Step>
+  <Step title="Push to a public GitHub repository">
+    docs.page only hosts **public** repositories. Create a new public repo on GitHub (for example `acme/my-docs`), then commit and push from your project directory:
+
+    ```bash
+    git init
+    git add docs.json docs/
+    git commit -m "Add docs.page site"
+    git branch -M main
+    git remote add origin https://github.com/acme/my-docs.git
+    git push -u origin main
+    ```
+
+    Replace `acme/my-docs` with your GitHub owner and repository name.
+
+    <Warning>
+      If the repository is private, docs.page returns an error and does not serve your documentation. Make the repository public before opening your live URL.
+    </Warning>
+  </Step>
+  <Step title="Open your live site">
+    Your documentation is available as soon as the push completes. Open:
+
+    ```
+    https://docs.page/{owner}/{repo}
+    ```
+
+    For `https://github.com/acme/my-docs`, visit `https://docs.page/acme/my-docs`.
+
+    Confirm the site loads with your project name in the header, the **Getting Started** sidebar group from `docs.json`, and the edit you made on the home page. Click **Next Steps** to verify `/next-steps` renders.
+
+    Pushes to your default branch update the live site automatically — there is no separate deploy step.
+  </Step>
+  <Step title="Read your URL patterns">
+    Every page URL mirrors its path under `docs/`:
+
+    | File | Live URL |
+    | --- | --- |
+    | `docs/index.mdx` | `/` |
+    | `docs/next-steps.mdx` | `/next-steps` |
+    | `docs/usage.mdx` | `/usage` |
+    | `docs/guides/setup/index.mdx` | `/guides/setup` |
+
+    Nested directories become nested URL paths. A file named `index.mdx` inside a folder serves that folder's path.
+
+    To preview documentation from a branch before it merges, append a ref segment to the repository URL:
+
+    ```
+    https://docs.page/{owner}/{repo}~{branch}
+    ```
+
+    For example, `https://docs.page/acme/my-docs~feature-docs` serves the `feature-docs` branch. See [Shareable preview](/authoring/shareable-preview) for pull request previews and the GitHub bot.
+  </Step>
+</Steps>
+
+## Next steps
+
+- [Write documentation](/authoring/write-documentation) — structure pages, add code examples, and use MDX components
+- [Organize your navigation](/authoring/organize-your-navigation) — order sidebar groups, tabs, and page links in `docs.json`
+- [Local preview](/authoring/preview-locally) — iterate on content on your machine before pushing
+- [Tutorial template](/templates/tutorial) — pick a page layout when you add new guides
