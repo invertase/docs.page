@@ -3,4 +3,143 @@ title: Update moved pages
 description: Redirect readers when pages are renamed or relocated.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+When you rename or move a page, its URL changes with it. Bookmarks, search results, and external links still point at the old path unless you leave a redirect behind.
+
+docs.page handles redirects with the `redirect` field in page frontmatter — not a central redirect table in `docs.json`. That keeps setup simple for one-off moves, but it is not a bulk URL migration tool.
+
+<Info>
+  **Coming from Mintlify or similar platforms?** Those tools often define redirects in `docs.json` with wildcard rules and permanent (308) redirects. docs.page uses **one redirect per `.mdx` file**, keeps the old file at the old path, and issues a **temporary (307)** redirect. There is no wildcard or catch-all redirect support today.
+</Info>
+
+## Before you begin
+
+- You know the old URL and the new URL after the move
+- You can edit files under `docs/` and update `docs.json` if sidebar links need to change
+- [Organize navigation](/authoring/organize-your-navigation) if the page also moves in the sidebar
+
+## Redirect a renamed page
+
+When you rename `docs/installation.mdx` to `docs/getting-started.mdx`, readers who visit `/installation` get a 404 unless something still lives at the old path.
+
+1. **Move or create the new page** at the destination path.
+
+   ```bash
+   git mv docs/installation.mdx docs/getting-started.mdx
+   ```
+
+   The page is now served at `/getting-started`.
+
+2. **Create a stub at the old path** with only a redirect in frontmatter.
+
+   ```yaml title="docs/installation.mdx"
+   ---
+   redirect: /getting-started
+   ---
+   ```
+
+   The file can be empty below the frontmatter. When a reader opens `/installation`, docs.page sends them to `/getting-started` and does not render page body content.
+
+3. **Update sidebar links** in `docs.json` so navigation points at the new href.
+
+   ```json
+   {
+     "sidebar": [
+       {
+         "group": "Getting Started",
+         "pages": [
+           {
+             "title": "Getting started",
+             "href": "/getting-started"
+           }
+         ]
+       }
+     ]
+   }
+   ```
+
+4. **Update in-page links** in other `.mdx` files that still point at `/installation`.
+
+## Redirect formats
+
+### Internal paths
+
+Use a root-relative path starting with `/`:
+
+```yaml
+redirect: /getting-started
+```
+
+docs.page resolves the full destination against your current site context — the default branch URL, a preview ref, a vanity subdomain, or a custom domain. You do not need to hard-code `https://docs.page/owner/repo`.
+
+### External URLs
+
+Use a full URL to send readers off-site:
+
+```yaml
+redirect: https://example.com/docs/new-location
+```
+
+### Paths to avoid
+
+Use path-only targets. Do not rely on query strings or hash anchors in `redirect` values — they are not part of the redirect contract and may not behave consistently.
+
+## Verify redirects
+
+Run the CLI link checker from your project root:
+
+```bash
+npx @docs.page/cli check
+```
+
+The checker validates `redirect`, `next`, and `previous` frontmatter targets the same way it validates links in page content. Fix any reported broken internal paths before you merge.
+
+Open the old URL in a browser after deploy and confirm you land on the new page.
+
+## Common patterns
+
+### Default locale on the home page
+
+If you use translated documentation, the root page can redirect to a default locale instead of showing content:
+
+```yaml title="docs/index.mdx"
+---
+redirect: /en
+---
+```
+
+See [Translate documentation](/authoring/translate-documentation) for multi-locale setup.
+
+### Page moved into a subdirectory
+
+If `docs/api.mdx` becomes `docs/reference/api.mdx`:
+
+1. Move the file to `docs/reference/api.mdx` (served at `/reference/api`)
+2. Add `docs/api.mdx` with `redirect: /reference/api`
+3. Update sidebar and cross-links
+
+## Limitations
+
+| Topic | docs.page behavior |
+| --- | --- |
+| Redirect definition | Per-page `redirect` in frontmatter only — no `redirects` array in `docs.json` |
+| Wildcards | Not supported — each old URL needs its own stub file |
+| HTTP status | Temporary redirect (307) |
+| Page content | Ignored when `redirect` is set |
+| Deleted pages | Removing the file removes the URL — leave a stub file to preserve the old path |
+
+If you are restructuring dozens of URLs at once, plan one stub file per old path or update inbound links at the source instead of expecting a single config rule to rewrite many paths.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| Old URL returns 404 | No file at the old path | Add a stub `.mdx` file with `redirect` frontmatter |
+| Redirect goes to wrong host on preview | Internal path resolved against current ref/domain | Use a root-relative path (`/new-page`); docs.page builds the full URL |
+| `docs check` reports broken redirect | Target path does not match any page file | Confirm the destination file exists under `docs/` and the path matches its URL |
+| Sidebar still shows old link | `docs.json` not updated | Change the `href` in the sidebar entry |
+
+## Next steps
+
+- [Page frontmatter](/reference/page-frontmatter) — full field reference for `redirect` and other per-page options
+- [Organize navigation](/authoring/organize-your-navigation) — keep sidebar links aligned after moves
+- [Preview locally](/authoring/preview-locally) — test redirects before pushing
