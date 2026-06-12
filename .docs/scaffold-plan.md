@@ -21,16 +21,9 @@ Root tab groups follow spec journey for the **contributor** (primary persona):
 | 4 | Using docs | _(secondary)_ | What consumers do |
 | 5 | Comparisons | _(SEO)_ | Platform choice — last |
 
-**Nested sidebar groups** with `href` are **clickable hub pages** (label → page, chevron → expand). Without `href`, the row only expands/collapses.
+**Nested sidebar groups** expand/collapse only — accordion parents are not pages today (product limitation; `href` on nested groups is schema-only).
 
-| Nested group | `href` (hub page) |
-| --- | --- |
-| Write by doc type | `/guides/write` |
-| Configure your site | `/configuration` |
-| Enable agent features | `/publishing/agent-ready` |
-| Advanced | `/advanced` |
-
-**Within Publishing docs:** share URLs → configure → agent features → CLI → advanced.
+**Within Publishing docs:** share URLs → configure (nested) → agent features → CLI → advanced.
 
 **Within Using Docs:** search → chat → connect (browse → in-site AI → external AI tools).
 
@@ -58,13 +51,20 @@ Documentation (/)
 │       └── Write an internal handbook  /guides/write/internal-handbook
 ├── Publishing docs [depth]
 │   ├── Share and preview links  /publishing/urls
-│   ├── Configure your site  /configuration  [nested group + href]
+│   ├── Configure your site [nested]
 │   │   ├── Customize theme and branding  /configuration/theme-and-branding
-│   │   ├── …
-│   ├── Enable agent features  /publishing/agent-ready  [nested + href]
+│   │   ├── Add analytics and SEO  /configuration/analytics-and-seo
+│   │   ├── Configure content display  /configuration/content-display
+│   │   ├── Set up a custom domain  /configuration/custom-domains
+│   │   └── docs.json reference  /configuration/reference
+│   ├── Enable agent features [nested]
+│   │   ├── Enable AI chat  /publishing/agent-ready/ai-chat
+│   │   └── Add agent skills  /publishing/agent-ready/skills
 │   ├── Use the CLI  /cli
-│   └── Advanced  /advanced  [nested + href]
-├── Guides — Write by doc type  /guides/write  [nested + href]
+│   └── Advanced [nested]
+│       ├── Write for AI search  /advanced/optimize-for-ai-search
+│       ├── Install the GitHub bot  /advanced/github-bot
+│       └── Set page metadata  /advanced/frontmatter
 ├── Using docs [depth]
 │   ├── Search docs  /using/search
 │   ├── Chat with docs  /using/chat
@@ -118,7 +118,6 @@ No icons on page leaves. **Section heading icons** on top-level sidebar groups o
 | `/using/chat` | Chat with docs | — |
 | `/using/connect` | Connect AI tools | Connect MCP and llms.txt |
 | `/cli` | Use the CLI | — |
-| `/configuration` | Overview | Configure your site |
 | `/configuration/reference` | docs.json reference | — |
 | `/components/*` | Component name | — (Accordion, Tabs, …) |
 
@@ -129,9 +128,9 @@ Group labels: **Publishing docs** / **Using docs** (sentence case, task framing)
 | Phase | Pages |
 | --- | --- |
 | Spine | 2 |
-| Depth | 28 |
+| Depth | 24 |
 | Reference | 17 |
-| **Total** | **47** |
+| **Total** | **43** |
 
 ## Merge map
 
@@ -143,10 +142,6 @@ Group labels: **Publishing docs** / **Using docs** (sentence case, task framing)
 | `/guides/content-types` | _(editorial)_ |
 | `/guides/write/*` | `config-content`, _(editorial)_ |
 | `/publishing/urls` | `vanity-subdomains`, `ref-previews`, `github-hosting` |
-| `/guides/write` | `config-content`, _(editorial)_ |
-| `/configuration` | `docs-json-config` |
-| `/publishing/agent-ready` | `config-agent`, `config-mcp`, `mcp-skills` |
-| `/advanced` | _(editorial hub)_ |
 | `/configuration/theme-and-branding` | `config-theme`, `config-logo`, `config-header` |
 | `/configuration/analytics-and-seo` | `config-analytics`, `config-seo`, `config-social`, `sitemap`, `robots-txt` |
 | `/configuration/content-display` | `config-content`, `config-anchors`, `previous-next` |
@@ -175,7 +170,6 @@ Group labels: **Publishing docs** / **Using docs** (sentence case, task framing)
 - **Agent split:** consume → Using docs; enable/publish → Publishing docs.
 - **Components sections:** category groups are top-level sidebar sections on the Components tab — always expanded, not nested accordions.
 - **Icons:** section headings only (`Getting Started` → `rocket`, `Layout & structure` → `layer-group`, etc.). No leaf icons.
-- **Nested group hubs (v3.3):** set `href` on `{ group, pages }` — parent label navigates; chevron expands. Requires sidebar support in app.
 - **Comparisons (v3.1):** one page per competitor — **Compare** + **Migrate** sections.
 - Getting Started stays **2 pages**. Config = 4 how-tos + 1 reference hub.
 - Getting Started stays **2 pages**. Config = 4 how-tos + 1 reference hub.
