@@ -141,6 +141,94 @@ function SidebarPageRow(props: {
   );
 }
 
+function SidebarNestedGroupChevron() {
+  return (
+    <CollapsibleTrigger asChild>
+      <button
+        type="button"
+        className="inline-flex size-7 shrink-0 items-center justify-center rounded-md text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring focus-visible:outline-hidden"
+        aria-label="Toggle section"
+      >
+        <RiArrowRightSLine className="size-4 shrink-0 transition-transform duration-200 [[data-state=open]_&]:rotate-90" />
+      </button>
+    </CollapsibleTrigger>
+  );
+}
+
+function SidebarNestedGroupHeader(props: {
+  label: string;
+  icon?: string;
+  href?: string;
+  isActive: boolean;
+  nested?: boolean;
+}) {
+  const chevron = (
+    <RiArrowRightSLine className="ml-auto size-4 shrink-0 transition-transform duration-200 [[data-state=open]>&]:rotate-90" />
+  );
+
+  if (props.href) {
+    if (props.nested) {
+      return (
+        <div className="flex min-w-0 items-center">
+          <SidebarMenuSubButton
+            asChild
+            isActive={props.isActive}
+            className="min-w-0 flex-1 text-muted-foreground"
+          >
+            <Link href={props.href}>
+              {props.icon ? <SidebarNavIcon icon={props.icon} /> : null}
+              <span className="truncate">{props.label}</span>
+            </Link>
+          </SidebarMenuSubButton>
+          <SidebarNestedGroupChevron />
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex min-w-0 items-center">
+        <SidebarMenuButton
+          asChild
+          tooltip={props.label}
+          isActive={props.isActive}
+          className="min-w-0 flex-1"
+        >
+          <Link href={props.href}>
+            {props.icon ? <SidebarNavIcon icon={props.icon} /> : null}
+            <span className="truncate">{props.label}</span>
+          </Link>
+        </SidebarMenuButton>
+        <SidebarNestedGroupChevron />
+      </div>
+    );
+  }
+
+  if (props.nested) {
+    return (
+      <CollapsibleTrigger asChild>
+        <SidebarMenuSubButton
+          isActive={props.isActive}
+          className="text-muted-foreground"
+        >
+          {props.icon ? <SidebarNavIcon icon={props.icon} /> : null}
+          <span className="truncate">{props.label}</span>
+          {chevron}
+        </SidebarMenuSubButton>
+      </CollapsibleTrigger>
+    );
+  }
+
+  return (
+    <CollapsibleTrigger asChild>
+      <SidebarMenuButton tooltip={props.label} isActive={props.isActive}>
+        {props.icon ? <SidebarNavIcon icon={props.icon} /> : null}
+        <span className="truncate">{props.label}</span>
+        {chevron}
+      </SidebarMenuButton>
+    </CollapsibleTrigger>
+  );
+}
+
 function SidebarNestedGroup(props: {
   node: SidebarConfigGroup;
   depth: number;
@@ -153,20 +241,18 @@ function SidebarNestedGroup(props: {
     props.node.href != null && isDocHrefActive(route, props.node.href, locales);
 
   const isActive = hasActive || groupHrefActive;
+  const nested = props.depth > 0;
 
   if (props.depth === 0) {
     return (
       <Collapsible defaultOpen={isActive}>
         <SidebarMenuItem className="pb-1">
-          <CollapsibleTrigger asChild>
-            <SidebarMenuButton tooltip={label} isActive={isActive}>
-              {props.node.icon ? (
-                <SidebarNavIcon icon={props.node.icon} />
-              ) : null}
-              <span className="truncate">{label}</span>
-              <RiArrowRightSLine className="ml-auto size-4 shrink-0 transition-transform duration-200 [[data-state=open]>&]:rotate-90" />
-            </SidebarMenuButton>
-          </CollapsibleTrigger>
+          <SidebarNestedGroupHeader
+            label={label}
+            icon={props.node.icon}
+            href={props.node.href}
+            isActive={isActive}
+          />
           <CollapsibleContent>
             <SidebarMenuSub>
               <SidebarPagesList
@@ -183,16 +269,13 @@ function SidebarNestedGroup(props: {
   return (
     <Collapsible defaultOpen={isActive}>
       <SidebarMenuSubItem className="pb-1">
-        <CollapsibleTrigger asChild>
-          <SidebarMenuSubButton
-            isActive={isActive}
-            className="text-muted-foreground"
-          >
-            {props.node.icon ? <SidebarNavIcon icon={props.node.icon} /> : null}
-            <span className="truncate">{label}</span>
-            <RiArrowRightSLine className="ml-auto size-4 shrink-0 transition-transform duration-200 [[data-state=open]>&]:rotate-90" />
-          </SidebarMenuSubButton>
-        </CollapsibleTrigger>
+        <SidebarNestedGroupHeader
+          label={label}
+          icon={props.node.icon}
+          href={props.node.href}
+          isActive={isActive}
+          nested
+        />
         <CollapsibleContent>
           <SidebarMenuSub className="mx-3.5 border-l border-sidebar-border px-2.5 py-0.5">
             <SidebarPagesList

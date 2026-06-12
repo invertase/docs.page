@@ -237,6 +237,7 @@
       "pages": [
         {
           "group": "Compare platforms",
+          "href": "/comparisons",
           "pages": [
             {
               "title": "Mintlify",
