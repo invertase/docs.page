@@ -13,7 +13,7 @@ Think of docs.page as **docs-as-code with zero hosting setup**. Configuration an
 
 docs.page is free and open source. It fits teams that want polished documentation without standing up a static-site generator, CI deploy, or hosted docs platform for every repository.
 
-### Who docs.page is for
+## Who it is for
 
 | Reader | What they get |
 | --- | --- |
@@ -21,7 +21,7 @@ docs.page is free and open source. It fits teams that want polished documentatio
 | **End users** | Fast, searchable docs with modern navigation, theming, and MDX components |
 | **Integrators** | Agent-ready surfaces — llms.txt, MCP, and HTTP APIs — on the same URLs readers already use |
 
-## How it works
+## How hosting works
 
 docs.page reads your repository on each request, bundles MDX, and serves a complete documentation site. You do not run a local build or upload artifacts to a host.
 
@@ -38,27 +38,15 @@ Push to your default branch and the site is live. There is no dashboard deploy s
 
 Documentation is served at:
 
-<br />
-<br />
-
 ```
 https://docs.page/{owner}/{repo}
 ```
 
-<br />
-<br />
-
 For example, a repository at `https://github.com/acme/my-project` is available at `https://docs.page/acme/my-project`. Individual pages follow the path of their file under `docs/` — `docs/usage.mdx` becomes `/usage`.
-
-<br />
-<br />
 
 <Info>
   docs.page only hosts **public** repositories. Private repos are blocked before any content is served. Keep documentation in a public repo, or in a public docs-only repository linked from your project.
 </Info>
-
-<br />
-<br />
 
 ### What you do not need
 
@@ -78,7 +66,7 @@ Agents and AI tools can use the same published site through dedicated surfaces: 
 
 See [Agent-ready docs](/ai-agents/agent-ready-docs) for how these surfaces fit together.
 
-## Design tradeoffs
+## When docs.page fits
 
 docs.page works well when most of your documentation is Markdown-based, you want instant publishing from GitHub, and your content can live in a public repository.
 
@@ -87,9 +75,6 @@ It is a strong default for open-source libraries, SDK reference sites, and inter
 For side-by-side comparisons with Docusaurus, Mintlify, GitHub Pages, and similar tools, see [Platform comparisons](/comparisons/docs-page-vs-mintlify).
 
 ## Related
-
-<br />
-<br />
 
 <CardGroup cols={2}>
   <Card title="Publish your first site" icon="rocket" href="/publish-your-first-site">
