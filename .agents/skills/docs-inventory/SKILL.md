@@ -10,14 +10,14 @@ description: >-
 
 # Docs Inventory
 
-Catalog **what the product does** by reading source code. Output is `docs-inventory.json` — a code-derived inventory for downstream tools (e.g. docs-scaffold). It does **not** decide where capabilities appear in documentation.
+Catalog **what the product does** by reading source code. Output is `docs-inventory.json` — a code-derived inventory for downstream tools (e.g. docs-sitemap-architect). It does **not** decide where capabilities appear in documentation.
 
 ## Pipeline position
 
 ```
 docs-spec        →  .docs/docs-spec.md
 docs-inventory   →  .docs/docs-inventory.json       ← you are here
-docs-scaffold    →  docs.json + stub .mdx + docs check
+docs-sitemap-architect →  .docs/docs-outline.md
 docs-write       →  full .mdx content
 ```
 
@@ -25,7 +25,7 @@ docs-write       →  full .mdx content
 
 ## Project layout
 
-Write to `.docs/docs-inventory.json` at the project root. Path resolution: [docs-scaffold — Project layout](../docs-scaffold/SKILL.md#project-layout).
+Write to `.docs/docs-inventory.json` at the project root. Path resolution: [docs-sitemap-architect — Project layout](../docs-sitemap-architect/SKILL.md#project-layout).
 
 ## Scope
 
@@ -43,7 +43,7 @@ Write to `.docs/docs-inventory.json` at the project root. Path resolution: [docs
 
 ## Output location
 
-Resolve path per [docs-scaffold — Project layout](../docs-scaffold/SKILL.md#project-layout):
+Resolve path per [docs-sitemap-architect — Project layout](../docs-sitemap-architect/SKILL.md#project-layout):
 
 1. User-specified path
 2. `.docs/docs-inventory.json` (create `.docs/` if needed)
@@ -228,11 +228,11 @@ Docs Inventory Progress:
 
 ### Step 0: Read docs-spec (optional)
 
-If `docs-spec.md` exists (resolved per [docs-scaffold — Project layout](../docs-scaffold/SKILL.md#project-layout)):
+If `docs-spec.md` exists (resolved per [docs-sitemap-architect — Project layout](../docs-sitemap-architect/SKILL.md#project-layout)):
 
 - Read `## Scan focus` — scan those paths/packages first and thoroughly
 - Read `## First success` hints — ensure matching CLI/API/config capabilities are discovered
-- Read `## Policy` → `Omit` — do not skip inventory entries for omitted themes unless the user asks; omit policy applies to **documentation**, not the inventory. Still catalog capabilities; docs-scaffold will unmap them.
+- Read `## Policy` → `Omit` — do not skip inventory entries for omitted themes unless the user asks; omit policy applies to **documentation**, not the inventory. Still catalog capabilities; docs-sitemap-architect may omit them from the outline.
 
 If `docs-spec.md` is missing and the user is starting a full documentation pipeline, suggest running [docs-spec](../docs-spec/SKILL.md) first — but continue if they only want a code inventory refresh.
 
@@ -303,7 +303,7 @@ Search systematically. Adapt paths to the stack; do not assume a specific framew
 
 **Granularity:** One entry per distinct user-facing, integrator-facing, or operator-facing capability. Split when behavior, audience, or configuration differ meaningfully. Merge when differences are implementation detail.
 
-**Component registries:** When a product exposes many named UI widgets, shortcodes, or MDX components from a registry, prefer **one `kind: component` entry per named component** — not one umbrella catalog entry. Populate `surface.ui` with the single component name. Link siblings via `related`. If the registry is large and homogeneous, a parent entry plus per-component children is acceptable only when each child has its own `sources` file; downstream [docs-scaffold](../docs-scaffold/SKILL.md) expects one doc page per component.
+**Component registries:** When a product exposes many named UI widgets, shortcodes, or MDX components from a registry, prefer **one `kind: component` entry per named component** — not one umbrella catalog entry. Populate `surface.ui` with the single component name. Link siblings via `related`. If the registry is large and homogeneous, a parent entry plus per-component children is acceptable only when each child has its own `sources` file; downstream [docs-sitemap-architect](../docs-sitemap-architect/SKILL.md) may plan one doc page per component.
 
 Example split:
 
@@ -398,8 +398,8 @@ A poor entry cites README text, guesses behavior, or duplicates documentation st
 ## Additional resources
 
 - Editorial spec (optional upstream): [docs-spec](../docs-spec/SKILL.md)
-- Project layout: [docs-scaffold](../docs-scaffold/SKILL.md#project-layout)
-- Next: [docs-scaffold Phase 1](../docs-scaffold/phases/1-plan.md) reads inventory for merge clusters
+- Project layout: [docs-sitemap-architect](../docs-sitemap-architect/SKILL.md#project-layout)
+- Next: [docs-sitemap-architect](../docs-sitemap-architect/SKILL.md) reads inventory for coverage scope
 
 ## Reporting to the user
 

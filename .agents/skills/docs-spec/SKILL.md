@@ -2,7 +2,7 @@
 name: docs-spec
 description: >-
   Gathers editorial documentation intent through a short interactive interview
-  and writes docs-spec.md. Use before docs-scaffold, when planning doc IA,
+  and writes docs-spec.md. Use before docs-sitemap-architect, when planning doc IA,
   defining personas and journeys, or when the user mentions docs-spec, doc brief,
   or documentation strategy. Does not scan source code or build docs-inventory.json.
 ---
@@ -16,7 +16,7 @@ Capture **who documentation is for** and **what story it should tell** before in
 ```
 docs-spec        →  .docs/docs-spec.md        ← you are here
 docs-inventory   →  .docs/docs-inventory.json
-docs-scaffold    →  docs.json + stub .mdx + docs check
+docs-sitemap-architect →  .docs/docs-outline.md
 docs-write       →  full .mdx content
 ```
 
@@ -24,7 +24,7 @@ docs-write       →  full .mdx content
 
 ## Project layout
 
-Write to `.docs/docs-spec.md` at the project root. Path resolution: [docs-scaffold — Project layout](../docs-scaffold/SKILL.md#project-layout).
+Write to `.docs/docs-spec.md` at the project root. Path resolution: [docs-sitemap-architect — Project layout](../docs-sitemap-architect/SKILL.md#project-layout).
 
 ## Scope
 
@@ -40,7 +40,7 @@ Write to `.docs/docs-spec.md` at the project root. Path resolution: [docs-scaffo
 
 ## Output location
 
-Resolve path per [docs-scaffold — Project layout](../docs-scaffold/SKILL.md#project-layout):
+Resolve path per [docs-sitemap-architect — Project layout](../docs-sitemap-architect/SKILL.md#project-layout):
 
 1. User-specified path
 2. `.docs/docs-spec.md` (create `.docs/` if needed)
@@ -123,7 +123,7 @@ Capture two lists:
 
 If unsure, default `omit` to empty and `advancedOnly` to architecture/internals themes.
 
-Do **not** ask about tabs, sidebar groups, or page slugs — those are [docs-scaffold](../docs-scaffold/SKILL.md) decisions, informed by `docs-inventory.json` and [sidebar-ia.md](../docs-scaffold/sidebar-ia.md).
+Do **not** ask about tabs, sidebar groups, or page slugs — those are [docs-sitemap-architect](../docs-sitemap-architect/SKILL.md) decisions, informed by `docs-inventory.json`.
 
 ### Question 6: Confirm
 
@@ -131,7 +131,7 @@ Show the full draft `docs-spec.md` (from [docs-spec.template.md](docs-spec.templ
 
 - Set `updatedAt` to today (`YYYY-MM-DD`)
 - Write the file
-- Tell the user the next step: run [docs-inventory](../docs-inventory/SKILL.md) if `docs-inventory.json` is missing or stale, then [docs-scaffold](../docs-scaffold/SKILL.md) Phase 1 (plan → `.docs/scaffold-plan.md`)
+- Tell the user the next step: run [docs-inventory](../docs-inventory/SKILL.md) if `docs-inventory.json` is missing or stale, then [docs-sitemap-architect](../docs-sitemap-architect/SKILL.md) (→ `.docs/docs-outline.md`)
 
 ## Output format
 
@@ -174,11 +174,11 @@ After writing:
 - `primaryPersona` and `firstSuccess.outcome`
 - Journey spine (ordered goal ids)
 - Omit/advanced counts
-- Next steps: docs-inventory → docs-scaffold Phase 1 (`.docs/scaffold-plan.md`)
+- Next steps: docs-inventory → docs-sitemap-architect (`.docs/docs-outline.md`)
 
 ## Additional resources
 
 - Template: [docs-spec.template.md](docs-spec.template.md)
 - Example (fictional Taskflow): [docs-spec.example.md](docs-spec.example.md)
-- User goal ids (shared with docs-scaffold): [user-goals.md](user-goals.md)
-- Downstream IA: [docs-scaffold](../docs-scaffold/SKILL.md)
+- User goal ids (shared with docs-sitemap-architect): [user-goals.md](user-goals.md)
+- Downstream IA: [docs-sitemap-architect](../docs-sitemap-architect/SKILL.md)

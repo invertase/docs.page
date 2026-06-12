@@ -2,262 +2,157 @@
   "$schema": "https://docs.page/schema.json",
   "name": "docs.page",
   "description": "Instantly serve markdown from any GitHub branch as modern, agent-ready docs.",
-  "tabs": [
-    {
-      "id": "root",
-      "title": "Documentation",
-      "href": "/"
-    },
-    {
-      "id": "components",
-      "title": "Components",
-      "href": "/components"
-    }
-  ],
+  "logo": {
+    "light": "https://static.invertase.io/assets/docs.page/docs-page-logo-v2.png",
+    "dark": "https://static.invertase.io/assets/docs.page/docs-page-logo-v2.png"
+  },
+  "theme": {
+    "preset": "emerald"
+  },
   "sidebar": [
     {
       "group": "Getting Started",
-      "tab": "root",
       "pages": [
         {
-          "title": "Overview",
+          "title": "Introduction",
           "href": "/"
         },
         {
-          "title": "Quickstart",
-          "href": "/quickstart"
-        }
-      ],
-      "icon": "rocket"
-    },
-    {
-      "group": "Guides",
-      "tab": "root",
-      "pages": [
-        {
-          "title": "Plan your site",
-          "href": "/guides/plan-your-docs-site"
+          "title": "Publish your first site",
+          "href": "/publish-your-first-site"
         },
         {
-          "title": "Choose a content type",
-          "href": "/guides/content-types"
-        },
-        {
-          "group": "Write by doc type",
+          "group": "Docs Guides",
           "pages": [
             {
-              "title": "Write a product guide",
-              "href": "/guides/write/product-guide"
+              "title": "Choose a documentation type",
+              "href": "/guides/choose-a-documentation-type"
             },
             {
-              "title": "Write an API reference",
-              "href": "/guides/write/api-sdk-reference"
+              "title": "Product documentation",
+              "href": "/guides/product-documentation"
             },
             {
-              "title": "Write a knowledge base",
-              "href": "/guides/write/support-knowledge-base"
+              "title": "API reference documentation",
+              "href": "/guides/api-reference-documentation"
             },
             {
-              "title": "Write a changelog",
-              "href": "/guides/write/changelog"
+              "title": "Help center documentation",
+              "href": "/guides/help-center-documentation"
             },
             {
-              "title": "Write an internal handbook",
-              "href": "/guides/write/internal-handbook"
+              "title": "Changelog documentation",
+              "href": "/guides/changelog-documentation"
+            },
+            {
+              "title": "Team handbook documentation",
+              "href": "/guides/team-handbook-documentation"
             }
           ]
         }
-      ],
-      "icon": "pen-to-square"
+      ]
     },
     {
-      "group": "Publishing docs",
-      "tab": "root",
+      "group": "Authoring content",
       "pages": [
         {
-          "title": "Share and preview links",
-          "href": "/publishing/urls"
+          "title": "Write documentation",
+          "href": "/authoring/write-documentation"
         },
         {
-          "group": "Configure your site",
-          "pages": [
-            {
-              "title": "Customize theme and branding",
-              "href": "/configuration/theme-and-branding"
-            },
-            {
-              "title": "Add analytics and SEO",
-              "href": "/configuration/analytics-and-seo"
-            },
-            {
-              "title": "Configure content display",
-              "href": "/configuration/content-display"
-            },
-            {
-              "title": "Set up a custom domain",
-              "href": "/configuration/custom-domains"
-            },
-            {
-              "title": "docs.json reference",
-              "href": "/configuration/reference"
-            }
-          ]
+          "title": "Organize your navigation",
+          "href": "/authoring/organize-your-navigation"
         },
         {
-          "group": "Enable agent features",
-          "pages": [
-            {
-              "title": "Enable AI chat",
-              "href": "/publishing/agent-ready/ai-chat"
-            },
-            {
-              "title": "Add agent skills",
-              "href": "/publishing/agent-ready/skills"
-            }
-          ]
+          "title": "Preview locally",
+          "href": "/authoring/preview-locally"
         },
         {
-          "title": "Use the CLI",
-          "href": "/cli"
+          "title": "Share pull request previews",
+          "href": "/authoring/share-pull-request-previews"
         },
         {
-          "group": "Advanced",
-          "pages": [
-            {
-              "title": "Write for AI search",
-              "href": "/advanced/optimize-for-ai-search"
-            },
-            {
-              "title": "Install the GitHub bot",
-              "href": "/advanced/github-bot"
-            },
-            {
-              "title": "Set page metadata",
-              "href": "/advanced/frontmatter"
-            }
-          ]
+          "title": "Translate documentation",
+          "href": "/authoring/translate-documentation"
+        },
+        {
+          "title": "Update moved pages",
+          "href": "/authoring/update-moved-pages"
         }
-      ],
-      "icon": "cloud-arrow-up"
+      ]
     },
     {
-      "group": "Using docs",
-      "tab": "root",
+      "group": "Customize your site",
       "pages": [
         {
-          "title": "Search docs",
-          "href": "/using/search"
+          "title": "Apply your branding",
+          "href": "/customize/apply-your-branding"
         },
         {
-          "title": "Chat with docs",
-          "href": "/using/chat"
+          "title": "Connect a custom domain",
+          "href": "/customize/connect-a-custom-domain"
         },
         {
-          "title": "Connect AI tools",
-          "href": "/using/connect"
+          "title": "Improve search visibility",
+          "href": "/customize/improve-search-visibility"
+        },
+        {
+          "title": "Track reader engagement",
+          "href": "/customize/track-reader-engagement"
         }
-      ],
-      "icon": "book-open-reader"
-    },
-    {
-      "group": "Comparisons",
-      "tab": "root",
-      "pages": [
-        {
-          "title": "Docusaurus",
-          "href": "/comparisons/docusaurus"
-        },
-        {
-          "title": "docsify",
-          "href": "/comparisons/docsify"
-        },
-        {
-          "title": "Jekyll",
-          "href": "/comparisons/jekyll"
-        }
-      ],
-      "icon": "code-compare"
+      ]
     },
     {
       "group": "Components",
-      "tab": "components",
       "pages": [
         {
-          "title": "Overview",
+          "title": "Components overview",
           "href": "/components"
-        }
-      ],
-      "icon": "cubes"
-    },
-    {
-      "group": "Layout & structure",
-      "tab": "components",
-      "pages": [
+        },
         {
           "title": "Accordion",
           "href": "/components/accordion"
         },
         {
-          "title": "Tabs",
-          "href": "/components/tabs"
-        },
-        {
-          "title": "Steps",
-          "href": "/components/steps"
-        },
-        {
-          "title": "Heading",
-          "href": "/components/heading"
-        }
-      ],
-      "icon": "layer-group"
-    },
-    {
-      "group": "Content blocks",
-      "tab": "components",
-      "pages": [
-        {
-          "title": "Callout",
-          "href": "/components/callout"
+          "title": "Callouts",
+          "href": "/components/callouts"
         },
         {
           "title": "Card",
           "href": "/components/card"
         },
         {
-          "title": "Property",
-          "href": "/components/property"
-        }
-      ],
-      "icon": "shapes"
-    },
-    {
-      "group": "Code & media",
-      "tab": "components",
-      "pages": [
-        {
           "title": "Code blocks",
-          "href": "/components/code-fence"
+          "href": "/components/code-blocks"
         },
         {
           "title": "Code group",
           "href": "/components/code-group"
         },
         {
-          "title": "Image",
-          "href": "/components/image"
+          "title": "Heading",
+          "href": "/components/heading"
         },
         {
           "title": "Icon",
           "href": "/components/icon"
-        }
-      ],
-      "icon": "code"
-    },
-    {
-      "group": "Embeds",
-      "tab": "components",
-      "pages": [
+        },
+        {
+          "title": "Image",
+          "href": "/components/image"
+        },
+        {
+          "title": "Property",
+          "href": "/components/property"
+        },
+        {
+          "title": "Steps",
+          "href": "/components/steps"
+        },
+        {
+          "title": "Tabs",
+          "href": "/components/tabs"
+        },
         {
           "title": "Tweet",
           "href": "/components/tweet"
@@ -267,731 +162,114 @@
           "href": "/components/video"
         },
         {
-          "title": "Vimeo",
-          "href": "/components/vimeo"
-        },
-        {
           "title": "YouTube",
           "href": "/components/youtube"
+        },
+        {
+          "title": "Vimeo",
+          "href": "/components/vimeo"
         }
-      ],
-      "icon": "photo-film"
-    }
-  ],
-  "outline": {
-    "version": "3.0.0",
-    "updatedAt": "2026-06-11",
-    "sourceInventory": ".docs/docs-inventory.json",
-    "pages": [
-      {
-        "href": "/",
-        "title": "Overview",
-        "description": "What docs.page is, who it is for, and how publishing from GitHub works.",
-        "docType": "explanation",
-        "userGoal": "orient",
-        "status": "stub",
-        "file": "docs/index.mdx",
-        "capabilityIds": [
-          "github-hosting"
-        ],
-        "audience": [
-          "contributor",
-          "end-user"
-        ]
-      },
-      {
-        "href": "/quickstart",
-        "title": "Quickstart",
-        "description": "Add docs.json, preview locally, run docs check, push to GitHub, and open your live URL.",
-        "docType": "tutorial",
-        "userGoal": "first-success",
-        "status": "stub",
-        "file": "docs/quickstart.mdx",
-        "capabilityIds": [
-          "github-hosting",
-          "docs-json-config",
-          "cli-init",
-          "public-repos-only",
-          "cli-check",
-          "local-preview"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/guides/plan-your-docs-site",
-        "title": "Plan your site",
-        "description": "Plan sidebar, tabs, and locales before you write pages.",
-        "docType": "how-to",
-        "userGoal": "author-content",
-        "status": "stub",
-        "file": "docs/guides/plan-your-docs-site.mdx",
-        "capabilityIds": [
-          "config-sidebar",
-          "config-tabs",
-          "locales",
-          "docs-json-config"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/guides/content-types",
-        "title": "Choose a content type",
-        "description": "Pick a docs archetype that fits your product and audience.",
-        "docType": "explanation",
-        "userGoal": "author-content",
-        "status": "stub",
-        "file": "docs/guides/content-types.mdx",
-        "capabilityIds": [],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/guides/write/product-guide",
-        "title": "Write a product guide",
-        "description": "Structure and write product documentation in MDX.",
-        "docType": "how-to",
-        "userGoal": "author-content",
-        "status": "stub",
-        "file": "docs/guides/write/product-guide.mdx",
-        "capabilityIds": [
-          "config-content"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/guides/write/api-sdk-reference",
-        "title": "Write an API reference",
-        "description": "Organize API and SDK reference content on docs.page.",
-        "docType": "how-to",
-        "userGoal": "author-content",
-        "status": "stub",
-        "file": "docs/guides/write/api-sdk-reference.mdx",
-        "capabilityIds": [
-          "config-content"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/guides/write/support-knowledge-base",
-        "title": "Write a knowledge base",
-        "description": "Build a support knowledge base with searchable articles.",
-        "docType": "how-to",
-        "userGoal": "author-content",
-        "status": "stub",
-        "file": "docs/guides/write/support-knowledge-base.mdx",
-        "capabilityIds": [
-          "config-content"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/guides/write/changelog",
-        "title": "Write a changelog",
-        "description": "Publish release notes and changelogs from your repo.",
-        "docType": "how-to",
-        "userGoal": "author-content",
-        "status": "stub",
-        "file": "docs/guides/write/changelog.mdx",
-        "capabilityIds": [
-          "config-content"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/guides/write/internal-handbook",
-        "title": "Write an internal handbook",
-        "description": "Document internal processes and team handbooks.",
-        "docType": "how-to",
-        "userGoal": "author-content",
-        "status": "stub",
-        "file": "docs/guides/write/internal-handbook.mdx",
-        "capabilityIds": [
-          "config-content",
-          "public-repos-only"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/publishing/urls",
-        "title": "Share and preview links",
-        "description": "Share vanity URLs, branch previews, and docs.page link shapes.",
-        "docType": "how-to",
-        "userGoal": "customize",
-        "status": "stub",
-        "file": "docs/publishing/urls.mdx",
-        "capabilityIds": [
-          "vanity-subdomains",
-          "ref-previews",
-          "github-hosting"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/configuration/theme-and-branding",
-        "title": "Customize theme and branding",
-        "description": "Set theme, logo, header links, and the theme toggle.",
-        "docType": "how-to",
-        "userGoal": "customize",
-        "status": "stub",
-        "file": "docs/configuration/theme-and-branding.mdx",
-        "capabilityIds": [
-          "config-theme",
-          "config-logo",
-          "config-header"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/configuration/analytics-and-seo",
-        "title": "Add analytics and SEO",
-        "description": "Add analytics, SEO metadata, social cards, sitemap, and robots.txt.",
-        "docType": "how-to",
-        "userGoal": "customize",
-        "status": "stub",
-        "file": "docs/configuration/analytics-and-seo.mdx",
-        "capabilityIds": [
-          "config-analytics",
-          "config-seo",
-          "config-social",
-          "sitemap",
-          "robots-txt"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/configuration/content-display",
-        "title": "Configure content display",
-        "description": "Control TOC depth, anchors, previous/next links, and image zoom.",
-        "docType": "how-to",
-        "userGoal": "customize",
-        "status": "stub",
-        "file": "docs/configuration/content-display.mdx",
-        "capabilityIds": [
-          "config-content",
-          "config-anchors",
-          "previous-next"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/configuration/custom-domains",
-        "title": "Set up a custom domain",
-        "description": "Point a custom domain at your docs.page site.",
-        "docType": "how-to",
-        "userGoal": "customize",
-        "status": "stub",
-        "file": "docs/configuration/custom-domains.mdx",
-        "capabilityIds": [
-          "custom-domains"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/publishing/agent-ready/ai-chat",
-        "title": "Enable AI chat",
-        "description": "Enable the in-docs AI chat panel with the CLI and docs.json.",
-        "docType": "how-to",
-        "userGoal": "integrate",
-        "status": "stub",
-        "file": "docs/publishing/agent-ready/ai-chat.mdx",
-        "capabilityIds": [
-          "ai-chat",
-          "config-agent",
-          "cli-agent-create",
-          "cli-agent-delete",
-          "create-agent-api",
-          "delete-agent-api"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/publishing/agent-ready/skills",
-        "title": "Add agent skills",
-        "description": "Publish .agents/skills for MCP clients to discover.",
-        "docType": "how-to",
-        "userGoal": "integrate",
-        "status": "stub",
-        "file": "docs/publishing/agent-ready/skills.mdx",
-        "capabilityIds": [
-          "mcp-skills"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/cli",
-        "title": "Use the CLI",
-        "description": "docs init, docs check, and agent commands.",
-        "docType": "reference",
-        "userGoal": "lookup",
-        "status": "stub",
-        "file": "docs/cli/index.mdx",
-        "capabilityIds": [
-          "cli-init",
-          "cli-check",
-          "cli-agent-create",
-          "cli-agent-delete",
-          "cli-api-url"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/advanced/optimize-for-ai-search",
-        "title": "Write for AI search",
-        "description": "Write headings and paragraphs that rank well in semantic search.",
-        "docType": "how-to",
-        "userGoal": "author-content",
-        "status": "stub",
-        "file": "docs/advanced/optimize-for-ai-search.mdx",
-        "capabilityIds": [
-          "config-seo",
-          "docs-search"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/advanced/github-bot",
-        "title": "Install the GitHub bot",
-        "description": "Install the GitHub bot for pull request doc previews.",
-        "docType": "how-to",
-        "userGoal": "customize",
-        "status": "stub",
-        "file": "docs/advanced/github-bot.mdx",
-        "capabilityIds": [
-          "github-bot"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/advanced/frontmatter",
-        "title": "Set page metadata",
-        "description": "Set redirects, titles, and navigation overrides in frontmatter.",
-        "docType": "how-to",
-        "userGoal": "author-content",
-        "status": "stub",
-        "file": "docs/advanced/frontmatter.mdx",
-        "capabilityIds": [
-          "redirects",
-          "previous-next"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/using/search",
-        "title": "Search docs",
-        "description": "Use the search bar and ⌘K modal on a published docs site.",
-        "docType": "explanation",
-        "userGoal": "lookup",
-        "status": "stub",
-        "file": "docs/using/search.mdx",
-        "capabilityIds": [
-          "docs-search",
-          "search-json"
-        ],
-        "audience": [
-          "end-user",
-          "integrator"
-        ]
-      },
-      {
-        "href": "/using/chat",
-        "title": "Chat with docs",
-        "description": "Use the in-docs AI chat panel when it is enabled.",
-        "docType": "explanation",
-        "userGoal": "lookup",
-        "status": "stub",
-        "file": "docs/using/chat.mdx",
-        "capabilityIds": [
-          "ai-chat",
-          "agent-chat-api"
-        ],
-        "audience": [
-          "end-user",
-          "integrator"
-        ]
-      },
-      {
-        "href": "/using/connect",
-        "title": "Connect AI tools",
-        "description": "Connect MCP clients and fetch llms.txt from a live docs site.",
-        "docType": "how-to",
-        "userGoal": "integrate",
-        "status": "stub",
-        "file": "docs/using/connect.mdx",
-        "capabilityIds": [
-          "mcp-server",
-          "mcp-skills",
-          "llms-txt",
-          "llms-full-txt",
-          "bundle-api",
-          "raw-markdown"
-        ],
-        "audience": [
-          "integrator",
-          "end-user"
-        ]
-      },
-      {
-        "href": "/comparisons/docusaurus",
-        "title": "Docusaurus",
-        "description": "How docs.page compares to Docusaurus and how to move your docs site over.",
-        "docType": "explanation",
-        "userGoal": "orient",
-        "status": "stub",
-        "file": "docs/comparisons/docusaurus.mdx",
-        "capabilityIds": [],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/comparisons/docsify",
-        "title": "docsify",
-        "description": "How docs.page compares to docsify and how to move your docs site over.",
-        "docType": "explanation",
-        "userGoal": "orient",
-        "status": "stub",
-        "file": "docs/comparisons/docsify.mdx",
-        "capabilityIds": [],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/comparisons/jekyll",
-        "title": "Jekyll",
-        "description": "How docs.page compares to Jekyll and how to move your docs site over.",
-        "docType": "explanation",
-        "userGoal": "orient",
-        "status": "stub",
-        "file": "docs/comparisons/jekyll.mdx",
-        "capabilityIds": [],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/configuration/reference",
-        "title": "docs.json reference",
-        "description": "docs.json field reference.",
-        "docType": "reference",
-        "userGoal": "lookup",
-        "status": "stub",
-        "file": "docs/configuration/reference.mdx",
-        "capabilityIds": [
-          "docs-json-config",
-          "config-sidebar",
-          "config-theme",
-          "config-agent",
-          "config-mcp",
-          "config-content",
-          "config-tabs",
-          "config-header",
-          "config-logo",
-          "config-seo",
-          "config-social",
-          "config-analytics",
-          "config-anchors",
-          "config-variables",
-          "config-schema"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/components",
-        "title": "Overview",
-        "description": "Built-in MDX components for docs.page sites.",
-        "docType": "catalogue",
-        "userGoal": "lookup",
-        "status": "stub",
-        "file": "docs/components/index.mdx",
-        "capabilityIds": [],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/components/accordion",
-        "title": "Accordion",
-        "description": "Accordion MDX component reference.",
-        "docType": "catalogue",
-        "userGoal": "lookup",
-        "status": "stub",
-        "file": "docs/components/accordion.mdx",
-        "capabilityIds": [
-          "component-accordion"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/components/tabs",
-        "title": "Tabs",
-        "description": "Tabs MDX component reference.",
-        "docType": "catalogue",
-        "userGoal": "lookup",
-        "status": "stub",
-        "file": "docs/components/tabs.mdx",
-        "capabilityIds": [
-          "component-tabs"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/components/steps",
-        "title": "Steps",
-        "description": "Steps MDX component reference.",
-        "docType": "catalogue",
-        "userGoal": "lookup",
-        "status": "stub",
-        "file": "docs/components/steps.mdx",
-        "capabilityIds": [
-          "component-steps"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/components/heading",
-        "title": "Heading",
-        "description": "Heading MDX component reference.",
-        "docType": "catalogue",
-        "userGoal": "lookup",
-        "status": "stub",
-        "file": "docs/components/heading.mdx",
-        "capabilityIds": [
-          "component-heading"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/components/callout",
-        "title": "Callout",
-        "description": "Callout MDX component reference.",
-        "docType": "catalogue",
-        "userGoal": "lookup",
-        "status": "stub",
-        "file": "docs/components/callout.mdx",
-        "capabilityIds": [
-          "component-callout"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/components/card",
-        "title": "Card",
-        "description": "Card MDX component reference.",
-        "docType": "catalogue",
-        "userGoal": "lookup",
-        "status": "stub",
-        "file": "docs/components/card.mdx",
-        "capabilityIds": [
-          "component-card"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/components/property",
-        "title": "Property",
-        "description": "Property MDX component reference.",
-        "docType": "catalogue",
-        "userGoal": "lookup",
-        "status": "stub",
-        "file": "docs/components/property.mdx",
-        "capabilityIds": [
-          "component-property"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/components/code-fence",
-        "title": "Code blocks",
-        "description": "Code blocks MDX component reference.",
-        "docType": "catalogue",
-        "userGoal": "lookup",
-        "status": "stub",
-        "file": "docs/components/code-fence.mdx",
-        "capabilityIds": [
-          "component-code-fence"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/components/code-group",
-        "title": "Code group",
-        "description": "Code group MDX component reference.",
-        "docType": "catalogue",
-        "userGoal": "lookup",
-        "status": "stub",
-        "file": "docs/components/code-group.mdx",
-        "capabilityIds": [
-          "component-code-group"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/components/image",
-        "title": "Image",
-        "description": "Image MDX component reference.",
-        "docType": "catalogue",
-        "userGoal": "lookup",
-        "status": "stub",
-        "file": "docs/components/image.mdx",
-        "capabilityIds": [
-          "component-image"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/components/icon",
-        "title": "Icon",
-        "description": "Icon MDX component reference.",
-        "docType": "catalogue",
-        "userGoal": "lookup",
-        "status": "stub",
-        "file": "docs/components/icon.mdx",
-        "capabilityIds": [
-          "component-icon"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/components/tweet",
-        "title": "Tweet",
-        "description": "Tweet MDX component reference.",
-        "docType": "catalogue",
-        "userGoal": "lookup",
-        "status": "stub",
-        "file": "docs/components/tweet.mdx",
-        "capabilityIds": [
-          "component-tweet"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/components/video",
-        "title": "Video",
-        "description": "Video MDX component reference.",
-        "docType": "catalogue",
-        "userGoal": "lookup",
-        "status": "stub",
-        "file": "docs/components/video.mdx",
-        "capabilityIds": [
-          "component-video"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/components/vimeo",
-        "title": "Vimeo",
-        "description": "Vimeo MDX component reference.",
-        "docType": "catalogue",
-        "userGoal": "lookup",
-        "status": "stub",
-        "file": "docs/components/vimeo.mdx",
-        "capabilityIds": [
-          "component-vimeo"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      },
-      {
-        "href": "/components/youtube",
-        "title": "YouTube",
-        "description": "YouTube MDX component reference.",
-        "docType": "catalogue",
-        "userGoal": "lookup",
-        "status": "stub",
-        "file": "docs/components/youtube.mdx",
-        "capabilityIds": [
-          "component-youtube"
-        ],
-        "audience": [
-          "contributor"
-        ]
-      }
-    ],
-    "coverage": {
-      "unmappedCapabilityIds": []
+      ]
     },
-    "validation": {
-      "passed": true,
-      "issues": [],
-      "cliCheck": {
-        "passed": true,
-        "command": "bun packages/cli/src/cli.ts check . --external-links off",
-        "ranAt": "2026-06-11",
-        "errors": 0,
-        "warnings": 0
-      },
-      "stats": {
-        "pageCount": 43,
-        "stubPages": 43,
-        "componentPages": 15
-      }
+    {
+      "group": "AI agents",
+      "pages": [
+        {
+          "title": "Agent-ready docs",
+          "href": "/ai-agents/agent-ready-docs"
+        },
+        {
+          "title": "llms.txt",
+          "href": "/ai-agents/llms-txt"
+        },
+        {
+          "title": "MCP server",
+          "href": "/ai-agents/mcp-server"
+        },
+        {
+          "title": "Agent skills",
+          "href": "/ai-agents/agent-skills"
+        },
+        {
+          "title": "AI chat",
+          "href": "/ai-agents/ai-chat"
+        },
+        {
+          "title": "Embed a docs assistant",
+          "href": "/ai-agents/embed-a-docs-assistant"
+        }
+      ]
+    },
+    {
+      "group": "Platform comparisons",
+      "pages": [
+        {
+          "title": "Choosing a docs platform",
+          "href": "/comparisons/choosing-a-docs-platform"
+        },
+        {
+          "title": "docs.page vs Mintlify",
+          "href": "/comparisons/docs-page-vs-mintlify"
+        },
+        {
+          "title": "docs.page vs Docusaurus",
+          "href": "/comparisons/docs-page-vs-docusaurus"
+        },
+        {
+          "title": "docs.page vs docsify",
+          "href": "/comparisons/docs-page-vs-docsify"
+        },
+        {
+          "title": "docs.page vs Jekyll",
+          "href": "/comparisons/docs-page-vs-jekyll"
+        },
+        {
+          "title": "docs.page vs GitHub Pages",
+          "href": "/comparisons/docs-page-vs-github-pages"
+        }
+      ]
+    },
+    {
+      "group": "Reference",
+      "pages": [
+        {
+          "title": "docs.json reference",
+          "href": "/reference/docs-json-reference"
+        },
+        {
+          "title": "Page frontmatter",
+          "href": "/reference/page-frontmatter"
+        },
+        {
+          "title": "CLI reference",
+          "href": "/reference/cli-reference"
+        },
+        {
+          "title": "HTTP endpoints",
+          "href": "/reference/http-endpoints"
+        },
+        {
+          "title": "Analytics providers",
+          "href": "/reference/analytics-providers"
+        },
+        {
+          "title": "Variables",
+          "href": "/reference/variables"
+        },
+        {
+          "title": "Search index",
+          "href": "/reference/search-index"
+        }
+      ]
+    },
+    {
+      "group": "Advanced",
+      "pages": [
+        {
+          "title": "Platform architecture",
+          "href": "/advanced/platform-architecture"
+        }
+      ]
     }
-  }
+  ]
 }

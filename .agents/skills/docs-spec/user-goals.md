@@ -39,4 +39,4 @@ When the interview does not specify a custom order, suggest this spine for the p
 **Operator-led (infra, self-hosted):**
 `orient` → `first-success` → `operate` → `integrate` → `lookup` → `understand`
 
-Adjust order in `docs-spec.md`; [docs-scaffold](../docs-scaffold/SKILL.md) treats the spec as authoritative over inferred defaults.
+Adjust order in `docs-spec.md`; [docs-sitemap-architect](../docs-sitemap-architect/SKILL.md) treats the spec as authoritative over inferred defaults.

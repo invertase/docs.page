@@ -4,7 +4,7 @@ description: >-
   Writes or revises MDX documentation pages from an approved docs.json outline.
   Applies Diátaxis templates, tone rules, and style linting. Use when drafting
   doc page content, writing .mdx files, or when the user mentions docs-write,
-  docs-writer, after approving a docs.json scaffold. Does not build docs-inventory.json or site IA.
+  docs-writer, after approving a docs outline. Does not build docs-inventory.json or site IA.
 ---
 
 # Docs Write
@@ -16,13 +16,15 @@ Write **prose** for pages that are already planned in `docs.json`. Routing and n
 ```
 docs-spec        →  .docs/docs-spec.md
 docs-inventory   →  .docs/docs-inventory.json
-docs-scaffold    →  docs.json + stub .mdx + docs check
+docs-sitemap-architect →  .docs/docs-outline.md
 docs-write       →  full .mdx content   ← you are here
 ```
 
-**Upstream (required):** Approved `docs.json` with an `outline` block from [docs-scaffold](../docs-scaffold/SKILL.md). If no `outline.pages` exists, stop and run docs-scaffold first — unless the user explicitly scopes a single page edit.
+**Upstream (required for new documentation efforts):** Approved `.docs/docs-outline.md` from [docs-sitemap-architect](../docs-sitemap-architect/SKILL.md). Stop and run docs-sitemap-architect first if missing — unless the user explicitly scopes a single page edit.
 
-**Secondary input:** `.docs/docs-inventory.json` (or path in `outline.sourceInventory`) for capability detail; `.docs/docs-spec.md` for positioning and tone when drafting overview or tutorial pages. Resolve paths per [docs-scaffold — Project layout](../docs-scaffold/SKILL.md#project-layout). Read `sources` in code when `writingNotes` or `summary` is insufficient.
+**Secondary input:** `.docs/docs-inventory.json` for capability detail; `.docs/docs-spec.md` for positioning and tone when drafting overview or tutorial pages. Resolve paths per [docs-sitemap-architect — Project layout](../docs-sitemap-architect/SKILL.md#project-layout). Read `sources` in code when `writingNotes` or `summary` is insufficient.
+
+**Existing sites:** When `docs.json` with an `outline` block already exists, use `outline.pages` for page metadata alongside the approved outline.
 
 **Output:** `.mdx` files at paths defined in `outline.pages[].file`.
 
@@ -36,7 +38,7 @@ docs-write       →  full .mdx content   ← you are here
 **Out of scope**
 - Editorial spec / persona interviews → [docs-spec](../docs-spec/SKILL.md)
 - Building `docs-inventory.json` → [docs-inventory](../docs-inventory/SKILL.md)
-- Planning site structure → [docs-scaffold](../docs-scaffold/SKILL.md)
+- Planning site structure → [docs-sitemap-architect](../docs-sitemap-architect/SKILL.md)
 - Marketing copy, changelogs, or release notes unless explicitly requested
 
 ## Reading the outline
@@ -86,16 +88,16 @@ Accept work only when:
 - User specifies `href`s or `status: new` / `stub` pages to write, or
 - User requests a targeted edit to an **existing** `.mdx` file
 
-If the user asks to "document the product" without prior artifacts, respond in order: **docs-spec** → **docs-inventory** → **docs-scaffold**, then docs-write.
+If the user asks to "document the product" without prior artifacts, respond in order: **docs-spec** → **docs-inventory** → **docs-sitemap-architect**, then docs-write.
 
 Write priority:
 
-1. `status: stub` (placeholder from docs-scaffold)
+1. `status: stub` (placeholder pages)
 2. `status: new` (outline entry without a file — create full page)
 3. `status: existing` (revisions)
 4. Skip `status: retire` unless user asks for redirect stub
 
-When replacing a stub, read the existing file first. Scope from `outline.pages`, `.docs/scaffold-plan.md` merge map, and `capabilityIds`.
+When replacing a stub, read the existing file first. Scope from `.docs/docs-outline.md`, `outline.pages` (if present), and `capabilityIds`.
 
 ## Step 2: Load page context
 
@@ -112,7 +114,7 @@ For each target entry in `outline.pages`:
 | `audience` | Vocabulary and depth (beginner vs integrator) |
 | `status` | `existing` → read current file first |
 
-Also read `.docs/scaffold-plan.md` **Decisions** and **Pairs** for merge context and cross-links.
+Also read `.docs/docs-outline.md` for page purpose, Diátaxis type, and cross-link context.
 
 ## Clean up stubs
 
@@ -167,5 +169,5 @@ Summarize:
 - Page skeletons: [templates.md](templates.md)
 - Style lint: [style-lint.md](style-lint.md)
 - Editorial spec (upstream): [docs-spec](../docs-spec/SKILL.md)
-- Site outline (upstream): [docs-scaffold](../docs-scaffold/SKILL.md)
+- Site outline (upstream): [docs-sitemap-architect](../docs-sitemap-architect/SKILL.md)
 - Capability detail (upstream): [docs-inventory](../docs-inventory/SKILL.md)
