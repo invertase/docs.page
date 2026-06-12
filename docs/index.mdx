@@ -1,6 +1,6 @@
 ---
 title: Introduction
-description: Instant, open source documentation hosting from a public GitHub repository, with no build step or hosting account.
+description: Instant, open-source documentation hosting from a public GitHub repository, with no build step or hosting account.
 ---
 
 [docs.page](https://docs.page) serves documentation straight from a public GitHub repository — no build step, no hosting account, and no separate deploy pipeline. You add a `docs.json` config file and write pages as MDX under `docs/`; [docs.page](https://docs.page) renders them at a live URL that stays in sync with your default branch.
@@ -15,11 +15,11 @@ Think of [docs.page](https://docs.page) as **docs-as-code with zero hosting setu
 
 ## Who it is for
 
-| Reader | What they get |
-| --- | --- |
+| Reader           | What they get                                                                                                        |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------- |
 | **Contributors** | A Git-native way to write, preview, and ship documentation — product teams, open-source maintainers, and SDK authors |
-| **End users** | Fast, searchable docs with modern navigation, theming, and MDX components |
-| **Integrators** | Agent-ready surfaces — llms.txt, MCP, and HTTP APIs — on the same URLs readers already use |
+| **End users**    | Fast, searchable docs with modern navigation, theming, and MDX components                                            |
+| **Integrators**  | Agent-ready surfaces — llms.txt, MCP, and HTTP APIs — on the same URLs readers already use                           |
 
 ## How hosting works
 
@@ -45,7 +45,9 @@ https://docs.page/{owner}/{repo}
 For example, a repository at `https://github.com/acme/my-project` is available at `https://docs.page/acme/my-project`. Individual pages follow the path of their file under `docs/` — `docs/usage.mdx` becomes `/usage`.
 
 <Info>
-  [docs.page](https://docs.page) only hosts **public** repositories. Private repos are blocked before any content is served. Keep documentation in a public repo, or in a public docs-only repository linked from your project.
+  [docs.page](https://docs.page) only hosts **public** repositories. Private
+  repos are blocked before any content is served. Keep documentation in a public
+  repo, or in a public docs-only repository linked from your project.
 </Info>
 
 ### What you do not need
@@ -77,16 +79,33 @@ For side-by-side comparisons with Docusaurus, Mintlify, GitHub Pages, and simila
 ## Related
 
 <CardGroup cols={2}>
-  <Card title="Publish your first site" icon="rocket" href="/publish-your-first-site">
-    Scaffold a site, push to GitHub, and open your live [docs.page](https://docs.page) URL.
+  <Card
+    title="Publish your first site"
+    icon="rocket"
+    href="/publish-your-first-site"
+  >
+    Scaffold a site, push to GitHub, and open your live
+    [docs.page](https://docs.page) URL.
   </Card>
-  <Card title="Write documentation" icon="pen-to-square" href="/authoring/write-documentation">
+  <Card
+    title="Write documentation"
+    icon="pen-to-square"
+    href="/authoring/write-documentation"
+  >
     Structure pages, write clear prose, and add code examples and media.
   </Card>
-  <Card title="Agent-ready docs" icon="robot" href="/ai-agents/agent-ready-docs">
+  <Card
+    title="Agent-ready docs"
+    icon="robot"
+    href="/ai-agents/agent-ready-docs"
+  >
     Learn how llms.txt, MCP, and AI chat expose your docs to agents.
   </Card>
-  <Card title="docs.json reference" icon="book" href="/reference/docs-json-reference">
+  <Card
+    title="docs.json reference"
+    icon="book"
+    href="/reference/docs-json-reference"
+  >
     Look up every configuration field when you need exact syntax.
   </Card>
 </CardGroup>
