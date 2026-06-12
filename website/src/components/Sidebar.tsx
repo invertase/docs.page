@@ -1,7 +1,7 @@
 import { ChevronDownIcon, ChevronUpIcon, XIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { type ReactElement, cloneElement, useState } from "react";
+import { type ReactElement, cloneElement, useEffect, useState } from "react";
 import { useHrefMeta, usePageContext, useSidebar } from "~/context";
 import { cn, getHrefIsActive, isExternalLink } from "~/utils";
 import { Anchors } from "./Anchors";
@@ -109,11 +109,20 @@ function SidebarGroup(props: { group: Pages[number] } & { depth: number }) {
     return isActive;
   }
 
-  // Determine if this group has an active child link.
+  // Determine if this group has an active child link or hub href.
   const activeChild =
-    "group" in props.group ? hasActiveChild(props.group.pages) : false;
+    "group" in props.group
+      ? hasActiveChild(props.group.pages) ||
+        (props.group.href
+          ? getHrefIsActive(ctx, router.asPath, props.group.href)
+          : false)
+      : false;
 
   const [open, setOpen] = useState(activeChild);
+
+  useEffect(() => {
+    setOpen(activeChild);
+  }, [activeChild]);
 
   if ("title" in props.group) {
     return (
@@ -215,7 +224,11 @@ function SidebarAnchor(props: {
           key="toggle"
           type="button"
           onKeyDown={props.onClick}
-          onClick={props.onClick}
+          onClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            props.onClick?.();
+          }}
           className="px-3"
         >
           {props.collapse}
