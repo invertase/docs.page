@@ -70,6 +70,7 @@
         {
           "group": "Appearance",
           "icon": "palette",
+          "href": "/appearance",
           "pages": [
             {
               "title": "Theme",
@@ -86,6 +87,7 @@
         {
           "group": "Navigation",
           "icon": "bars",
+          "href": "/navigation",
           "pages": [
             {
               "title": "Sidebar & tabs",
@@ -107,6 +109,7 @@
         {
           "group": "Integrations",
           "icon": "plug",
+          "href": "/integrations",
           "pages": [
             {
               "title": "Search",
@@ -315,6 +318,7 @@
         {
           "group": "Commands",
           "icon": "terminal",
+          "href": "/cli",
           "pages": [
             {
               "title": "init",
