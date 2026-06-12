@@ -136,14 +136,25 @@ Agent-ready surfaces — sequenced after first publish per spec tone guidance.
 
 Product comparisons for evaluation and SEO — no migration guides in v1.
 
+**Nav structure:** `Platform comparisons` → `Choosing a platform` · `Compare platforms` → …
+
+#### Pages
+
 | Page Title | Diátaxis Type | Priority | Purpose |
 | --- | --- | --- | --- |
-| Choosing a docs platform | Explanation | **Must have** | Decision guide: when docs.page fits, how it compares across hosting model, authoring workflow, previews, AI surfaces, and cost. |
-| docs.page vs Mintlify | Explanation | **Must have** | Side-by-side comparison on Git-only vs web editor, zero-config hosting vs dashboard deploys, open source vs SaaS, shared patterns, and feature gaps. |
-| docs.page vs Docusaurus | Explanation | **Should have** | Compare instant GitHub hosting to a static-site generator with build and deploy setup. |
-| docs.page vs docsify | Explanation | **Should have** | Compare hosted docs.page to client-side docsify with manual hosting. |
-| docs.page vs Jekyll | Explanation | **Should have** | Compare docs.page to Jekyll-based documentation workflows. |
-| docs.page vs GitHub Pages | Explanation | **Should have** | Compare docs.page to serving documentation through GitHub Pages. |
+| Choosing a platform | Explanation | **Must have** | Decision guide: when docs.page fits, how it compares across hosting model, authoring workflow, previews, AI surfaces, and cost. |
+
+#### Compare platforms
+
+Nested subgroup — peer product comparison pages. Sidebar labels use competitor names; page titles stay `docs.page vs …` for SEO.
+
+| Page Title | Diátaxis Type | Priority | Purpose |
+| --- | --- | --- | --- |
+| Mintlify | Explanation | **Must have** | Side-by-side comparison on Git-only vs web editor, zero-config hosting vs dashboard deploys, open source vs SaaS, shared patterns, and feature gaps. |
+| Docusaurus | Explanation | **Should have** | Compare instant GitHub hosting to a static-site generator with build and deploy setup. |
+| docsify | Explanation | **Should have** | Compare hosted docs.page to client-side docsify with manual hosting. |
+| Jekyll | Explanation | **Should have** | Compare docs.page to Jekyll-based documentation workflows. |
+| GitHub Pages | Explanation | **Should have** | Compare docs.page to serving documentation through GitHub Pages. |
 
 ### Reference
 
@@ -175,7 +186,7 @@ Yes, with these revisions applied from author feedback:
 - **Customize follows goals:** branding → domain → discoverability → measurement — not one page per config field.
 - **Components is its own section** (Mintlify pattern), separate from Reference.
 - **Reference holds lookup only:** config, frontmatter, CLI, HTTP endpoints — not workflow content.
-- **Comparisons are peer product pages** for Mintlify, Docusaurus, docsify, Jekyll, and GitHub Pages — no migration how-tos in v1.
+- **Compare platforms** nested under Platform comparisons — peer comparison pages grouped like Docs Guides under Getting Started.
 - **Renames applied:** MCP skills → Agent skills; External AI chat → Embed a docs assistant.
 - **Title rule maintained:** each page title names one focus.
 - **Docs Guides** nested under Getting Started (child group after Publish your first site) — content-type patterns before Authoring mechanics.

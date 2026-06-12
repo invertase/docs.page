@@ -231,24 +231,29 @@
           "href": "/comparisons/choosing-a-docs-platform"
         },
         {
-          "title": "docs.page vs Mintlify",
-          "href": "/comparisons/docs-page-vs-mintlify"
-        },
-        {
-          "title": "docs.page vs Docusaurus",
-          "href": "/comparisons/docs-page-vs-docusaurus"
-        },
-        {
-          "title": "docs.page vs docsify",
-          "href": "/comparisons/docs-page-vs-docsify"
-        },
-        {
-          "title": "docs.page vs Jekyll",
-          "href": "/comparisons/docs-page-vs-jekyll"
-        },
-        {
-          "title": "docs.page vs GitHub Pages",
-          "href": "/comparisons/docs-page-vs-github-pages"
+          "group": "Compare platforms",
+          "pages": [
+            {
+              "title": "Mintlify",
+              "href": "/comparisons/docs-page-vs-mintlify"
+            },
+            {
+              "title": "Docusaurus",
+              "href": "/comparisons/docs-page-vs-docusaurus"
+            },
+            {
+              "title": "docsify",
+              "href": "/comparisons/docs-page-vs-docsify"
+            },
+            {
+              "title": "Jekyll",
+              "href": "/comparisons/docs-page-vs-jekyll"
+            },
+            {
+              "title": "GitHub Pages",
+              "href": "/comparisons/docs-page-vs-github-pages"
+            }
+          ]
         }
       ]
     },
