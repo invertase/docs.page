@@ -1,0 +1,39 @@
+---
+title: Assets
+description: Learn how to add assets to your project.
+---
+
+Assets such as images and videos are a common requirement for documentation.
+
+## Remote Assets
+
+To use remote assets in your documentation, you can reference them directly in your markdown files.
+
+For example, to include an image from a URL:
+
+```md
+![Description](https://example.com/image.png)
+```
+
+## Local Assets
+
+To use assets with your documentation, you can add them to your repository within the `docs/` directory and reference them in your markdown files.
+
+For example, consider the following directory structure:
+
+```
+docs/
+  assets/
+    image.png
+  index.mdx
+```
+
+Within your markdown file, you can reference the image using a relative path:
+
+```md
+![Description](/assets/image.png)
+```
+
+<Info>
+  You can place assets where you wish - whether in a root `docs/assets` directory or co-located next to your markdown.
+</Info>

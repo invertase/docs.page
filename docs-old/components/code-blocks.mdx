@@ -1,0 +1,104 @@
+---
+title: Code Blocks
+description: Display code blocks with syntax highlighting.
+---
+
+Code Blocks are a great way to display code snippets in your documentation. Use the standard markdown syntax of three backticks
+(```) to create a code block, or use the `<CodeBlock />` component. 
+
+You can also specify the language of the code block to enable syntax highlighting, and other features such as a title.
+
+## Example
+
+```js
+export async function apiRequest(options) {
+  const response = await fetch(options.url);
+  const data = await response.json();
+  return data;
+}
+```
+
+````
+```js
+export async function apiRequest(options) {
+  const response = await fetch(options.url);
+  const data = await response.json();
+  return data;
+}
+```
+````
+
+## Props
+
+<Property name="title" type="string" optional>
+  The title of the code block.
+
+  ````
+  ```js title="Logging: Hello World"
+  console.log("Hello World");
+  ```
+  ````
+</Property>
+
+## Advanced
+
+Code Blocks also support a number of other useful features, such as diffing, line highlighting and more.
+
+### Diffing
+
+Diffing codeblocks enables you to visually compare the difference between code in a single code block. For example:
+
+```js
+console.log('hewwo') // [!code --]
+console.log('hello') // [!code ++]
+console.log('goodbye')
+```
+
+To enable diffing, add the `// [!code --]` and `// [!code ++]` annotations to the end of each line:
+
+````
+```js
+console.log('hewwo') // [\!code --]
+console.log('hello') // [\!code ++]
+console.log('goodbye')
+```
+````
+
+### Line Highlighting
+
+You can highlight specific lines in a code block, useful for calling out important lines of code. For example:
+
+```js
+console.log('hello') // [!code highlight]
+console.log('world')
+```
+
+To highlight a line, add the `// [!code highlight]` annotation to the end of the line:
+
+````
+```ts
+console.log('hello') // [\!code highlight]
+console.log('world')
+```
+````
+
+### Focused Lines
+
+You can focus on specific lines in a code block, blurring out the rest of the code. For example:
+
+```js
+console.log('Not focused');
+console.log('Focused') // [!code focus]
+console.log('Not focused');
+```
+
+
+To focus on a line, add the `// [!code focus]` annotation to the end of the line:
+
+````
+```js
+console.log('Not focused');
+console.log('Focused') // [\!code focus]
+console.log('Not focused');
+```
+````
