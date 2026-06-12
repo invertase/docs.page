@@ -76,15 +76,15 @@ description: [What understanding the reader will gain]
 
 Coffee Shop orders move through an asynchronous fulfillment pipeline. The API accepts payment and queues work immediately; the physical barista and espresso machine finish the drink on their own timeline.
 
-#### Why asynchronous architecture?
+### The concept
 
 Pulling a shot of espresso takes a physical baseline of about 25 seconds. If order creation blocked until the cup hit the counter, HTTP clients would time out waiting for the barista. Async acceptance decouples **authorization** from **fulfillment**.
 
-#### How it works
+### How it works
 
 When a client creates an order, the platform writes a ticket and returns `201 Created` with an `order_id`. Fulfillment proceeds in the background. Clients poll the order resource or subscribe to webhooks for status changes.
 
-#### The order state machine
+### The order state machine
 
 Each order transitions through four explicit states:
 
@@ -95,7 +95,7 @@ Each order transitions through four explicit states:
 
 Invalid transitions — for example, jumping from `received` to `completed` — are rejected server-side so clients never show a ready drink that is still being made.
 
-#### Design tradeoffs
+### Design decisions
 
 **Webhooks over long polling by default.** Most café apps care about the moment a drink is ready, not every intermediate state. Webhooks push `completed` once; polling remains available for clients that cannot receive callbacks.
 
