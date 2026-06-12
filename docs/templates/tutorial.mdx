@@ -9,9 +9,13 @@ Use this layout when you want to guide someone through a first success and help 
   The examples on this page and the other **Templates** pages use a fictional **Coffee Shop Ordering API**. The same product scenario appears in every template so you can compare how structure, tone, and code change by documentation type.
 </Info>
 
-## When to use it
+## Blueprint anatomy
 
-Pick the tutorial layout for onboarding: a new user, a learning path, or any page where one small outcome matters more than exhaustive coverage.
+Before writing, anchor yourself to the core constraints of the learning-oriented quadrant:
+
+- **The goal:** Provide a narrative, hands-on experience for an immediate win.
+- **The tone:** Encouraging, authoritative, and instructional. Do not offer alternatives, deep explanations, or production hardening.
+- **The layout:** Introduction → Prerequisites → Steps → Next steps. Use `<Steps>` for long procedures. Keep code blocks copy-paste ready.
 
 | Use a tutorial when… | Use something else when… |
 | --- | --- |
@@ -19,131 +23,90 @@ Pick the tutorial layout for onboarding: a new user, a learning path, or any pag
 | You want one guaranteed success path | They need field-by-field lookup → [Reference](/templates/reference) |
 | Choices and tradeoffs would slow them down | They need background and *why* → [Explanation](/templates/explanation) |
 
-## The goal
-
-Provide a narrative, hands-on experience that gives the reader an immediate win and helps them begin building a mental model of the system.
-
-## The tone
-
-Encouraging, authoritative, and instructional. Tell them what to do next. Do not offer alternatives, deep explanations, or production hardening on this page.
-
-## Recommended layout
-
-Structure every tutorial with these sections:
-
-1. **Introduction** — State exactly what the reader will accomplish by the end.
-2. **Prerequisites** — List tools, keys, or setup they need before starting.
-3. **Step-by-step instructions** — Chronological steps that lead to a successful result.
-4. **Next steps** — Point to a how-to, reference, or explanation once the win is achieved.
-
-Use `<Steps>` for long procedures. Keep code blocks copy-paste ready.
-
 ## Copy this template
 
-Copy the skeleton below into a new `.mdx` file and replace placeholder paths and content with your own.
+Copy this raw skeleton into a new `.mdx` file to begin scaffolding your page.
 
-````mdx title="docs/create-your-first-coffee-order.mdx"
+````mdx title="docs/your-quickstart-page.mdx"
 ---
-title: Create your first coffee order
-description: Place your first espresso order using the Coffee Shop Ordering API.
+title: [Action] your first [Noun]
+description: A short, 1-sentence summary of the immediate win the reader will achieve.
 ---
 
-This page guides you through setting up your environment and placing your very first espresso order.
+This page guides you through setting up your environment and achieving [Core Benefit/Win] in under 5 minutes.
 
 ## Prerequisites
 
-- A Barista API key
-- `curl` or any HTTP client
+- [Prerequisite 1, e.g., An API key]
+- [Prerequisite 2, e.g., A specific dependency or tool]
 
 ## Steps
 
 <Steps>
-  <Step title="Get your Barista API key">
-    Copy your sandbox key from your project's developer console.
+  <Step title="[Action 1: Setup]">
+    Describe the first chronological step. Keep choices out of this flow.
   </Step>
-  <Step title="Construct the payload">
-    Create a JSON object for a simple hot espresso:
-
-    ```json
-    {
-      "item": "espresso",
-      "size": "single"
-    }
-    ```
+  <Step title="[Action 2: Configuration]">
+    Provide code snippets that are complete and copy-paste ready.
   </Step>
-  <Step title="Send the request">
-    Run this command in your terminal:
-
-    ```bash
-    curl -X POST https://api.coffeeshop.dev/v1/orders \
-      -H "Authorization: Bearer YOUR_API_KEY" \
-      -H "Content-Type: application/json" \
-      -d '{"item": "espresso", "size": "single"}'
-    ```
-
-    You should receive a `201 Created` response with an `order_id`.
+  <Step title="[Action 3: Execution]">
+    Execute the command. Clearly state what the successful output looks like so they can verify their win.
   </Step>
 </Steps>
 
 ## Next steps
 
-- [Customize drinks with milk alternatives](/path/to/how-to)
-- [Orders API reference](/path/to/reference)
+- [Link to a logical next How-to Guide]
+- [Link to the relevant technical Reference page]
 ````
 
 ## Example: Create your first coffee order
 
-Below is how a tutorial page might read for our fictional coffee API. Notice the narrow path, imperative steps, and a single celebratory outcome.
+Below is a live preview of how a finished tutorial reads. Notice the narrow path, imperative steps, and a single celebratory outcome.
 
-### Introduction
+<Card title="Live preview">
 
-This page guides you through setting up your environment and placing your very first espresso order using the Coffee Shop Ordering API.
-
-### Prerequisites
+#### Prerequisites
 
 - A Barista API key (use `test_key_demo` for sandbox requests)
 - `curl` or any HTTP client
 
-### Step-by-step instructions
+#### Steps
 
-<Steps>
-  <Step title="Get your Barista API key">
-    Copy your sandbox key from your project's developer console. For this walkthrough, you can use the mock key `test_key_demo`.
-  </Step>
-  <Step title="Construct the payload">
-    Create a JSON object for a simple hot espresso:
+1. **Get your Barista API key.** Copy your sandbox key from your project's developer console. For this walkthrough, you can use the mock key `test_key_demo`.
 
-    ```json
-    {
-      "item": "espresso",
-      "size": "single"
-    }
-    ```
-  </Step>
-  <Step title="Send the request">
-    Run this command in your terminal:
+2. **Construct the payload.** Create a JSON object for a simple hot espresso:
 
-    ```bash
-    curl -X POST https://api.coffeeshop.dev/v1/orders \
-      -H "Authorization: Bearer test_key_demo" \
-      -H "Content-Type: application/json" \
-      -d '{"item": "espresso", "size": "single"}'
-    ```
+   ```json
+   {
+     "item": "espresso",
+     "size": "single"
+   }
+   ```
 
-    You should receive a `201 Created` response with an `order_id`. Your virtual espresso is brewing.
-  </Step>
-</Steps>
+3. **Send the request.** Run this command in your terminal:
 
-### Next steps
+   ```bash
+   curl -X POST https://api.coffeeshop.dev/v1/orders \
+     -H "Authorization: Bearer test_key_demo" \
+     -H "Content-Type: application/json" \
+     -d '{"item": "espresso", "size": "single"}'
+   ```
+
+   You should receive a `201 Created` response with an `order_id`. Your virtual espresso is brewing.
+
+#### Next steps
 
 - Customize an order with milk alternatives → see the [How-to template](/templates/how-to)
 - Look up every request field → see the [Reference template](/templates/reference)
+
+</Card>
 
 ## How tutorials treat code
 
 In a tutorial, code blocks are **complete, copy-paste solutions**. The reader should not edit placeholders mid-flow or compare variants. Save surgical edits for how-to guides, field tables for reference, and architecture diagrams for explanations.
 
-## Next steps
+## Explore other templates
 
 - [How-to template](/templates/how-to) — Task-oriented pages for readers who know the basics
 - [Reference template](/templates/reference) — Lookup pages for APIs, config, and commands

@@ -9,9 +9,13 @@ Use this layout when readers need to understand *why* something works the way it
   Examples on the **Templates** pages share a fictional **Coffee Shop Ordering API** so you can compare how the same product reads across documentation types.
 </Info>
 
-## When to use it
+## Blueprint anatomy
 
-Pick the explanation layout when procedure alone leaves questions unanswered.
+Before writing, anchor yourself to the core constraints of the understanding-oriented quadrant:
+
+- **The goal:** Build deeper conceptual understanding — background context, architecture, intent, and design decisions.
+- **The tone:** Discursive, expository, and educational. Longer paragraphs are fine, but split walls of text and use headings generously.
+- **The layout:** Overview → How it works → Design tradeoffs → Related. Link out for procedures and field lookup.
 
 | Use explanation when… | Use something else when… |
 | --- | --- |
@@ -19,82 +23,64 @@ Pick the explanation layout when procedure alone leaves questions unanswered.
 | Architecture, state, or design tradeoffs matter | They need steps for one task → [How-to](/templates/how-to) |
 | Code would distract from the concept | They need every field and error code → [Reference](/templates/reference) |
 
-## The goal
-
-Build deeper conceptual understanding: background context, architecture, intent, and design decisions.
-
-## The tone
-
-Discursive, expository, and educational. It is fine to use longer paragraphs here — but still split walls of text and use headings generously.
-
-## Recommended layout
-
-Structure every explanation with these sections:
-
-1. **The concept** — High-level overview of the feature, architecture, or philosophy.
-2. **How it works** — Mechanics, data flow, or system interactions. Diagrams welcome.
-3. **Design decisions** — Why the system was built this way, alternatives considered, and tradeoffs.
-4. **Related** — Links to tutorial, how-to, and reference pages for procedures and lookup.
-
 ## Copy this template
 
-Copy the skeleton below into a new `.mdx` file and replace placeholder paths and content with your own.
+Copy this raw skeleton into a new `.mdx` file to begin scaffolding your page.
 
-````mdx title="docs/explanations/order-fulfillment-lifecycle.mdx"
+````mdx title="docs/explanations/your-concept.mdx"
 ---
-title: Order fulfillment lifecycle
-description: How asynchronous ticketing coordinates the POS, barista queue, and espresso machine.
+title: [Concept name]
+description: [What understanding the reader will gain]
 ---
 
-Coffee Shop orders move through an asynchronous fulfillment pipeline. The API accepts payment and queues work immediately; the physical barista and espresso machine finish the drink on their own timeline.
+[Hook — high-level framing of the concept and why it matters]
 
 ## Overview
 
-Pulling a shot of espresso takes a physical baseline of about 25 seconds. If order creation blocked until the cup hit the counter, HTTP clients would time out waiting for the barista. Async acceptance decouples **authorization** from **fulfillment**.
+[Mental model — the big picture before diving into mechanics]
 
 ## How it works
 
-When a client creates an order, the platform writes a ticket and returns `201 Created` with an `order_id`. Fulfillment proceeds in the background. Clients poll the order resource or subscribe to webhooks for status changes.
+[Discursive explanation of mechanics, data flow, or system interactions]
 
-### The order state machine
+### [Subconcept A]
 
-Each order transitions through four explicit states:
+[Detail on one aspect of the system]
 
-1. **`received`** — Payment is authorized and the ticket is recorded.
-2. **`queued`** — The order enters the barista's ticket queue.
-3. **`brewing`** — The espresso machine is actively pulling the shot.
-4. **`completed`** — The drink is on the pickup counter; a webhook notifies the client app.
+### [Subconcept B]
+
+[Detail on another aspect]
 
 ## Design tradeoffs
 
-**Webhooks over long polling by default.** Most café apps care about the moment a drink is ready, not every intermediate state. Webhooks push `completed` once; polling remains available for clients that cannot receive callbacks.
+**[Decision 1].** [Rationale, alternatives considered, and tradeoffs]
 
-**Explicit states instead of free-form strings.** Named states make integration tests predictable and give support staff a shared vocabulary when debugging stuck tickets.
+**[Decision 2].** [Rationale, alternatives considered, and tradeoffs]
 
 ## Related
 
-- [Create your first coffee order](/path/to/tutorial)
-- [Customize drinks with milk alternatives](/path/to/how-to)
-- [Create order](/path/to/reference)
+- [Link to Tutorial]
+- [Link to How-to]
+- [Link to Reference]
 ````
 
 ## Example: The order fulfillment lifecycle
 
-Below is how an explanation page might read for our fictional coffee API. Notice the focus on *why*, the state model, and the absence of copy-paste setup steps.
+Below is a live preview of how a finished explanation reads. Notice the focus on *why*, the state model, and the absence of copy-paste setup steps.
 
-### The concept
+<Card title="Live preview">
 
 Coffee Shop orders move through an asynchronous fulfillment pipeline. The API accepts payment and queues work immediately; the physical barista and espresso machine finish the drink on their own timeline.
 
-### Why asynchronous architecture?
+#### Why asynchronous architecture?
 
 Pulling a shot of espresso takes a physical baseline of about 25 seconds. If order creation blocked until the cup hit the counter, HTTP clients would time out waiting for the barista. Async acceptance decouples **authorization** from **fulfillment**.
 
-### How it works
+#### How it works
 
 When a client creates an order, the platform writes a ticket and returns `201 Created` with an `order_id`. Fulfillment proceeds in the background. Clients poll the order resource or subscribe to webhooks for status changes.
 
-### The order state machine
+#### The order state machine
 
 Each order transitions through four explicit states:
 
@@ -105,17 +91,19 @@ Each order transitions through four explicit states:
 
 Invalid transitions — for example, jumping from `received` to `completed` — are rejected server-side so clients never show a ready drink that is still being made.
 
-### Design decisions
+#### Design tradeoffs
 
 **Webhooks over long polling by default.** Most café apps care about the moment a drink is ready, not every intermediate state. Webhooks push `completed` once; polling remains available for clients that cannot receive callbacks.
 
 **Explicit states instead of free-form strings.** Named states make integration tests predictable and give support staff a shared vocabulary when debugging stuck tickets.
 
+</Card>
+
 ## How explanations treat code
 
 Explanation pages **omit step-by-step code** when prose carries the idea. Link to [Tutorial](/templates/tutorial) for onboarding, [How-to](/templates/how-to) for tasks, and [Reference](/templates/reference) for field-level detail. Short inline mentions of endpoints or state names are fine.
 
-## Related
+## Explore other templates
 
 - [Tutorial template](/templates/tutorial) — Place your first coffee order
 - [How-to template](/templates/how-to) — Customize an order with milk alternatives

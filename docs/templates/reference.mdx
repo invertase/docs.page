@@ -9,9 +9,13 @@ Use this layout when readers need facts on demand — not a story or a walkthrou
   Examples on the **Templates** pages share a fictional **Coffee Shop Ordering API** so you can compare how the same product reads across documentation types.
 </Info>
 
-## When to use it
+## Blueprint anatomy
 
-Pick the reference layout for surfaces where accuracy and completeness matter more than narrative.
+Before writing, anchor yourself to the core constraints of the information-oriented quadrant:
+
+- **The goal:** Provide a strict, lookup-oriented directory of facts — API specs, configuration keys, command syntax, or component props.
+- **The tone:** Stark, literal, objective, and dense. No welcome paragraphs, analogies, or marketing language.
+- **The layout:** Syntax → Parameters or options → Examples → Errors → See also. Use `<Property>` and `<Accordion>` for nested fields; use tables for flat lists.
 
 | Use reference when… | Use something else when… |
 | --- | --- |
@@ -19,91 +23,62 @@ Pick the reference layout for surfaces where accuracy and completeness matter mo
 | Fields, types, defaults, and errors must be exhaustive | They need steps for one task → [How-to](/templates/how-to) |
 | Prose should stay minimal | They need architecture and tradeoffs → [Explanation](/templates/explanation) |
 
-## The goal
-
-Provide a strict, lookup-oriented directory of facts: API specs, configuration keys, command syntax, or component props.
-
-## The tone
-
-Stark, literal, objective, and dense. No welcome paragraphs, analogies, or marketing language.
-
-## Recommended layout
-
-Structure every reference page with these sections:
-
-1. **Syntax or blueprint** — The exact format: endpoint, command, or file shape.
-2. **Parameters or options** — Tables or `<Property>` blocks for fields, types, defaults, and constraints.
-3. **Examples** — Valid snippets only; link out for walkthroughs.
-4. **Errors** — Status codes or failure conditions when applicable.
-5. **See also** — Links to how-to and explanation pages.
-
 ## Copy this template
 
-Copy the skeleton below into a new `.mdx` file and replace placeholder paths and content with your own.
+Copy this raw skeleton into a new `.mdx` file to begin scaffolding your page.
 
-````mdx title="docs/reference/create-order.mdx"
+````mdx title="docs/reference/your-surface.mdx"
 ---
-title: Create order
-description: Request parameters, examples, and errors for POST /v1/orders.
+title: [Resource or endpoint name]
+description: [What this page documents — parameters, errors, or syntax]
 ---
 
-Create a new beverage order.
+[One-line austere description of the surface]
 
 ## Syntax
 
 ```http
-POST /v1/orders
-Authorization: Bearer <api_key>
-Content-Type: application/json
+[METHOD] [path or command format]
 ```
 
-## Request parameters
+## [Parameters / Options / Fields]
 
 | Field | Type | Required | Description |
 | --- | --- | --- | --- |
-| `item` | `string` | Yes | Base beverage. Allowed values: `espresso`, `americano`, `latte`, `cappuccino`. |
-| `size` | `string` | Yes | Drink size. Allowed values: `single`, `double`, `twelve_oz`, `sixteen_oz`. |
-| `temperature` | `string` | No | Defaults to `hot`. Allowed values: `hot`, `iced`. |
+| `[field]` | `[type]` | [Yes/No] | [Description and allowed values] |
 
 ## Example request
 
 ```json
-{
-  "item": "latte",
-  "size": "twelve_oz",
-  "temperature": "iced"
-}
+[Valid request or config snippet]
 ```
 
 ## Example response
 
 ```json
-{
-  "order_id": "ord_123",
-  "status": "received",
-  "total_cents": 525
-}
+[Valid response or output]
 ```
 
 ## Errors
 
-| Status | Condition |
+| Status / condition | Meaning |
 | --- | --- |
-| `401 Unauthorized` | Missing or invalid API key. |
-| `422 Unprocessable Entity` | Invalid combination — for example, `single` size with an `iced` latte. |
+| `[code or condition]` | [When this occurs] |
 
 ## See also
 
-- [Create your first coffee order](/path/to/tutorial)
-- [Customize drinks with milk alternatives](/path/to/how-to)
-- [Order fulfillment lifecycle](/path/to/explanation)
+- [Link to Tutorial]
+- [Link to How-to]
+- [Link to Explanation]
 ````
 
 ## Example: Create order (`POST /v1/orders`)
 
-Below is how a reference page might read for our fictional coffee API. Notice the absence of onboarding prose and the emphasis on allowed values.
+Below is a live preview of how a finished reference page reads. Notice the absence of onboarding prose and the emphasis on allowed values.
 
-### Syntax
+<Card title="Live preview">
+
+#### Syntax
 
 ```http
 POST /v1/orders
@@ -111,7 +86,7 @@ Authorization: Bearer <api_key>
 Content-Type: application/json
 ```
 
-### Request parameters
+#### Request parameters
 
 | Field | Type | Required | Description |
 | --- | --- | --- | --- |
@@ -119,7 +94,7 @@ Content-Type: application/json
 | `size` | `string` | Yes | Drink size. Allowed values: `single`, `double`, `twelve_oz`, `sixteen_oz`. |
 | `temperature` | `string` | No | Defaults to `hot`. Allowed values: `hot`, `iced`. |
 
-### Example request
+#### Example request
 
 ```json
 {
@@ -129,7 +104,7 @@ Content-Type: application/json
 }
 ```
 
-### Example response
+#### Example response
 
 ```json
 {
@@ -139,20 +114,20 @@ Content-Type: application/json
 }
 ```
 
-### Errors
+#### Errors
 
 | Status | Condition |
 | --- | --- |
 | `401 Unauthorized` | Missing or invalid API key. |
 | `422 Unprocessable Entity` | Invalid combination — for example, `single` size with an `iced` latte. |
 
+</Card>
+
 ## How reference treats code
 
 In reference, code blocks are **data definitions** — request shapes, config snippets, and response samples. Do not embed numbered procedures; link to [Tutorial](/templates/tutorial) or [How-to](/templates/how-to) instead.
 
-Use `<Property>` and `<Accordion>` when you have nested or grouped fields. Use tables when a flat parameter list is enough.
-
-## See also
+## Explore other templates
 
 - [Tutorial template](/templates/tutorial) — First coffee order walkthrough
 - [How-to template](/templates/how-to) — Modify an order with milk alternatives
