@@ -70,16 +70,15 @@
         {
           "group": "Appearance",
           "icon": "palette",
-          "href": "/appearance",
           "pages": [
             {
               "title": "Theme",
-              "href": "/theme",
+              "href": "/appearance/theme",
               "icon": "palette"
             },
             {
               "title": "Assets",
-              "href": "/assets",
+              "href": "/appearance/assets",
               "icon": "image"
             }
           ]
@@ -90,12 +89,12 @@
           "pages": [
             {
               "title": "Sidebar & tabs",
-              "href": "/navigation",
+              "href": "/navigation/sidebar",
               "icon": "map"
             },
             {
               "title": "Locales",
-              "href": "/locales",
+              "href": "/navigation/locales",
               "icon": "language"
             }
           ]
@@ -111,12 +110,12 @@
           "pages": [
             {
               "title": "Search",
-              "href": "/search",
+              "href": "/integrations/search",
               "icon": "magnifying-glass"
             },
             {
               "title": "Analytics",
-              "href": "/analytics",
+              "href": "/integrations/analytics",
               "icon": "chart-line"
             }
           ]
@@ -316,7 +315,6 @@
         {
           "group": "Commands",
           "icon": "terminal",
-          "href": "/cli",
           "pages": [
             {
               "title": "init",

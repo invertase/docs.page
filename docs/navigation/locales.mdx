@@ -1,0 +1,25 @@
+---
+title: Locales
+description: Derives available locales from non-default keys in a record-shaped sidebar config and renders a language picker that links to locale-prefixed paths.
+---
+
+Derives available locales from non-default keys in a record-shaped sidebar config and renders a language picker that links to locale-prefixed paths.
+
+## Locale-keyed sidebar
+
+Use a record instead of an array when supporting multiple languages:
+
+```json
+{
+  "sidebar": {
+    "default": [ { "group": "Getting Started", "pages": [] } ],
+    "es": [ { "group": "Empezar", "pages": [] } ]
+  }
+}
+```
+
+Non-`default` keys become available locales in the language picker.
+## Implementation
+
+- `api/src/config/schema.ts` — locales extraction
+- `website/src/components/Locale.tsx` — UI component
