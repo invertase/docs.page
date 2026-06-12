@@ -29,6 +29,7 @@
   "sidebar": [
     {
       "group": "Getting Started",
+      "icon": "rocket",
       "tab": "docs",
       "pages": [
         {
@@ -72,6 +73,7 @@
     },
     {
       "group": "Authoring content",
+      "icon": "pen-to-square",
       "tab": "docs",
       "pages": [
         {
@@ -102,6 +104,7 @@
     },
     {
       "group": "Customize your site",
+      "icon": "palette",
       "tab": "docs",
       "pages": [
         {
@@ -124,6 +127,7 @@
     },
     {
       "group": "Components",
+      "icon": "cubes",
       "tab": "components",
       "pages": [
         {
@@ -194,6 +198,7 @@
     },
     {
       "group": "AI agents",
+      "icon": "robot",
       "tab": "docs",
       "pages": [
         {
@@ -224,12 +229,9 @@
     },
     {
       "group": "Platform comparisons",
+      "icon": "scale-balanced",
       "tab": "docs",
       "pages": [
-        {
-          "title": "Choosing a platform",
-          "href": "/comparisons/choosing-a-docs-platform"
-        },
         {
           "group": "Compare platforms",
           "pages": [
@@ -259,6 +261,7 @@
     },
     {
       "group": "Reference",
+      "icon": "book",
       "tab": "reference",
       "pages": [
         {

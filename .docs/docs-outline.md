@@ -136,13 +136,7 @@ Agent-ready surfaces — sequenced after first publish per spec tone guidance.
 
 Product comparisons for evaluation and SEO — no migration guides in v1.
 
-**Nav structure:** `Platform comparisons` → `Choosing a platform` · `Compare platforms` → …
-
-#### Pages
-
-| Page Title | Diátaxis Type | Priority | Purpose |
-| --- | --- | --- | --- |
-| Choosing a platform | Explanation | **Must have** | Decision guide: when docs.page fits, how it compares across hosting model, authoring workflow, previews, AI surfaces, and cost. |
+**Nav structure:** `Platform comparisons` → `Compare platforms` → …
 
 #### Compare platforms
 
