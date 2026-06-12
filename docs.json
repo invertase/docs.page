@@ -9,9 +9,27 @@
   "theme": {
     "preset": "emerald"
   },
+  "tabs": [
+    {
+      "id": "docs",
+      "title": "Documentation",
+      "href": "/"
+    },
+    {
+      "id": "components",
+      "title": "Components",
+      "href": "/components"
+    },
+    {
+      "id": "reference",
+      "title": "Reference",
+      "href": "/reference"
+    }
+  ],
   "sidebar": [
     {
       "group": "Getting Started",
+      "tab": "docs",
       "pages": [
         {
           "title": "Introduction",
@@ -25,27 +43,27 @@
           "group": "Docs Guides",
           "pages": [
             {
-              "title": "Choose a documentation type",
+              "title": "Choose a doc type",
               "href": "/guides/choose-a-documentation-type"
             },
             {
-              "title": "Product documentation",
+              "title": "Product docs",
               "href": "/guides/product-documentation"
             },
             {
-              "title": "API reference documentation",
+              "title": "API reference",
               "href": "/guides/api-reference-documentation"
             },
             {
-              "title": "Help center documentation",
+              "title": "Help center",
               "href": "/guides/help-center-documentation"
             },
             {
-              "title": "Changelog documentation",
+              "title": "Changelog",
               "href": "/guides/changelog-documentation"
             },
             {
-              "title": "Team handbook documentation",
+              "title": "Team handbook",
               "href": "/guides/team-handbook-documentation"
             }
           ]
@@ -54,13 +72,14 @@
     },
     {
       "group": "Authoring content",
+      "tab": "docs",
       "pages": [
         {
           "title": "Write documentation",
           "href": "/authoring/write-documentation"
         },
         {
-          "title": "Organize your navigation",
+          "title": "Organize navigation",
           "href": "/authoring/organize-your-navigation"
         },
         {
@@ -68,7 +87,7 @@
           "href": "/authoring/preview-locally"
         },
         {
-          "title": "Share pull request previews",
+          "title": "PR previews",
           "href": "/authoring/share-pull-request-previews"
         },
         {
@@ -83,6 +102,7 @@
     },
     {
       "group": "Customize your site",
+      "tab": "docs",
       "pages": [
         {
           "title": "Apply your branding",
@@ -104,9 +124,10 @@
     },
     {
       "group": "Components",
+      "tab": "components",
       "pages": [
         {
-          "title": "Components overview",
+          "title": "Overview",
           "href": "/components"
         },
         {
@@ -173,6 +194,7 @@
     },
     {
       "group": "AI agents",
+      "tab": "docs",
       "pages": [
         {
           "title": "Agent-ready docs",
@@ -195,16 +217,17 @@
           "href": "/ai-agents/ai-chat"
         },
         {
-          "title": "Embed a docs assistant",
+          "title": "Embed assistant",
           "href": "/ai-agents/embed-a-docs-assistant"
         }
       ]
     },
     {
       "group": "Platform comparisons",
+      "tab": "docs",
       "pages": [
         {
-          "title": "Choosing a docs platform",
+          "title": "Choosing a platform",
           "href": "/comparisons/choosing-a-docs-platform"
         },
         {
@@ -231,6 +254,7 @@
     },
     {
       "group": "Reference",
+      "tab": "reference",
       "pages": [
         {
           "title": "docs.json reference",
@@ -264,6 +288,7 @@
     },
     {
       "group": "Advanced",
+      "tab": "docs",
       "pages": [
         {
           "title": "Platform architecture",
