@@ -41,31 +41,23 @@
           "href": "/publish-your-first-site"
         },
         {
-          "group": "Docs Guides",
+          "group": "Templates",
           "pages": [
             {
-              "title": "Choose a doc type",
-              "href": "/guides/choose-a-documentation-type"
+              "title": "Tutorial",
+              "href": "/templates/tutorial"
             },
             {
-              "title": "Product docs",
-              "href": "/guides/product-documentation"
+              "title": "How-to",
+              "href": "/templates/how-to"
             },
             {
-              "title": "API reference",
-              "href": "/guides/api-reference-documentation"
+              "title": "Reference",
+              "href": "/templates/reference"
             },
             {
-              "title": "Help center",
-              "href": "/guides/help-center-documentation"
-            },
-            {
-              "title": "Changelog",
-              "href": "/guides/changelog-documentation"
-            },
-            {
-              "title": "Team handbook",
-              "href": "/guides/team-handbook-documentation"
+              "title": "Explanation",
+              "href": "/templates/explanation"
             }
           ]
         }

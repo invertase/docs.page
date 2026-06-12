@@ -1,5 +1,5 @@
 ---
-version: "1.5.1"
+version: "1.6.0"
 updatedAt: 2026-06-12
 status: approved
 ---
@@ -22,7 +22,7 @@ Mintlify is the closest equivalent: MDX content, a root `docs.json` config file,
 
 | Mintlify section | Pattern | docs.page adaptation |
 | --- | --- | --- |
-| **Get started** (Introduction, Quickstart) | Short orient + hands-on first publish | **Getting Started** with nested **Docs Guides** subgroup after Publish your first site |
+| **Get started** (Introduction, Quickstart) | Short orient + hands-on first publish | **Getting Started** with nested **Templates** subgroup after Publish your first site |
 | **Create** (Format text, code, images, redirects) | Writing-oriented how-tos, not "MDX" framing | **Write documentation** and related authoring pages use content-writing language; MDX is implementation detail in prose |
 | **Organize** (Navigation, pages, settings) | Split across many config pages | Navigation covered in authoring workflow; field lookup deferred to **docs.json reference** |
 | **Components** | Dedicated top-level section with overview + per-component pages | **Match:** standalone **Components** section, separate from config/API reference |
@@ -33,7 +33,7 @@ Mintlify is the closest equivalent: MDX content, a root `docs.json` config file,
 | **AI-native / Assistant / Agent** | Large AI section | **AI agents** section; consumer surfaces before integrator APIs |
 | **API playground** (OpenAPI) | Entire vertical | **Omit** — note in comparisons |
 | **Migration** | Dedicated migration hub | **Defer** — comparisons only for v1 per author feedback |
-| **Guides** (help center, API docs, content types) | Editorial patterns by documentation type | Nested **Docs Guides** under Getting Started — **Could have** for v1 |
+| **Guides** (help center, API docs, content types) | Editorial patterns by documentation type | Nested **Templates** under Getting Started — Diátaxis page layouts for contributors |
 
 **Key adaptations vs Mintlify:** Journey-ordered spine (not feature silos), goal-driven authoring/customize sections, Components as its own section, slim Getting Started, product comparisons without migration guides for now.
 
@@ -48,9 +48,9 @@ Mintlify is the closest equivalent: MDX content, a root `docs.json` config file,
 
 ### Getting Started
 
-Orient, achieve first publish, then optionally pick a documentation type — all under one top-level nav group.
+Orient, achieve first publish, then pick a page layout for the kind of documentation you are writing — all under one top-level nav group.
 
-**Nav structure:** `Getting Started` → `Introduction` · `Publish your first site` · `Docs Guides` → …
+**Nav structure:** `Getting Started` → `Introduction` · `Publish your first site` · `Templates` → …
 
 #### Pages
 
@@ -59,18 +59,16 @@ Orient, achieve first publish, then optionally pick a documentation type — all
 | Introduction | Explanation | **Must have** | Explain what docs.page is, who it is for, and the "docs for humans + agents" value proposition. Include how hosting works: public GitHub repo → `docs.json` + `docs/**/*.mdx` → live URL, public repos only, and what you do not need (build step, hosting account). |
 | Publish your first site | Tutorial | **Must have** | Walk through first success: scaffold with `docs init` or manually, push to a public repo, open the live docs.page URL, and verify the site renders. Cover expected repo layout (`docs.json`, `docs/**/*.mdx`) and how to read your site's URL patterns. |
 
-#### Docs Guides
+#### Templates
 
-Nested subgroup under Getting Started — immediately after first publish, when contributors ask *what kind of docs am I creating?* These pages cover content strategy and structure, not docs.page mechanics (those follow in **Authoring content**). Link forward to **Components** where a doc type needs specific building blocks.
+Nested subgroup under Getting Started — immediately after first publish, when contributors ask *what kind of page am I writing?* These pages describe Diátaxis page layouts (goal, tone, and recommended sections), not docs.page mechanics (those follow in **Authoring content**).
 
 | Page Title | Diátaxis Type | Priority | Purpose |
 | --- | --- | --- | --- |
-| Choose a documentation type | Explanation | **Could have** | Hub page: map common doc types to reader goals, suggested navigation shapes, and links to type-specific guides below. |
-| Product documentation | How-to | **Could have** | Structure feature explanations and product workflows: task-oriented guides, conceptual overviews, and sensible sidebar groupings. |
-| API reference documentation | How-to | **Could have** | Structure endpoint pages, parameters, and examples — manual reference pages (docs.page has no OpenAPI autogen). Link to Property, Code group, and Tabs in Components. |
-| Help center documentation | How-to | **Could have** | Structure support answers and troubleshooting: searchable short pages, problem/solution framing, and navigation that mirrors how customers look for fixes. |
-| Changelog documentation | How-to | **Could have** | Structure release logs and version updates: dating, scoping entries, linking to detailed guides, and keeping a readable history over time. |
-| Team handbook documentation | How-to | **Could have** | Structure internal-facing team docs on docs.page. Note: hosting requires a public GitHub repo — suitable for open teams or intentionally public handbooks, not private intranets. |
+| Tutorial template | Tutorial | **Should have** | Learning-oriented layout: narrative, hands-on steps that give readers an immediate win and build a mental model. Encouraging and instructional — no choices or deep explanations. Sections: Introduction, Prerequisites, Step-by-step instructions, Next steps. |
+| How-to template | How-to | **Should have** | Task-oriented layout for readers who know the basics and need to solve a specific problem. Practical and scannable. Sections: Goal or scenario, Implementation steps, Verification. |
+| Reference template | Reference | **Should have** | Lookup-oriented layout for facts, API specs, config keys, or command syntax. Stark, literal, and dense. Sections: Syntax or blueprint, Parameters or options table, Examples. |
+| Explanation template | Explanation | **Should have** | Understanding-oriented layout for background, architecture, intent, and design decisions — answers *why*, not just *how*. Discursive and educational. Sections: The concept, How it works, Design decisions. |
 
 ### Authoring content
 
@@ -196,12 +194,12 @@ Yes, with these revisions applied from author feedback:
 - **Customize follows goals:** branding → domain → discoverability → measurement — not one page per config field.
 - **Components is its own section** (Mintlify pattern), separate from Reference.
 - **Reference holds lookup only:** config, frontmatter, CLI, HTTP endpoints — not workflow content.
-- **Previews** nested under Authoring content — local and shareable preview pages grouped like Docs Guides under Getting Started.
+- **Previews** nested under Authoring content — local and shareable preview pages grouped like Templates under Getting Started.
 - **Maintain documentation** nested under Authoring content — translate and redirect pages grouped after Previews.
-- **Compare platforms** nested under Platform comparisons — peer comparison pages grouped like Docs Guides under Getting Started.
-- **Renames applied:** MCP skills → Agent skills; External AI chat → Embed a docs assistant.
+- **Compare platforms** nested under Platform comparisons — peer comparison pages grouped like Templates under Getting Started.
+- **Renames applied:** MCP skills → Agent skills; External AI chat → Embed a docs assistant; Docs Guides → Templates (Diátaxis page layouts).
 - **Title rule maintained:** each page title names one focus.
-- **Docs Guides** nested under Getting Started (child group after Publish your first site) — content-type patterns before Authoring mechanics.
+- **Templates** nested under Getting Started (child group after Publish your first site) — four Diátaxis layout guides.
 
 **Coverage note:** Feature details for tabs, header links, vanity subdomains, variables, and search are covered within goal-oriented pages or Reference lookups rather than standalone feature pages.
 
@@ -211,8 +209,8 @@ Yes, with these revisions applied from author feedback:
 
 **Approved** — sitemap locked for v1 content writing.
 
-Confirmed structure: **Docs Guides** nested under **Getting Started** (child group after Publish your first site).
+Confirmed structure: **Templates** nested under **Getting Started** (child group after Publish your first site).
 
-**Deferred to v1 planning:** Docs Guides pages (Could have), migration guides (Won't have).
+**Deferred to v1 planning:** migration guides (Won't have).
 
 **Next step:** [docs-write](../.agents/skills/docs-write/SKILL.md) — draft MDX from this outline when ready.
