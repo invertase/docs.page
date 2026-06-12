@@ -68,38 +68,34 @@
           "icon": "sliders"
         },
         {
-          "group": "Appearance",
-          "icon": "palette",
+          "title": "Appearance",
           "href": "/appearance",
-          "pages": [
-            {
-              "title": "Theme",
-              "href": "/appearance/theme",
-              "icon": "palette"
-            },
-            {
-              "title": "Assets",
-              "href": "/appearance/assets",
-              "icon": "image"
-            }
-          ]
+          "icon": "palette"
         },
         {
-          "group": "Navigation",
-          "icon": "bars",
+          "title": "  Theme",
+          "href": "/appearance/theme",
+          "icon": "palette"
+        },
+        {
+          "title": "  Assets",
+          "href": "/appearance/assets",
+          "icon": "image"
+        },
+        {
+          "title": "Navigation",
           "href": "/navigation",
-          "pages": [
-            {
-              "title": "Sidebar & tabs",
-              "href": "/navigation/sidebar",
-              "icon": "map"
-            },
-            {
-              "title": "Locales",
-              "href": "/navigation/locales",
-              "icon": "language"
-            }
-          ]
+          "icon": "bars"
+        },
+        {
+          "title": "  Sidebar & tabs",
+          "href": "/navigation/sidebar",
+          "icon": "map"
+        },
+        {
+          "title": "  Locales",
+          "href": "/navigation/locales",
+          "icon": "language"
         },
         {
           "title": "Variables",
@@ -107,21 +103,19 @@
           "icon": "code"
         },
         {
-          "group": "Integrations",
-          "icon": "plug",
+          "title": "Integrations",
           "href": "/integrations",
-          "pages": [
-            {
-              "title": "Search",
-              "href": "/integrations/search",
-              "icon": "magnifying-glass"
-            },
-            {
-              "title": "Analytics",
-              "href": "/integrations/analytics",
-              "icon": "chart-line"
-            }
-          ]
+          "icon": "plug"
+        },
+        {
+          "title": "  Search",
+          "href": "/integrations/search",
+          "icon": "magnifying-glass"
+        },
+        {
+          "title": "  Analytics",
+          "href": "/integrations/analytics",
+          "icon": "chart-line"
         },
         {
           "title": "v1 YAML migration",
@@ -316,21 +310,19 @@
       "tab": "cli",
       "pages": [
         {
-          "group": "Commands",
-          "icon": "terminal",
+          "title": "Commands",
           "href": "/cli",
-          "pages": [
-            {
-              "title": "init",
-              "href": "/cli/init",
-              "icon": "plus"
-            },
-            {
-              "title": "check",
-              "href": "/cli/check",
-              "icon": "check"
-            }
-          ]
+          "icon": "terminal"
+        },
+        {
+          "title": "  init",
+          "href": "/cli/init",
+          "icon": "plus"
+        },
+        {
+          "title": "  check",
+          "href": "/cli/check",
+          "icon": "check"
         }
       ]
     }
