@@ -85,12 +85,17 @@
           "href": "/authoring/organize-your-navigation"
         },
         {
-          "title": "Preview locally",
-          "href": "/authoring/preview-locally"
-        },
-        {
-          "title": "PR previews",
-          "href": "/authoring/share-pull-request-previews"
+          "group": "Previews",
+          "pages": [
+            {
+              "title": "Local preview",
+              "href": "/authoring/preview-locally"
+            },
+            {
+              "title": "Shareable preview",
+              "href": "/authoring/shareable-preview"
+            }
+          ]
         },
         {
           "title": "Translate documentation",

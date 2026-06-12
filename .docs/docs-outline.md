@@ -80,8 +80,15 @@ Follow the contributor workflow: write → organize → preview → review. Page
 | --- | --- | --- | --- |
 | Write documentation | How-to | **Must have** | Help contributors write clear, useful documentation pages: structure and headings, prose and tone, links, code examples, images, and media. Frame this as content writing; mention MDX only where needed for syntax. |
 | Organize your navigation | How-to | **Must have** | Structure the sidebar so readers can find content — page order, groups, tabs, and anchors in `docs.json`. |
-| Preview locally | How-to | **Must have** | Iterate on content and configuration on your machine before pushing, using the CLI and local preview flow. |
-| Share pull request previews | How-to | **Must have** | Review documentation changes with teammates: preview at branch or PR URLs, install the GitHub bot for automatic preview links on pull requests. |
+
+#### Previews
+
+Nested subgroup — preview documentation before it goes live. Local for solo iteration; shareable for branch, pull request, and team review links.
+
+| Page Title | Diátaxis Type | Priority | Purpose |
+| --- | --- | --- | --- |
+| Local preview | How-to | **Must have** | Iterate on content and configuration on your machine before pushing, using the CLI and local preview flow. |
+| Shareable preview | How-to | **Must have** | Share preview links with teammates via branch or pull request URLs, and install the GitHub bot for automatic preview links. |
 | Translate documentation | How-to | **Could have** | Set up multi-locale documentation when teams need translated content. |
 | Update moved pages | How-to | **Should have** | Redirect readers when you rename or relocate pages, using frontmatter redirects. |
 
@@ -176,10 +183,11 @@ Lookup for configuration fields, page metadata, CLI commands, and HTTP endpoints
 Yes, with these revisions applied from author feedback:
 
 - **Getting Started trimmed to two pages:** hosting model folded into Introduction; repo layout and URLs folded into Publish your first site.
-- **Authoring follows a workflow:** write → organize → preview locally → share PR previews → maintain (redirects, locales). Titles use content-writing language ("Write documentation", not "Write MDX content").
+- **Authoring follows a workflow:** write → organize → preview (local, then shareable) → maintain (redirects, locales). Titles use content-writing language ("Write documentation", not "Write MDX content").
 - **Customize follows goals:** branding → domain → discoverability → measurement — not one page per config field.
 - **Components is its own section** (Mintlify pattern), separate from Reference.
 - **Reference holds lookup only:** config, frontmatter, CLI, HTTP endpoints — not workflow content.
+- **Previews** nested under Authoring content — local and shareable preview pages grouped like Docs Guides under Getting Started.
 - **Compare platforms** nested under Platform comparisons — peer comparison pages grouped like Docs Guides under Getting Started.
 - **Renames applied:** MCP skills → Agent skills; External AI chat → Embed a docs assistant.
 - **Title rule maintained:** each page title names one focus.
