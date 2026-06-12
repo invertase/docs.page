@@ -158,18 +158,9 @@ Lookup for configuration fields, page metadata, CLI commands, and HTTP endpoints
 | Analytics providers | Reference | **Could have** | Supported analytics integration keys and config shapes. |
 | Variables | Reference | **Could have** | `{{ dotted.path }}` substitution syntax and config object structure. |
 | Search index | Reference | **Could have** | How `search.json` is built and what content is indexed for the command-palette search UI. |
+| Platform architecture | Reference | **Could have** | High-level overview of GitHub fetch, MDX bundling, routing modes, and request lifecycle — optional reading for those who want internals context. |
 
-### Advanced (deferred spine)
-
-Optional deeper material — not core contributor path.
-
-| Page Title | Diátaxis Type | Priority | Purpose |
-| --- | --- | --- | --- |
-| Platform architecture | Explanation | **Could have** | High-level overview of GitHub fetch, MDX bundling, routing modes, and request lifecycle. |
-| Preview internals | Explanation | **Won't have** | Deferred per spec advanced-only policy. |
-| Routing internals | Explanation | **Won't have** | Deferred per spec advanced-only policy. |
-| Self-hosting | Explanation | **Won't have** | Omitted per spec — infrastructure operation is out of scope. |
-| Migration guides | How-to | **Won't have** | Deferred per author feedback — comparisons only for v1. |
+**Deferred (not in sitemap):** Preview internals, routing internals, self-hosting, migration guides — Won't have per spec and author feedback.
 
 ---
 

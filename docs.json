@@ -257,6 +257,10 @@
       "tab": "reference",
       "pages": [
         {
+          "title": "Overview",
+          "href": "/reference"
+        },
+        {
           "title": "docs.json reference",
           "href": "/reference/docs-json-reference"
         },
@@ -283,16 +287,10 @@
         {
           "title": "Search index",
           "href": "/reference/search-index"
-        }
-      ]
-    },
-    {
-      "group": "Advanced",
-      "tab": "docs",
-      "pages": [
+        },
         {
           "title": "Platform architecture",
-          "href": "/advanced/platform-architecture"
+          "href": "/reference/platform-architecture"
         }
       ]
     }
