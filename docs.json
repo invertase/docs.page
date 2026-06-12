@@ -98,12 +98,17 @@
           ]
         },
         {
-          "title": "Translate documentation",
-          "href": "/authoring/translate-documentation"
-        },
-        {
-          "title": "Update moved pages",
-          "href": "/authoring/update-moved-pages"
+          "group": "Maintain documentation",
+          "pages": [
+            {
+              "title": "Translate documentation",
+              "href": "/authoring/translate-documentation"
+            },
+            {
+              "title": "Update moved pages",
+              "href": "/authoring/update-moved-pages"
+            }
+          ]
         }
       ]
     },

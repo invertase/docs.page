@@ -1,5 +1,5 @@
 ---
-version: "1.5.0"
+version: "1.5.1"
 updatedAt: 2026-06-12
 status: approved
 ---
@@ -74,7 +74,9 @@ Nested subgroup under Getting Started — immediately after first publish, when 
 
 ### Authoring content
 
-Follow the contributor workflow: write → organize → preview → review. Pages are ordered by what someone does after their site is live, not by product feature names.
+Follow the contributor workflow: write → organize → preview → maintain. Pages are ordered by what someone does after their site is live, not by product feature names.
+
+**Nav structure:** `Authoring content` → `Write documentation` · `Organize your navigation` · `Previews` → … · `Maintain documentation` → …
 
 | Page Title | Diátaxis Type | Priority | Purpose |
 | --- | --- | --- | --- |
@@ -89,6 +91,13 @@ Nested subgroup — preview documentation before it goes live. Local for solo it
 | --- | --- | --- | --- |
 | Local preview | How-to | **Must have** | Iterate on content and configuration on your machine before pushing, using the CLI and local preview flow. |
 | Shareable preview | How-to | **Must have** | Share preview links with teammates via branch or pull request URLs, and install the GitHub bot for automatic preview links. |
+
+#### Maintain documentation
+
+Nested subgroup — ongoing content upkeep after publish: locales and URL stability when pages move or get renamed.
+
+| Page Title | Diátaxis Type | Priority | Purpose |
+| --- | --- | --- | --- |
 | Translate documentation | How-to | **Could have** | Set up multi-locale documentation when teams need translated content. |
 | Update moved pages | How-to | **Should have** | Redirect readers when you rename or relocate pages, using frontmatter redirects. |
 
@@ -188,6 +197,7 @@ Yes, with these revisions applied from author feedback:
 - **Components is its own section** (Mintlify pattern), separate from Reference.
 - **Reference holds lookup only:** config, frontmatter, CLI, HTTP endpoints — not workflow content.
 - **Previews** nested under Authoring content — local and shareable preview pages grouped like Docs Guides under Getting Started.
+- **Maintain documentation** nested under Authoring content — translate and redirect pages grouped after Previews.
 - **Compare platforms** nested under Platform comparisons — peer comparison pages grouped like Docs Guides under Getting Started.
 - **Renames applied:** MCP skills → Agent skills; External AI chat → Embed a docs assistant.
 - **Title rule maintained:** each page title names one focus.
