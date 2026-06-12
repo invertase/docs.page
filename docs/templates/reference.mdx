@@ -37,6 +37,68 @@ Structure every reference page with these sections:
 4. **Errors** — Status codes or failure conditions when applicable.
 5. **See also** — Links to how-to and explanation pages.
 
+## Copy this template
+
+Copy the skeleton below into a new `.mdx` file and replace placeholder paths and content with your own.
+
+````mdx title="docs/reference/create-order.mdx"
+---
+title: Create order
+description: Request parameters, examples, and errors for POST /v1/orders.
+---
+
+Create a new beverage order.
+
+## Syntax
+
+```http
+POST /v1/orders
+Authorization: Bearer <api_key>
+Content-Type: application/json
+```
+
+## Request parameters
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `item` | `string` | Yes | Base beverage. Allowed values: `espresso`, `americano`, `latte`, `cappuccino`. |
+| `size` | `string` | Yes | Drink size. Allowed values: `single`, `double`, `twelve_oz`, `sixteen_oz`. |
+| `temperature` | `string` | No | Defaults to `hot`. Allowed values: `hot`, `iced`. |
+
+## Example request
+
+```json
+{
+  "item": "latte",
+  "size": "twelve_oz",
+  "temperature": "iced"
+}
+```
+
+## Example response
+
+```json
+{
+  "order_id": "ord_123",
+  "status": "received",
+  "total_cents": 525
+}
+```
+
+## Errors
+
+| Status | Condition |
+| --- | --- |
+| `401 Unauthorized` | Missing or invalid API key. |
+| `422 Unprocessable Entity` | Invalid combination — for example, `single` size with an `iced` latte. |
+
+## See also
+
+- [Create your first coffee order](/path/to/tutorial)
+- [Customize drinks with milk alternatives](/path/to/how-to)
+- [Order fulfillment lifecycle](/path/to/explanation)
+````
+
 ## Example: Create order (`POST /v1/orders`)
 
 Below is how a reference page might read for our fictional coffee API. Notice the absence of onboarding prose and the emphasis on allowed values.

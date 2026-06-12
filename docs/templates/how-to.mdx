@@ -37,6 +37,60 @@ Structure every how-to with these sections:
 4. **Verification** — How the reader confirms the task worked.
 5. **Next steps** — Related how-tos or deeper reading.
 
+## Copy this template
+
+Copy the skeleton below into a new `.mdx` file and replace placeholder paths and content with your own.
+
+````mdx title="docs/customize-drinks-with-milk-alternatives.mdx"
+---
+title: Customize drinks with milk alternatives
+description: Modify a pending order to use oat, almond, or other milk substitutes.
+---
+
+This guide shows you how to modify an existing order to include milk alternatives so you can accommodate dietary preferences without canceling and reordering.
+
+## Before you begin
+
+- An active order ID with status `pending`
+- Your Barista API key
+- [Orders API reference](/path/to/reference) for field names
+
+## Steps
+
+1. **Find the pending order ID.** Copy the `order_id` from your original `POST` response. You can only modify orders while status is `pending`.
+
+2. **Add a modifications array.** Include the milk substitute in the request body:
+
+   ```json
+   {
+     "modifications": [
+       {
+         "type": "milk",
+         "substitute": "oat_milk"
+       }
+     ]
+   }
+   ```
+
+3. **Update the order.** Send a `PATCH` request to the order endpoint:
+
+   ```bash
+   curl -X PATCH https://api.coffeeshop.dev/v1/orders/ord_123 \
+     -H "Authorization: Bearer YOUR_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"modifications": [{"type": "milk", "substitute": "oat_milk"}]}'
+   ```
+
+## Verify
+
+Check the response payload. The `total_cents` field should increase to reflect the milk alternative upcharge, and `modifications` should list `oat_milk`.
+
+## Next steps
+
+- [Create your first coffee order](/path/to/tutorial)
+- [Order fulfillment lifecycle](/path/to/explanation)
+````
+
 ## Example: Customize drinks with milk alternatives
 
 Below is how a how-to page might read for our fictional coffee API. Notice the specific scenario, surgical request edit, and explicit verification.
