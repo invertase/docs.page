@@ -61,7 +61,7 @@ Documentation (/)
 │       ├── Install the GitHub bot  /advanced/github-bot
 │       └── Set page metadata  /advanced/frontmatter
 ├── Configure your site [depth]
-│   ├── Configure your site  /configuration
+│   ├── Overview  /configuration                    → H1: Configure your site
 │   ├── Customize theme and branding  /configuration/theme-and-branding
 │   ├── Add analytics and SEO  /configuration/analytics-and-seo
 │   ├── Configure content display  /configuration/content-display
@@ -120,6 +120,7 @@ No icons on page leaves. **Section heading icons** on top-level sidebar groups o
 | `/using/chat` | Chat with docs | — |
 | `/using/connect` | Connect AI tools | Connect MCP and llms.txt |
 | `/cli` | Use the CLI | — |
+| `/configuration` | Overview | Configure your site |
 | `/configuration/reference` | docs.json reference | — |
 | `/components/*` | Component name | — (Accordion, Tabs, …) |
 
@@ -173,7 +174,7 @@ Group labels: **Publishing docs** / **Using docs** (sentence case, task framing)
 - **Agent split:** consume → Using docs; enable/publish → Publishing docs.
 - **Components sections:** category groups are top-level sidebar sections on the Components tab — always expanded, not nested accordions.
 - **Icons:** section headings only (`Getting Started` → `rocket`, `Layout & structure` → `layer-group`, etc.). No leaf icons.
-- **Configure hub (v3.2):** `/configuration` landing — top-level section; nested accordions are not clickable pages.
+- **Configure hub (v3.2):** top-level section; first leaf **Overview** at `/configuration` (H1: Configure your site) — same pattern as Components tab.
 - **Comparisons (v3.1):** one page per competitor — **Compare** + **Migrate** sections.
 - Getting Started stays **2 pages**. Config = 4 how-tos + 1 reference hub.
 - Getting Started stays **2 pages**. Config = 4 how-tos + 1 reference hub.

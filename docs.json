@@ -121,7 +121,7 @@
       "icon": "sliders",
       "pages": [
         {
-          "title": "Configure your site",
+          "title": "Overview",
           "href": "/configuration"
         },
         {
@@ -451,7 +451,7 @@
       },
       {
         "href": "/configuration",
-        "title": "Configure your site",
+        "title": "Overview",
         "description": "Customize theme, analytics, navigation, and domains with docs.json.",
         "docType": "explanation",
         "userGoal": "customize",
