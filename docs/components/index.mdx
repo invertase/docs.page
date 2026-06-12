@@ -1,74 +1,60 @@
 ---
 title: Components overview
-description: Browse the docs.page MDX component library for layout, emphasis, API documentation, and navigation.
+description: When to use MDX components instead of plain Markdown, with links to each component reference page.
 ---
 
-> Browse the full docs.page component library for layout, emphasis, API documentation, and navigation elements available in your MDX pages.
+Use these components in any `.mdx` file under `docs/`. Plain Markdown still works for paragraphs, lists, and links — reach for components when you need tabs, callouts, code switchers, or structured API fields.
 
-docs.page supports [MDX](https://mdxjs.com/), so you can use JSX components alongside standard Markdown in any `.mdx` file. Components structure long pages, highlight important details, and document APIs more clearly than plain prose alone.
-
-Use Markdown for simple paragraphs, lists, and links. Reach for components when you need tabbed examples, expandable sections, styled callouts, or structured reference fields.
-
-## Structure your content
+## Structure
 
 <CardGroup cols={2}>
   <Card title="Tabs" icon="folder" href="/components/tabs">
-    Organize related content into switchable tabbed views.
+    Switch between related content variants, such as platform-specific instructions.
   </Card>
+  <Card title="Accordion" icon="chevron-down" href="/components/accordion">
+    Hide detail until readers expand a section.
+  </Card>
+  <Card title="Steps" icon="list-ol" href="/components/steps">
+    Number procedures for tutorials and setup guides.
+  </Card>
+  <Card title="Card" icon="square" href="/components/card">
+    Link to related pages from overview grids and landing sections.
+  </Card>
+  <Card title="Heading" icon="heading" href="/components/heading">
+    Anchor headings for in-page navigation and table-of-contents links.
+  </Card>
+</CardGroup>
+
+## Code
+
+<CardGroup cols={2}>
   <Card title="Code blocks" icon="code" href="/components/code-blocks">
     Add syntax highlighting, titles, line numbers, and copy-to-clipboard controls.
   </Card>
   <Card title="Code group" icon="code-branch" href="/components/code-group">
-    Display code examples in multiple languages or variants behind one tab switcher.
-  </Card>
-  <Card title="Steps" icon="list-ol" href="/components/steps">
-    Display sequential instructions in a numbered format for tutorials and setup guides.
-  </Card>
-  <Card title="Heading" icon="heading" href="/components/heading">
-    Customize heading anchors and scroll offset for in-page navigation.
+    Show equivalent examples in multiple languages behind one tab switcher.
   </Card>
 </CardGroup>
 
-## Draw attention
+## Reference
 
 <CardGroup cols={2}>
   <Card title="Callouts" icon="message" href="/components/callouts">
-    Emphasize important information with styled Info, Warning, Error, and Success alerts.
+    Highlight notes, warnings, errors, and success messages with styled alerts.
   </Card>
-</CardGroup>
-
-## Show and hide content
-
-<CardGroup cols={2}>
-  <Card title="Accordion" icon="chevron-down" href="/components/accordion">
-    Expandable sections for progressive disclosure of content.
-  </Card>
-</CardGroup>
-
-## Document your API
-
-<CardGroup cols={2}>
   <Card title="Property" icon="brackets-curly" href="/components/property">
-    Display parameter and property definitions with type and required badges.
+    Document API fields with name, type, and required badges.
   </Card>
 </CardGroup>
 
-## Link to other pages
-
-<CardGroup cols={2}>
-  <Card title="Card" icon="square" href="/components/card">
-    Highlight content with customizable containers, icons, and links.
-  </Card>
-</CardGroup>
-
-## Add visual context
+## Media
 
 <CardGroup cols={2}>
   <Card title="Icon" icon="icons" href="/components/icon">
-    Add visual indicators using Font Awesome solid and brand icons.
+    Add Font Awesome solid and brand icons inline or in navigation.
   </Card>
   <Card title="Image" icon="image" href="/components/image">
-    Display images with sizing, alt text, light/dark theming, and optional zoom.
+    Display repo-hosted images with alt text, theming, and optional zoom.
   </Card>
   <Card title="Video" icon="video" href="/components/video">
     Embed self-hosted or generic HTML5 video from a URL.

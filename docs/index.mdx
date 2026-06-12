@@ -3,15 +3,15 @@ title: Introduction
 description: Instant, open-source documentation hosting from a public GitHub repository — with no build step or hosting account.
 ---
 
-docs.page serves documentation straight from a public GitHub repository — no build step, no hosting account, and no separate deploy pipeline. You add a `docs.json` config file and write pages as MDX under `docs/`; docs.page renders them at a live URL that stays in sync with your default branch.
+[docs.page](https://docs.page) serves documentation straight from a public GitHub repository — no build step, no hosting account, and no separate deploy pipeline. You add a `docs.json` config file and write pages as MDX under `docs/`; [docs.page](https://docs.page) renders them at a live URL that stays in sync with your default branch.
 
 The same site works for human readers and for AI tools. Search, navigation, and rich MDX components serve people in the browser; llms.txt, MCP, and optional in-docs chat help agents find and use your content without a second publishing workflow.
 
 ## Overview
 
-Think of docs.page as **docs-as-code with zero hosting setup**. Configuration and content live in Git alongside your project. When you push changes, the live site updates — the same way your codebase does.
+Think of [docs.page](https://docs.page) as **docs-as-code with zero hosting setup**. Configuration and content live in Git alongside your project. When you push changes, the live site updates — the same way your codebase does.
 
-docs.page is free and open source. It fits teams that want polished documentation without standing up a static-site generator, CI deploy, or hosted docs platform for every repository.
+[docs.page](https://docs.page) is free and open source. It fits teams that want polished documentation without standing up a static-site generator, CI deploy, or hosted docs platform for every repository.
 
 ## Who it is for
 
@@ -23,11 +23,11 @@ docs.page is free and open source. It fits teams that want polished documentatio
 
 ## How hosting works
 
-docs.page reads your repository on each request, bundles MDX, and serves a complete documentation site. You do not run a local build or upload artifacts to a host.
+[docs.page](https://docs.page) reads your repository on each request, bundles MDX, and serves a complete documentation site. You do not run a local build or upload artifacts to a host.
 
 ### What goes in your repository
 
-Every docs.page site needs two things in a **public** GitHub repository:
+Every [docs.page](https://docs.page) site needs two things in a **public** GitHub repository:
 
 - **`docs.json`** at the repository root — site name, navigation, theme, and other configuration
 - **`docs/**/*.mdx`** — your documentation pages, one file per page (with optional subdirectories)
@@ -45,12 +45,12 @@ https://docs.page/{owner}/{repo}
 For example, a repository at `https://github.com/acme/my-project` is available at `https://docs.page/acme/my-project`. Individual pages follow the path of their file under `docs/` — `docs/usage.mdx` becomes `/usage`.
 
 <Info>
-  docs.page only hosts **public** repositories. Private repos are blocked before any content is served. Keep documentation in a public repo, or in a public docs-only repository linked from your project.
+  [docs.page](https://docs.page) only hosts **public** repositories. Private repos are blocked before any content is served. Keep documentation in a public repo, or in a public docs-only repository linked from your project.
 </Info>
 
 ### What you do not need
 
-Because docs.page handles rendering and hosting, you can skip the usual documentation infrastructure:
+Because [docs.page](https://docs.page) handles rendering and hosting, you can skip the usual documentation infrastructure:
 
 - **No build step** — no webpack, Docusaurus build, or static export in CI
 - **No hosting account** — no S3 bucket, CDN, or Pages project per repository
@@ -66,9 +66,9 @@ Agents and AI tools can use the same published site through dedicated surfaces: 
 
 See [Agent-ready docs](/ai-agents/agent-ready-docs) for how these surfaces fit together.
 
-## When docs.page fits
+## When [docs.page](https://docs.page) fits
 
-docs.page works well when most of your documentation is Markdown-based, you want instant publishing from GitHub, and your content can live in a public repository.
+[docs.page](https://docs.page) works well when most of your documentation is Markdown-based, you want instant publishing from GitHub, and your content can live in a public repository.
 
 It is a strong default for open-source libraries, SDK reference sites, and internal product docs that teams are comfortable publishing publicly. If you need a heavily customized documentation experience — bespoke routing, proprietary auth gates, or a private-only docs site — a self-hosted static generator or custom app may be a better fit.
 
@@ -78,7 +78,7 @@ For side-by-side comparisons with Docusaurus, Mintlify, GitHub Pages, and simila
 
 <CardGroup cols={2}>
   <Card title="Publish your first site" icon="rocket" href="/publish-your-first-site">
-    Scaffold a site, push to GitHub, and open your live docs.page URL.
+    Scaffold a site, push to GitHub, and open your live [docs.page](https://docs.page) URL.
   </Card>
   <Card title="Write documentation" icon="pen-to-square" href="/authoring/write-documentation">
     Structure pages, write clear prose, and add code examples and media.
