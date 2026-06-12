@@ -57,7 +57,7 @@ Orient, achieve first publish, then pick a page layout for the kind of documenta
 | Page Title | Diátaxis Type | Priority | Purpose |
 | --- | --- | --- | --- |
 | Introduction | Explanation | **Must have** | Explain what docs.page is, who it is for, and the "docs for humans + agents" value proposition. Include how hosting works: public GitHub repo → `docs.json` + `docs/**/*.mdx` → live URL, public repos only, and what you do not need (build step, hosting account). |
-| Publish your first site | Tutorial | **Must have** | Walk through first success: scaffold with `docs init` or manually, push to a public repo, open the live docs.page URL, and verify the site renders. Cover expected repo layout (`docs.json`, `docs/**/*.mdx`) and how to read your site's URL patterns. |
+| Publish your first site | Tutorial | **Must have** | Walk through something they've never done before: scaffold with `docs init` or manually, push to a public repo, open the live docs.page URL, and verify the site renders. Cover expected repo layout (`docs.json`, `docs/**/*.mdx`) and how to read your site's URL patterns. |
 
 #### Templates
 
@@ -65,7 +65,7 @@ Nested subgroup under Getting Started — immediately after first publish, when 
 
 | Page Title | Diátaxis Type | Priority | Purpose |
 | --- | --- | --- | --- |
-| Tutorial template | Tutorial | **Should have** | Learning-oriented layout: narrative, hands-on steps that give readers an immediate win and build a mental model. Encouraging and instructional — no choices or deep explanations. Sections: Introduction, Prerequisites, Step-by-step instructions, Next steps. |
+| Tutorial template | Tutorial | **Should have** | Learning-oriented layout: narrative, hands-on steps toward one clear thing to accomplish that builds a mental model. Encouraging and instructional — no choices or deep explanations. Sections: Introduction, Prerequisites, Step-by-step instructions, Next steps. |
 | How-to template | How-to | **Should have** | Task-oriented layout for readers who know the basics and need to solve a specific problem. Practical and scannable. Sections: Goal or scenario, Implementation steps, Verification. |
 | Reference template | Reference | **Should have** | Lookup-oriented layout for facts, API specs, config keys, or command syntax. Stark, literal, and dense. Sections: Syntax or blueprint, Parameters or options table, Examples. |
 | Explanation template | Explanation | **Should have** | Understanding-oriented layout for background, architecture, intent, and design decisions — answers *why*, not just *how*. Discursive and educational. Sections: The concept, How it works, Design decisions. |

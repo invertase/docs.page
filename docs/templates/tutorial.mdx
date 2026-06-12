@@ -1,12 +1,12 @@
 ---
 title: Tutorial template
-description: Structure guided walkthroughs with prerequisites, hands-on steps, and a concrete first win.
+description: Structure guided walkthroughs with prerequisites, hands-on steps, and one clear thing to accomplish.
 ---
 
-Use this layout when you want to guide someone through a first success and help them start building a mental model of your product. The reader should finish with a concrete win — not a menu of options or a deep dive into architecture.
+Use this layout when you want to guide someone through what they set out to do for the first time and help them start building a mental model — the moment the product clicks. The reader should finish with something working they can verify, not a menu of options or a deep dive into architecture.
 
 <Info>
-  **Tutorial vs how-to:** A tutorial is for readers who have never done this before — one guaranteed path to a first win. Use a [how-to](/templates/how-to) when they already know the basics and need to complete one specific task.
+  **Tutorial vs how-to:** A tutorial is for readers who have never done this before — one guaranteed path through one thing they set out to do. Use a [how-to](/templates/how-to) when they already know the basics and need to complete one specific task.
 </Info>
 
 These are **page templates** — layouts for individual `.mdx` files, not site themes, starter repos, or `docs init` scaffolds.
@@ -21,14 +21,14 @@ These are **page templates** — layouts for individual `.mdx` files, not site t
 
 Before writing, anchor yourself to the core constraints of the learning-oriented quadrant:
 
-- **The goal:** Provide a narrative, hands-on experience for an immediate win.
+- **The goal:** Provide a narrative, hands-on experience focused on one thing the reader sets out to do.
 - **The tone:** Encouraging, authoritative, and instructional. Do not offer alternatives, deep explanations, or production hardening.
 - **The layout:** Introduction → Prerequisites → Steps → Next steps. Use `<Steps>` for long procedures. Keep code blocks copy-paste ready.
 
 | Use a tutorial when… | Use something else when… |
 | --- | --- |
 | The reader has never done this before | They need one specific task → [How-to](/templates/how-to) |
-| You want one guaranteed success path | They need field-by-field lookup → [Reference](/templates/reference) |
+| You want one guaranteed path through one clear objective | They need field-by-field lookup → [Reference](/templates/reference) |
 | Choices and tradeoffs would slow them down | They need background and *why* → [Explanation](/templates/explanation) |
 
 ## Copy this template
@@ -38,10 +38,10 @@ Copy this raw skeleton into a new `.mdx` file to begin scaffolding your page.
 ````mdx title="docs/your-quickstart-page.mdx"
 ---
 title: [Action] your first [Noun]
-description: A short, 1-sentence summary of the immediate win the reader will achieve.
+description: A short, 1-sentence summary of what the reader sets out to accomplish.
 ---
 
-This page guides you through setting up your environment and achieving [Core Benefit/Win] in under 5 minutes.
+This page guides you through setting up your environment and [what they set out to do] in under 5 minutes.
 
 ## Prerequisites
 
@@ -58,7 +58,7 @@ This page guides you through setting up your environment and achieving [Core Ben
     Provide code snippets that are complete and copy-paste ready.
   </Step>
   <Step title="[Action 3: Execution]">
-    Execute the command. Clearly state what the successful output looks like so they can verify their win.
+    Execute the command. Clearly state what the successful output looks like so they can confirm it worked.
   </Step>
 </Steps>
 
