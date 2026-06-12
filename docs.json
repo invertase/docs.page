@@ -70,6 +70,7 @@
         {
           "group": "Appearance",
           "icon": "palette",
+          "href": "/appearance",
           "pages": [
             {
               "title": "Theme",
@@ -315,6 +316,7 @@
         {
           "group": "Commands",
           "icon": "terminal",
+          "href": "/cli",
           "pages": [
             {
               "title": "init",
