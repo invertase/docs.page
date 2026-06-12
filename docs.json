@@ -65,7 +65,8 @@
               "title": "Write an internal handbook",
               "href": "/guides/write/internal-handbook"
             }
-          ]
+          ],
+          "href": "/guides/write"
         }
       ],
       "icon": "pen-to-square"
@@ -79,7 +80,34 @@
           "href": "/publishing/urls"
         },
         {
+          "group": "Configure your site",
+          "href": "/configuration",
+          "pages": [
+            {
+              "title": "Customize theme and branding",
+              "href": "/configuration/theme-and-branding"
+            },
+            {
+              "title": "Add analytics and SEO",
+              "href": "/configuration/analytics-and-seo"
+            },
+            {
+              "title": "Configure content display",
+              "href": "/configuration/content-display"
+            },
+            {
+              "title": "Set up a custom domain",
+              "href": "/configuration/custom-domains"
+            },
+            {
+              "title": "docs.json reference",
+              "href": "/configuration/reference"
+            }
+          ]
+        },
+        {
           "group": "Enable agent features",
+          "href": "/publishing/agent-ready",
           "pages": [
             {
               "title": "Enable AI chat",
@@ -97,6 +125,7 @@
         },
         {
           "group": "Advanced",
+          "href": "/advanced",
           "pages": [
             {
               "title": "Write for AI search",
@@ -114,37 +143,6 @@
         }
       ],
       "icon": "cloud-arrow-up"
-    },
-    {
-      "group": "Configure your site",
-      "tab": "root",
-      "icon": "sliders",
-      "pages": [
-        {
-          "title": "Overview",
-          "href": "/configuration"
-        },
-        {
-          "title": "Customize theme and branding",
-          "href": "/configuration/theme-and-branding"
-        },
-        {
-          "title": "Add analytics and SEO",
-          "href": "/configuration/analytics-and-seo"
-        },
-        {
-          "title": "Configure content display",
-          "href": "/configuration/content-display"
-        },
-        {
-          "title": "Set up a custom domain",
-          "href": "/configuration/custom-domains"
-        },
-        {
-          "title": "docs.json reference",
-          "href": "/configuration/reference"
-        }
-      ]
     },
     {
       "group": "Using docs",
@@ -357,6 +355,21 @@
         ]
       },
       {
+        "href": "/guides/write",
+        "title": "Write by doc type",
+        "description": "Patterns for product guides, API reference, knowledge bases, changelogs, and handbooks.",
+        "docType": "explanation",
+        "userGoal": "author-content",
+        "status": "stub",
+        "file": "docs/guides/write/index.mdx",
+        "capabilityIds": [
+          "config-content"
+        ],
+        "audience": [
+          "contributor"
+        ]
+      },
+      {
         "href": "/guides/write/product-guide",
         "title": "Write a product guide",
         "description": "Structure and write product documentation in MDX.",
@@ -451,7 +464,7 @@
       },
       {
         "href": "/configuration",
-        "title": "Overview",
+        "title": "Configure your site",
         "description": "Customize theme, analytics, navigation, and domains with docs.json.",
         "docType": "explanation",
         "userGoal": "customize",
@@ -533,6 +546,23 @@
         ]
       },
       {
+        "href": "/publishing/agent-ready",
+        "title": "Enable agent features",
+        "description": "Turn on AI chat and publish agent skills for your docs site.",
+        "docType": "explanation",
+        "userGoal": "integrate",
+        "status": "stub",
+        "file": "docs/publishing/agent-ready/index.mdx",
+        "capabilityIds": [
+          "config-agent",
+          "config-mcp",
+          "mcp-skills"
+        ],
+        "audience": [
+          "contributor"
+        ]
+      },
+      {
         "href": "/publishing/agent-ready/ai-chat",
         "title": "Enable AI chat",
         "description": "Enable the in-docs AI chat panel with the CLI and docs.json.",
@@ -582,6 +612,19 @@
           "cli-agent-delete",
           "cli-api-url"
         ],
+        "audience": [
+          "contributor"
+        ]
+      },
+      {
+        "href": "/advanced",
+        "title": "Advanced",
+        "description": "Semantic authoring, GitHub bot, and page metadata for power users.",
+        "docType": "explanation",
+        "userGoal": "author-content",
+        "status": "stub",
+        "file": "docs/advanced/index.mdx",
+        "capabilityIds": [],
         "audience": [
           "contributor"
         ]
@@ -1009,8 +1052,8 @@
         "warnings": 0
       },
       "stats": {
-        "pageCount": 44,
-        "stubPages": 44,
+        "pageCount": 47,
+        "stubPages": 47,
         "componentPages": 15
       }
     }

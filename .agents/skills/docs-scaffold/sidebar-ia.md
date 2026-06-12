@@ -52,6 +52,12 @@ Per spec journey spine:
 
 ## Nesting
 
+### Clickable nested groups (`href`)
+
+A nested `{ group, pages }` may set **`href`** to a hub page. The **label navigates** to that page; the **chevron** expands/collapses children. Use when the group name is also a doc topic (e.g. "Write by doc type" → `/guides/write`).
+
+Without `href`, the whole row is expand/collapse only.
+
 When ≥2 categories with ≥3 pages in a group, nest sub-groups:
 
 - Getting Started: nest author-content (Writing)

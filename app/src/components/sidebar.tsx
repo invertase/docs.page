@@ -141,6 +141,29 @@ function SidebarPageRow(props: {
   );
 }
 
+function SidebarNestedGroupLabel(props: {
+  icon?: string;
+  label: string;
+}) {
+  return (
+    <>
+      {props.icon ? <SidebarNavIcon icon={props.icon} /> : null}
+      <span className="truncate">{props.label}</span>
+    </>
+  );
+}
+
+function SidebarNestedGroupChevron(props: { className?: string }) {
+  return (
+    <RiArrowRightSLine
+      className={cn(
+        "size-4 shrink-0 transition-transform duration-200 [[data-state=open]>&]:rotate-90",
+        props.className,
+      )}
+    />
+  );
+}
+
 function SidebarNestedGroup(props: {
   node: SidebarConfigGroup;
   depth: number;
@@ -152,55 +175,120 @@ function SidebarNestedGroup(props: {
   const groupHrefActive =
     props.node.href != null && isDocHrefActive(route, props.node.href, locales);
 
-  const isActive = hasActive || groupHrefActive;
+  const isOpen = hasActive || groupHrefActive;
+  const href = props.node.href;
+
+  const childList = (
+    <CollapsibleContent>
+      {props.depth === 0 ? (
+        <SidebarMenuSub>
+          <SidebarPagesList pages={props.node.pages} depth={props.depth + 1} />
+        </SidebarMenuSub>
+      ) : (
+        <SidebarMenuSub className="mx-3.5 border-l border-sidebar-border px-2.5 py-0.5">
+          <SidebarPagesList pages={props.node.pages} depth={props.depth + 1} />
+        </SidebarMenuSub>
+      )}
+    </CollapsibleContent>
+  );
+
+  if (href) {
+    if (props.depth === 0) {
+      return (
+        <Collapsible defaultOpen={isOpen}>
+          <SidebarMenuItem className="pb-1">
+            <div className="flex items-center gap-0.5">
+              <SidebarMenuButton
+                asChild
+                tooltip={label}
+                isActive={groupHrefActive}
+                className="min-w-0 flex-1"
+              >
+                <Link href={href}>
+                  <SidebarNestedGroupLabel
+                    icon={props.node.icon}
+                    label={label}
+                  />
+                </Link>
+              </SidebarMenuButton>
+              <CollapsibleTrigger
+                className={cn(
+                  "group flex size-8 shrink-0 items-center justify-center rounded-md text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                  hasActive && "text-sidebar-foreground",
+                )}
+                aria-label={`${label} section`}
+              >
+                <SidebarNestedGroupChevron className="group-data-[state=open]:rotate-90" />
+              </CollapsibleTrigger>
+            </div>
+            {childList}
+          </SidebarMenuItem>
+        </Collapsible>
+      );
+    }
+
+    return (
+      <Collapsible defaultOpen={isOpen}>
+        <SidebarMenuSubItem className="pb-1">
+          <div className="flex items-center gap-0.5">
+            <SidebarMenuSubButton
+              asChild
+              isActive={groupHrefActive}
+              size="md"
+              className="min-w-0 flex-1 text-muted-foreground"
+            >
+              <Link href={href}>
+                <SidebarNestedGroupLabel
+                  icon={props.node.icon}
+                  label={label}
+                />
+              </Link>
+            </SidebarMenuSubButton>
+            <CollapsibleTrigger
+              className={cn(
+                "group flex size-7 shrink-0 items-center justify-center rounded-md text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                hasActive && "text-sidebar-foreground",
+              )}
+              aria-label={`${label} section`}
+            >
+              <SidebarNestedGroupChevron className="group-data-[state=open]:rotate-90" />
+            </CollapsibleTrigger>
+          </div>
+          {childList}
+        </SidebarMenuSubItem>
+      </Collapsible>
+    );
+  }
 
   if (props.depth === 0) {
     return (
-      <Collapsible defaultOpen={isActive}>
+      <Collapsible defaultOpen={isOpen}>
         <SidebarMenuItem className="pb-1">
           <CollapsibleTrigger asChild>
-            <SidebarMenuButton tooltip={label} isActive={isActive}>
-              {props.node.icon ? (
-                <SidebarNavIcon icon={props.node.icon} />
-              ) : null}
-              <span className="truncate">{label}</span>
-              <RiArrowRightSLine className="ml-auto size-4 shrink-0 transition-transform duration-200 [[data-state=open]>&]:rotate-90" />
+            <SidebarMenuButton tooltip={label} isActive={isOpen}>
+              <SidebarNestedGroupLabel icon={props.node.icon} label={label} />
+              <SidebarNestedGroupChevron className="ml-auto" />
             </SidebarMenuButton>
           </CollapsibleTrigger>
-          <CollapsibleContent>
-            <SidebarMenuSub>
-              <SidebarPagesList
-                pages={props.node.pages}
-                depth={props.depth + 1}
-              />
-            </SidebarMenuSub>
-          </CollapsibleContent>
+          {childList}
         </SidebarMenuItem>
       </Collapsible>
     );
   }
 
   return (
-    <Collapsible defaultOpen={isActive}>
+    <Collapsible defaultOpen={isOpen}>
       <SidebarMenuSubItem className="pb-1">
         <CollapsibleTrigger asChild>
           <SidebarMenuSubButton
-            isActive={isActive}
+            isActive={isOpen}
             className="text-muted-foreground"
           >
-            {props.node.icon ? <SidebarNavIcon icon={props.node.icon} /> : null}
-            <span className="truncate">{label}</span>
-            <RiArrowRightSLine className="ml-auto size-4 shrink-0 transition-transform duration-200 [[data-state=open]>&]:rotate-90" />
+            <SidebarNestedGroupLabel icon={props.node.icon} label={label} />
+            <SidebarNestedGroupChevron className="ml-auto" />
           </SidebarMenuSubButton>
         </CollapsibleTrigger>
-        <CollapsibleContent>
-          <SidebarMenuSub className="mx-3.5 border-l border-sidebar-border px-2.5 py-0.5">
-            <SidebarPagesList
-              pages={props.node.pages}
-              depth={props.depth + 1}
-            />
-          </SidebarMenuSub>
-        </CollapsibleContent>
+        {childList}
       </SidebarMenuSubItem>
     </Collapsible>
   );
