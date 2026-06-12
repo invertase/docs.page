@@ -42,7 +42,7 @@
         },
         {
           "group": "Page templates",
-          "href": "/templates",
+          "href": "/templates/index",
           "pages": [
             {
               "title": "Tutorial",
@@ -237,7 +237,7 @@
       "pages": [
         {
           "group": "Compare platforms",
-          "href": "/comparisons",
+          "href": "/comparisons/index",
           "pages": [
             {
               "title": "Mintlify",
