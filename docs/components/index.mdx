@@ -3,74 +3,74 @@ title: Components overview
 description: When to use MDX components instead of plain Markdown, with links to each component reference page.
 ---
 
-Use these components in any `.mdx` file under `docs/`. Plain Markdown still works for paragraphs, lists, and links — reach for components when you need tabs, callouts, code switchers, or structured API fields.
+Add these components to any `.mdx` file under `docs/`. Plain Markdown handles paragraphs, lists, and links; components add structure for tabs, callouts, code examples, and API reference fields.
 
 ## Structure
 
-<CardGroup cols={2}>
+<CardGroup cols={1}>
   <Card title="Tabs" icon="folder" href="/components/tabs">
-    Switch between related content variants, such as platform-specific instructions.
+    Organize related content in switchable panels — for example, per-platform instructions.
   </Card>
   <Card title="Accordion" icon="chevron-down" href="/components/accordion">
-    Hide detail until readers expand a section.
+    Collapse long sections so readers expand only what they need.
   </Card>
   <Card title="Steps" icon="list-ol" href="/components/steps">
-    Number procedures for tutorials and setup guides.
+    Show numbered or icon-backed steps in tutorials and setup guides.
   </Card>
   <Card title="Card" icon="square" href="/components/card">
-    Link to related pages from overview grids and landing sections.
+    Present linked tiles on overview pages and landing sections.
   </Card>
   <Card title="Heading" icon="heading" href="/components/heading">
-    Anchor headings for in-page navigation and table-of-contents links.
+    Add anchor links to headings for in-page navigation.
   </Card>
 </CardGroup>
 
 ## Code
 
-<CardGroup cols={2}>
+<CardGroup cols={1}>
   <Card title="Code blocks" icon="code" href="/components/code-blocks">
-    Add syntax highlighting, titles, line numbers, and copy-to-clipboard controls.
+    Render syntax-highlighted code with a language label, optional title, and copy button.
   </Card>
   <Card title="Code group" icon="code-branch" href="/components/code-group">
-    Show equivalent examples in multiple languages behind one tab switcher.
+    Switch between equivalent code samples in one control.
   </Card>
 </CardGroup>
 
 ## Reference
 
-<CardGroup cols={2}>
+<CardGroup cols={1}>
   <Card title="Callouts" icon="message" href="/components/callouts">
-    Highlight notes, warnings, errors, and success messages with styled alerts.
+    Draw attention with Info, Warning, Error, and Success blocks.
   </Card>
   <Card title="Property" icon="brackets-curly" href="/components/property">
-    Document API fields with name, type, and required badges.
+    Describe API fields with name, type, and required or optional badges.
   </Card>
 </CardGroup>
 
 ## Media
 
-<CardGroup cols={2}>
+<CardGroup cols={1}>
   <Card title="Icon" icon="icons" href="/components/icon">
-    Add Font Awesome solid and brand icons inline or in navigation.
+    Insert Font Awesome solid or brand icons by slug.
   </Card>
   <Card title="Image" icon="image" href="/components/image">
-    Display repo-hosted images with alt text, theming, and optional zoom.
+    Show repo-relative images with alt text, theming, captions, and optional zoom.
   </Card>
   <Card title="Video" icon="video" href="/components/video">
-    Embed self-hosted or generic HTML5 video from a URL.
+    Play HTML5 video from a URL.
   </Card>
   <Card title="YouTube" icon="youtube" href="/components/youtube">
-    Embed a YouTube player from a video ID.
+    Embed a YouTube player by video ID.
   </Card>
   <Card title="Vimeo" icon="vimeo" href="/components/vimeo">
-    Embed a Vimeo player from a video ID.
+    Embed a Vimeo player by video ID.
   </Card>
   <Card title="Tweet" icon="x-twitter" href="/components/tweet">
     Embed a Twitter/X post by status ID.
   </Card>
 </CardGroup>
 
-## Related topics
+## Related
 
 - [Write documentation](/authoring/write-documentation)
 - [Page templates](/templates/tutorial)
