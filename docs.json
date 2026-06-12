@@ -234,32 +234,27 @@
       "group": "Platform comparisons",
       "icon": "scale-balanced",
       "tab": "docs",
+      "href": "/comparisons/index", 
       "pages": [
         {
-          "group": "Compare platforms",
-          "href": "/comparisons/index",
-          "pages": [
-            {
-              "title": "Mintlify",
-              "href": "/comparisons/docs-page-vs-mintlify"
-            },
-            {
-              "title": "Docusaurus",
-              "href": "/comparisons/docs-page-vs-docusaurus"
-            },
-            {
-              "title": "docsify",
-              "href": "/comparisons/docs-page-vs-docsify"
-            },
-            {
-              "title": "Jekyll",
-              "href": "/comparisons/docs-page-vs-jekyll"
-            },
-            {
-              "title": "GitHub Pages",
-              "href": "/comparisons/docs-page-vs-github-pages"
-            }
-          ]
+          "title": "Mintlify",
+          "href": "/comparisons/docs-page-vs-mintlify"
+        },
+        {
+          "title": "Docusaurus",
+          "href": "/comparisons/docs-page-vs-docusaurus"
+        },
+        {
+          "title": "docsify",
+          "href": "/comparisons/docs-page-vs-docsify"
+        },
+        {
+          "title": "Jekyll",
+          "href": "/comparisons/docs-page-vs-jekyll"
+        },
+        {
+          "title": "GitHub Pages",
+          "href": "/comparisons/docs-page-vs-github-pages"
         }
       ]
     },
