@@ -7,9 +7,15 @@ Use this layout when you want to guide someone through a first success and help 
 
 These are **page templates** — layouts for individual `.mdx` files, not site themes, starter repos, or `docs init` scaffolds.
 
+<br />
+<br />
+
 <Info>
   The examples on this page and the other **Page templates** use a fictional **Coffee Shop Ordering API**. The same product scenario appears in every template so you can compare how structure, tone, and code change by documentation type.
 </Info>
+
+<br />
+<br />
 
 ## Blueprint anatomy
 
@@ -77,6 +83,9 @@ This page guides you through setting up your environment and achieving [Core Ben
 
 2. **Construct the payload.** Create a JSON object for a simple hot espresso:
 
+   <br />
+   <br />
+
    ```json
    {
      "item": "espresso",
@@ -84,7 +93,13 @@ This page guides you through setting up your environment and achieving [Core Ben
    }
    ```
 
+   <br />
+   <br />
+
 3. **Send the request.** Run this command in your terminal:
+
+   <br />
+   <br />
 
    ```bash
    curl -X POST https://api.coffeeshop.dev/v1/orders \
@@ -92,6 +107,9 @@ This page guides you through setting up your environment and achieving [Core Ben
      -H "Content-Type: application/json" \
      -d '{"item": "espresso", "size": "single"}'
    ```
+
+   <br />
+   <br />
 
    You should receive a `201 Created` response with an `order_id`. Your virtual espresso is brewing.
 

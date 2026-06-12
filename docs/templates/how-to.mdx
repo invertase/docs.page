@@ -5,9 +5,15 @@ description: A task-oriented layout for solving a specific problem with clear, s
 
 Use this layout when the reader already knows the basics and needs to accomplish one distinct objective. Headings should name the action and the benefit so the page stays scannable under time pressure.
 
+<br />
+<br />
+
 <Info>
   Examples on the **Page templates** share a fictional **Coffee Shop Ordering API** so you can compare how the same product reads across documentation types.
 </Info>
+
+<br />
+<br />
 
 ## Blueprint anatomy
 
@@ -81,6 +87,9 @@ This guide shows you how to [task] so you can [benefit].
 
 2. **Add a modifications array.** Include the milk substitute in the request body:
 
+   <br />
+   <br />
+
    ```json
    {
      "modifications": [
@@ -92,7 +101,13 @@ This guide shows you how to [task] so you can [benefit].
    }
    ```
 
+   <br />
+   <br />
+
 3. **Update the order.** Send a `PATCH` request to the order endpoint:
+
+   <br />
+   <br />
 
    ```bash
    curl -X PATCH https://api.coffeeshop.dev/v1/orders/ord_123 \
@@ -100,6 +115,9 @@ This guide shows you how to [task] so you can [benefit].
      -H "Content-Type: application/json" \
      -d '{"modifications": [{"type": "milk", "substitute": "oat_milk"}]}'
    ```
+
+   <br />
+   <br />
 
 #### Verify
 
