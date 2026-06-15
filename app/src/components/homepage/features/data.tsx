@@ -49,7 +49,7 @@ export const features = [
     description:
       "Add interactive components to your docs with MDX for richer experiences than standard Markdown.",
     video: "/_docs.page/markdown-components.mp4",
-    link: "/markdown-components",
+    link: "/markdown-components?v=2",
   },
   {
     header: (
