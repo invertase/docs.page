@@ -1,203 +1,205 @@
-import { spawn } from "node:child_process";
-
 import chalk from "chalk";
 import type { Command } from "commander";
 
+import { encryptAgentCredentials } from "../lib/agent-credentials";
+import { getApiBase, isRecord, parseJson } from "../lib/api";
+import { getGlobalOptions } from "../lib/command";
+import { CliError } from "../lib/errors";
+import { resolveGitHubToken } from "../lib/github";
+import {
+  canPrompt,
+  promptPassword,
+  promptSelect,
+  promptText,
+} from "../lib/prompts";
+
+const PROVIDERS = ["xai", "openai", "anthropic", "google"] as const;
+
+type Provider = (typeof PROVIDERS)[number];
+
 type CreateAgentOptions = {
-  repo: string;
-  model: string;
-  apikey: string;
-  auth?: string;
+  repo?: string;
+  provider?: string;
+  apikey?: string;
+  ghAuth?: string;
   force?: boolean;
 };
 
 type DeleteAgentOptions = {
-  repo: string;
-  auth?: string;
+  repo?: string;
+  ghAuth?: string;
 };
 
-type GlobalCliOptions = {
-  apiUrl?: string;
-};
-
-type CommandError = Error & {
-  code?: string;
-  stdout?: string;
-  stderr?: string;
-  exitCode?: number | null;
-};
+const PROVIDER_OPTIONS = PROVIDERS.map((provider) => ({
+  value: provider,
+  label: provider,
+}));
 
 export function registerAgentCommand(program: Command) {
   const agents = program
     .command("agent")
-    .description("Work with docs.page agent tooling");
+    .description("Manage docs.page documentation agents");
 
   agents
     .command("create")
     .description("Create a new docs.page agent")
-    .requiredOption(
-      "--repo <org/name>",
-      "GitHub repository in the form org/name",
-    )
-    .requiredOption("--model <string>", "Model identifier to use for the agent")
-    .requiredOption("--apikey <string>", "Docs.page API key to send to the API")
+    .option("--repo <org/name>", "GitHub repository in the form org/name")
+    .option("--provider <provider>", `Provider: ${PROVIDERS.join(", ")}`)
+    .option("--apikey <key>", "Provider API key to store for the agent")
     .option(
-      "--auth <string>",
+      "--gh-auth <token>",
       "GitHub auth token to use instead of `gh auth token`",
     )
-    .option(
-      "--force",
-      "Overwrite an existing agent API key for this repository",
-    )
+    .option("--force", "Overwrite an existing agent configuration")
     .action(async (options: CreateAgentOptions, command: Command) => {
-      try {
-        const repo = validateRepo(options.repo);
-        const model = validateModel(options.model);
-        const apikey = validateApiKey(options.apikey);
-        const githubToken = await resolveGitHubToken(options.auth);
-        const globalOptions = command.optsWithGlobals() as GlobalCliOptions;
-        const agentId = await createAgent({
-          apiBase: getApiBase(globalOptions.apiUrl),
-          repo,
-          model,
-          apikey,
-          githubToken,
-          force: Boolean(options.force),
-        });
+      const repo = await resolveRepo(options.repo, "--repo");
+      const provider = await resolveProvider(options.provider);
+      const apikey = await resolveApiKey(options.apikey);
+      const githubToken = await resolveGitHubToken(options.ghAuth);
+      const globalOptions = getGlobalOptions(command);
+      const token = await createAgent({
+        apiBase: getApiBase(globalOptions.apiUrl),
+        repo,
+        provider,
+        apikey,
+        githubToken,
+        force: Boolean(options.force),
+      });
 
-        console.log(agentId);
-      } catch (error) {
-        console.error(chalk.red(getErrorMessage(error)));
-        process.exit(1);
-      }
+      printAgentInstructions(repo, token);
     });
 
   agents
     .command("delete")
     .description("Delete a docs.page agent")
-    .requiredOption(
-      "--repo <org/name>",
-      "GitHub repository in the form org/name",
-    )
+    .option("--repo <org/name>", "GitHub repository in the form org/name")
     .option(
-      "--auth <string>",
+      "--gh-auth <token>",
       "GitHub auth token to use instead of `gh auth token`",
     )
     .action(async (options: DeleteAgentOptions, command: Command) => {
-      try {
-        const repo = validateRepo(options.repo);
-        const githubToken = await resolveGitHubToken(options.auth);
-        const globalOptions = command.optsWithGlobals() as GlobalCliOptions;
+      const repo = await resolveRepo(options.repo, "--repo");
+      const githubToken = await resolveGitHubToken(options.ghAuth);
+      const globalOptions = getGlobalOptions(command);
 
-        await deleteAgent({
-          apiBase: getApiBase(globalOptions.apiUrl),
-          repo,
-          githubToken,
-        });
+      await deleteAgent({
+        apiBase: getApiBase(globalOptions.apiUrl),
+        repo,
+        githubToken,
+      });
 
-        console.log(`Deleted agent for ${repo}`);
-      } catch (error) {
-        console.error(chalk.red(getErrorMessage(error)));
-        process.exit(1);
-      }
+      console.log(chalk.green(`Deleted agent for ${repo}.`));
     });
+}
+
+async function resolveRepo(value: string | undefined, flag: string) {
+  if (value?.trim()) {
+    return validateRepo(value);
+  }
+
+  if (canPrompt()) {
+    return validateRepo(
+      await promptText({
+        message: "GitHub repository",
+        flag,
+        validate: (input) => {
+          try {
+            validateRepo(input ?? "");
+            return undefined;
+          } catch (error) {
+            return error instanceof Error
+              ? error.message
+              : "Invalid repository.";
+          }
+        },
+      }),
+    );
+  }
+
+  throw new CliError(`Missing ${flag}.`);
+}
+
+async function resolveProvider(value: string | undefined) {
+  if (value?.trim()) {
+    return validateProvider(value);
+  }
+
+  return promptSelect({
+    message: "Provider",
+    flag: "--provider",
+    options: PROVIDER_OPTIONS,
+    initialValue: "google",
+  });
+}
+
+async function resolveApiKey(value: string | undefined) {
+  if (value?.trim()) {
+    return validateApiKey(value);
+  }
+
+  return validateApiKey(
+    await promptPassword({
+      message: "Provider API key",
+      flag: "--apikey",
+      validate: (input) =>
+        (input ?? "").trim().length > 1
+          ? undefined
+          : "API key must be longer than 1 character.",
+    }),
+  );
 }
 
 function validateRepo(repo: string) {
   const trimmedRepo = repo.trim();
   const [owner, name, ...rest] = trimmedRepo.split("/");
 
-  if (!owner || !name || rest.length > 0) {
-    throw new Error("`--repo` must be in the form `org/name`.");
+  if (!owner || !name || rest.length > 0 || /\s/.test(trimmedRepo)) {
+    throw new CliError("`--repo` must be in the form `org/name`.");
   }
 
   return trimmedRepo;
 }
 
-function validateModel(model: string) {
-  const trimmedModel = model.trim();
+function validateProvider(provider: string): Provider {
+  const trimmedProvider = provider.trim();
 
-  if (!trimmedModel) {
-    throw new Error("`--model` must be a non-empty string.");
+  if (isProvider(trimmedProvider)) {
+    return trimmedProvider;
   }
 
-  return trimmedModel;
+  throw new CliError(`\`--provider\` must be one of: ${PROVIDERS.join(", ")}.`);
 }
 
 function validateApiKey(apikey: string) {
   const trimmedApiKey = apikey.trim();
 
   if (trimmedApiKey.length <= 1) {
-    throw new Error("`--apikey` must be longer than 1 character.");
+    throw new CliError("`--apikey` must be longer than 1 character.");
   }
 
   return trimmedApiKey;
 }
 
-function getApiBase(apiUrl?: string) {
-  const configuredBase = apiUrl?.trim();
-
-  if (!configuredBase) {
-    throw new Error("`apiUrl` was not provided.");
-  }
-
-  return configuredBase.replace(/\/+$/, "");
-}
-
-async function resolveGitHubToken(auth?: string) {
-  const providedToken = auth?.trim();
-
-  if (providedToken) {
-    return providedToken;
-  }
-
-  try {
-    await runCommand("gh", ["--version"]);
-  } catch (error) {
-    const commandError = error as CommandError;
-
-    if (commandError.code === "ENOENT") {
-      throw new Error(
-        "GitHub CLI (`gh`) is required when `--auth` is not provided.",
-      );
-    }
-
-    throw new Error(
-      "Unable to verify the GitHub CLI. Make sure `gh` is installed and available on your PATH.",
-    );
-  }
-
-  try {
-    const { stdout } = await runCommand("gh", ["auth", "token"]);
-    const ghToken = stdout.trim();
-
-    if (!ghToken) {
-      throw new Error("GitHub CLI did not return an auth token.");
-    }
-
-    return ghToken;
-  } catch {
-    throw new Error(
-      "Unable to read a GitHub auth token from `gh`. Make sure you are logged in with `gh auth login`, or pass `--auth`.",
-    );
-  }
-}
-
 async function createAgent({
   apiBase,
   repo,
-  model,
+  provider,
   apikey,
   githubToken,
   force,
 }: {
   apiBase: string;
   repo: string;
-  model: string;
+  provider: Provider;
   apikey: string;
   githubToken: string;
   force: boolean;
 }) {
+  const credentials = await encryptAgentCredentials(apiBase, {
+    provider,
+    apikey,
+  });
+
   const response = await fetch(`${apiBase}/api/agent/create`, {
     method: "POST",
     headers: {
@@ -205,10 +207,9 @@ async function createAgent({
     },
     body: JSON.stringify({
       repo,
-      model,
-      apikey,
       githubToken,
       force,
+      credentials,
     }),
   });
 
@@ -216,20 +217,26 @@ async function createAgent({
   const json = parseJson(responseText);
 
   if (isRecord(json) && typeof json.error === "string") {
-    throw new Error(json.error);
+    throw new CliError(json.error);
   }
 
   if (!response.ok) {
-    throw new Error(
+    throw new CliError(
       `Agent creation failed (${response.status} ${response.statusText}).`,
     );
   }
 
-  if (isRecord(json) && typeof json.id === "string" && json.id.trim()) {
-    return json.id;
+  if (isRecord(json)) {
+    const token = getString(json, "token") ?? getString(json, "id");
+
+    if (token) {
+      return token;
+    }
   }
 
-  throw new Error("Agent creation failed: response did not include an `id`.");
+  throw new CliError(
+    "Agent creation failed: response did not include a token.",
+  );
 }
 
 async function deleteAgent({
@@ -256,90 +263,35 @@ async function deleteAgent({
   const json = parseJson(responseText);
 
   if (isRecord(json) && typeof json.error === "string") {
-    throw new Error(json.error);
+    throw new CliError(json.error);
   }
 
   if (!response.ok) {
-    throw new Error(
+    throw new CliError(
       `Agent deletion failed (${response.status} ${response.statusText}).`,
     );
   }
 }
 
-function parseJson(value: string) {
-  if (!value.trim()) {
-    return null;
-  }
-
-  try {
-    return JSON.parse(value) as unknown;
-  } catch {
-    return null;
-  }
+function printAgentInstructions(repo: string, token: string) {
+  console.log(chalk.green("Your documentation agent is ready to use."));
+  console.log(
+    `Add the following configuration to your docs.json file in the ${repo} repository:\n`,
+  );
+  console.log(
+    ["```json", '"agent": {', `  "key": "${token}"`, "}", "```"].join("\n"),
+  );
+  console.log("\nTo learn more, view https://use.docs.page/agent.");
 }
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null;
+function isProvider(value: string): value is Provider {
+  return PROVIDERS.includes(value as Provider);
 }
 
-function runCommand(command: string, args: string[]) {
-  return new Promise<{ stdout: string; stderr: string }>((resolve, reject) => {
-    const child = spawn(command, args, {
-      stdio: ["ignore", "pipe", "pipe"],
-    });
+function getString(value: Record<string, unknown>, key: string) {
+  const result = value[key];
 
-    let stdout = "";
-    let stderr = "";
-    let settled = false;
-
-    child.stdout.on("data", (chunk) => {
-      stdout += chunk.toString();
-    });
-
-    child.stderr.on("data", (chunk) => {
-      stderr += chunk.toString();
-    });
-
-    child.once("error", (error) => {
-      if (settled) {
-        return;
-      }
-
-      settled = true;
-
-      const commandError = error as CommandError;
-      commandError.stdout = stdout;
-      commandError.stderr = stderr;
-      reject(commandError);
-    });
-
-    child.once("close", (exitCode) => {
-      if (settled) {
-        return;
-      }
-
-      settled = true;
-
-      if (exitCode === 0) {
-        resolve({ stdout, stderr });
-        return;
-      }
-
-      const error = new Error(
-        stderr.trim() || `Command failed: ${command} ${args.join(" ")}`,
-      ) as CommandError;
-      error.stdout = stdout;
-      error.stderr = stderr;
-      error.exitCode = exitCode;
-      reject(error);
-    });
-  });
-}
-
-function getErrorMessage(error: unknown) {
-  if (error instanceof Error && error.message) {
-    return error.message;
-  }
-
-  return "An unknown error occurred.";
+  return typeof result === "string" && result.trim()
+    ? result.trim()
+    : undefined;
 }

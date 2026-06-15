@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "generate:fa-brand-icons": "bun scripts/generate-fa-brand-icons.ts",
+    "generate:agent-credentials-key": "bun scripts/generate-agent-credentials-key.ts",
     "generate:source-files": "bun scripts/generate-source-files.ts",
     "dev": "next dev",
     "build": "next build",
