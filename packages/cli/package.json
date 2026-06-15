@@ -1,9 +1,13 @@
 {
   "name": "@docs.page/cli",
-  "version": "2.0.0",
+  "description": "The docs.page cli tool for managing your documentation.",
+  "version": "2.0.0-beta.1",
   "module": "src/index.ts",
+  "files": [
+    "dist",
+    "templates"
+  ],
   "type": "module",
-  "private": true,
   "bin": {
     "docs.page": "./dist/cli.js",
     "docs": "./dist/cli.js"
@@ -11,7 +15,8 @@
   "scripts": {
     "dev": "bun run src/cli.ts",
     "typecheck": "bunx tsc --noEmit",
-    "build": "rm -rf dist && bun build ./src/cli.ts --outdir ./dist --target node --format esm --minify"
+    "build": "rm -rf dist && bun build ./src/cli.ts --outdir ./dist --target node --format esm --minify",
+    "prepublishOnly": "bun run build"
   },
   "dependencies": {
     "@clack/prompts": "^1.5.1",
