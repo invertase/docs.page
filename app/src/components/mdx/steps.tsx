@@ -44,7 +44,7 @@ export function Step(props: StepProps) {
         {!!props.title && (
           <h3 className="m-0 text-xl font-medium">{props.title}</h3>
         )}
-        <div>{props.children}</div>
+        {props.children}
       </div>
     </li>
   );
