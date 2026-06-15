@@ -37,9 +37,6 @@ export function FeatureCard({
       <PaperCorner />
       <div className="mx-auto flex flex-col max-w-8xl space-y-8">
         <div className="px-6 pt-8 lg:pl-26 lg:pr-0">
-          <h3 className="hidden lg:block text-sm uppercase text-neutral-400">
-            {header}
-          </h3>
         </div>
         <div className="mt-8 lg:mt-0 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,2.5fr)_minmax(0,3.5fr)] lg:gap-0">
           <div className="flex flex-col gap-4 px-6 space-y-6 lg:mt-12 lg:px-20">
