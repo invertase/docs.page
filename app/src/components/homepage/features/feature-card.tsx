@@ -29,10 +29,11 @@ export function FeatureCard({
       className={cn(
         PAPER_SECTION_SHELL_CLASS,
         PAPER_SECTION_OVERLAP_CLASS,
-        "bg-neutral-950 pb-20 lg:pb-40",
+        "bg-black/60 pb-20 lg:pb-40",
       )}
       style={{ clipPath: paperCornerClipPath() }}
     >
+      
       <PaperCorner />
       <div className="mx-auto flex flex-col max-w-8xl space-y-8">
         <div className="px-6 pt-8 lg:pl-26 lg:pr-0">
