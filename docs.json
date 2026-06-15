@@ -218,6 +218,7 @@
         { "title": "Overview", "href": "/cli" },
         {
           "group": "Commands",
+          "href": "/cli/commands",
           "pages": [
             { "title": "init", "href": "/cli/init" },
             { "title": "check", "href": "/cli/check" }
