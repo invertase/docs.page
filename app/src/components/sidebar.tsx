@@ -1,5 +1,5 @@
 import { RiArrowRightSLine, RiExternalLinkLine } from "@remixicon/react";
-import { useEffect, useState, type MouseEvent } from "react";
+import { type MouseEvent, useEffect, useState } from "react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -299,9 +299,15 @@ function SidebarCollapsibleNestedGroup(props: {
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
       {nested ? (
-        <SidebarMenuSubItem className="pb-1">{trigger}{children}</SidebarMenuSubItem>
+        <SidebarMenuSubItem className="pb-1">
+          {trigger}
+          {children}
+        </SidebarMenuSubItem>
       ) : (
-        <SidebarMenuItem className="pb-1">{trigger}{children}</SidebarMenuItem>
+        <SidebarMenuItem className="pb-1">
+          {trigger}
+          {children}
+        </SidebarMenuItem>
       )}
     </Collapsible>
   );
@@ -460,9 +466,7 @@ export function Sidebar() {
                       href={group.href}
                       className="hover:text-sidebar-foreground"
                     >
-                      {group.icon ? (
-                        <SidebarNavIcon icon={group.icon} />
-                      ) : null}
+                      {group.icon ? <SidebarNavIcon icon={group.icon} /> : null}
                       {group.group}
                     </Link>
                   </SidebarGroupLabel>

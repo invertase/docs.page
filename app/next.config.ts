@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   output: "standalone",
   reactCompiler: true,
   devIndicators: false,
+  transpilePackages: ["@docs.page/mdx-bundler"],
   async rewrites() {
     return {
       beforeFiles: [
