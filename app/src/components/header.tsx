@@ -37,7 +37,14 @@ export function Header() {
     <header className="sticky top-0 z-30 bg-background">
       <div className="mx-auto w-full max-w-8xl px-4">
         <div className="h-14 flex items-center justify-between px-1">
-          <Logo />
+          <div className="flex min-w-0 flex-1 items-center gap-1">
+            {!hasTabs && (
+              <div className="shrink-0 md:hidden">
+                <SidebarTrigger />
+              </div>
+            )}
+            <Logo />
+          </div>
           <Actions />
         </div>
         {hasTabs && (
