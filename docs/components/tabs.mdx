@@ -3,4 +3,149 @@ title: Tabs
 description: Switchable content panels for platform or option variants.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+Use `<Tabs>` to organize content into switchable panels. Add any number of `<TabItem>` children and include other MDX content—code blocks, callouts, or lists—inside each panel.
+
+<Tabs>
+  <TabItem label="First tab" value="first">
+    Welcome to the content inside the first tab.
+
+    You can nest other components inside tabs. For example, a code block:
+
+    ```js
+    export function greet(name) {
+      return `Hello, ${name}!`;
+    }
+    ```
+  </TabItem>
+  <TabItem label="Second tab" value="second">
+    Content that appears only when the second tab is selected.
+  </TabItem>
+  <TabItem label="Third tab" value="third">
+    Content that appears only when the third tab is selected.
+  </TabItem>
+</Tabs>
+
+````mdx
+<Tabs>
+  <TabItem label="First tab" value="first">
+    Welcome to the content inside the first tab.
+
+    You can nest other components inside tabs. For example, a code block:
+
+    ```js
+    export function greet(name) {
+      return `Hello, ${name}!`;
+    }
+    ```
+  </TabItem>
+  <TabItem label="Second tab" value="second">
+    Content that appears only when the second tab is selected.
+  </TabItem>
+  <TabItem label="Third tab" value="third">
+    Content that appears only when the third tab is selected.
+  </TabItem>
+</Tabs>
+````
+
+## Synchronizing tabs
+
+Add a shared `groupId` to keep tab groups in sync across the page. When a reader selects a tab in one group, every other group with the same `groupId` switches to the tab with the matching `value`. The selection is saved in the browser and restored on reload.
+
+Use this when the same options appear in multiple places—for example, language-specific install steps followed by language-specific API examples.
+
+Without `groupId`, each `<Tabs>` group works independently.
+
+### Example
+
+The examples below share `groupId="language"`. Selecting **JavaScript** in the first group also selects **JavaScript** in the second.
+
+First, install the HTTP client:
+
+<Tabs groupId="language">
+  <TabItem label="JavaScript" value="js">
+    Install `axios`:
+
+    ```bash
+    npm i --save axios
+    ```
+
+    Import it in your code:
+
+    ```js
+    import axios from 'axios';
+    ```
+  </TabItem>
+  <TabItem label="Dart" value="dart">
+    Add the `dio` package:
+
+    ```bash
+    flutter pub add dio
+    ```
+
+    Import it in your code:
+
+    ```dart
+    import 'package:dio/dio.dart';
+    ```
+  </TabItem>
+</Tabs>
+
+Next, send a request to `https://example.com`:
+
+<Tabs groupId="language">
+  <TabItem label="JavaScript" value="js">
+    ```js
+    const response = await axios.get('https://example.com');
+    console.log(response.data);
+    ```
+  </TabItem>
+  <TabItem label="Dart" value="dart">
+    ```dart
+    var dio = Dio();
+    final response = await dio.get('https://example.com');
+    print(response.data);
+    ```
+  </TabItem>
+</Tabs>
+
+```jsx
+<Tabs groupId="language">
+  <TabItem label="JavaScript" value="js">
+    ...
+  </TabItem>
+  <TabItem label="Dart" value="dart">
+    ...
+  </TabItem>
+</Tabs>
+```
+
+## `Tabs` props
+
+<Property name="defaultValue" type="string" optional>
+  The tab to show on first load. Must match a `TabItem` `value`.
+
+  Defaults to the first tab.
+</Property>
+
+---
+
+<Property name="groupId" type="string" optional>
+  A shared identifier for synchronized tab groups. Tabs with the same `groupId` stay in sync by matching `value` props. When set, the reader's selection is stored in local storage and restored on reload.
+</Property>
+
+## `TabItem` props
+
+<Property name="label" type="string" required>
+  The text shown on the tab trigger.
+</Property>
+
+---
+
+<Property name="value" type="string" required>
+  A unique identifier for the tab within its group. Used by `defaultValue` and by `groupId` synchronization across tab groups.
+</Property>
+
+## See also
+
+- [Code group](/components/code-group) — tabbed code blocks for multiple languages
+- [Accordion](/components/accordion) — collapsible panels for optional detail
