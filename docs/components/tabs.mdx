@@ -5,6 +5,8 @@ description: Switchable content panels for platform or option variants.
 
 Use `<Tabs>` to organize content into switchable panels. Add any number of `<TabItem>` children and include other MDX content—code blocks, callouts, or lists—inside each panel.
 
+## Example
+
 <Tabs>
   <TabItem label="First tab" value="first">
     Welcome to the content inside the first tab.
@@ -47,78 +49,6 @@ Use `<Tabs>` to organize content into switchable panels. Add any number of `<Tab
 </Tabs>
 ````
 
-## Synchronizing tabs
-
-Add a shared `groupId` to keep tab groups in sync across the page. When a reader selects a tab in one group, every other group with the same `groupId` switches to the tab with the matching `value`. The selection is saved in the browser and restored on reload.
-
-Use this when the same options appear in multiple places—for example, language-specific install steps followed by language-specific API examples.
-
-Without `groupId`, each `<Tabs>` group works independently.
-
-### Example
-
-The examples below share `groupId="language"`. Selecting **JavaScript** in the first group also selects **JavaScript** in the second.
-
-First, install the HTTP client:
-
-<Tabs groupId="language">
-  <TabItem label="JavaScript" value="js">
-    Install `axios`:
-
-    ```bash
-    npm i --save axios
-    ```
-
-    Import it in your code:
-
-    ```js
-    import axios from 'axios';
-    ```
-  </TabItem>
-  <TabItem label="Dart" value="dart">
-    Add the `dio` package:
-
-    ```bash
-    flutter pub add dio
-    ```
-
-    Import it in your code:
-
-    ```dart
-    import 'package:dio/dio.dart';
-    ```
-  </TabItem>
-</Tabs>
-
-Next, send a request to `https://example.com`:
-
-<Tabs groupId="language">
-  <TabItem label="JavaScript" value="js">
-    ```js
-    const response = await axios.get('https://example.com');
-    console.log(response.data);
-    ```
-  </TabItem>
-  <TabItem label="Dart" value="dart">
-    ```dart
-    var dio = Dio();
-    final response = await dio.get('https://example.com');
-    print(response.data);
-    ```
-  </TabItem>
-</Tabs>
-
-```jsx
-<Tabs groupId="language">
-  <TabItem label="JavaScript" value="js">
-    ...
-  </TabItem>
-  <TabItem label="Dart" value="dart">
-    ...
-  </TabItem>
-</Tabs>
-```
-
 ## `Tabs` props
 
 <Property name="defaultValue" type="string" optional>
@@ -130,7 +60,9 @@ Next, send a request to `https://example.com`:
 ---
 
 <Property name="groupId" type="string" optional>
-  A shared identifier for synchronized tab groups. Tabs with the same `groupId` stay in sync by matching `value` props. When set, the reader's selection is stored in local storage and restored on reload.
+  A shared identifier for synchronized tab groups. Tabs with the same `groupId` stay in sync by matching `value` props across groups.
+
+  When set, the selected tab is stored in local storage and restored on reload. Preview mode uses the key `preview:tabs:{groupId}`; published docs use `docs.page:tabs:{owner}/{repository}:{groupId}`.
 </Property>
 
 ## `TabItem` props
@@ -145,7 +77,59 @@ Next, send a request to `https://example.com`:
   A unique identifier for the tab within its group. Used by `defaultValue` and by `groupId` synchronization across tab groups.
 </Property>
 
+## Synchronization
+
+When the same options appear in more than one place—for example, language-specific install steps and matching API examples—give each `<Tabs>` group the same `groupId`. Without `groupId`, each tab group on the page operates independently.
+
+The example below uses two groups that share `groupId="language"`. Selecting **JavaScript** in either group selects **JavaScript** in both.
+
+<Tabs groupId="language">
+  <TabItem label="JavaScript" value="js">
+    ```js
+    import axios from 'axios';
+    ```
+  </TabItem>
+  <TabItem label="Dart" value="dart">
+    ```dart
+    import 'package:dio/dio.dart';
+    ```
+  </TabItem>
+</Tabs>
+
+<Tabs groupId="language">
+  <TabItem label="JavaScript" value="js">
+    ```js
+    const response = await axios.get('https://example.com');
+    ```
+  </TabItem>
+  <TabItem label="Dart" value="dart">
+    ```dart
+    final response = await Dio().get('https://example.com');
+    ```
+  </TabItem>
+</Tabs>
+
+````mdx
+<Tabs groupId="language">
+  <TabItem label="JavaScript" value="js">...</TabItem>
+  <TabItem label="Dart" value="dart">...</TabItem>
+</Tabs>
+
+<Tabs groupId="language">
+  <TabItem label="JavaScript" value="js">...</TabItem>
+  <TabItem label="Dart" value="dart">...</TabItem>
+</Tabs>
+````
+
+## Behavior
+
+| Condition | Result |
+| --- | --- |
+| No valid `<TabItem>` children | Renders nothing |
+| Selected `value` is not in the current group | Falls back to `defaultValue`, then the first tab |
+| `groupId` omitted | Tab groups on the page operate independently |
+
 ## See also
 
-- [Code group](/components/code-group) — tabbed code blocks for multiple languages
-- [Accordion](/components/accordion) — collapsible panels for optional detail
+- [Components overview](/components/index) — when to use tabs, code groups, and accordions
+- [Reference template](/templates/reference) — structure for lookup pages like this one
