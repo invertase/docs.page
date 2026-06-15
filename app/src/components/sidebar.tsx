@@ -1,4 +1,5 @@
 import { RiArrowRightSLine, RiExternalLinkLine } from "@remixicon/react";
+import { useEffect, useState, type MouseEvent } from "react";
 import {
   Collapsible,
   CollapsibleContent,
@@ -141,67 +142,79 @@ function SidebarPageRow(props: {
   );
 }
 
-function SidebarNestedGroupChevron() {
+function SidebarLinkedGroupRow(props: {
+  href: string;
+  label: string;
+  icon?: string;
+  isActive: boolean;
+  open: boolean;
+  onClick: (event: MouseEvent<HTMLAnchorElement>) => void;
+  nested?: boolean;
+  tooltip?: string;
+}) {
+  const external = isExternalLink(props.href);
+  const row = (
+    <>
+      {props.icon ? <SidebarNavIcon icon={props.icon} /> : null}
+      <span className="truncate">{props.label}</span>
+      <RiArrowRightSLine
+        className={cn(
+          "ml-auto size-4 shrink-0 transition-transform duration-200",
+          props.open && "rotate-90",
+        )}
+      />
+    </>
+  );
+
+  if (props.nested) {
+    return (
+      <>
+        <SidebarMenuSubButton
+          asChild
+          isActive={props.isActive}
+          size="md"
+          className={cn("text-muted-foreground", external && "pr-7")}
+        >
+          <Link href={props.href} onClick={props.onClick}>
+            {row}
+          </Link>
+        </SidebarMenuSubButton>
+        {external ? <ExternalLinkBadge nested /> : null}
+      </>
+    );
+  }
+
   return (
-    <CollapsibleTrigger asChild>
-      <button
-        type="button"
-        className="inline-flex size-7 shrink-0 items-center justify-center rounded-md text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 focus-visible:ring-sidebar-ring focus-visible:outline-hidden"
-        aria-label="Toggle section"
+    <>
+      <SidebarMenuButton
+        asChild
+        tooltip={props.tooltip}
+        isActive={props.isActive}
+        className={cn(external && "pr-8")}
       >
-        <RiArrowRightSLine className="size-4 shrink-0 transition-transform duration-200 [[data-state=open]_&]:rotate-90" />
-      </button>
-    </CollapsibleTrigger>
+        <Link href={props.href} onClick={props.onClick}>
+          {row}
+        </Link>
+      </SidebarMenuButton>
+      {external ? <ExternalLinkBadge /> : null}
+    </>
   );
 }
 
-function SidebarNestedGroupHeader(props: {
+function SidebarCollapsibleGroupTrigger(props: {
   label: string;
   icon?: string;
-  href?: string;
   isActive: boolean;
   nested?: boolean;
+  tooltip?: string;
 }) {
-  const chevron = (
-    <RiArrowRightSLine className="ml-auto size-4 shrink-0 transition-transform duration-200 [[data-state=open]>&]:rotate-90" />
+  const trigger = (
+    <>
+      {props.icon ? <SidebarNavIcon icon={props.icon} /> : null}
+      <span className="truncate">{props.label}</span>
+      <RiArrowRightSLine className="ml-auto size-4 shrink-0 transition-transform duration-200 [[data-state=open]_&]:rotate-90" />
+    </>
   );
-
-  if (props.href) {
-    if (props.nested) {
-      return (
-        <div className="flex min-w-0 items-center">
-          <SidebarMenuSubButton
-            asChild
-            isActive={props.isActive}
-            className="min-w-0 flex-1 text-muted-foreground"
-          >
-            <Link href={props.href}>
-              {props.icon ? <SidebarNavIcon icon={props.icon} /> : null}
-              <span className="truncate">{props.label}</span>
-            </Link>
-          </SidebarMenuSubButton>
-          <SidebarNestedGroupChevron />
-        </div>
-      );
-    }
-
-    return (
-      <div className="flex min-w-0 items-center">
-        <SidebarMenuButton
-          asChild
-          tooltip={props.label}
-          isActive={props.isActive}
-          className="min-w-0 flex-1"
-        >
-          <Link href={props.href}>
-            {props.icon ? <SidebarNavIcon icon={props.icon} /> : null}
-            <span className="truncate">{props.label}</span>
-          </Link>
-        </SidebarMenuButton>
-        <SidebarNestedGroupChevron />
-      </div>
-    );
-  }
 
   if (props.nested) {
     return (
@@ -210,9 +223,7 @@ function SidebarNestedGroupHeader(props: {
           isActive={props.isActive}
           className="text-muted-foreground"
         >
-          {props.icon ? <SidebarNavIcon icon={props.icon} /> : null}
-          <span className="truncate">{props.label}</span>
-          {chevron}
+          {trigger}
         </SidebarMenuSubButton>
       </CollapsibleTrigger>
     );
@@ -220,12 +231,79 @@ function SidebarNestedGroupHeader(props: {
 
   return (
     <CollapsibleTrigger asChild>
-      <SidebarMenuButton tooltip={props.label} isActive={props.isActive}>
-        {props.icon ? <SidebarNavIcon icon={props.icon} /> : null}
-        <span className="truncate">{props.label}</span>
-        {chevron}
+      <SidebarMenuButton tooltip={props.tooltip} isActive={props.isActive}>
+        {trigger}
       </SidebarMenuButton>
     </CollapsibleTrigger>
+  );
+}
+
+function SidebarCollapsibleNestedGroup(props: {
+  node: SidebarConfigGroup;
+  depth: number;
+  label: string;
+  isActive: boolean;
+}) {
+  const [open, setOpen] = useState(props.isActive);
+  const nested = props.depth > 0;
+  const href = props.node.href;
+  const triggerProps = {
+    label: props.label,
+    icon: props.node.icon,
+    isActive: props.isActive,
+    nested,
+    tooltip: nested ? undefined : props.label,
+  };
+
+  useEffect(() => {
+    if (props.isActive) {
+      setOpen(true);
+    }
+  }, [props.isActive]);
+
+  const handleGroupClick = (event: MouseEvent<HTMLAnchorElement>) => {
+    if (open) {
+      event.preventDefault();
+      setOpen(false);
+      return;
+    }
+
+    setOpen(true);
+  };
+
+  const trigger = href ? (
+    <SidebarLinkedGroupRow
+      href={href}
+      {...triggerProps}
+      open={open}
+      onClick={handleGroupClick}
+    />
+  ) : (
+    <SidebarCollapsibleGroupTrigger {...triggerProps} />
+  );
+
+  const children = (
+    <CollapsibleContent>
+      <SidebarMenuSub
+        className={
+          nested
+            ? "mx-3.5 border-l border-sidebar-border px-2.5 py-0.5"
+            : undefined
+        }
+      >
+        <SidebarPagesList pages={props.node.pages} depth={props.depth + 1} />
+      </SidebarMenuSub>
+    </CollapsibleContent>
+  );
+
+  return (
+    <Collapsible open={open} onOpenChange={setOpen}>
+      {nested ? (
+        <SidebarMenuSubItem className="pb-1">{trigger}{children}</SidebarMenuSubItem>
+      ) : (
+        <SidebarMenuItem className="pb-1">{trigger}{children}</SidebarMenuItem>
+      )}
+    </Collapsible>
   );
 }
 
@@ -236,55 +314,48 @@ function SidebarNestedGroup(props: {
   const { bundle, route } = useDocPageContext();
   const label = props.node.group ?? "More";
   const locales = bundle.config.locales;
+  const hasChildren = props.node.pages.length > 0;
   const hasActive = subtreeHasActivePage(route, props.node.pages, locales);
   const groupHrefActive =
     props.node.href != null && isDocHrefActive(route, props.node.href, locales);
 
   const isActive = hasActive || groupHrefActive;
+  const nested = props.depth > 0;
 
-  if (props.depth === 0) {
-    return (
-      <Collapsible defaultOpen={isActive}>
-        <SidebarMenuItem className="pb-1">
-          <SidebarNestedGroupHeader
-            label={label}
-            icon={props.node.icon}
+  if (props.node.href && !hasChildren) {
+    if (nested) {
+      return (
+        <SidebarMenuSubItem className="pb-1 text-muted-foreground">
+          <SidebarPageRow
+            title={label}
             href={props.node.href}
-            isActive={isActive}
+            icon={props.node.icon}
+            isActive={groupHrefActive}
+            nested
           />
-          <CollapsibleContent>
-            <SidebarMenuSub>
-              <SidebarPagesList
-                pages={props.node.pages}
-                depth={props.depth + 1}
-              />
-            </SidebarMenuSub>
-          </CollapsibleContent>
-        </SidebarMenuItem>
-      </Collapsible>
+        </SidebarMenuSubItem>
+      );
+    }
+
+    return (
+      <SidebarMenuItem className="pb-1 text-muted-foreground">
+        <SidebarPageRow
+          title={label}
+          href={props.node.href}
+          icon={props.node.icon}
+          isActive={groupHrefActive}
+        />
+      </SidebarMenuItem>
     );
   }
 
   return (
-    <Collapsible defaultOpen={isActive}>
-      <SidebarMenuSubItem className="pb-1">
-        <SidebarNestedGroupHeader
-          label={label}
-          icon={props.node.icon}
-          href={props.node.href}
-          isActive={isActive}
-          nested
-        />
-        <CollapsibleContent>
-          <SidebarMenuSub className="mx-3.5 border-l border-sidebar-border px-2.5 py-0.5">
-            <SidebarPagesList
-              pages={props.node.pages}
-              depth={props.depth + 1}
-            />
-          </SidebarMenuSub>
-        </CollapsibleContent>
-      </SidebarMenuSubItem>
-    </Collapsible>
+    <SidebarCollapsibleNestedGroup
+      node={props.node}
+      depth={props.depth}
+      label={label}
+      isActive={isActive}
+    />
   );
 }
 
@@ -377,15 +448,35 @@ export function Sidebar() {
             >
               {group.group && gi > 0 ? <Separator className="mb-4" /> : null}
               {group.group ? (
-                <SidebarGroupLabel
-                  className={cn(
-                    "flex items-center gap-2",
-                    !group.pages?.length && "sr-only",
-                  )}
-                >
-                  {group.icon ? <SidebarNavIcon icon={group.icon} /> : null}
-                  {group.group}
-                </SidebarGroupLabel>
+                group.href ? (
+                  <SidebarGroupLabel
+                    asChild
+                    className={cn(
+                      "flex items-center gap-2",
+                      !group.pages?.length && "sr-only",
+                    )}
+                  >
+                    <Link
+                      href={group.href}
+                      className="hover:text-sidebar-foreground"
+                    >
+                      {group.icon ? (
+                        <SidebarNavIcon icon={group.icon} />
+                      ) : null}
+                      {group.group}
+                    </Link>
+                  </SidebarGroupLabel>
+                ) : (
+                  <SidebarGroupLabel
+                    className={cn(
+                      "flex items-center gap-2",
+                      !group.pages?.length && "sr-only",
+                    )}
+                  >
+                    {group.icon ? <SidebarNavIcon icon={group.icon} /> : null}
+                    {group.group}
+                  </SidebarGroupLabel>
+                )
               ) : null}
               <SidebarGroupContent>
                 <SidebarMenu className="text-muted-foreground">
