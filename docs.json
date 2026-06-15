@@ -42,7 +42,7 @@
         },
         {
           "group": "Page templates",
-          "href": "/templates/index",
+          "href": "/templates/",
           "pages": [
             {
               "title": "Tutorial",
