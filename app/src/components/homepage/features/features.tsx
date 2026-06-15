@@ -8,7 +8,6 @@ export function Features() {
       {features.map((feature, i) => (
         <FeatureCard
           key={i}
-          header={feature.header}
           title={feature.title}
           description={feature.description}
           link={feature.link}

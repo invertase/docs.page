@@ -11,14 +11,12 @@ import {
 } from "../paper-corner";
 
 type FeatureCardProps = PropsWithChildren<{
-  header: React.ReactNode;
-  title: string;
+  title: React.ReactNode;
   description: string;
   link: string;
 }>;
 
 export function FeatureCard({
-  header,
   title,
   description,
   link,
