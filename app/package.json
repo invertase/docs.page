@@ -13,6 +13,7 @@
   "dependencies": {
     "@ai-sdk/google": "^3.0.64",
     "@ai-sdk/react": "^3.0.170",
+    "@docs.page/mdx-bundler": "workspace:*",
     "@mjackson/headers": "^0.11.1",
     "@modelcontextprotocol/sdk": "^1.29.0",
     "@octokit/graphql": "^9.0.3",

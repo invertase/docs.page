@@ -15,7 +15,9 @@
   },
   "dependencies": {
     "@clack/prompts": "^1.5.1",
+    "@docs.page/mdx-bundler": "workspace:*",
     "chalk": "^5.3.0",
+    "chokidar": "^4.0.0",
     "commander": "^12.1.0",
     "fast-glob": "^3.3.3",
     "gray-matter": "^4.0.3",
@@ -25,11 +27,13 @@
     "remark-frontmatter": "^5.0.0",
     "remark-mdx": "^3.1.1",
     "remark-parse": "^11.0.0",
-    "unified": "^11.0.5"
+    "unified": "^11.0.5",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
     "@types/js-yaml": "^4.0.9",
-    "@types/node": "^25.9.2"
+    "@types/node": "^25.9.2",
+    "@types/ws": "^8.5.13"
   },
   "peerDependencies": {
     "typescript": "^5"

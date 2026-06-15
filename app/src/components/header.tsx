@@ -107,7 +107,8 @@ function Logo() {
 }
 
 function Actions() {
-  const { meta } = useDocPageContext();
+  const { meta, route } = useDocPageContext();
+  const isPreview = route.requestMode === "preview";
 
   return (
     <div className="flex min-w-0 flex-1 items-center justify-end gap-1">
@@ -117,7 +118,7 @@ function Actions() {
         <HeaderLinks />
       </div>
       <div>
-        <GitHubLink />
+        {!isPreview && <GitHubLink />}
         <ThemeToggle />
       </div>
     </div>

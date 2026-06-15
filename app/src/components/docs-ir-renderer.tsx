@@ -1,3 +1,4 @@
+import type { DocIrNode } from "@docs.page/mdx-bundler";
 import { type CSSProperties, Fragment, type ReactNode } from "react";
 import { Accordion, AccordionGroup } from "@/components/mdx/accordion";
 import { Error, Info, Success, Warning } from "@/components/mdx/callout";
@@ -5,7 +6,6 @@ import { Property } from "@/components/mdx/property";
 import { TabItem, Tabs } from "@/components/mdx/tabs";
 import { Tweet } from "@/components/mdx/tweet";
 import { YouTube } from "@/components/mdx/youtube";
-import type { DocIrNode } from "@/lib/docs-ir/types";
 import { MarkdownLeaf } from "./markdown-leaf";
 import { Card, CardGroup } from "./mdx/card";
 import { CodeFence } from "./mdx/code-fence";

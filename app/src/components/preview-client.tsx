@@ -1,5 +1,6 @@
 "use client";
 
+import type { DocIrNode } from "@docs.page/mdx-bundler";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Docs } from "@/components/docs";
@@ -12,7 +13,6 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { DocPageContext } from "@/hooks/use-doc-page-context";
-import type { DocIrNode } from "@/lib/docs-ir/types";
 import type { DocPageProps } from "@/lib/types";
 import { defaultConfig, parseConfig } from "@/server/config";
 import { Preset } from "./preset";
