@@ -1,7 +1,12 @@
 {
   "name": "@docs.page/cli",
   "description": "The docs.page cli tool for managing your documentation.",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0-next.1",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/invertase/docs.page.git",
+    "directory": "packages/cli"
+  },
   "module": "src/index.ts",
   "files": [
     "dist",
@@ -12,6 +17,10 @@
     "docs.page": "./dist/cli.js",
     "docs": "./dist/cli.js"
   },
+  "publishConfig": {
+    "access": "public",
+    "tag": "next"
+  },
   "scripts": {
     "dev": "bun run src/cli.ts",
     "typecheck": "bunx tsc --noEmit",
@@ -20,7 +29,6 @@
   },
   "dependencies": {
     "@clack/prompts": "^1.5.1",
-    "@docs.page/mdx-bundler": "workspace:*",
     "chalk": "^5.3.0",
     "chokidar": "^4.0.0",
     "commander": "^12.1.0",
@@ -36,6 +44,7 @@
     "ws": "^8.18.0"
   },
   "devDependencies": {
+    "@docs.page/mdx-bundler": "workspace:*",
     "@types/js-yaml": "^4.0.9",
     "@types/node": "^25.9.2",
     "@types/ws": "^8.5.13"
