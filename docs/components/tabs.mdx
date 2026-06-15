@@ -5,6 +5,14 @@ description: Switchable content panels for platform or option variants.
 
 Use `<Tabs>` to organize content into switchable panels. Add any number of `<TabItem>` children and include other MDX content—code blocks, callouts, or lists—inside each panel.
 
+Each `<TabItem>` needs a `label` (what readers see) and a `value` (a stable ID for defaults, sync, and persistence). Keep `value` fixed even if you rename the label.
+
+```mdx
+<Tabs>
+  <TabItem label="First" value="first">Content here</TabItem>
+</Tabs>
+```
+
 ## Example
 
 <Tabs>
@@ -20,10 +28,16 @@ Use `<Tabs>` to organize content into switchable panels. Add any number of `<Tab
     ```
   </TabItem>
   <TabItem label="Second tab" value="second">
-    Content that appears only when the second tab is selected.
+    Panels can contain lists too:
+
+    - Install dependencies
+    - Configure your project
+    - Deploy
   </TabItem>
   <TabItem label="Third tab" value="third">
-    Content that appears only when the third tab is selected.
+    <Info>
+      Callouts and other MDX components work inside tabs as well.
+    </Info>
   </TabItem>
 </Tabs>
 
@@ -41,15 +55,26 @@ Use `<Tabs>` to organize content into switchable panels. Add any number of `<Tab
     ```
   </TabItem>
   <TabItem label="Second tab" value="second">
-    Content that appears only when the second tab is selected.
+    Panels can contain lists too:
+
+    - Install dependencies
+    - Configure your project
+    - Deploy
   </TabItem>
   <TabItem label="Third tab" value="third">
-    Content that appears only when the third tab is selected.
+    <Info>
+      Callouts and other MDX components work inside tabs as well.
+    </Info>
   </TabItem>
 </Tabs>
 ````
 
 ## `Tabs` props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `defaultValue` | `string` | First tab | Tab to show on first load; must match a `TabItem` `value` |
+| `groupId` | `string` | — | Shared ID for synchronized tab groups across the page |
 
 <Property name="defaultValue" type="string" optional>
   The tab to show on first load. Must match a `TabItem` `value`.
@@ -67,19 +92,28 @@ Use `<Tabs>` to organize content into switchable panels. Add any number of `<Tab
 
 ## `TabItem` props
 
+| Prop | Type | Required | Description |
+| --- | --- | --- | --- |
+| `label` | `string` | Yes | Text shown on the tab trigger |
+| `value` | `string` | Yes | Stable ID for `defaultValue`, sync, and persistence |
+
 <Property name="label" type="string" required>
-  The text shown on the tab trigger.
+  The text shown on the tab trigger. Use short, scannable labels such as **JavaScript** or **CLI**.
 </Property>
 
 ---
 
 <Property name="value" type="string" required>
-  A unique identifier for the tab within its group. Used by `defaultValue` and by `groupId` synchronization across tab groups.
+  A stable identifier for the tab within its group. Used by `defaultValue` and by `groupId` synchronization across tab groups.
+
+  Choose a `value` that won't change when you edit the label—for example, `label="JavaScript"` with `value="js"`.
 </Property>
 
 ## Synchronization
 
-When the same options appear in more than one place—for example, language-specific install steps and matching API examples—give each `<Tabs>` group the same `groupId`. Without `groupId`, each tab group on the page operates independently.
+Tab groups are independent by default. To keep multiple groups in sync, set the same `groupId` on each `<Tabs>` and use matching `value` props on corresponding `<TabItem>` children.
+
+Use this when the same options appear in more than one place—for example, language-specific install steps and matching API examples.
 
 The example below uses two groups that share `groupId="language"`. Selecting **JavaScript** in either group selects **JavaScript** in both.
 
