@@ -40,7 +40,7 @@ export function Step(props: StepProps) {
           <span className="before:content-[counter(line-number)] text-lg font-medium" />
         )}
       </div>
-      <div className="w-full min-w-0 pb-6 mt-1">
+      <div className="w-full min-w-0 pb-6 mt-1 space-y-4">
         {!!props.title && (
           <h3 className="m-0 text-xl font-medium">{props.title}</h3>
         )}
