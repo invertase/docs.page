@@ -3,4 +3,164 @@ title: Steps
 description: Numbered procedures for tutorials and setup guides.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+Use `<Steps>` and `<Step>` to present a numbered sequence—installation guides, onboarding flows, or any procedure readers should follow in order. Each step shows an auto-incremented number in a circle, with an optional title and room for rich MDX content underneath.
+
+Wrap one or more `<Step>` children inside `<Steps>`. Add code blocks, callouts, lists, or other components inside each step.
+
+```mdx
+<Steps>
+  <Step title="Install dependencies">
+    Run `npm install` in your project root.
+  </Step>
+  <Step title="Start the dev server">
+    Run `npm run dev`.
+  </Step>
+</Steps>
+```
+
+## Example
+
+<Steps>
+  <Step title="Install via npm">
+    Install the package:
+
+    ```bash
+    npm install newpackage
+    ```
+
+    The `newpackage` executable will be available in your terminal.
+  </Step>
+  <Step title="Configure" icon="gear">
+    Initialise configuration:
+
+    ```bash
+    newpackage configure --init
+    ```
+
+    <Info>
+      Callouts and other MDX components work inside steps.
+    </Info>
+  </Step>
+  <Step title="Local development">
+    Start your development server:
+
+    ```bash
+    newpackage dev --port 3000
+    ```
+  </Step>
+</Steps>
+
+````mdx
+<Steps>
+  <Step title="Install via npm">
+    Install the package:
+
+    ```bash
+    npm install newpackage
+    ```
+
+    The `newpackage` executable will be available in your terminal.
+  </Step>
+  <Step title="Configure" icon="gear">
+    Initialise configuration:
+
+    ```bash
+    newpackage configure --init
+    ```
+
+    <Info>
+      Callouts and other MDX components work inside steps.
+    </Info>
+  </Step>
+  <Step title="Local development">
+    Start your development server:
+
+    ```bash
+    newpackage dev --port 3000
+    ```
+  </Step>
+</Steps>
+````
+
+## `Steps` props
+
+`<Steps>` renders a list element with a CSS counter reset so step numbers start at 1. It accepts standard `<ul>` attributes such as `className`.
+
+| Prop | Type | Description |
+| --- | --- | --- |
+| `children` | `ReactNode` | One or more `<Step>` elements |
+| `className` | `string` | Optional class names merged onto the list |
+
+## `Step` props
+
+| Prop | Type | Required | Description |
+| --- | --- | --- | --- |
+| `title` | `string` | No | Heading shown above the step content |
+| `icon` | `string` | No | [Font Awesome](/components/icon) slug shown instead of the step number |
+| `children` | `ReactNode` | Yes | Step body—prose, code blocks, callouts, and other MDX |
+
+<Property name="title" type="string" optional>
+  An optional heading rendered as an `<h3>` above the step content. Use short, action-oriented titles such as **Install dependencies** or **Deploy to production**.
+
+  Omit `title` when the step body is self-explanatory or you only need the step number for context.
+</Property>
+
+---
+
+<Property name="icon" type="string" optional>
+  A [Font Awesome](/components/icon) icon slug that replaces the auto-incremented step number in the circle. Pass the slug without the `fa-` prefix—for example, `icon="gear"` for a settings step.
+
+  When `icon` is set, the step number is hidden for that step only; other steps without an icon continue numbering in sequence.
+</Property>
+
+## Step without a title
+
+`title` is optional. Use a titleless step when the content speaks for itself or when you want a lighter visual hierarchy.
+
+<Steps>
+  <Step title="Create a project">
+    ```bash
+    npm create docs-page@latest my-docs
+    ```
+  </Step>
+  <Step>
+    Open `docs.json` and add your first page to the `sidebar` array.
+  </Step>
+  <Step title="Preview locally">
+    ```bash
+    npm run dev
+    ```
+  </Step>
+</Steps>
+
+````mdx
+<Steps>
+  <Step title="Create a project">
+    ```bash
+    npm create docs-page@latest my-docs
+    ```
+  </Step>
+  <Step>
+    Open `docs.json` and add your first page to the `sidebar` array.
+  </Step>
+  <Step title="Preview locally">
+    ```bash
+    npm run dev
+    ```
+  </Step>
+</Steps>
+````
+
+## When to use steps
+
+| Use steps when… | Consider alternatives when… |
+| --- | --- |
+| Readers must follow steps in order | Content is reference material with no sequence |
+| A tutorial or setup guide has 3+ stages | Options are parallel, not sequential—use [Tabs](/components/tabs) |
+| Each stage has its own code or callouts | Detail can stay hidden until needed—use [Accordion](/components/accordion) |
+
+## See also
+
+- [Components overview](/components/index) — when to use steps, tabs, and accordions
+- [Icon](/components/icon) — finding Font Awesome slugs for the `icon` prop
+- [Reference template](/templates/reference) — structure for lookup pages like this one
