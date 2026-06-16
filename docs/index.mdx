@@ -3,9 +3,9 @@ title: Introduction
 description: Instant, open-source documentation hosting from a public GitHub repository, with no build step or hosting account.
 ---
 
-[docs.page](https://docs.page) serves documentation straight from a public GitHub repository — no build step, no hosting account, and no separate deploy pipeline. You add a `docs.json` config file and write pages as MDX under `docs/`; [docs.page](https://docs.page) renders them at a live URL that stays in sync with your default branch.
+[docs.page](https://docs.page) serves documentation straight from a public GitHub repository — no build step, no hosting account, and no separate deploy pipeline. You add a `docs.json` config file and write documentation pages under `docs/`; [docs.page](https://docs.page) renders them at a live URL that stays in sync with your default branch.
 
-The same site works for human readers and for AI tools. Search, navigation, and rich MDX components serve people in the browser; llms.txt, MCP, and optional in-docs chat help agents find and use your content without a second publishing workflow.
+The same site works for human readers and for AI tools. Search, navigation, and rich built-in components serve people in the browser; llms.txt, MCP, and optional in-docs chat help agents find and use your content without a second publishing workflow.
 
 ## Overview
 
@@ -18,12 +18,12 @@ Think of [docs.page](https://docs.page) as **docs-as-code with zero hosting setu
 | Reader           | What they get                                                                                                        |
 | ---------------- | -------------------------------------------------------------------------------------------------------------------- |
 | **Contributors** | A Git-native way to write, preview, and ship documentation — product teams, open-source maintainers, and SDK authors |
-| **End users**    | Fast, searchable docs with modern navigation, theming, and MDX components                                            |
+| **End users**    | Fast, searchable docs with modern navigation, theming, and built-in components                                        |
 | **Integrators**  | Agent-ready surfaces — llms.txt, MCP, and HTTP APIs — on the same URLs readers already use                           |
 
 ## How hosting works
 
-[docs.page](https://docs.page) reads your repository on each request, bundles MDX, and serves a complete documentation site. You do not run a local build or upload artifacts to a host.
+[docs.page](https://docs.page) reads your repository on each request, renders your pages, and serves a complete documentation site. You do not run a local build or upload artifacts to a host.
 
 ### What goes in your repository
 
@@ -62,7 +62,7 @@ You still use Git for versioning, branches, and pull requests — the same workf
 
 ### Docs for humans and agents
 
-Human readers get search, sidebar navigation, responsive layout, and MDX components such as tabs, callouts, and code blocks.
+Human readers get search, sidebar navigation, responsive layout, and components such as tabs, callouts, and code blocks.
 
 Agents and AI tools can use the same published site through dedicated surfaces: an auto-generated `llms.txt` index, a repository-scoped MCP server, and optional in-docs chat. You do not maintain a separate export or mirror for tooling.
 

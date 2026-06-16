@@ -1,0 +1,83 @@
+---
+title: Check documentation
+description: Run docs check before you push to catch broken links, missing assets, and unreachable external URLs.
+---
+
+Run `docs check` after [local preview](/concepts/cli/preview) looks right and before you push. The command reads your configuration, scans `docs/**/*.mdx`, and reports link and asset problems you can fix locally or block in CI.
+
+## Before you begin
+
+- A [docs.page project](/concepts/cli/init) with `docs.json` or `docs.yaml` and page files under `docs/`
+- [Install the CLI](/concepts/cli/install) or use `npx @docs.page/cli`
+
+For what each check category covers at a high level, see [CLI](/concepts/cli).
+
+## Steps
+
+1. **Open a terminal at your project root.**
+
+2. **Run check.**
+
+   ```bash
+   npx @docs.page/cli check
+   ```
+
+   The CLI checks that `docs.json` or `docs.yaml` is readable, then scans your pages for:
+
+   - Broken **internal links** — paths that do not resolve to another page or asset in the repo
+   - Missing **assets** — images and other referenced files that are not on disk
+   - Unreachable **external links** — HTTP targets that fail when fetched
+
+   Frontmatter fields `redirect`, `next`, and `previous` are included in link scanning.
+
+3. **Fix reported issues.** The CLI prints file paths and targets for each problem. Address `error`-level findings before you push.
+
+4. **Tune severity when external links are flaky or you want warnings only.**
+
+   ```bash
+   npx @docs.page/cli check --external-links warn --internal-links error --assets error
+   ```
+
+   Each category accepts `off`, `warn`, or `error`. All three default to `error`.
+
+5. **Check a subdirectory or monorepo package.**
+
+   ```bash
+   npx @docs.page/cli check ./packages/docs
+   ```
+
+6. **Wire check into CI.** The command exits with code `1` when any `error`-level issue is found:
+
+   ```yaml
+   - name: Check documentation
+     run: npx @docs.page/cli check
+   ```
+
+   `check` does not publish or upload anything — [docs.page](/concepts/github-hosting) updates the live site when you push to your default branch.
+
+## Verify
+
+A clean run ends with no `error`-level output and exit code `0`. Re-run after each fix until check passes.
+
+To confirm CI behavior locally:
+
+```bash
+npx @docs.page/cli check
+echo $?
+```
+
+The last line should print `0` when no errors remain.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| External link failures in CI | Target blocks automated requests or is temporarily down | Set `--external-links warn` or `off` for that pipeline |
+| False positive on internal link | Path typo or file not yet committed | Fix the path or add the missing file under `docs/` |
+| Check passes locally but fails in CI | CI checks a different directory | Pass the correct `[path]` argument or set the job working directory |
+
+## Next steps
+
+- [CLI reference](/reference/cli-reference) — all `check` flags and exit codes
+- [Preview locally](/concepts/cli/preview) — iterate until content looks right
+- [Update moved pages](/authoring/update-moved-pages) — fix links after renames

@@ -1,0 +1,86 @@
+---
+title: Install the CLI
+description: Run docs.page commands with npx or install @docs.page/cli globally on your machine.
+---
+
+Install `@docs.page/cli` once, then run `docs init`, `docs preview`, `docs check`, and `docs agent` from any docs.page project on your machine.
+
+## Before you begin
+
+- [Node.js](https://nodejs.org/) installed (required for `npx` and global install)
+- A terminal open at your project root when you run commands
+
+## Run without installing
+
+To try a command without a global install, prefix it with `npx`:
+
+```bash
+npx @docs.page/cli <command>
+```
+
+`npx` downloads the package when needed and runs it immediately. This works well for one-off scaffolding or CI jobs.
+
+## Install globally
+
+To use the shorter `docs` command everywhere, install the package globally:
+
+<CodeGroup>
+
+```bash npm
+npm install -g @docs.page/cli
+```
+
+```bash pnpm
+pnpm add -g @docs.page/cli
+```
+
+</CodeGroup>
+
+After install, both `docs` and `docs.page` binaries point to the same CLI:
+
+```bash
+docs --help
+docs.page preview
+```
+
+## Update the CLI
+
+Reinstall the latest version when preview behavior or flags change:
+
+<CodeGroup>
+
+```bash npm
+npm install -g @docs.page/cli@latest
+```
+
+```bash pnpm
+pnpm add -g @docs.page/cli@latest
+```
+
+</CodeGroup>
+
+For a single project, `npx @docs.page/cli@latest <command>` always resolves the newest release.
+
+## Verify
+
+Run:
+
+```bash
+docs --version
+```
+
+The command prints the installed CLI version. Run `docs <command> --help` for flags on a specific command.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| `command not found: docs` | CLI not installed globally and `npx` not used | Run `npx @docs.page/cli <command>` or install globally |
+| `EACCES` or permission error on global install | npm global directory is not writable | Fix npm permissions or use `npx` instead of a global install |
+| Preview or agent commands fail to connect | Outdated CLI | Reinstall with `@latest` |
+
+## Next steps
+
+- [Initialize a project](/concepts/cli/init) — scaffold `docs.json` and starter pages
+- [CLI](/concepts/cli) — overview of all commands
+- [CLI reference](/reference/cli-reference) — flags and exit codes

@@ -1,6 +1,126 @@
 ---
 title: CLI reference
-description: docs init, docs check, and agent CLI commands.
+description: Look up docs.page CLI commands, flags, defaults, and exit codes.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+Use this page when you need exact syntax for `@docs.page/cli`. Workflow guides live under [CLI](/concepts/cli); task walkthroughs live on each [command guide](/concepts/cli/install).
+
+## Global options
+
+These options apply before any subcommand.
+
+| Flag | Environment variable | Description |
+| --- | --- | --- |
+| `--api-url <url>` | `DOCS_PAGE_API_BASE` | Base docs.page API URL for `agent` commands. Defaults to the production API when unset. |
+| `--help`, `-h` | — | Show help for the command. |
+| `--version`, `-v` | — | Print the CLI version. |
+
+```bash
+docs --api-url https://your-api.example.com agent create --repo org/repo
+```
+
+`init`, `preview`, and `check` do not call the docs.page API.
+
+---
+
+## `docs init`
+
+Initialize docs.page files in a project directory.
+
+```bash
+docs init [path] [flags]
+```
+
+| Flag | Description |
+| --- | --- |
+| `[path]` | Project directory to initialize. Defaults to `.`. |
+| `--name <name>` | Project name written into `docs.json`. |
+| `--docs` | Create starter `docs/**/*.mdx` files. Default when neither `--docs` nor `--no-docs` is passed in non-interactive mode. |
+| `--no-docs` | Write `docs.json` only; skip starter page files. |
+| `--overwrite` | Replace existing files created by docs.page init. |
+
+---
+
+## `docs preview`
+
+Start a local preview server and open the docs.page preview UI.
+
+```bash
+docs preview [flags]
+```
+
+| Flag | Description |
+| --- | --- |
+| `--port <number>` | Port for the local WebSocket server. |
+| `--no-browser` | Do not open the preview URL automatically. |
+
+Requires `docs.json` or `docs.yaml` and at least one `.mdx` file under `docs/`.
+
+---
+
+## `docs check`
+
+Check documentation for broken links and missing assets.
+
+```bash
+docs check [path] [flags]
+```
+
+| Flag | Default | Description |
+| --- | --- | --- |
+| `[path]` | `.` | Project directory to check. |
+| `--internal-links <level>` | `error` | Check internal links and frontmatter `redirect`, `next`, `previous` paths. |
+| `--assets <level>` | `error` | Check that referenced local image and asset files exist. |
+| `--external-links <level>` | `error` | Fetch external URLs and report failures. |
+
+Severity `<level>` accepts `off`, `warn`, or `error`.
+
+### Exit codes
+
+| Code | Meaning |
+| --- | --- |
+| `0` | No `error`-level issues found. |
+| `1` | One or more `error`-level issues found. |
+
+---
+
+## `docs agent create`
+
+Create an in-docs chat agent for a GitHub repository.
+
+```bash
+docs agent create [flags]
+```
+
+| Flag | Description |
+| --- | --- |
+| `--repo <org/name>` | Target repository. Prompted when omitted in an interactive terminal. |
+| `--provider <provider>` | LLM provider: `openai`, `anthropic`, `google`, or `xai`. |
+| `--apikey <key>` | Provider API key. Encrypted locally before upload. |
+| `--gh-auth <token>` | GitHub token instead of `gh auth token`. |
+| `--force` | Overwrite an existing agent configuration. |
+
+On success, the CLI prints an `agent.key` value to add to `docs.json`.
+
+---
+
+## `docs agent delete`
+
+Delete the agent configuration for a repository.
+
+```bash
+docs agent delete [flags]
+```
+
+| Flag | Description |
+| --- | --- |
+| `--repo <org/name>` | Target repository. |
+| `--gh-auth <token>` | GitHub token instead of `gh auth token`. |
+
+---
+
+## See also
+
+- [CLI](/concepts/cli) — overview and design tradeoffs
+- [Install the CLI](/concepts/cli/install)
+- [Check documentation](/concepts/cli/check)

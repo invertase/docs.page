@@ -24,6 +24,27 @@ Run this checklist **after** drafting, **before** delivering files. Fix every fa
 
 ---
 
+## Locale (international English)
+
+Use **international English** (American spelling and conventions), not British English.
+
+| British | International |
+| --- | --- |
+| behaviour | behavior |
+| colour, coloured, colouring | color, colored, coloring |
+| emphasise, emphasised | emphasize, emphasized |
+| synchronise, synchronised, synchronisation | synchronize, synchronized, synchronization |
+| labelled | labeled |
+| initialise | initialize |
+| centred | centered |
+| favourites | favorites |
+| unrecognised | unrecognized |
+| backwards compatibility | backward compatibility |
+
+- [ ] No British `-ise` / `-our` spellings remain (unless quoting external text verbatim)
+
+---
+
 ## Voice and structure
 
 - [ ] Steps start with imperative verbs (Click, Run, Set, Enable)
@@ -113,7 +134,7 @@ Remove or rewrite on sight:
 
 ---
 
-**Before (catalog description):** Tabs and TabItem panels with optional groupId synchronisation and persisted tab selection.
+**Before (catalog description):** Tabs and TabItem panels with optional groupId synchronization and persisted tab selection.
 
 **After (reader description):** Organize content into switchable panels for options, platforms, or language examples.
 

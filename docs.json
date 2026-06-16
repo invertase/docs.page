@@ -90,8 +90,30 @@
           "href": "/concepts/navigation"
         },
         {
-          "title": "CLI",
-          "href": "/concepts/cli"
+          "group": "CLI",
+          "href": "/concepts/cli",
+          "pages": [
+            {
+              "title": "Install the CLI",
+              "href": "/concepts/cli/install"
+            },
+            {
+              "title": "Initialize a project",
+              "href": "/concepts/cli/init"
+            },
+            {
+              "title": "Preview locally",
+              "href": "/concepts/cli/preview"
+            },
+            {
+              "title": "Check documentation",
+              "href": "/concepts/cli/check"
+            },
+            {
+              "title": "Manage the AI agent",
+              "href": "/concepts/cli/agent"
+            }
+          ]
         },
         {
           "title": "Previews",

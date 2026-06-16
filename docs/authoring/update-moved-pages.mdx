@@ -8,7 +8,7 @@ When you rename or move a page, its URL changes with it. Bookmarks, search resul
 docs.page handles redirects with the `redirect` field in page frontmatter — not a central redirect table in `docs.json`. That keeps setup simple for one-off moves, but it is not a bulk URL migration tool.
 
 <Info>
-  **Coming from Mintlify or similar platforms?** Those tools often define redirects in `docs.json` with wildcard rules and permanent (308) redirects. docs.page uses **one redirect per `.mdx` file**, keeps the old file at the old path, and issues a **temporary (307)** redirect. There is no wildcard or catch-all redirect support today.
+  **Coming from Mintlify or similar platforms?** Those tools often define redirects in `docs.json` with wildcard rules and permanent (308) redirects. docs.page uses **one redirect per page file**, keeps the old file at the old path, and issues a **temporary (307)** redirect. There is no wildcard or catch-all redirect support today.
 </Info>
 
 ## Before you begin
@@ -57,7 +57,7 @@ When you rename `docs/installation.mdx` to `docs/getting-started.mdx`, readers w
    }
    ```
 
-4. **Update in-page links** in other `.mdx` files that still point at `/installation`.
+4. **Update in-page links** in other documentation pages that still point at `/installation`.
 
 ## Redirect formats
 
@@ -133,7 +133,7 @@ If you are restructuring dozens of URLs at once, plan one stub file per old path
 
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |
-| Old URL returns 404 | No file at the old path | Add a stub `.mdx` file with `redirect` frontmatter |
+| Old URL returns 404 | No file at the old path | Add a stub page file with `redirect` frontmatter |
 | Redirect goes to wrong host on preview | Internal path resolved against current ref/domain | Use a root-relative path (`/new-page`); docs.page builds the full URL |
 | `docs check` reports broken redirect | Target path does not match any page file | Confirm the destination file exists under `docs/` and the path matches its URL |
 | Sidebar still shows old link | `docs.json` not updated | Change the `href` in the sidebar entry |
@@ -142,4 +142,4 @@ If you are restructuring dozens of URLs at once, plan one stub file per old path
 
 - [Page frontmatter](/reference/page-frontmatter) — full field reference for `redirect` and other per-page options
 - [Organize navigation](/authoring/organize-your-navigation) — keep sidebar links aligned after moves
-- [Preview locally](/authoring/preview-locally) — test redirects before pushing
+- [Preview locally](/concepts/cli/preview) — test redirects before pushing

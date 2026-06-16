@@ -134,6 +134,7 @@ Before delivering final content:
 - **Reader-first descriptions:** Frontmatter `description` answers *why would I open this page?* — task, outcome, or common use case. Use second person or imperative (*"Use … to …"*, *"When you need …"*). Do not list props, implementation details, or copy `summary` text from inventory. Rewrite outline `description` / purpose; never paste capability summaries verbatim.
 - **Description vs body:** `description` is for discoverability (search, nav, social previews); the opening paragraph shows how to start. If they overlap, `description` is shorter and more benefit-focused.
 - **Semantic UI formatting:** Bold UI labels; backtick code, paths, env vars
+- **International English:** American spelling and conventions (`behavior`, `color`, `synchronize`, not British variants). See style-lint **Locale** checks.
 - **Truthfulness:** Match `docs-inventory.json` and code; flag `beta` / `deprecated` / `schema-only`
 
 ### docs.page conventions

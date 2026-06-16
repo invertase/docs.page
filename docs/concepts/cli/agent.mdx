@@ -1,0 +1,82 @@
+---
+title: Manage the AI agent
+description: Create or delete the in-docs chat agent for a GitHub repository from the terminal.
+---
+
+Use `docs agent` to provision the in-docs AI chat panel for a repository. The CLI encrypts your LLM provider API key locally, verifies you have GitHub admin access, and registers the agent with the docs.page API.
+
+## Before you begin
+
+- [Install the CLI](/concepts/cli/install) or use `npx @docs.page/cli`
+- Admin access to the target GitHub repository
+- A provider API key from OpenAI, Anthropic, Google, or xAI
+- [GitHub CLI](https://cli.github.com/) authenticated (`gh auth login`) or a token you can pass with `--gh-auth`
+
+Agent commands call the docs.page API. Self-hosted or staging setups must set `--api-url` or `DOCS_PAGE_API_BASE` — see [CLI](/concepts/cli#global-options).
+
+## Create an agent
+
+1. **Run create from your project root or any directory.**
+
+   ```bash
+   npx @docs.page/cli agent create --repo org/repo --provider openai --apikey sk-...
+   ```
+
+   Omit flags in an interactive terminal to be prompted for the repository, provider, and API key.
+
+2. **Copy the agent key into `docs.json`.** On success, the CLI prints an `agent.key` value to add to your repository:
+
+   ```json
+   "agent": {
+     "key": "your-agent-key"
+   }
+   ```
+
+   Commit and push `docs.json` so the live site enables the reader-facing panel.
+
+3. **Overwrite an existing agent when rotating keys.**
+
+   ```bash
+   npx @docs.page/cli agent create --repo org/repo --provider anthropic --apikey sk-ant-... --force
+   ```
+
+Supported providers: `openai`, `anthropic`, `google`, `xai`.
+
+## Delete an agent
+
+Remove stored agent credentials for a repository:
+
+```bash
+npx @docs.page/cli agent delete --repo org/repo
+```
+
+Pass `--gh-auth <token>` when `gh auth token` is unavailable.
+
+## Verify
+
+After create:
+
+- The CLI prints `Your documentation agent is ready to use` and a JSON snippet for `docs.json`
+- After you push the config change, open your live site and confirm the agent panel appears
+
+After delete:
+
+- The CLI prints `Deleted agent for org/repo`
+- The agent panel no longer loads on the live site once credentials are removed
+
+See [AI chat](/ai-agents/ai-chat) for placeholder text, starter questions, and rate limits on the reader-facing panel.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| GitHub auth error | `gh` not logged in or token lacks repo access | Run `gh auth login` or pass `--gh-auth` |
+| Agent creation failed (403) | Token does not have admin on the repository | Use an account with admin access |
+| API connection error | Wrong API base for self-hosted setup | Set `--api-url` or `DOCS_PAGE_API_BASE` |
+| Panel missing on live site | `agent.key` not in pushed `docs.json` | Add the key from create output and push |
+
+## Next steps
+
+- [AI chat](/ai-agents/ai-chat) — configure the reader-facing chat panel
+- [CLI reference](/reference/cli-reference) — `agent create` and `agent delete` flags
+- [CLI](/concepts/cli) — global `--api-url` option

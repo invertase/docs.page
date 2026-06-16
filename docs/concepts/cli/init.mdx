@@ -1,0 +1,81 @@
+---
+title: Initialize a project
+description: Scaffold docs.json and optional starter pages in a new or existing repository.
+---
+
+Run `docs init` to create the files [docs.page](https://docs.page) expects: a `docs.json` configuration file and, by default, starter content under `docs/`. Templates use your project name so you can push and open a live URL quickly.
+
+## Before you begin
+
+- [Install the CLI](/concepts/cli/install) or use `npx @docs.page/cli`
+- An empty folder or an existing Git repository as your project root
+
+For a full first-publish walkthrough including GitHub push, follow [Publish your first site](/publish-your-first-site).
+
+## Steps
+
+1. **Open a terminal at your project root.** Use an empty directory or the root of an existing repository.
+
+   ```bash
+   cd my-docs
+   ```
+
+2. **Run init.** The CLI scaffolds docs.page files in the current directory.
+
+   ```bash
+   npx @docs.page/cli init
+   ```
+
+   In an interactive terminal, the CLI prompts for your project name and whether to create starter pages. Accept the defaults unless you already have a `docs/` directory you want to keep.
+
+3. **Review the created files.** With default choices, init writes:
+
+   ```
+   docs.json
+   docs/
+     index.mdx
+     next-steps.mdx
+   ```
+
+   - **`docs.json`** — site name, description, sidebar, and theme
+   - **`docs/index.mdx`** — home page (served at `/`)
+   - **`docs/next-steps.mdx`** — second page (served at `/next-steps`)
+
+4. **Initialize a subdirectory or skip starter pages when scripting.** Pass flags to avoid prompts in CI or scripts:
+
+   ```bash
+   npx @docs.page/cli init ./my-project --name "My Project"
+   npx @docs.page/cli init --no-docs
+   ```
+
+   Use `--no-docs` when you only need `docs.json` and will add page files yourself.
+
+5. **Re-run init safely in an existing project.** When docs.page files already exist, init skips them unless you pass `--overwrite`:
+
+   ```bash
+   npx @docs.page/cli init --overwrite
+   ```
+
+   <Warning>
+     `--overwrite` replaces files created by docs.page init. Review the skipped-file list before confirming in interactive mode.
+   </Warning>
+
+## Verify
+
+Confirm `docs.json` exists at the project root and at least one `.mdx` file lives under `docs/` if you created starter pages. Open `docs/index.mdx` and edit the title — you will see the change after you [preview locally](/concepts/cli/preview) or push to GitHub.
+
+See [Project structure](/concepts/project-structure) for how `docs.json` and `docs/**/*.mdx` map to URLs.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| `No docs.page files were changed` | All target paths already exist | Pass `--overwrite` or delete conflicting files first |
+| Wrong project name in `docs.json` | Name inferred from folder | Pass `--name "Your Project"` |
+| Init prompts in CI | Missing non-interactive flags | Pass `--name` and `--no-docs` or `--docs` explicitly |
+
+## Next steps
+
+- [Preview locally](/concepts/cli/preview) — see edits in the browser before you push
+- [Publish your first site](/publish-your-first-site) — push to GitHub and open your live URL
+- [CLI reference](/reference/cli-reference) — `init` flags and arguments

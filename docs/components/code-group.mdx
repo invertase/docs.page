@@ -79,7 +79,7 @@ Prefer **Code group** over [Tabs](/components/tabs) when every panel is a code f
   Sync state is held by `CodeGroupProvider`, which wraps page content automatically. Unlike `<Tabs groupId="…">`, there is no separate group ID—synchronized code groups on a page share one language state.
 </Property>
 
-Only fenced code blocks inside `<CodeGroup>` become tabs. Other MDX content is ignored. The renderer passes parsed blocks to the component internally—you do not set a `blocks` property in MDX.
+Only fenced code blocks inside `<CodeGroup>` become tabs. Other page content is ignored. The renderer passes parsed blocks to the component internally—you do not set a `blocks` property yourself.
 
 ## Synchronization
 

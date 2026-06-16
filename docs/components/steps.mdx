@@ -3,7 +3,7 @@ title: Steps
 description: Walk readers through install and setup procedures with numbered steps.
 ---
 
-Use `<Steps>` and `<Step>` to present a numbered sequence—installation guides, onboarding flows, or any procedure readers should follow in order. Each step shows an auto-incremented number in a circle, with an optional title and room for rich MDX content underneath.
+Use `<Steps>` and `<Step>` to present a numbered sequence—installation guides, onboarding flows, or any procedure readers should follow in order. Each step shows an auto-incremented number in a circle, with an optional title and room for rich content underneath.
 
 Wrap one or more `<Step>` children inside `<Steps>`. Add code blocks, callouts, lists, or other components inside each step.
 
@@ -38,7 +38,7 @@ Wrap one or more `<Step>` children inside `<Steps>`. Add code blocks, callouts, 
     ```
 
     <Info>
-      Callouts and other MDX components work inside steps.
+      Callouts and other components work inside steps.
     </Info>
   </Step>
   <Step title="Local development">
@@ -69,7 +69,7 @@ Wrap one or more `<Step>` children inside `<Steps>`. Add code blocks, callouts, 
     ```
 
     <Info>
-      Callouts and other MDX components work inside steps.
+      Callouts and other components work inside steps.
     </Info>
   </Step>
   <Step title="Local development">
@@ -162,7 +162,7 @@ Wrap one or more `<Step>` children inside `<Steps>`. Add code blocks, callouts, 
 | `title` omitted on `<Step>` | Renders the step number and body content only |
 | `icon` set on `<Step>` | Replaces the step number with the icon for that step |
 | Mixed `icon` and numbered steps | Numbering continues for steps without an icon |
-| Nested MDX inside `<Step>` | Rendered in the step body |
+| Nested content inside `<Step>` | Rendered in the step body |
 
 ## See also
 
