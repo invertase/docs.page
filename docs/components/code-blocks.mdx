@@ -1,6 +1,156 @@
 ---
 title: Code blocks
-description: Syntax highlighting, titles, line numbers, and copy behavior.
+description: Syntax highlighting, titles, annotations, and copy behaviour.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+Use fenced code blocks to show commands, configuration, and snippets in your docs. Wrap content in triple backticks and add an optional language tag for syntax highlighting. Every block gets a header with the language label and a copy button.
+
+There is no `<CodeBlock />` component—standard Markdown fences are all you need.
+
+````mdx
+```js
+export async function apiRequest(options) {
+  const response = await fetch(options.url);
+  return response.json();
+}
+```
+````
+
+## Example
+
+```js
+export async function apiRequest(options) {
+  const response = await fetch(options.url);
+  const data = await response.json();
+  return data;
+}
+```
+
+````mdx
+```js
+export async function apiRequest(options) {
+  const response = await fetch(options.url);
+  const data = await response.json();
+  return data;
+}
+```
+````
+
+## Language tags
+
+Add a language identifier immediately after the opening backticks. docs.page uses [Shiki](https://shiki.style/) for highlighting and accepts any bundled Shiki language or alias—for example, `js`, `ts`, `bash`, or `json`.
+
+If the tag is missing or unrecognised, the block renders as plain text.
+
+```bash
+npm install docs.page
+```
+
+````mdx
+```bash
+npm install docs.page
+```
+````
+
+## Titles
+
+Add `title="..."` to the opening fence line to show a label beside the language in the block header. Use double quotes, single quotes, or an unquoted value.
+
+```js title="Logging: Hello World"
+console.log("Hello World");
+```
+
+````mdx
+```js title="Logging: Hello World"
+console.log("Hello World");
+```
+````
+
+The header shows the language, a divider, then the title—for example, **js** | **Logging: Hello World**.
+
+## Annotations
+
+Shiki notation transformers add diff markers, line highlights, and focus effects. Add a comment at the end of each annotated line using the `// [!code …]` pattern (or the equivalent comment syntax for your language).
+
+### Diff
+
+Show removed and added lines in a single block:
+
+```js
+console.log('hewwo') // [!code --]
+console.log('hello') // [!code ++]
+console.log('goodbye')
+```
+
+Add `// [!code --]` for removed lines and `// [!code ++]` for added lines:
+
+````
+```js
+console.log('hewwo') // [\!code --]
+console.log('hello') // [\!code ++]
+console.log('goodbye')
+```
+````
+
+### Line highlight
+
+Call out important lines with a background highlight:
+
+```js
+console.log('hello') // [!code highlight]
+console.log('world')
+```
+
+Add `// [!code highlight]` at the end of the line:
+
+````
+```js
+console.log('hello') // [\!code highlight]
+console.log('world')
+```
+````
+
+### Focus
+
+Dim surrounding lines to draw attention to one or more lines:
+
+```js
+console.log('Not focused');
+console.log('Focused') // [!code focus]
+console.log('Not focused');
+```
+
+Add `// [!code focus]` at the end of the line:
+
+````
+```js
+console.log('Not focused');
+console.log('Focused') // [\!code focus]
+console.log('Not focused');
+```
+````
+
+## Copy behaviour
+
+Each code block includes a copy button in the header. Click it to copy the raw fence content to the clipboard. The icon switches to a check mark for two seconds to confirm the copy.
+
+Readers copy source text—including annotation comments—not the rendered HTML.
+
+## Behaviour
+
+| Condition | Result |
+| --- | --- | --- |
+| No language tag | Renders as `text` with no syntax colouring |
+| Unrecognised language tag | Falls back to `text` |
+| `title="..."` in fence meta | Shown in the header after the language |
+| `title` omitted | Header shows the language only |
+| `// [!code --]` / `// [!code ++]` | Line styled as removed or added |
+| `// [!code highlight]` | Line gets a background highlight |
+| `// [!code focus]` | Line stays sharp; other lines are dimmed |
+| Copy button clicked | Raw fence content copied to the clipboard |
+
+## See also
+
+- [Code group](/components/code-group) — tabbed blocks for multiple languages or variants
+- [Components overview](/components/index) — when to use tabs, code groups, and accordions
+- [Reference template](/templates/reference) — structure for lookup pages like this one
