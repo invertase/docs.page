@@ -20,6 +20,7 @@
         "@mjackson/headers": "^0.11.1",
         "@modelcontextprotocol/sdk": "^1.29.0",
         "@octokit/graphql": "^9.0.3",
+        "@octokit/webhooks": "^14.2.0",
         "@pierre/diffs": "^1.2.4",
         "@pierre/trees": "^1.0.0-beta.4",
         "@radix-ui/react-collapsible": "^1.1.12",
@@ -88,14 +89,13 @@
     },
     "packages/cli": {
       "name": "@docs.page/cli",
-      "version": "2.0.0",
+      "version": "2.0.0-next.1",
       "bin": {
         "docs.page": "./dist/cli.js",
         "docs": "./dist/cli.js",
       },
       "dependencies": {
         "@clack/prompts": "^1.5.1",
-        "@docs.page/mdx-bundler": "workspace:*",
         "chalk": "^5.3.0",
         "chokidar": "^4.0.0",
         "commander": "^12.1.0",
@@ -111,6 +111,7 @@
         "ws": "^8.18.0",
       },
       "devDependencies": {
+        "@docs.page/mdx-bundler": "workspace:*",
         "@types/js-yaml": "^4.0.9",
         "@types/node": "^25.9.2",
         "@types/ws": "^8.5.13",
