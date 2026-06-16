@@ -14,51 +14,59 @@ For a full first-publish walkthrough including GitHub push, follow [Publish your
 
 ## Steps
 
-1. **Open a terminal at your project root.** Use an empty directory or the root of an existing repository.
+<Steps>
+  <Step title="Open a terminal at your project root">
+    Use an empty directory or the root of an existing repository.
 
-   ```bash
-   cd my-docs
-   ```
+    ```bash
+    cd my-docs
+    ```
+  </Step>
+  <Step title="Run init">
+    The CLI scaffolds docs.page files in the current directory.
 
-2. **Run init.** The CLI scaffolds docs.page files in the current directory.
+    ```bash
+    npx @docs.page/cli init
+    ```
 
-   ```bash
-   npx @docs.page/cli init
-   ```
+    In an interactive terminal, the CLI prompts for your project name and whether to create starter pages. Accept the defaults unless you already have a `docs/` directory you want to keep.
+  </Step>
+  <Step title="Review the created files">
+    With default choices, init writes:
 
-   In an interactive terminal, the CLI prompts for your project name and whether to create starter pages. Accept the defaults unless you already have a `docs/` directory you want to keep.
+    ```
+    docs.json
+    docs/
+      index.mdx
+      next-steps.mdx
+    ```
 
-3. **Review the created files.** With default choices, init writes:
+    - **`docs.json`** — site name, description, sidebar, and theme
+    - **`docs/index.mdx`** — home page (served at `/`)
+    - **`docs/next-steps.mdx`** — second page (served at `/next-steps`)
+  </Step>
+  <Step title="Initialize a subdirectory or skip starter pages when scripting">
+    Pass flags to avoid prompts in CI or scripts:
 
-   ```
-   docs.json
-   docs/
-     index.mdx
-     next-steps.mdx
-   ```
+    ```bash
+    npx @docs.page/cli init ./my-project --name "My Project"
+    npx @docs.page/cli init --no-docs
+    ```
 
-   - **`docs.json`** — site name, description, sidebar, and theme
-   - **`docs/index.mdx`** — home page (served at `/`)
-   - **`docs/next-steps.mdx`** — second page (served at `/next-steps`)
+    Use `--no-docs` when you only need `docs.json` and will add page files yourself.
+  </Step>
+  <Step title="Re-run init safely in an existing project">
+    When docs.page files already exist, init skips them unless you pass `--overwrite`:
 
-4. **Initialize a subdirectory or skip starter pages when scripting.** Pass flags to avoid prompts in CI or scripts:
+    ```bash
+    npx @docs.page/cli init --overwrite
+    ```
 
-   ```bash
-   npx @docs.page/cli init ./my-project --name "My Project"
-   npx @docs.page/cli init --no-docs
-   ```
-
-   Use `--no-docs` when you only need `docs.json` and will add page files yourself.
-
-5. **Re-run init safely in an existing project.** When docs.page files already exist, init skips them unless you pass `--overwrite`:
-
-   ```bash
-   npx @docs.page/cli init --overwrite
-   ```
-
-   <Warning>
-     `--overwrite` replaces files created by docs.page init. Review the skipped-file list before confirming in interactive mode.
-   </Warning>
+    <Warning>
+      `--overwrite` replaces files created by docs.page init. Review the skipped-file list before confirming in interactive mode.
+    </Warning>
+  </Step>
+</Steps>
 
 ## Verify
 
