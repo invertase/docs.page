@@ -7,7 +7,9 @@ The `@docs.page/cli` package is the local companion to [docs.page](https://docs.
 
 ## Overview
 
-docs.page serves documentation from a public GitHub repository — there is no separate deploy dashboard. The CLI fills the gaps on your machine: scaffolding, checking, and live preview while you write.
+docs.page serves documentation from a public GitHub repository — there is no separate deploy dashboard. The CLI fits that Git-native model: scaffold into an existing repo, lint before push or in CI, and preview work in progress without opening a branch on GitHub.
+
+Local preview renders page content on your machine while the browser loads the production preview shell — you see real theme and layout without embedding a full copy of the docs.page app. `check` improves quality before push; it does not upload or publish anything.
 
 | Command | Role in your workflow |
 | --- | --- |
@@ -48,14 +50,6 @@ docs agent create --repo org/repo
 ```
 
 When neither is set, the CLI uses the production docs.page API. `init`, `preview`, and `check` do not need an API URL.
-
-## Design tradeoffs
-
-**CLI over a web editor.** docs.page is Git-native: content lives in your repository and publishes on push. A terminal tool fits that model — scaffold into an existing repo, check in CI, and preview without committing work-in-progress branches.
-
-**Hosted preview UI.** Local preview does not embed a full static copy of the docs.page app. Instead, your machine renders page content and the browser loads the production preview shell. You see real theme and layout behavior while file I/O stays on localhost.
-
-**Check as a gate, not a deploy step.** `check` improves quality before push; it does not upload or publish anything. Hosting remains push-to-publish from GitHub.
 
 ## Related
 

@@ -2,9 +2,10 @@
 name: docs-write
 description: >-
   Writes or revises MDX documentation pages from an approved docs.json outline.
-  Applies Diátaxis templates, tone rules, and style linting. Use when drafting
-  doc page content, writing .mdx files, or when the user mentions docs-write,
-  docs-writer, after approving a docs outline. Does not build docs-inventory.json or site IA.
+  Applies Diátaxis templates, tone rules, style linting, and docs.page MDX
+  components via published reference. Use when drafting doc page content,
+  writing .mdx files, or when the user mentions docs-write, docs-writer, after
+  approving a docs outline. Does not build docs-inventory.json or site IA.
 ---
 
 # Docs Write
@@ -73,12 +74,13 @@ Docs Writer Progress:
 - [ ] 1. Confirm — outline approved; identify target hrefs or statuses
 - [ ] 2. Load — read outline.pages entries + capabilityIds from docs-inventory.json
 - [ ] 3. Template — read templates.md; pick skeleton for docType
+- [ ] 3b. Components — read components.md; for each MDX component you plan to use, read the matching page at https://use.docs.page/components/… before drafting syntax
 - [ ] 4. Draft — write .mdx with tone and formatting rules
-- [ ] 5. Lint — read style-lint.md; run self-correction pass (including description voice checks)
+- [ ] 5. Lint — read style-lint.md; run self-correction pass (description voice, intro duplication)
 - [ ] 6. Deliver — write files; summarize changes
 ```
 
-**Mandatory reads:** `templates.md` at step 3, `style-lint.md` at step 5.
+**Mandatory reads:** `templates.md` at step 3, `components.md` at step 3b, `style-lint.md` at step 5.
 
 ## Step 1: Confirm scope
 
@@ -132,7 +134,7 @@ Before delivering final content:
 - **Cognitive load:** Paragraphs ≤ 3 lines; use bullets
 - **Why before how:** State outcome before each setting change
 - **Reader-first descriptions:** Frontmatter `description` answers *why would I open this page?* — task, outcome, or common use case. Use second person or imperative (*"Use … to …"*, *"When you need …"*). Do not list props, implementation details, or copy `summary` text from inventory. Rewrite outline `description` / purpose; never paste capability summaries verbatim.
-- **Description vs body:** `description` is for discoverability (search, nav, social previews); the opening paragraph shows how to start. If they overlap, `description` is shorter and more benefit-focused.
+- **Description vs opening paragraph:** These are **different fields with different jobs** — never paraphrase one from the other. `description` = discoverability (search, nav, previews). Opening paragraph = scope, workflow position, or first action — see [templates.md — Description vs opening paragraph](templates.md#description-vs-opening-paragraph). **How-to and reference:** omit the opening paragraph when the first section (`## Before you begin` or first `##` group) already orients the reader.
 - **Semantic UI formatting:** Bold UI labels; backtick code, paths, env vars
 - **International English:** American spelling and conventions (`behavior`, `color`, `synchronize`, not British variants). See style-lint **Locale** checks.
 - **Truthfulness:** Match `docs-inventory.json` and code; flag `beta` / `deprecated` / `schema-only`
@@ -140,12 +142,13 @@ Before delivering final content:
 ### docs.page conventions
 
 - Frontmatter: `title` from outline; `description` written per Writing rules
-- **tutorial / how-to:** `<Steps>` / `<Step>`
-- **reference:** `<Property>`, nested `<Accordion>`
-- **Callouts:** `<Info>`, `<Warning>`, `<Error>`, `<Success>` — not `<Callout>`
-- **Code:** Fenced blocks with language tags; `<CodeGroup>` for equivalents
+- MDX components are global — no imports required
+- Component selection: [components.md](components.md); syntax from [use.docs.page/components](https://use.docs.page/components)
+- Fenced code blocks need language tags (`bash`, `json`, `tsx`)
 
 Honor `docType` from outline. Templates: [templates.md](templates.md). Lint: [style-lint.md](style-lint.md).
+
+**Explanation pages:** Follow the Hook → Overview → How it works → Related skeleton. Do not add a standalone `## Design tradeoffs` section unless the outline explicitly calls for one — weave rationale into `## How it works` when needed.
 
 ## Create vs update
 
@@ -170,6 +173,7 @@ Summarize:
 ## Additional resources
 
 - Page skeletons: [templates.md](templates.md)
+- MDX components: [components.md](components.md)
 - Style lint: [style-lint.md](style-lint.md)
 - Editorial spec (upstream): [docs-spec](../docs-spec/SKILL.md)
 - Site outline (upstream): [docs-sitemap-architect](../docs-sitemap-architect/SKILL.md)

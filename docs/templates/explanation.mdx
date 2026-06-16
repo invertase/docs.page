@@ -1,9 +1,9 @@
 ---
 title: Explanation template
-description: Structure pages that explain why something works, including background, architecture, and tradeoffs.
+description: Structure pages that explain why something works, including background and architecture.
 ---
 
-Use this layout when readers need to understand *why* something works the way it does — not just how to use it. Explanation pages build mental models, connect concepts, and document tradeoffs.
+Use this layout when readers need to understand *why* something works the way it does — not just how to use it. Explanation pages build mental models and connect concepts.
 
 
 <Info>
@@ -17,12 +17,12 @@ Before writing, anchor yourself to the core constraints of the understanding-ori
 
 - **The goal:** Build deeper conceptual understanding — background context, architecture, intent, and design decisions.
 - **The tone:** Discursive, expository, and educational. Longer paragraphs are fine, but split walls of text and use headings generously.
-- **The layout:** Overview → How it works → Design tradeoffs → Related. Link out for procedures and field lookup.
+- **The layout:** Overview → How it works → Related. Link out for procedures and field lookup. Weave rationale into `## How it works` when it helps — do not add a standalone tradeoffs section by default.
 
 | Use explanation when… | Use something else when… |
 | --- | --- |
 | The reader asks *why* or *how does this fit together* | They need a guided first walkthrough → [Tutorial](/templates/tutorial) |
-| Architecture, state, or design tradeoffs matter | They need steps for one task → [How-to](/templates/how-to) |
+| Architecture or state matters | They need steps for one task → [How-to](/templates/how-to) |
 | Code would distract from the concept | They need every field and error code → [Reference](/templates/reference) |
 
 ## Copy this template
@@ -52,12 +52,6 @@ description: [What understanding the reader will gain]
 ### [Subconcept B]
 
 [Detail on another aspect]
-
-## Design tradeoffs
-
-**[Decision 1].** [Rationale, alternatives considered, and tradeoffs]
-
-**[Decision 2].** [Rationale, alternatives considered, and tradeoffs]
 
 ## Related
 

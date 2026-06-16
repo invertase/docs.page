@@ -1,6 +1,107 @@
 ---
 title: Project structure
-description: What lives in a docs.page repo and how paths map to URLs.
+description: Map your repository layout to live URLs before you configure navigation or publish.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+A docs.page site is not a build artifact or a `dist/` folder. It is configuration at the repository root and `.mdx` pages under `docs/` — the same files GitHub stores and docs.page serves on push.
+
+## Overview
+
+Every hosted site follows the same minimal layout:
+
+```
+docs.json          # site configuration (required)
+docs/              # documentation pages (required)
+  index.mdx        # home page
+  next-steps.mdx   # example inner page
+  assets/          # optional images and other files
+    screenshot.png
+```
+
+| Piece | Role |
+| --- | --- |
+| `docs.json` or `docs.yaml` | Site identity, theme, sidebar, tabs, and other settings |
+| `docs/**/*.mdx` | Page content — the only files that become documentation URLs |
+| Paths under `docs/` | Images and other assets referenced from MDX (for example `/assets/screenshot.png`) |
+
+[docs.page](https://docs.page) reads these files from your public GitHub repository on the default branch (or a pinned ref for previews). The CLI (`init`, `preview`, `check`) expects the same layout on your machine.
+
+Run [`docs init`](/concepts/cli/init) to scaffold this structure, or create the files manually if you prefer.
+
+## How it works
+
+### Configuration at the repository root
+
+`docs.json` is the primary configuration file. It lives next to your `docs/` directory, not inside it.
+
+You can use `docs.yaml` instead when your team prefers YAML. The platform and CLI accept either file, but not both as active configuration — pick one format for the project.
+
+The file controls what surrounds your pages: site name, theme, sidebar groups, tabs, analytics, and more. It does **not** create pages by itself. Each sidebar `href` must point at a URL that resolves to an `.mdx` file under `docs/`. You can reorder navigation without renaming files, but moving or renaming a page updates both the file path and any `href` values that point at it.
+
+See [Configuration](/concepts/configuration) for what each area controls conceptually, and [docs.json reference](/reference/docs-json-reference) when you need field-level lookup.
+
+### Pages under `docs/`
+
+All documentation pages are MDX files inside `docs/`. docs.page does not scan other directories for page content, and plain `.md` files are not registered as site pages.
+
+When you add a page:
+
+1. Create `docs/your-topic.mdx` (or `docs/your-topic/index.mdx` for a folder index).
+2. Add a matching `href` in `docs.json` if you want it in the sidebar.
+
+A file can exist without a sidebar entry (useful for pages you only link to from other content). A sidebar link without a matching file returns a not-found error when opened.
+
+### How file paths map to URLs
+
+Page URLs mirror paths under `docs/`, with two rules:
+
+- Strip the `docs/` prefix and `.mdx` extension.
+- Treat `index.mdx` as the URL for its folder.
+
+| File | URL path |
+| --- | --- |
+| `docs/index.mdx` | `/` |
+| `docs/next-steps.mdx` | `/next-steps` |
+| `docs/guides/setup.mdx` | `/guides/setup` |
+| `docs/guides/setup/index.mdx` | `/guides/setup` |
+
+Nested folders become nested URL segments. If both `docs/guides/setup.mdx` and `docs/guides/setup/index.mdx` exist, `index.mdx` wins for that path.
+
+Sidebar `href` values use these URL paths (for example `"/guides/setup"`), not repository file paths. Internal links in MDX use the same URL style.
+
+On the live site, paths are served under your repository URL:
+
+```
+https://docs.page/{owner}/{repo}/{url-path}
+```
+
+For example, `docs/usage.mdx` in `acme/handbook` is `https://docs.page/acme/handbook/usage`. Branch and pull request previews add a `~ref` segment to the repository part of the URL — see [GitHub hosting](/concepts/github-hosting) and [Previews](/concepts/previews).
+
+### Repo-relative assets
+
+Images and other static files can live anywhere under `docs/`. Reference them with a root-relative path from the `docs/` directory:
+
+```mdx
+<Image src="/assets/screenshot.png" alt="Dashboard overview" />
+```
+
+If the file is `docs/assets/screenshot.png`, use `/assets/screenshot.png` as the `src`. External `https://` URLs are passed through unchanged.
+
+The CLI `check` command validates that referenced assets exist on disk. See [Content pages](/concepts/content-pages) for frontmatter, links, and asset conventions.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Initialize a project" icon="folder-plus" href="/concepts/cli/init">
+    Scaffold `docs.json` and starter pages with the CLI.
+  </Card>
+  <Card title="Configuration" icon="sliders" href="/concepts/configuration">
+    What `docs.json` controls across your site.
+  </Card>
+  <Card title="Content pages" icon="file-lines" href="/concepts/content-pages">
+    Frontmatter, internal links, and assets in MDX.
+  </Card>
+  <Card title="GitHub hosting" icon="github" href="/concepts/github-hosting">
+    How pushes to a public repository become a live site.
+  </Card>
+</CardGroup>

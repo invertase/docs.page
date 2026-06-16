@@ -14,7 +14,7 @@ title: $CONCRETE_OUTCOME
 description: $FINISHED_OUTCOME
 ---
 
-$OPENING_SENTENCE
+$SCOPE_AND_SETUP
 
 ## Prerequisites
 
@@ -44,6 +44,8 @@ $OPENING_SENTENCE
 - $EXPLANATION_LINK
 ```
 
+**Opening paragraph (`$SCOPE_AND_SETUP`):** What the reader will do in *this* guide and any sandbox constraints — not a restatement of `$FINISHED_OUTCOME`. Example: *"In this guide you create a preview project and publish it to a test branch."*
+
 **Forbidden in tutorials:** API reference tables, long concept sections, "alternatively" branches, production hardening.
 
 ---
@@ -58,7 +60,7 @@ title: $HOW_TO_TITLE
 description: $PROBLEM_OUTCOME
 ---
 
-$PROBLEM_STATEMENT
+$WORKFLOW_CONTEXT
 
 ## Before you begin
 
@@ -91,6 +93,8 @@ $VERIFY_INSTRUCTION
 - $REFERENCE_LINK_FULL
 ```
 
+**Opening paragraph (`$WORKFLOW_CONTEXT`):** Optional. When present: where this task fits in the reader's workflow, scope boundaries, or a constraint — **not** a restatement of `$PROBLEM_OUTCOME`. Example: *"After local preview looks right, run check in CI before you merge."* When absent: start directly at `## Before you begin`.
+
 **Optional:** Use `<Steps>` instead of ordered list when steps are long or include screenshots.
 
 ---
@@ -105,7 +109,7 @@ title: $SURFACE_NAME
 description: $REFERENCE_DESCRIPTION
 ---
 
-$AUSTERE_INTRO
+$SYNTAX_POINTER
 
 ## $GROUP_NAME
 
@@ -150,7 +154,7 @@ $AUSTERE_INTRO
 | Token | Voice |
 | --- | --- |
 | `$REFERENCE_DESCRIPTION` | Reader benefit: when/why to use this surface — imperative or *you*-focused (*"Organize content into switchable panels for options, platforms, or languages"*). Not a prop list or inventory summary. |
-| `$AUSTERE_INTRO` | Brief usage pointer in the body; lead with outcome, then syntax. Austere means no fluff, not catalog voice. |
+| `$SYNTAX_POINTER` | Optional. When present: syntax anchor or where values live (*"Set fields under the `theme` key in `docs.json`."*) — **not** a restatement of `$REFERENCE_DESCRIPTION`. When absent: start directly at the first `##` group. |
 
 ---
 
@@ -182,10 +186,6 @@ $SUBCONCEPT_A_BODY
 
 $SUBCONCEPT_B_BODY
 
-## Design tradeoffs
-
-$TRADEOFFS
-
 ## Related
 
 - $TUTORIAL_LINK
@@ -193,7 +193,11 @@ $TRADEOFFS
 - $HOWTO_LINK
 ```
 
-**Forbidden in explanation:** Step-by-step setup (link to Tutorial/How-To), exhaustive field lists (link to Reference).
+**Opening paragraph (`$HOOK`):** A question, tension, or scenario that pulls the reader in — **not** a restatement of `$UNDERSTANDING_GAINED`.
+
+**Structure:** Hook → Overview → How it works → Related. Do **not** add a standalone `## Design tradeoffs` section by default. When rationale or consequences matter, weave them into `## How it works` (or a named subsection there) — keep the page focused on the mental model the outline asks for.
+
+**Forbidden in explanation:** Step-by-step setup (link to Tutorial/How-To), exhaustive field lists (link to Reference), boilerplate tradeoffs sections that repeat Introduction or comparison pages.
 
 ---
 
@@ -205,15 +209,37 @@ $TRADEOFFS
 | `description` | yes | &lt; 160 chars where possible. **Reader benefit:** when/why to open this page. Imperative or *you*-focused. Not a feature inventory, prop list, or inventory `summary` paraphrase. |
 | `image` | no | Rare; use for high-traffic landing pages only |
 
-**Description vs body intro** — applies to every doc type, especially Reference:
+## Description vs opening paragraph
 
-- **`description`** — discoverability: why would a reader open this page?
-- **Opening paragraph** — how to start; can mention syntax but should still lead with outcome
-- If both say the same thing, shorten and sharpen the `description`; keep procedural detail in the body
+These fields answer **different questions**. Never paraphrase the opening from `description` or vice versa.
+
+| Field | Question it answers | Where it appears |
+| --- | --- | --- |
+| `description` | Why would I open this page? | Frontmatter — search, nav, social previews |
+| Opening paragraph | What is my entry point on this page? | First body content before the first `##` |
+
+### Role split by doc type
+
+| Doc type | `description` | Opening paragraph |
+| --- | --- | --- |
+| Tutorial | Outcome when finished (`$FINISHED_OUTCOME`) | Scope and setup (`$SCOPE_AND_SETUP`) — what happens *in this guide* |
+| How-To | Problem solved (`$PROBLEM_OUTCOME`) | Workflow context (`$WORKFLOW_CONTEXT`) — **optional**; omit if `## Before you begin` suffices |
+| Reference | When/why to use this surface (`$REFERENCE_DESCRIPTION`) | Syntax pointer (`$SYNTAX_POINTER`) — **optional**; omit if the first `##` group is self-explanatory |
+| Explanation | Insight gained (`$UNDERSTANDING_GAINED`) | Hook (`$HOOK`) — scenario or question, not the insight restated |
+
+### Duplication test
+
+Before delivering, read `description` and the opening paragraph aloud. **Fail** if they:
+
+- Share the same leading verb or command (e.g. both start with "Run `docs check`…")
+- Restate the same outcome in different words
+- Could be merged into one sentence without losing information
+
+**Fix:** Keep `description` as the benefit. Rewrite or **delete** the opening paragraph.
 
 **Description tokens by doc type:**
 
-| Doc type | `$TOKEN` | Aim |
+| Doc type | Frontmatter token | Aim |
 | --- | --- | --- |
 | Tutorial | `$FINISHED_OUTCOME` | What the reader will have done when finished |
 | How-To | `$PROBLEM_OUTCOME` | The problem solved or result achieved |
@@ -224,9 +250,4 @@ $TRADEOFFS
 
 ## Choosing components
 
-| Doc type | Preferred components |
-| --- | --- |
-| Tutorial | `<Steps>`, `<Info>` for prerequisites |
-| How-To | `<Steps>` or ordered lists, `<Warning>` |
-| Reference | `<Property>`, `<Accordion>`, tables |
-| Explanation | Prose, `<Cards>` for related links, mermaid only if user/project uses it |
+Component selection and published references: [components.md](components.md).

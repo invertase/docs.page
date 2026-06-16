@@ -1,6 +1,85 @@
 ---
 title: GitHub hosting
-description: How docs.page serves documentation from a public GitHub repository.
+description: Understand how your default branch becomes production, how live URLs are formed, and which repositories docs.page can host.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+When someone opens `https://docs.page/acme/handbook`, the HTML they see is not a static export sitting on a CDN bucket. docs.page fetches your public GitHub repository, bundles the matching MDX page, and returns a rendered site from the files you committed.
+
+## Overview
+
+GitHub is the source of truth for a hosted docs.page site. Configuration lives in `docs.json` (or `docs.yaml`) at the repository root; page content lives under `docs/**/*.mdx`. docs.page does not clone your repo into a dashboard or run a separate deploy pipeline — it fetches those files from GitHub and renders them at request time.
+
+That model is **push-to-publish**: merge or push to your default branch and the live site reflects those commits. There is no build artifact to upload and no hosting project to configure beyond making the repository public and adding the required files.
+
+See [Project structure](/concepts/project-structure) for the file layout and how paths under `docs/` map to URL segments.
+
+## How it works
+
+### Production is your default branch
+
+URLs without a ref segment serve content from the repository's **default branch** — usually `main`, but whatever GitHub reports as the default for that repo.
+
+```
+https://docs.page/{owner}/{repo}
+https://docs.page/{owner}/{repo}/{page-path}
+```
+
+For example, `https://github.com/acme/handbook` with default branch `main` is served at `https://docs.page/acme/handbook`. A page at `docs/usage.mdx` is `https://docs.page/acme/handbook/usage`.
+
+docs.page resolves the default branch through the GitHub API on each bundle request. You do not configure a production branch name in `docs.json`. Renaming the default branch on GitHub updates what the canonical URL serves — there is no separate promote-to-production step.
+
+### What happens when someone visits a URL
+
+On each page request, docs.page:
+
+1. Parses the URL into owner, repository, optional ref, and page path
+2. Fetches `docs.json` (or `docs.yaml`) and the target `.mdx` file from GitHub at the resolved ref
+3. Validates configuration, bundles MDX, and returns the rendered page
+
+Responses are cached at the edge for a short period (on the order of one minute), so a push may take a moment to appear everywhere. There is no manual "publish" button — visibility follows Git.
+
+### Public repositories only
+
+docs.page only hosts **public** GitHub repositories. If the repository is private, the platform returns a `403` error before any content is bundled or served.
+
+<Info>
+  Keep documentation in a public repository, or in a dedicated public docs repo linked from your project. docs.page cannot serve private repos, even with a GitHub token on your side.
+</Info>
+
+If you need access-controlled documentation, use a self-hosted static generator or a custom app with your own auth layer.
+
+### Non-production refs
+
+To serve a branch, commit, or pull request before it merges, add a `~ref` segment after the repository name:
+
+```
+https://docs.page/{owner}/{repo}~{ref}
+https://docs.page/{owner}/{repo}~{ref}/{page-path}
+```
+
+Examples:
+
+| URL segment | Resolves to |
+| --- | --- |
+| `~feature-docs` | Branch `feature-docs` |
+| `~abc123…` (40-character SHA) | That commit |
+| `~42` | Pull request #42 head branch |
+
+Production URLs omit the `~ref` segment entirely. See [Previews](/concepts/previews) for when to use local CLI preview versus shareable ref URLs.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Publish your first site" icon="rocket" href="/publish-your-first-site">
+    Scaffold files, push to a public repo, and open your live URL.
+  </Card>
+  <Card title="Project structure" icon="folder-tree" href="/concepts/project-structure">
+    Required files, assets, and how `docs/` paths become URLs.
+  </Card>
+  <Card title="Previews" icon="eye" href="/concepts/previews">
+    Local CLI preview versus shareable branch and pull request URLs.
+  </Card>
+  <Card title="Introduction" icon="book-open" href="/">
+    High-level overview of docs.page hosting and agent-ready surfaces.
+  </Card>
+</CardGroup>

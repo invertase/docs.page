@@ -20,7 +20,7 @@ Run this checklist **after** drafting, **before** delivering files. Fix every fa
 | Tutorial | No `<Property>` tables, no exhaustive flag lists |
 | Reference | No `<Steps>`, no "you will learn" |
 | How-To | Problem stated up front; no architecture essays |
-| Explanation | No numbered install steps; links out for procedures |
+| Explanation | No numbered install steps; links out for procedures; no standalone `## Design tradeoffs` unless outline requires it |
 
 ---
 
@@ -61,7 +61,10 @@ Use **international English** (American spelling and conventions), not British E
 | --- | --- |
 | Reader benefit | `description` answers *why open this page?* — imperative or *you*-focused; not a feature/prop inventory |
 | Not inventory copy | Does not copy or lightly paraphrase inventory `summary` or outline technical purpose |
-| Distinct from intro | If opening paragraph and `description` overlap, `description` is shorter and more benefit-focused |
+| Distinct from intro | Opening paragraph adds **different** information — scope, workflow position, syntax anchor, or hook. **Fail** if it restates `description` or shares the same leading verb/command |
+| Optional intro honored | How-to and reference pages omit the opening paragraph when the first `##` section already orients the reader |
+
+- [ ] Read `description` and opening paragraph together — rewrite or delete the opening if they fail the duplication test in [templates.md](templates.md#duplication-test)
 
 ---
 
@@ -91,6 +94,13 @@ Remove or rewrite on sight:
 - [ ] `description` passes **Description voice** checks above (not "Learn about X", not a catalog of capabilities)
 - [ ] Fenced code blocks have language tags (`bash`, `json`, `tsx`)
 - [ ] MDX components closed properly (`<Steps>`, `<Property>`)
+
+### Component accuracy
+
+- [ ] Every MDX component used appears in the published index ([use.docs.page/components](https://use.docs.page/components))
+- [ ] Syntax matches the published page (child element names, required props)
+- [ ] No `<Callout>`, `<Cards>`, or other invented component names
+- [ ] Diátaxis component limits still pass (see **Diátaxis purity** above)
 - [ ] Images use project asset paths; alt text or descriptive captions where shown
 - [ ] Internal links use root-relative paths (`/configuration`, not full URLs)
 - [ ] External links fully qualified `https://`
@@ -149,3 +159,49 @@ Remove or rewrite on sight:
 **Before (vague description):** Learn about the Tabs component.
 
 **After (reader description):** Organize related content into switchable panels readers can flip between.
+
+---
+
+**Before (duplicated intro — how-to):**
+
+```yaml
+description: Run docs check before you push to catch broken links, missing assets, and unreachable external URLs.
+```
+
+Run `docs check` after local preview looks right and before you push. The command scans your pages for link and asset problems.
+
+**After:**
+
+```yaml
+description: Run docs check before you push to catch broken links, missing assets, and unreachable external URLs.
+```
+
+## Before you begin
+
+- A docs.page project with `docs.json` and page files under `docs/`
+```
+
+Opening paragraph deleted — `## Before you begin` carries the entry point. Alternative: keep one sentence of **workflow context only**: *"Run this after preview and before you open a pull request."*
+
+---
+
+**Before (duplicated intro — reference):**
+
+```yaml
+description: Configure sidebar navigation groups and page links in docs.json.
+```
+
+Use the `sidebar` property in `docs.json` to configure sidebar navigation groups and page links.
+
+**After:**
+
+```yaml
+description: Configure sidebar navigation groups and page links in docs.json.
+```
+
+## sidebar
+
+<Property name="sidebar" type="array" required>
+```
+
+Opening paragraph deleted — first section is self-explanatory. Alternative syntax pointer: *"Each group is an object in the top-level `sidebar` array."*
