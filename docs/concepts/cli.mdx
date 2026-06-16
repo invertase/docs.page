@@ -34,25 +34,7 @@ npx @docs.page/cli check
 - [Check documentation](/concepts/cli/check) — link and asset checks before push or in CI
 - [Manage the AI agent](/concepts/cli/agent) — provision the in-docs chat panel
 
-## How it works
-
-### `docs init`
-
-`init` scaffolds the files docs.page expects. See [Initialize a project](/concepts/cli/init) for flags, overwrite behavior, and scripting in CI.
-
-### `docs preview`
-
-`preview` starts a local WebSocket server, renders your pages with the production pipeline, and streams results to `docs.page/preview`. See [Preview locally](/concepts/cli/preview) for ports, browser options, and limitations.
-
-### `docs check`
-
-`check` scans your project for broken internal links, missing assets, and unreachable external URLs. Each category uses severity `off`, `warn`, or `error`. The command exits with code `1` when any `error`-level issue is found. See [Check documentation](/concepts/cli/check) for CI setup and severity flags.
-
-### `docs agent`
-
-The `agent` command registers or removes in-docs chat credentials for a GitHub repository after verifying admin access. See [Manage the AI agent](/concepts/cli/agent) for create, delete, and `docs.json` configuration.
-
-### Global options
+## Global options
 
 Agent commands call the docs.page API. Set the API base URL with a global flag or environment variable:
 

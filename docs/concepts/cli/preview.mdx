@@ -14,32 +14,35 @@ For how local preview fits alongside branch and pull request previews, see [Prev
 
 ## Steps
 
-1. **Open a terminal at your project root** — the directory that contains `docs.json`.
+<Steps>
+  <Step title="Open a terminal at your project root">
+    Use the directory that contains `docs.json`.
+  </Step>
+  <Step title="Start the preview server">
+    ```bash
+    npx @docs.page/cli preview
+    ```
 
-2. **Start the preview server.**
+    The CLI starts a local WebSocket server, prints the socket URL, and opens your browser to a preview URL shaped like:
 
-   ```bash
-   npx @docs.page/cli preview
-   ```
+    ```
+    https://docs.page/preview?url=ws://localhost:57250
+    ```
 
-   The CLI starts a local WebSocket server, prints the socket URL, and opens your browser to a preview URL shaped like:
+    The browser loads the production preview shell while file reads and bundling stay on localhost.
+  </Step>
+  <Step title="Edit and save">
+    Change any watched file under `docs/` or update `docs.json`. The preview reloads without a Git push.
+  </Step>
+  <Step title="Customize port or browser behavior when needed">
+    ```bash
+    npx @docs.page/cli preview --port 4000
+    npx @docs.page/cli preview --no-browser
+    ```
 
-   ```
-   https://docs.page/preview?url=ws://localhost:57250
-   ```
-
-   The browser loads the production preview shell while file reads and bundling stay on localhost.
-
-3. **Edit and save.** Change any watched file under `docs/` or update `docs.json`. The preview reloads without a Git push.
-
-4. **Customize port or browser behavior when needed.**
-
-   ```bash
-   npx @docs.page/cli preview --port 4000
-   npx @docs.page/cli preview --no-browser
-   ```
-
-   Use `--no-browser` in remote development or when you want to copy the printed URL manually.
+    Use `--no-browser` in remote development or when you want to copy the printed URL manually.
+  </Step>
+</Steps>
 
 ## Verify
 

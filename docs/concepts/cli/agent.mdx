@@ -16,29 +16,35 @@ Agent commands call the docs.page API. Self-hosted or staging setups must set `-
 
 ## Create an agent
 
-1. **Run create from your project root or any directory.**
+<Warning>
+  Passing `--apikey` on the command line stores the key in your shell history. Prefer an interactive prompt (omit the flag) or set the key in a short-lived environment variable in CI. Never commit API keys to your repository.
+</Warning>
 
-   ```bash
-   npx @docs.page/cli agent create --repo org/repo --provider openai --apikey sk-...
-   ```
+<Steps>
+  <Step title="Run create from your project root or any directory">
+    ```bash
+    npx @docs.page/cli agent create --repo org/repo --provider openai --apikey sk-...
+    ```
 
-   Omit flags in an interactive terminal to be prompted for the repository, provider, and API key.
+    Omit flags in an interactive terminal to be prompted for the repository, provider, and API key.
+  </Step>
+  <Step title="Copy the agent key into docs.json">
+    On success, the CLI prints an `agent.key` value to add to your repository:
 
-2. **Copy the agent key into `docs.json`.** On success, the CLI prints an `agent.key` value to add to your repository:
+    ```json
+    "agent": {
+      "key": "your-agent-key"
+    }
+    ```
 
-   ```json
-   "agent": {
-     "key": "your-agent-key"
-   }
-   ```
-
-   Commit and push `docs.json` so the live site enables the reader-facing panel.
-
-3. **Overwrite an existing agent when rotating keys.**
-
-   ```bash
-   npx @docs.page/cli agent create --repo org/repo --provider anthropic --apikey sk-ant-... --force
-   ```
+    Commit and push `docs.json` so the live site enables the reader-facing panel.
+  </Step>
+  <Step title="Overwrite an existing agent when rotating keys">
+    ```bash
+    npx @docs.page/cli agent create --repo org/repo --provider anthropic --apikey sk-ant-... --force
+    ```
+  </Step>
+</Steps>
 
 Supported providers: `openai`, `anthropic`, `google`, `xai`.
 
