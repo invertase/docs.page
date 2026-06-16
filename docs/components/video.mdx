@@ -26,7 +26,7 @@ Host MP4 files in your repository and link to the raw file URL, or upload them t
 The sample below uses a public demo file. Replace `src` with your own hosted video URL in production docs.
 
 <Video
-  src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+  src="https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4"
   type="video/mp4"
 />
 
@@ -76,12 +76,12 @@ Set `type` to the video MIME type when you know it—for example, `video/mp4` or
 
 | Condition | Result |
 | --- | --- |
-| `src` set | Renders an HTML5 `<video>` with one `<source>` child |
+| `src` set | Renders an HTML5 `<video>` with one `<source>` child and playback controls |
 | `src` omitted or empty | Renders nothing |
 | `type` set | Passed to the `<source>` element's `type` attribute |
 | `type` omitted | `<source>` has no `type` attribute; browser infers format where possible |
 
-The component applies default layout styles: full width, 16:9 aspect ratio, and rounded corners. It does not accept `muted`, `autoPlay`, `controls`, `loop`, or other native `<video>` attributes—only `src` and `type` are implemented.
+The component applies default layout styles: full width, 16:9 aspect ratio, and rounded corners. Native playback controls are always enabled. It does not accept `muted`, `autoPlay`, `loop`, or other native `<video>` attributes—only `src` and `type` are implemented.
 
 <Info>
   `<Video>` does not add captions or subtitles. For accessible video, host a file that includes captions where possible, or link out to a platform player that supports them.
