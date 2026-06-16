@@ -3,4 +3,93 @@ title: Video
 description: Self-hosted or generic embedded video.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+Use `<Video>` to embed a self-hosted or generic video file in your documentation. The component renders a native HTML5 `<video>` element with a single `<source>` child. Pass a publicly accessible URL to an MP4, WebM, or other supported format.
+
+For YouTube or Vimeo, use [`<YouTube>`](/components/youtube) or [`<Vimeo>`](/components/vimeo) instead.
+
+```mdx
+<Video src="https://cdn.example.com/demo.mp4" type="video/mp4" />
+```
+
+## Video sources
+
+Pass a full `https` URL to a file you host—on your own CDN, object storage, or any public address the reader's browser can fetch. Unlike [`<Image>`](/components/image), `<Video>` does not resolve repo-relative paths from `/docs`; the `src` value is used as-is on the `<source>` element.
+
+Host MP4 files in your repository and link to the raw file URL, or upload them to your own hosting and use that address in `src`.
+
+```mdx
+<Video src="https://cdn.example.com/guides/install.mp4" type="video/mp4" />
+```
+
+## Example
+
+The sample below uses a public demo file. Replace `src` with your own hosted video URL in production docs.
+
+<Video
+  src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+  type="video/mp4"
+/>
+
+````mdx
+<Video
+  src="https://cdn.example.com/demo.mp4"
+  type="video/mp4"
+/>
+````
+
+## MIME type
+
+Set `type` to the video MIME type when you know it—for example, `video/mp4` or `video/webm`. This helps the browser select the correct source. When omitted, the browser infers the format from the URL or file extension where possible.
+
+```mdx
+<Video src="https://cdn.example.com/clip.webm" type="video/webm" />
+```
+
+## Props
+
+| Prop | Type | Required | Description |
+| --- | --- | --- | --- |
+| `src` | `string` | Yes | Public URL of the video file |
+| `type` | `string` | No | MIME type for the source, such as `video/mp4` |
+
+<Property name="src" type="string" required>
+  The video file URL passed to the `<source>` element. Must be a full `http` or `https` address that readers can load in the browser.
+
+  When `src` is omitted or empty, the component renders nothing.
+
+  ```mdx
+  <Video src="https://cdn.example.com/walkthrough.mp4" type="video/mp4" />
+  ```
+</Property>
+
+---
+
+<Property name="type" type="string" optional>
+  Optional MIME type for the video source—for example, `video/mp4`, `video/webm`, or `video/ogg`.
+
+  ```mdx
+  <Video src="https://cdn.example.com/clip.mp4" type="video/mp4" />
+  ```
+</Property>
+
+## Behaviour
+
+| Condition | Result |
+| --- | --- |
+| `src` set | Renders an HTML5 `<video>` with one `<source>` child |
+| `src` omitted or empty | Renders nothing |
+| `type` set | Passed to the `<source>` element's `type` attribute |
+| `type` omitted | `<source>` has no `type` attribute; browser infers format where possible |
+
+The component applies default layout styles: full width, 16:9 aspect ratio, and rounded corners. It does not accept `muted`, `autoPlay`, `controls`, `loop`, or other native `<video>` attributes—only `src` and `type` are implemented.
+
+<Info>
+  `<Video>` does not add captions or subtitles. For accessible video, host a file that includes captions where possible, or link out to a platform player that supports them.
+</Info>
+
+## See also
+
+- [YouTube](/components/youtube) — embed YouTube videos by ID
+- [Vimeo](/components/vimeo) — embed Vimeo videos by ID
+- [Image](/components/image) — images with repo-relative paths and zoom
+- [Components overview](/components/index) — when to use media embeds and other MDX components
