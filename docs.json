@@ -16,6 +16,11 @@
       "href": "/"
     },
     {
+      "id": "features",
+      "title": "Features",
+      "href": "/features"
+    },
+    {
       "id": "components",
       "title": "Components",
       "href": "/components"
@@ -198,6 +203,161 @@
         {
           "title": "Track reader engagement",
           "href": "/customize/track-reader-engagement"
+        }
+      ]
+    },
+    {
+      "group": "Features",
+      "icon": "sparkles",
+      "tab": "features",
+      "pages": [
+        {
+          "title": "Overview",
+          "href": "/features"
+        }
+      ]
+    },
+    {
+      "group": "Publish",
+      "tab": "features",
+      "pages": [
+        {
+          "title": "Public GitHub hosting",
+          "href": "/features/github-hosting"
+        },
+        {
+          "title": "Components",
+          "href": "/features/components"
+        },
+        {
+          "title": "Local preview",
+          "href": "/features/local-preview"
+        },
+        {
+          "title": "Branch preview",
+          "href": "/features/branch-preview"
+        },
+        {
+          "title": "CLI",
+          "href": "/features/cli"
+        }
+      ]
+    },
+    {
+      "group": "Organize",
+      "tab": "features",
+      "pages": [
+        {
+          "title": "Sidebar",
+          "href": "/features/sidebar"
+        },
+        {
+          "title": "Tabs",
+          "href": "/features/navigation-tabs"
+        },
+        {
+          "title": "Links",
+          "href": "/features/navigation-links"
+        },
+        {
+          "title": "Locales",
+          "href": "/features/locales"
+        },
+        {
+          "title": "Redirects",
+          "href": "/features/redirects"
+        },
+        {
+          "title": "Search",
+          "href": "/features/search"
+        }
+      ]
+    },
+    {
+      "group": "Customize",
+      "tab": "features",
+      "pages": [
+        {
+          "title": "Theme",
+          "href": "/features/theme"
+        },
+        {
+          "title": "Logo",
+          "href": "/features/logo"
+        },
+        {
+          "title": "Header",
+          "href": "/features/header"
+        },
+        {
+          "title": "Social links",
+          "href": "/features/social-links"
+        },
+        {
+          "title": "Vanity subdomains",
+          "href": "/features/vanity-subdomains"
+        },
+        {
+          "title": "Custom domains",
+          "href": "/features/custom-domains"
+        }
+      ]
+    },
+    {
+      "group": "Configure",
+      "tab": "features",
+      "pages": [
+        {
+          "title": "Global variables",
+          "href": "/features/global-variables"
+        },
+        {
+          "title": "Table of contents",
+          "href": "/features/table-of-contents"
+        },
+        {
+          "title": "Previous and next links",
+          "href": "/features/navigation-buttons"
+        },
+        {
+          "title": "Search engine indexing",
+          "href": "/features/search-engine-indexing"
+        }
+      ]
+    },
+    {
+      "group": "AI",
+      "tab": "features",
+      "pages": [
+        {
+          "title": "llms.txt",
+          "href": "/features/llms-txt"
+        },
+        {
+          "title": "MCP server",
+          "href": "/features/mcp-server"
+        },
+        {
+          "title": "Agent skills",
+          "href": "/features/agent-skills"
+        },
+        {
+          "title": "Ask AI",
+          "href": "/features/ask-ai"
+        }
+      ]
+    },
+    {
+      "group": "Integrate",
+      "tab": "features",
+      "pages": [
+        {
+          "title": "Analytics",
+          "href": "/features/analytics"
+        },
+        {
+          "title": "GitHub App",
+          "href": "/features/github-app"
         }
       ]
     },
