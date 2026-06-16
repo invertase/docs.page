@@ -3,4 +3,182 @@ title: Icon
 description: Icons for inline emphasis and navigation cues.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+Use `<Icon>` to render [Font Awesome](https://fontawesome.com/icons) icons in MDX. Pass the icon slug as `name` without the `fa-` prefix—for example, `user` for a person icon or `github` for the GitHub brand mark.
+
+Icons inherit the parent font size by default. Set `size` to control the pixel size, or pass standard `<i>` attributes such as `className` and `style` for colour and layout.
+
+```mdx
+<Icon name="user" size={40} style={{ color: 'red' }} />
+```
+
+## Basic example
+
+<Icon name="user" size={40} style={{ color: 'red' }} />
+
+````mdx
+<Icon name="user" size={40} style={{ color: 'red' }} />
+````
+
+## Finding icon names
+
+Browse the [Font Awesome icon library](https://fontawesome.com/icons) and copy the icon slug from the icon page. Use the slug without the `fa-` prefix.
+
+| On Font Awesome | In MDX |
+| --- | --- |
+| `fa-user` | `name="user"` |
+| `fa-book` | `name="book"` |
+| `fa-github` | `name="github"` |
+
+<Info>
+  docs.page ships Font Awesome solid and brand styles. Regular (`fa-regular`) and light (`fa-light`) variants are not available.
+</Info>
+
+## Inline in prose
+
+Place `<Icon>` inside a sentence for emphasis or visual cues. Omit `size` to match surrounding text.
+
+Add a <Icon name="star" className="text-amber-500" /> to your favourites, or open <Icon name="folder-open" /> from the sidebar.
+
+````mdx
+Add a <Icon name="star" className="text-amber-500" /> to your favourites, or open <Icon name="folder-open" /> from the sidebar.
+````
+
+## Size and colour
+
+Set `size` in pixels. Pass `style` or `className` for colour and spacing.
+
+<Icon name="circle-check" size={16} className="text-green-600" /> Small confirmation
+
+<Icon name="circle-check" size={24} className="text-green-600" /> Medium confirmation
+
+<Icon name="circle-check" size={32} className="text-green-600" /> Large confirmation
+
+````mdx
+<Icon name="circle-check" size={16} className="text-green-600" />
+<Icon name="circle-check" size={24} className="text-green-600" />
+<Icon name="circle-check" size={32} className="text-green-600" />
+````
+
+## Brand icons
+
+Brand icons—GitHub, npm, Docker, and similar—use the `fa-brands` style automatically. Pass the brand slug as `name`; docs.page detects brands from the bundled icon set.
+
+<CardGroup cols={3}>
+  <Card title="GitHub" icon="github">
+    Source control and CI workflows.
+  </Card>
+  <Card title="npm" icon="npm">
+    Package installation and publishing.
+  </Card>
+  <Card title="Docker" icon="docker">
+    Container images and local development.
+  </Card>
+</CardGroup>
+
+````mdx
+<Icon name="github" size={20} />
+<Icon name="npm" size={20} />
+<Icon name="docker" size={20} />
+````
+
+## In cards
+
+The `<Card>` component accepts an `icon` prop that renders a header icon using the same slug format. See [Card](/components/card) for layout options.
+
+<Card title="API reference" icon="code">
+  Browse endpoints, request bodies, and response schemas.
+</Card>
+
+````mdx
+<Card title="API reference" icon="code">
+  Browse endpoints, request bodies, and response schemas.
+</Card>
+````
+
+## In steps
+
+Use the `icon` prop on `<Step>` to replace the default step number with a custom icon. Useful when a procedure step has a clear visual association.
+
+<Steps>
+  <Step title="Install dependencies" icon="download">
+    Run the install command for your package manager:
+
+    ```bash
+    npm install
+    ```
+  </Step>
+  <Step title="Configure the project" icon="cog">
+    Add your API key to the environment file.
+  </Step>
+  <Step title="Deploy" icon="rocket">
+    Push to your default branch to publish.
+  </Step>
+</Steps>
+
+````mdx
+<Steps>
+  <Step title="Install dependencies" icon="download">
+    Run the install command for your package manager.
+  </Step>
+  <Step title="Configure the project" icon="cog">
+    Add your API key to the environment file.
+  </Step>
+  <Step title="Deploy" icon="rocket">
+    Push to your default branch to publish.
+  </Step>
+</Steps>
+````
+
+## Props
+
+| Prop | Type | Required | Description |
+| --- | --- | --- | --- |
+| `name` | `string` | Yes | Font Awesome icon slug without the `fa-` prefix |
+| `size` | `number` | No | Icon size in pixels; defaults to the parent font size |
+
+<Property name="name" type="string" required>
+  The Font Awesome icon slug. Pass the name from [fontawesome.com/icons](https://fontawesome.com/icons) without the `fa-` prefix—for example, `user`, `book`, or `github`.
+
+  Brand slugs such as `github` and `npm` automatically use the brands style (`fa-brands`). All other slugs use the solid style (`fa-solid`).
+</Property>
+
+---
+
+<Property name="size" type="number" optional>
+  The icon size in pixels. When omitted, the icon inherits the parent element's font size.
+
+  ```mdx
+  <Icon name="star" size={24} />
+  ```
+</Property>
+
+## Additional attributes
+
+`<Icon>` renders a native `<i>` element. Any prop not consumed by `name` or `size` is forwarded to that element—`className`, `style`, `aria-hidden`, `title`, and others.
+
+The component always applies `fa-fw` for consistent width, plus either `fa-brands` or `fa-solid` and `fa-{name}` based on the slug.
+
+```mdx
+<Icon
+  name="triangle-exclamation"
+  className="text-amber-500 mr-1"
+  aria-hidden
+/>
+```
+
+## Behaviour
+
+| Condition | Result |
+| --- | --- |
+| `name` matches a brand slug in the icon set | Renders with `fa-brands fa-{name}` |
+| `name` is any other valid slug | Renders with `fa-solid fa-{name}` |
+| `size` omitted | Icon uses the parent font size |
+| `size` set | `font-size` is set to `{size}px` on the `<i>` element |
+| `style` passed | Merged with the component's inline styles; your values override on conflict |
+
+## See also
+
+- [Card](/components/card) — `icon` prop on card headers
+- [Steps](/components/steps) — `icon` prop on individual steps
+- [Components overview](/components/index) — when to use icons, cards, and callouts
+- [Reference template](/templates/reference) — structure for lookup pages like this one
