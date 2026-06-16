@@ -65,6 +65,57 @@
       ]
     },
     {
+      "group": "Core concepts",
+      "icon": "layer-group",
+      "tab": "docs",
+      "pages": [
+        {
+          "title": "Project structure",
+          "href": "/concepts/project-structure"
+        },
+        {
+          "title": "GitHub hosting",
+          "href": "/concepts/github-hosting"
+        },
+        {
+          "title": "Content pages",
+          "href": "/concepts/content-pages"
+        },
+        {
+          "title": "Configuration",
+          "href": "/concepts/configuration"
+        },
+        {
+          "title": "Navigation",
+          "href": "/concepts/navigation"
+        },
+        {
+          "title": "CLI",
+          "href": "/concepts/cli"
+        },
+        {
+          "title": "Previews",
+          "href": "/concepts/previews"
+        },
+        {
+          "title": "Search",
+          "href": "/concepts/search"
+        },
+        {
+          "title": "Locales",
+          "href": "/concepts/locales"
+        },
+        {
+          "title": "Redirects",
+          "href": "/concepts/redirects"
+        },
+        {
+          "title": "Variables",
+          "href": "/concepts/variables"
+        }
+      ]
+    },
+    {
       "group": "Authoring content",
       "icon": "pen-to-square",
       "tab": "docs",
