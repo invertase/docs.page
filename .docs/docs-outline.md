@@ -1,7 +1,7 @@
 ---
-version: "1.6.0"
-updatedAt: 2026-06-12
-status: approved
+version: "2.0.0"
+updatedAt: 2026-06-16
+status: pending-review
 ---
 
 # Documentation outline
@@ -10,7 +10,14 @@ status: approved
 
 This outline serves **contributors** — developers who publish and maintain documentation for their users (product teams, open-source maintainers, SDK authors). Secondary readers include **end-users** who consume published docs and **integrators** who wire docs.page into agents and tooling.
 
-The mental model to build: **docs.page is docs-as-code with no hosting setup**. You add a `docs.json` and pages to a public GitHub repo; docs.page serves them instantly at a live URL. The same site is readable by humans and discoverable by agents via llms.txt, MCP, and AI chat — without a separate build pipeline, dashboard, or paid tier. Configuration lives in Git; previews come from branch/PR refs; customization is declarative.
+The mental model to build: **docs.page is docs-as-code with no hosting setup**. You add a `docs.json` and pages to a public GitHub repo; docs.page serves them instantly at a live URL. The same site is readable by humans and discoverable by agents via llms.txt, MCP, and AI chat — without a separate build pipeline, dashboard, or paid tier. Configuration lives in Git; customization is declarative.
+
+**Two-layer documentation model:**
+
+1. **Core concepts** — bottom-up explanations of how docs.page works. Author these first; each page stands alone. Some pages are **temporary homes** for content that may later fold into Authoring, Customize, or Reference once workflow pages are written.
+2. **Authoring content** — workflow-oriented how-tos that cherry-pick from Core concepts. Thin on mechanics, rich on *when* and *in what order*.
+
+**Contributor loop (composed in Authoring, explained in Core concepts):** `docs init` → write and organize → **`docs preview`** (local iteration) → **`docs check`** (sub-step before push, still under Previews) → push → shareable `~ref` preview → merge to main → maintain.
 
 ---
 
@@ -24,11 +31,11 @@ Mintlify is the closest equivalent: MDX content, a root `docs.json` config file,
 | --- | --- | --- |
 | **Get started** (Introduction, Quickstart) | Short orient + hands-on first publish | **Getting Started** with nested **Templates** subgroup after Publish your first site |
 | **Create** (Format text, code, images, redirects) | Writing-oriented how-tos, not "MDX" framing | **Write documentation** and related authoring pages use content-writing language; MDX is implementation detail in prose |
-| **Organize** (Navigation, pages, settings) | Split across many config pages | Navigation covered in authoring workflow; field lookup deferred to **docs.json reference** |
+| **Organize** (Navigation, pages, settings) | Split across many config pages | **Core concepts → Navigation** for the model; **Organize your navigation** (Authoring) for workflow; field lookup in **docs.json reference** |
 | **Components** | Dedicated top-level section with overview + per-component pages | **Match:** standalone **Components** section, separate from config/API reference |
 | **Customize** (Themes, custom domain, fonts) | Appearance goals | Reframe as user goals: branding, domain, SEO, analytics — not one page per config key |
 | **Deploy** (GitHub, previews, monorepo) | Heavy infra section | Fold preview/review into authoring workflow pages; no deploy dashboard docs |
-| **CLI** | Dedicated CLI section | **CLI reference** in Reference section only |
+| **CLI** | Dedicated CLI section | **Core concepts** explains what the CLI does; **CLI reference** holds flag lookup |
 | **Editor** (web WYSIWYG) | Major differentiator | **Omit** — note in product comparisons |
 | **AI-native / Assistant / Agent** | Large AI section | **AI agents** section; consumer surfaces before integrator APIs |
 | **API playground** (OpenAPI) | Entire vertical | **Omit** — note in comparisons |
@@ -56,8 +63,8 @@ Orient, achieve first publish, then pick a page layout for the kind of documenta
 
 | Page Title | Diátaxis Type | Priority | Purpose |
 | --- | --- | --- | --- |
-| Introduction | Explanation | **Must have** | Explain what docs.page is, who it is for, and the "docs for humans + agents" value proposition. Include how hosting works: public GitHub repo → `docs.json` + `docs/**/*.mdx` → live URL, public repos only, and what you do not need (build step, hosting account). |
-| Publish your first site | Tutorial | **Must have** | Walk through something they've never done before: scaffold with `docs init` or manually, push to a public repo, open the live docs.page URL, and verify the site renders. Cover expected repo layout (`docs.json`, `docs/**/*.mdx`) and how to read your site's URL patterns. |
+| Introduction | Explanation | **Must have** | Explain what docs.page is, who it is for, and the "docs for humans + agents" value proposition. Summarise hosting at a high level; link to **GitHub hosting** in Core concepts for URL patterns and public-repos-only detail. |
+| Publish your first site | Tutorial | **Must have** | Walk through first publish: `docs init` or manual scaffold, `docs preview` to verify locally, push to a public repo, open the live URL. Link to **CLI**, **Project structure**, and **GitHub hosting** in Core concepts; keep the tutorial narrative-focused. |
 
 #### Templates
 
@@ -70,25 +77,60 @@ Nested subgroup under Getting Started — immediately after first publish, when 
 | Reference template | Reference | **Should have** | Lookup-oriented layout for facts, API specs, config keys, or command syntax. Stark, literal, and dense. Sections: Syntax or blueprint, Parameters or options table, Examples. |
 | Explanation template | Explanation | **Should have** | Understanding-oriented layout for background, architecture, intent, and design decisions — answers *why*, not just *how*. Discursive and educational. Sections: The concept, How it works, Design decisions. |
 
+### Core concepts
+
+Bottom-up explanations of how docs.page works. **Write these first** — Authoring content, Getting Started tutorials, and Customize pages link here rather than re-explaining mechanics. Diátaxis type is mostly Explanation; some pages include short Reference-style tables where helpful.
+
+**Consolidation policy:** Include all Must, Should, and Could have pages below even when content may later move into Authoring, Customize, Components, or Reference. Mark temporary pages in prose with a note pointing to their eventual home; remove or redirect once the destination page owns the content.
+
+**Nav structure:** `Core concepts` → `Project structure` · `GitHub hosting` · `Content pages` · `Configuration` · `Navigation` · `CLI` · `Previews` · `Search` · `Locales` · `Redirects` · `Variables`
+
+#### Must have
+
+| Page Title | Diátaxis Type | Priority | Purpose |
+| --- | --- | --- | --- |
+| Project structure | Explanation | **Must have** | What lives in a docs.page repo: `docs.json` (or `docs.yaml`), `docs/**/*.mdx`, repo-relative assets, and how file paths map to URLs. Foundation for every other concept page. |
+| GitHub hosting | Explanation | **Must have** | How docs.page serves documentation from a public GitHub repository: default branch as production, `docs.page/owner/repo` URL patterns, push-to-publish model, and public-repos-only constraint. Introduction and **Publish your first site** link here for hosting mechanics. |
+| Content pages | Explanation | **Must have** | How a documentation page works: Markdown/MDX, frontmatter metadata, internal links, and repo-relative image paths. **Write documentation** (Authoring) cherry-picks from here; component usage links to the **Components** section. |
+| Configuration | Explanation | **Must have** | What `docs.json` controls conceptually — site identity, theme, content behaviour, scripts — without exhaustively listing every field. Sidebar and tabs are summarised here; detail in **Navigation**. Link to **docs.json reference** for lookup. |
+| CLI | Explanation | **Must have** | What `@docs.page/cli` is, how to run it (`npx`, global install), and what each command does at baseline: `init` (scaffold), `preview` (local WebSocket server + hosted `/preview` UI), `check` (link and asset linting — a quality sub-step before push, not a separate workflow stage), `agent` (provision in-docs chat). Cover `--api-url`. Link to **CLI reference** for flags and exit codes. |
+| Previews | Explanation | **Must have** | Two preview modes and when each applies: **local** (CLI watches disk, bundles MDX, streams to `docs.page/preview` over WebSocket — [PR #472](https://github.com/invertase/docs.page/pull/472)) vs **shareable** (Git ref routing via `~branch`, `~commit`, `~PR`). Where `docs check` fits: after local preview looks right, before you push. Note v1 local preview limitations (no search, sitemap, agent panel). |
+
+#### Should have
+
+| Page Title | Diátaxis Type | Priority | Purpose |
+| --- | --- | --- | --- |
+| Navigation | Explanation | **Should have** | How site navigation is modelled: sidebar groups and pages, tabs, anchors, and how they interact with locales. **Organize your navigation** (Authoring) links here. *May later fold into Configuration or Authoring once workflow page is complete.* |
+| Search | Explanation | **Should have** | How full-text search works: index built from repository MDX, `search.json` endpoint, and the command-palette UI (⌘K). *May later fold into a Customize or Reference page once those pages cover discoverability end-to-end.* |
+
+#### Could have
+
+| Page Title | Diátaxis Type | Priority | Purpose |
+| --- | --- | --- | --- |
+| Locales | Explanation | **Could have** | How multi-locale documentation is derived from sidebar locale keys and resolved from the current path. **Translate documentation** (Authoring) links here. *Temporary until Authoring owns locale workflow.* |
+| Redirects | Explanation | **Could have** | How `redirect` frontmatter resolves internal and external destinations across routing modes. **Update moved pages** (Authoring) links here. *Temporary until Authoring owns redirect workflow.* |
+| Variables | Explanation | **Could have** | How `{{ dotted.path }}` placeholders in MDX are substituted from the `variables` object in `docs.json`. *Temporary until **Variables** reference or Configuration absorbs this.* |
+
 ### Authoring content
 
-Follow the contributor workflow: write → organize → preview → maintain. Pages are ordered by what someone does after their site is live, not by product feature names.
+Workflow-oriented how-tos for contributors after first publish. **Cherry-pick from Core concepts** — keep pages focused on goals and sequence, not re-documenting CLI flags or preview architecture.
 
 **Nav structure:** `Authoring content` → `Write documentation` · `Organize your navigation` · `Previews` → … · `Maintain documentation` → …
 
 | Page Title | Diátaxis Type | Priority | Purpose |
 | --- | --- | --- | --- |
-| Write documentation | How-to | **Must have** | Help contributors write clear, useful documentation pages: structure and headings, prose and tone, links, code examples, images, and media. Frame this as content writing; mention MDX only where needed for syntax. |
-| Organize your navigation | How-to | **Must have** | Structure the sidebar so readers can find content — page order, groups, tabs, and anchors in `docs.json`. |
+| Write documentation | How-to | **Must have** | Help contributors write clear, useful pages: structure, prose, links, code, images, and media. Link to **Content pages** in Core concepts and the **Components** section; keep MDX as implementation detail. |
+| Organize your navigation | How-to | **Must have** | Structure the sidebar so readers can find content. Link to **Navigation** and **Configuration** in Core concepts; defer field lookup to **docs.json reference**. |
 
 #### Previews
 
-Nested subgroup — preview documentation before it goes live. Local for solo iteration; shareable for branch, pull request, and team review links.
+Nested subgroup — preview before publish. `docs check` is a **sub-step of Previews**, not a peer workflow stage: run it after local preview looks right, before you push for shareable preview.
 
 | Page Title | Diátaxis Type | Priority | Purpose |
 | --- | --- | --- | --- |
-| Local preview | How-to | **Must have** | Iterate on content and configuration on your machine before pushing, using the CLI and local preview flow. |
-| Shareable preview | How-to | **Must have** | Share preview links with teammates via branch or pull request URLs, and install the GitHub bot for automatic preview links. |
+| Local preview | How-to | **Must have** | Workflow for iterating with `docs preview`: run from project root, open the printed URL, edit with live reload. Link to **CLI** and **Previews** in Core concepts for architecture; cover only `--port` and `--no-browser` inline. |
+| Check documentation | How-to | **Must have** | Sub-step before push: run `docs check` after local preview, fix link and asset issues, wire into CI. Link to **CLI** and **CLI reference** for severity flags; do not re-explain what `check` validates (that lives in Core concepts → CLI). |
+| Shareable preview | How-to | **Must have** | Push a branch, share `~ref` URLs, install the GitHub bot for PR comments. Link to **Previews** in Core concepts for URL patterns. |
 
 #### Maintain documentation
 
@@ -96,8 +138,8 @@ Nested subgroup — ongoing content upkeep after publish: locales and URL stabil
 
 | Page Title | Diátaxis Type | Priority | Purpose |
 | --- | --- | --- | --- |
-| Translate documentation | How-to | **Could have** | Set up multi-locale documentation when teams need translated content. |
-| Update moved pages | How-to | **Should have** | Redirect readers when you rename or relocate pages, using frontmatter redirects. |
+| Translate documentation | How-to | **Could have** | Set up multi-locale documentation when teams need translated content. Link to **Locales** in Core concepts. |
+| Update moved pages | How-to | **Should have** | Redirect readers when you rename or relocate pages, using frontmatter redirects. Link to **Redirects** in Core concepts; mention `docs check` for validating redirect targets. |
 
 ### Customize your site
 
@@ -107,7 +149,7 @@ Goals that come after basic authoring: make the site yours, reachable, and measu
 | --- | --- | --- | --- |
 | Apply your branding | How-to | **Must have** | Match the docs site to your project identity: theme, colors, logo, favicon, header, tabs, and footer links. |
 | Connect a custom domain | How-to | **Should have** | Serve documentation on your own domain, including vanity subdomain options and DNS/TLS expectations. |
-| Improve search visibility | How-to | **Should have** | Help search engines and readers discover your docs: SEO metadata, sitemap, and robots.txt configuration. |
+| Improve search visibility | How-to | **Should have** | Help search engines and readers discover your docs: SEO metadata, sitemap, and robots.txt configuration. Link to **Search** in Core concepts for on-site search behaviour. |
 | Track reader engagement | How-to | **Should have** | Add analytics to understand which pages readers visit and how they use your documentation. |
 
 ### Components
@@ -172,11 +214,11 @@ Lookup for configuration fields, page metadata, CLI commands, and HTTP endpoints
 | --- | --- | --- | --- |
 | docs.json reference | Reference | **Must have** | Complete field reference for site configuration: types, defaults, and valid values. |
 | Page frontmatter | Reference | **Must have** | Exhaustive lookup for per-page YAML fields: title, description, redirects, previous/next overrides, and SEO fields. |
-| CLI reference | Reference | **Must have** | Commands and flags: `docs init`, `docs check`, `docs agent create`, `docs agent delete`. |
+| CLI reference | Reference | **Must have** | Flag and exit-code lookup: `docs init`, `docs preview`, `docs check`, `docs agent create`, `docs agent delete`. Conceptual coverage lives in **Core concepts → CLI**; workflow sequencing lives in **Authoring content → Previews**. |
 | HTTP endpoints | Reference | **Must have** | Lookup for published routes: `llms.txt`, `llms-full.txt`, MCP, `search.json`, `schema.json`, bundle/chat/agent APIs, sitemap, robots.txt, and raw markdown URLs. |
 | Analytics providers | Reference | **Could have** | Supported analytics integration keys and config shapes. |
-| Variables | Reference | **Could have** | `{{ dotted.path }}` substitution syntax and config object structure. |
-| Search index | Reference | **Could have** | How `search.json` is built and what content is indexed for the command-palette search UI. |
+| Variables | Reference | **Could have** | `{{ dotted.path }}` substitution syntax and config object structure. Conceptual overview lives in **Core concepts → Variables** until consolidated. |
+| Search index | Reference | **Could have** | How `search.json` is built and what content is indexed for the command-palette search UI. Conceptual overview lives in **Core concepts → Search** until consolidated. |
 | Platform architecture | Reference | **Could have** | High-level overview of GitHub fetch, MDX bundling, routing modes, and request lifecycle — optional reading for those who want internals context. |
 
 **Deferred (not in sitemap):** Preview internals, routing internals, self-hosting, migration guides — Won't have per spec and author feedback.
@@ -187,30 +229,53 @@ Lookup for configuration fields, page metadata, CLI commands, and HTTP endpoints
 
 **Does this give the audience everything they need, whilst keeping the docs simple?**
 
-Yes, with these revisions applied from author feedback:
+Yes, with revision 2.0.0 applied:
 
-- **Getting Started trimmed to two pages:** hosting model folded into Introduction; repo layout and URLs folded into Publish your first site.
-- **Authoring follows a workflow:** write → organize → preview (local, then shareable) → maintain (redirects, locales). Titles use content-writing language ("Write documentation", not "Write MDX content").
-- **Customize follows goals:** branding → domain → discoverability → measurement — not one page per config field.
-- **Components is its own section** (Mintlify pattern), separate from Reference.
-- **Reference holds lookup only:** config, frontmatter, CLI, HTTP endpoints — not workflow content.
-- **Previews** nested under Authoring content — local and shareable preview pages grouped like Templates under Getting Started.
-- **Maintain documentation** nested under Authoring content — translate and redirect pages grouped after Previews.
-- **Compare platforms** nested under Platform comparisons — peer comparison pages grouped like Templates under Getting Started.
-- **Renames applied:** MCP skills → Agent skills; External AI chat → Embed a docs assistant; Docs Guides → Templates (Diátaxis page layouts).
+- **Two-layer model:** Core concepts (bottom-up, write first) + Authoring content (workflow how-tos that link inward).
+- **Core concepts complete set (11 pages):** 6 Must have, 2 Should have, 3 Could have — included even when marked temporary until content moves to Authoring, Customize, or Reference.
+- **Check documentation** under **Previews** subgroup — sub-step before push, not a peer workflow stage.
+- **Authoring follows a workflow:** write → organize → preview (local → check → shareable) → maintain. Pages stay thin; mechanics live in Core concepts.
+- **Cross-links added** from Authoring, Getting Started, Customize, and Reference to matching Core concepts pages.
 - **Title rule maintained:** each page title names one focus.
-- **Templates** nested under Getting Started (child group after Publish your first site) — four Diátaxis layout guides.
 
-**Coverage note:** Feature details for tabs, header links, vanity subdomains, variables, and search are covered within goal-oriented pages or Reference lookups rather than standalone feature pages.
+**Writing order:** Core concepts (Must have first) → Authoring stubs → Getting Started / Customize cherry-picking → consolidate temporary Could have pages into destination sections.
 
 ---
 
-## 5. Status
+## 5. Author review prompt
 
-**Approved** — sitemap locked for v1 content writing.
+**Pending review** — revision 2.0.0: full **Core concepts** page set (Must, Should, Could).
 
-Confirmed structure: **Templates** nested under **Getting Started** (child group after Publish your first site).
+**Core concepts (11 pages):**
 
-**Deferred to v1 planning:** migration guides (Won't have).
+```
+Must have
+  Project structure
+  GitHub hosting
+  Content pages
+  Configuration
+  CLI
+  Previews
+Should have
+  Navigation
+  Search
+Could have (temporary homes — consolidate later)
+  Locales      → Authoring → Translate documentation
+  Redirects    → Authoring → Update moved pages
+  Variables    → Reference → Variables
+```
 
-**Next step:** [docs-write](../.agents/skills/docs-write/SKILL.md) — draft MDX from this outline when ready.
+**Section map:**
+
+```
+Getting Started
+Core concepts            ← write first (11 pages)
+Authoring content        ← cherry-picks inward
+Customize your site
+Components
+AI agents
+Platform comparisons
+Reference
+```
+
+Once approved, proceed with [docs-write](../.agents/skills/docs-write/SKILL.md) — **Core concepts Must have** first, then Should/Could have stubs with consolidation notes.
