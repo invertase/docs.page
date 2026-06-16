@@ -131,6 +131,7 @@ function Agent() {
   return (
     <Button variant="outline" aria-label="Toggle agent panel" onClick={toggle}>
       <RiSparkling2Fill />
+      <span>Ask AI</span>
       <Kbd className="hidden md:block h-[17px] gap-2">⌘I</Kbd>
     </Button>
   );
