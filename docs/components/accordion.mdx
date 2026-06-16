@@ -3,4 +3,154 @@ title: Accordion
 description: Expandable panels for progressive disclosure.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+Use `<Accordion>` to hide optional content behind a clickable header. Accordions suit progressive disclosure—FAQs, troubleshooting notes, or detail that not every reader needs on first load.
+
+Each accordion needs a `title` (the clickable header). Put any MDX content—code blocks, callouts, or lists—inside the panel.
+
+```mdx
+<Accordion title="Click to expand">Content here</Accordion>
+```
+
+## Example
+
+<Accordion title="Click to expand the accordion">
+  This is collapsible content.
+
+  You can nest other components inside an accordion. For example, a code block:
+
+  ```js
+  export function greet(name) {
+    return `Hello, ${name}!`;
+  }
+  ```
+
+  <Info>
+    Callouts and other MDX components work inside accordions as well.
+  </Info>
+</Accordion>
+
+````mdx
+<Accordion title="Click to expand the accordion">
+  This is collapsible content.
+
+  You can nest other components inside an accordion. For example, a code block:
+
+  ```js
+  export function greet(name) {
+    return `Hello, ${name}!`;
+  }
+  ```
+
+  <Info>
+    Callouts and other MDX components work inside accordions as well.
+  </Info>
+</Accordion>
+````
+
+## `Accordion` props
+
+| Prop | Type | Required | Description |
+| --- | --- | --- | --- |
+| `title` | `string` | Yes | Text shown on the panel trigger |
+| `defaultOpen` | `boolean` | No | Whether the panel starts expanded |
+
+<Property name="title" type="string" required>
+  The text shown on the panel trigger. Use short, scannable titles such as **Installation** or **Troubleshooting**.
+
+  Without a `title`, the accordion renders nothing.
+</Property>
+
+---
+
+<Property name="defaultOpen" type="boolean" optional>
+  Whether the panel starts expanded on first load.
+
+  Defaults to `false`.
+</Property>
+
+## `AccordionGroup` props
+
+| Prop | Type | Default | Description |
+| --- | --- | --- | --- |
+| `type` | `"single"` \| `"multiple"` | `"multiple"` | How many panels can stay open at once |
+
+<Property name="type" type="string" optional>
+  Controls how many panels in the group can be open at the same time.
+
+  - `"multiple"` (default) — readers can expand more than one panel.
+  - `"single"` — only one panel stays open; opening another closes the rest.
+
+  Defaults to `"multiple"`.
+</Property>
+
+## Accordion groups
+
+Wrap related accordions in `<AccordionGroup>` so they share one bordered container. Each child must be an `<Accordion>`—other elements are ignored.
+
+Set `defaultOpen` on individual items to choose which panels start expanded. In a `type="single"` group, only the first item with `defaultOpen` opens on load.
+
+<AccordionGroup>
+  <Accordion defaultOpen title="Open by default">
+    This panel starts expanded. Readers can collapse it like any other accordion.
+  </Accordion>
+  <Accordion title="Click to expand">
+    Grouped accordions stack in a single panel. Add as many as you need.
+  </Accordion>
+  <Accordion title="Another section">
+  - Optional setup steps
+  - Advanced configuration
+  - Related links
+  </Accordion>
+</AccordionGroup>
+
+````mdx
+<AccordionGroup>
+  <Accordion defaultOpen title="Open by default">
+    This panel starts expanded.
+  </Accordion>
+  <Accordion title="Click to expand">
+    Grouped accordions stack in a single panel.
+  </Accordion>
+  <Accordion title="Another section">
+    More collapsible content here.
+  </Accordion>
+</AccordionGroup>
+````
+
+Use `type="single"` when panels are mutually exclusive—for example, one answer per FAQ category.
+
+<AccordionGroup type="single">
+  <Accordion title="Billing">
+    Manage plans and invoices from **Settings → Billing**.
+  </Accordion>
+  <Accordion title="Authentication">
+    Configure API keys under **Settings → API keys**.
+  </Accordion>
+  <Accordion title="Deployments">
+    Deploy from the CLI or connect a Git repository.
+  </Accordion>
+</AccordionGroup>
+
+````mdx
+<AccordionGroup type="single">
+  <Accordion title="Billing">...</Accordion>
+  <Accordion title="Authentication">...</Accordion>
+  <Accordion title="Deployments">...</Accordion>
+</AccordionGroup>
+````
+
+## Behaviour
+
+| Condition | Result |
+| --- | --- |
+| `title` omitted on `<Accordion>` | Renders nothing |
+| No valid `<Accordion>` children in `<AccordionGroup>` | Renders nothing |
+| `type="multiple"` (default) | Multiple panels can stay open |
+| `type="single"` | Only one panel open at a time |
+| Several items with `defaultOpen` in `type="single"` | Only the first matching item starts open |
+| `defaultOpen` on items in `type="multiple"` | All matching items start open |
+
+## See also
+
+- [Components overview](/components/index) — when to use tabs, code groups, and accordions
+- [Reference template](/templates/reference) — structure for lookup pages like this one
