@@ -8,7 +8,7 @@ import styles from "./homepage.module.css";
 export function Explore() {
   return (
     <div className="border-x border-t border lg:grid lg:grid-cols-[minmax(0,10fr)_minmax(0,6fr)_minmax(0,6fr)_minmax(0,6fr)_minmax(0,6fr)] lg:divide-x lg:divide-border">
-      <div className="border-b border-border py-8 px-6 text-center bg-neutral-950/50 lg:border-b-0 lg:px-10 lg:text-left">
+      <div className="border-b border-border py-8 px-6 text-center bg-black/60 lg:border-b-0 lg:px-10 lg:text-left">
         <p className="text-xl">
           Explore <b>open-source</b> projects powered by docs.page
         </p>
@@ -17,25 +17,25 @@ export function Explore() {
         <Project
           href="https://github.com/invertase/react-native-firebase"
           title="React Native Firebase"
-          color="#f97316"
+          color="#E99363"
           stars="12k+"
         />
         <Project
           href="https://github.com/schultek/jaspr"
           title="Jaspr"
-          color="#14b8a6"
+          color="#63D0BD"
           stars="2k+"
         />
         <Project
           href="https://github.com/invertase/melos"
           title="Melos"
-          color="#ef4444"
+          color="#E96767"
           stars="1k+"
         />
         <Project
           href="https://github.com/widgetbook/widgetbook"
           title="Widgetbook"
-          color="#a855f7"
+          color="#A68BF3"
           stars="900+"
         />
       </div>
@@ -53,7 +53,7 @@ function Project(props: {
     <Link
       href={props.href}
       target="_blank"
-      className="group relative isolate flex overflow-hidden bg-neutral-950"
+      className="group relative isolate flex overflow-hidden bg-black"
     >
       <div
         className={cn(
