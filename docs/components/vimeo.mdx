@@ -3,4 +3,68 @@ title: Vimeo
 description: Embedded Vimeo player.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+Use `<Vimeo>` to embed a Vimeo video in your documentation. Pass the numeric video ID from the Vimeo URL—the component renders a responsive iframe pointed at `player.vimeo.com`.
+
+```mdx
+<Vimeo id="253989945" />
+```
+
+## Video ID
+
+Copy the numeric ID from the end of the Vimeo URL. For example, `https://vimeo.com/253989945` has ID `253989945`.
+
+## Example
+
+<Vimeo id="253989945" />
+
+````mdx
+<Vimeo id="253989945" />
+````
+
+## Props
+
+| Prop | Type | Required | Description |
+| --- | --- | --- | --- |
+| `id` | `string` | Yes* | Numeric Vimeo video ID |
+| `video` | `string` | No | Legacy alias for `id` |
+
+\* Pass `id` or `video`. If both are set, `id` takes precedence.
+
+<Property name="id" type="string" required>
+  The numeric ID of the Vimeo video to embed. This is the number at the end of the video URL—for example, `253989945` from `https://vimeo.com/253989945`.
+
+  The component loads the player from `https://player.vimeo.com/video/{id}`.
+
+  ```mdx
+  <Vimeo id="253989945" />
+  ```
+</Property>
+
+---
+
+<Property name="video" type="string" optional>
+  Legacy alias for `id`. Use `id` in new content; `video` is supported for backwards compatibility with older pages.
+
+  When both props are present, `id` is used.
+
+  ```mdx
+  <Vimeo video="253989945" />
+  ```
+</Property>
+
+## Behaviour
+
+| Condition | Result |
+| --- | --- |
+| `id` or `video` set | Renders a responsive `<iframe>` at `https://player.vimeo.com/video/{id}` |
+| Both `id` and `video` set | `id` wins |
+| Neither `id` nor `video` set | Renders an empty `<div>` |
+
+The iframe uses a 16:9 aspect ratio, fills the content width, and has rounded corners. Full-screen viewing is enabled via `allowFullScreen`.
+
+## See also
+
+- [YouTube](/components/youtube) — embed YouTube videos
+- [Video](/components/video) — self-hosted or generic embedded video
+- [Components overview](/components/index) — when to use embeds, callouts, and media components
+- [Reference template](/templates/reference) — structure for lookup pages like this one
