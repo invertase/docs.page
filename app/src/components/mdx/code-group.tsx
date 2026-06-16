@@ -11,9 +11,10 @@ import {
 } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
 
 export type CodeGroupBlock = {
-  lang: string;
+  label: string;
   highlighted: string;
   value: string;
 };
@@ -66,22 +67,22 @@ export function CodeGroup({
   blocks,
 }: CodeGroupProps) {
   const codeGroups = useCodeGroups();
-  const languages = blocks.map((block) => block.lang || "text");
+  const labels = blocks.map((block) => block.label || "text");
 
-  let initialLanguage: string;
+  let initialLabel: string;
   if (
     synchronize &&
     codeGroups.language &&
-    languages.includes(codeGroups.language)
+    labels.includes(codeGroups.language)
   ) {
-    initialLanguage = codeGroups.language;
-  } else if (defaultLanguage && languages.includes(defaultLanguage)) {
-    initialLanguage = defaultLanguage;
+    initialLabel = codeGroups.language;
+  } else if (defaultLanguage && labels.includes(defaultLanguage)) {
+    initialLabel = defaultLanguage;
   } else {
-    initialLanguage = languages[0] ?? "text";
+    initialLabel = labels[0] ?? "text";
   }
 
-  const [active, setActive] = useState(initialLanguage);
+  const [active, setActive] = useState(initialLabel);
   const [copied, setCopied] = useState(false);
   const copyTimeoutRef = useRef<ReturnType<typeof setTimeout>>(null);
 
@@ -89,22 +90,22 @@ export function CodeGroup({
     if (
       synchronize &&
       codeGroups.language &&
-      languages.includes(codeGroups.language) &&
+      labels.includes(codeGroups.language) &&
       active !== codeGroups.language
     ) {
       setActive(codeGroups.language);
     }
-  }, [active, synchronize, codeGroups.language, languages]);
+  }, [active, synchronize, codeGroups.language, labels]);
 
   useEffect(() => {
-    if (languages.length === 0) {
+    if (labels.length === 0) {
       return;
     }
 
-    if (!languages.includes(active)) {
-      setActive(languages[0] ?? "text");
+    if (!labels.includes(active)) {
+      setActive(labels[0] ?? "text");
     }
-  }, [active, languages]);
+  }, [active, labels]);
 
   useEffect(() => {
     return () => {
@@ -117,7 +118,7 @@ export function CodeGroup({
   }
 
   const activeBlock =
-    blocks.find((block) => (block.lang || "text") === active) ?? blocks[0];
+    blocks.find((block) => (block.label || "text") === active) ?? blocks[0];
 
   const onCopy = () => {
     void navigator.clipboard.writeText(activeBlock.value);
@@ -129,48 +130,51 @@ export function CodeGroup({
     }, 2000);
   };
 
-  const selectLanguage = (language: string) => {
-    setActive(language);
+  const selectLabel = (label: string) => {
+    setActive(label);
 
     if (synchronize) {
-      codeGroups.onChange(language);
+      codeGroups.onChange(label);
     }
   };
 
   return (
     <figure className="not-prose overflow-hidden rounded-lg border bg-card text-card-foreground">
-      <figcaption className="flex h-9 items-center gap-3 px-4 font-mono text-muted-foreground text-xs">
-        {title ? (
-          <div className="min-w-0 truncate font-medium">{title}</div>
-        ) : null}
-        <div className="ml-auto flex items-center gap-1">
-          {languages.map((language) => (
-            <Button
-              key={language}
+      <figcaption className="flex h-9 items-center justify-between gap-3 px-4 font-mono text-muted-foreground text-xs">
+        <div className="flex min-w-0 items-center gap-3 truncate">
+          {labels.map((label) => (
+            <button
+              key={label}
               type="button"
-              variant="ghost"
-              size="sm"
               className={cn(
-                "h-7 px-2 font-mono text-xs",
-                language === active && "bg-muted text-foreground",
+                "font-mono text-xs transition-colors",
+                label === active
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:text-foreground",
               )}
-              onClick={() => selectLanguage(language)}
+              onClick={() => selectLabel(label)}
             >
-              {language}
-            </Button>
+              {label}
+            </button>
           ))}
-          <Button variant="ghost" size="icon-sm" onClick={onCopy}>
-            {copied ? <RiCheckLine /> : <RiFileCopyLine />}
-          </Button>
+          {title ? (
+            <>
+              <Separator orientation="vertical" />
+              <span className="truncate font-medium">{title}</span>
+            </>
+          ) : null}
         </div>
+        <Button variant="ghost" size="icon-sm" onClick={onCopy}>
+          {copied ? <RiCheckLine /> : <RiFileCopyLine />}
+        </Button>
       </figcaption>
       <div className="overflow-x-auto px-4 py-2 text-sm">
         {blocks.map((block, index) => {
-          const lang = block.lang || "text";
+          const label = block.label || "text";
           return (
             <div
-              key={`${lang}-${index}`}
-              className={cn({ hidden: lang !== active })}
+              key={`${label}-${index}`}
+              className={cn({ hidden: label !== active })}
               dangerouslySetInnerHTML={
                 block.highlighted ? { __html: block.highlighted } : undefined
               }

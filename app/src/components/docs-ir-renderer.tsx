@@ -243,10 +243,25 @@ function codeBlocksFromChildren(children: DocIrNode[]): CodeGroupBlock[] {
         child.kind === "code",
     )
     .map((block) => ({
-      lang: block.lang || "text",
+      label: codeGroupBlockLabel(block),
       highlighted: block.highlighted ?? "",
       value: block.value,
     }));
+}
+
+function codeGroupBlockLabel(
+  block: Extract<DocIrNode, { kind: "code" }>,
+): string {
+  if (block.title) {
+    return block.title;
+  }
+
+  const meta = block.meta?.trim();
+  if (meta && !meta.includes("=")) {
+    return meta;
+  }
+
+  return block.lang || "text";
 }
 
 function videoPropsFromIr(props: Record<string, unknown>) {
