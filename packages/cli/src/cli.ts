@@ -5,6 +5,7 @@ import { Command, Option } from "commander";
 import { registerAgentCommand } from "./commands/agent";
 import { registerCheckCommand } from "./commands/check";
 import { registerInitCommand } from "./commands/init";
+import { registerPreviewCommand } from "./commands/preview";
 import { DEFAULT_API_BASE_URL } from "./lib/api";
 import { handleCliError } from "./lib/errors";
 
@@ -19,6 +20,7 @@ program.addOption(
 
 registerInitCommand(program);
 registerCheckCommand(program);
+registerPreviewCommand(program);
 registerAgentCommand(program);
 
 program.parseAsync(process.argv).catch(handleCliError);
