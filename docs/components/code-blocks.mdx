@@ -40,7 +40,7 @@ export async function apiRequest(options) {
 
 Add a language identifier immediately after the opening backticks. docs.page uses [Shiki](https://shiki.style/) for highlighting and accepts any bundled Shiki language or alias—for example, `js`, `ts`, `bash`, or `json`.
 
-If the tag is missing or unrecognised, the block renders as plain text.
+If the tag is missing or unrecognized, the block renders as plain text.
 
 ```bash
 npm install docs.page
@@ -130,18 +130,18 @@ console.log('Not focused');
 ```
 ````
 
-## Copy behaviour
+## Copy behavior
 
 Each code block includes a copy button in the header. Click it to copy the raw fence content to the clipboard. The icon switches to a check mark for two seconds to confirm the copy.
 
 Readers copy source text—including annotation comments—not the rendered HTML.
 
-## Behaviour
+## Behavior
 
 | Condition | Result |
 | --- | --- |
-| No language tag | Renders as `text` with no syntax colouring |
-| Unrecognised language tag | Falls back to `text` |
+| No language tag | Renders as `text` with no syntax coloring |
+| Unrecognized language tag | Falls back to `text` |
 | `title="..."` in fence meta | Shown in the header after the language |
 | `title` omitted | Header shows the language only |
 | `// [!code --]` / `// [!code ++]` | Line styled as removed or added |

@@ -1,6 +1,104 @@
 ---
 title: CLI
-description: The docs.page CLI and its commands for scaffolding, preview, and validation.
+description: Scaffold your site, preview MDX locally, validate links before push, and manage in-docs AI chat from the terminal.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+The `@docs.page/cli` package is the local companion to [docs.page](https://docs.page) hosting. Run it from your project root to create starter files, see edits in the browser before you push, catch broken links and missing assets, and provision the in-docs AI chat agent for a GitHub repository.
+
+## Overview
+
+docs.page serves documentation from a public GitHub repository — there is no separate deploy dashboard. The CLI fills the gaps on your machine: scaffolding, validation, and live preview while you write.
+
+| Command | Role in your workflow |
+| --- | --- |
+| `docs init` | Create `docs.json` and optional starter pages in a new or existing repo |
+| `docs preview` | Watch local files and render changes in the docs.page preview UI |
+| `docs check` | Lint configuration, links, and assets — a quality gate before you push |
+| `docs agent` | Create or delete the in-docs chat agent for a repository |
+
+Run any command with `npx` (no install required) or install the package globally. Both `docs` and `docs.page` binaries are available after install.
+
+```bash
+npx @docs.page/cli <command>
+```
+
+```bash
+npm install -g @docs.page/cli
+docs <command>
+```
+
+For flag-level detail and exit codes, see [CLI reference](/reference/cli-reference). Workflow guides live under [Authoring content](/authoring/write-documentation).
+
+## How it works
+
+### `docs init`
+
+`init` scaffolds the files docs.page expects: a `docs.json` configuration file and, by default, starter content under `docs/`. Templates are rendered with your project name so you can push and open a live URL quickly.
+
+When you run `init` in a directory that already has docs.page files, the CLI skips existing paths unless you pass `--overwrite`. In an interactive terminal it can prompt for the project name and whether to create starter MDX files; pass `--name` and `--no-docs` to script the same choices in CI or scripts.
+
+See [Project structure](/concepts/project-structure) for how `docs.json` and `docs/**/*.mdx` map to URLs, or follow [Publish your first site](/publish-your-first-site) for a guided first run.
+
+### `docs preview`
+
+`preview` starts a local WebSocket server in your project directory. It watches `docs.json` (or `docs.yaml`) and `docs/**/*.mdx`, bundles changed pages with the same MDX pipeline used in production, and streams the result to the hosted preview UI at `docs.page/preview`.
+
+When the server starts, the CLI prints a preview URL that points the browser at your local WebSocket endpoint. Edit a file, save, and the page reloads without pushing to GitHub.
+
+<Info>
+  Local preview requires a valid `docs.json` or `docs.yaml` and at least one `.mdx` file under `docs/`. Some production features — search, sitemap, and the agent panel — are not available in local preview. See [Previews](/concepts/previews) for both preview modes and current limitations.
+</Info>
+
+For day-to-day iteration (`--port`, `--no-browser`), see [Local preview](/authoring/preview-locally).
+
+### `docs check`
+
+`check` validates your project before you push. It confirms `docs.json` or `docs.yaml` is readable, then scans `docs/**/*.mdx` for:
+
+- Broken **internal links** — paths that do not resolve to another page or asset in the repo
+- Missing **assets** — images and other referenced files that are not on disk
+- Unreachable **external links** — HTTP targets that fail when fetched
+
+Each category uses a severity level: `off`, `warn`, or `error`. The command exits with code `1` when any `error`-level issue is found, so you can run it in CI the same way you would locally.
+
+Treat `check` as a sub-step in your authoring workflow: preview until the site looks right, run `check` to catch link and asset problems, then push. It is not a separate publishing stage — [docs.page](/concepts/github-hosting) updates the live site when you push to your default branch.
+
+### `docs agent`
+
+The `agent` command manages the in-docs AI chat panel for a GitHub repository. It talks to the docs.page API after verifying you have admin access to the repo.
+
+- **`docs agent create`** — Encrypts your LLM provider API key locally, then registers an agent for the repository. Supported providers: OpenAI, Anthropic, Google, and xAI.
+- **`docs agent delete`** — Removes the agent configuration for a repository.
+
+Creation and deletion require a GitHub token with access to the target repository. By default the CLI reads `gh auth token`; pass `--gh-auth` to supply a token explicitly. See [AI chat](/ai-agents/ai-chat) for enabling and configuring the reader-facing panel.
+
+### Global options
+
+Agent commands call the docs.page API. Set the API base URL with a global flag or environment variable:
+
+```bash
+docs --api-url https://your-api.example.com agent create --repo org/repo
+```
+
+```bash
+export DOCS_PAGE_API_BASE=https://your-api.example.com
+docs agent create --repo org/repo
+```
+
+When neither is set, the CLI uses the production docs.page API. Self-hosted or staging setups use `--api-url` or `DOCS_PAGE_API_BASE`; `init`, `preview`, and `check` do not need an API URL.
+
+## Design tradeoffs
+
+**CLI over a web editor.** docs.page is Git-native: content lives in your repository and publishes on push. A terminal tool fits that model — scaffold into an existing repo, validate in CI, and preview without committing work-in-progress branches.
+
+**Hosted preview UI.** Local preview does not embed a full static copy of the docs.page app. Instead, your machine bundles MDX and the browser loads the production preview shell. You see real theme and layout behavior while file I/O stays on localhost.
+
+**Check as a gate, not a deploy step.** `check` improves quality before push; it does not upload or publish anything. Hosting remains push-to-publish from GitHub.
+
+## Related
+
+- [CLI reference](/reference/cli-reference) — flags, severities, and exit codes
+- [Previews](/concepts/previews) — local vs shareable preview modes
+- [Local preview](/authoring/preview-locally) — iterate on content before you push
+- [Publish your first site](/publish-your-first-site) — scaffold and go live
+- [AI chat](/ai-agents/ai-chat) — configure the in-docs chat panel

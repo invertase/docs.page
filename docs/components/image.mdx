@@ -19,7 +19,7 @@ Use standard Markdown syntax for simple images:
 ![Orange car](https://images.unsplash.com/photo-1671483579112-0872cb05978f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1469&q=80)
 ```
 
-Markdown images render as `<Image>` without extra properties. They inherit zoom behaviour from [`content.zoomImages`](/reference/docs-json-reference) in `docs.json` but cannot set `caption`, `theme`, or per-image `zoom` without switching to the component.
+Markdown images render as `<Image>` without extra properties. They inherit zoom behavior from [`content.zoomImages`](/reference/docs-json-reference) in `docs.json` but cannot set `caption`, `theme`, or per-image `zoom` without switching to the component.
 
 ![Orange car](https://images.unsplash.com/photo-1671483579112-0872cb05978f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1469&q=80)
 
@@ -103,7 +103,7 @@ For example, if your repository contains `/docs/assets/my-image.png`, use `/asse
 ---
 
 <Property name="zoom" type="boolean" optional>
-  Controls click-to-zoom behaviour for this image.
+  Controls click-to-zoom behavior for this image.
 
   - `zoom={true}` — enables zoom for this image
   - `zoom={false}` — disables zoom even when [`content.zoomImages`](/reference/docs-json-reference) is `true` in `docs.json`
@@ -117,7 +117,7 @@ For example, if your repository contains `/docs/assets/my-image.png`, use `/asse
 ---
 
 <Property name="caption" type="string" optional>
-  Renders a centred caption below the image inside a `<figure>` wrapper.
+  Renders a centered caption below the image inside a `<figure>` wrapper.
 
   ```mdx
   <Image
@@ -131,7 +131,7 @@ For example, if your repository contains `/docs/assets/my-image.png`, use `/asse
 ---
 
 <Property name="theme" type="string" optional>
-  Restricts visibility to one colour scheme. Omit `theme` to show the image in both light and dark modes.
+  Restricts visibility to one color scheme. Omit `theme` to show the image in both light and dark modes.
 
   - `theme="light"` — visible in light mode only
   - `theme="dark"` — visible in dark mode only
@@ -184,7 +184,7 @@ Add `caption` to show descriptive text below the image. The component wraps the 
 
 ## Theme
 
-By default, images appear in both light and dark modes. Set `theme` to show a variant only in the matching colour scheme—useful for logos or screenshots that do not work on every background.
+By default, images appear in both light and dark modes. Set `theme` to show a variant only in the matching color scheme—useful for logos or screenshots that do not work on every background.
 
 ```mdx
 <Image caption="Light-mode logo" theme="light" src="/assets/logo-light.svg" alt="Logo" />
@@ -206,7 +206,7 @@ The component always sets `loading="lazy"` on the image element.
 />
 ```
 
-## Behaviour
+## Behavior
 
 | Condition | Result |
 | --- | --- |

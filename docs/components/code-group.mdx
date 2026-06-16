@@ -3,7 +3,7 @@ title: Code group
 description: Compare the same example across languages in a tabbed code block.
 ---
 
-Use `<CodeGroup>` to show the same example in multiple languages or variants. Wrap fenced code blocks as children—each fence becomes a tab labelled with its language tag. Readers switch tabs to compare snippets without scrolling past duplicate blocks.
+Use `<CodeGroup>` to show the same example in multiple languages or variants. Wrap fenced code blocks as children—each fence becomes a tab labeled with its language tag. Readers switch tabs to compare snippets without scrolling past duplicate blocks.
 
 Prefer **Code group** over [Tabs](/components/tabs) when every panel is a code fence. Use **Tabs** when panels mix prose, lists, and callouts.
 
@@ -76,12 +76,12 @@ Prefer **Code group** over [Tabs](/components/tabs) when every panel is a code f
 <Property name="synchronize" type="boolean" optional>
   When `true`, language selection is shared across every `<CodeGroup>` on the page that also sets `synchronize`. Groups stay in sync when they define the same language tags—for example, selecting **javascript** in one group selects **javascript** in the others.
 
-  Sync state is held by `CodeGroupProvider`, which wraps page content automatically. Unlike `<Tabs groupId="…">`, there is no separate group ID—synchronised code groups on a page share one language state.
+  Sync state is held by `CodeGroupProvider`, which wraps page content automatically. Unlike `<Tabs groupId="…">`, there is no separate group ID—synchronized code groups on a page share one language state.
 </Property>
 
 Only fenced code blocks inside `<CodeGroup>` become tabs. Other MDX content is ignored. The renderer passes parsed blocks to the component internally—you do not set a `blocks` property in MDX.
 
-## Synchronisation
+## Synchronization
 
 Code groups are independent by default. To keep language selection aligned across multiple groups, add `synchronize` to each `<CodeGroup>` that should follow the same choice.
 
@@ -131,16 +131,16 @@ The example below uses two groups with `synchronize`. Selecting **javascript** i
 </CodeGroup>
 ````
 
-If a synchronised group does not include the currently selected language, it falls back to `defaultLanguage`, then the first fence in that group.
+If a synchronized group does not include the currently selected language, it falls back to `defaultLanguage`, then the first fence in that group.
 
-## Behaviour
+## Behavior
 
 | Condition | Result |
 | --- | --- |
 | No fenced code children | Renders nothing |
 | `defaultLanguage` not in the group | Falls back to the first fence |
 | `synchronize` omitted | Each group keeps its own language selection |
-| Selected language missing from a synchronised group | Falls back to `defaultLanguage`, then the first fence |
+| Selected language missing from a synchronized group | Falls back to `defaultLanguage`, then the first fence |
 
 Language tabs use the fence language tag as the label—for example, `javascript`, `python`, or `bash`. See [Code blocks](/components/code-blocks) for supported tags and highlighting.
 
