@@ -18,12 +18,12 @@ export function Features() {
               autoPlay
               loop
               muted
-              title={feature.title}
+              title={feature.titleText}
               className="relative aspect-auto z-1 w-full rounded-md object-cover border border-border/50 shadow-lg"
             />
           ) : null}
           {feature.image ? (
-            <Image src={feature.image} alt={feature.title} className="" />
+            <Image src={feature.image} alt={feature.titleText} className="" />
           ) : null}
           {feature.component ? feature.component : null}
         </FeatureCard>

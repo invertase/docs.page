@@ -4,6 +4,7 @@ import { ModernInterface } from "./modern-interface";
 
 export const features = [
   {
+    titleText: "Agent-ready",
     title: (
       <>
         <span className="text-primary">Agent</span>-ready
@@ -15,6 +16,7 @@ export const features = [
     link: "/agent-access",
   },
   {
+    titleText: "Git Publishing",
     title: (
       <>
         <span className="text-primary">Git</span> Publishing
@@ -26,6 +28,7 @@ export const features = [
     link: "/git-publishing",
   },
   {
+    titleText: "Intelligent Search",
     title: (
       <>
         <span className="text-primary">Intelligent</span> Search
@@ -37,6 +40,7 @@ export const features = [
     link: "/intelligent-search",
   },
   {
+    titleText: "Markdown Components",
     title: (
       <>
         <span className="text-primary">Markdown</span> Components
@@ -48,6 +52,7 @@ export const features = [
     link: "/markdown-components?v=2",
   },
   {
+    titleText: "Branches & versions",
     title: (
       <>
         <span className="text-primary">Branches</span> & versions
@@ -59,6 +64,7 @@ export const features = [
     link: "/agent-ready",
   },
   {
+    titleText: "Modern Interface",
     title: (
       <>
         <span className="text-primary">Modern</span> Interface
