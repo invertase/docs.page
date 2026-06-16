@@ -1,6 +1,6 @@
 {
   "version": "2.0.0",
-  "updatedAt": "2026-06-11",
+  "updatedAt": "2026-06-16",
   "capabilities": [
     {
       "id": "github-hosting",
@@ -46,7 +46,7 @@
     {
       "id": "ref-previews",
       "kind": "feature",
-      "title": "Branch and PR previews",
+      "title": "Branch preview",
       "summary": "Routes documentation to a specific Git ref using a ~ref URL segment; numeric refs resolve to pull request head branches via the GitHub GraphQL API.",
       "status": "stable",
       "audience": [
@@ -76,6 +76,9 @@
       "related": [
         "github-hosting",
         "github-bot"
+      ],
+      "writingNotes": [
+        "Feature page slug: /features/branch-preview."
       ]
     },
     {
@@ -330,7 +333,7 @@
       "id": "config-content",
       "kind": "feature",
       "title": "Content settings",
-      "summary": "Controls table-of-contents depth, image zoom defaults, page title/image visibility, and automatic previous/next link inference.",
+      "summary": "Controls image zoom defaults, page title/image visibility, and automatic previous/next link inference via content.automaticallyInferNextPrevious.",
       "status": "stable",
       "audience": [
         "contributor"
@@ -354,7 +357,8 @@
         "model": "app/src/server/config/models/content.ts"
       },
       "related": [
-        "previous-next"
+        "previous-next",
+        "table-of-contents"
       ]
     },
     {
@@ -427,7 +431,7 @@
     {
       "id": "config-seo",
       "kind": "feature",
-      "title": "SEO",
+      "title": "Search engine indexing",
       "summary": "Sets site-wide noindex behavior and optional socialPreview image override for metadata generation.",
       "status": "stable",
       "audience": [
@@ -446,7 +450,10 @@
         "type": "file",
         "path": "seo,noindex,socialPreview",
         "model": "app/src/server/config/schema.ts"
-      }
+      },
+      "writingNotes": [
+        "Feature page slug: /features/search-engine-indexing."
+      ]
     },
     {
       "id": "config-social",
@@ -498,7 +505,7 @@
     {
       "id": "config-anchors",
       "kind": "feature",
-      "title": "Anchor links",
+      "title": "Navigation links",
       "summary": "Renders configurable floating anchor shortcuts with icon, title, href, and optional locale or tab scope.",
       "status": "stable",
       "audience": [
@@ -513,12 +520,15 @@
         "type": "file",
         "path": "anchors",
         "model": "app/src/server/config/models/anchors.ts"
-      }
+      },
+      "writingNotes": [
+        "Feature page slug: /features/navigation-links. Sidebar label: Links."
+      ]
     },
     {
       "id": "config-variables",
       "kind": "feature",
-      "title": "Variables",
+      "title": "Global variables",
       "summary": "Substitutes {{ dotted.path }} placeholders in MDX content using values from the docs.json variables object.",
       "status": "stable",
       "audience": [
@@ -606,7 +616,7 @@
     {
       "id": "previous-next",
       "kind": "feature",
-      "title": "Previous and next links",
+      "title": "Navigation buttons",
       "summary": "Renders previous/next navigation from frontmatter overrides or by inferring order from flattened sidebar links when enabled in content settings.",
       "status": "stable",
       "audience": [
@@ -620,6 +630,44 @@
       "related": [
         "config-sidebar",
         "config-content"
+      ],
+      "writingNotes": [
+        "Feature page slug: /features/navigation-buttons."
+      ]
+    },
+    {
+      "id": "table-of-contents",
+      "kind": "feature",
+      "title": "Table of contents",
+      "summary": "Renders an on-page heading sidebar for the current doc, including headings between h2 and the depth set by content.headerDepth.",
+      "status": "stable",
+      "audience": [
+        "contributor",
+        "end-user"
+      ],
+      "sources": [
+        {
+          "path": "app/src/components/table-of-contents.tsx"
+        },
+        {
+          "path": "app/src/lib/docs-markdown.ts",
+          "role": "heading depth filter"
+        },
+        {
+          "path": "app/src/server/config/models/content.ts",
+          "role": "headerDepth config"
+        }
+      ],
+      "configuration": {
+        "type": "file",
+        "path": "content.headerDepth",
+        "model": "app/src/server/config/models/content.ts"
+      },
+      "related": [
+        "config-content"
+      ],
+      "writingNotes": [
+        "Feature page slug: /features/table-of-contents."
       ]
     },
     {
@@ -732,7 +780,7 @@
     {
       "id": "ai-chat",
       "kind": "feature",
-      "title": "AI chat",
+      "title": "Ask AI",
       "summary": "Provides an in-docs chat panel that streams answers from a ToolLoopAgent with bash access to mounted MDX files, gated by agent session cookies and rate limits. Supports xAI, OpenAI, Anthropic, and Google providers.",
       "status": "beta",
       "audience": [
@@ -780,6 +828,9 @@
         "config-agent",
         "agent-chat-api",
         "cli-agent-create"
+      ],
+      "writingNotes": [
+        "Feature page slug: /features/ask-ai. Beta status called out on overview card."
       ]
     },
     {
@@ -1115,6 +1166,38 @@
       "related": [
         "docs-json-config",
         "redirects"
+      ]
+    },
+    {
+      "id": "cli-preview",
+      "kind": "cli",
+      "title": "docs preview",
+      "summary": "Runs a local WebSocket preview server that watches docs.json and docs/**/*.mdx, bundles MDX on change, and opens docs.page/preview pointed at the local socket URL.",
+      "status": "stable",
+      "audience": [
+        "contributor"
+      ],
+      "sources": [
+        {
+          "path": "packages/cli/src/commands/preview.ts"
+        },
+        {
+          "path": "app/src/components/preview-client.tsx",
+          "role": "browser client"
+        }
+      ],
+      "surface": {
+        "cli": [
+          "docs preview [--port <number>] [--no-browser]"
+        ]
+      },
+      "related": [
+        "local-preview",
+        "docs-json-config",
+        "cli-check"
+      ],
+      "writingNotes": [
+        "Feature pages: /features/cli (CLI overview) and /features/local-preview (workflow focus)."
       ]
     },
     {
@@ -1538,17 +1621,13 @@
     {
       "id": "github-bot",
       "kind": "integration",
-      "title": "GitHub bot",
+      "title": "GitHub App",
       "summary": "GitHub App that comments on pull requests with links to live documentation previews for the PR branch, served by docs.page ref routing.",
       "status": "stable",
       "audience": [
         "contributor"
       ],
       "sources": [
-        {
-          "path": "README.md",
-          "role": "product overview"
-        },
         {
           "path": "app/src/server/github/repo-source.ts",
           "symbol": "getPullRequestMetadata",
@@ -1563,6 +1642,9 @@
       "related": [
         "ref-previews",
         "github-hosting"
+      ],
+      "writingNotes": [
+        "Feature page slug: /features/github-app. App install URL: https://github.com/apps/docs-page"
       ]
     },
     {
@@ -1586,7 +1668,7 @@
     {
       "id": "mcp-skills",
       "kind": "integration",
-      "title": "MCP skills",
+      "title": "Agent skills",
       "summary": "Exposes repository .agents/skills/** markdown files as MCP resources with docs-page://skills/ URIs.",
       "status": "stable",
       "audience": [
@@ -1604,6 +1686,59 @@
       ],
       "related": [
         "mcp-server"
+      ],
+      "writingNotes": [
+        "Feature page slug: /features/agent-skills."
+      ]
+    },
+    {
+      "id": "mdx-components",
+      "kind": "feature",
+      "title": "Components",
+      "summary": "Built-in PascalCase MDX components (tabs, callouts, code blocks, cards, media, and more) rendered from docs.page IR without explicit imports in author MDX.",
+      "status": "stable",
+      "audience": [
+        "contributor"
+      ],
+      "sources": [
+        {
+          "path": "app/src/components/docs-ir-renderer.tsx",
+          "role": "component map"
+        },
+        {
+          "path": "app/src/lib/docs-ir/from-mdx.ts",
+          "symbol": "isMdxComponentName"
+        }
+      ],
+      "surface": {
+        "ui": [
+          "Accordion",
+          "Card",
+          "Tabs",
+          "Steps",
+          "Info",
+          "CodeFence"
+        ]
+      },
+      "related": [
+        "component-accordion",
+        "component-callout",
+        "component-card",
+        "component-code-fence",
+        "component-code-group",
+        "component-heading",
+        "component-icon",
+        "component-image",
+        "component-property",
+        "component-steps",
+        "component-tabs",
+        "component-tweet",
+        "component-video",
+        "component-vimeo",
+        "component-youtube"
+      ],
+      "writingNotes": [
+        "Feature page slug: /features/components — overview linking to /components reference pages."
       ]
     }
   ]

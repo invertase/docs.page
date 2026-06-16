@@ -1,6 +1,58 @@
 ---
 title: Analytics
-description: Add Google Analytics, Tag Manager, or Plausible without custom docs site template scripts.
+description: See how docs.page injects analytics on live sites and why local preview stays script-free.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+You want page views in Google Analytics or Plausible without maintaining a custom HTML shell or sprinkling `<script>` tags through MDX. docs.page loads tracking from `docs.json` on published pages only—your local preview never sends events to production dashboards.
+
+## Overview
+
+The `scripts` object in `docs.json` declares which analytics provider to use. docs.page injects the matching snippets when it renders a **published** page: production on the default branch, a vanity subdomain, or a custom domain.
+
+Three providers are supported:
+
+- **Google Tag Manager** — bootstrap a GTM container by container ID
+- **Google Analytics (GA4)** — load `gtag.js` with a measurement ID when Tag Manager is not configured
+- **Plausible** — load Plausible's hosted script or a self-hosted URL, scoped to your site domain
+
+Configuration is declarative. You do not edit page templates or MDX to add tracking code.
+
+## How it works
+
+### Injection at render time
+
+During page render, docs.page reads `scripts` from the bundled configuration and outputs provider-specific `<Script>` tags in the HTML. For Google Tag Manager, it also inserts the standard `<noscript>` iframe fallback.
+
+This runs on every published page view. The snippets are identical across routes—page-level MDX does not control analytics.
+
+### Google Tag Manager versus Google Analytics
+
+When `googleTagManager` is set, docs.page injects the GTM bootstrap script only. It skips direct Google Analytics injection even if `googleAnalytics` is also present. Route GA (and other tags) through your GTM container instead.
+
+Set `googleAnalytics` alone when you want a direct GA4 integration without Tag Manager.
+
+### Plausible and site domains
+
+Plausible requires a `data-domain` attribute that matches the hostname readers use. docs.page loads the Plausible script only when the request resolves to a configured **custom domain** or **vanity subdomain**. On the default `docs.page/{owner}/{repo}` path with no mapped domain, Plausible config has no effect.
+
+Set `plausible` to `true` for Plausible's hosted script endpoint, or pass a string URL for self-hosted Plausible.
+
+### No scripts during local preview
+
+`docs preview` serves pages in preview request mode. In that mode, the script injector returns nothing—no GTM, GA, or Plausible tags are added to the document.
+
+That keeps local editing and QA from inflating production analytics. Merge and push to your default branch (or open a hosted preview URL) to verify tags on a live-rendered page.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Track reader engagement" icon="chart-simple" href="/customize/track-reader-engagement">
+    Add analytics keys to docs.json and confirm events on your live site.
+  </Card>
+  <Card title="Analytics providers" icon="book-open" href="/reference/analytics-providers">
+    Config keys, value types, and example `scripts` blocks.
+  </Card>
+  <Card title="Local preview" icon="eye" href="/features/local-preview">
+    Preview theme and layout locally without loading analytics scripts.
+  </Card>
+</CardGroup>

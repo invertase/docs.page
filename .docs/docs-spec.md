@@ -1,6 +1,6 @@
 ---
-version: "1.0.0"
-updatedAt: 2026-06-11
+version: "1.2.0"
+updatedAt: 2026-06-16
 ---
 
 # Documentation spec
@@ -28,11 +28,13 @@ Ordered spine for documentation IA.
 1. **orient** — What docs.page is, when to use it, docs for humans + agents
 2. **first-success** — Quickstart: publish a live site from GitHub
 3. **author-content** — Write MDX, navigation, frontmatter, GitHub bot for PR previews
-4. **customize** — Theme, logo, nav, analytics, custom domains, local preview
-5. **integrate** — Agent-ready surfaces: llms.txt, MCP, AI chat
-6. **lookup** — Reference for config fields, components, and agent endpoints
+4. **customize** — Theme, branding, domains, SEO, and site chrome (Features → Customize + Configure)
+5. **integrate** — Agent-ready surfaces: llms.txt, MCP, agent skills, Ask AI (Features → AI)
+6. **lookup** — Reference for config fields, components, CLI flags, and HTTP endpoints
 
 Optional later: **understand** — architecture and internals (nice-to-have, not core spine).
+
+**Features tab** — Goal-ordered capability catalog (`/features`): Publish → Organize → Customize → Configure → AI → Integrate. One page per capability; stubs link to Reference and Components where appropriate.
 
 ## Policy
 
@@ -52,14 +54,18 @@ GitHub bot, configuration, components, and Agents & AI are core product features
 ## Notes
 
 - Lead with contributor quickstart; secondary readers include doc consumers (`end-user`) and agent integrators (`integrator`).
-- Configuration, components, and Agents & AI are major narrative topics in the main docs; detailed field and prop lookup belongs in reference sections (IA decided at scaffold time).
-- Add a **Comparisons & migrations** section — feature comparisons vs Docusaurus, docsify, Jekyll, etc., plus migration guides; prioritize for SEO.
+- **Features tab** (`docs/features/index.mdx`) is the canonical capability map: six groups (Publish, Organize, Customize, Configure, AI, Integrate), card overview plus one page per feature. **Every feature page is an Explanation** — what the capability is, how it fits the product, and how it behaves. At most, add a short **How-to** section for enablement steps (install app, run CLI, connect MCP). Do not write Reference-style field tables on feature pages; link to the Reference tab instead.
+- **Documentation tab** holds tutorials and how-tos: Getting Started, Authoring workflows, Customize your site guides. Multi-step procedures that combine several features live here, not on Features.
+- Configuration, components, and AI surfaces: conceptual coverage on Features; per-field and per-prop lookup on Reference and Components tabs.
+- Add a **Platform comparisons** section — feature comparisons vs Docusaurus, docsify, Jekyll, etc.; migration guides deferred for v1.
 - Tone: practical, zero-config friendly; emphasize “docs for humans + agents” without over-indexing on agent features before first publish.
+- Feature page titles follow single-focus naming in nav; cross-links at the bottom of `/features` point to Components, Reference, and Publish your first site.
 
 ## Scan focus
 
-- Configuration and `docs.json` schema
-- MDX components
-- GitHub bot and preview flows
-- Agent surfaces: llms.txt, MCP, AI chat
-- Local preview CLI
+- `docs/features/**` — feature page stubs and written pages (align inventory ids with slugs)
+- Configuration and `docs.json` schema (`app/src/server/config/`)
+- MDX components (`app/src/components/mdx/`, `docs-ir-renderer.tsx`)
+- GitHub App and preview flows (`ref-previews`, `local-preview`, `cli-preview`)
+- Agent surfaces: llms.txt, MCP, agent skills, Ask AI
+- CLI commands (`packages/cli/src/commands/`)

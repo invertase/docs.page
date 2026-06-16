@@ -1,6 +1,91 @@
 ---
 title: Previous and next links
-description: Show previous and next links at page bottoms in sidebar navigation order across your site.
+description: Understand when bottom-of-page links follow sidebar order and when page frontmatter overrides that sequence.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+A reader finishes a tutorial and taps **Next** expecting the follow-up guide—not necessarily the next item in your sidebar tree. docs.page balances those two models: automatic neighbors from navigation order, with per-page overrides when the reading path should diverge.
+
+## Overview
+
+Previous and next links are button-style anchors at the bottom of every doc page, directly under the main content and above the site footer. They help readers move through your documentation without returning to the sidebar.
+
+By default, docs.page **infers** those links from where the current page sits in your `sidebar` configuration in `docs.json`. The flattened sidebar order becomes the reading sequence: the page before yours is **Previous**, the page after is **Next**.
+
+When a page needs a different path—skipping a reference page, jumping to a related how-to, or stitching a custom learning track—you set `previous` and `next` in that page's frontmatter. Frontmatter wins for whichever direction you set; the other direction can still come from inference.
+
+| Mechanism | What it controls |
+| --- | --- |
+| Sidebar order + `content.automaticallyInferNextPrevious` | Default neighbors for every page |
+| Frontmatter `previous` / `next` (and optional titles) | Per-page overrides that replace inferred links |
+
+## How it works
+
+### Automatic inference from the sidebar
+
+When `content.automaticallyInferNextPrevious` is `true` (the default), docs.page builds a single ordered list from your sidebar:
+
+1. Walk every group and page in `sidebar`, depth-first.
+2. Keep only **internal** links—external URLs are skipped because they are not docs pages on your site.
+3. Include nested group labels when a group has both a `group` name and an `href` pointing at an internal page.
+4. Find the current page in that list (locale-aware path matching) and take the items immediately before and after it.
+
+That order mirrors how readers scan the left navigation: siblings in a group are neighbors, and the next group continues the sequence. Nested groups contribute their pages in tree order, not alphabetically by URL.
+
+To turn off inference site-wide, set `automaticallyInferNextPrevious` to `false` under `content` in `docs.json`:
+
+```json
+{
+  "content": {
+    "automaticallyInferNextPrevious": false
+  }
+}
+```
+
+With inference disabled, links appear only on pages where you set frontmatter overrides.
+
+### Frontmatter overrides
+
+Add `previous` and/or `next` to a page's YAML frontmatter to replace the inferred link for that direction. Paths are site-root relative, same as sidebar `href` values:
+
+```yaml
+---
+title: Deploy to production
+next: /guides/monitoring
+nextTitle: Monitor your deployment
+---
+```
+
+Optional `previousTitle` and `nextTitle` set the button label. When you omit a title field, docs.page looks up the target path in the flattened sidebar and uses that entry's title. If the path is not in the sidebar and no title is provided, that button is hidden—docs.page does not render a link with an empty label.
+
+Overrides are evaluated **after** inference. Setting only `next` keeps an inferred **Previous** when inference is enabled; setting only `previous` keeps an inferred **Next**. Setting both replaces both directions entirely.
+
+External URLs in `previous` or `next` are ignored—the navigation buttons are for moving between pages on your docs site, not for outbound links.
+
+### When nothing renders
+
+If docs.page cannot resolve a previous or next target with a display title, that side is omitted. When both sides are missing, the component renders nothing—no empty row at the bottom of the page.
+
+Common cases:
+
+- The current page is not listed in the sidebar and inference is on (no index match → no inferred neighbors).
+- Inference is off and the page has no frontmatter overrides.
+- An override points at a path outside the sidebar without a matching `previousTitle` or `nextTitle`.
+
+Run `docs check` before you push to validate `previous` and `next` frontmatter paths the same way it validates links in page content.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Sidebar" icon="sidebar" href="/features/sidebar">
+    How groups and page order in docs.json define the sequence inference uses.
+  </Card>
+  <Card title="Table of contents" icon="list" href="/features/table-of-contents">
+    On-page heading navigation alongside bottom-of-page prev/next links.
+  </Card>
+  <Card title="Page frontmatter" icon="file-code" href="/reference/page-frontmatter">
+    Reference for previous, next, and title fields on individual pages.
+  </Card>
+  <Card title="docs.json reference" icon="book" href="/reference/docs-json-reference">
+    Reference for content.automaticallyInferNextPrevious and other content settings.
+  </Card>
+</CardGroup>

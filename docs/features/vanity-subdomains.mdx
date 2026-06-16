@@ -1,6 +1,101 @@
 ---
 title: Vanity subdomains
-description: Host docs at owner subdomains on docs.page instead of the default repository URL path now.
+description: Use {owner}.docs.page URLs when you want the GitHub owner in the hostname instead of the path.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+If your GitHub organization publishes documentation in several repositories, the default `docs.page/{owner}/{repo}` URL repeats the owner on every link. Vanity subdomains move that segment into the hostname so each repo gets a shorter path under your org.
+
+## Overview
+
+Every hosted docs.page site has a **canonical URL** on the main domain:
+
+```
+https://docs.page/{owner}/{repo}
+https://docs.page/{owner}/{repo}/{page-path}
+```
+
+Vanity subdomains add a second public shape for the same content. The GitHub owner becomes the subdomain, and the path starts at the repository name:
+
+```
+https://{owner}.docs.page/{repo}
+https://{owner}.docs.page/{repo}/{page-path}
+```
+
+For example, `https://docs.page/acme/handbook` and `https://acme.docs.page/handbook` serve the same site. A page at `docs/usage.mdx` is `/usage` on either URL shape.
+
+Vanity subdomains require **no configuration**. If your repository is public and the subdomain matches your GitHub owner or organization name, the shorter URL works immediately. One subdomain covers every public docs repo under that owner.
+
+See [Public GitHub hosting](/features/github-hosting) for how owner and repository segments resolve to GitHub content.
+
+## How it works
+
+### Default paths vs vanity URLs
+
+| URL shape | Example | Owner in URL |
+| --- | --- | --- |
+| Canonical (default) | `https://docs.page/acme/handbook/usage` | Path segment `/acme/` |
+| Vanity subdomain | `https://acme.docs.page/handbook/usage` | Hostname `acme.docs.page` |
+
+Both forms fetch the same `docs.json` and MDX files from GitHub. docs.page picks the request mode from the hostname:
+
+1. A request to `{owner}.docs.page` maps the subdomain to a GitHub owner
+2. The path after the hostname is treated as `/{repo}/…` instead of `/{owner}/{repo}/…`
+3. Internal links, search, sitemaps, and redirects use the vanity path shape while you stay on the subdomain
+
+Canonical URLs on `docs.page/{owner}/{repo}` still work. Use whichever shape fits your links and branding.
+
+### One subdomain, many repositories
+
+The subdomain is tied to the **GitHub owner**, not a single repository. If `acme` owns `handbook`, `api`, and `sdk`, all three are available under the same hostname:
+
+```
+https://acme.docs.page/handbook
+https://acme.docs.page/api
+https://acme.docs.page/sdk
+```
+
+Each repository keeps its own `docs.json`, sidebar, and page tree. The vanity hostname is shared identity for the organization; the first path segment selects the repo.
+
+### Branch and pull request previews
+
+[Branch preview](/features/branch-preview) ref segments work on vanity URLs the same way they do on canonical URLs. Add `~{ref}` immediately after the repository name:
+
+```
+https://{owner}.docs.page/{repo}~{ref}
+https://{owner}.docs.page/{repo}~{ref}/{page-path}
+```
+
+For example, `https://acme.docs.page/handbook~feature-docs` serves the `feature-docs` branch of `acme/handbook`. Numeric refs still resolve to pull request head branches through the GitHub API.
+
+### Reserved subdomains
+
+These hostnames stay on the main `docs.page` site and do not map to a GitHub owner:
+
+- `docs.docs.page`
+- `www.docs.page`
+- `staging.docs.page`
+
+Nested subdomains (for example `team.acme.docs.page`) are not supported. The owner segment must be a single label before `.docs.page`.
+
+### Vanity subdomains vs custom domains
+
+Vanity subdomains keep you on the `docs.page` domain with a shorter path. [Custom domains](/features/custom-domains) serve docs on a hostname you control (for example `docs.acme.com`) and drop both the owner and repository from public paths when configured.
+
+Use vanity URLs when a branded `docs.page` subdomain is enough. Use a custom domain when readers should never see `docs.page` in the address bar.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Public GitHub hosting" icon="github" href="/features/github-hosting">
+    How default-branch URLs map to GitHub repositories.
+  </Card>
+  <Card title="Branch preview" icon="code-branch" href="/features/branch-preview">
+    Share branch, commit, and pull request URLs with teammates.
+  </Card>
+  <Card title="Custom domains" icon="link" href="/features/custom-domains">
+    Map your own domain to a hosted docs site.
+  </Card>
+  <Card title="Redirects" icon="arrow-right" href="/features/redirects">
+    How frontmatter redirects resolve on vanity and custom-domain URLs.
+  </Card>
+</CardGroup>

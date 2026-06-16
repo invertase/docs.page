@@ -1,6 +1,78 @@
 ---
 title: Table of contents
-description: Control which heading levels show in the on-page sidebar for every docs page on your site.
+description: Understand which headings appear in the on-page sidebar and tune depth with content.headerDepth.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+A long guide with six sections and no landmarks forces readers to scroll and guess where they are. The on-page table of contents gives every doc page a scan-friendly map of what is on *this* page — without leaving the article.
+
+## Overview
+
+docs.page renders an **On this page** sidebar in the right column of each documentation page. It lists Markdown headings from the current page, links to in-page anchors, and highlights the section you are reading as you scroll.
+
+The list is built at bundle time from your MDX source. You do not enable the table of contents per page or add a component to each file — it appears automatically on every doc page when the layout has room for it.
+
+Which heading levels qualify is controlled globally through the `content` object in `docs.json`. The key that matters for the table of contents is `content.headerDepth`. That setting sits alongside other content defaults such as image zoom and previous/next link inference.
+
+## How it works
+
+### On-page layout
+
+On wide viewports, the table of contents sits in a sticky column to the right of the article body. Each entry is a link to a heading anchor (`#section-slug`). As you scroll, the active entry updates so readers always know which section is in view.
+
+Deeper headings are indented in the list so nested structure is visible at a glance. On narrower screens the column is hidden so the main content keeps full width — the heading anchors still work when readers follow deep links.
+
+### Which headings are included
+
+The table of contents reads **Markdown heading lines** from the page source — `##` through `######`. Headings inside fenced code blocks are ignored.
+
+| Rule | Behavior |
+| --- | --- |
+| Minimum depth | `h2` (`##`) — fixed |
+| Maximum depth | `content.headerDepth` (default `3`, so `h3`) |
+| Page title | Excluded — the visible title comes from frontmatter `title`, not a body `#` heading |
+| `<Heading>` components | Not extracted — use Markdown syntax when you want a section in the table of contents |
+
+Each included heading gets a slugified `id` for anchor links. Duplicate titles on the same page receive numeric suffixes (`-1`, `-2`, and so on).
+
+See [Heading](/components/heading) for slug rules, anchor behavior, and when to use the `<Heading>` component instead of Markdown.
+
+### `content.headerDepth`
+
+Set `headerDepth` under the `content` key in `docs.json` to control the deepest heading level that appears in the table of contents on every page:
+
+```json
+{
+  "content": {
+    "headerDepth": 3
+  }
+}
+```
+
+The default is `3`, which includes `h2` and `h3` sections. Increase the value to surface deeper structure — for example, `4` adds `h4` headings, `5` adds `h5`, and `6` adds `h6`.
+
+At build time, docs.page passes `content.headerDepth` to the MDX bundler as the maximum table-of-contents depth. Every page on the site uses the same limit; there is no per-page override.
+
+If `headerDepth` is lower than the minimum depth (`2`) or invalid, no headings qualify and the **On this page** list is empty.
+
+### Authoring for a useful table of contents
+
+Structure long pages with `##` for major sections and `###` for subsections readers should be able to jump to. Avoid repeating the frontmatter `title` as `# Page title` in the body — that creates a duplicate heading and does not belong in the table of contents.
+
+When a page has many small `h4` or `h5` headings, raising `headerDepth` can make the sidebar noisy. Start with the default and increase it only when deeper levels represent real navigation landmarks, not one-line labels.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Heading" icon="heading" href="/components/heading">
+    Slug rules, anchor links, and table-of-contents depth from the component side.
+  </Card>
+  <Card title="docs.json reference" icon="book" href="/reference/docs-json-reference">
+    Field-level lookup for `content.headerDepth` and other content settings.
+  </Card>
+  <Card title="Write documentation" icon="pen" href="/authoring/write-documentation">
+    Structure pages with headings, links, and prose readers can scan.
+  </Card>
+  <Card title="Content pages" icon="file-lines" href="/concepts/content-pages">
+    How MDX files, frontmatter, and repo paths map to live URLs.
+  </Card>
+</CardGroup>

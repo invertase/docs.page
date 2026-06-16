@@ -1,6 +1,100 @@
 ---
 title: Custom domains
-description: Map your own domain to a hosted docs site so readers see branded public URLs on your site.
+description: Serve docs from your own hostname with clean paths that hide the GitHub owner and repository segments.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+Readers expect product documentation at a URL you control — `https://docs.example.com`, not `https://docs.page/acme/handbook`. Custom domains map a hostname to a single hosted repository so every page, preview link, and sitemap uses your brand at the root of the path.
+
+## Overview
+
+A custom domain is a **one hostname, one repository** mapping. When the mapping is active, production URLs drop the `/{owner}/{repo}` prefix that appears on the default docs.page host. The same MDX files and `docs.json` configuration power the site; only the public URL shape changes.
+
+docs.page still fetches content from your public GitHub repository on each request — the same [push-to-publish model](/features/github-hosting) as the default host. Custom domains change routing and link generation, not how content is stored or bundled.
+
+Compare with [Vanity subdomains](/features/vanity-subdomains), which shorten paths under `{owner}.docs.page` but keep the docs.page hostname. Custom domains use a hostname you own entirely.
+
+## How it works
+
+### Request routing
+
+Incoming requests on a configured custom domain pass through an edge **custom-domain worker** before they reach the docs.page app. The worker resolves the request hostname to a GitHub `owner` and `repository`, then forwards the request with an `x-docs-page-custom-domain` header.
+
+Inside the app, that header selects **custom-domain request mode**. Routing, canonical URLs, sitemaps, redirects, and utility endpoints all use shorter public paths than the default docs.page URL shape.
+
+### Public URL shape
+
+On the default host, production docs live under `/{owner}/{repo}`:
+
+```
+https://docs.page/acme/handbook
+https://docs.page/acme/handbook/installation
+```
+
+On a custom domain for `acme/handbook`, the same pages are served at the domain root:
+
+```
+https://docs.example.com/
+https://docs.example.com/installation
+```
+
+[Branch preview](/features/branch-preview) ref segments work the same way — they move to the front of the path without the owner or repository prefix:
+
+```
+https://docs.example.com/~feature-docs
+https://docs.example.com/~feature-docs/installation
+```
+
+Per-repo utility routes follow the same pattern: `/search.json`, `/sitemap.xml`, `/robots.txt`, `/llms.txt`, and `/mcp` are available at the domain root (or under a `~ref` prefix when previewing a ref).
+
+### Domain lookup
+
+The app maintains the mapping in both directions through the Invertase custom-domain worker API at `custom-domain.invertase.workers.dev`.
+
+When a page is rendered on the default docs.page host, `getCustomDomain` queries the worker with `owner` and `repo` parameters. If a domain is registered, production **canonical URLs**, sitemap links, and internal link generation point readers at `https://{your-domain}` instead of `https://docs.page/{owner}/{repo}`.
+
+When a request arrives on your custom domain, the edge worker performs the reverse lookup — hostname to owner and repository — before the app bundles the page.
+
+<Info>
+  Custom domain mappings are managed outside your repository. You do not set the hostname in `docs.json`; the worker registry and DNS together connect your domain to a hosted repo.
+</Info>
+
+### Links, redirects, and locales
+
+Features that resolve URLs against the current site context respect custom-domain mode automatically:
+
+- **Frontmatter redirects** resolve relative paths against your custom domain base instead of `docs.page/{owner}/{repo}`.
+- **[Locales](/features/locales)** keep the same first-segment locale pattern — only the host changes (`https://docs.example.com/fr/installation`).
+- **Canonical URLs**, sitemap links, and internal navigation use your custom domain in production when the worker returns a mapping.
+
+Development and [local preview](/features/local-preview) continue to use localhost or the default docs.page host. Custom-domain path rewriting applies in production when the worker returns a domain for your repository.
+
+## Enable it
+
+Custom domain setup spans DNS, the worker registry, and TLS at the edge. These steps stay at a high level — full DNS record types, verification, and troubleshooting live in the procedural guide.
+
+1. **Choose a hostname** for the public repository you already host on docs.page (for example `docs.example.com` for `acme/handbook`).
+
+2. **Register the mapping** in the custom-domain worker so the hostname resolves to that GitHub `owner` and `repository`. The app reads this registry when generating canonical URLs and when the edge worker routes incoming requests.
+
+3. **Point DNS** at the docs.page edge infrastructure. Add the CNAME or equivalent record your operator documents so traffic for the hostname reaches the worker that sets `x-docs-page-custom-domain`.
+
+4. **Confirm TLS** terminates correctly for the hostname, then open the domain root in a browser. You should see the same home page as `https://docs.page/{owner}/{repo}` with paths rooted at `/`.
+
+For step-by-step DNS and verification detail, see [Connect a custom domain](/customize/connect-a-custom-domain). For HTTP routes, worker behavior, and platform internals, see [Reference](/reference).
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Connect a custom domain" icon="link" href="/customize/connect-a-custom-domain">
+    DNS, TLS, and verification steps to go live on your hostname.
+  </Card>
+  <Card title="Vanity subdomains" icon="globe" href="/features/vanity-subdomains">
+    Shorten paths under `{owner}.docs.page` without bringing your own domain.
+  </Card>
+  <Card title="Branch preview" icon="code-branch" href="/features/branch-preview">
+    Share ref URLs on your custom domain before you merge.
+  </Card>
+  <Card title="Reference" icon="book" href="/reference">
+    Configuration, HTTP endpoints, and platform lookup.
+  </Card>
+</CardGroup>

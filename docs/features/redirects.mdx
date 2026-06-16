@@ -3,4 +3,79 @@ title: Redirects
 description: Keep old URLs working when you move or rename pages anywhere across your public docs site.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+What happens when a reader bookmarks `/installation` and you rename the page to `/getting-started`? Without a redirect, the old path returns a 404 even though the content still exists under a new URL.
+
+## Overview
+
+docs.page redirects readers with the `redirect` field in page frontmatter. Leave a stub file at the old path, set `redirect` to the new destination, and the platform sends a temporary HTTP redirect before any page body renders.
+
+Redirects are **per page file**, not a central redirect table in `docs.json`. That keeps one-off renames simple: one old file, one target path. It is not a bulk URL migration tool — each old URL needs its own stub.
+
+For step-by-step rename workflows, see [Update moved pages](/authoring/update-moved-pages). Field syntax and other frontmatter options live in [Page frontmatter](/reference/page-frontmatter).
+
+## How it works
+
+### When a redirect runs
+
+On each page request, docs.page fetches the target `.mdx` file from GitHub and reads its frontmatter. If `redirect` is a non-empty string, the server returns a **307 Temporary Redirect** to the resolved destination. Page body content is ignored.
+
+The redirect runs in the same request path as normal page rendering — there is no separate redirect config to deploy.
+
+### Internal and external destinations
+
+**External URLs** — values starting with `http://`, `https://`, or `//` — are returned unchanged. Use these when the destination lives off your docs site.
+
+**Internal paths** — root-relative paths such as `/getting-started` — are resolved against the **current request context**. You write the path once; docs.page builds the full URL from how the reader opened the page.
+
+```yaml
+redirect: /getting-started
+```
+
+```yaml
+redirect: https://example.com/docs/new-location
+```
+
+Do not rely on query strings or hash anchors in `redirect` values. They are not part of the redirect contract.
+
+### How internal paths resolve across routing modes
+
+Internal redirects stay on the same site **mode** as the request. docs.page picks a base URL from the active route, appends the current ref segment when present, then appends your path.
+
+| Routing mode | Example request | Redirect base (before your path) |
+| --- | --- | --- |
+| **Canonical** | `https://docs.page/acme/handbook/old-page` | `https://docs.page/acme/handbook` |
+| **Branch preview** | `https://docs.page/acme/handbook~feature/old-page` | `https://docs.page/acme/handbook~feature` |
+| **Vanity subdomain** | `https://acme.docs.page/handbook/old-page` | `https://acme.docs.page/handbook` |
+| **Custom domain** | `https://docs.acme.com/old-page` | `https://docs.acme.com` |
+
+With a ref segment on a custom domain, the ref appears after the domain root: `https://docs.acme.com/~feature/new-page`.
+
+This behavior matters for previews and alternate hosts. A reader on a branch preview who hits a redirect lands on the same branch, not on production. A reader on your vanity subdomain or custom domain stays on that host instead of being sent to the default `docs.page/{owner}/{repo}` URL.
+
+You do not hard-code `https://docs.page/owner/repo` in frontmatter for internal moves — root-relative paths are enough.
+
+### What redirects do not cover
+
+| Topic | Behavior |
+| --- | --- |
+| Definition | Per-page `redirect` in frontmatter only — no wildcard or catch-all rules in `docs.json` |
+| HTTP status | Temporary redirect (307), not permanent (308) |
+| Deleted files | Removing the stub removes the URL — keep the old file to preserve the path |
+| Validation | [`docs check`](/features/cli#check-documentation) validates redirect targets the same way it validates in-page links |
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Update moved pages" icon="arrow-right-arrow-left" href="/authoring/update-moved-pages">
+    Rename or relocate pages and leave redirect stubs at old paths.
+  </Card>
+  <Card title="Page frontmatter" icon="file-lines" href="/reference/page-frontmatter">
+    Full field reference for `redirect` and other per-page YAML options.
+  </Card>
+  <Card title="Branch preview" icon="code-branch" href="/features/branch-preview">
+    How ref segments in URLs affect preview and production routing.
+  </Card>
+  <Card title="CLI" icon="terminal" href="/features/cli">
+    Run `docs check` to catch broken redirect targets before you merge.
+  </Card>
+</CardGroup>

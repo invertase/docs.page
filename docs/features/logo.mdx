@@ -1,6 +1,121 @@
 ---
 title: Logo
-description: Set light and dark logos plus favicons for your docs site in docs.json configuration file.
+description: Understand how header logos and tab favicons resolve when readers switch between light and dark mode.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+Your logo in the site header and the icon in the browser tab should stay legible when someone toggles light and dark mode. docs.page treats those as separate assets with their own resolution rules—not one image stretched across every surface.
+
+## Overview
+
+Branding in docs.page comes from two optional keys in `docs.json`:
+
+- **`logo`** — images in the site header, linked to the homepage
+- **`favicon`** — icons in the browser tab
+
+Both support **light** and **dark** variants. You can set one variant and let docs.page reuse it, or supply different files so each mode gets artwork that matches the background.
+
+Paths can be absolute URLs or repo-relative paths under `docs/`. Relative paths resolve to the matching file on the served Git branch through GitHub raw URLs—the same asset pipeline used for images in MDX.
+
+For every field name and accepted value shape, see [docs.json reference](/reference/docs-json-reference).
+
+## How it works
+
+### Header logo
+
+The header reads `logo.light` and `logo.dark` independently. Each value is optional.
+
+When **both** variants are set, docs.page renders two `<img>` elements and uses CSS to show the right one:
+
+- **Light logo** — visible in light mode (`dark:hidden` when a dark logo exists)
+- **Dark logo** — visible in dark mode (`hidden dark:block` when a light logo exists)
+
+When **only one** variant is set, that image appears in both modes. This is useful when a single mark works on every background.
+
+Logos link to `/` and sit beside the site **name** when `header.showName` is enabled (the default). Set `header.showName` to `false` if the logo alone carries your identity.
+
+```json
+{
+  "logo": {
+    "light": "/assets/logo-light.svg",
+    "dark": "/assets/logo-dark.svg"
+  }
+}
+```
+
+Use SVG or PNG with transparent backgrounds. docs.page displays logos at a fixed height in the header; wide marks scale down proportionally.
+
+### Favicon
+
+`favicon` accepts two shapes:
+
+1. **A string** — one icon for every color scheme. docs.page normalizes this to the same path for both light and dark.
+2. **An object** with optional `light` and `dark` keys — separate icons per mode, like the header logo.
+
+When both light and dark favicons are configured, docs.page emits two `<link rel="icon">` tags with `prefers-color-scheme` media queries so the browser picks the icon that matches the OS or browser theme. With only one variant set, a single tag applies everywhere—no media query needed.
+
+```json
+{
+  "favicon": "/assets/favicon.png"
+}
+```
+
+```json
+{
+  "favicon": {
+    "light": "/assets/favicon-light.png",
+    "dark": "/assets/favicon-dark.png"
+  }
+}
+```
+
+If you omit `favicon` entirely, docs.page falls back to the platform default icon bundled with the renderer.
+
+<Info>
+  Favicon media queries follow the **system** color scheme (`prefers-color-scheme`), while the header logo follows the **site** theme toggle. On pages where those differ, the tab icon and header logo may not always match—supply both light and dark variants when that distinction matters.
+</Info>
+
+### Asset paths
+
+External URLs pass through unchanged:
+
+```json
+{
+  "logo": {
+    "light": "https://example.com/logo-light.png",
+    "dark": "https://example.com/logo-dark.png"
+  }
+}
+```
+
+Repo-relative paths point at files under your `docs/` directory—for example, `/assets/logo-light.svg` resolves to `docs/assets/logo-light.svg` on the branch being served. Commit assets alongside your MDX so branch previews and production share the same files.
+
+### Legacy v1 config
+
+Older `docs.json` files used flat string fields: `logo`, `logoDark`, and `favicon`. docs.page detects that shape and migrates it automatically:
+
+- `logo` → `logo.light`
+- `logoDark` → `logo.dark`
+- `favicon` (string) → both `favicon.light` and `favicon.dark`
+
+You do not need to rewrite v1 configs to get light/dark behavior, but new projects should use the object form.
+
+### Open Graph fallback
+
+Social preview cards can use a dedicated image via `og.logo`. When that is unset, docs.page falls back to `logo.dark`, then `logo.light`, when generating default Open Graph images. Header and favicon settings do not replace `socialPreview` or per-page `image` frontmatter—those still take precedence for link previews.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Theme" icon="palette" href="/features/theme">
+    How light and dark mode, presets, and colors shape the site chrome around your logo.
+  </Card>
+  <Card title="Header" icon="window-maximize" href="/features/header">
+    Control whether the site name, theme toggle, and GitHub card appear beside the logo.
+  </Card>
+  <Card title="Apply your branding" icon="paintbrush" href="/customize/apply-your-branding">
+    Walk through theme, logo, favicon, header, and footer settings in one pass.
+  </Card>
+  <Card title="docs.json reference" icon="book" href="/reference/docs-json-reference">
+    Field-by-field lookup for `logo`, `favicon`, and related configuration keys.
+  </Card>
+</CardGroup>

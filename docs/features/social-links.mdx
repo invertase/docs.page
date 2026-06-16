@@ -1,6 +1,80 @@
 ---
 title: Social links
-description: Show social profiles and Open Graph metadata in the site chrome for richer social sharing.
+description: Connect footer profile links and control what appears when readers share your docs URLs.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+Someone pastes your docs URL into Slack or LinkedIn — what title, description, and preview image do they see? And where do visitors find your GitHub or Discord without hunting through the prose? docs.page answers both questions from `docs.json`: footer icons for your profiles, and Open Graph metadata for link previews.
+
+## Overview
+
+Social configuration splits across two concerns in `docs.json`:
+
+- **`social`** — profile shortcuts rendered as icon buttons in the site footer.
+- **`og`** — inputs that shape **auto-generated** share-card images when no static preview image is set.
+
+A third top-level field, **`socialPreview`**, sets a default preview image for every page. Per-page frontmatter can override that image. Together, these settings control outbound sharing and the small slice of site chrome reserved for community links.
+
+Field names, types, and defaults live on the [docs.json reference](/reference/docs-json-reference). This page explains how the pieces fit together.
+
+## How it works
+
+### Social profiles in the footer
+
+Add a `social` object to `docs.json`. Each key is a supported platform; the value is a handle, ID, or URL fragment — not a full profile URL (except `website`):
+
+```json
+{
+  "social": {
+    "website": "https://acme.dev",
+    "github": "acme",
+    "x": "acme",
+    "discord": "acme-community"
+  }
+}
+```
+
+docs.page maps each key to the correct destination — for example `github: "acme"` becomes `https://github.com/acme`, and `discord: "acme-community"` becomes `https://discord.gg/acme-community`.
+
+Supported platforms: `website`, `x`, `youtube`, `facebook`, `instagram`, `linkedin`, `github`, `slack`, and `discord`. Entries with empty values or unknown keys are skipped. The footer sorts remaining icons alphabetically by key so the order stays consistent on server and client renders.
+
+These icons sit in the footer beside the docs.page attribution — separate from [header links](/features/header) (top-bar CTAs) and [anchor links](/features/navigation-links) (sidebar shortcuts). Use footer social icons when you want profile links on every page without competing for header or sidebar space.
+
+### Open Graph metadata on every page
+
+Each published page emits standard meta tags for title, description, and preview image — both Open Graph (`og:*`) and Twitter Card (`twitter:*`) variants. The renderer resolves values in a predictable cascade:
+
+| Field | Resolution order |
+| --- | --- |
+| **Title** | Page frontmatter `title` → `name` in `docs.json` → `"Documentation"` |
+| **Description** | Page frontmatter `description` → `description` in `docs.json` |
+| **Preview image** | Page frontmatter `image` → `socialPreview` in `docs.json` → auto-generated card |
+
+Canonical URLs and `seo.noindex` come from other configuration surfaces; see [Search engine indexing](/features/search-engine-indexing) when you need to block crawlers.
+
+### Auto-generated share images
+
+When neither page frontmatter nor `socialPreview` supplies an image, docs.page builds one dynamically. It sends the resolved title, description, logo, and optional repository identifier to an OG image endpoint and uses the result as `og:image`.
+
+The `og` object in `docs.json` controls what goes into that generated card:
+
+- **`og.logo`** — a repo-relative path under `docs/` or an absolute URL for the logo on the card. When omitted, docs.page falls back to `logo.dark`, then `logo.light`, from your [logo configuration](/features/logo).
+- **`og.github`** — when `true` (the default), the generated card includes your GitHub repository (`owner/repo` from the hosted source). Set to `false` to omit the repository badge.
+
+Set `socialPreview` to a static image URL when you want the same artwork on every page without generation — useful for a branded default. Individual pages can still override it with frontmatter `image`. See [Page frontmatter](/reference/page-frontmatter) for per-page metadata fields.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="docs.json reference" icon="file-code" href="/reference/docs-json-reference">
+    Field lookup for `social`, `og`, and `socialPreview`.
+  </Card>
+  <Card title="Logo" icon="image" href="/features/logo">
+    How light and dark logos feed the header and generated share cards.
+  </Card>
+  <Card title="Page frontmatter" icon="file-lines" href="/reference/page-frontmatter">
+    Override title, description, and preview image on individual pages.
+  </Card>
+  <Card title="Links" icon="link" href="/features/navigation-links">
+    Sidebar shortcuts for repos and communities — separate from footer social icons.
+  </Card>
+</CardGroup>

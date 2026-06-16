@@ -1,6 +1,98 @@
 ---
 title: llms.txt
-description: Auto-generate llms.txt and llms-full.txt exports for LLM discovery and ingestion workflow.
+description: Understand how docs.page builds llms.txt indexes so LLM tools can discover your published documentation.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+When an AI agent needs to answer questions about your product, it first needs to know what documentation exists and where to read it. Human readers browse sidebars and search; agents benefit from a compact, machine-readable index they can fetch in one request.
+
+## Overview
+
+Every published docs.page site exposes two auto-generated markdown exports: **`llms.txt`** and **`llms-full.txt`**. They follow the [llms.txt convention](https://llmstxt.org/) — a plain-text index that LLM tools can crawl or ingest without scraping HTML.
+
+You do not enable these exports in `docs.json`, run a build step, or maintain a separate mirror. docs.page generates both files from the same GitHub source that powers your live site. Push a page update and the exports reflect it on the next request.
+
+## How it works
+
+### What `llms.txt` contains
+
+`llms.txt` is a lightweight index of every documentation page in the repository. The response is markdown with:
+
+- A **site title** from `docs.json` `name`, or `{owner}/{repo}` when `name` is unset
+- A **site description** from `docs.json` `description`, or a generated fallback
+- A **Docs** section listing each page as a markdown link with its title, absolute URL, and page `description` from frontmatter when present
+
+Example shape:
+
+```markdown
+# Acme Handbook
+
+Product documentation for the Acme platform.
+
+## Docs
+
+- [Getting started](https://docs.page/acme/handbook/getting-started): Install the SDK and make your first API call.
+- [Authentication](https://docs.page/acme/handbook/authentication): API keys, OAuth, and token refresh.
+```
+
+Use `llms.txt` when a tool needs a map of your docs — titles, summaries, and canonical links — without downloading full page source.
+
+### What `llms-full.txt` contains
+
+`llms-full.txt` includes the same site header, then **full MDX source** for every page. Each entry has a heading with the page title, a `Source:` line with the absolute URL, and the raw `.mdx` content in a fenced code block.
+
+Agents that cannot follow links or that prefer a single bulk download use `llms-full.txt` for one-shot ingestion. The tradeoff is size: large sites produce large responses, so prefer `llms.txt` when discovery alone is enough.
+
+### Generation from your repository
+
+On each request, docs.page:
+
+1. Lists documentation files from your public GitHub repository at the resolved ref (default branch, or a branch/commit/PR when the URL includes `~ref`)
+2. Loads `docs.json` and page frontmatter for titles and descriptions
+3. Assembles the markdown export and returns it with `Content-Type: text/markdown; charset=utf-8`
+
+There is no export cache you manage. Content stays in sync with Git — the same model as [Public GitHub hosting](/features/github-hosting).
+
+<Info>
+  If your repository tree is very large, docs.page may truncate the file list. When that happens, the response includes an `x-docs-page-tree-truncated: 1` header so integrators know the export may be incomplete.
+</Info>
+
+### URLs and routing
+
+On the default docs.page host, exports live at:
+
+```
+https://docs.page/{owner}/{repo}/llms.txt
+https://docs.page/{owner}/{repo}/llms-full.txt
+```
+
+Branch, commit, and pull request previews use the same `~ref` segment as page URLs:
+
+```
+https://docs.page/{owner}/{repo}~{ref}/llms.txt
+https://docs.page/{owner}/{repo}~{ref}/llms-full.txt
+```
+
+On [vanity subdomains](/features/vanity-subdomains) and [custom domains](/features/custom-domains), links inside the export use that site's public origin and path layout. See [Branch preview](/features/branch-preview) for ref URL patterns.
+
+For method names, response headers, cache behavior, and the full route list, see [HTTP endpoints](/reference/http-endpoints).
+
+### Caching
+
+Responses are cached at the edge for a short period (on the order of five minutes) with stale-while-revalidate. Browser clients receive `max-age=0` so LLM tooling that fetches directly tends to get a fresh aggregate. The edge cache still reduces load when many agents request the same export.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="HTTP endpoints" icon="globe" href="/reference/http-endpoints">
+    Route lookup for llms.txt, llms-full.txt, MCP, search.json, and other published APIs.
+  </Card>
+  <Card title="MCP server" icon="plug" href="/features/mcp-server">
+    Let agents list and read individual pages through a per-repo MCP endpoint.
+  </Card>
+  <Card title="Public GitHub hosting" icon="github" href="/features/github-hosting">
+    How docs.page fetches and renders your repository on each request.
+  </Card>
+  <Card title="Branch preview" icon="code-branch" href="/features/branch-preview">
+    Preview llms.txt exports for a branch or pull request before merge.
+  </Card>
+</CardGroup>
