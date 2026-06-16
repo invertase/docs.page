@@ -3,4 +3,351 @@ title: CLI
 description: Scaffold projects, preview locally, check links, and manage docs agent from your terminal.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+The `@docs.page/cli` package is the local companion to [docs.page](https://docs.page) hosting. Run it from your project root to create starter files, see edits in the browser before you push, catch broken links and missing assets, and provision the in-docs AI chat agent for a GitHub repository.
+
+## Overview
+
+docs.page serves documentation from a public GitHub repository — there is no separate deploy dashboard. The CLI fits that Git-native model: scaffold into an existing repo, lint before push or in CI, and preview work in progress without opening a branch on GitHub.
+
+Local preview renders page content on your machine while the browser loads the production preview shell — you see real theme and layout without embedding a full copy of the docs.page app. `check` improves quality before push; it does not upload or publish anything.
+
+| Command | Role in your workflow |
+| --- | --- |
+| `docs init` | Create `docs.json` and optional starter pages in a new or existing repo |
+| `docs preview` | Watch local files and render changes in the docs.page preview UI |
+| `docs check` | Lint configuration, links, and assets — a quality gate before you push |
+| `docs agent` | Create or delete the in-docs chat agent for a repository |
+
+## Quick start
+
+```bash
+npx @docs.page/cli init
+npx @docs.page/cli preview
+npx @docs.page/cli check
+```
+
+For flag-level detail and exit codes, see [CLI reference](/reference/cli-reference).
+
+## Install
+
+Install `@docs.page/cli` once, then run commands from any docs.page project on your machine.
+
+**Before you begin:** [Node.js](https://nodejs.org/) installed and a terminal open at your project root.
+
+### Run without installing
+
+To try a command without a global install, prefix it with `npx`:
+
+```bash
+npx @docs.page/cli <command>
+```
+
+`npx` downloads the package when needed and runs it immediately. This works well for one-off scaffolding or CI jobs.
+
+### Install globally
+
+To use the shorter `docs` command everywhere, install the package globally:
+
+<CodeGroup>
+
+```npm
+npm install -g @docs.page/cli
+```
+
+```pnpm
+pnpm add -g @docs.page/cli
+```
+
+</CodeGroup>
+
+After install, both `docs` and `docs.page` binaries point to the same CLI:
+
+```bash
+docs --help
+docs.page preview
+```
+
+### Update the CLI
+
+Reinstall the latest version when preview behavior or flags change:
+
+<CodeGroup>
+
+```npm
+npm install -g @docs.page/cli@latest
+```
+
+```pnpm
+pnpm add -g @docs.page/cli@latest
+```
+
+</CodeGroup>
+
+For a single project, `npx @docs.page/cli@latest <command>` always resolves the newest release.
+
+### Verify
+
+Run `docs --version` to print the installed CLI version. Run `docs <command> --help` for flags on a specific command.
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| `command not found: docs` | CLI not installed globally and `npx` not used | Run `npx @docs.page/cli <command>` or install globally |
+| `EACCES` or permission error on global install | npm global directory is not writable | Fix npm permissions or use `npx` instead of a global install |
+| Preview or agent commands fail to connect | Outdated CLI | Reinstall with `@latest` |
+
+## Initialize a project
+
+Run `docs init` to create the files [docs.page](https://docs.page) expects: a `docs.json` configuration file and, by default, starter content under `docs/`. Templates use your project name so you can push and open a live URL quickly.
+
+For a full first-publish walkthrough including GitHub push, follow [Publish your first site](/publish-your-first-site).
+
+<Steps>
+  <Step title="Open a terminal at your project root">
+    Use an empty directory or the root of an existing repository.
+
+    ```bash
+    cd my-docs
+    ```
+  </Step>
+  <Step title="Run init">
+    The CLI scaffolds docs.page files in the current directory.
+
+    ```bash
+    npx @docs.page/cli init
+    ```
+
+    In an interactive terminal, the CLI prompts for your project name and whether to create starter pages. Accept the defaults unless you already have a `docs/` directory you want to keep.
+  </Step>
+  <Step title="Review the created files">
+    With default choices, init writes:
+
+    ```
+    docs.json
+    docs/
+      index.mdx
+      next-steps.mdx
+    ```
+
+    - **`docs.json`** — site name, description, sidebar, and theme
+    - **`docs/index.mdx`** — home page (served at `/`)
+    - **`docs/next-steps.mdx`** — second page (served at `/next-steps`)
+  </Step>
+  <Step title="Initialize a subdirectory or skip starter pages when scripting">
+    Pass flags to avoid prompts in CI or scripts:
+
+    ```bash
+    npx @docs.page/cli init ./my-project --name "My Project"
+    npx @docs.page/cli init --no-docs
+    ```
+
+    Use `--no-docs` when you only need `docs.json` and will add page files yourself.
+  </Step>
+  <Step title="Re-run init safely in an existing project">
+    When docs.page files already exist, init skips them unless you pass `--overwrite`:
+
+    ```bash
+    npx @docs.page/cli init --overwrite
+    ```
+
+    <Warning>
+      `--overwrite` replaces files created by docs.page init. Review the skipped-file list before confirming in interactive mode.
+    </Warning>
+  </Step>
+</Steps>
+
+Confirm `docs.json` exists at the project root and at least one `.mdx` file lives under `docs/` if you created starter pages. See [Introduction](/) for how paths map to URLs.
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| `No docs.page files were changed` | All target paths already exist | Pass `--overwrite` or delete conflicting files first |
+| Wrong project name in `docs.json` | Name inferred from folder | Pass `--name "Your Project"` |
+| Init prompts in CI | Missing non-interactive flags | Pass `--name` and `--no-docs` or `--docs` explicitly |
+
+## Preview locally
+
+Run `docs preview` when you want to see layout and theme changes before pushing to GitHub. The CLI watches `docs.json` (or `docs.yaml`) and `docs/**/*.mdx` on your machine, renders each page with the same production content pipeline, and streams updates to the hosted preview UI.
+
+For shareable branch and pull request previews after you push, see [Branch preview](/features/branch-preview).
+
+<Steps>
+  <Step title="Open a terminal at your project root">
+    Use the directory that contains `docs.json`.
+  </Step>
+  <Step title="Start the preview server">
+    ```bash
+    npx @docs.page/cli preview
+    ```
+
+    The CLI starts a local WebSocket server, prints the socket URL, and opens your browser to a preview URL shaped like:
+
+    ```
+    https://docs.page/preview?url=ws://localhost:57250
+    ```
+
+    The browser loads the production preview shell while file reads and bundling stay on localhost.
+  </Step>
+  <Step title="Edit and save">
+    Change any watched file under `docs/` or update `docs.json`. The preview reloads without a Git push.
+  </Step>
+  <Step title="Customize port or browser behavior when needed">
+    ```bash
+    npx @docs.page/cli preview --port 4000
+    npx @docs.page/cli preview --no-browser
+    ```
+
+    Use `--no-browser` in remote development or when you want to copy the printed URL manually.
+  </Step>
+</Steps>
+
+After the server starts, confirm the terminal shows **Local preview server started**, the browser renders your home page with the correct sidebar, and saving a change in `docs/index.mdx` updates the preview within a few seconds.
+
+<Info>
+  Local preview does not include search, sitemap generation, or the in-docs agent panel. Those features require a published site or branch preview. Run `docs check` after preview looks right and before you push.
+</Info>
+
+Local asset resolution in preview mode has known gaps — prefer relative paths that match how files are laid out in your repository.
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| CLI exits before the server starts | Missing `docs.json` or no `.mdx` under `docs/` | Run `docs init` or add the required files |
+| Browser shows a connection error | Preview server stopped or wrong URL | Restart `docs preview` and open the newly printed URL |
+| Port already in use | Another process bound the default port | Pass `--port` with a free port number |
+| Preview looks stale | Editor did not save the file | Save the file; confirm the terminal still shows the watcher running |
+
+## Check documentation
+
+Run `docs check` after preview looks right and before you push. The command reads your configuration, scans `docs/**/*.mdx`, and reports link and asset problems you can fix locally or block in CI.
+
+<Steps>
+  <Step title="Open a terminal at your project root">
+    Use the directory that contains `docs.json` or `docs.yaml`.
+  </Step>
+  <Step title="Run check">
+    ```bash
+    npx @docs.page/cli check
+    ```
+
+    The CLI checks that `docs.json` or `docs.yaml` is readable, then scans your pages for:
+
+    - Broken **internal links** — paths that do not resolve to another page or asset in the repo
+    - Missing **assets** — images and other referenced files that are not on disk
+    - Unreachable **external links** — HTTP targets that fail when fetched
+
+    Frontmatter fields `redirect`, `next`, and `previous` are included in link scanning.
+  </Step>
+  <Step title="Fix reported issues">
+    The CLI prints file paths and targets for each problem. Address `error`-level findings before you push.
+  </Step>
+  <Step title="Tune severity when external links are flaky or you want warnings only">
+    ```bash
+    npx @docs.page/cli check --external-links warn --internal-links error --assets error
+    ```
+
+    Each category accepts `off`, `warn`, or `error`. All three default to `error`.
+  </Step>
+  <Step title="Check a subdirectory or monorepo package">
+    ```bash
+    npx @docs.page/cli check ./packages/docs
+    ```
+  </Step>
+  <Step title="Wire check into CI">
+    The command exits with code `1` when any `error`-level issue is found:
+
+    ```yaml
+    - name: Check documentation
+      run: npx @docs.page/cli check
+    ```
+
+    `check` does not publish or upload anything — [Public GitHub hosting](/features/github-hosting) updates the live site when you push to your default branch.
+  </Step>
+</Steps>
+
+A clean run ends with no `error`-level output and exit code `0`. Re-run after each fix until check passes.
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| External link failures in CI | Target blocks automated requests or is temporarily down | Set `--external-links warn` or `off` for that pipeline |
+| False positive on internal link | Path typo or file not yet committed | Fix the path or add the missing file under `docs/` |
+| Check passes locally but fails in CI | CI checks a different directory | Pass the correct `[path]` argument or set the job working directory |
+
+## Global options
+
+Agent commands call the docs.page API. Set the API base URL with a global flag or environment variable:
+
+```bash
+docs --api-url https://your-api.example.com agent create --repo org/repo
+```
+
+```bash
+export DOCS_PAGE_API_BASE=https://your-api.example.com
+docs agent create --repo org/repo
+```
+
+When neither is set, the CLI uses the production docs.page API. `init`, `preview`, and `check` do not need an API URL.
+
+## Manage the AI agent
+
+Use `docs agent` to provision the in-docs AI chat panel for a repository. The CLI encrypts your LLM provider API key locally, verifies you have GitHub admin access, and registers the agent with the docs.page API.
+
+**Before you begin:** Admin access to the target GitHub repository, a provider API key from OpenAI, Anthropic, Google, or xAI, and [GitHub CLI](https://cli.github.com/) authenticated (`gh auth login`) or a token you can pass with `--gh-auth`.
+
+### Create an agent
+
+<Warning>
+  Passing `--apikey` on the command line stores the key in your shell history. Prefer an interactive prompt (omit the flag) or set the key in a short-lived environment variable in CI. Never commit API keys to your repository.
+</Warning>
+
+<Steps>
+  <Step title="Run create from your project root or any directory">
+    ```bash
+    npx @docs.page/cli agent create --repo org/repo --provider openai --apikey sk-...
+    ```
+
+    Omit flags in an interactive terminal to be prompted for the repository, provider, and API key.
+  </Step>
+  <Step title="Copy the agent key into docs.json">
+    On success, the CLI prints an `agent.key` value to add to your repository:
+
+    ```json
+    "agent": {
+      "key": "your-agent-key"
+    }
+    ```
+
+    Commit and push `docs.json` so the live site enables the reader-facing panel.
+  </Step>
+  <Step title="Overwrite an existing agent when rotating keys">
+    ```bash
+    npx @docs.page/cli agent create --repo org/repo --provider anthropic --apikey sk-ant-... --force
+    ```
+  </Step>
+</Steps>
+
+Supported providers: `openai`, `anthropic`, `google`, `xai`.
+
+### Delete an agent
+
+Remove stored agent credentials for a repository:
+
+```bash
+npx @docs.page/cli agent delete --repo org/repo
+```
+
+Pass `--gh-auth <token>` when `gh auth token` is unavailable.
+
+After create, the CLI prints `Your documentation agent is ready to use` and a JSON snippet for `docs.json`. After delete, the agent panel no longer loads on the live site once credentials are removed. See [Ask AI](/features/ask-ai) for placeholder text, starter questions, and rate limits on the reader-facing panel.
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| GitHub auth error | `gh` not logged in or token lacks repo access | Run `gh auth login` or pass `--gh-auth` |
+| Agent creation failed (403) | Token does not have admin on the repository | Use an account with admin access |
+| API connection error | Wrong API base for self-hosted setup | Set `--api-url` or `DOCS_PAGE_API_BASE` |
+| Panel missing on live site | `agent.key` not in pushed `docs.json` | Add the key from create output and push |
+
+## Related
+
+- [CLI reference](/reference/cli-reference) — flags, severities, and exit codes
+- [Local preview](/features/local-preview) — feature overview for browser preview
+- [Branch preview](/features/branch-preview) — shareable ref URLs after you push
+- [Publish your first site](/publish-your-first-site) — scaffold and go live
+- [Ask AI](/features/ask-ai) — configure the in-docs chat panel

@@ -7,7 +7,8 @@
     "dark": "https://static.invertase.io/assets/docs.page/docs-page-logo-v2.png"
   },
   "theme": {
-    "preset": "b5fybI"
+    "preset": "bcj0c6sa",
+    "primary": "#E69135"
   },
   "tabs": [
     {
@@ -66,79 +67,6 @@
               "href": "/templates/explanation"
             }
           ]
-        }
-      ]
-    },
-    {
-      "group": "Core concepts",
-      "icon": "layer-group",
-      "tab": "docs",
-      "pages": [
-        {
-          "title": "Project structure",
-          "href": "/concepts/project-structure"
-        },
-        {
-          "title": "GitHub hosting",
-          "href": "/concepts/github-hosting"
-        },
-        {
-          "title": "Content pages",
-          "href": "/concepts/content-pages"
-        },
-        {
-          "title": "Configuration",
-          "href": "/concepts/configuration"
-        },
-        {
-          "title": "Navigation",
-          "href": "/concepts/navigation"
-        },
-        {
-          "group": "CLI",
-          "href": "/concepts/cli",
-          "pages": [
-            {
-              "title": "Install the CLI",
-              "href": "/concepts/cli/install"
-            },
-            {
-              "title": "Initialize a project",
-              "href": "/concepts/cli/init"
-            },
-            {
-              "title": "Preview locally",
-              "href": "/concepts/cli/preview"
-            },
-            {
-              "title": "Check documentation",
-              "href": "/concepts/cli/check"
-            },
-            {
-              "title": "Manage the AI agent",
-              "href": "/concepts/cli/agent"
-            }
-          ]
-        },
-        {
-          "title": "Previews",
-          "href": "/concepts/previews"
-        },
-        {
-          "title": "Search",
-          "href": "/concepts/search"
-        },
-        {
-          "title": "Locales",
-          "href": "/concepts/locales"
-        },
-        {
-          "title": "Redirects",
-          "href": "/concepts/redirects"
-        },
-        {
-          "title": "Variables",
-          "href": "/concepts/variables"
         }
       ]
     },
