@@ -1,11 +1,27 @@
 import { Webhooks } from "@octokit/webhooks";
 import { onPullRequestOpened } from "./pull_request.opened";
 
-const webhook = new Webhooks({
-  secret: process.env.GITHUB_APP_WEBHOOK_SECRET!,
-});
+let webhook: Webhooks | undefined;
+
+function getWebhook() {
+  if (webhook) {
+    return webhook;
+  }
+
+  const secret = process.env.GITHUB_APP_WEBHOOK_SECRET;
+
+  if (!secret) {
+    throw new Error(
+      "GITHUB_APP_WEBHOOK_SECRET environment variable is required.",
+    );
+  }
+
+  webhook = new Webhooks({ secret });
+  return webhook;
+}
 
 export const POST = async (req: Request) => {
+  const webhook = getWebhook();
   const body = await req.text();
 
   // Verify the signature of the request.

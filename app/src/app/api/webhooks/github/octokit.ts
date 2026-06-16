@@ -1,10 +1,25 @@
 import { App } from "octokit";
 
-export const app = new App({
-  appId: process.env.GITHUB_APP_ID!,
-  privateKey: process.env.GITHUB_APP_PRIVATE_KEY!,
-});
+let app: App | undefined;
+
+function getApp() {
+  if (app) {
+    return app;
+  }
+
+  const appId = process.env.GITHUB_APP_ID;
+  const privateKey = process.env.GITHUB_APP_PRIVATE_KEY;
+
+  if (!appId || !privateKey) {
+    throw new Error(
+      "GITHUB_APP_ID and GITHUB_APP_PRIVATE_KEY environment variables are required.",
+    );
+  }
+
+  app = new App({ appId, privateKey });
+  return app;
+}
 
 export async function getOctokitForInstallation(installationId: number) {
-  return await app.getInstallationOctokit(installationId);
+  return await getApp().getInstallationOctokit(installationId);
 }

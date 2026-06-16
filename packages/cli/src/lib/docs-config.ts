@@ -10,7 +10,9 @@ export type DocsConfigSource = {
   yaml: string | null;
 };
 
-export async function loadDocsConfig(rootDir: string): Promise<DocsConfigSource> {
+export async function loadDocsConfig(
+  rootDir: string,
+): Promise<DocsConfigSource> {
   const [json, yaml] = await Promise.all([
     readOptionalFile(path.join(rootDir, "docs.json")),
     readOptionalFile(path.join(rootDir, "docs.yaml")),
