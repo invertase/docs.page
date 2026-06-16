@@ -1,6 +1,6 @@
 ---
 title: Accordion
-description: Collapsible Accordion panels and AccordionGroup layouts for FAQs and optional detail.
+description: Hide optional detail behind expandable sections—ideal for FAQs and progressive disclosure.
 ---
 
 Use `<Accordion>` to hide optional content behind a clickable header. Accordions suit progressive disclosure—FAQs, troubleshooting notes, or detail that not every reader needs on first load.
@@ -47,12 +47,9 @@ Each accordion needs a `title` (the clickable header). Put any MDX content—cod
 </Accordion>
 ````
 
-## `Accordion` props
+## Properties
 
-| Prop | Type | Required | Description |
-| --- | --- | --- | --- |
-| `title` | `string` | Yes | Text shown on the panel trigger |
-| `defaultOpen` | `boolean` | No | Whether the panel starts expanded |
+### `Accordion`
 
 <Property name="title" type="string" required>
   The text shown on the panel trigger. Use short, scannable titles such as **Installation** or **Troubleshooting**.
@@ -68,11 +65,7 @@ Each accordion needs a `title` (the clickable header). Put any MDX content—cod
   Defaults to `false`.
 </Property>
 
-## `AccordionGroup` props
-
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `type` | `"single"` \| `"multiple"` | `"multiple"` | How many panels can stay open at once |
+### `AccordionGroup`
 
 <Property name="type" type="string" optional>
   Controls how many panels in the group can be open at the same time.
@@ -106,13 +99,15 @@ Set `defaultOpen` on individual items to choose which panels start expanded. In 
 ````mdx
 <AccordionGroup>
   <Accordion defaultOpen title="Open by default">
-    This panel starts expanded.
+    This panel starts expanded. Readers can collapse it like any other accordion.
   </Accordion>
   <Accordion title="Click to expand">
-    Grouped accordions stack in a single panel.
+    Grouped accordions stack in a single panel. Add as many as you need.
   </Accordion>
   <Accordion title="Another section">
-    More collapsible content here.
+  - Optional setup steps
+  - Advanced configuration
+  - Related links
   </Accordion>
 </AccordionGroup>
 ````
@@ -152,5 +147,5 @@ Use `type="single"` when panels are mutually exclusive—for example, one answer
 
 ## See also
 
-- [Components overview](/components/index) — when to use tabs, code groups, and accordions
-- [Reference template](/templates/reference) — structure for lookup pages like this one
+- [Tabs](/components/tabs) — switchable panels for parallel options
+- [Components overview](/components) — when to use tabs, code groups, and accordions

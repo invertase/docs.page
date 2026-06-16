@@ -1,6 +1,6 @@
 ---
 title: Tabs
-description: Tabs and TabItem panels with optional groupId synchronisation and persisted tab selection.
+description: Organize related content into switchable panels readers can flip between.
 ---
 
 Use `<Tabs>` to organize content into switchable panels. Add any number of `<TabItem>` children and include other MDX content—code blocks, callouts, or lists—inside each panel.
@@ -69,12 +69,9 @@ Each `<TabItem>` needs a `label` (what readers see) and a `value` (a stable ID f
 </Tabs>
 ````
 
-## `Tabs` props
+## Properties
 
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `defaultValue` | `string` | First tab | Tab to show on first load; must match a `TabItem` `value` |
-| `groupId` | `string` | — | Shared ID for synchronized tab groups across the page |
+### `Tabs`
 
 <Property name="defaultValue" type="string" optional>
   The tab to show on first load. Must match a `TabItem` `value`.
@@ -85,17 +82,12 @@ Each `<TabItem>` needs a `label` (what readers see) and a `value` (a stable ID f
 ---
 
 <Property name="groupId" type="string" optional>
-  A shared identifier for synchronized tab groups. Tabs with the same `groupId` stay in sync by matching `value` props across groups.
+  A shared identifier for synchronized tab groups. Tabs with the same `groupId` stay in sync by matching `value` values across groups.
 
   When set, the selected tab is stored in local storage and restored on reload. Preview mode uses the key `preview:tabs:{groupId}`; published docs use `docs.page:tabs:{owner}/{repository}:{groupId}`.
 </Property>
 
-## `TabItem` props
-
-| Prop | Type | Required | Description |
-| --- | --- | --- | --- |
-| `label` | `string` | Yes | Text shown on the tab trigger |
-| `value` | `string` | Yes | Stable ID for `defaultValue`, sync, and persistence |
+### `TabItem`
 
 <Property name="label" type="string" required>
   The text shown on the tab trigger. Use short, scannable labels such as **JavaScript** or **CLI**.
@@ -111,7 +103,7 @@ Each `<TabItem>` needs a `label` (what readers see) and a `value` (a stable ID f
 
 ## Synchronization
 
-Tab groups are independent by default. To keep multiple groups in sync, set the same `groupId` on each `<Tabs>` and use matching `value` props on corresponding `<TabItem>` children.
+Tab groups are independent by default. To keep multiple groups in sync, set the same `groupId` on each `<Tabs>` and use the same `value` on corresponding `<TabItem>` children.
 
 Use this when the same options appear in more than one place—for example, language-specific install steps and matching API examples.
 
@@ -155,15 +147,18 @@ The example below uses two groups that share `groupId="language"`. Selecting **J
 </Tabs>
 ````
 
-## Behavior
+## Behaviour
 
 | Condition | Result |
 | --- | --- |
 | No valid `<TabItem>` children | Renders nothing |
 | Selected `value` is not in the current group | Falls back to `defaultValue`, then the first tab |
+| `defaultValue` does not match any `value` | Falls back to the first tab |
 | `groupId` omitted | Tab groups on the page operate independently |
+| `groupId` set | Selection syncs across groups and persists in local storage on reload |
 
 ## See also
 
-- [Components overview](/components/index) — when to use tabs, code groups, and accordions
-- [Reference template](/templates/reference) — structure for lookup pages like this one
+- [Code group](/components/code-group) — tabbed code blocks for language switching
+- [Accordion](/components/accordion) — collapsible sections for optional detail
+- [Components overview](/components) — when to use tabs, code groups, and accordions

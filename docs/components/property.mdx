@@ -1,9 +1,9 @@
 ---
 title: Property
-description: Property name, type, and required labels for API and configuration reference fields.
+description: Document API fields with name, type, and required badges in reference pages.
 ---
 
-Use `<Property>` to document a single field, parameter, or prop with a name, type badge, and optional **required** or **optional** labels. Put the description in the component body so you can use full MDX—code blocks, lists, callouts, and nested components.
+Use `<Property>` to document a single field, parameter, or configuration key with a name, type badge, and optional **required** or **optional** labels. Put the description in the component body so you can use full MDX—code blocks, lists, callouts, and nested components.
 
 Separate consecutive properties with a horizontal rule (`---`) so readers can scan long reference sections.
 
@@ -35,7 +35,7 @@ Separate consecutive properties with a horizontal rule (`---`) so readers can sc
     ---
 
     <Property name="font" type="string" optional>
-      The font family to use for your application. Defaults to `Comic Sans`.
+      The font family to use for your application. Defaults to `system-ui`.
     </Property>
   </Accordion>
 </Property>
@@ -61,7 +61,7 @@ Separate consecutive properties with a horizontal rule (`---`) so readers can sc
     ---
 
     <Property name="font" type="string" optional>
-      The font family to use for your application. Defaults to `Comic Sans`.
+      The font family to use for your application. Defaults to `system-ui`.
     </Property>
   </Accordion>
 </Property>
@@ -78,17 +78,9 @@ Both formats suit reference pages. Choose based on how much detail each field ne
 | Readers copy examples from the description | You are comparing columns (type, default, required) across many rows |
 | A field needs more than a sentence of context | The list is long and uniform with no nested structure |
 
-Many reference pages combine both: a summary table at the top of a props section, then `<Property>` blocks underneath for fields that need richer explanation. See [Tabs](/components/tabs) or [Accordion](/components/accordion) for that pattern.
+Component reference pages in this section use `<Property>` blocks for component properties. Use markdown tables for behaviour matrices and when-to-use comparisons instead.
 
-## Props
-
-| Prop | Type | Required | Description |
-| --- | --- | --- | --- |
-| `name` | `string` | Yes | Field name shown in monospace |
-| `type` | `string` | No | Type label shown as a badge |
-| `required` | `boolean` | No | Shows a **required** badge |
-| `optional` | `boolean` | No | Shows an **optional** badge |
-| `children` | `MDX` | No | Rich description content |
+## Properties
 
 <Property name="name" type="string" required>
   The field name shown in monospace at the start of the block.
@@ -146,6 +138,6 @@ For deeply nested APIs, repeat the pattern: a parent `<Property>` for the object
 
 ## See also
 
-- [Components overview](/components/index) — when to use property blocks, tables, and accordions
+- [Components overview](/components) — when to use property blocks, tables, and accordions
 - [Accordion](/components/accordion) — collapsible panels for nested fields
 - [Reference template](/templates/reference) — structure for lookup pages like this one

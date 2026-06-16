@@ -1,11 +1,11 @@
 ---
 title: Code blocks
-description: Fenced Markdown code with Shiki highlighting, titles, diff and focus annotations, and a copy button.
+description: Show syntax-highlighted code with copy, titles, and diff or focus annotations.
 ---
 
 Use fenced code blocks to show commands, configuration, and snippets in your docs. Wrap content in triple backticks and add an optional language tag for syntax highlighting. Every block gets a header with the language label and a copy button.
 
-There is no `<CodeBlock />` component—standard Markdown fences are all you need.
+There is no `<CodeBlock />` component—standard Markdown fences are all you need. Line numbers are not supported.
 
 ````mdx
 ```js
@@ -70,7 +70,7 @@ The header shows the language, a divider, then the title—for example, **js** |
 
 ## Annotations
 
-Shiki notation transformers add diff markers, line highlights, and focus effects. Add a comment at the end of each annotated line using the `// [!code …]` pattern (or the equivalent comment syntax for your language).
+Shiki notation transformers add diff markers, line highlights, and focus effects. Add a comment at the end of each annotated line using the `// [!code …]` pattern. Use your language's comment syntax—for example, `#` in Python or `<!--` in HTML.
 
 ### Diff
 
@@ -139,7 +139,7 @@ Readers copy source text—including annotation comments—not the rendered HTML
 ## Behaviour
 
 | Condition | Result |
-| --- | --- | --- |
+| --- | --- |
 | No language tag | Renders as `text` with no syntax colouring |
 | Unrecognised language tag | Falls back to `text` |
 | `title="..."` in fence meta | Shown in the header after the language |
@@ -152,5 +152,4 @@ Readers copy source text—including annotation comments—not the rendered HTML
 ## See also
 
 - [Code group](/components/code-group) — tabbed blocks for multiple languages or variants
-- [Components overview](/components/index) — when to use tabs, code groups, and accordions
-- [Reference template](/templates/reference) — structure for lookup pages like this one
+- [Components overview](/components) — when to use tabs, code groups, and accordions

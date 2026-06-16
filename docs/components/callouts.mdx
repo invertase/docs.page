@@ -1,6 +1,6 @@
 ---
 title: Callouts
-description: Info, Warning, Error, and Success panels for emphasising notes, cautions, and outcomes.
+description: Highlight notes, cautions, blockers, and success messages with coloured callout panels.
 ---
 
 Use `<Info>`, `<Warning>`, `<Error>`, and `<Success>` to emphasise content readers should notice. Each callout renders a coloured panel with a fixed title and icon. Put any MDX content—paragraphs, lists, or code blocks—inside the component.
@@ -10,6 +10,17 @@ docs.page provides four callout types. There is no generic `<Callout>` component
 ```mdx
 <Info>Your API key is shown once after creation.</Info>
 ```
+
+## Choosing the right callout
+
+| Type | Panel title | Use when |
+| --- | --- | --- |
+| `<Info>` | Information | Context, notes, or optional detail that aids understanding |
+| `<Warning>` | Warning | Caution before an action; deprecated or risky behaviour |
+| `<Error>` | Error | Failure, blocker, or requirement that prevents progress |
+| `<Success>` | Success | Confirmation that something completed or succeeded |
+
+Reserve `<Error>` for problems that matter—overusing it dilutes urgency. Prefer `<Info>` when the content is helpful but not alarming.
 
 ## Info
 
@@ -67,17 +78,6 @@ Use `<Success>` for positive outcomes—completed setup, verified checks, or con
 </Success>
 ````
 
-## Choosing the right callout
-
-| Type | Panel title | Use when |
-| --- | --- | --- |
-| `<Info>` | Information | Context, notes, or optional detail that aids understanding |
-| `<Warning>` | Warning | Caution before an action; deprecated or risky behaviour |
-| `<Error>` | Error | Failure, blocker, or requirement that prevents progress |
-| `<Success>` | Success | Confirmation that something completed or succeeded |
-
-Reserve `<Error>` for problems that matter—overusing it dilutes urgency. Prefer `<Info>` when the content is helpful but not alarming.
-
 ## Nesting
 
 Callouts work inside other MDX components. Use them within `<Tabs>`, `<Accordion>`, `<Steps>`, and similar containers when a panel or step needs emphasised detail.
@@ -104,14 +104,13 @@ Callouts work inside other MDX components. Use them within `<Tabs>`, `<Accordion
 
 | Condition | Result |
 | --- | --- |
-| Children only | No custom `title`, `icon`, or styling props |
+| Children only | No custom `title`, `icon`, or styling attributes |
 | Fixed titles | **Information**, **Warning**, **Error**, and **Success** are set by the component |
 | Empty children | Renders an empty panel |
 
 ## See also
 
-- [Components overview](/components/index) — when to use callouts, tabs, and accordions
+- [Components overview](/components) — when to use callouts, tabs, and accordions
 - [Tabs](/components/tabs) — switchable panels that can contain callouts
 - [Accordion](/components/accordion) — collapsible sections that can contain callouts
 - [Steps](/components/steps) — numbered procedures for tutorials and guides
-- [Reference template](/templates/reference) — structure for lookup pages like this one

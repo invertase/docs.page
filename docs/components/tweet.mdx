@@ -1,6 +1,6 @@
 ---
 title: Tweet
-description: Embed an X post by tweet ID with optional link cards and thread context.
+description: Embed an X post in your docs with optional link previews and thread context.
 ---
 
 Use `<Tweet>` to embed a post from X (formerly Twitter) in your documentation. Pass the numeric tweet ID from the post URL—the component loads Twitter's embed script and renders the official widget.
@@ -29,8 +29,6 @@ By default, link preview cards inside the tweet are hidden. Set `cards` to show 
 <Tweet id="1513662173796605958" cards />
 ```
 
-<Tweet id="1513662173796605958" cards />
-
 ## Conversation
 
 By default, thread context is not shown. Set `conversation` to include replies in the embed.
@@ -38,8 +36,6 @@ By default, thread context is not shown. Set `conversation` to include replies i
 ```mdx
 <Tweet id="1513662173796605958" conversation />
 ```
-
-<Tweet id="1513662173796605958" conversation />
 
 ## Cards and conversation
 
@@ -49,15 +45,7 @@ You can enable both options on the same embed.
 <Tweet id="1513662173796605958" cards conversation />
 ```
 
-<Tweet id="1513662173796605958" cards conversation />
-
-## Props
-
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `id` | `string` | — | Numeric tweet ID from the post URL |
-| `cards` | `boolean` | `false` | Show link preview cards inside the tweet |
-| `conversation` | `boolean` | `false` | Show thread replies alongside the tweet |
+## Properties
 
 <Property name="id" type="string" required>
   The numeric ID of the post to embed. This is the number at the end of the post URL—for example, `1513662173796605958` from `https://x.com/docsdotpage/status/1513662173796605958`.
@@ -107,13 +95,12 @@ The component loads `https://platform.twitter.com/widgets.js` once per page. Whi
 
 ## Privacy
 
-Embeds are created with **Do Not Track** (`dnt: true`) enabled. Twitter receives less tracking data for embedded posts than it would with DNT disabled. Readers who block third-party scripts or cookies may still see an empty area instead of the tweet.
+Embeds are created with **Do Not Track** (`dnt: true`) enabled. Twitter receives less tracking data for embedded posts than it would with DNT disabled.
 
-<Info>
-  Embedded tweets load content from X's servers. Consider your audience and any privacy policies that apply when embedding third-party social content.
-</Info>
+<Warning>
+  Embedded tweets load content and scripts from X's servers. Readers who block third-party scripts or cookies may see an empty area instead of the tweet. Consider your audience and any privacy policies that apply when embedding social content.
+</Warning>
 
 ## See also
 
-- [Components overview](/components/index) — when to use embeds, callouts, and media components
-- [Reference template](/templates/reference) — structure for lookup pages like this one
+- [Components overview](/components) — when to use embeds, callouts, and media components

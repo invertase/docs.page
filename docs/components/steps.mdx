@@ -1,6 +1,6 @@
 ---
 title: Steps
-description: Numbered Step sequences inside Steps for install flows and guided procedures.
+description: Walk readers through install and setup procedures with numbered steps.
 ---
 
 Use `<Steps>` and `<Step>` to present a numbered sequence—installation guides, onboarding flows, or any procedure readers should follow in order. Each step shows an auto-incremented number in a circle, with an optional title and room for rich MDX content underneath.
@@ -82,22 +82,17 @@ Wrap one or more `<Step>` children inside `<Steps>`. Add code blocks, callouts, 
 </Steps>
 ````
 
-## `Steps` props
+## Properties
 
-`<Steps>` renders a list element with a CSS counter reset so step numbers start at 1. It accepts standard `<ul>` attributes such as `className`.
+### `Steps`
 
-| Prop | Type | Description |
-| --- | --- | --- |
-| `children` | `ReactNode` | One or more `<Step>` elements |
-| `className` | `string` | Optional class names merged onto the list |
+<Property name="children" optional>
+  One or more `<Step>` elements. `<Steps>` renders a list element with a CSS counter reset so step numbers start at 1.
 
-## `Step` props
+  Standard `<ul>` attributes such as `className` are forwarded to the list element.
+</Property>
 
-| Prop | Type | Required | Description |
-| --- | --- | --- | --- |
-| `title` | `string` | No | Heading shown above the step content |
-| `icon` | `string` | No | [Font Awesome](/components/icon) slug shown instead of the step number |
-| `children` | `ReactNode` | Yes | Step body—prose, code blocks, callouts, and other MDX |
+### `Step`
 
 <Property name="title" type="string" optional>
   An optional heading rendered as an `<h3>` above the step content. Use short, action-oriented titles such as **Install dependencies** or **Deploy to production**.
@@ -159,8 +154,17 @@ Wrap one or more `<Step>` children inside `<Steps>`. Add code blocks, callouts, 
 | A tutorial or setup guide has 3+ stages | Options are parallel, not sequential—use [Tabs](/components/tabs) |
 | Each stage has its own code or callouts | Detail can stay hidden until needed—use [Accordion](/components/accordion) |
 
+## Behaviour
+
+| Condition | Result |
+| --- | --- |
+| Empty `<Steps>` or no `<Step>` children | Renders an empty list |
+| `title` omitted on `<Step>` | Renders the step number and body content only |
+| `icon` set on `<Step>` | Replaces the step number with the icon for that step |
+| Mixed `icon` and numbered steps | Numbering continues for steps without an icon |
+| Nested MDX inside `<Step>` | Rendered in the step body |
+
 ## See also
 
-- [Components overview](/components/index) — when to use steps, tabs, and accordions
-- [Icon](/components/icon) — finding Font Awesome slugs for the `icon` prop
-- [Reference template](/templates/reference) — structure for lookup pages like this one
+- [Components overview](/components) — when to use steps, tabs, and accordions
+- [Icon](/components/icon) — finding Font Awesome slugs for the `icon` property

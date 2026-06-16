@@ -143,7 +143,14 @@ $AUSTERE_INTRO
 - $HOWTO_LINK
 ```
 
-**Forbidden in reference:** "Welcome", tutorials, analogies, marketing adjectives, step-by-step workflows (link out).
+**Forbidden in reference body:** "Welcome", tutorials, analogies, marketing adjectives, step-by-step workflows (link out). These limits do **not** apply to frontmatter `description` — metadata should still use reader-benefit voice.
+
+**Reference tokens:**
+
+| Token | Voice |
+| --- | --- |
+| `$REFERENCE_DESCRIPTION` | Reader benefit: when/why to use this surface — imperative or *you*-focused (*"Organize content into switchable panels for options, platforms, or languages"*). Not a prop list or inventory summary. |
+| `$AUSTERE_INTRO` | Brief usage pointer in the body; lead with outcome, then syntax. Austere means no fluff, not catalog voice. |
 
 ---
 
@@ -195,8 +202,23 @@ $TRADEOFFS
 | Field | Required | Guidance |
 | --- | --- | --- |
 | `title` | yes | Match doc type: Tutorial = outcome; How-To = "How to …"; Reference = noun phrase |
-| `description` | yes | &lt; 160 chars where possible; no fluff |
+| `description` | yes | &lt; 160 chars where possible. **Reader benefit:** when/why to open this page. Imperative or *you*-focused. Not a feature inventory, prop list, or inventory `summary` paraphrase. |
 | `image` | no | Rare; use for high-traffic landing pages only |
+
+**Description vs body intro** — applies to every doc type, especially Reference:
+
+- **`description`** — discoverability: why would a reader open this page?
+- **Opening paragraph** — how to start; can mention syntax but should still lead with outcome
+- If both say the same thing, shorten and sharpen the `description`; keep procedural detail in the body
+
+**Description tokens by doc type:**
+
+| Doc type | `$TOKEN` | Aim |
+| --- | --- | --- |
+| Tutorial | `$FINISHED_OUTCOME` | What the reader will have done when finished |
+| How-To | `$PROBLEM_OUTCOME` | The problem solved or result achieved |
+| Reference | `$REFERENCE_DESCRIPTION` | When/why to use this API, component, or config surface |
+| Explanation | `$UNDERSTANDING_GAINED` | What mental model or insight the reader takes away |
 
 ---
 

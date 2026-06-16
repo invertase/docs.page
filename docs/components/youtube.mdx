@@ -1,6 +1,6 @@
 ---
 title: YouTube
-description: Responsive YouTube iframe from a video ID in the watch or shorts URL.
+description: Embed a YouTube video by pasting its video ID from the watch or Shorts URL.
 ---
 
 Use `<YouTube>` to embed a video from [YouTube](https://www.youtube.com/) in your documentation. Pass the video ID from the URL—the component renders a responsive iframe pointed at `youtube.com/embed/{id}`.
@@ -15,6 +15,8 @@ Copy the ID from the `v` query parameter in a YouTube watch URL. For example, `h
 
 Short links such as `https://youtu.be/X8ipUgXH6jw` use the same ID—the segment after the final slash.
 
+Shorts URLs use the same ID—the path segment after `/shorts/`. For example, `https://www.youtube.com/shorts/X8ipUgXH6jw` has ID `X8ipUgXH6jw`.
+
 ## Example
 
 <YouTube id="X8ipUgXH6jw" />
@@ -23,13 +25,7 @@ Short links such as `https://youtu.be/X8ipUgXH6jw` use the same ID—the segment
 <YouTube id="X8ipUgXH6jw" />
 ````
 
-## Props
-
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `id` | `string` | — | YouTube video ID from the URL |
-| `allowFullScreen` | `boolean` | `true` | Allow the embedded player to enter full-screen mode |
-| `allow` | `string` | See below | `allow` attribute passed to the iframe |
+## Properties
 
 <Property name="id" type="string" required>
   The YouTube video ID to embed. This is the value of the `v` parameter in a watch URL—for example, `X8ipUgXH6jw` from `https://www.youtube.com/watch?v=X8ipUgXH6jw`.
@@ -59,7 +55,7 @@ Short links such as `https://youtu.be/X8ipUgXH6jw` use the same ID—the segment
 <Property name="allow" type="string" optional>
   The `allow` attribute on the iframe, which declares browser features the embed may use.
 
-  Defaults to `accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture`.
+  Defaults to `accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture`. Most readers never need to change this.
 
   ```mdx
   <YouTube
@@ -82,5 +78,6 @@ The iframe uses a 16:9 aspect ratio, fills the content width, and has rounded co
 
 ## See also
 
-- [Components overview](/components/index) — when to use embeds, callouts, and media components
-- [Reference template](/templates/reference) — structure for lookup pages like this one
+- [Vimeo](/components/vimeo) — embed Vimeo videos by ID
+- [Video](/components/video) — self-hosted or generic embedded video
+- [Components overview](/components) — when to use embeds, callouts, and media components

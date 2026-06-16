@@ -34,6 +34,14 @@ Run this checklist **after** drafting, **before** delivering files. Fix every fa
 - [ ] Code, paths, env vars, JSON keys in `backticks`
 - [ ] `status: beta` / `deprecated` called out near first mention
 
+## Description voice (all doc types)
+
+| Check | Pass criteria |
+| --- | --- |
+| Reader benefit | `description` answers *why open this page?* — imperative or *you*-focused; not a feature/prop inventory |
+| Not inventory copy | Does not copy or lightly paraphrase inventory `summary` or outline technical purpose |
+| Distinct from intro | If opening paragraph and `description` overlap, `description` is shorter and more benefit-focused |
+
 ---
 
 ## Banned and weak phrases
@@ -59,7 +67,7 @@ Remove or rewrite on sight:
 ## docs.page formatting
 
 - [ ] Frontmatter has `title` and `description`
-- [ ] `description` is specific, not generic ("Learn about X" → what X does)
+- [ ] `description` passes **Description voice** checks above (not "Learn about X", not a catalog of capabilities)
 - [ ] Fenced code blocks have language tags (`bash`, `json`, `tsx`)
 - [ ] MDX components closed properly (`<Steps>`, `<Property>`)
 - [ ] Images use project asset paths; alt text or descriptive captions where shown
@@ -102,3 +110,21 @@ Remove or rewrite on sight:
 **Before (tutorial with reference leak):** Step 1: Install the CLI. The `--format` flag accepts `json`, `yaml`, and `toml` with default `json`…
 
 **After:** Step 1: Install the CLI. → Move flag table to Reference page; link "CLI options".
+
+---
+
+**Before (catalog description):** Tabs and TabItem panels with optional groupId synchronisation and persisted tab selection.
+
+**After (reader description):** Organize content into switchable panels for options, platforms, or language examples.
+
+---
+
+**Before (catalog description):** Collapsible Accordion panels and AccordionGroup layouts for FAQs and optional detail.
+
+**After (reader description):** Hide optional detail behind expandable sections—ideal for FAQs and progressive disclosure.
+
+---
+
+**Before (vague description):** Learn about the Tabs component.
+
+**After (reader description):** Organize related content into switchable panels readers can flip between.

@@ -1,9 +1,23 @@
 ---
 title: Components overview
-description: Browse MDX components for layout, code, callouts, and media, with guidance on when to use each.
+description: Choose the right MDX component for layout, code, callouts, and media—or stick with plain Markdown when it is enough.
 ---
 
-Add these components to any `.mdx` file under `docs/`. Plain Markdown handles paragraphs, lists, and links; components add structure for tabs, callouts, code examples, and API reference fields.
+Add these components to any `.mdx` file under `docs/`. Components are available globally in MDX—no imports required. Plain Markdown handles paragraphs, lists, and links; components add structure for tabs, callouts, code examples, and API reference fields.
+
+## When to use components
+
+| Need | Use | Instead of |
+| --- | --- | --- |
+| Switchable panels for languages or platforms | [Tabs](/components/tabs) or [Code group](/components/code-group) | Stacked duplicate code blocks |
+| Optional detail or FAQs | [Accordion](/components/accordion) | Long pages readers must scroll |
+| Ordered install or setup procedure | [Steps](/components/steps) | A numbered Markdown list |
+| Emphasised note, warning, or blocker | [Callouts](/components/callouts) | Bold text or blockquotes |
+| API or config field reference | [Property](/components/property) | Plain prose paragraphs |
+| Overview or navigation tiles | [Card](/components/card) | Unstyled link lists |
+| Screenshot or diagram | [Image](/components/image) | Markdown `![alt](url)` when you need zoom, captions, or theme variants |
+
+For code-only language switching, prefer **Code group**. For mixed content—prose, lists, and callouts—use **Tabs**.
 
 ## Structure
 

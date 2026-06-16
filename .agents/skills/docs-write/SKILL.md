@@ -32,7 +32,7 @@ docs-write       →  full .mdx content   ← you are here
 
 **In scope**
 - Draft or revise `.mdx` for pages listed in `docs.json` `outline.pages`
-- Match `docType`, `title`, and `description` from the outline entry
+- Match `docType` and `title` from the outline entry; write a reader-oriented `description` (rewrite outline purpose — do not copy inventory `summary`)
 - Run style self-correction before delivering
 
 **Out of scope**
@@ -74,7 +74,7 @@ Docs Writer Progress:
 - [ ] 2. Load — read outline.pages entries + capabilityIds from docs-inventory.json
 - [ ] 3. Template — read templates.md; pick skeleton for docType
 - [ ] 4. Draft — write .mdx with tone and formatting rules
-- [ ] 5. Lint — read style-lint.md; run self-correction pass
+- [ ] 5. Lint — read style-lint.md; run self-correction pass (including description voice checks)
 - [ ] 6. Deliver — write files; summarize changes
 ```
 
@@ -107,10 +107,10 @@ For each target entry in `outline.pages`:
 | --- | --- |
 | `docType` | Template selection — do not override without user approval |
 | `userGoal` | Scope and tone — prioritize task outcome over internal architecture |
-| `title`, `description` | Frontmatter |
+| `title`, `description` | Frontmatter — `title` from outline; `description` rewritten for reader benefit (see Writing rules) |
+| `capabilityIds` | Pull **body** detail from `docs-inventory.json` — not frontmatter voice |
 | `icon` | Confirms nav entry; not used in MDX body |
 | `file` | Output path |
-| `capabilityIds` | Pull detail from `docs-inventory.json` |
 | `audience` | Vocabulary and depth (beginner vs integrator) |
 | `status` | `existing` → read current file first |
 
@@ -131,12 +131,14 @@ Before delivering final content:
 - **Imperative & active voice:** *"Click **Submit**"* not *"The user should click submit"*
 - **Cognitive load:** Paragraphs ≤ 3 lines; use bullets
 - **Why before how:** State outcome before each setting change
+- **Reader-first descriptions:** Frontmatter `description` answers *why would I open this page?* — task, outcome, or common use case. Use second person or imperative (*"Use … to …"*, *"When you need …"*). Do not list props, implementation details, or copy `summary` text from inventory. Rewrite outline `description` / purpose; never paste capability summaries verbatim.
+- **Description vs body:** `description` is for discoverability (search, nav, social previews); the opening paragraph shows how to start. If they overlap, `description` is shorter and more benefit-focused.
 - **Semantic UI formatting:** Bold UI labels; backtick code, paths, env vars
 - **Truthfulness:** Match `docs-inventory.json` and code; flag `beta` / `deprecated` / `schema-only`
 
 ### docs.page conventions
 
-- Frontmatter: `title`, `description` from outline
+- Frontmatter: `title` from outline; `description` written per Writing rules
 - **tutorial / how-to:** `<Steps>` / `<Step>`
 - **reference:** `<Property>`, nested `<Accordion>`
 - **Callouts:** `<Info>`, `<Warning>`, `<Error>`, `<Success>` — not `<Callout>`

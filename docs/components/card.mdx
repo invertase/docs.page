@@ -1,6 +1,6 @@
 ---
 title: Card
-description: Bordered Card panels with optional icons and links, plus CardGroup grids for overview pages.
+description: Build linked overview tiles and multi-column card grids for landing pages.
 ---
 
 Use `<Card>` to present related content in a bordered panel. Add an optional `title`, `icon`, or `href` in the header, then put any MDX content—paragraphs, lists, or code blocks—in the card body.
@@ -39,49 +39,45 @@ A card with a `title` shows a header above the body content. Omit `title`, `icon
 
 Add `href` to show an external-link button in the card header. The button uses the same link component as other docs.page navigation—it does not make the entire card clickable.
 
-<Card title="Learn more" href="/components/index">
+<Card title="Learn more" href="/components">
   Browse the components overview for tabs, callouts, and accordions.
 </Card>
 
 ````mdx
-<Card title="Learn more" href="/components/index">
+<Card title="Learn more" href="/components">
   Browse the components overview for tabs, callouts, and accordions.
 </Card>
 ````
 
 ## With `icon`
 
-Add `icon` to show a Font Awesome icon beside the title. Pass the icon slug without the `fa-` prefix—for example, `cog` for a settings icon or `school` for documentation.
+Add `icon` to show a Font Awesome icon beside the title. Pass the icon slug without the `fa-` prefix—for example, `gear` for a settings icon or `book` for documentation.
 
 <Card title="Documentation" icon="book">
-  Read the reference pages for props, behaviour, and examples.
+  Read the reference pages for properties, behaviour, and examples.
 </Card>
 
 ````mdx
 <Card title="Documentation" icon="book">
-  Read the reference pages for props, behaviour, and examples.
+  Read the reference pages for properties, behaviour, and examples.
 </Card>
 ````
 
 Combine `title`, `icon`, and `href` when you need a labelled card with a navigation action:
 
-<Card title="Components" icon="square" href="/components/index">
+<Card title="Components" icon="square" href="/components">
   Jump to the components overview.
 </Card>
 
 ````mdx
-<Card title="Components" icon="square" href="/components/index">
+<Card title="Components" icon="square" href="/components">
   Jump to the components overview.
 </Card>
 ````
 
-## `Card` props
+## Properties
 
-| Prop | Type | Required | Description |
-| --- | --- | --- | --- |
-| `title` | `string` | No | Text shown in the card header |
-| `href` | `string` | No | Destination for the header link button |
-| `icon` | `string` | No | Font Awesome icon slug shown beside the title |
+### `Card`
 
 <Property name="title" type="string" optional>
   The text shown in the card header. Use short, scannable titles such as **Installation** or **API reference**.
@@ -100,7 +96,7 @@ Combine `title`, `icon`, and `href` when you need a labelled card with a navigat
 ---
 
 <Property name="icon" type="string" optional>
-  A Font Awesome icon slug displayed beside the title. Pass the slug without the `fa-` prefix—for example, `cog` or `book`.
+  A Font Awesome icon slug displayed beside the title. Pass the slug without the `fa-` prefix—for example, `gear` or `book`.
 
   Brand icons use their brand slug (for example, `github`). See [Icon](/components/icon) for details.
 </Property>
@@ -110,20 +106,20 @@ Combine `title`, `icon`, and `href` when you need a labelled card with a navigat
 Use `<CardGroup>` to arrange multiple cards in a grid. By default, cards flow into two equal columns.
 
 <CardGroup>
-  <Card title="Installation" icon="cog">
+  <Card title="Installation" icon="gear">
     Install the package and verify the CLI.
   </Card>
-  <Card title="Documentation" icon="book" href="/components/index">
+  <Card title="Documentation" icon="book" href="/components">
     Browse component reference pages.
   </Card>
 </CardGroup>
 
 ````mdx
 <CardGroup>
-  <Card title="Installation" icon="cog">
+  <Card title="Installation" icon="gear">
     Install the package and verify the CLI.
   </Card>
-  <Card title="Documentation" icon="book" href="/components/index">
+  <Card title="Documentation" icon="book" href="/components">
     Browse component reference pages.
   </Card>
 </CardGroup>
@@ -157,11 +153,7 @@ Set `cols` to change the number of columns—for example, three cards per row on
 </CardGroup>
 ````
 
-## `CardGroup` props
-
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `cols` | `number` | `2` | Number of grid columns |
+### `CardGroup`
 
 <Property name="cols" type="number" optional>
   The number of columns in the card grid.
@@ -181,7 +173,6 @@ Set `cols` to change the number of columns—for example, three cards per row on
 
 ## See also
 
-- [Components overview](/components/index) — card grid used on the components landing page
-- [Icon](/components/icon) — Font Awesome icon slugs for the `icon` prop
+- [Components overview](/components) — card grid used on the components landing page
+- [Icon](/components/icon) — Font Awesome icon slugs for the `icon` property
 - [Callouts](/components/callouts) — emphasised panels for notes and warnings inside cards
-- [Reference template](/templates/reference) — structure for lookup pages like this one

@@ -1,6 +1,6 @@
 ---
 title: Video
-description: HTML5 video embed from a direct URL using only src and MIME type props.
+description: Embed a self-hosted MP4 or WebM file with native browser playback controls.
 ---
 
 Use `<Video>` to embed a self-hosted or generic video file in your documentation. The component renders a native HTML5 `<video>` element with a single `<source>` child. Pass a publicly accessible URL to an MP4, WebM, or other supported format.
@@ -15,7 +15,13 @@ For YouTube or Vimeo, use [`<YouTube>`](/components/youtube) or [`<Vimeo>`](/com
 
 Pass a full `https` URL to a file you host—on your own CDN, object storage, or any public address the reader's browser can fetch. Unlike [`<Image>`](/components/image), `<Video>` does not resolve repo-relative paths from `/docs`; the `src` value is used as-is on the `<source>` element.
 
-Host MP4 files in your repository and link to the raw file URL, or upload them to your own hosting and use that address in `src`.
+### Hosting options
+
+| Approach | How |
+| --- | --- |
+| CDN or object storage | Upload the file and use the public URL in `src` |
+| Raw GitHub URL | Link to the raw file URL from your repository |
+| External host | Any `https` address the reader's browser can fetch |
 
 ```mdx
 <Video src="https://cdn.example.com/guides/install.mp4" type="video/mp4" />
@@ -45,12 +51,7 @@ Set `type` to the video MIME type when you know it—for example, `video/mp4` or
 <Video src="https://cdn.example.com/clip.webm" type="video/webm" />
 ```
 
-## Props
-
-| Prop | Type | Required | Description |
-| --- | --- | --- | --- |
-| `src` | `string` | Yes | Public URL of the video file |
-| `type` | `string` | No | MIME type for the source, such as `video/mp4` |
+## Properties
 
 <Property name="src" type="string" required>
   The video file URL passed to the `<source>` element. Must be a full `http` or `https` address that readers can load in the browser.
@@ -92,4 +93,4 @@ The component applies default layout styles: full width, 16:9 aspect ratio, and 
 - [YouTube](/components/youtube) — embed YouTube videos by ID
 - [Vimeo](/components/vimeo) — embed Vimeo videos by ID
 - [Image](/components/image) — images with repo-relative paths and zoom
-- [Components overview](/components/index) — when to use media embeds and other MDX components
+- [Components overview](/components) — when to use media embeds and other MDX components

@@ -1,6 +1,6 @@
 ---
 title: Icon
-description: Font Awesome Icon slugs for inline graphics in prose, cards, and steps.
+description: Add Font Awesome icons inline in prose, cards, and steps.
 ---
 
 Use `<Icon>` to render [Font Awesome](https://fontawesome.com/icons) icons in MDX. Pass the icon slug as `name` without the `fa-` prefix—for example, `user` for a person icon or `github` for the GitHub brand mark.
@@ -35,12 +35,12 @@ Browse the [Font Awesome icon library](https://fontawesome.com/icons) and copy t
 
 ## Inline in prose
 
-Place `<Icon>` inside a sentence for emphasis or visual cues. Omit `size` to match surrounding text.
+Place `<Icon>` inside a sentence for emphasis or visual cues. Omit `size` to match surrounding text. Pass `aria-hidden` when the icon is decorative and nearby text conveys the meaning.
 
-Add a <Icon name="star" className="text-amber-500" /> to your favourites, or open <Icon name="folder-open" /> from the sidebar.
+Add a <Icon name="star" className="text-amber-500" aria-hidden /> to your favourites, or open <Icon name="folder-open" aria-hidden /> from the sidebar.
 
 ````mdx
-Add a <Icon name="star" className="text-amber-500" /> to your favourites, or open <Icon name="folder-open" /> from the sidebar.
+Add a <Icon name="star" className="text-amber-500" aria-hidden /> to your favourites, or open <Icon name="folder-open" aria-hidden /> from the sidebar.
 ````
 
 ## Size and colour
@@ -83,7 +83,7 @@ Brand icons—GitHub, npm, Docker, and similar—use the `fa-brands` style autom
 
 ## In cards
 
-The `<Card>` component accepts an `icon` prop that renders a header icon using the same slug format. See [Card](/components/card) for layout options.
+The `<Card>` component accepts an `icon` property that renders a header icon using the same slug format. See [Card](/components/card) for layout options.
 
 <Card title="API reference" icon="code">
   Browse endpoints, request bodies, and response schemas.
@@ -97,7 +97,7 @@ The `<Card>` component accepts an `icon` prop that renders a header icon using t
 
 ## In steps
 
-Use the `icon` prop on `<Step>` to replace the default step number with a custom icon. Useful when a procedure step has a clear visual association.
+Use the `icon` property on `<Step>` to replace the default step number with a custom icon. Useful when a procedure step has a clear visual association.
 
 <Steps>
   <Step title="Install dependencies" icon="download">
@@ -107,7 +107,7 @@ Use the `icon` prop on `<Step>` to replace the default step number with a custom
     npm install
     ```
   </Step>
-  <Step title="Configure the project" icon="cog">
+  <Step title="Configure the project" icon="gear">
     Add your API key to the environment file.
   </Step>
   <Step title="Deploy" icon="rocket">
@@ -120,7 +120,7 @@ Use the `icon` prop on `<Step>` to replace the default step number with a custom
   <Step title="Install dependencies" icon="download">
     Run the install command for your package manager.
   </Step>
-  <Step title="Configure the project" icon="cog">
+  <Step title="Configure the project" icon="gear">
     Add your API key to the environment file.
   </Step>
   <Step title="Deploy" icon="rocket">
@@ -129,12 +129,7 @@ Use the `icon` prop on `<Step>` to replace the default step number with a custom
 </Steps>
 ````
 
-## Props
-
-| Prop | Type | Required | Description |
-| --- | --- | --- | --- |
-| `name` | `string` | Yes | Font Awesome icon slug without the `fa-` prefix |
-| `size` | `number` | No | Icon size in pixels; defaults to the parent font size |
+## Properties
 
 <Property name="name" type="string" required>
   The Font Awesome icon slug. Pass the name from [fontawesome.com/icons](https://fontawesome.com/icons) without the `fa-` prefix—for example, `user`, `book`, or `github`.
@@ -154,7 +149,7 @@ Use the `icon` prop on `<Step>` to replace the default step number with a custom
 
 ## Additional attributes
 
-`<Icon>` renders a native `<i>` element. Any prop not consumed by `name` or `size` is forwarded to that element—`className`, `style`, `aria-hidden`, `title`, and others.
+`<Icon>` renders a native `<i>` element. Any attribute not consumed by `name` or `size` is forwarded to that element—`className`, `style`, `aria-hidden`, `title`, and others.
 
 The component always applies `fa-fw` for consistent width, plus either `fa-brands` or `fa-solid` and `fa-{name}` based on the slug.
 
@@ -178,7 +173,6 @@ The component always applies `fa-fw` for consistent width, plus either `fa-brand
 
 ## See also
 
-- [Card](/components/card) — `icon` prop on card headers
-- [Steps](/components/steps) — `icon` prop on individual steps
-- [Components overview](/components/index) — when to use icons, cards, and callouts
-- [Reference template](/templates/reference) — structure for lookup pages like this one
+- [Card](/components/card) — `icon` property on card headers
+- [Steps](/components/steps) — `icon` property on individual steps
+- [Components overview](/components) — when to use icons, cards, and callouts

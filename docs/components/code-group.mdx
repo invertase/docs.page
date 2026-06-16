@@ -1,9 +1,11 @@
 ---
 title: Code group
-description: CodeGroup tabs for multi-language snippets with optional synchronisation across groups on a page.
+description: Compare the same example across languages in a tabbed code block.
 ---
 
 Use `<CodeGroup>` to show the same example in multiple languages or variants. Wrap fenced code blocks as children—each fence becomes a tab labelled with its language tag. Readers switch tabs to compare snippets without scrolling past duplicate blocks.
+
+Prefer **Code group** over [Tabs](/components/tabs) when every panel is a code fence. Use **Tabs** when panels mix prose, lists, and callouts.
 
 ````mdx
 <CodeGroup title="Logging: Hello World">
@@ -53,15 +55,7 @@ Use `<CodeGroup>` to show the same example in multiple languages or variants. Wr
 </CodeGroup>
 ````
 
-## Props
-
-| Prop | Type | Default | Description |
-| --- | --- | --- | --- |
-| `title` | `string` | — | Label shown in the group header |
-| `defaultLanguage` | `string` | First fence | Language tab to show on first load |
-| `synchronize` | `boolean` | `false` | Keep language selection in sync across groups on the page |
-
-Only fenced code blocks inside `<CodeGroup>` become tabs. Other MDX content is ignored. The renderer passes parsed blocks to the component internally—you do not set a `blocks` prop in MDX.
+## Properties
 
 <Property name="title" type="string" optional>
   A short label shown in the group header, for example **Logging: Hello World** or **Install dependencies**.
@@ -84,6 +78,8 @@ Only fenced code blocks inside `<CodeGroup>` become tabs. Other MDX content is i
 
   Sync state is held by `CodeGroupProvider`, which wraps page content automatically. Unlike `<Tabs groupId="…">`, there is no separate group ID—synchronised code groups on a page share one language state.
 </Property>
+
+Only fenced code blocks inside `<CodeGroup>` become tabs. Other MDX content is ignored. The renderer passes parsed blocks to the component internally—you do not set a `blocks` property in MDX.
 
 ## Synchronisation
 
@@ -150,10 +146,10 @@ Language tabs use the fence language tag as the label—for example, `javascript
 
 The copy button in the header copies the **active** tab's source—the raw fence content, not the highlighted HTML.
 
-docs.page shows language tabs as buttons in the header. There is no dropdown mode; some other doc platforms expose a `dropdown` prop for compact layouts, but that prop is not supported here.
+docs.page shows language tabs as buttons in the header. There is no dropdown mode; some other doc platforms expose a `dropdown` property for compact layouts, but that property is not supported here.
 
 ## See also
 
 - [Code blocks](/components/code-blocks) — single fences, titles, and annotations
 - [Tabs](/components/tabs) — switchable panels for prose and mixed content
-- [Components overview](/components/index) — when to use tabs, code groups, and accordions
+- [Components overview](/components) — when to use tabs, code groups, and accordions

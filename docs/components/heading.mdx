@@ -1,6 +1,6 @@
 ---
 title: Heading
-description: Markdown headings with slug anchors and table-of-contents support, plus manual Heading when needed.
+description: Link to page sections and control what appears in the table of contents.
 ---
 
 Use standard Markdown `#` syntax for most headings. Each level renders through the `Heading` component with a slugified `id` and a hover anchor link. Use the `<Heading>` component only when Markdown syntax is not practical.
@@ -21,6 +21,10 @@ The visible page title comes from frontmatter `title`, not from a Markdown `#` h
 <Info>
   When `showPageTitle` is enabled in frontmatter or site config, the page title renders as an `h1` above the body content.
 </Info>
+
+<Warning>
+  Do not repeat the frontmatter `title` as `# Page title` in the body. That creates a duplicate heading and can confuse the table of contents.
+</Warning>
 
 ## Markdown headings
 
@@ -49,7 +53,7 @@ By default, headings from `h2` through `h3` appear in the table of contents. The
 }
 ```
 
-Increase `headerDepth` to include `h4`, `h5`, or `h6` in the table of contents.
+Increase `headerDepth` to include deeper levels—for example, `4` includes `h4` headings, `5` includes `h5`, and `6` includes `h6`.
 
 ## Custom headings
 
@@ -61,12 +65,7 @@ When Markdown syntax is unavailable—for example, inside a component that does 
 
 Set `id` when you need a stable anchor link. Without `id`, the heading renders without a hover anchor. Manual headings are never added to the table of contents, even when `id` is set.
 
-## `Heading` props
-
-| Prop | Type | Required | Description |
-| --- | --- | --- | --- |
-| `type` | `"h1"` \| `"h2"` \| `"h3"` \| `"h4"` \| `"h5"` \| `"h6"` | Yes | HTML heading element to render |
-| `id` | `string` | No | Anchor target; hover link appears only when set |
+## Properties
 
 <Property name="type" type="string" required>
   The heading level to render. Must be one of `h1` through `h6`.
@@ -98,5 +97,5 @@ Standard HTML heading attributes—such as `className`—are forwarded to the un
 
 ## See also
 
-- [Components overview](/components/index) — when to use headings with other layout components
-- [Reference template](/templates/reference) — structure for lookup pages like this one
+- [Components overview](/components) — when to use headings with other layout components
+- [docs.json reference](/reference/docs-json-reference) — `content.headerDepth` and other content settings
