@@ -1,6 +1,7 @@
 import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
 
+import { renderDoc } from "@docs.page/mdx-bundler";
 import chalk from "chalk";
 import type { Command } from "commander";
 import { Option } from "commander";
@@ -12,12 +13,22 @@ import remarkMdx from "remark-mdx";
 import remarkParse from "remark-parse";
 import { unified } from "unified";
 
+import {
+  type DocsConfigSource,
+  hasNonLatin1,
+  loadDocsConfig,
+  parseConfigObject,
+  resolveHeaderDepth,
+  resolveVariables,
+  usesAutoOgImage,
+} from "../lib/docs-config";
 import { isNodeError } from "../lib/errors";
 
 const SEVERITIES = ["off", "warn", "error"] as const;
 const FRONTMATTER_LINK_FIELDS = ["redirect", "next", "previous"] as const;
 const EXTERNAL_LINK_TIMEOUT_MS = 10_000;
 const EXTERNAL_LINK_CONCURRENCY = 8;
+const RENDER_CONCURRENCY = 4;
 
 type Severity = (typeof SEVERITIES)[number];
 type ReportableSeverity = Exclude<Severity, "off">;
@@ -26,6 +37,8 @@ type CheckOptions = {
   externalLinks: Severity;
   internalLinks: Severity;
   assets: Severity;
+  render: Severity;
+  metadata: Severity;
 };
 
 type CheckIssue = {
@@ -85,6 +98,12 @@ export function registerCheckCommand(program: Command) {
     .addOption(
       createSeverityOption("--assets <level>", "Check local image assets"),
     )
+    .addOption(
+      createSeverityOption("--render <level>", "Check MDX renders correctly"),
+    )
+    .addOption(
+      createSeverityOption("--metadata <level>", "Check page metadata"),
+    )
     .action(async (inputPath: string, options: CheckOptions) => {
       const exitCode = await runCheck(path.resolve(inputPath), options);
 
@@ -97,6 +116,8 @@ export function registerCheckCommand(program: Command) {
 async function runCheck(rootDir: string, options: CheckOptions) {
   const reporter = createReporter();
   const mdxFiles = await findMdxFiles(rootDir);
+  const configSource = await loadDocsConfig(rootDir);
+  const parsedConfig = parseConfigObject(configSource);
 
   console.log(chalk.cyan("Checking docs.page project:"), rootDir);
 
@@ -117,8 +138,23 @@ async function runCheck(rootDir: string, options: CheckOptions) {
   const externalReferences: Reference[] = [];
   const externalCheckCache = new Map<string, Promise<string | undefined>>();
 
+  reportProjectMetadataIssues({
+    config: parsedConfig,
+    configSource,
+    severity: options.metadata,
+    reporter,
+  });
+
   for (const file of mdxFiles) {
     const references = await readReferences(rootDir, file, reporter.report);
+
+    await reportPageMetadataIssues({
+      rootDir,
+      file,
+      config: parsedConfig,
+      severity: options.metadata,
+      reporter,
+    });
 
     for (const reference of references) {
       const target = classifyTarget(reference.target);
@@ -151,6 +187,14 @@ async function runCheck(rootDir: string, options: CheckOptions) {
       });
     }
   }
+
+  await reportRenderIssues({
+    rootDir,
+    files: mdxFiles,
+    configSource,
+    severity: options.render,
+    reporter,
+  });
 
   const externalSeverity =
     options.externalLinks === "off" ? undefined : options.externalLinks;
@@ -268,20 +312,29 @@ async function readReferences(
 ) {
   const filePath = path.join(rootDir, file);
   const markdown = await readFile(filePath, "utf8");
+  const references: Reference[] = [];
 
   try {
-    return [
-      ...extractMarkdownReferences(file, markdown),
-      ...extractFrontmatterReferences(file, markdown),
-    ];
+    references.push(...extractMarkdownReferences(file, markdown));
   } catch (error) {
     report({
       severity: "error",
       file,
       message: `Unable to parse MDX: ${getErrorMessage(error)}`,
     });
-    return [];
   }
+
+  try {
+    references.push(...extractFrontmatterReferences(file, markdown));
+  } catch (error) {
+    report({
+      severity: "error",
+      file,
+      message: `Invalid frontmatter YAML: ${getErrorMessage(error)}`,
+    });
+  }
+
+  return references;
 }
 
 function extractMarkdownReferences(file: string, markdown: string) {
@@ -351,6 +404,209 @@ function extractFrontmatterReferences(file: string, markdown: string) {
   }
 
   return references;
+}
+
+async function reportRenderIssues({
+  rootDir,
+  files,
+  configSource,
+  severity,
+  reporter,
+}: {
+  rootDir: string;
+  files: string[];
+  configSource: DocsConfigSource;
+  severity: Severity;
+  reporter: ReturnType<typeof createReporter>;
+}) {
+  if (severity === "off") {
+    return;
+  }
+
+  const variables = resolveVariables(configSource);
+  const headerDepth = resolveHeaderDepth(configSource);
+
+  await runLimited(files, RENDER_CONCURRENCY, async (file) => {
+    const markdown = await readFile(path.join(rootDir, file), "utf8");
+
+    try {
+      await renderDoc(markdown, { variables, headerDepth });
+    } catch (error) {
+      reporter.report({
+        severity,
+        file,
+        message: `MDX failed to render: ${getErrorMessage(error)}`,
+      });
+    }
+  });
+}
+
+function reportProjectMetadataIssues({
+  config,
+  configSource,
+  severity,
+  reporter,
+}: {
+  config: Record<string, unknown>;
+  configSource: DocsConfigSource;
+  severity: Severity;
+  reporter: ReturnType<typeof createReporter>;
+}) {
+  if (severity === "off" || !usesAutoOgImage(config)) {
+    return;
+  }
+
+  const file = getConfigFile(configSource);
+
+  reportMetadataFieldIssue({
+    value: config.name,
+    field: "name",
+    source: "config",
+    severity,
+    reporter,
+    file,
+  });
+  reportMetadataFieldIssue({
+    value: config.description,
+    field: "description",
+    source: "config",
+    severity,
+    reporter,
+    file,
+  });
+}
+
+async function reportPageMetadataIssues({
+  rootDir,
+  file,
+  config,
+  severity,
+  reporter,
+}: {
+  rootDir: string;
+  file: string;
+  config: Record<string, unknown>;
+  severity: Severity;
+  reporter: ReturnType<typeof createReporter>;
+}) {
+  if (severity === "off") {
+    return;
+  }
+
+  const markdown = await readFile(path.join(rootDir, file), "utf8");
+  let frontmatter: Record<string, unknown>;
+
+  try {
+    frontmatter = matter(markdown).data;
+  } catch {
+    return;
+  }
+
+  if (!usesAutoOgImage(config, frontmatter)) {
+    return;
+  }
+
+  reportMetadataFieldIssue({
+    value: frontmatter.title,
+    field: "title",
+    source: "frontmatter",
+    severity,
+    reporter,
+    file,
+    line: getFrontmatterFieldLine(markdown, "title"),
+  });
+  reportMetadataFieldIssue({
+    value: frontmatter.description,
+    field: "description",
+    source: "frontmatter",
+    severity,
+    reporter,
+    file,
+    line: getFrontmatterFieldLine(markdown, "description"),
+  });
+}
+
+function reportMetadataFieldIssue({
+  value,
+  field,
+  source,
+  severity,
+  reporter,
+  file,
+  line,
+}: {
+  value: unknown;
+  field: string;
+  source: "config" | "frontmatter";
+  severity: Severity;
+  reporter: ReturnType<typeof createReporter>;
+  file?: string;
+  line?: number;
+}) {
+  if (severity === "off") {
+    return;
+  }
+
+  if (value === undefined || value === null) {
+    return;
+  }
+
+  if (typeof value !== "string") {
+    reporter.report({
+      severity,
+      file,
+      line,
+      message: `Metadata field "${field}" must be a string.`,
+      target: source,
+    });
+    return;
+  }
+
+  if (!hasNonLatin1(value)) {
+    return;
+  }
+
+  reporter.report({
+    severity,
+    file,
+    line,
+    message: `Metadata field "${field}" contains non-Latin-1 characters that can break client-side social image generation. Use ASCII text or set socialPreview/frontmatter image.`,
+    target: source,
+  });
+}
+
+function getConfigFile(configSource: DocsConfigSource) {
+  if (configSource.json !== null) {
+    return "docs.json";
+  }
+
+  if (configSource.yaml !== null) {
+    return "docs.yaml";
+  }
+
+  return undefined;
+}
+
+function getFrontmatterFieldLine(markdown: string, field: string) {
+  const lines = markdown.split(/\r?\n/);
+
+  if (lines[0] !== "---") {
+    return undefined;
+  }
+
+  for (let index = 1; index < lines.length; index += 1) {
+    const line = lines[index];
+
+    if (line === "---" || line === "...") {
+      return undefined;
+    }
+
+    if (line?.match(new RegExp(`^\\s*${escapeRegExp(field)}\\s*:`))) {
+      return index + 1;
+    }
+  }
+
+  return undefined;
 }
 
 function reportBrokenInternalLink({
@@ -767,6 +1023,10 @@ function decodePath(value: string) {
   } catch {
     return value;
   }
+}
+
+function escapeRegExp(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 function getErrorMessage(error: unknown) {

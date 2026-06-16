@@ -7,21 +7,21 @@ import { renderDoc } from "@docs.page/mdx-bundler";
 import chalk from "chalk";
 import chokidar from "chokidar";
 import type { Command } from "commander";
-import { load as parseYaml } from "js-yaml";
 import { type WebSocket, WebSocketServer } from "ws";
 
 import { getApiBase } from "../lib/api";
 import { getGlobalOptions } from "../lib/command";
+import {
+  type DocsConfigSource,
+  isRecord,
+  resolveHeaderDepth,
+  resolveVariables,
+} from "../lib/docs-config";
 import { CliError } from "../lib/errors";
 
 type PreviewOptions = {
   port?: number;
   browser: boolean;
-};
-
-type PreviewConfig = {
-  json: string | null;
-  yaml: string | null;
 };
 
 type SerializedPreviewError = {
@@ -44,7 +44,7 @@ type PreviewResponseEvent = {
   pathname: string;
   filePath: string | null;
   changedPaths?: string[];
-  config: PreviewConfig;
+  config: DocsConfigSource;
   markdown: string | null;
   bundle: PreviewBundle | null;
   candidates: string[];
@@ -57,7 +57,7 @@ type PreviewResponseEvent = {
 type PreviewSnapshot = {
   docPath: string;
   filePath: string | null;
-  config: PreviewConfig;
+  config: DocsConfigSource;
   markdown: string | null;
   candidates: string[];
   error: string | null;
@@ -350,7 +350,7 @@ function readPreviewSnapshot(
 
   const jsonConfigPath = path.join(rootDir, "docs.json");
   const yamlConfigPath = path.join(rootDir, "docs.yaml");
-  const config: PreviewConfig = {
+  const config: DocsConfigSource = {
     json: fs.existsSync(jsonConfigPath)
       ? fs.readFileSync(jsonConfigPath, "utf8")
       : null,
@@ -402,43 +402,6 @@ function isWatchedPath(changedPath: string) {
     normalized.endsWith(".mdx") ||
     normalized.endsWith(".md")
   );
-}
-
-function parseConfigObject(config: PreviewConfig): Record<string, unknown> {
-  try {
-    if (config.json) {
-      const parsed = JSON.parse(config.json) as unknown;
-      return isRecord(parsed) ? parsed : {};
-    }
-
-    if (config.yaml) {
-      const parsed = parseYaml(config.yaml);
-      return isRecord(parsed) ? parsed : {};
-    }
-  } catch {
-    return {};
-  }
-
-  return {};
-}
-
-function resolveVariables(config: PreviewConfig): Record<string, unknown> {
-  const parsed = parseConfigObject(config);
-  return isRecord(parsed.variables) ? parsed.variables : {};
-}
-
-function resolveHeaderDepth(config: PreviewConfig): number {
-  const parsed = parseConfigObject(config);
-  const content = isRecord(parsed.content) ? parsed.content : undefined;
-  const headerDepth = content?.headerDepth ?? parsed.headerDepth;
-
-  return typeof headerDepth === "number" && Number.isInteger(headerDepth)
-    ? headerDepth
-    : 3;
-}
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
 }
 
 function isPingMessage(
