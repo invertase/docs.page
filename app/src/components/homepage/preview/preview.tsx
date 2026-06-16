@@ -85,7 +85,7 @@ export function Preview() {
 
 function Embedded() {
   return (
-    <div className="h-[min(680px,75dvh)] overflow-hidden rounded-2xl border bg-black sm:h-[800px] sm:rounded-3xl">
+    <div className="h-[min(680px,75dvh)] overflow-hidden rounded-2xl border bg-black sm:h-[800px] sm:rounded-xl">
       <PreviewEmbedded />
     </div>
   );

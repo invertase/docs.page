@@ -19,7 +19,7 @@ export function Features() {
               loop
               muted
               title={feature.titleText}
-              className="relative aspect-auto z-1 w-full rounded-md object-cover border border-border/50 shadow-lg"
+              className="relative aspect-auto z-1 w-full rounded-lg object-cover border border-border/50 shadow-lg"
             />
           ) : null}
           {feature.image ? (

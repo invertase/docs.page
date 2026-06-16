@@ -227,12 +227,12 @@ export function PreviewSource() {
   const showFile = !isMobile || mobileView === "file";
 
   return (
-    <div className="flex h-[min(680px,75dvh)] flex-col overflow-hidden rounded-2xl border bg-black p-1.5 sm:h-[800px] sm:rounded-3xl sm:p-2 md:grid md:grid-cols-[minmax(0,300px)_minmax(0,1fr)] md:gap-2">
+    <div className="flex h-[min(680px,75dvh)] flex-col overflow-hidden rounded-2xl border bg-black p-1.5 sm:h-[800px] sm:rounded-xl sm:p-2 md:grid md:grid-cols-[minmax(0,300px)_minmax(0,1fr)] md:gap-2">
       <div className="shrink-0 border-b px-2 py-1.5 md:hidden">
         <MobileViewTabs view={mobileView} onViewChange={setMobileView} />
       </div>
       {showTree && (
-        <div className="min-h-0 flex-1 overflow-hidden rounded-2xl border md:h-full md:flex-none">
+        <div className="min-h-0 flex-1 overflow-hidden rounded-lg border md:h-full md:flex-none">
           <FileTree
             model={model}
             className="min-h-0 h-full overflow-hidden py-2"
@@ -240,7 +240,7 @@ export function PreviewSource() {
         </div>
       )}
       {showFile && (
-        <div className="min-h-0 flex-1 overflow-hidden rounded-2xl border md:h-full">
+        <div className="min-h-0 flex-1 overflow-hidden rounded-lg border md:h-full">
           {fileContent && (
             <SourceFilePanel
               key={fileContent.path}
