@@ -285,11 +285,10 @@ function SidebarCollapsibleNestedGroup(props: {
   const children = (
     <CollapsibleContent>
       <SidebarMenuSub
-        className={
-          nested
-            ? "mx-3.5 border-l border-sidebar-border px-2.5 py-0.5"
-            : undefined
-        }
+        className={cn(
+          "gap-1 py-0",
+          nested && "mx-3.5 border-l border-sidebar-border px-2.5",
+        )}
       >
         <SidebarPagesList pages={props.node.pages} depth={props.depth + 1} />
       </SidebarMenuSub>
@@ -299,12 +298,12 @@ function SidebarCollapsibleNestedGroup(props: {
   return (
     <Collapsible open={open} onOpenChange={setOpen}>
       {nested ? (
-        <SidebarMenuSubItem className="pb-1">
+        <SidebarMenuSubItem className="flex flex-col gap-1">
           {trigger}
           {children}
         </SidebarMenuSubItem>
       ) : (
-        <SidebarMenuItem className="pb-1">
+        <SidebarMenuItem className="flex flex-col gap-1">
           {trigger}
           {children}
         </SidebarMenuItem>
@@ -331,7 +330,7 @@ function SidebarNestedGroup(props: {
   if (props.node.href && !hasChildren) {
     if (nested) {
       return (
-        <SidebarMenuSubItem className="pb-1 text-muted-foreground">
+        <SidebarMenuSubItem className="text-muted-foreground">
           <SidebarPageRow
             title={label}
             href={props.node.href}
@@ -344,7 +343,7 @@ function SidebarNestedGroup(props: {
     }
 
     return (
-      <SidebarMenuItem className="pb-1 text-muted-foreground">
+      <SidebarMenuItem className="text-muted-foreground">
         <SidebarPageRow
           title={label}
           href={props.node.href}
@@ -382,10 +381,7 @@ function SidebarPagesList(props: {
           const active = isDocHrefActive(route, link.href, locales);
           if (props.depth > 0) {
             return (
-              <SidebarMenuSubItem
-                key={key}
-                className="pb-1 text-muted-foreground"
-              >
+              <SidebarMenuSubItem key={key} className="text-muted-foreground">
                 <SidebarPageRow
                   title={link.title}
                   href={link.href}
@@ -397,7 +393,7 @@ function SidebarPagesList(props: {
             );
           }
           return (
-            <SidebarMenuItem key={key} className="pb-1 text-muted-foreground">
+            <SidebarMenuItem key={key} className="text-muted-foreground">
               <SidebarPageRow
                 title={link.title}
                 href={link.href}
@@ -458,7 +454,7 @@ export function Sidebar() {
                   <SidebarGroupLabel
                     asChild
                     className={cn(
-                      "flex items-center gap-2",
+                      "mb-1 flex items-center gap-2",
                       !group.pages?.length && "sr-only",
                     )}
                   >
@@ -473,7 +469,7 @@ export function Sidebar() {
                 ) : (
                   <SidebarGroupLabel
                     className={cn(
-                      "flex items-center gap-2",
+                      "mb-1 flex items-center gap-2",
                       !group.pages?.length && "sr-only",
                     )}
                   >
@@ -483,7 +479,7 @@ export function Sidebar() {
                 )
               ) : null}
               <SidebarGroupContent>
-                <SidebarMenu className="text-muted-foreground">
+                <SidebarMenu className="gap-1 text-muted-foreground">
                   <SidebarPagesList pages={group.pages} depth={0} />
                 </SidebarMenu>
               </SidebarGroupContent>
