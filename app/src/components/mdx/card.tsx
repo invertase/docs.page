@@ -7,10 +7,9 @@ import {
   Card as CardPrimitive,
   CardTitle,
 } from "@/components/ui/card";
-import { Link } from "../doc-link";
-import { Button } from "../ui/button";
-import { Icon } from "./icon";
 import { cn } from "@/lib/utils";
+import { Link } from "../doc-link";
+import { Icon } from "./icon";
 
 type CardProps = PropsWithChildren<{
   title?: string;
@@ -25,11 +24,11 @@ export function Card({ title, icon, href, children }: CardProps) {
         <Link href={href} className="block">
           {children}
         </Link>
-      )
+      );
     }
 
     return children;
-  }
+  };
 
   return container(
     <CardPrimitive
@@ -60,7 +59,7 @@ export function Card({ title, icon, href, children }: CardProps) {
       >
         {children}
       </CardContent>
-    </CardPrimitive>
+    </CardPrimitive>,
   );
 }
 
@@ -68,11 +67,20 @@ type CardGroupProps = PropsWithChildren<{
   cols?: number;
 }>;
 
+const smGridCols: Record<number, string> = {
+  1: "md:grid-cols-1",
+  2: "md:grid-cols-2",
+  3: "md:grid-cols-3",
+  4: "md:grid-cols-4",
+};
+
 export function CardGroup({ cols = 2, children }: CardGroupProps) {
   return (
     <div
-      className="grid gap-4"
-      style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}
+      className={cn(
+        "grid grid-cols-1 gap-4",
+        smGridCols[cols] ?? "sm:grid-cols-2",
+      )}
     >
       {children}
     </div>
