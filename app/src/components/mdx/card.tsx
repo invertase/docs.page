@@ -10,6 +10,7 @@ import {
 import { Link } from "../doc-link";
 import { Button } from "../ui/button";
 import { Icon } from "./icon";
+import { cn } from "@/lib/utils";
 
 type CardProps = PropsWithChildren<{
   title?: string;
@@ -18,28 +19,45 @@ type CardProps = PropsWithChildren<{
 }>;
 
 export function Card({ title, icon, href, children }: CardProps) {
-  return (
-    <CardPrimitive>
+  const container = (children: React.ReactNode) => {
+    if (href) {
+      return (
+        <Link href={href} className="block">
+          {children}
+        </Link>
+      )
+    }
+
+    return children;
+  }
+
+  return container(
+    <CardPrimitive
+      className={cn("group", href && "border hover:border-primary")}
+    >
       {title || icon || href ? (
         <CardHeader>
           {href ? (
             <CardAction>
-              <Button size="icon-sm" variant="outline" asChild>
-                <Link href={href}>
-                  <RiExternalLinkLine />
-                </Link>
-              </Button>
+              <RiExternalLinkLine className="size-4 opacity-80 group-hover:opacity-100 transition-opacity" />
             </CardAction>
           ) : null}
-          <CardTitle className="text-lg flex items-center gap-2">
-            {icon ? (
-              <Icon name={icon} size={16} className="opacity-80" />
-            ) : null}
-            <span>{title}</span>
+          <CardTitle>
+            {icon && (
+              <div className="mb-3">
+                <Icon name={icon} size={20} className="text-primary" />
+              </div>
+            )}
+            <span className="text-lg">{title}</span>
           </CardTitle>
         </CardHeader>
       ) : null}
-      <CardContent className="space-y-4 text-foreground/90">
+      <CardContent
+        className={cn(
+          "space-y-4 text-foreground/90",
+          href && "group-hover:text-primary",
+        )}
+      >
         {children}
       </CardContent>
     </CardPrimitive>
