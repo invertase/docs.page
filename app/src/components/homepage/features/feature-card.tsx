@@ -14,20 +14,22 @@ type FeatureCardProps = PropsWithChildren<{
   title: React.ReactNode;
   description: string;
   link: string;
+  overlap?: boolean;
 }>;
 
 export function FeatureCard({
   title,
   description,
   link,
+  overlap = true,
   children,
 }: FeatureCardProps) {
   return (
     <div
       className={cn(
         PAPER_SECTION_SHELL_CLASS,
-        PAPER_SECTION_OVERLAP_CLASS,
-        "bg-black/60 pb-20 lg:pb-40",
+        overlap && PAPER_SECTION_OVERLAP_CLASS,
+        "bg-black/96 pb-20 lg:pb-40",
       )}
       style={{ clipPath: paperCornerClipPath() }}
     >
