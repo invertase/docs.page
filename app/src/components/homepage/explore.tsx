@@ -53,7 +53,7 @@ function Project(props: {
     <Link
       href={props.href}
       target="_blank"
-      className="group relative isolate flex overflow-hidden bg-black"
+      className="group relative isolate flex min-w-0 overflow-hidden bg-black"
     >
       <div
         className={cn(
@@ -63,9 +63,9 @@ function Project(props: {
         style={{ "--homepage-dot-color": props.color } as CSSProperties}
         aria-hidden
       />
-      <div className="relative z-10 flex h-full min-h-28 flex-col gap-2 p-6 lg:min-h-0">
+      <div className="relative z-10 flex h-full min-h-28 min-w-0 flex-col gap-2 p-6 lg:min-h-0">
         <h3
-          className="flex-1 text-base font-medium leading-snug lg:text-sm lg:font-normal lg:truncate"
+          className="min-w-0 flex-1 text-base font-medium leading-snug lg:text-sm lg:font-normal"
           style={{ color: props.color }}
         >
           {props.title}
