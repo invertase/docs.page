@@ -43,7 +43,7 @@
           "href": "/"
         },
         {
-          "title": "Publish your first site",
+          "title": "Quickstart",
           "href": "/publish-your-first-site"
         },
         {
@@ -91,7 +91,7 @@
               "href": "/authoring/preview-locally"
             },
             {
-              "title": "Shareable preview",
+              "title": "Preview from a feature branch",
               "href": "/authoring/shareable-preview"
             }
           ]
@@ -444,6 +444,10 @@
         {
           "title": "CLI reference",
           "href": "/reference/cli-reference"
+        },
+        {
+          "title": "Routing and URL resolution",
+          "href": "/reference/routing-url-resolution"
         },
         {
           "title": "HTTP endpoints",

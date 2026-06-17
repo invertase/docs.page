@@ -1,6 +1,51 @@
 ---
-title: Shareable previews
-description: Share branch and pull request preview links with teammates, including the GitHub bot.
+title: How to preview from a feature branch
+description: Push a branch and open a shareable preview URL so teammates review documentation before it merges.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+After your site is live, use shareable previews when you need feedback on in-progress documentation without merging to your default branch first.
+
+## Before you begin
+
+- A published [docs.page](https://docs.page) site in a **public** GitHub repository
+- Changes committed on a feature branch (not yet merged to your default branch)
+
+## Steps
+
+1. **Push your branch** to GitHub from your project directory:
+
+   ```bash
+   git checkout -b feature-docs
+   # edit docs/ and docs.json
+   git add docs.json docs/
+   git commit -m "Draft new documentation"
+   git push -u origin feature-docs
+   ```
+
+2. **Build the preview URL** by adding a `~{branch}` segment after the repository name:
+
+   ```
+   https://docs.page/{owner}/{repo}~{branch}
+   ```
+
+   For `acme/my-docs` on branch `feature-docs`:
+
+   ```
+   https://docs.page/acme/my-docs~feature-docs
+   ```
+
+3. **Open the URL** in your browser and confirm your branch changes appear — navigation, theme, and page content should match what you pushed, not what is on your default branch.
+
+4. **Share the link** with reviewers. Anyone with the URL can open the preview; no local CLI or GitHub access is required on their side.
+
+## Verify
+
+- The preview shows edits from your feature branch, not production content on your default branch
+- Sidebar and theme match your branch's `docs.json`
+- Individual pages load at the same paths they will use after merge (for example `/next-steps`)
+
+## Next steps
+
+- [Branch preview](/features/branch-preview) — ref URL patterns for commits and pull requests, and when to use shareable vs local preview
+- [GitHub App](/features/github-app) — automatic pull request comments with preview links
+- [Local preview](/features/local-preview) — iterate on your machine before you push

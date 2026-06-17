@@ -1,6 +1,6 @@
 ---
-title: Publish your first site
-description: Walk through scaffolding your site, pushing to GitHub, and opening your live documentation URL.
+title: Quickstart
+description: Publish a live documentation site from a public GitHub repository in minutes.
 ---
 
 This tutorial walks you through your first publish: scaffold the required files, push them to a public GitHub repository, and open your live [docs.page](https://docs.page) URL. When you finish, your documentation site is on the web — no build step or hosting setup required.
@@ -11,9 +11,7 @@ This tutorial walks you through your first publish: scaffold the required files,
 - [Git](https://git-scm.com/downloads) installed locally
 - [Node.js](https://nodejs.org/) (to run the CLI via `npx`)
 
-If you have not read it yet, skim [Introduction](/) for how [docs.page](https://docs.page) hosting works.
-
-## Step-by-step instructions
+## Steps
 
 <Steps>
   <Step title="Scaffold your docs files">
@@ -59,37 +57,15 @@ If you have not read it yet, skim [Introduction](/) for how [docs.page](https://
     </Warning>
   </Step>
   <Step title="Open your live site">
-    Your documentation is available as soon as the push completes. Open:
+    Your documentation is live the instant your push completes. Open your browser and navigate to:
 
     ```
     https://docs.page/{owner}/{repo}
     ```
 
-    For `https://github.com/acme/my-docs`, visit `https://docs.page/acme/my-docs`.
+    For example, if your repository is `https://github.com/acme/my-docs`, your live site is `https://docs.page/acme/my-docs`.
 
-    Confirm the site loads with your project name in the header, the **Getting Started** sidebar group from `docs.json`, and the edit you made on the home page. Click **Next Steps** to verify `/next-steps` renders.
-
-    Pushes to your default branch update the live site automatically — there is no separate deploy step.
-  </Step>
-  <Step title="Read your URL patterns">
-    Every page URL mirrors its path under `docs/`:
-
-    | File | Live URL |
-    | --- | --- |
-    | `docs/index.mdx` | `/` |
-    | `docs/next-steps.mdx` | `/next-steps` |
-    | `docs/usage.mdx` | `/usage` |
-    | `docs/guides/setup/index.mdx` | `/guides/setup` |
-
-    Nested directories become nested URL paths. A file named `index.mdx` inside a folder serves that folder's path.
-
-    To preview documentation from a branch before it merges, append a ref segment to the repository URL:
-
-    ```
-    https://docs.page/{owner}/{repo}~{branch}
-    ```
-
-    For example, `https://docs.page/acme/my-docs~feature-docs` serves the `feature-docs` branch. See [Shareable preview](/authoring/shareable-preview) for pull request previews and the GitHub bot.
+    **Congratulations — your docs site is officially published.** Pushes to your default branch update this live site automatically with zero build steps.
   </Step>
 </Steps>
 
