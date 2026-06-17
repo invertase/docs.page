@@ -2,6 +2,7 @@ import { z } from "zod";
 
 import agent from "./models/agent";
 import anchors from "./models/anchors";
+import banner from "./models/banner";
 import content from "./models/content";
 import favicon from "./models/favicon";
 import header from "./models/header";
@@ -30,6 +31,7 @@ export const ConfigSchema = z
     mcp,
     og,
     favicon,
+    banner,
     logo,
     theme,
     header,

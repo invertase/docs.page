@@ -212,7 +212,7 @@ function SidebarCollapsibleGroupTrigger(props: {
     <>
       {props.icon ? <SidebarNavIcon icon={props.icon} /> : null}
       <span className="min-w-0 flex-1 wrap-break-word">{props.label}</span>
-      <RiArrowRightSLine className="ml-auto size-4 shrink-0 transition-transform duration-200 [[data-state=open]_&]:rotate-90" />
+      <RiArrowRightSLine className="ml-auto size-4 shrink-0 transition-transform duration-200 in-data-[state=open]:rotate-90" />
     </>
   );
 

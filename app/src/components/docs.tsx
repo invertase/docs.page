@@ -1,6 +1,7 @@
 import dynamic from "next/dynamic";
 import { AgentPanel } from "@/components/agent/panel";
 import { AgentPanelProvider } from "@/components/agent/provider";
+import { Banner } from "./banner";
 import { Footer } from "./footer";
 import { Header } from "./header";
 import { McpDialogProvider } from "./mcp-dialog";
@@ -34,6 +35,7 @@ export function Docs() {
                 id="docs-content-panel"
                 className="flex min-w-0 flex-1 flex-col overflow-visible!"
               >
+                <Banner />
                 <Header />
                 <div className="relative mx-auto flex min-h-0 w-full max-w-8xl flex-1 flex-row">
                   <Sidebar />
