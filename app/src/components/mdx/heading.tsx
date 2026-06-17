@@ -21,7 +21,7 @@ const styles = {
 } satisfies Record<HeadingTag, string>;
 
 export function Heading(props: HeadingTagProps) {
-  const { node, id, type, ...other } = props;
+  const { node, id, type, className, ...other } = props;
   const Tag = type;
 
   return (
@@ -32,7 +32,15 @@ export function Heading(props: HeadingTagProps) {
       )}
     >
       <span id={id} data-heading="true" className="absolute -mt-36 pt-36" />
-      <Tag {...other} />
+      <Tag
+        {...other}
+        className={cn(className, id && "cursor-pointer")}
+        onClick={() => {
+          if (id) {
+            window.location.href = `#${id}`;
+          }
+        }}
+      />
       {id ? (
         <Button variant="outline" size="icon" asChild>
           <a
