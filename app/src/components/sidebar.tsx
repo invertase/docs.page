@@ -11,7 +11,6 @@ import {
   SidebarGroupContent,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
@@ -83,17 +82,12 @@ function subtreeHasActivePage(
   return false;
 }
 
-function ExternalLinkBadge(props: { nested?: boolean }) {
+function ExternalLinkIndicator() {
   return (
-    <SidebarMenuBadge
-      aria-hidden="true"
-      className={cn(
-        "text-sidebar-foreground/60 [&>svg]:size-3.5",
-        props.nested && "top-1",
-      )}
-    >
-      <RiExternalLinkLine />
-    </SidebarMenuBadge>
+    <RiExternalLinkLine
+      aria-hidden
+      className="size-3.5! shrink-0 text-sidebar-foreground/60!"
+    />
   );
 }
 
@@ -108,37 +102,29 @@ function SidebarPageRow(props: {
 
   if (props.nested) {
     return (
-      <>
-        <SidebarMenuSubButton
-          asChild
-          isActive={props.isActive}
-          size="md"
-          className={cn("text-muted-foreground", external && "pr-7")}
-        >
-          <Link href={props.href}>
-            {props.icon ? <SidebarNavIcon icon={props.icon} /> : null}
-            <span className="min-w-0 wrap-break-word">{props.title}</span>
-          </Link>
-        </SidebarMenuSubButton>
-        {external ? <ExternalLinkBadge nested /> : null}
-      </>
+      <SidebarMenuSubButton
+        asChild
+        isActive={props.isActive}
+        size="md"
+        className="text-muted-foreground"
+      >
+        <Link href={props.href}>
+          {props.icon ? <SidebarNavIcon icon={props.icon} /> : null}
+          <span className="min-w-0 flex-1 wrap-break-word">{props.title}</span>
+          {external ? <ExternalLinkIndicator /> : null}
+        </Link>
+      </SidebarMenuSubButton>
     );
   }
 
   return (
-    <>
-      <SidebarMenuButton
-        asChild
-        isActive={props.isActive}
-        className={cn(external && "pr-8")}
-      >
-        <Link href={props.href}>
-          {props.icon ? <SidebarNavIcon icon={props.icon} /> : null}
-          <span className="min-w-0 wrap-break-word">{props.title}</span>
-        </Link>
-      </SidebarMenuButton>
-      {external ? <ExternalLinkBadge /> : null}
-    </>
+    <SidebarMenuButton asChild isActive={props.isActive}>
+      <Link href={props.href}>
+        {props.icon ? <SidebarNavIcon icon={props.icon} /> : null}
+        <span className="min-w-0 flex-1 wrap-break-word">{props.title}</span>
+        {external ? <ExternalLinkIndicator /> : null}
+      </Link>
+    </SidebarMenuButton>
   );
 }
 
@@ -157,6 +143,7 @@ function SidebarLinkedGroupRow(props: {
     <>
       {props.icon ? <SidebarNavIcon icon={props.icon} /> : null}
       <span className="min-w-0 flex-1 wrap-break-word">{props.label}</span>
+      {external ? <ExternalLinkIndicator /> : null}
       <RiArrowRightSLine
         className={cn(
           "ml-auto size-4 shrink-0 transition-transform duration-200",
@@ -168,36 +155,29 @@ function SidebarLinkedGroupRow(props: {
 
   if (props.nested) {
     return (
-      <>
-        <SidebarMenuSubButton
-          asChild
-          isActive={props.isActive}
-          size="md"
-          className={cn("text-muted-foreground", external && "pr-7")}
-        >
-          <Link href={props.href} onClick={props.onClick}>
-            {row}
-          </Link>
-        </SidebarMenuSubButton>
-        {external ? <ExternalLinkBadge nested /> : null}
-      </>
-    );
-  }
-
-  return (
-    <>
-      <SidebarMenuButton
+      <SidebarMenuSubButton
         asChild
-        tooltip={props.tooltip}
         isActive={props.isActive}
-        className={cn(external && "pr-8")}
+        size="md"
+        className="text-muted-foreground"
       >
         <Link href={props.href} onClick={props.onClick}>
           {row}
         </Link>
-      </SidebarMenuButton>
-      {external ? <ExternalLinkBadge /> : null}
-    </>
+      </SidebarMenuSubButton>
+    );
+  }
+
+  return (
+    <SidebarMenuButton
+      asChild
+      tooltip={props.tooltip}
+      isActive={props.isActive}
+    >
+      <Link href={props.href} onClick={props.onClick}>
+        {row}
+      </Link>
+    </SidebarMenuButton>
   );
 }
 
