@@ -7,8 +7,9 @@ export function Footer() {
     <>
       <div className="flex flex-col items-center gap-10 px-6 py-16 text-center lg:grid lg:grid-cols-2 lg:items-center lg:gap-0 lg:px-20 lg:py-32 lg:text-left">
         <div className="order-2 flex flex-col items-center gap-8 lg:order-1 lg:items-start">
-          <h3 className="text-4xl leading-snug font-heading font-light tracking-loose lg:text-5xl">
-            Bring your docs <br /> into the <b>agentic</b> age
+          <h3 className="text-4xl leading-14 font-heading font-extralight tracking-loose lg:text-5xl">
+            Bring your docs <br /> into the{" "}
+            <span className="font-normal">agentic age</span>
           </h3>
 
           <Button
