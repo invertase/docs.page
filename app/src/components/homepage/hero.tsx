@@ -39,8 +39,14 @@ export function Hero() {
 
 function Eyebrow() {
   return (
-    <div className="border rounded-full px-4 py-2 bg-periwinkle-950 text-sm hover:cursor-pointer text-muted-foreground hover:text-foreground transition-colors">
-      Free and open-source
+    <div className="group relative">
+      <div
+        className="pointer-events-none absolute -inset-2 -z-10 rounded-full bg-periwinkle-500/10 opacity-0 blur-sm transition-opacity group-hover:opacity-100"
+        aria-hidden
+      />
+      <div className="border rounded-full px-4 py-2 bg-periwinkle-950 text-sm hover:cursor-pointer text-muted-foreground hover:text-foreground transition-colors">
+        Free and open-source
+      </div>
     </div>
   );
 }
