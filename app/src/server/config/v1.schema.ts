@@ -86,6 +86,11 @@ export const V1ConfigSchema = z
           repo: 10_000,
         },
       },
+      banner: {
+        message: undefined,
+        backgroundColor: undefined,
+        foregroundColor: undefined,
+      },
       mcp: {
         enabled: true,
       },
