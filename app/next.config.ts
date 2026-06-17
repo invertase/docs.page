@@ -9,10 +9,6 @@ const nextConfig: NextConfig = {
     return {
       beforeFiles: [
         {
-          source: "/schema.json",
-          destination: "/api/schema.json",
-        },
-        {
           source: "/:owner/:repo/search.json",
           destination: "/api/:owner/:repo/search.json",
         },
