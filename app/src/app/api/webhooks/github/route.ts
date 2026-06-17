@@ -17,6 +17,7 @@ function getWebhook() {
   }
 
   webhook = new Webhooks({ secret });
+  webhook.on("pull_request.opened", onPullRequestOpened);
   return webhook;
 }
 
@@ -33,8 +34,6 @@ export const POST = async (req: Request) => {
   if (!verified) {
     return Response.json({ error: "Invalid signature." }, { status: 400 });
   }
-
-  webhook.on("pull_request.opened", onPullRequestOpened);
 
   try {
     const id = String(req.headers.get("x-github-hook-id"));
