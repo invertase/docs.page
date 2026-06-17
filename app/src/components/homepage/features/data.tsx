@@ -7,7 +7,7 @@ export const features = [
     titleText: "Agent-ready",
     title: (
       <>
-        <span className="text-primary">Agent</span>-ready
+        <span className="text-primary font-light">Agent</span>-ready
       </>
     ),
     description:
@@ -19,7 +19,7 @@ export const features = [
     titleText: "Git Publishing",
     title: (
       <>
-        <span className="text-primary">Git</span> Publishing
+        <span className="text-primary font-light">Git</span> Publishing
       </>
     ),
     description:
@@ -31,7 +31,7 @@ export const features = [
     titleText: "Intelligent Search",
     title: (
       <>
-        <span className="text-primary">Intelligent</span> Search
+        <span className="text-primary font-light">Intelligent</span> Search
       </>
     ),
     description:
@@ -43,7 +43,7 @@ export const features = [
     titleText: "Markdown Components",
     title: (
       <>
-        <span className="text-primary">Markdown</span> Components
+        <span className="text-primary font-light">Markdown</span> Components
       </>
     ),
     description:
@@ -55,7 +55,7 @@ export const features = [
     titleText: "Branches & versions",
     title: (
       <>
-        <span className="text-primary">Branches</span> & versions
+        <span className="text-primary font-light">Branches</span> & versions
       </>
     ),
     description:
@@ -67,7 +67,7 @@ export const features = [
     titleText: "Modern Interface",
     title: (
       <>
-        <span className="text-primary">Modern</span> Interface
+        <span className="text-primary font-light">Modern</span> Interface
       </>
     ),
     description:
