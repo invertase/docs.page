@@ -27,15 +27,23 @@ The redirect runs in the same request path as normal page rendering — there is
 
 **Internal paths** — root-relative paths such as `/getting-started` — are resolved against the **current request context**. You write the path once; docs.page builds the full URL from how the reader opened the page.
 
-```yaml
+```yaml title="docs/installation.mdx"
+---
+title: Installation
+description: Install and configure the product on your machine.
 redirect: /getting-started
+---
 ```
 
-```yaml
+```yaml title="docs/legacy-docs.mdx"
+---
+title: Legacy documentation
+description: Documentation hosted at an external site.
 redirect: https://example.com/docs/new-location
+---
 ```
 
-Do not rely on query strings or hash anchors in `redirect` values. They are not part of the redirect contract.
+The file body can be empty. Only `redirect` is required for the HTTP redirect — other frontmatter fields are ignored at request time. Do not rely on query strings or hash anchors in `redirect` values. They are not part of the redirect contract.
 
 ### How internal paths resolve across routing modes
 

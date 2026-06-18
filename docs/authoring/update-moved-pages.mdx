@@ -29,15 +29,17 @@ When you rename `docs/installation.mdx` to `docs/getting-started.mdx`, readers w
 
    The page is now served at `/getting-started`.
 
-2. **Create a stub at the old path** with only a redirect in frontmatter.
+2. **Create a stub at the old path** with `redirect` in the page frontmatter.
 
    ```yaml title="docs/installation.mdx"
    ---
+   title: Installation
+   description: Install and configure the product on your machine.
    redirect: /getting-started
    ---
    ```
 
-   The file can be empty below the frontmatter. When a reader opens `/installation`, docs.page sends them to `/getting-started` and does not render page body content.
+   The file body can be empty. Only `redirect` is required — docs.page sends the HTTP redirect before rendering page content. Keep `title` and `description` if you want the stub to match a typical page file in your repo.
 
 3. **Update sidebar links** in `docs.json` so navigation points at the new href.
 
@@ -65,8 +67,12 @@ When you rename `docs/installation.mdx` to `docs/getting-started.mdx`, readers w
 
 Use a root-relative path starting with `/`:
 
-```yaml
+```yaml title="docs/installation.mdx"
+---
+title: Installation
+description: Install and configure the product on your machine.
 redirect: /getting-started
+---
 ```
 
 docs.page resolves the full destination against your current site context — the default branch URL, a preview ref, a vanity subdomain, or a custom domain. You do not need to hard-code `https://docs.page/owner/repo`.
@@ -75,8 +81,12 @@ docs.page resolves the full destination against your current site context — th
 
 Use a full URL to send readers off-site:
 
-```yaml
+```yaml title="docs/legacy-docs.mdx"
+---
+title: Legacy documentation
+description: Documentation hosted at an external site.
 redirect: https://example.com/docs/new-location
+---
 ```
 
 ### Paths to avoid
@@ -103,6 +113,8 @@ If you use translated documentation, the root page can redirect to a default loc
 
 ```yaml title="docs/index.mdx"
 ---
+title: Documentation
+description: Product documentation and guides.
 redirect: /en
 ---
 ```
