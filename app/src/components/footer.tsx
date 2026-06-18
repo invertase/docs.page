@@ -40,7 +40,9 @@ export function Footer() {
 
   // Sorting here ensures that the socials are always displayed in the same order,
   // on client and server side.
-  const sorted = socials.sort(([a], [b]) => a.localeCompare(b));
+  const sorted = socials
+    .filter(([name, url]) => Boolean(url) && links[name])
+    .sort(([a], [b]) => a.localeCompare(b));
 
   return (
     <footer className="py-12 border-t flex text-muted-foreground">
