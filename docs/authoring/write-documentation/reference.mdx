@@ -1,0 +1,136 @@
+---
+title: Reference template
+description: Structure lookup pages for APIs, config fields, commands, and exact syntax.
+---
+
+Use this layout when readers need facts on demand — not a story or a walkthrough. Reference pages are for scanning, copying exact syntax, and confirming allowed values.
+
+
+<Info>
+  Examples on the **Page templates** share a fictional **Coffee Shop Ordering API** so you can compare how the same product reads across documentation types.
+</Info>
+
+
+## Blueprint anatomy
+
+Before writing, anchor yourself to the core constraints of the information-oriented quadrant:
+
+- **The goal:** Provide a strict, lookup-oriented directory of facts — API specs, configuration keys, command syntax, or component props.
+- **The tone:** Stark, literal, objective, and dense. No welcome paragraphs, analogies, or marketing language.
+- **The layout:** Syntax → Parameters or options → Examples → Errors → See also. Use `<Property>` and `<Accordion>` for nested fields; use tables for flat lists.
+
+| Use reference when… | Use something else when… |
+| --- | --- |
+| The reader knows *what* they need to look up | They need a guided first walkthrough → [Tutorial](/authoring/write-documentation/tutorial) |
+| Fields, types, defaults, and errors must be exhaustive | They need steps for one task → [How-to](/authoring/write-documentation/how-to) |
+| Prose should stay minimal | They need architecture and tradeoffs → [Explanation](/authoring/write-documentation/explanation) |
+
+## Copy this template
+
+Copy this raw skeleton into a new `.mdx` file to begin scaffolding your page.
+
+````mdx title="docs/reference/your-surface.mdx"
+---
+title: [Resource or endpoint name]
+description: [What this page documents — parameters, errors, or syntax]
+---
+
+[One-line austere description of the surface]
+
+## Syntax
+
+```http
+[METHOD] [path or command format]
+```
+
+## [Parameters / Options / Fields]
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `[field]` | `[type]` | [Yes/No] | [Description and allowed values] |
+
+## Example request
+
+```json
+[Valid request or config snippet]
+```
+
+## Example response
+
+```json
+[Valid response or output]
+```
+
+## Errors
+
+| Status / condition | Meaning |
+| --- | --- |
+| `[code or condition]` | [When this occurs] |
+
+## See also
+
+- [Link to Tutorial]
+- [Link to How-to]
+- [Link to Explanation]
+````
+
+## Example: Create order (`POST /v1/orders`)
+
+<Card>
+
+### Syntax
+
+
+```http
+POST /v1/orders
+Authorization: Bearer <api_key>
+Content-Type: application/json
+```
+
+
+### Parameters
+
+| Field | Type | Required | Description |
+| --- | --- | --- | --- |
+| `item` | `string` | Yes | Base beverage. Allowed values: `espresso`, `americano`, `latte`, `cappuccino`. |
+| `size` | `string` | Yes | Drink size. Allowed values: `single`, `double`, `twelve_oz`, `sixteen_oz`. |
+| `temperature` | `string` | No | Defaults to `hot`. Allowed values: `hot`, `iced`. |
+
+### Example request
+
+
+```json
+{
+  "item": "latte",
+  "size": "twelve_oz",
+  "temperature": "iced"
+}
+```
+
+
+### Example response
+
+
+```json
+{
+  "order_id": "ord_123",
+  "status": "received",
+  "total_cents": 525
+}
+```
+
+
+### Errors
+
+| Status | Condition |
+| --- | --- |
+| `401 Unauthorized` | Missing or invalid API key. |
+| `422 Unprocessable Entity` | Invalid combination — for example, `single` size with an `iced` latte. |
+
+</Card>
+
+## Explore other templates
+
+- [Tutorial template](/authoring/write-documentation/tutorial) — First coffee order walkthrough
+- [How-to template](/authoring/write-documentation/how-to) — Modify an order with milk alternatives
+- [Explanation template](/authoring/write-documentation/explanation) — Order fulfillment lifecycle and state machine

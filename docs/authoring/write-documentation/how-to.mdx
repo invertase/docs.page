@@ -1,0 +1,119 @@
+---
+title: How-to template
+description: Structure task pages for readers who know the basics and need steps to solve one problem.
+---
+
+Use this layout when the reader already knows the basics and needs to accomplish one distinct objective. Headings should name the action and the benefit so the page stays scannable under time pressure.
+
+<Info>
+  Examples on the **Page templates** share a fictional **Coffee Shop Ordering API** so you can compare how the same product reads across documentation types.
+</Info>
+
+
+## Blueprint anatomy
+
+Before writing, anchor yourself to the core constraints of the task-oriented quadrant:
+
+- **The goal:** Help a reader who knows the basics solve one specific, real-world problem.
+- **The tone:** Practical, direct, and action-driven. Headings focus on the action and the benefit. Keep conceptual fluff out of the steps.
+- **The layout:** Goal → Before you begin → Steps → Verify → Next steps. State **why** before each change when it is not obvious.
+
+| Use a how-to when… | Use something else when… |
+| --- | --- |
+| The reader knows the product but not this task | They have never tried the product → [Tutorial](/authoring/write-documentation/tutorial) |
+| You can state a problem and a verification step | They need every field and error code → [Reference](/authoring/write-documentation/reference) |
+| Steps are actions, not architecture | They need *why* the system works this way → [Explanation](/authoring/write-documentation/explanation) |
+
+## Copy this template
+
+Copy this raw skeleton into a new `.mdx` file to begin scaffolding your page.
+
+````mdx title="docs/your-how-to-page.mdx"
+---
+title: How to [accomplish specific task]
+description: One sentence on the problem solved and benefit gained.
+---
+
+This guide shows you how to [task] so you can [benefit].
+
+## Before you begin
+
+- [Prerequisite 1]
+- [Prerequisite 2]
+- [Link to relevant Reference page]
+
+## Steps
+
+1. **[Action with context].** [Imperative instruction]
+
+   ```json
+   [Config or payload snippet]
+   ```
+
+2. **[Next action].** [Imperative instruction]
+
+   ```bash
+   [Command or request]
+   ```
+
+## Verify
+
+[How to confirm success — expected output, status change, or behavior]
+
+## Next steps
+
+- [Related how-to]
+- [Related explanation or reference]
+````
+
+## Example: Customize drinks with milk alternatives
+
+<Card>
+
+### Before you begin
+
+- An active order ID with status `pending`
+- Your Barista API key
+- [Orders API reference](/authoring/write-documentation/reference) for field names
+
+### Steps
+
+1. **Find the pending order ID.** List recent orders or copy the `order_id` from your original `POST` response. You can only modify orders while status is `pending`.
+
+2. **Add a modifications array.** Include the milk substitute in the request body:
+
+
+   ```json
+   {
+     "modifications": [
+       {
+         "type": "milk",
+         "substitute": "oat_milk"
+       }
+     ]
+   }
+   ```
+
+
+3. **Update the order.** Send a `PATCH` request to the order endpoint:
+
+
+   ```bash
+   curl -X PATCH https://api.coffeeshop.dev/v1/orders/ord_123 \
+     -H "Authorization: Bearer YOUR_API_KEY" \
+     -H "Content-Type: application/json" \
+     -d '{"modifications": [{"type": "milk", "substitute": "oat_milk"}]}'
+   ```
+
+
+### Verify
+
+Check the response payload. The `total_cents` field should increase to reflect the milk alternative upcharge, and `modifications` should list `oat_milk`.
+
+</Card>
+
+## Explore other templates
+
+- [Tutorial template](/authoring/write-documentation/tutorial) — Onboarding pages focused on one thing the reader sets out to do
+- [Reference template](/authoring/write-documentation/reference) — Lookup pages for endpoints and parameters
+- [Explanation template](/authoring/write-documentation/explanation) — Why the order lifecycle works asynchronously

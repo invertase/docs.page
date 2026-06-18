@@ -45,28 +45,6 @@
         {
           "title": "Quickstart",
           "href": "/publish-your-first-site"
-        },
-        {
-          "group": "Page templates",
-          "href": "/templates/index",
-          "pages": [
-            {
-              "title": "Tutorial",
-              "href": "/templates/tutorial"
-            },
-            {
-              "title": "How-to",
-              "href": "/templates/how-to"
-            },
-            {
-              "title": "Reference",
-              "href": "/templates/reference"
-            },
-            {
-              "title": "Explanation",
-              "href": "/templates/explanation"
-            }
-          ]
         }
       ]
     },
@@ -76,8 +54,26 @@
       "tab": "docs",
       "pages": [
         {
-          "title": "Write documentation",
-          "href": "/authoring/write-documentation"
+          "group": "Write documentation",
+          "href": "/authoring/write-documentation",
+          "pages": [
+            {
+              "title": "Tutorial",
+              "href": "/authoring/write-documentation/tutorial"
+            },
+            {
+              "title": "How-to",
+              "href": "/authoring/write-documentation/how-to"
+            },
+            {
+              "title": "Reference",
+              "href": "/authoring/write-documentation/reference"
+            },
+            {
+              "title": "Explanation",
+              "href": "/authoring/write-documentation/explanation"
+            }
+          ]
         },
         {
           "title": "Organize navigation",
