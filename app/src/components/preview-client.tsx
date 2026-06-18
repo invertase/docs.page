@@ -1,5 +1,7 @@
 "use client";
 
+import type { DocIrNode } from "@docs.page/mdx-bundler";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Docs } from "@/components/docs";
@@ -12,10 +14,10 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { DocPageContext } from "@/hooks/use-doc-page-context";
-import type { DocIrNode } from "@/lib/docs-ir/types";
 import type { DocPageProps } from "@/lib/types";
 import { defaultConfig, parseConfig } from "@/server/config";
 import { Preset } from "./preset";
+import { Button } from "./ui/button";
 
 type PreviewBundle = {
   markdown?: string;
@@ -258,65 +260,27 @@ export function PreviewClient() {
   }
 
   if (!previewDocProps) {
-    const isMissingSocketUrl = !rawSocketUrl;
-    const isInvalidSocketUrl = Boolean(rawSocketUrl) && !websocketUrl;
-
     return (
       <Empty>
         <EmptyHeader>
           <EmptyMedia variant="icon">
-            <img src="/logo.svg" alt="Docs Page" width={100} height={100} />
+            <img src="/_docs.page/logo-icon.svg" alt="Docs Page" />
           </EmptyMedia>
-          <EmptyTitle>
-            {isMissingSocketUrl
-              ? "Missing preview server URL"
-              : isInvalidSocketUrl
-                ? "Invalid preview server URL"
-                : "Connecting to local preview"}
-          </EmptyTitle>
-          <EmptyDescription>
-            {isMissingSocketUrl
-              ? "Open this page from the CLI preview command so the app knows how to reach your local preview server."
-              : isInvalidSocketUrl
-                ? "The `url` query parameter is present, but it is not a valid websocket or http URL."
-                : "Waiting for the local preview server to send the first bundled page."}
+          <EmptyTitle className="text-2xl">Preview</EmptyTitle>
+          <EmptyDescription className="space-y-2">
+            <p>Preview your documentation locally before publishing.</p>
           </EmptyDescription>
         </EmptyHeader>
-        <EmptyContent>
-          {isMissingSocketUrl ? (
-            <>
-              <div className="rounded-md border bg-muted/40 px-3 py-2 font-mono text-xs break-all">
-                /preview{previewPath === "/" ? "" : previewPath}
-                ?url=ws://localhost:PORT
-              </div>
-              <p className="text-muted-foreground">
-                Run <code>docs preview</code> and open the URL it prints in the
-                terminal.
-              </p>
-            </>
-          ) : isInvalidSocketUrl ? (
-            <>
-              <div className="rounded-md border bg-muted/40 px-3 py-2 font-mono text-xs break-all">
-                {rawSocketUrl}
-              </div>
-              <p className="text-muted-foreground">
-                Use a valid <code>ws://</code>, <code>wss://</code>,{" "}
-                <code>http://</code>, or <code>https://</code> preview server
-                URL.
-              </p>
-            </>
-          ) : (
-            <>
-              <div className="rounded-md border bg-muted/40 px-3 py-2 font-mono text-xs break-all">
-                {websocketUrl?.toString()}
-              </div>
-              <p className="text-muted-foreground">
-                If this takes more than a moment, make sure{" "}
-                <code>docs preview</code> is still running and that the
-                requested page exists under <code>docs/</code>.
-              </p>
-            </>
-          )}
+        <EmptyContent className="space-y-2">
+          <p>
+            To get started, run the preview command in the root of your project:
+          </p>
+          <pre className="rounded-md border bg-muted/40 px-3 py-2 font-mono text-xs break-all">{`npx @docs.page/cli preview`}</pre>
+          <Button variant="ghost" size="sm" asChild>
+            <Link href="https://use.docs.page/live-previews">
+              View documentation
+            </Link>
+          </Button>
         </EmptyContent>
       </Empty>
     );

@@ -58,6 +58,8 @@ Options:
 1. `--external-links` (flag (error) - `off`, `warn`, `error`) - specifies whether to check external markdown links resolve.
 2. `--internal-links` (flag (error) - `off`, `warn`, `error`) - specifies whether to check internal links resolve to another markdown file.
 3. `--assets` (flag (error) - `off`, `warn`, `error`) - specifies whether to check any referenced links (e.g. in images) resolve to a local asset if they are relative.
+4. `--render` (flag (error) - `off`, `warn`, `error`) - specifies whether to check MDX files render through the docs.page render pipeline.
+5. `--metadata` (flag (error) - `off`, `warn`, `error`) - specifies whether to check page and project metadata values.
 
 Much like running a linter tool such as Biome/ESLint etc, the check flow should:
 
@@ -68,6 +70,8 @@ Much like running a linter tool such as Biome/ESLint etc, the check flow should:
  1. Find all anchor nodes (external + internal links)
  2. Find all image nodes, both `![..](..)` and `<Image ... src="...">` (assets)
  3. Find any frontmatter with: `redirect`, `next` and/or `previous`
+- For each MDX file, validate that it can render via the shared `@docs.page/mdx-bundler` pipeline.
+- Validate project and page metadata values that are used for client-side generated social image URLs.
 - If the link source is:
  1. Internal = ensure that the URL -> mdx file mapping exists so there would be no 404s.
  2. External = validate the URL exists (follow redirects.. should be 1xx-2xx range (I think?))

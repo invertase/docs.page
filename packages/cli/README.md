@@ -33,15 +33,16 @@ docs init --overwrite        # replace existing docs.page files
 
 ### `check`
 
-Lint your documentation for broken links and missing assets. Exits with code `1` when errors are found, so it works in CI.
+Lint your documentation for broken links, missing assets, render errors, and metadata issues. Exits with code `1` when errors are found, so it works in CI.
 
 ```bash
 docs check
 docs check ./my-project
 docs check --external-links warn --internal-links error --assets error
+docs check --render error --metadata warn
 ```
 
-Severity levels for link and asset checks: `off`, `warn`, `error`.
+Severity levels for checks: `off`, `warn`, `error`.
 
 ### `preview`
 

@@ -46,6 +46,7 @@ export function Search() {
           onClick={() => setOpen(!open)}
         >
           <RiSearch2Line />
+          <span className="hidden md:inline">Search</span>
           <Kbd className="hidden md:block h-[17px]">⌘K</Kbd>
         </Button>
       </div>

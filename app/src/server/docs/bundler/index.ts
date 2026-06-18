@@ -1,11 +1,10 @@
-import frontmatter from "gray-matter";
+import {
+  type DocIrNode,
+  type HeadingNode,
+  renderDoc,
+} from "@docs.page/mdx-bundler";
 import { assertPublicRepo } from "@/lib/docs-access";
-import { mdxToDocIr } from "@/lib/docs-ir/from-mdx";
-import { highlightCodeBlocksInIr } from "@/lib/docs-ir/highlight-code-blocks";
-import type { DocIrNode } from "@/lib/docs-ir/types";
-import { extractHeadingNodes, type HeadingNode } from "@/lib/docs-markdown";
 import { type Config, defaultConfig, parseConfig } from "@/server/config";
-import { replaceMoustacheVariables } from "@/server/docs/variables";
 import {
   type GitHubSource,
   getGitHubContents,
@@ -132,18 +131,13 @@ export class Bundler {
     }
 
     try {
-      const { content, data } = frontmatter(this.#markdown);
-
-      const markdown = replaceMoustacheVariables(
-        this.#config.variables ?? {},
-        content,
+      const { markdown, docIr, headings, frontmatter } = await renderDoc(
+        this.#markdown,
+        {
+          variables: this.#config.variables ?? {},
+          headerDepth: this.#config.content?.headerDepth ?? 3,
+        },
       );
-
-      const headings = extractHeadingNodes(markdown, {
-        tocMinDepth: 2,
-        tocMaxDepth: this.#config.content?.headerDepth ?? 3,
-      });
-      const docIr = await highlightCodeBlocksInIr(await mdxToDocIr(markdown));
 
       return {
         source: this.#source,
@@ -157,7 +151,7 @@ export class Bundler {
         markdown,
         docIr,
         headings,
-        frontmatter: data,
+        frontmatter,
       };
     } catch (error) {
       console.error(error);

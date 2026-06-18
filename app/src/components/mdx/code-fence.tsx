@@ -34,7 +34,7 @@ export function CodeFence({
       {...props}
     >
       <figcaption className="flex h-9 items-center justify-between gap-3 px-4 font-mono text-muted-foreground text-xs">
-        <div className="truncate">
+        <div className="flex items-center gap-2 truncate">
           {title ? (
             <>
               {language}

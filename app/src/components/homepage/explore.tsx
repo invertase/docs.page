@@ -15,25 +15,25 @@ export function Explore() {
       </div>
       <div className="grid grid-cols-2 divide-x divide-y divide-border lg:contents">
         <Project
-          href="https://github.com/invertase/react-native-firebase"
+          href="https://rnfirebase.io"
           title="React Native Firebase"
           color="#f97316"
           stars="12k+"
         />
         <Project
-          href="https://github.com/schultek/jaspr"
+          href="https://docs.jaspr.site"
           title="Jaspr"
           color="#14b8a6"
           stars="2k+"
         />
         <Project
-          href="https://github.com/invertase/melos"
+          href="https://melos.invertase.dev"
           title="Melos"
           color="#ef4444"
           stars="1k+"
         />
         <Project
-          href="https://github.com/widgetbook/widgetbook"
+          href="https://docs.widgetbook.io"
           title="Widgetbook"
           color="#a855f7"
           stars="900+"

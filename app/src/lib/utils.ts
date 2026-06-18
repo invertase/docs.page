@@ -6,9 +6,17 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function toBase64(str: string) {
+  const bytes = new TextEncoder().encode(str);
+
   if (typeof window !== "undefined") {
-    return window.btoa(str);
+    let binary = "";
+
+    for (const byte of bytes) {
+      binary += String.fromCharCode(byte);
+    }
+
+    return window.btoa(binary);
   }
 
-  return Buffer.from(str).toString("base64");
+  return Buffer.from(bytes).toString("base64");
 }

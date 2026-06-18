@@ -37,7 +37,14 @@ export function Header() {
     <header className="sticky top-0 z-30 bg-background">
       <div className="mx-auto w-full max-w-8xl px-4">
         <div className="h-14 flex items-center justify-between px-1">
-          <Logo />
+          <div className="flex min-w-0 flex-1 items-center gap-1">
+            {!hasTabs && (
+              <div className="shrink-0 md:hidden">
+                <SidebarTrigger />
+              </div>
+            )}
+            <Logo />
+          </div>
           <Actions />
         </div>
         {hasTabs && (
@@ -100,7 +107,8 @@ function Logo() {
 }
 
 function Actions() {
-  const { meta } = useDocPageContext();
+  const { meta, route } = useDocPageContext();
+  const isPreview = route.requestMode === "preview";
 
   return (
     <div className="flex min-w-0 flex-1 items-center justify-end gap-1">
@@ -110,7 +118,7 @@ function Actions() {
         <HeaderLinks />
       </div>
       <div>
-        <GitHubLink />
+        {!isPreview && <GitHubLink />}
         <ThemeToggle />
       </div>
     </div>
@@ -123,6 +131,7 @@ function Agent() {
   return (
     <Button variant="outline" aria-label="Toggle agent panel" onClick={toggle}>
       <RiSparkling2Fill />
+      <span className="hidden md:inline">Ask AI</span>
       <Kbd className="hidden md:block h-[17px] gap-2">⌘I</Kbd>
     </Button>
   );

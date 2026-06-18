@@ -1,3 +1,4 @@
+import type { DocIrNode } from "@docs.page/mdx-bundler";
 import { type CSSProperties, Fragment, type ReactNode } from "react";
 import { Accordion, AccordionGroup } from "@/components/mdx/accordion";
 import { Error, Info, Success, Warning } from "@/components/mdx/callout";
@@ -5,7 +6,6 @@ import { Property } from "@/components/mdx/property";
 import { TabItem, Tabs } from "@/components/mdx/tabs";
 import { Tweet } from "@/components/mdx/tweet";
 import { YouTube } from "@/components/mdx/youtube";
-import type { DocIrNode } from "@/lib/docs-ir/types";
 import { MarkdownLeaf } from "./markdown-leaf";
 import { Card, CardGroup } from "./mdx/card";
 import { CodeFence } from "./mdx/code-fence";
@@ -196,13 +196,7 @@ function renderComponent(
         video={stringProp(node.props.video)}
       />
     ),
-    Video: (
-      <Video
-        key={key}
-        src={stringProp(node.props.src)}
-        type={stringProp(node.props.type)}
-      />
-    ),
+    Video: <Video key={key} {...videoPropsFromIr(node.props)} />,
     Steps: <Steps key={key}>{children}</Steps>,
     Step: (
       <Step
@@ -249,10 +243,52 @@ function codeBlocksFromChildren(children: DocIrNode[]): CodeGroupBlock[] {
         child.kind === "code",
     )
     .map((block) => ({
-      lang: block.lang || "text",
+      label: codeGroupBlockLabel(block),
       highlighted: block.highlighted ?? "",
       value: block.value,
     }));
+}
+
+function codeGroupBlockLabel(
+  block: Extract<DocIrNode, { kind: "code" }>,
+): string {
+  if (block.title) {
+    return block.title;
+  }
+
+  const meta = block.meta?.trim();
+  if (meta && !meta.includes("=")) {
+    return meta;
+  }
+
+  return block.lang || "text";
+}
+
+function videoPropsFromIr(props: Record<string, unknown>) {
+  return {
+    src: stringProp(props.src),
+    type: stringProp(props.type),
+    className: stringProp(props.className),
+    controls: booleanProp(props.controls),
+    autoPlay: booleanProp(props.autoPlay),
+    muted: booleanProp(props.muted),
+    loop: booleanProp(props.loop),
+    playsInline: booleanProp(props.playsInline),
+    poster: stringProp(props.poster),
+    preload: stringProp(props.preload) as
+      | "auto"
+      | "metadata"
+      | "none"
+      | undefined,
+    crossOrigin: stringProp(props.crossOrigin) as
+      | ""
+      | "anonymous"
+      | "use-credentials"
+      | undefined,
+    title: stringProp(props.title),
+    width: numberProp(props.width),
+    height: numberProp(props.height),
+  };
 }
 
 function stringProp(value: unknown): string | undefined {

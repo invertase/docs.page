@@ -1,7 +1,6 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp";
-import * as z from "zod/v3";
-import { zodToJsonSchema } from "zod-to-json-schema";
+import * as z from "zod";
 import type { ResolvedDocsRoute } from "@/lib/docs-routing";
 import type { Config } from "@/server/config";
 import { ConfigSchema } from "@/server/config/schema";
@@ -63,16 +62,12 @@ export async function createMcpDescriptor(context: McpRepoContext) {
     getMcpSkillResources(context.route),
   ]);
   const skillResources = skillList?.skills ?? [];
-  const readDocSchema = zodToJsonSchema(
-    ReadDocToolSchema.describe(
-      "Read a docs.page markdown or MDX source file.",
-    ) as unknown as Parameters<typeof zodToJsonSchema>[0],
-  );
-  const listDocFilesSchema = zodToJsonSchema(
-    ListDocFilesToolSchema.describe(
-      "List docs.page `.mdx` pages available in the current repository context.",
-    ) as unknown as Parameters<typeof zodToJsonSchema>[0],
-  );
+  const readDocSchema = ReadDocToolSchema.describe(
+    "Read a docs.page markdown or MDX source file.",
+  ).toJSONSchema({ io: "input", unrepresentable: "any" });
+  const listDocFilesSchema = ListDocFilesToolSchema.describe(
+    "List docs.page `.mdx` pages available in the current repository context.",
+  ).toJSONSchema({ io: "input", unrepresentable: "any" });
 
   return {
     server: {
@@ -154,11 +149,10 @@ async function createMcpServer(context: McpRepoContext) {
             uri: uri.toString(),
             mimeType: "application/json",
             text: JSON.stringify(
-              zodToJsonSchema(
-                ConfigSchema as unknown as Parameters<
-                  typeof zodToJsonSchema
-                >[0],
-              ),
+              ConfigSchema.toJSONSchema({
+                io: "input",
+                unrepresentable: "any",
+              }),
               null,
               2,
             ),
