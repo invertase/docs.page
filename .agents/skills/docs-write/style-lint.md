@@ -19,14 +19,14 @@ Run this checklist **after** drafting, **before** delivering files. Fix every fa
 | Single mode | Page content matches routed doc type only |
 | Tutorial | No `<Property>` tables, no exhaustive flag lists |
 | Reference | No `<Steps>`, no "you will learn" |
-| How-To | Problem stated up front; no architecture essays |
+| How-To | Problem stated up front; no architecture essays; 3+ code-heavy steps use `<Steps>` not a bare numbered list |
 | Explanation | No numbered install steps; links out for procedures; no standalone `## Design tradeoffs` unless outline requires it |
 
 ---
 
 ## Locale (international English)
 
-Use **international English** (American spelling and conventions), not British English.
+Use **international English** (American spelling and conventions) in **body prose**, not British English.
 
 | British | International |
 | --- | --- |
@@ -40,20 +40,32 @@ Use **international English** (American spelling and conventions), not British E
 | favourites | favorites |
 | unrecognised | unrecognized |
 | backwards compatibility | backward compatibility |
+| organise, organised | organize, organized |
 
-- [ ] No British `-ise` / `-our` spellings remain (unless quoting external text verbatim)
+**Product exception:** When the sidebar or outline uses British nav labels (e.g. **Organise**), keep that spelling in frontmatter `title`, Card titles, and cross-links to that page. Use American spelling everywhere else in body prose.
+
+- [ ] No British `-ise` / `-our` spellings in body prose (unless quoting external text verbatim or matching a product nav label)
 
 ---
 
 ## Voice and structure
 
 - [ ] Steps start with imperative verbs (Click, Run, Set, Enable)
+- [ ] Numbered steps: first **bold phrase** states why or outcome, not only the action verb
 - [ ] No passive hedging ("It is recommended that…" → "Enable…")
 - [ ] Paragraphs ≤ 3 lines; split or bulletize longer blocks
 - [ ] Every setting change states **why** before **how**
 - [ ] UI labels bold: **Settings**, **Save**
 - [ ] Code, paths, env vars, JSON keys in `backticks`
 - [ ] `status: beta` / `deprecated` called out near first mention
+
+## Section prerequisites
+
+When drafting pages in the same sidebar group:
+
+- [ ] First page in the section has full project prerequisites
+- [ ] Later pages list **delta** prerequisites only — no copy-pasted "A docs.page project with `docs.json`…" on every sibling
+- [ ] Shared setup cross-links to the establishing page instead of repeating bullets
 
 ## Description voice (all doc types)
 
@@ -92,8 +104,32 @@ Remove or rewrite on sight:
 
 - [ ] Frontmatter has `title` and `description`
 - [ ] `description` passes **Description voice** checks above (not "Learn about X", not a catalog of capabilities)
-- [ ] Fenced code blocks have language tags (`bash`, `json`, `tsx`)
+- [ ] Fenced code blocks have language tags — see **Fence language tags** below (no bare ` ``` ` opening fences)
 - [ ] MDX components closed properly (`<Steps>`, `<Property>`)
+
+### Fence language tags
+
+Every opening fence must include a language tag. Common mappings:
+
+| Content | Tag |
+| --- | --- |
+| Shell commands | `bash` |
+| Config / JSON | `json` |
+| YAML / GitHub Actions | `yaml` |
+| TypeScript / TSX | `tsx` or `ts` |
+| MDX snippets | `mdx` |
+| URL patterns, hostnames, ref segments | `text` |
+| Directory trees, ASCII layouts | `text` |
+
+Post-draft check: search for opening lines that are exactly ` ``` ` with no tag and fix them.
+
+### Hub how-to scope
+
+For section-hub how-tos (outline lists multiple subtopics on one page):
+
+- [ ] One decision table + one short example max per subtopic
+- [ ] Component props, CLI flag tables, and schema fields link out — not copied inline
+- [ ] Body stays near **~120 lines**; excess detail moved to linked Reference/Features/Components pages
 
 ### Component accuracy
 
@@ -118,7 +154,9 @@ Remove or rewrite on sight:
 
 ## Navigation coherence
 
-- [ ] In-body **Next steps** / **See also** links to correct doc types (not circular only)
+- [ ] How-tos use `## Related` (bullets or `<CardGroup>` per page role in [templates.md — How-To](templates.md#how-to))
+- [ ] Reference pages use `## See also`; tutorials use `## Next steps`
+- [ ] Leaf how-tos in nested sidebar groups use bullet `## Related` unless the page is a section hub
 - [ ] Sidebar `title` and frontmatter `title` aligned
 - [ ] New page appears in `docs.json` if user expects nav discovery
 
@@ -205,3 +243,45 @@ description: Configure sidebar navigation groups and page links in docs.json.
 ```
 
 Opening paragraph deleted — first section is self-explanatory. Alternative syntax pointer: *"Each group is an object in the top-level `sidebar` array."*
+
+---
+
+**Before (action-only step bold):**
+
+1. **Open `docs.json`** and find the `sidebar` property.
+
+**After:**
+
+1. **Declare navigation explicitly** — open `docs.json` and find the `sidebar` property.
+
+---
+
+**Before (copy-pasted prerequisites on every sibling page):**
+
+## Before you begin
+
+- A docs.page project with `docs.json` at the repository root and page files under `docs/`
+- …
+
+(repeated verbatim on Write, Organise, Preview, Publish, Redirect, Translate)
+
+**After (delta prerequisites on Organise):**
+
+## Before you begin
+
+- At least one page file ready to link — see [Write](/authoring/write)
+- [Preview](/authoring/preview) when you want to confirm sidebar changes as you edit
+
+---
+
+**Before (untagged fence):**
+
+```
+https://docs.page/{owner}/{repo}~{ref}
+```
+
+**After:**
+
+```text
+https://docs.page/{owner}/{repo}~{ref}
+```

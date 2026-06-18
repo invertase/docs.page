@@ -55,9 +55,9 @@ GitHub bot, configuration, components, and Agents & AI are core product features
 
 - Lead with contributor quickstart; secondary readers include doc consumers (`end-user`) and agent integrators (`integrator`).
 - **Features tab** (`docs/features/index.mdx`) is the canonical capability map: six groups (Publish, Organize, Customize, Configure, AI, Integrate), card overview plus one page per feature. **Every feature page is an Explanation** — what the capability is, how it fits the product, and how it behaves. At most, add a short **How-to** section for enablement steps (install app, run CLI, connect MCP). Do not write Reference-style field tables on feature pages; link to the Reference tab instead.
-- **Documentation tab** holds tutorials and how-tos: Getting Started, Authoring workflows, Customize your site guides. Multi-step procedures that combine several features live here, not on Features.
+- **Documentation tab** holds tutorials and how-tos: Getting Started, Authoring, Customize, Agents, and Comparisons. Multi-step procedures that combine several features live here, not on Features.
 - Configuration, components, and AI surfaces: conceptual coverage on Features; per-field and per-prop lookup on Reference and Components tabs.
-- Add a **Platform comparisons** section — feature comparisons vs Docusaurus, docsify, Jekyll, etc.; migration guides deferred for v1.
+- Add a **Comparisons** section — feature comparisons vs Docusaurus, docsify, Jekyll, etc.; migration guides deferred for v1.
 - Tone: practical, zero-config friendly; emphasize “docs for humans + agents” without over-indexing on agent features before first publish.
 - Feature page titles follow single-focus naming in nav; cross-links at the bottom of `/features` point to Components, Reference, and Publish your first site.
 

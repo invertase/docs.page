@@ -3,39 +3,50 @@ title: Write
 description: Write clear, scannable MDX pages with structure, links, and media, then verify in preview.
 ---
 
-## Before you begin
+**Before you begin**
 
 - A [docs.page](https://docs.page) project with `docs.json` at the repository root and page files under `docs/`
 - Basic Markdown familiarity: headings, lists, links, and fenced code blocks
-- [Preview](/authoring/preview) running locally when you want to see layout and components as you edit
+
+---
 
 ## Write a new page
 
-1. **Create a file** under `docs/` with a `.mdx` or `.md` extension. The path (without the extension) becomes the page URL.
+Each page is a `.mdx` or `.md` file under `docs/`. Work through these steps in order:
 
-2. **Add frontmatter** at the top of the file with at least `title` and `description`. See [Frontmatter](#frontmatter).
-
-3. **Structure the body** with `##` headings, short paragraphs, and imperative instructions readers can scan.
-
-4. **Add links, code, images, or components** where they help the reader. The sections below cover each type.
-
-5. **Add the page to your sidebar** in `docs.json` so readers can find it. See [Organise](/authoring/organise).
-
-6. **Preview and check** the page locally. See [Verify](#verify). When you are ready to share changes on GitHub, continue to [Publish](/authoring/publish).
+1. **Create the file** — add `docs/{path}.mdx` (or `.md`). The path without the extension becomes the URL.
+2. **Set frontmatter** — declare `title` and `description` at the top of the file. See [Frontmatter](#frontmatter).
+3. **Draft the body** — structure with `##` headings and write scannable prose. See [Write scannable prose](#write-scannable-prose).
+4. **Add links, code, and media** — use root-relative links, fenced code blocks, and images where they help the reader. See [Links and assets](#links-and-assets).
+5. **Publish the page to readers** — add it to the sidebar in [Organise](/authoring/organise), then confirm in [Preview](/authoring/preview).
 
 ## Page structure and prose
 
-### Where pages live
+### Write scannable prose
 
-Store every page as a `.mdx` or `.md` file under `docs/`. Subdirectories are allowed. The file path (without the extension) becomes the URL path:
+Structure the body with `##` headings. The table of contents derives from heading levels — keep one main idea per section and nest subsections one level deeper.
 
-| File | URL |
-| --- | --- |
-| `docs/index.mdx` | `/` |
-| `docs/getting-started.mdx` | `/getting-started` |
-| `docs/api/authentication.mdx` | `/api/authentication` |
+Write so a busy reader can skim:
 
-Create a new file when you add a topic. Rename the file and add a [redirect](/authoring/redirect-pages) when you move a published URL.
+- **State the outcome first** — tell readers what they will accomplish before steps or settings
+- **Keep paragraphs short** — split long blocks into bullets or numbered lists
+- **Use imperative voice** — **Run**, **Set**, **Open**; not passive hedging ("It is recommended that…")
+- **Format for clarity** — bold UI labels; put commands, paths, and keys in `backticks`
+
+Match page shape to what the reader needs:
+
+| Reader goal | Page shape | Link out for |
+| --- | --- | --- |
+| Learn by doing | Step-by-step walkthrough | Field lookup, API tables |
+| Complete one task | Focused how-to with a verify step | Architecture essays |
+| Look up a value | Reference tables or property rows | Tutorial narrative |
+| Understand why | Explanation with a mental model | Numbered setup steps |
+
+Stay in one mode per page. Link to Reference and Components instead of mixing exhaustive lists into prose.
+
+**Before:** In order to preview locally, the user should run the docs.page CLI preview command from the project root.
+
+**After:** Run `npx @docs.page/cli preview` from the directory that contains `docs.json`.
 
 ### Frontmatter
 
@@ -57,18 +68,17 @@ Additional frontmatter keys control redirects, previous/next links, hero images,
   Global variables (`{{ dotted.path }}`) substitute in the MDX body only, not inside frontmatter. Define values in `docs.json` and reference them in prose or code fences. See [Global variables](/features/global-variables).
 </Info>
 
-### Headings and flow
+### Where pages live
 
-Use `##` headings to structure the body. The sidebar and table of contents derive from heading levels, so keep the hierarchy logical: one main idea per section, subsections one level deeper.
+Store every page under `docs/`. Subdirectories are allowed. The file path (without the extension) becomes the URL path:
 
-Write for scanning:
+| File | URL |
+| --- | --- |
+| `docs/index.mdx` | `/` |
+| `docs/getting-started.mdx` | `/getting-started` |
+| `docs/api/authentication.mdx` | `/api/authentication` |
 
-- Lead with the outcome or constraint before steps
-- Keep paragraphs short; split long blocks into bullets
-- Use imperative verbs in instructions: **Run**, **Set**, **Open**
-- Bold UI labels; put commands, paths, and keys in `backticks`
-
-Pick a page shape that matches the reader's goal: a learning walkthrough, a focused task, a lookup table, or background on how something works. Match the structure to that goal instead of mixing tutorial steps with exhaustive field lists on the same page.
+Create a new file when you add a topic. Rename the file and add a [redirect](/authoring/redirect-pages) when you move a published URL.
 
 ## Links and assets
 
@@ -92,9 +102,7 @@ npx @docs.page/cli preview
 ```
 ````
 
-Use `bash` for terminal commands, `json` for config, and `tsx` or `ts` for TypeScript. For multiple equivalent snippets (npm vs pnpm, curl vs fetch), use a [code group](/components/code-group) or [tabs](/components/tabs) instead of repeating blocks in prose.
-
-See [Code blocks](/components/code-blocks) for titles, diff markers, and other fence options.
+Use `bash` for terminal commands, `json` for config, and `tsx` or `ts` for TypeScript. For multiple equivalent snippets (npm vs pnpm, curl vs fetch), use a [code group](/components/code-group) or [tabs](/components/tabs) instead of repeating blocks in prose. See [Code blocks](/components/code-blocks) for titles, diff markers, and other fence options.
 
 ### Images
 
@@ -104,21 +112,17 @@ Commit images under `docs/` (for example `docs/assets/dashboard.png`) and refere
 ![Dashboard overview](/assets/dashboard.png)
 ```
 
-Standard Markdown image syntax works. Switch to the [`<Image>`](/components/image) component when you need captions, light/dark variants, sizing, or per-image zoom control.
-
-Store screenshots as PNG or WebP; use SVG for diagrams and logos. Add meaningful `alt` text so the page stays useful without the image.
+Standard Markdown image syntax works. Switch to the [`<Image>`](/components/image) component when you need captions, light/dark variants, sizing, or per-image zoom control. Store screenshots as PNG or WebP; use SVG for diagrams and logos. Add meaningful `alt` text.
 
 ### Video and embeds
 
-- **YouTube or Vimeo**: use [`<YouTube>`](/components/youtube) or [`<Vimeo>`](/components/vimeo)
-- **Self-hosted MP4/WebM**: use [`<Video>`](/components/video) with a public `https` URL
-- **Social posts**: use [`<Tweet>`](/components/tweet)
-
-`<Video>` does not resolve repo-relative paths; host the file on a CDN or object storage and pass the full URL.
+- **YouTube or Vimeo**: [`<YouTube>`](/components/youtube) or [`<Vimeo>`](/components/vimeo)
+- **Self-hosted MP4/WebM**: [`<Video>`](/components/video) with a public `https` URL — repo-relative paths are not supported
+- **Social posts**: [`<Tweet>`](/components/tweet)
 
 ## When to use components
 
-Plain Markdown covers most writing: paragraphs, lists, links, and fenced code. docs.page also ships **built-in MDX components** (tabs, callouts, steps, cards, and more) with no imports and no extra packages.
+Plain Markdown covers most writing. docs.page also ships **built-in MDX components** (tabs, callouts, steps, cards, and more) with no imports and no extra packages.
 
 | Reader need | Start with |
 | --- | --- |
@@ -130,38 +134,13 @@ Plain Markdown covers most writing: paragraphs, lists, links, and fenced code. d
 | API or config field rows | [`<Property>`](/components/property) on Reference pages |
 | Section landing links | [`<Card>`](/components/card) and [`<CardGroup>`](/components/card) |
 
-Author components with PascalCase JSX tags in your `.mdx` file:
-
-````mdx
-<Warning>
-  Back up `docs.json` before you change production navigation.
-</Warning>
-
-<Tabs groupId="package-manager">
-  <TabItem label="npm" value="npm">
-    ```bash
-    npm install @acme/sdk
-    ```
-  </TabItem>
-  <TabItem label="pnpm" value="pnpm">
-    ```bash
-    pnpm add @acme/sdk
-    ```
-  </TabItem>
-</Tabs>
-````
-
-Unknown component names show an inline error in preview. Fix the tag before you publish.
+Author components with PascalCase JSX tags in your `.mdx` file. Unknown component names show an inline error in preview — match the tag to the [Components](/components) reference before you publish.
 
 For props, child elements, and examples, use the [Components](/components) tab. For how the library fits the product, see [Features → Components](/features/components). Keep workflow pages focused on *when* to reach for a component; defer field-by-field lookup to the component reference.
 
 ## Verify
 
-After you edit a page:
-
-1. Run [Preview](/authoring/preview) and open the page in your browser
-2. Confirm headings, links, code blocks, and images render as expected
-3. Run `docs check` to catch broken internal links and missing assets
+After you edit a page, use [Preview](/authoring/preview) to confirm layout and components, then run `docs check` to catch broken links and missing assets. When both look good, continue to [Publish](/authoring/publish).
 
 ## Troubleshooting
 

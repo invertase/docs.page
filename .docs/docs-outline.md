@@ -14,7 +14,7 @@ The mental model to build: **docs.page is docs-as-code with no hosting setup**. 
 
 **Four top-level tabs:**
 
-1. **Documentation** — journey-ordered guides: Getting Started, Authoring content, Customize your site, AI agents, Platform comparisons.
+1. **Documentation** — journey-ordered guides: Getting Started, Authoring, Customize, Agents, Comparisons.
 2. **Features** (`/features`) — goal-ordered capability catalog: **Publish → Organize → Customize → Configure → AI → Integrate**. One **Explanation** page per capability. Short **Enable it** sections only when setup is required; procedural depth lives on the Documentation tab.
 3. **Components** (`/components`) — per-component **Reference** lookup.
 4. **Reference** (`/reference`) — config fields, CLI flags, HTTP endpoints, and editorial page templates (interim).
@@ -24,7 +24,7 @@ The mental model to build: **docs.page is docs-as-code with no hosting setup**. 
 1. **Features tab** — what each capability is and how it behaves (Explanation). Authoring and Customize pages link here for mechanics instead of a separate Core concepts section on Documentation.
 2. **Documentation tab** — workflow-oriented how-tos: _when_ and _in what order_. Thin on architecture, rich on procedure.
 
-**Contributor loop (Authoring content):** **Write** → **Organise** → **Preview** (local) → **Publish** (remote) → **Manage** (occasional).
+**Contributor loop (Authoring):** **Write** → **Organise** → **Preview** (local) → **Publish** (remote) → **Manage** (occasional).
 
 **Nav title rule:** Sidebar leaf labels are **2–4 words** (~24 characters). Page `title` in frontmatter may be longer for SEO; `docs.json` sidebar `title` controls nav labels.
 
@@ -40,11 +40,11 @@ The mental model to build: **docs.page is docs-as-code with no hosting setup**. 
 | **Create** (Format text, code, images, redirects) | Writing-oriented how-tos, not "MDX" framing                     | **Authoring → Write** uses content-writing language; MDX is implementation detail in prose                                        |
 | **Organize** (Navigation, pages, settings)        | Split across many config pages                                  | **Features → Organize** for the model; **Authoring → Organise** for workflow; field lookup in **docs.json reference**             |
 | **Components**                                    | Dedicated top-level section with overview + per-component pages | **Components tab** — separate from config/API reference                                                                         |
-| **Customize** (Themes, custom domain, fonts)      | Appearance goals                                                | **Customize your site** — branding, domain, SEO, analytics as goal-oriented how-tos                                              |
+| **Customize** (Themes, custom domain, fonts)      | Appearance goals                                                | **Customize** — Branding, Custom domain, SEO, Analytics as goal-oriented how-tos                                                 |
 | **Deploy** (GitHub, previews, monorepo)           | Heavy infra section                                             | **Authoring → Preview** (local) and **Publish** (remote); no deploy dashboard docs                                              |
 | **CLI**                                           | Dedicated CLI section                                           | **Features → CLI** explains commands; **CLI reference** holds flags; **Authoring → Preview/Publish** hold workflows             |
 | **Editor** (web WYSIWYG)                          | Major differentiator                                            | **Omit** — note in product comparisons                                                                                            |
-| **AI-native / Assistant / Agent**                 | Large AI section                                                | **Features → AI** for Explanation; **AI agents** on Documentation tab for setup how-tos                                          |
+| **AI-native / Assistant / Agent**                 | Large AI section                                                | **Features → AI** for Explanation; **Agents** on Documentation tab for setup how-tos                                               |
 | **API playground** (OpenAPI)                      | Entire vertical                                                 | **Omit** — note in comparisons                                                                                                    |
 | **Migration**                                     | Dedicated migration hub                                         | **Defer** — comparisons only for v1                                                                                               |
 | **Guides** (help center, API docs, content types) | Editorial patterns by documentation type                        | **Reference → Page templates** (interim graveyard) — Diátaxis layouts for contributors; placement TBD                             |
@@ -53,7 +53,7 @@ The mental model to build: **docs.page is docs-as-code with no hosting setup**. 
 
 ### Other equivalents (brief)
 
-- **Docusaurus / docsify / Jekyll / GitHub Pages:** Static-site or build-and-host workflows. Contrast with instant GitHub publish; cover in **Platform comparisons** as peer product pages, not migration how-tos.
+- **Docusaurus / docsify / Jekyll / GitHub Pages:** Static-site or build-and-host workflows. Contrast with instant GitHub publish; cover in **Comparisons** as peer product pages, not migration how-tos.
 - **ReadMe / GitBook:** Hosted platforms with proprietary editors. Position docs.page as open-source, Git-native, and agent-ready by default.
 
 ---
@@ -151,11 +151,11 @@ Orient and achieve first publish — no nested subgroups.
 | Introduction | Introduction | Explanation   | **Must have** | What docs.page is, who it is for, and the "docs for humans + agents" value proposition. Link to **Public GitHub hosting** on Features for URL patterns. **Written.**                                                          |
 | Quickstart   | Quickstart   | Tutorial      | **Must have** | First publish: `docs init` or manual scaffold, `docs preview`, push to a public repo, open the live URL. Link to **CLI**, **Local preview** on Features, and **Authoring → Preview/Publish** for the ongoing loop. **Written.** |
 
-### Authoring content
+### Authoring
 
 Workflow-oriented how-tos for contributors after first publish. Link to **Features** for mechanics and **Reference** for field lookup — do not re-document architecture or CLI flag tables here.
 
-**Nav structure:** `Authoring content` → `Write` · `Organise` · `Preview` · `Publish` · `Manage` → …
+**Nav structure:** `Authoring` → `Write` · `Organise` · `Preview` · `Publish` · `Manage` → …
 
 **Five workflow concepts:**
 
@@ -226,35 +226,39 @@ Nested subgroup — infrequent post-launch tasks. Do not promote from Introducti
 | Redirect pages | Redirect pages | `/authoring/redirect-pages`   | How-to        | **Should have** | Redirect readers when you rename or relocate pages using frontmatter `redirect` stubs. Link to **Features → Redirects** and **Page frontmatter** reference; mention `docs check` for validating redirect targets. |
 | Translate docs | Translate docs | `/authoring/translate`        | How-to        | **Could have**  | Set up multi-locale documentation when teams need translated content. Link to **Features → Locales** and **Organise**. |
 
-### Customize your site
+### Customize
 
 Goal-oriented how-tos after basic authoring. Link to matching **Features** pages for mechanics.
 
-| Page Title                | Nav label (suggested) | Diátaxis Type | Priority        | Purpose                                                                                                                                                    |
-| ------------------------- | --------------------- | ------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Apply your branding       | Branding              | How-to        | **Must have**   | Match the docs site to your project identity: theme, colors, logo, favicon, header, tabs, and footer links. Link to **Features → Customize**.              |
-| Connect a custom domain   | Custom domain         | How-to        | **Should have** | Serve documentation on your own domain, including vanity subdomain options and DNS/TLS expectations. Link to **Features → Custom domains**.                |
-| Improve search visibility | SEO                   | How-to        | **Should have** | Help search engines discover your docs: SEO metadata, sitemap, and robots.txt. Link to **Features → Search engine indexing** and **Search**.             |
-| Track reader engagement   | Analytics             | How-to        | **Should have** | Add analytics to understand which pages readers visit. Link to **Features → Analytics** and **Analytics providers** reference.                           |
+**Nav structure:** `Customize` → `Branding` · `Custom domain` · `SEO` · `Analytics`
 
-### AI agents
+| Page Title                | Nav label     | Diátaxis Type | Priority        | Purpose                                                                                                                                                    |
+| ------------------------- | ------------- | ------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Apply your branding       | Branding      | How-to        | **Must have**   | Match the docs site to your project identity: theme, colors, logo, favicon, header, tabs, and footer links. Link to **Features → Customize**.              |
+| Connect a custom domain   | Custom domain | How-to        | **Should have** | Serve documentation on your own domain, including vanity subdomain options and DNS/TLS expectations. Link to **Features → Custom domains**.                |
+| Improve search visibility | SEO           | How-to        | **Should have** | Help search engines discover your docs: SEO metadata, sitemap, and robots.txt. Link to **Features → Search engine indexing** and **Search**.             |
+| Track reader engagement   | Analytics     | How-to        | **Should have** | Add analytics to understand which pages readers visit. Link to **Features → Analytics** and **Analytics providers** reference.                           |
+
+### Agents
 
 Agent-ready setup how-tos — sequenced after first publish. **Features → AI** holds Explanations; this section holds procedures only.
 
-| Page Title             | Nav label (suggested) | Diátaxis Type | Priority        | Purpose                                                                                                               |
-| ---------------------- | --------------------- | ------------- | --------------- | --------------------------------------------------------------------------------------------------------------------- |
-| Agent-ready docs       | Overview              | Explanation   | **Must have**   | Why docs.page exposes llms.txt, MCP, and AI chat, and how agent-ready docs complement normal reading. Bridge page.    |
-| llms.txt               | llms.txt              | How-to        | **Must have**   | Use auto-generated LLM index files so tools can discover and ingest your documentation. Link to **Features → llms.txt**. |
-| MCP server             | MCP client            | How-to        | **Must have**   | Connect Cursor, Claude, or other MCP clients. Link to **Features → MCP server**.                                      |
-| Agent skills           | Agent skills          | How-to        | **Should have** | Expose repository `.agents/skills/**` files as MCP resources. Link to **Features → Agent skills**.                    |
-| AI chat                | AI chat               | How-to        | **Should have** | Enable and configure the in-docs chat panel. Link to **Features → Ask AI**.                                           |
-| Embed a docs assistant | Embed assistant       | How-to        | **Could have**  | Integrate a docs-aware chat assistant into your own product using the agent HTTP APIs.                                  |
+**Nav structure:** `Agents` → `Overview` · `llms.txt` · `MCP client` · `Agent skills` · `AI chat` · `Embed assistant`
 
-### Platform comparisons
+| Page Title             | Nav label       | Diátaxis Type | Priority        | Purpose                                                                                                               |
+| ---------------------- | --------------- | ------------- | --------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Agent-ready docs       | Overview        | Explanation   | **Must have**   | Why docs.page exposes llms.txt, MCP, and AI chat, and how agent-ready docs complement normal reading. Bridge page.    |
+| llms.txt               | llms.txt        | How-to        | **Must have**   | Use auto-generated LLM index files so tools can discover and ingest your documentation. Link to **Features → llms.txt**. |
+| MCP server             | MCP client      | How-to        | **Must have**   | Connect Cursor, Claude, or other MCP clients. Link to **Features → MCP server**.                                      |
+| Agent skills           | Agent skills    | How-to        | **Should have** | Expose repository `.agents/skills/**` files as MCP resources. Link to **Features → Agent skills**.                    |
+| AI chat                | AI chat         | How-to        | **Should have** | Enable and configure the in-docs chat panel. Link to **Features → Ask AI**.                                           |
+| Embed a docs assistant | Embed assistant | How-to        | **Could have**  | Integrate a docs-aware chat assistant into your own product using the agent HTTP APIs.                                  |
+
+### Comparisons
 
 Product comparisons for evaluation and SEO — no migration guides in v1.
 
-**Nav structure:** `Platform comparisons` → `Compare platforms` → …
+**Nav structure:** `Comparisons` → `Platforms` → …
 
 | Page Title   | Diátaxis Type | Priority        | Purpose                                                                                                                                              |
 | ------------ | ------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -331,7 +335,7 @@ Editorial guides for Diátaxis page layouts — **not** docs.page product refere
 Yes, with revision 4.0.0:
 
 - **Features tab:** Explanation catalog; optional short **Enable it** for one-time setup.
-- **Documentation tab:** Getting Started tutorial + Authoring workflow how-tos (Write → Organise → Preview → Publish → Manage) + Customize + AI agents + Comparisons.
+- **Documentation tab:** Getting Started tutorial + Authoring workflow how-tos (Write → Organise → Preview → Publish → Manage) + Customize + Agents + Comparisons.
 - **Preview vs Publish:** clear local/remote boundary — no overlapping preview subpages.
 - **Manage:** deprioritized edge cases (redirects, locales) — not mixed into daily workflow.
 - **No Core concepts on Documentation:** Features tab owns capability explanations.
@@ -339,7 +343,7 @@ Yes, with revision 4.0.0:
 - **Page templates:** interim on Reference, not in Authoring or Getting Started.
 - **Nav titles:** short leaf labels (2–4 words).
 
-**Writing order:** Authoring → Preview and Publish (highest workflow value) → Write and Organise → Manage → Customize → AI agents how-tos. Features and Components stubs continue in parallel as needed.
+**Writing order:** Authoring → Preview and Publish (highest workflow value) → Write and Organise → Manage → Customize → Agents how-tos. Features and Components stubs continue in parallel as needed.
 
 ---
 
@@ -352,10 +356,10 @@ Yes, with revision 4.0.0:
 ```
 Documentation tab
   Getting Started       Introduction · Quickstart
-  Authoring content     Write · Organise · Preview · Publish · Manage → Redirect pages · Translate docs
-  Customize your site   Branding · Custom domain · SEO · Analytics (nav labels)
-  AI agents             Overview · llms.txt · MCP client · Agent skills · AI chat · Embed assistant
-  Platform comparisons  Compare platforms → …
+  Authoring             Write · Organise · Preview · Publish · Manage → Redirect pages · Translate docs
+  Customize             Branding · Custom domain · SEO · Analytics
+  Agents                Overview · llms.txt · MCP client · Agent skills · AI chat · Embed assistant
+  Comparisons           Platforms → …
 
 Features tab            Overview · Publish · Organize · Customize · Configure · AI · Integrate
 Components tab          Overview · Accordion · …

@@ -67,15 +67,9 @@ $WORKFLOW_CONTEXT
 - $PREREQUISITE
 - $REFERENCE_LINK
 
-## Steps
+## $TASK_SECTION
 
-1. **$WHY_FIRST** $IMPERATIVE_ACTION
-
-   ```json
-   $CONFIG_OR_COMMAND
-   ```
-
-2. **$NEXT_ACTION** ...
+$ORDERED_STEPS_OR_STEPS_COMPONENT
 
 ## Verify
 
@@ -87,15 +81,29 @@ $VERIFY_INSTRUCTION
 | --- | --- | --- |
 | $SYMPTOM | $CAUSE | $FIX |
 
-## Next steps
+## Related
 
-- $RELATED_HOWTO
-- $REFERENCE_LINK_FULL
+$RELATED_LINKS
 ```
 
 **Opening paragraph (`$WORKFLOW_CONTEXT`):** Optional. When present: where this task fits in the reader's workflow, scope boundaries, or a constraint — **not** a restatement of `$PROBLEM_OUTCOME`. Example: *"After local preview looks right, run check in CI before you merge."* When absent: start directly at `## Before you begin`.
 
-**Optional:** Use `<Steps>` instead of ordered list when steps are long or include screenshots.
+**Task sections:** Name the main `##` after the task, not a generic `## Steps` — e.g. `## Add pages to the sidebar`, `## Preview locally (\`docs preview\`)`. Multiple tasks on one page (e.g. preview + check) get separate `##` sections.
+
+**Steps format:** Use `<Steps>` / `<Step>` when there are 3+ sequential steps with code blocks or screenshots; otherwise a numbered list. In each step, the **first bold phrase** states why or outcome before the action.
+
+**Verify:** Always `## Verify` (optionally qualified: `## Verify navigation`, `## Verify in preview`). Do not rename to "Confirm" or skip on leaf how-tos.
+
+**Related:** Use `## Related` (not `## Next steps`) for docs.page how-tos.
+
+| Page role | Related format |
+| --- | --- |
+| Section hub or landing | `<CardGroup>` with 4–6 `<Card>` links |
+| Leaf how-to in a nested group | Bullet list of 3–4 links, or a smaller `<CardGroup>` (2–3 cards) |
+
+**Section prerequisites:** On the first page in a sidebar group, list full project setup. On later pages in the same group, list only delta prerequisites and link to siblings for shared setup — do not repeat the same opening bullet on every page.
+
+**Hub how-tos:** When one page covers several subtopics (e.g. Write), cap at one table + one short example per subtopic and link out for Reference/Components detail. See [SKILL.md — Hub how-to scope](SKILL.md#hub-how-to-scope).
 
 ---
 

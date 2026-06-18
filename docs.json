@@ -49,7 +49,7 @@
       ]
     },
     {
-      "group": "Authoring content",
+      "group": "Authoring",
       "icon": "pen-to-square",
       "tab": "docs",
       "pages": [
@@ -85,24 +85,24 @@
       ]
     },
     {
-      "group": "Customize your site",
+      "group": "Customize",
       "icon": "palette",
       "tab": "docs",
       "pages": [
         {
-          "title": "Apply your branding",
+          "title": "Branding",
           "href": "/customize/apply-your-branding"
         },
         {
-          "title": "Connect a custom domain",
+          "title": "Custom domain",
           "href": "/customize/connect-a-custom-domain"
         },
         {
-          "title": "Improve search visibility",
+          "title": "SEO",
           "href": "/customize/improve-search-visibility"
         },
         {
-          "title": "Track reader engagement",
+          "title": "Analytics",
           "href": "/customize/track-reader-engagement"
         }
       ]
@@ -334,12 +334,12 @@
       ]
     },
     {
-      "group": "AI agents",
+      "group": "Agents",
       "icon": "robot",
       "tab": "docs",
       "pages": [
         {
-          "title": "Agent-ready docs",
+          "title": "Overview",
           "href": "/ai-agents/agent-ready-docs"
         },
         {
@@ -347,7 +347,7 @@
           "href": "/ai-agents/llms-txt"
         },
         {
-          "title": "MCP server",
+          "title": "MCP client",
           "href": "/ai-agents/mcp-server"
         },
         {
@@ -365,12 +365,12 @@
       ]
     },
     {
-      "group": "Platform comparisons",
+      "group": "Comparisons",
       "icon": "scale-balanced",
       "tab": "docs",
       "pages": [
         {
-          "group": "Compare platforms",
+          "group": "Platforms",
           "href": "/comparisons/index",
           "pages": [
             {
