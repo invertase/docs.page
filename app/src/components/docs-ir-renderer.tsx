@@ -12,6 +12,7 @@ import { CodeFence } from "./mdx/code-fence";
 import { CodeGroup, type CodeGroupBlock } from "./mdx/code-group";
 import { Icon } from "./mdx/icon";
 import { Image } from "./mdx/image";
+import { MermaidDiagram } from "./mdx/mermaid";
 import { Step, Steps } from "./mdx/steps";
 import { Video } from "./mdx/video";
 import { Vimeo } from "./mdx/vimeo";
@@ -58,6 +59,10 @@ function renderNode(
         />
       );
     case "code":
+      if (node.lang?.toLowerCase() === "mermaid") {
+        return <MermaidDiagram key={key} value={node.value} />;
+      }
+
       return (
         <CodeFence
           key={key}

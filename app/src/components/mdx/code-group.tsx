@@ -175,10 +175,15 @@ export function CodeGroup({
             <div
               key={`${label}-${index}`}
               className={cn({ hidden: label !== active })}
-              dangerouslySetInnerHTML={
-                block.highlighted ? { __html: block.highlighted } : undefined
-              }
-            />
+            >
+              {block.highlighted ? (
+                <div dangerouslySetInnerHTML={{ __html: block.highlighted }} />
+              ) : (
+                <pre className="m-0">
+                  <code>{block.value}</code>
+                </pre>
+              )}
+            </div>
           );
         })}
       </div>

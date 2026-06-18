@@ -118,6 +118,11 @@
           "icon": "laptop-code"
         },
         {
+          "title": "Mermaid",
+          "href": "/components/mermaid",
+          "icon": "diagram-project"
+        },
+        {
           "title": "Headings",
           "href": "/components/headings",
           "icon": "heading"

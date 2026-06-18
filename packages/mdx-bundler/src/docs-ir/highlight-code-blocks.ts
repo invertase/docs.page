@@ -49,6 +49,10 @@ export async function highlightCodeBlocksInIr(
     case "component":
       return mapIrChildren(node, highlightCodeBlocksInIr);
     case "code": {
+      if (isMermaidLanguage(node.lang)) {
+        return node;
+      }
+
       const highlighted = await highlightCode(node.value, node.lang, node.meta);
       return {
         ...node,
@@ -113,6 +117,10 @@ async function getHighlighter() {
 
 function languageFor(lang: string | undefined) {
   return languages[lang?.toLowerCase() ?? ""] ?? "text";
+}
+
+function isMermaidLanguage(lang: string | undefined) {
+  return lang?.toLowerCase() === "mermaid";
 }
 
 function extractTitle(meta: string): string | null {
