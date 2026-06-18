@@ -54,54 +54,31 @@
       "tab": "docs",
       "pages": [
         {
-          "group": "Write documentation",
-          "href": "/authoring/write-documentation",
-          "pages": [
-            {
-              "title": "Tutorial",
-              "href": "/authoring/write-documentation/tutorial"
-            },
-            {
-              "title": "How-to",
-              "href": "/authoring/write-documentation/how-to"
-            },
-            {
-              "title": "Reference",
-              "href": "/authoring/write-documentation/reference"
-            },
-            {
-              "title": "Explanation",
-              "href": "/authoring/write-documentation/explanation"
-            }
-          ]
+          "title": "Write",
+          "href": "/authoring/write"
         },
         {
-          "title": "Organize navigation",
-          "href": "/authoring/organize-your-navigation"
+          "title": "Organise",
+          "href": "/authoring/organise"
         },
         {
-          "group": "Previews",
-          "pages": [
-            {
-              "title": "Local preview",
-              "href": "/authoring/preview-locally"
-            },
-            {
-              "title": "Preview from a feature branch",
-              "href": "/authoring/shareable-preview"
-            }
-          ]
+          "title": "Preview",
+          "href": "/authoring/preview"
         },
         {
-          "group": "Maintain documentation",
+          "title": "Publish",
+          "href": "/authoring/publish"
+        },
+        {
+          "group": "Manage",
           "pages": [
             {
-              "title": "Translate documentation",
-              "href": "/authoring/translate-documentation"
+              "title": "Redirect pages",
+              "href": "/authoring/redirect-pages"
             },
             {
-              "title": "Update moved pages",
-              "href": "/authoring/update-moved-pages"
+              "title": "Translate docs",
+              "href": "/authoring/translate"
             }
           ]
         }
