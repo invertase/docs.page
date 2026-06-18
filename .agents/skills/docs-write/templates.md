@@ -62,7 +62,7 @@ description: $PROBLEM_OUTCOME
 
 $WORKFLOW_CONTEXT
 
-## Before you begin
+**Before you begin**
 
 - $PREREQUISITE
 - $REFERENCE_LINK
@@ -86,7 +86,11 @@ $VERIFY_INSTRUCTION
 $RELATED_LINKS
 ```
 
-**Opening paragraph (`$WORKFLOW_CONTEXT`):** Optional. When present: where this task fits in the reader's workflow, scope boundaries, or a constraint — **not** a restatement of `$PROBLEM_OUTCOME`. Example: *"After local preview looks right, run check in CI before you merge."* When absent: start directly at `## Before you begin`.
+**Opening paragraph (`$WORKFLOW_CONTEXT`):** Optional. When present: where this task fits in the reader's workflow, scope boundaries, or a constraint — **not** a restatement of `$PROBLEM_OUTCOME`. Example: *"After local preview looks right, run check in CI before you merge."* When absent: start directly at **`Before you begin`**.
+
+**Prerequisites heading:** Use bold **`Before you begin`** (not `## Before you begin`) so the block stays visually light above the fold. An optional `---` rule after the bullets is fine.
+
+**Nav alignment:** Sidebar `title`, frontmatter `title`, `href`, and filename should match (kebab-case slug). Manage how-tos **Redirects** and **Locales** pair with `/features/redirects` and `/features/locales`.
 
 **Task sections:** Name the main `##` after the task, not a generic `## Steps` — e.g. `## Add pages to the sidebar`, `## Preview locally (\`docs preview\`)`. Multiple tasks on one page (e.g. preview + check) get separate `##` sections.
 

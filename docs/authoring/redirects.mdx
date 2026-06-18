@@ -1,5 +1,5 @@
 ---
-title: Redirect pages
+title: Redirects
 description: Keep bookmarked and linked URLs working when you rename or move a page.
 ---
 
@@ -17,10 +17,10 @@ When you change a published URL, update three things: the file at the new path, 
 ## Rename or move a page
 
 <Steps>
-  <Step title="Put content at the new URL path">
+  <Step title="Serve content from the new URL">
     Rename or move the file under `docs/` to match the new URL. For example, move `docs/installation.mdx` to `docs/getting-started.mdx` so the page serves at `/getting-started`.
   </Step>
-  <Step title="Point sidebar navigation at the new href">
+  <Step title="Point sidebar at the new href">
     Update the sidebar in `docs.json` so the entry points at the new `href`. Remove or replace the old path — readers should not land on a dead link from navigation. See [Organise](/authoring/organise).
   </Step>
   <Step title="Keep bookmarks working with a redirect stub">
@@ -37,7 +37,7 @@ When you change a published URL, update three things: the file at the new path, 
 Leave a minimal file at the **old** path and set `redirect` in frontmatter to the destination.
 
 <Steps>
-  <Step title="Leave a file at the old path">
+  <Step title="Keep a stub file at the old path">
     Create or replace the file at the old location — for example `docs/installation.mdx` after you moved content to `docs/getting-started.mdx`.
   </Step>
   <Step title="Declare the destination in frontmatter">
@@ -53,9 +53,10 @@ Leave a minimal file at the **old** path and set `redirect` in frontmatter to th
 
     The body can be empty. docs.page reads `redirect` and returns a **307 Temporary Redirect** before any page content renders.
   </Step>
-  <Step title="Use a root-relative or full URL target">
-    - **Internal moves** — use a root-relative path: `/getting-started`. No domain, no `.mdx` extension.
-    - **External destinations** — use a full URL starting with `https://` (or `http://`).
+  <Step title="Resolve targets correctly across hosts">
+    **Internal moves** — use a root-relative path: `/getting-started`. No domain, no `.mdx` extension.
+
+    **External destinations** — use a full URL starting with `https://` (or `http://`).
 
     Internal paths resolve against the same routing mode as the request — production, branch preview (`~ref`), vanity subdomain, or custom domain — so readers stay on the host and ref they started on. You do not need to hard-code `https://docs.page/owner/repo` for in-repo moves.
   </Step>
@@ -65,7 +66,7 @@ Leave a minimal file at the **old** path and set `redirect` in frontmatter to th
   Do not rely on query strings or hash anchors in `redirect` values. They are not part of the redirect contract.
 </Warning>
 
-## Confirm the redirect
+## Verify the redirect
 
 After you add or change redirect stubs:
 
@@ -76,7 +77,7 @@ After you add or change redirect stubs:
   <Step title="Confirm the old URL redirects in preview">
     Open the old URL in the same preview session — for example `/installation` after you moved content to `/getting-started`. The browser should land on the new page without a 404.
   </Step>
-  <Step title="Run check to validate redirect targets">
+  <Step title="Catch broken redirect targets before merge">
     ```bash
     npx @docs.page/cli check
     ```

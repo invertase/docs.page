@@ -73,12 +73,12 @@
           "group": "Manage",
           "pages": [
             {
-              "title": "Redirect pages",
-              "href": "/authoring/redirect-pages"
+              "title": "Redirects",
+              "href": "/authoring/redirects"
             },
             {
-              "title": "Translate docs",
-              "href": "/authoring/translate"
+              "title": "Locales",
+              "href": "/authoring/locales"
             }
           ]
         }

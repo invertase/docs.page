@@ -67,6 +67,37 @@ When drafting pages in the same sidebar group:
 - [ ] Later pages list **delta** prerequisites only — no copy-pasted "A docs.page project with `docs.json`…" on every sibling
 - [ ] Shared setup cross-links to the establishing page instead of repeating bullets
 
+### Prerequisites heading (Authoring convention)
+
+Use bold **`Before you begin`** (not `## Before you begin`) when the prerequisites block should stay visually light above the fold. Keep the same bullet content; optional `---` rule after the block is fine.
+
+- [ ] Prerequisites use **`Before you begin`** bold label unless the page needs a TOC entry for that section
+
+## Nav, href, and filename alignment
+
+Sidebar `title`, frontmatter `title`, URL path, and filename should describe the same page:
+
+| Field | Rule |
+| --- | --- |
+| Sidebar `title` | Matches frontmatter `title` |
+| `href` | Root-relative path; kebab-case slug from title words |
+| File | Under `docs/`; stem matches href (e.g. `/authoring/redirects` → `docs/authoring/redirects.mdx`) |
+
+Manage-group how-tos pair with Features explanations: **Redirects** ↔ `/features/redirects`, **Locales** ↔ `/features/locales`.
+
+- [ ] Nav title, frontmatter `title`, `href`, and filename are aligned
+- [ ] Cross-links use the canonical href, not retired paths
+
+## Steps vs ordered list
+
+| Use | When |
+| --- | --- |
+| `<Steps>` / `<Step>` | 3+ sequential instruction steps with code blocks, tables, or sub-bullets |
+| Ordered list | ≤5 short one-line steps (verification checklists, cross-ref workflows) |
+
+- [ ] Code-heavy or multi-part procedures use `<Steps>`, not a bare numbered list
+- [ ] `<Step title="…">` and ordered-list bold phrases state **why or outcome** first, not action alone
+
 ## Description voice (all doc types)
 
 | Check | Pass criteria |
@@ -122,6 +153,18 @@ Every opening fence must include a language tag. Common mappings:
 | Directory trees, ASCII layouts | `text` |
 
 Post-draft check: search for opening lines that are exactly ` ``` ` with no tag and fix them.
+
+### Tables and lists inside `<Step>`
+
+Content inside `<Step>` is indented for MDX. At that indent, markdown **tables** become code blocks and **`-` lists** render as nested sub-bullets — visually smaller and misaligned with top-level lists.
+
+| Inside `<Step>` | Prefer instead |
+| --- | --- |
+| Markdown table | Table in the section body (no indent), or prose |
+| `-` bullet list | Bold lead-in paragraphs, or move the list before/after `<Steps>` |
+
+- [ ] No markdown tables inside `<Step>` — place at section level
+- [ ] No `-` lists inside `<Step>` unless nested styling is intentional — use prose or section-level lists
 
 ### Hub how-to scope
 

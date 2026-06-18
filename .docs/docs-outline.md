@@ -223,8 +223,8 @@ Nested subgroup — infrequent post-launch tasks. Do not promote from Introducti
 
 | Page Title     | Nav label      | Path                          | Diátaxis Type | Priority        | Purpose |
 | -------------- | -------------- | ----------------------------- | ------------- | --------------- | ------- |
-| Redirect pages | Redirect pages | `/authoring/redirect-pages`   | How-to        | **Should have** | Redirect readers when you rename or relocate pages using frontmatter `redirect` stubs. Link to **Features → Redirects** and **Page frontmatter** reference; mention `docs check` for validating redirect targets. |
-| Translate docs | Translate docs | `/authoring/translate`        | How-to        | **Could have**  | Set up multi-locale documentation when teams need translated content. Link to **Features → Locales** and **Organise**. |
+| Redirects | Redirects | `/authoring/redirects`   | How-to        | **Should have** | Redirect readers when you rename or relocate pages using frontmatter `redirect` stubs. Link to **Features → Redirects** and **Page frontmatter** reference; mention `docs check` for validating redirect targets. |
+| Locales   | Locales   | `/authoring/locales`        | How-to        | **Could have**  | Set up multi-locale documentation when teams need translated content. Link to **Features → Locales** and **Organise**. |
 
 ### Customize
 
@@ -356,7 +356,7 @@ Yes, with revision 4.0.0:
 ```
 Documentation tab
   Getting Started       Introduction · Quickstart
-  Authoring             Write · Organise · Preview · Publish · Manage → Redirect pages · Translate docs
+  Authoring             Write · Organise · Preview · Publish · Manage → Redirects · Locales
   Customize             Branding · Custom domain · SEO · Analytics
   Agents                Overview · llms.txt · MCP client · Agent skills · AI chat · Embed assistant
   Comparisons           Platforms → …

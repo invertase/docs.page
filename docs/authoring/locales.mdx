@@ -1,5 +1,5 @@
 ---
-title: Translate docs
+title: Locales
 description: Configure translated pages, locale sidebars, and root redirects so readers can browse docs in their language.
 ---
 
@@ -13,27 +13,37 @@ Multi-locale behavior is driven by the **`sidebar`** property in `docs.json`, no
 
 ---
 
+## Quick start
+
+A minimal multi-locale setup needs three pieces:
+
+1. **Locale folders** — page files under `docs/{locale}/` with matching paths (for example `docs/en/index.mdx` and `docs/fr/index.mdx`)
+2. **Locale-keyed sidebar** — replace the flat `sidebar` array in `docs.json` with an object keyed by locale code (`en`, `fr`, …)
+3. **Local verification** — open `/en/...` and `/fr/...` in [Preview](/authoring/preview), then run `docs check`
+
+The sections below cover planning, content files, sidebar configuration, and a full preview checklist.
+
 ## Plan locale structure
 
 Readers need distinct URL segments and matching files per language. Start by locking locale codes, folder layout, and what `/` should do.
 
 | Goal at `/` | Pattern | Where to configure |
 | --- | --- | --- |
-| Send readers to a default locale | `redirect` frontmatter on `docs/index.mdx` | [Redirect pages](/authoring/redirect-pages) |
+| Send readers to a default locale | `redirect` frontmatter on `docs/index.mdx` | [Redirects](/authoring/redirects) |
 | Keep a language picker at `/` | `sidebar.default` tree plus content at `docs/index.mdx` | [Configure locale sidebars](#configure-locale-sidebars) and [Locales](/features/locales) |
 
+Each translated page lives under a locale folder in `docs/`. Match the path after the locale key across languages:
+
+| File | URL |
+| --- | --- |
+| `docs/en/installation.mdx` | `/en/installation` |
+| `docs/fr/installation.mdx` | `/fr/installation` |
+
 <Steps>
-  <Step title="Pick ISO 639-1 locale codes">
-    Use two-letter keys (for example `en`, `fr`, `de`). They become URL segments and `sidebar` object keys.
+  <Step title="Pick stable locale codes up front">
+    Use two-letter ISO 639-1 keys (for example `en`, `fr`, `de`). They become URL segments and `sidebar` object keys.
   </Step>
   <Step title="Mirror page paths across locale folders">
-    Each translated page lives under a locale folder in `docs/`:
-
-    | File | URL |
-    | --- | --- |
-    | `docs/en/installation.mdx` | `/en/installation` |
-    | `docs/fr/installation.mdx` | `/fr/installation` |
-
     You do not need every locale to have every page on day one — but sidebar links should point at pages that exist for that locale, or readers will hit 404s. See [Locales](/features/locales) for partial rollout details.
   </Step>
   <Step title="Sketch a sidebar tree per locale">
@@ -57,17 +67,14 @@ Readers need distinct URL segments and matching files per language. Start by loc
         installation.mdx
     ```
   </Step>
-  <Step title="Author each translated page with matching paths">
-    Copy or write each page as its own `.mdx` or `.md` file. Match the path segment after the locale key across languages so the same sidebar `href` resolves in each locale:
-
-    - English: `docs/en/installation.mdx` → sidebar `href`: `/installation`
-    - French: `docs/fr/installation.mdx` → sidebar `href`: `/installation`
+  <Step title="Keep matching paths across languages">
+    Copy or write each page as its own `.mdx` or `.md` file. English at `docs/en/installation.mdx` and French at `docs/fr/installation.mdx` both use sidebar `href` `/installation` — the path after the locale folder must match so the same link works in every locale.
   </Step>
-  <Step title="Set frontmatter in the target language">
+  <Step title="Write frontmatter in the target language">
     Every page needs at least `title` and `description` in the locale readers will see. See [Write — Frontmatter](/authoring/write#frontmatter).
   </Step>
   <Step title="Retire single-locale files when you switch layouts">
-    If `docs/installation.mdx` used to serve `/installation`, relocate content into `docs/en/installation.mdx` (and other locales) and add [redirects](/authoring/redirect-pages) for old URLs if they were already published. To send `/` to a default locale, add `redirect: /en` (or your chosen locale) on `docs/index.mdx`.
+    If `docs/installation.mdx` used to serve `/installation`, relocate content into `docs/en/installation.mdx` (and other locales) and add [redirects](/authoring/redirects) for old URLs if they were already published. To send `/` to a default locale, add `redirect: /en` (or your chosen locale) on `docs/index.mdx`.
   </Step>
 </Steps>
 
@@ -76,7 +83,7 @@ Readers need distinct URL segments and matching files per language. Start by loc
 Replace the flat `sidebar` array in `docs.json` with an object keyed by locale code.
 
 <Steps>
-  <Step title="Replace the flat sidebar array with locale keys">
+  <Step title="Key sidebar trees by locale code">
     Open `docs.json` and change `sidebar` from an array to an object. Each value is the same nested group structure you use for a single-language site:
 
     ```json
@@ -109,7 +116,7 @@ Replace the flat `sidebar` array in `docs.json` with an object keyed by locale c
   <Step title="Keep href values locale-neutral">
     Write `/installation`, not `/fr/installation`. While a locale is active, internal navigation and in-page links are prefixed automatically so readers stay in the current language.
   </Step>
-  <Step title="Add a default tree for locale-free root URLs">
+  <Step title="Serve locale-free root URLs with a default tree">
     The `default` key is optional and is **not** treated as a locale. Use it for pages without a locale prefix — for example a language picker at `/`:
 
     ```json
@@ -141,7 +148,7 @@ Replace the flat `sidebar` array in `docs.json` with an object keyed by locale c
   When at least two locale keys are configured and the reader is on a locale-prefixed page, a **language switcher** appears in the sidebar. It does not show on locale-free root pages, even when `sidebar.default` is defined. See [Locales — Language switcher](/features/locales#language-switcher).
 </Info>
 
-## Confirm in preview
+## Verify in preview
 
 <Steps>
   <Step title="Open locale-prefixed URLs in preview">
@@ -156,7 +163,7 @@ Replace the flat `sidebar` array in `docs.json` with an object keyed by locale c
   <Step title="Check root URL behavior">
     If you use `redirect: /en` or a `default` sidebar, open `/` and confirm the behavior you planned.
   </Step>
-  <Step title="Run check on the project">
+  <Step title="Catch broken locale links before merge">
     ```bash
     npx @docs.page/cli check
     ```
@@ -181,5 +188,5 @@ Replace the flat `sidebar` array in `docs.json` with an object keyed by locale c
 
 - [Locales](/features/locales) — How locale keys, link prefixing, and the language switcher work in production.
 - [Organise](/authoring/organise) — Structure groups, tabs, and page links before you split them by locale.
-- [Redirect pages](/authoring/redirect-pages) — Send `/` or renamed URLs to a default locale or new path.
+- [Redirects](/authoring/redirects) — Send `/` or renamed URLs to a default locale or new path.
 - [Preview](/authoring/preview) — Reload locally to confirm locale URLs, sidebars, and the language switcher.

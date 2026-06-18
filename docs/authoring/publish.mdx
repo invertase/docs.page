@@ -18,7 +18,7 @@ This page covers remote actions on GitHub after local [Preview](/authoring/previ
 Commit your documentation changes and push the branch to GitHub so docs.page can read the files from the remote.
 
 <Steps>
-  <Step title="Stage your documentation changes">
+  <Step title="Capture documentation changes in git">
     Stage at minimum `docs.json`, pages under `docs/`, and any assets you added:
 
     ```bash
@@ -45,24 +45,32 @@ Commit your documentation changes and push the branch to GitHub so docs.page can
 
 Share a live preview URL so reviewers can open the rendered site from your branch — navigation, theme, search, and MDX components included — without running the CLI locally.
 
-1. **Build the ref URL** by adding `~{ref}` immediately after the repository name:
+Replace `{ref}` in the URL with one of:
 
-   ```text
-   https://docs.page/{owner}/{repo}~{ref}
-   https://docs.page/{owner}/{repo}~{ref}/{page-path}
-   ```
+| Ref | Example segment | Resolves to |
+| --- | --- | --- |
+| Branch name | `~feature-docs` | Branch `feature-docs` |
+| Commit SHA | `~abc123…` (40 characters) | That commit |
+| Pull request | `~42` | Pull request #42 head branch |
 
-   Replace `{owner}` and `{repo}` with your GitHub organization or user and repository name. Replace `{ref}` with:
+<Steps>
+  <Step title="Build a ref URL reviewers can open">
+    Add `~{ref}` immediately after the repository name:
 
-   | Ref | Example segment | Resolves to |
-   | --- | --- | --- |
-   | Branch name | `~feature-docs` | Branch `feature-docs` |
-   | Commit SHA | `~abc123…` (40 characters) | That commit |
-   | Pull request | `~42` | Pull request #42 head branch |
+    ```text
+    https://docs.page/{owner}/{repo}~{ref}
+    https://docs.page/{owner}/{repo}~{ref}/{page-path}
+    ```
 
-2. **Open the URL** in a browser and confirm the pages you changed render as expected.
-
-3. **Share the link** with reviewers in your pull request description, chat, or review thread.
+    Replace `{owner}` and `{repo}` with your GitHub organization or user and repository name. Pick the `{ref}` segment from the table above.
+  </Step>
+  <Step title="Confirm the branch site looks right">
+    Open the URL in a browser and confirm the pages you changed render as expected.
+  </Step>
+  <Step title="Share the link in your review thread">
+    Send the URL to reviewers in your pull request description, chat, or review comments.
+  </Step>
+</Steps>
 
 Production URLs omit the `~ref` segment entirely. For ref URL patterns, numeric PR resolution, and when to use branch preview instead of local preview, see [Branch preview](/features/branch-preview).
 
@@ -71,7 +79,7 @@ Production URLs omit the `~ref` segment entirely. For ref URL patterns, numeric 
 Install the docs.page GitHub App once so every pull request gets an automatic comment with a live preview link — reviewers do not need to build ref URLs by hand.
 
 <Steps>
-  <Step title="Install the docs.page GitHub App">
+  <Step title="Install the GitHub App once">
     Open [docs.page on GitHub](https://github.com/apps/docs-page) and click **Install**.
   </Step>
   <Step title="Grant access to your public docs repository">

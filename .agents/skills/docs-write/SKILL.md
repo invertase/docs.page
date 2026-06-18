@@ -122,7 +122,7 @@ Also read `.docs/docs-outline.md` for page purpose, Diátaxis type, content sect
 
 ### Section-aware prerequisites
 
-When drafting multiple pages in the same sidebar group, **do not copy-paste the same `## Before you begin` block on every page**.
+When drafting multiple pages in the same sidebar group, **do not copy-paste the same `Before you begin` block on every page**.
 
 - **First page in a section** (or a standalone page): full project prerequisites — `docs.json`, `docs/` layout, links to upstream tasks.
 - **Later pages in the same section**: delta prerequisites only — what this task adds beyond siblings (e.g. "Pages already in the sidebar" on Organise, not re-stating the whole project setup).
@@ -152,7 +152,7 @@ Before delivering final content:
 - **Cognitive load:** Paragraphs ≤ 3 lines; use bullets
 - **Why before how:** State outcome before each setting change. In numbered steps, the **first bold phrase** should carry the why or outcome, not only the verb (*"**Declare navigation explicitly** — open `docs.json`…"* not *"**Open `docs.json**"*)
 - **Reader-first descriptions:** Frontmatter `description` answers *why would I open this page?* — task, outcome, or common use case. Use second person or imperative (*"Use … to …"*, *"When you need …"*). Do not list props, implementation details, or copy `summary` text from inventory. Rewrite outline `description` / purpose; never paste capability summaries verbatim.
-- **Description vs opening paragraph:** These are **different fields with different jobs** — never paraphrase one from the other. `description` = discoverability (search, nav, previews). Opening paragraph = scope, workflow position, or first action — see [templates.md — Description vs opening paragraph](templates.md#description-vs-opening-paragraph). **How-to and reference:** omit the opening paragraph when the first section (`## Before you begin` or first `##` group) already orients the reader.
+- **Description vs opening paragraph:** These are **different fields with different jobs** — never paraphrase one from the other. `description` = discoverability (search, nav, previews). Opening paragraph = scope, workflow position, or first action — see [templates.md — Description vs opening paragraph](templates.md#description-vs-opening-paragraph). **How-to and reference:** omit the opening paragraph when **`Before you begin`** or the first `##` section already orients the reader.
 - **Semantic UI formatting:** Bold UI labels; backtick code, paths, env vars
 - **International English:** American spelling in body prose (`behavior`, `color`, `synchronize`). **Exception:** keep British spelling in nav labels and frontmatter `title` when the product sidebar uses it (e.g. `Organise`). See style-lint **Locale** checks.
 - **Truthfulness:** Match `docs-inventory.json` and code; flag `beta` / `deprecated` / `schema-only`
