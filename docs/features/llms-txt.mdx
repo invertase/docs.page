@@ -50,7 +50,7 @@ On each request, docs.page:
 2. Loads `docs.json` and page frontmatter for titles and descriptions
 3. Assembles the markdown export and returns it with `Content-Type: text/markdown; charset=utf-8`
 
-There is no export cache you manage. Content stays in sync with Git — the same model as [Public GitHub hosting](/features/github-hosting).
+There is no export cache you manage. Content stays in sync with Git — the same model as [Public GitHub hosting](/features/public-github-hosting).
 
 <Info>
   If your repository tree is very large, docs.page may truncate the file list. When that happens, the response includes an `x-docs-page-tree-truncated: 1` header so integrators know the export may be incomplete.
@@ -74,7 +74,7 @@ https://docs.page/{owner}/{repo}~{ref}/llms-full.txt
 
 On [vanity subdomains](/features/vanity-subdomains) and [custom domains](/features/custom-domains), links inside the export use that site's public origin and path layout. See [Branch preview](/features/branch-preview) for ref URL patterns.
 
-Readers can also open one page as raw markdown from the **View markdown** item in the [page action menu](/features/github-hosting#page-actions), or by appending `.md` to the page URL. See [HTTP endpoints — Raw markdown](/reference/http-endpoints#raw-markdown).
+Readers can also open one page as raw markdown from the **View markdown** item in the [page action menu](/features/public-github-hosting#page-actions), or by appending `.md` to the page URL. See [HTTP endpoints — Raw markdown](/reference/http-endpoints#raw-markdown).
 
 For method names, response headers, cache behavior, and the full route list, see [HTTP endpoints](/reference/http-endpoints).
 
@@ -91,7 +91,7 @@ Responses are cached at the edge for a short period (on the order of five minute
   <Card title="MCP server" icon="plug" href="/features/mcp-server">
     Let agents list and read individual pages through a per-repo MCP endpoint.
   </Card>
-  <Card title="Public GitHub hosting" icon="github" href="/features/github-hosting">
+  <Card title="Public GitHub hosting" icon="github" href="/features/public-github-hosting">
     How docs.page fetches and renders your repository on each request.
   </Card>
   <Card title="Branch preview" icon="code-branch" href="/features/branch-preview">

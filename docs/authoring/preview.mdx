@@ -8,7 +8,7 @@ description: See documentation in your browser as you edit, then run an automate
 - [Install the CLI](/features/cli#install) or use `npx @docs.page/cli`
 - Page files or `docs.json` edits ready to review — see [Write](/authoring/write) if you still need to create content
 
-Run commands from the directory that contains `docs.json`. For flag-level detail and exit codes, see [CLI](/reference/cli-reference).
+Run commands from the directory that contains `docs.json`. For flag-level detail and exit codes, see [CLI](/reference/cli).
 
 ---
 
@@ -73,7 +73,7 @@ Preview while you edit so you can judge layout, navigation, and components. Run 
     npx @docs.page/cli check --external-links warn --internal-links error --assets error
     ```
 
-    Each of `--external-links`, `--internal-links`, and `--assets` accepts `off`, `warn`, or `error`. See [CLI — check](/reference/cli-reference#docs-check) for defaults and exit codes.
+    Each of `--external-links`, `--internal-links`, and `--assets` accepts `off`, `warn`, or `error`. See [CLI — check](/reference/cli#docs-check) for defaults and exit codes.
   </Step>
   <Step title="Check a monorepo package path">
     Pass an optional path when `docs.json` lives outside the repository root:
@@ -107,7 +107,7 @@ For more detail on both commands, see [CLI](/features/cli).
   <Card title="Publish" icon="rocket" href="/authoring/publish">
     Share changes on GitHub and send branch previews to reviewers.
   </Card>
-  <Card title="CLI" icon="terminal" href="/reference/cli-reference">
+  <Card title="CLI" icon="terminal" href="/reference/cli">
     Flags, severities, exit codes, and error messages for every command.
   </Card>
   <Card title="Local preview" icon="eye" href="/features/local-preview">

@@ -1,5 +1,5 @@
 ---
-title: docs.page vs docsify
+title: docsify
 description: Decide between a hosted docs.page site and self-hosted client-side docsify.
 ---
 
@@ -9,7 +9,7 @@ docsify keeps documentation lightweight — markdown files, a small client-side 
 
 docsify renders documentation in the browser by fetching markdown at runtime. You control where files live and how they are served — often a static bucket or simple web server.
 
-docs.page also reads markdown from Git, but bundles and serves a full documentation site from **public GitHub repositories** — navigation, search, themes, branch previews, and [agent-ready exports](/ai-agents/agent-ready-docs) without assembling those pieces yourself.
+docs.page also reads markdown from Git, but bundles and serves a full documentation site from **public GitHub repositories** — navigation, search, themes, branch previews, and [agent-ready exports](/ai-agents/overview) without assembling those pieces yourself.
 
 See [Introduction](/) for the docs.page repository layout.
 
@@ -27,7 +27,7 @@ docsify wins when you already have static hosting, want the smallest possible cl
 
 docsify provides a core viewer; sidebars, full-text search, analytics, and polished MDX components are community plugins or custom work.
 
-docs.page ships a **complete docs experience** from `docs.json`: nested [sidebar](/features/sidebar) and [tabs](/features/navigation-tabs), [command-palette search](/features/search), built-in [MDX components](/features/components), [themes](/features/theme), and [page actions](/features/github-hosting#page-actions) like **Copy page** and **Install with MCP**.
+docs.page ships a **complete docs experience** from `docs.json`: nested [sidebar](/features/sidebar) and [tabs](/features/tabs), [command-palette search](/features/search), built-in [MDX components](/features/components), [themes](/features/theme), and [page actions](/features/public-github-hosting#page-actions) like **Copy page** and **Install with MCP**.
 
 Choose docsify for a thin viewer you extend yourself. Choose docs.page when you want product-grade docs UX without plugin hunting.
 
@@ -49,7 +49,7 @@ If your documentation is public and lives in GitHub already, docs.page collapses
 
 ## Related
 
-- [Public GitHub hosting](/features/github-hosting) — push-to-publish from Git
+- [Public GitHub hosting](/features/public-github-hosting) — push-to-publish from Git
 - [Local preview](/features/local-preview) — iterate before you push
-- [Agent-ready docs](/ai-agents/agent-ready-docs) — llms.txt and MCP from the same repo
-- [docs.page vs Jekyll](/comparisons/docs-page-vs-jekyll) — another self-hosted static path
+- [Agent-ready docs](/ai-agents/overview) — llms.txt and MCP from the same repo
+- [docs.page vs Jekyll](/comparisons/jekyll) — another self-hosted static path

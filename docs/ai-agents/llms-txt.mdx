@@ -7,7 +7,7 @@ When an AI tool needs to answer questions about your product, it first needs to 
 
 **Before you begin**
 
-- A published site on a **public** GitHub repository — see [Agent-ready docs](/ai-agents/agent-ready-docs)
+- A published site on a **public** GitHub repository — see [Agent-ready docs](/ai-agents/overview)
 - Your `{owner}` and `{repo}` slugs from the production URL
 
 ---
@@ -59,8 +59,8 @@ The tradeoff is size—large sites produce large responses. Prefer `llms.txt` wh
 | --- | --- |
 | Map of pages — titles, summaries, links | `llms.txt` |
 | Full source in one download | `llms-full.txt` |
-| Per-page reads after discovery | `llms.txt`, then follow links — or use [MCP client](/ai-agents/mcp-server) |
-| One page's raw source in the browser | Append `.md` to the page URL, or choose **View markdown** in the [page action menu](/features/github-hosting#page-actions) |
+| Per-page reads after discovery | `llms.txt`, then follow links — or use [MCP server](/ai-agents/mcp-server) |
+| One page's raw source in the browser | Append `.md` to the page URL, or choose **View markdown** in the [page action menu](/features/public-github-hosting#page-actions) |
 
 ### How agents use exports in practice
 
@@ -86,7 +86,7 @@ For branch previews, add `~{ref}` after the repository name—the same rules as 
 curl -sS "https://docs.page/{owner}/{repo}~feature-branch/llms.txt" | head
 ```
 
-For very large repositories, the response may include an `x-docs-page-tree-truncated: 1` header—the export can be incomplete. Use [MCP client](/ai-agents/mcp-server) to read individual pages instead.
+For very large repositories, the response may include an `x-docs-page-tree-truncated: 1` header—the export can be incomplete. Use [MCP server](/ai-agents/mcp-server) to read individual pages instead.
 
 ### Check one page
 
@@ -100,8 +100,8 @@ See [HTTP endpoints — Raw markdown](/reference/http-endpoints#raw-markdown) fo
 
 ## Related
 
-- [Agent-ready docs](/ai-agents/agent-ready-docs) — how llms.txt fits alongside MCP and Ask AI
+- [Agent-ready docs](/ai-agents/overview) — how llms.txt fits alongside MCP and Ask AI
 - [llms.txt on Features](/features/llms-txt) — generation, caching, and response headers
-- [MCP client](/ai-agents/mcp-server) — list and read individual pages through MCP
-- [Public GitHub hosting](/features/github-hosting#page-actions) — **View markdown** in the page action menu
+- [MCP server](/ai-agents/mcp-server) — list and read individual pages through MCP
+- [Public GitHub hosting](/features/public-github-hosting#page-actions) — **View markdown** in the page action menu
 - [HTTP endpoints](/reference/http-endpoints) — route lookup for llms.txt, llms-full.txt, and raw markdown

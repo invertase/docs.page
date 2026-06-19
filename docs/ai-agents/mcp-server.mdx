@@ -1,13 +1,13 @@
 ---
-title: MCP client
-description: Learn what the per-repo MCP endpoint provides, how agents use it, and how to connect a client or disable it.
+title: MCP server
+description: Connect MCP clients to your per-repo server, learn what the endpoint exposes, and how to disable it.
 ---
 
 When an assistant can pull raw MDX from your repository—not a one-time HTML scrape—it answers with the same wording, examples, and structure your team published. docs.page runs a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for every hosted public repository.
 
 **Before you begin**
 
-- A published docs URL you can open in a browser — see [Agent-ready docs](/ai-agents/agent-ready-docs)
+- A published docs URL you can open in a browser — see [Agent-ready docs](/ai-agents/overview)
 - A **public** GitHub repository; private repos return `404` for MCP
 
 MCP is **on by default**. You only edit `docs.json` when you want to turn the endpoint off. For server design, tools, and access control detail, see [MCP server on Features](/features/mcp-server).
@@ -118,8 +118,8 @@ Commit and publish. The MCP route returns `404`, **Install MCP** disappears from
 
 ## Related
 
-- [Agent-ready docs](/ai-agents/agent-ready-docs) — how MCP fits alongside llms.txt and Ask AI
-- [Page actions](/features/github-hosting#page-actions) — **Install with MCP**, **Connect to Cursor**, and **Connect to VSCode** in the header menu
+- [Agent-ready docs](/ai-agents/overview) — how MCP fits alongside llms.txt and Ask AI
+- [Page actions](/features/public-github-hosting#page-actions) — **Install with MCP**, **Connect to Cursor**, and **Connect to VSCode** in the header menu
 - [MCP server on Features](/features/mcp-server) — server descriptor, access control, and URL patterns
 - [Agent skills](/ai-agents/agent-skills) — expose `.agents/skills` as MCP resources
 - [HTTP endpoints](/reference/http-endpoints) — MCP route lookup

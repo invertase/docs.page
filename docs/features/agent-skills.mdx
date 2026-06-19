@@ -54,7 +54,7 @@ If MCP is disabled (`mcp.enabled: false`) or the repository is private, neither 
 
 2. **Push to a public GitHub repository.** Skills follow the same visibility rules as hosted docs. Commit and push to the branch your MCP client targets (usually the default branch for production URLs).
 
-3. **Connect an MCP client.** MCP is on by default. Open your live site, choose **Install with MCP** from the [page action menu](/features/github-hosting#page-actions) or **Install MCP** from **Cmd+K**, and add the endpoint to Cursor, Claude Code, or another HTTP MCP client. See [MCP client](/ai-agents/mcp-server) for endpoint URLs and client setup.
+3. **Connect an MCP client.** MCP is on by default. Open your live site, choose **Install with MCP** from the [page action menu](/features/public-github-hosting#page-actions) or **Install MCP** from **Cmd+K**, and add the endpoint to Cursor, Claude Code, or another HTTP MCP client. See [MCP server](/ai-agents/mcp-server) for endpoint URLs and client setup.
 
 After connecting, list MCP resources on your docs server—you should see one entry per `SKILL.md`, plus `docs-page-config-schema`. Fetch a skill resource to load its instructions into the agent context.
 
@@ -67,7 +67,7 @@ After connecting, list MCP resources on your docs server—you should see one en
   <Card title="llms.txt" icon="file-lines" href="/features/llms-txt">
     Text exports for LLM discovery without MCP.
   </Card>
-  <Card title="Public GitHub hosting" icon="github" href="/features/github-hosting">
+  <Card title="Public GitHub hosting" icon="github" href="/features/public-github-hosting">
     Why docs.page reads from public repositories at request time.
   </Card>
   <Card title="HTTP endpoints" icon="globe" href="/reference/http-endpoints">

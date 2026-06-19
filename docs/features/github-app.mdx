@@ -7,7 +7,7 @@ Documentation pull requests are easier to review when teammates can open the ren
 
 ## Overview
 
-The GitHub App is a one-time install on repositories that use [public GitHub hosting](/features/github-hosting). After installation, docs.page comments on pull requests with a preview URL built from [branch preview](/features/branch-preview) routing.
+The GitHub App is a one-time install on repositories that use [public GitHub hosting](/features/public-github-hosting). After installation, docs.page comments on pull requests with a preview URL built from [branch preview](/features/branch-preview) routing.
 
 You do not configure webhooks or add secrets to `docs.json`. The app uses GitHub pull request events and docs.page's existing `~ref` URL model to serve the same MDX and configuration as production—just from the PR branch.
 
@@ -67,7 +67,7 @@ No changes to `docs.json` are required. To preview before opening a PR, use [loc
   <Card title="Branch preview" icon="code-branch" href="/features/branch-preview">
     Ref URL patterns for branches, commits, and pull requests.
   </Card>
-  <Card title="Public GitHub hosting" icon="github" href="/features/github-hosting">
+  <Card title="Public GitHub hosting" icon="github" href="/features/public-github-hosting">
     How default-branch URLs become your production site.
   </Card>
   <Card title="Custom domains" icon="globe" href="/features/custom-domains">

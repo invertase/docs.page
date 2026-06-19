@@ -21,7 +21,7 @@ When you change a published URL, update three things: the file at the new path, 
     Rename or move the file under `docs/` to match the new URL. For example, move `docs/installation.mdx` to `docs/getting-started.mdx` so the page serves at `/getting-started`.
   </Step>
   <Step title="Point sidebar at the new href">
-    Update the sidebar in `docs.json` so the entry points at the new `href`. Remove or replace the old path — readers should not land on a dead link from navigation. See [Organize](/authoring/organise).
+    Update the sidebar in `docs.json` so the entry points at the new `href`. Remove or replace the old path — readers should not land on a dead link from navigation. See [Organize](/authoring/organize).
   </Step>
   <Step title="Keep bookmarks working with a redirect stub">
     Create a redirect stub at the old file path (next section). Without it, bookmarks and external links to the old URL return 404.
@@ -96,11 +96,11 @@ After you add or change redirect stubs:
 | `docs check` reports a broken redirect | Target path does not match a page or asset in the repo | Use the correct root-relative path (no `.mdx`). Confirm the destination file exists |
 | Redirect sends readers to production from a branch preview | Unlikely with internal paths — they resolve per request context | Use a root-relative path, not a hard-coded production URL. See [Redirects](/features/redirects#how-internal-paths-resolve-across-routing-modes) |
 | External redirect fails validation | Typo in URL or unreachable host | Fix the `https://` target. Tune `--external-links` if CI flakes on third-party sites |
-| Old page still appears in the sidebar | `docs.json` still lists the old `href` | Update or remove the sidebar entry in [Organize](/authoring/organise) |
+| Old page still appears in the sidebar | `docs.json` still lists the old `href` | Update or remove the sidebar entry in [Organize](/authoring/organize) |
 
 ## Related
 
 - [Redirects](/features/redirects) — How per-page redirects work across routing modes, HTTP status, and limits.
 - [Page frontmatter](/reference/page-frontmatter) — Field reference for `redirect` and other per-page YAML options.
-- [Organize](/authoring/organise) — Point sidebar entries at the new URL after you move a page.
+- [Organize](/authoring/organize) — Point sidebar entries at the new URL after you move a page.
 - [Preview](/authoring/preview) — Confirm the new page and redirect locally.

@@ -18,7 +18,7 @@ Everything lives under the top-level `theme` key in `docs.json`. You do not edit
 }
 ```
 
-Field names, types, and defaults live in [docs.json](/reference/docs-json-reference) — this page explains the model, not every key.
+Field names, types, and defaults live in [docs.json](/reference/docs-json) — this page explains the model, not every key.
 
 ## How it works
 
@@ -34,7 +34,7 @@ If the code is invalid or cannot be resolved, docs.page falls back to the defaul
 
 Every hosted site supports **light** and **dark** appearance. docs.page toggles modes with a `dark` class on the document root (via [next-themes](https://github.com/pacocoursey/next-themes)). Preset CSS defines separate token values for `:root` and `.dark`, so backgrounds, borders, and text stay balanced in both modes.
 
-Readers switch modes from the **theme toggle** in the site header. The `header` schema also defines `showThemeToggle`, but that field is **schema only** — the toggle always renders on hosted sites today. See [Header](/features/header) and [docs.json — Schema-only fields](/reference/docs-json-reference#schema-only-fields).
+Readers switch modes from the **theme toggle** in the site header. The `header` schema also defines `showThemeToggle`, but that field is **schema only** — the toggle always renders on hosted sites today. See [Header](/features/header) and [docs.json — Schema-only fields](/reference/docs-json#schema-only-fields).
 
 The `theme` block accepts `defaultTheme` (`light` or `dark`) to pin the starting mode. That field is also **schema only** — readers still get the platform default until default-theme support ships. Mode-specific color overrides apply only in the matching mode.
 
@@ -61,7 +61,7 @@ Older `docs.json` files used a top-level `theme` **string** for a single accent 
 ## Related
 
 <CardGroup cols={2}>
-  <Card title="Reference" icon="book" href="/reference/docs-json-reference">
+  <Card title="Reference" icon="book" href="/reference/docs-json">
     Field-by-field lookup for `theme`, `header`, and the rest of site configuration.
   </Card>
   <Card title="Local preview" icon="eye" href="/features/local-preview">

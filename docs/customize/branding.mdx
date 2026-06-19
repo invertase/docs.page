@@ -1,5 +1,5 @@
 ---
-title: Apply your branding
+title: Branding
 description: Match your docs site to your product with theme colors, logos, header actions, and footer profile links.
 ---
 
@@ -21,7 +21,7 @@ Theme settings control typography, accent colors, and how the site looks in ligh
 | Brand accent only | Set `theme.primary`, or `primaryLight` / `primaryDark` for mode-specific accents |
 | Page background tweak | Set `backgroundLight` and `backgroundDark` |
 
-For how presets, fonts, and mode switching work, see [Theme](/features/theme). Field names and defaults live in [docs.json](/reference/docs-json-reference).
+For how presets, fonts, and mode switching work, see [Theme](/features/theme). Field names and defaults live in [docs.json](/reference/docs-json).
 
 <Steps>
   <Step title="Choose a preset or set custom colors">
@@ -39,7 +39,7 @@ For how presets, fonts, and mode switching work, see [Theme](/features/theme). F
   </Step>
 </Steps>
 
-The schema accepts `defaultTheme` (`light` or `dark`) to pin the starting mode, but that field is **schema only** today — see [docs.json — Schema-only fields](/reference/docs-json-reference#schema-only-fields).
+The schema accepts `defaultTheme` (`light` or `dark`) to pin the starting mode, but that field is **schema only** today — see [docs.json — Schema-only fields](/reference/docs-json#schema-only-fields).
 
 ## Add logo and favicon
 
@@ -93,7 +93,7 @@ When your sidebar outgrows one tree, define top-level tabs in the header and sco
 ]
 ```
 
-Tag each sidebar group with `"tab": "docs"` (or another tab `id`). Groups without `tab` appear on every tab. See [Navigation tabs](/features/navigation-tabs) for URL-based active tab resolution and [Organize](/authoring/organise) when you restructure navigation.
+Tag each sidebar group with `"tab": "docs"` (or another tab `id`). Groups without `tab` appear on every tab. See [Navigation tabs](/features/tabs) for URL-based active tab resolution and [Organize](/authoring/organize) when you restructure navigation.
 
 ## Add footer social links
 
@@ -126,7 +126,7 @@ Set `og.logo` or top-level `socialPreview` when share cards need artwork beyond 
 | --- | --- | --- |
 | Theme colors do not change | Invalid hex or typo in `theme` keys | Use six-digit hex; invalid values are ignored—see [Theme](/features/theme) |
 | Logo missing in preview | Wrong path or file not under `docs/` | Commit assets under `docs/` and use a leading slash, e.g. `/assets/logo.svg` |
-| Tab shows the wrong sidebar | Group `tab` id does not match a tab entry | Align `sidebar[].tab` with `tabs[].id`; see [Navigation tabs](/features/navigation-tabs) |
+| Tab shows the wrong sidebar | Group `tab` id does not match a tab entry | Align `sidebar[].tab` with `tabs[].id`; see [Navigation tabs](/features/tabs) |
 | Footer icon or share preview wrong | Empty social key, or `image` / `socialPreview` overrides | Use supported `social` keys; check frontmatter—see [Social links](/features/social-links) |
 
 ## Related
@@ -138,10 +138,10 @@ Set `og.logo` or top-level `socialPreview` when share cards need artwork beyond 
   <Card title="Preview" icon="eye" href="/authoring/preview">
     Confirm branding locally before you push.
   </Card>
-  <Card title="Organize" icon="sitemap" href="/authoring/organise">
+  <Card title="Organize" icon="sitemap" href="/authoring/organize">
     Structure sidebar groups and tab scopes in `docs.json`.
   </Card>
-  <Card title="docs.json" icon="book" href="/reference/docs-json-reference">
+  <Card title="docs.json" icon="book" href="/reference/docs-json">
     Field lookup for `theme`, `logo`, `header`, `tabs`, and `social`.
   </Card>
 </CardGroup>

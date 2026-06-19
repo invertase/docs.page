@@ -17,7 +17,7 @@ description: Install the docs.page CLI on macOS, Linux, or Windows.
 <Property name="title" type="string">
   Page title for the browser tab, visible page hero (when enabled), search index, and Open Graph metadata.
 
-  Falls back to the site `name` from `docs.json` when omitted. With [`docs check --metadata`](/reference/cli-reference), warns when `title` is missing on pages that use auto-generated social preview images.
+  Falls back to the site `name` from `docs.json` when omitted. With [`docs check --metadata`](/reference/cli), warns when `title` is missing on pages that use auto-generated social preview images.
 </Property>
 
 ## description
@@ -25,7 +25,7 @@ description: Install the docs.page CLI on macOS, Linux, or Windows.
 <Property name="description" type="string">
   Short summary shown under the page title and used in metadata, search results, and social previews.
 
-  Falls back to the site `description` from `docs.json` when omitted. With [`docs check --metadata`](/reference/cli-reference), warns when `description` is missing on pages that use auto-generated social preview images.
+  Falls back to the site `description` from `docs.json` when omitted. With [`docs check --metadata`](/reference/cli), warns when `description` is missing on pages that use auto-generated social preview images.
 </Property>
 
 ## image
@@ -41,7 +41,7 @@ description: Install the docs.page CLI on macOS, Linux, or Windows.
 <Property name="showPageTitle" type="boolean">
   When `false`, hide the rendered title and description hero for this page.
 
-  When omitted, inherits [`content.showPageTitle`](/reference/docs-json-reference) from `docs.json`. Default site value: `true`.
+  When omitted, inherits [`content.showPageTitle`](/reference/docs-json) from `docs.json`. Default site value: `true`.
 </Property>
 
 ## showPageImage
@@ -49,7 +49,7 @@ description: Install the docs.page CLI on macOS, Linux, or Windows.
 <Property name="showPageImage" type="boolean">
   When `false`, hide the frontmatter `image` hero for this page.
 
-  When omitted, inherits [`content.showPageImage`](/reference/docs-json-reference) from `docs.json`. Default site value: `true`.
+  When omitted, inherits [`content.showPageImage`](/reference/docs-json) from `docs.json`. Default site value: `true`.
 </Property>
 
 ## noindex
@@ -57,7 +57,7 @@ description: Install the docs.page CLI on macOS, Linux, or Windows.
 <Property name="noindex" type="boolean">
   When `true`, add `noindex` to this page's metadata so search engines skip it.
 
-  Site-wide blocking uses [`seo.noindex`](/reference/docs-json-reference) in `docs.json` instead. See [Search engine indexing](/features/search-engine-indexing).
+  Site-wide blocking uses [`seo.noindex`](/reference/docs-json) in `docs.json` instead. See [Search engine indexing](/features/search-engine-indexing).
 </Property>
 
 ## redirect
@@ -71,7 +71,7 @@ description: Install the docs.page CLI on macOS, Linux, or Windows.
 ## previous
 
 <Property name="previous" type="string">
-  Root-relative path for the **Previous** footer link. Overrides sidebar-inferred navigation when [`content.automaticallyInferNextPrevious`](/reference/docs-json-reference) is enabled.
+  Root-relative path for the **Previous** footer link. Overrides sidebar-inferred navigation when [`content.automaticallyInferNextPrevious`](/reference/docs-json) is enabled.
 
   External URLs are ignored. `docs check` validates internal targets.
 </Property>
@@ -98,7 +98,7 @@ description: Install the docs.page CLI on macOS, Linux, or Windows.
 
 ## See also
 
-- [docs.json](/reference/docs-json-reference) — site-wide defaults that frontmatter can override
-- [CLI](/reference/cli-reference) — `docs check --metadata` for missing title and description
+- [docs.json](/reference/docs-json) — site-wide defaults that frontmatter can override
+- [CLI](/reference/cli) — `docs check --metadata` for missing title and description
 - [Write](/authoring/write) — page structure, links, and media
-- [Organize](/authoring/organise) — sidebar order that drives default previous/next links
+- [Organize](/authoring/organize) — sidebar order that drives default previous/next links

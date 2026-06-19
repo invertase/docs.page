@@ -9,7 +9,7 @@ Readers expect product documentation at a URL you control — `https://docs.exam
 
 A custom domain is a **one hostname, one repository** mapping. When the mapping is active, production URLs drop the `/{owner}/{repo}` prefix that appears on the default docs.page host. The same MDX files and `docs.json` configuration power the site; only the public URL shape changes.
 
-docs.page still fetches content from your public GitHub repository on each request — the same [push-to-publish model](/features/github-hosting) as the default host. Custom domains change routing and link generation, not how content is stored or bundled.
+docs.page still fetches content from your public GitHub repository on each request — the same [push-to-publish model](/features/public-github-hosting) as the default host. Custom domains change routing and link generation, not how content is stored or bundled.
 
 Compare with [Vanity subdomains](/features/vanity-subdomains), which shorten paths under `{owner}.docs.page` but keep the docs.page hostname. Custom domains use a hostname you own entirely.
 
@@ -80,12 +80,12 @@ Custom domain setup spans DNS, the worker registry, and TLS at the edge. These s
 
 4. **Confirm TLS** terminates correctly for the hostname, then open the domain root in a browser. You should see the same home page as `https://docs.page/{owner}/{repo}` with paths rooted at `/`.
 
-For step-by-step DNS and verification detail, see [Custom domain](/customize/connect-a-custom-domain). For HTTP routes, worker behavior, and platform internals, see [HTTP endpoints](/reference/http-endpoints).
+For step-by-step DNS and verification detail, see [Custom domain](/customize/custom-domain). For HTTP routes, worker behavior, and platform internals, see [HTTP endpoints](/reference/http-endpoints).
 
 ## Related
 
 <CardGroup cols={2}>
-  <Card title="Custom domain" icon="link" href="/customize/connect-a-custom-domain">
+  <Card title="Custom domain" icon="link" href="/customize/custom-domain">
     DNS, TLS, and verification steps to go live on your hostname.
   </Card>
   <Card title="Vanity subdomains" icon="globe" href="/features/vanity-subdomains">
@@ -94,7 +94,7 @@ For step-by-step DNS and verification detail, see [Custom domain](/customize/con
   <Card title="Branch preview" icon="code-branch" href="/features/branch-preview">
     Share ref URLs on your custom domain before you merge.
   </Card>
-  <Card title="Reference" icon="book" href="/reference/docs-json-reference">
+  <Card title="Reference" icon="book" href="/reference/docs-json">
     Configuration, HTTP endpoints, and platform lookup.
   </Card>
 </CardGroup>

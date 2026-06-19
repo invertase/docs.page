@@ -63,7 +63,7 @@
         },
         {
           "title": "Quickstart",
-          "href": "/publish-your-first-site"
+          "href": "/quickstart"
         }
       ]
     },
@@ -78,7 +78,7 @@
         },
         {
           "title": "Organize",
-          "href": "/authoring/organise"
+          "href": "/authoring/organize"
         },
         {
           "title": "Preview",
@@ -104,25 +104,25 @@
       ]
     },
     {
-      "group": "Site setup",
+      "group": "Customize",
       "icon": "palette",
       "tab": "docs",
       "pages": [
         {
           "title": "Branding",
-          "href": "/customize/apply-your-branding"
+          "href": "/customize/branding"
         },
         {
           "title": "Custom domain",
-          "href": "/customize/connect-a-custom-domain"
+          "href": "/customize/custom-domain"
         },
         {
           "title": "SEO",
-          "href": "/customize/improve-search-visibility"
+          "href": "/customize/seo"
         },
         {
           "title": "Analytics",
-          "href": "/customize/track-reader-engagement"
+          "href": "/customize/analytics"
         }
       ]
     },
@@ -143,7 +143,7 @@
       "pages": [
         {
           "title": "Public GitHub hosting",
-          "href": "/features/github-hosting"
+          "href": "/features/public-github-hosting"
         },
         {
           "title": "Components",
@@ -173,11 +173,11 @@
         },
         {
           "title": "Tabs",
-          "href": "/features/navigation-tabs"
+          "href": "/features/tabs"
         },
         {
           "title": "Links",
-          "href": "/features/navigation-links"
+          "href": "/features/links"
         },
         {
           "title": "Locales",
@@ -237,7 +237,7 @@
         },
         {
           "title": "Previous and next links",
-          "href": "/features/navigation-buttons"
+          "href": "/features/previous-and-next-links"
         },
         {
           "title": "Search engine indexing",
@@ -359,14 +359,14 @@
       "pages": [
         {
           "title": "Overview",
-          "href": "/ai-agents/agent-ready-docs"
+          "href": "/ai-agents/overview"
         },
         {
           "title": "llms.txt",
           "href": "/ai-agents/llms-txt"
         },
         {
-          "title": "MCP client",
+          "title": "MCP server",
           "href": "/ai-agents/mcp-server"
         },
         {
@@ -394,23 +394,23 @@
           "pages": [
             {
               "title": "Mintlify",
-              "href": "/comparisons/docs-page-vs-mintlify"
+              "href": "/comparisons/mintlify"
             },
             {
               "title": "Docusaurus",
-              "href": "/comparisons/docs-page-vs-docusaurus"
+              "href": "/comparisons/docusaurus"
             },
             {
               "title": "docsify",
-              "href": "/comparisons/docs-page-vs-docsify"
+              "href": "/comparisons/docsify"
             },
             {
               "title": "Jekyll",
-              "href": "/comparisons/docs-page-vs-jekyll"
+              "href": "/comparisons/jekyll"
             },
             {
               "title": "GitHub Pages",
-              "href": "/comparisons/docs-page-vs-github-pages"
+              "href": "/comparisons/github-pages"
             }
           ]
         }
@@ -427,7 +427,7 @@
         },
         {
           "title": "docs.json",
-          "href": "/reference/docs-json-reference"
+          "href": "/reference/docs-json"
         },
         {
           "title": "Page frontmatter",
@@ -435,7 +435,7 @@
         },
         {
           "title": "CLI",
-          "href": "/reference/cli-reference"
+          "href": "/reference/cli"
         },
         {
           "title": "HTTP endpoints",

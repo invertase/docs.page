@@ -5,7 +5,7 @@ description: Push your branch to GitHub, share branch previews with reviewers, a
 
 **Before you begin**
 
-- A **public** GitHub repository — docs.page only hosts public repos. See [Public GitHub hosting](/features/github-hosting).
+- A **public** GitHub repository — docs.page only hosts public repos. See [Public GitHub hosting](/features/public-github-hosting).
 - [Preview](/authoring/preview) and check already passed on your machine
 - Git installed and write access to the repository on GitHub
 
@@ -38,7 +38,7 @@ Commit your documentation changes and push the branch to GitHub so docs.page can
 </Steps>
 
 <Info>
-  docs.page does not run a separate deploy step. Pushing to GitHub is what makes branch content available for previews; merging to your default branch updates production. See [Public GitHub hosting](/features/github-hosting).
+  docs.page does not run a separate deploy step. Pushing to GitHub is what makes branch content available for previews; merging to your default branch updates production. See [Public GitHub hosting](/features/public-github-hosting).
 </Info>
 
 ## Share branch previews
@@ -105,7 +105,7 @@ Add a job step that runs from the directory containing `docs.json`:
   run: npx @docs.page/cli check
 ```
 
-The command exits with code `1` when any `error`-level issue is found, which fails the job. It does not publish or upload anything — [Public GitHub hosting](/features/github-hosting) updates the live site when you merge to your default branch.
+The command exits with code `1` when any `error`-level issue is found, which fails the job. It does not publish or upload anything — [Public GitHub hosting](/features/public-github-hosting) updates the live site when you merge to your default branch.
 
 ### Monorepo
 
@@ -140,7 +140,7 @@ https://docs.page/{owner}/{repo}
 https://docs.page/{owner}/{repo}/{page-path}
 ```
 
-Edge caching may delay updates by about a minute after the merge. Renaming the default branch on GitHub updates what the production URL serves — you do not configure a production branch in `docs.json`. See [Public GitHub hosting](/features/github-hosting).
+Edge caching may delay updates by about a minute after the merge. Renaming the default branch on GitHub updates what the production URL serves — you do not configure a production branch in `docs.json`. See [Public GitHub hosting](/features/public-github-hosting).
 
 ## Troubleshooting
 
@@ -149,7 +149,7 @@ Edge caching may delay updates by about a minute after the merge. Renaming the d
 | Branch preview returns 404 or old content | Wrong ref segment, branch not pushed, or cache delay | Confirm the branch exists on GitHub; match the ref in the URL; wait a minute and hard-refresh |
 | Production still shows old content after merge | Merge targeted a non-default branch, or cache delay | Confirm the PR merged to the default branch; wait briefly and refresh |
 | GitHub App did not comment on the PR | App not installed on this repo, or repository is private | Install [docs.page on GitHub](https://github.com/apps/docs-page) on the public docs repo; see [GitHub App](/features/github-app) |
-| `403` on preview or production URL | Repository is private | docs.page only hosts public repositories — see [Public GitHub hosting](/features/github-hosting) |
+| `403` on preview or production URL | Repository is private | docs.page only hosts public repositories — see [Public GitHub hosting](/features/public-github-hosting) |
 | CI check fails on external links | Target blocks bots or is down | Add `--external-links warn` (or `off`) for that workflow; keep `--internal-links error` |
 | CI check fails but local preview looked fine | CI runs from a different directory or missing committed files | Pass the correct `[path]` to `check` or set `working-directory`; confirm all docs files are committed and pushed |
 | Numeric `~42` ref does not match expected PR | Wrong PR number or PR closed without merge | Use the open PR number, or switch to the branch name ref |
@@ -162,7 +162,7 @@ You do not need a local clone for small fixes. On any live or branch preview pag
   **Edit page** is unavailable during [local preview](/features/local-preview). Use your editor locally, or push a branch and open a [branch preview](/features/branch-preview) URL to edit on GitHub.
 </Info>
 
-After you save on GitHub, the preview or production site updates on the next request—there is no separate publish step. See [Page actions](/features/github-hosting#page-actions) for the full header menu.
+After you save on GitHub, the preview or production site updates on the next request—there is no separate publish step. See [Page actions](/features/public-github-hosting#page-actions) for the full header menu.
 
 ## Related
 
@@ -176,10 +176,10 @@ After you save on GitHub, the preview or production site updates on the next req
   <Card title="GitHub App" icon="robot" href="/features/github-app">
     Automatic pull request comments with live preview links.
   </Card>
-  <Card title="Public GitHub hosting" icon="github" href="/features/github-hosting">
+  <Card title="Public GitHub hosting" icon="github" href="/features/public-github-hosting">
     How default-branch URLs become your production site.
   </Card>
-  <Card title="Page actions" icon="copy" href="/features/github-hosting#page-actions">
+  <Card title="Page actions" icon="copy" href="/features/public-github-hosting#page-actions">
     **Edit page** and **View markdown** from the header menu.
   </Card>
   <Card title="CLI" icon="terminal" href="/features/cli">

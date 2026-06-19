@@ -14,7 +14,7 @@ Social configuration splits across two concerns in `docs.json`:
 
 A third top-level field, **`socialPreview`**, sets a default preview image for every page. Per-page frontmatter can override that image. Together, these settings control outbound sharing and the footer area where community links appear.
 
-Field names, types, and defaults live on the [docs.json](/reference/docs-json-reference). This page explains how the pieces fit together.
+Field names, types, and defaults live on the [docs.json](/reference/docs-json). This page explains how the pieces fit together.
 
 ## How it works
 
@@ -37,7 +37,7 @@ docs.page maps each key to the correct destination — for example `github: "acm
 
 Supported platforms: `website`, `x`, `youtube`, `facebook`, `instagram`, `linkedin`, `github`, `slack`, and `discord`. Entries with empty values or unknown keys are skipped. The footer sorts remaining icons alphabetically by key so the order stays consistent on server and client renders.
 
-These icons sit in the footer beside the docs.page attribution — separate from [header links](/features/header) (top-bar CTAs) and [anchor links](/features/navigation-links) (sidebar shortcuts). Use footer social icons when you want profile links on every page without competing for header or sidebar space.
+These icons sit in the footer beside the docs.page attribution — separate from [header links](/features/header) (top-bar CTAs) and [anchor links](/features/links) (sidebar shortcuts). Use footer social icons when you want profile links on every page without competing for header or sidebar space.
 
 ### Open Graph metadata on every page
 
@@ -65,7 +65,7 @@ Set `socialPreview` to a static image URL when you want the same artwork on ever
 ## Related
 
 <CardGroup cols={2}>
-  <Card title="docs.json" icon="file-code" href="/reference/docs-json-reference">
+  <Card title="docs.json" icon="file-code" href="/reference/docs-json">
     Field lookup for `social`, `og`, and `socialPreview`.
   </Card>
   <Card title="Logo" icon="image" href="/features/logo">
@@ -74,7 +74,7 @@ Set `socialPreview` to a static image URL when you want the same artwork on ever
   <Card title="Page frontmatter" icon="file-lines" href="/reference/page-frontmatter">
     Override title, description, and preview image on individual pages.
   </Card>
-  <Card title="Links" icon="link" href="/features/navigation-links">
+  <Card title="Links" icon="link" href="/features/links">
     Sidebar shortcuts for repos and communities: separate from footer social icons.
   </Card>
 </CardGroup>

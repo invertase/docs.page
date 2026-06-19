@@ -1,5 +1,5 @@
 ---
-title: Improve search visibility
+title: SEO
 description: Help search engines discover and rank your docs with metadata, sitemap, and indexing controls.
 ---
 
@@ -8,8 +8,8 @@ On-site search (the **⌘K** palette) helps readers who are already on your docs
 **Before you begin**
 
 - A [branch preview](/features/branch-preview) or production URL — [local preview](/features/local-preview) does not serve `sitemap.xml` or `robots.txt`
-- Site identity fields in `docs.json` — see [Apply your branding](/customize/apply-your-branding) for `name`, logo, and related settings that feed share cards
-- Optional: a [custom domain](/customize/connect-a-custom-domain) when you want canonical URLs on your own host
+- Site identity fields in `docs.json` — see [Apply your branding](/customize/branding) for `name`, logo, and related settings that feed share cards
+- Optional: a [custom domain](/customize/custom-domain) when you want canonical URLs on your own host
 
 ---
 
@@ -39,7 +39,7 @@ docs.page emits `<title>`, description, Open Graph, and Twitter Card tags on eve
     }
     ```
 
-    When `socialPreview` is unset, docs.page generates a card from the resolved title, description, and logo (from [Apply your branding](/customize/apply-your-branding) or `og.logo`). Set `socialPreview` to `false` to omit a default image entirely.
+    When `socialPreview` is unset, docs.page generates a card from the resolved title, description, and logo (from [Apply your branding](/customize/branding) or `og.logo`). Set `socialPreview` to `false` to omit a default image entirely.
   </Step>
   <Step title="Push and preview on a hosted URL">
     Commit and push your changes, then open a [branch preview](/features/branch-preview) or production URL. Metadata and crawler files are served from the hosted origin — not from `docs preview` on localhost.
@@ -52,7 +52,7 @@ docs.page emits `<title>`, description, Open Graph, and Twitter Card tags on eve
 | **Description** | `description` in `docs.json` |
 | **Preview image** | `socialPreview` → auto-generated card |
 
-Field types and defaults: [docs.json](/reference/docs-json-reference).
+Field types and defaults: [docs.json](/reference/docs-json).
 
 ## Tune page-level metadata
 
@@ -104,7 +104,7 @@ https://docs.page/{owner}/{repo}~{ref}/robots.txt
 https://docs.page/{owner}/{repo}~{ref}/sitemap.xml
 ```
 
-On a [custom domain](/customize/connect-a-custom-domain), the same paths sit at the domain root. The sitemap includes every page file in the tree — it does not filter by sidebar visibility or per-page `noindex`.
+On a [custom domain](/customize/custom-domain), the same paths sit at the domain root. The sitemap includes every page file in the tree — it does not filter by sidebar visibility or per-page `noindex`.
 
 ## Block search engine indexing
 
@@ -160,7 +160,7 @@ Use indexing controls when the site or specific pages should stay out of search 
 | --- | --- | --- |
 | `sitemap.xml` or `robots.txt` returns 404 | Checked on [local preview](/features/local-preview) | Use a branch preview or production URL — crawler files are not generated locally |
 | Search snippet shows the wrong title or description | Missing or stale frontmatter; browser cache | Set `title` and `description` in page frontmatter; confirm the merged branch is live |
-| Share preview shows the wrong image | Page lacks `image`; `socialPreview` unset | Set frontmatter `image` or `socialPreview` in `docs.json`; confirm logo paths from [Apply your branding](/customize/apply-your-branding) |
+| Share preview shows the wrong image | Page lacks `image`; `socialPreview` unset | Set frontmatter `image` or `socialPreview` in `docs.json`; confirm logo paths from [Apply your branding](/customize/branding) |
 | Page still appears in Google after `noindex` | Crawlers have not re-crawled yet | Allow time for re-crawl; confirm the live page source includes `<meta name="robots" content="noindex" />` |
 | Page is in `sitemap.xml` but has `noindex` in frontmatter | Sitemap lists all repo pages; `noindex` is page-level only | Expected — crawlers should honor the meta tag; use site-wide `seo.noindex` to block everything |
 | `robots.txt` still lists a sitemap after enabling `seo.noindex` | Old response cached, or change not deployed | Confirm `seo.noindex: true` is on the deployed ref; hard-refresh or check the branch preview URL |
@@ -169,7 +169,7 @@ Use indexing controls when the site or specific pages should stay out of search 
 
 - [Search engine indexing](/features/search-engine-indexing) — how `sitemap.xml`, `robots.txt`, and metadata are generated
 - [Search](/features/search) — on-site **⌘K** search for readers already on your docs
-- [Apply your branding](/customize/apply-your-branding) — `name`, logo, and theme settings that feed share cards
-- [Connect a custom domain](/customize/connect-a-custom-domain) — serve docs and crawler files on your own domain
+- [Apply your branding](/customize/branding) — `name`, logo, and theme settings that feed share cards
+- [Connect a custom domain](/customize/custom-domain) — serve docs and crawler files on your own domain
 - [Page frontmatter](/reference/page-frontmatter) — per-page `title`, `description`, `image`, and `noindex`
-- [docs.json](/reference/docs-json-reference) — `name`, `description`, `socialPreview`, and `seo.noindex`
+- [docs.json](/reference/docs-json) — `name`, `description`, `socialPreview`, and `seo.noindex`

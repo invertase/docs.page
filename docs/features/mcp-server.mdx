@@ -69,16 +69,16 @@ To disable the endpoint, set `mcp.enabled` to `false`:
 }
 ```
 
-Omit the `mcp` block—or leave `enabled` unset—to keep the server available. Field defaults and related settings are documented in [docs.json](/reference/docs-json-reference).
+Omit the `mcp` block—or leave `enabled` unset—to keep the server available. Field defaults and related settings are documented in [docs.json](/reference/docs-json).
 
 ### Connect a client
 
-Open your live docs site and connect from the [page action menu](/features/github-hosting#page-actions) or the command palette:
+Open your live docs site and connect from the [page action menu](/features/public-github-hosting#page-actions) or the command palette:
 
 - **Install with MCP** (page menu) or **Install MCP** (**Cmd+K** / **Ctrl+K**) — opens the **Install MCP** dialog with endpoint URL and client-specific config
 - **Connect to Cursor** or **Connect to VSCode** (page menu) — one-click deep links that register the MCP server for the site you have open
 
-The command palette shows **Install MCP** when `mcp.enabled` is not `false`. See [MCP client](/ai-agents/mcp-server#connect-from-the-live-site) for the full entry-point list.
+The command palette shows **Install MCP** when `mcp.enabled` is not `false`. See [MCP server](/ai-agents/mcp-server#connect-from-the-live-site) for the full entry-point list.
 
 <Tabs>
   <TabItem label="Cursor" value="cursor">
@@ -125,7 +125,7 @@ Other MCP clients connect to the same HTTP URL. **Install MCP** includes copy-re
   <Card title="llms.txt" icon="file-lines" href="/features/llms-txt">
     Auto-generated text exports for LLM discovery without MCP.
   </Card>
-  <Card title="Reference" icon="book" href="/reference/docs-json-reference">
+  <Card title="Reference" icon="book" href="/reference/docs-json">
     `mcp.enabled`, HTTP routes, and other lookup pages.
   </Card>
   <Card title="HTTP endpoints" icon="globe" href="/reference/http-endpoints">

@@ -34,13 +34,13 @@ Add a `tabs` array at the top level of `docs.json`. Each entry needs a stable `i
 
 When `tabs` is non-empty, docs.page renders those labels in the header below the logo row. Clicking a tab navigates to its `href`. With no `tabs` array (or an empty one), that tab row is omitted and the full sidebar is always visible.
 
-For every field on `tabs` entries, including optional `locale`, see [docs.json](/reference/docs-json-reference).
+For every field on `tabs` entries, including optional `locale`, see [docs.json](/reference/docs-json).
 
 ### How the active tab is chosen
 
 docs.page does not store "current tab" separately. It derives the active tab from the page URL on each request.
 
-The platform compares the current doc path against each tab's `href`. The tab whose path prefix best matches the current page wins — longest match takes priority. A reader on `/features/github-hosting` activates the tab whose `href` is `/features`, not the tab rooted at `/`.
+The platform compares the current doc path against each tab's `href`. The tab whose path prefix best matches the current page wins — longest match takes priority. A reader on `/features/public-github-hosting` activates the tab whose `href` is `/features`, not the tab rooted at `/`.
 
 If no tab's prefix matches, docs.page falls back to the first tab in the array. Tab resolution respects locale prefixing the same way sidebar links do, so localized URLs stay aligned with the correct tab.
 
@@ -59,12 +59,12 @@ Tag sidebar groups with the `tab` field set to a tab `id`:
     {
       "group": "Publish",
       "tab": "features",
-      "pages": [{ "title": "Public GitHub hosting", "href": "/features/github-hosting" }]
+      "pages": [{ "title": "Public GitHub hosting", "href": "/features/public-github-hosting" }]
     },
     {
       "group": "Reference",
       "tab": "reference",
-      "pages": [{ "title": "docs.json", "href": "/reference/docs-json-reference" }]
+      "pages": [{ "title": "docs.json", "href": "/reference/docs-json" }]
     }
   ]
 }
@@ -86,13 +86,13 @@ Use this when header sections differ by language — for example, a tab that onl
   <Card title="Sidebar" icon="bars" href="/features/sidebar">
     How nested groups, page links, and icons are defined in docs.json.
   </Card>
-  <Card title="Organize" icon="sitemap" href="/authoring/organise">
+  <Card title="Organize" icon="sitemap" href="/authoring/organize">
     Structure groups, tabs, and page links before you publish.
   </Card>
   <Card title="Locales" icon="language" href="/features/locales">
     How locale keys in sidebar shape URLs and the language switcher.
   </Card>
-  <Card title="Reference" icon="book" href="/reference/docs-json-reference">
+  <Card title="Reference" icon="book" href="/reference/docs-json">
     Field-level lookup for docs.json, CLI commands, and HTTP endpoints.
   </Card>
 </CardGroup>

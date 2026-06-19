@@ -19,7 +19,7 @@ Use standard Markdown syntax for simple images:
 ![Orange car](https://images.unsplash.com/photo-1671483579112-0872cb05978f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1469&q=80)
 ```
 
-Markdown images render as `<Image>` without extra properties. They inherit zoom behavior from [`content.zoomImages`](/reference/docs-json-reference) in `docs.json` but cannot set `caption`, `theme`, or per-image `zoom` without switching to the component.
+Markdown images render as `<Image>` without extra properties. They inherit zoom behavior from [`content.zoomImages`](/reference/docs-json) in `docs.json` but cannot set `caption`, `theme`, or per-image `zoom` without switching to the component.
 
 ![Orange car](https://images.unsplash.com/photo-1671483579112-0872cb05978f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1469&q=80)
 
@@ -106,7 +106,7 @@ For example, if your repository contains `/docs/assets/my-image.png`, use `/asse
   Controls click-to-zoom behavior for this image.
 
   - `zoom={true}` — enables zoom for this image
-  - `zoom={false}` — disables zoom even when [`content.zoomImages`](/reference/docs-json-reference) is `true` in `docs.json`
+  - `zoom={false}` — disables zoom even when [`content.zoomImages`](/reference/docs-json) is `true` in `docs.json`
   - omitted — follows the global `content.zoomImages` setting (defaults to `false`)
 
   ```mdx
@@ -147,7 +147,7 @@ For example, if your repository contains `/docs/assets/my-image.png`, use `/asse
 Click an image with zoom enabled to open a full-size overlay. Set `zoom` on individual images, or enable zoom site-wide with `content.zoomImages` in `docs.json`.
 
 <Info>
-  When [`content.zoomImages`](/reference/docs-json-reference) is `true`, all images zoom by default. Pass `zoom={false}` on an `<Image>` to opt out for a specific image.
+  When [`content.zoomImages`](/reference/docs-json) is `true`, all images zoom by default. Pass `zoom={false}` on an `<Image>` to opt out for a specific image.
 </Info>
 
 <Image
@@ -222,6 +222,6 @@ The component always sets `loading="lazy"` on the image element.
 
 ## See also
 
-- [docs.json](/reference/docs-json-reference) — `content.zoomImages` and other content settings
+- [docs.json](/reference/docs-json) — `content.zoomImages` and other content settings
 - [Video](/components/video) — self-hosted video (no repo-relative path support)
 - [Components overview](/components) — when to use images, callouts, and embeds

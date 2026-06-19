@@ -47,7 +47,7 @@ After the agent is enabled, tune the panel in `docs.json` without re-running cre
 
 If `agent.key` is missing or does not match the stored agent, the header control and panel do not appear.
 
-**Open in Claude** in the [page action menu](/features/github-hosting#page-actions) is separate—it opens Claude on the web with the current page URL. It does not use Ask AI credentials or search your full doc set.
+**Open in Claude** in the [page action menu](/features/public-github-hosting#page-actions) is separate—it opens Claude on the web with the current page URL. It does not use Ask AI credentials or search your full doc set.
 
 ## Enable it
 
@@ -69,7 +69,7 @@ If `agent.key` is missing or does not match the stored agent, the header control
 
 3. **Push to your default branch** — Merge or push so the live site at `https://docs.page/org/repo` loads the panel. Open the site, click **Agent** in the header, and send a test question.
 
-For delete, rotate keys, provider flags, and troubleshooting, see [Manage the AI agent](/features/cli#manage-the-ai-agent) on the CLI page and [`docs agent create`](/reference/cli-reference#docs-agent-create) in the CLI.
+For delete, rotate keys, provider flags, and troubleshooting, see [Manage the AI agent](/features/cli#manage-the-ai-agent) on the CLI page and [`docs agent create`](/reference/cli#docs-agent-create) in the CLI.
 
 ## Related
 
@@ -77,13 +77,13 @@ For delete, rotate keys, provider flags, and troubleshooting, see [Manage the AI
   <Card title="CLI" icon="terminal" href="/features/cli">
     Install the CLI and run agent create, preview, and check workflows.
   </Card>
-  <Card title="CLI" icon="book" href="/reference/cli-reference">
+  <Card title="CLI" icon="book" href="/reference/cli">
     Flags and errors for `docs agent create` and `docs agent delete`.
   </Card>
   <Card title="MCP server" icon="plug" href="/features/mcp-server">
     Expose docs to external AI tools over MCP instead of an in-site chat panel.
   </Card>
-  <Card title="Page actions" icon="copy" href="/features/github-hosting#page-actions">
+  <Card title="Page actions" icon="copy" href="/features/public-github-hosting#page-actions">
     **Open in Claude** and other header menu shortcuts on every page.
   </Card>
   <Card title="llms.txt" icon="file-lines" href="/features/llms-txt">

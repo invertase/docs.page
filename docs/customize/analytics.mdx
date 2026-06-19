@@ -1,14 +1,14 @@
 ---
-title: Track reader engagement
+title: Analytics
 description: Add analytics to docs.json so you can see which pages readers visit on your live site.
 ---
 
 **Before you begin**
 
-- Theme and layout already set — see [Apply your branding](/customize/apply-your-branding) if you have not configured `docs.json` yet
+- Theme and layout already set — see [Apply your branding](/customize/branding) if you have not configured `docs.json` yet
 - A provider account with a GTM container ID, GA4 measurement ID, or Plausible site
 - A **published** docs URL for verification — merge to your default branch, open a branch preview, or use a custom domain. Local `docs preview` does not load analytics scripts
-- For **Plausible** only: a [custom domain or vanity subdomain](/customize/connect-a-custom-domain) mapped to your docs. Plausible requires a resolved hostname
+- For **Plausible** only: a [custom domain or vanity subdomain](/customize/custom-domain) mapped to your docs. Plausible requires a resolved hostname
 
 ---
 
@@ -73,11 +73,11 @@ When both `googleTagManager` and `googleAnalytics` are set, docs.page loads GTM 
         }
         ```
 
-        Plausible needs a mapped domain — configure [Connect a custom domain](/customize/connect-a-custom-domain) before you verify.
+        Plausible needs a mapped domain — configure [Connect a custom domain](/customize/custom-domain) before you verify.
       </TabItem>
     </Tabs>
 
-    For field types, optional keys, and additional examples, see [docs.json — scripts](/reference/docs-json-reference#scripts).
+    For field types, optional keys, and additional examples, see [docs.json — scripts](/reference/docs-json#scripts).
   </Step>
   <Step title="Publish so the live site picks up config">
     Commit and push `docs.json`, then merge to your default branch or share a branch preview URL. See [Publish](/authoring/publish).
@@ -111,7 +111,7 @@ Open a **live** docs URL — not the local preview shell — and confirm the pro
 | --- | --- | --- |
 | No analytics scripts in local preview | Expected — preview mode suppresses `scripts` | Verify on a published or branch-preview URL |
 | GA4 script missing but GTM is configured | GTM takes precedence over direct GA | Add GA as a tag inside GTM, or remove `googleTagManager` to use direct GA |
-| Plausible script never loads | No custom domain or vanity subdomain on the request | [Connect a custom domain](/customize/connect-a-custom-domain) and open the site on that hostname |
+| Plausible script never loads | No custom domain or vanity subdomain on the request | [Connect a custom domain](/customize/custom-domain) and open the site on that hostname |
 | Plausible loads but no page views | `data-domain` must match the hostname readers use | Confirm the domain in Plausible matches your docs domain exactly |
 | Scripts present but no dashboard data | Provider misconfiguration or ad blockers | Check container or measurement ID spelling; test in a clean browser profile |
 | Changes not reflected after push | Cached bundle or wrong branch | Confirm `docs.json` is on the branch docs.page serves; hard-reload the live page |
@@ -119,6 +119,6 @@ Open a **live** docs URL — not the local preview shell — and confirm the pro
 ## Related
 
 - [Analytics](/features/analytics) — how docs.page injects scripts, GTM versus GA, and preview suppression
-- [docs.json — scripts](/reference/docs-json-reference#scripts) — full `scripts` field reference
-- [Connect a custom domain](/customize/connect-a-custom-domain) — required hostname for Plausible
+- [docs.json — scripts](/reference/docs-json#scripts) — full `scripts` field reference
+- [Connect a custom domain](/customize/custom-domain) — required hostname for Plausible
 - [Local preview](/features/local-preview) — why preview stays script-free

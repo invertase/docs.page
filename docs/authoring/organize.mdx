@@ -27,7 +27,7 @@ The sidebar is declared in `docs.json`, not inferred from folder layout. For how
       "icon": "pen-to-square",
       "pages": [
         { "title": "Write", "href": "/authoring/write" },
-        { "title": "Organize", "href": "/authoring/organise" }
+        { "title": "Organize", "href": "/authoring/organize" }
       ]
     }
     ```
@@ -57,17 +57,17 @@ The sidebar is declared in `docs.json`, not inferred from folder layout. For how
     Nested groups can stack several levels deep. When the active page matches a nested group's `href` or any link inside it, that section stays expanded.
   </Step>
   <Step title="Match sidebar order to reading flow">
-    Array order is sidebar order top to bottom. It also drives default [previous/next](/features/navigation-buttons) links unless a page overrides them with `previous` and `next` in [page frontmatter](/reference/page-frontmatter).
+    Array order is sidebar order top to bottom. It also drives default [previous/next](/features/previous-and-next-links) links unless a page overrides them with `previous` and `next` in [page frontmatter](/reference/page-frontmatter).
   </Step>
 </Steps>
 
 Groups without a `group` label still render — as an unlabeled block of links. External URLs in `href` are supported and show an external-link indicator.
 
-For every sidebar field and type, see [docs.json](/reference/docs-json-reference).
+For every sidebar field and type, see [docs.json](/reference/docs-json).
 
 ## Use tabs
 
-When your site splits into major areas (guides, features, reference), use [site tabs](/features/navigation-tabs) so each section gets its own sidebar slice instead of one long tree.
+When your site splits into major areas (guides, features, reference), use [site tabs](/features/tabs) so each section gets its own sidebar slice instead of one long tree.
 
 <Steps>
   <Step title="Separate major areas with header tabs">
@@ -104,7 +104,7 @@ Site tabs split the header and sidebar. They are not the same as the [`<Tabs>`](
 
 ## Add anchor shortcuts
 
-Pin GitHub, Discord, or app links **above** the sidebar — outside the main tree — with the top-level `anchors` array in `docs.json`. Each entry needs `title`, `href`, and optional `icon`. See [Links](/features/navigation-links).
+Pin GitHub, Discord, or app links **above** the sidebar — outside the main tree — with the top-level `anchors` array in `docs.json`. Each entry needs `title`, `href`, and optional `icon`. See [Links](/features/links).
 
 ## Verify navigation
 
@@ -125,13 +125,13 @@ After you edit `docs.json`:
 | Page shows under the wrong tab | Group `tab` does not match the tab you expect | Set `tab` to the correct tab `id`, or omit `tab` to show the group on every tab |
 | Nested section stays collapsed | Active page is not under that group's `href` or nested links | Open a page inside the nested group, or set the group's `href` to its section landing page |
 | Previous/next order feels wrong | Sidebar array order differs from the reading flow you want | Reorder entries in the group's `pages` array, or set `previous` / `next` in page frontmatter |
-| Shortcut missing above the sidebar | Repository or community links use `anchors`, not sidebar groups | Add entries under `anchors` in `docs.json`. See [Links](/features/navigation-links) |
+| Shortcut missing above the sidebar | Repository or community links use `anchors`, not sidebar groups | Add entries under `anchors` in `docs.json`. See [Links](/features/links) |
 
 ## Related
 
 - [Write](/authoring/write) — Create page files and frontmatter before you add them to the sidebar.
 - [Preview](/authoring/preview) — Reload locally to confirm sidebar groups, tabs, and link order.
 - [Sidebar](/features/sidebar) — How groups, nested pages, and locale keys form the navigation tree.
-- [Tabs](/features/navigation-tabs) — Split large sites into header tabs and scope sidebar groups per tab.
-- [Links](/features/navigation-links) — Add GitHub, community, or app shortcuts above the sidebar with anchors.
-- [docs.json](/reference/docs-json-reference) — Field lookup for `sidebar`, `tabs`, `anchors`, and every other config key.
+- [Tabs](/features/tabs) — Split large sites into header tabs and scope sidebar groups per tab.
+- [Links](/features/links) — Add GitHub, community, or app shortcuts above the sidebar with anchors.
+- [docs.json](/reference/docs-json) — Field lookup for `sidebar`, `tabs`, `anchors`, and every other config key.

@@ -15,7 +15,7 @@ That structure drives three behaviors readers notice:
 - Which nested sections expand to reveal the active page
 - Which translation tree loads when the URL includes a locale segment
 
-Field names, types, and defaults live in [docs.json](/reference/docs-json-reference) — this page explains the model, not every key.
+Field names, types, and defaults live in [docs.json](/reference/docs-json) — this page explains the model, not every key.
 
 ## How it works
 
@@ -44,7 +44,7 @@ See [Introduction](/) for how paths under `docs/` map to URL segments; sidebar `
   "pages": [
     { "title": "Introduction", "href": "/" },
     { "title": "Write", "href": "/authoring/write" },
-    { "title": "Organize", "href": "/authoring/organise" }
+    { "title": "Organize", "href": "/authoring/organize" }
   ]
 }
 ```
@@ -82,13 +82,13 @@ See [Locales](/features/locales) for how locale segments are detected from the p
 
 ### Tabs filter groups, not pages
 
-Top-level [Tabs](/features/navigation-tabs) partition the site into separate doc areas. Each group can set `tab` to a tab id so it only appears when that tab is active. Groups without a `tab` field appear on every tab.
+Top-level [Tabs](/features/tabs) partition the site into separate doc areas. Each group can set `tab` to a tab id so it only appears when that tab is active. Groups without a `tab` field appear on every tab.
 
 Tab filtering applies to top-level groups after locale resolution — it does not split individual page links inside a group.
 
 ### What the sidebar does not control
 
-The sidebar defines navigation links and grouping. It does not replace [Search](/features/search), [Links](/features/navigation-links) anchor shortcuts in the sidebar footer, or [Navigation buttons](/features/navigation-buttons) at the bottom of each page — those read sidebar order but have their own configuration surfaces.
+The sidebar defines navigation links and grouping. It does not replace [Search](/features/search), [Links](/features/links) anchor shortcuts in the sidebar footer, or [Navigation buttons](/features/previous-and-next-links) at the bottom of each page — those read sidebar order but have their own configuration surfaces.
 
 ## Related
 
@@ -96,13 +96,13 @@ The sidebar defines navigation links and grouping. It does not replace [Search](
   <Card title="Locales" icon="language" href="/features/locales">
     How locale keys in `sidebar` map to URL segments and the locale switcher.
   </Card>
-  <Card title="Tabs" icon="folder" href="/features/navigation-tabs">
+  <Card title="Tabs" icon="folder" href="/features/tabs">
     Split the site into top-level tabs, each scoped to its own sidebar groups.
   </Card>
-  <Card title="Organize" icon="sitemap" href="/authoring/organise">
+  <Card title="Organize" icon="sitemap" href="/authoring/organize">
     Structure your sidebar so readers can find content: workflow on the Documentation tab.
   </Card>
-  <Card title="docs.json" icon="book" href="/reference/docs-json-reference">
+  <Card title="docs.json" icon="book" href="/reference/docs-json">
     Field-level lookup for `sidebar`, groups, pages, and related config keys.
   </Card>
 </CardGroup>

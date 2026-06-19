@@ -1,5 +1,5 @@
 ---
-title: Agent-ready docs
+title: Agents
 description: See which agent surfaces your public site already exposes, which you opt into, and where to learn about each one.
 ---
 
@@ -8,7 +8,7 @@ Human readers browse sidebars and search. AI assistants need structured access t
 **Before you begin**
 
 - A [published public docs site](/authoring/publish) on your repository's default branch
-- A **public** GitHub repository — programmatic routes require public visibility (see [Public GitHub hosting](/features/github-hosting))
+- A **public** GitHub repository — programmatic routes require public visibility (see [Public GitHub hosting](/features/public-github-hosting))
 
 ---
 
@@ -19,7 +19,7 @@ Agent-ready docs serve two audiences from one Git source:
 | Surface | On your site | Learn more |
 | --- | --- | --- |
 | **llms.txt** | Auto-generated | [llms.txt](/ai-agents/llms-txt) |
-| **MCP server** | On by default | [MCP client](/ai-agents/mcp-server) |
+| **MCP server** | On by default | [MCP server](/ai-agents/mcp-server) |
 | **Agent skills** | When you add files | [Agent skills](/ai-agents/agent-skills) |
 | **Ask AI** (**beta**) | Requires setup | [Ask AI](/ai-agents/ask-ai) |
 
@@ -29,7 +29,7 @@ Most teams start with [llms.txt](/ai-agents/llms-txt) or [MCP](/ai-agents/mcp-se
 
 ## How it works
 
-Every surface reads from the public GitHub repository and ref that power your docs site. Push an MDX update and exports, MCP listings, and Ask AI search reflect it on the next request—the same model as [Public GitHub hosting](/features/github-hosting).
+Every surface reads from the public GitHub repository and ref that power your docs site. Push an MDX update and exports, MCP listings, and Ask AI search reflect it on the next request—the same model as [Public GitHub hosting](/features/public-github-hosting).
 
 You do not maintain a second documentation store or run an export job. Branch and pull request URLs use the same `~ref` segment as page previews, so tools can target a preview ref before merge.
 
@@ -43,7 +43,7 @@ Set `mcp.enabled` to `false` in `docs.json` when you want a public site without 
 
 Every doc page header includes a **Copy page** menu with shortcuts for readers and integrators—**View markdown** (raw `{path}.md`), **Install with MCP**, **Connect to Cursor**, **Connect to VSCode**, and **Open in Claude** (external Claude web chat about the current page). These complement site-wide surfaces like [llms.txt](/ai-agents/llms-txt) and [MCP](/ai-agents/mcp-server); they do not replace [Ask AI](/ai-agents/ask-ai), which is a separate in-docs panel you enable explicitly.
 
-See [Page actions](/features/github-hosting#page-actions) for the full menu list and [MCP client](/ai-agents/mcp-server#connect-from-the-live-site) for setup from the live site.
+See [Page actions](/features/public-github-hosting#page-actions) for the full menu list and [MCP server](/ai-agents/mcp-server#connect-from-the-live-site) for setup from the live site.
 
 ## Related
 
@@ -51,7 +51,7 @@ See [Page actions](/features/github-hosting#page-actions) for the full menu list
   <Card title="llms.txt" icon="file-lines" href="/ai-agents/llms-txt">
     Auto-generated index exports: what they are and how agents use them.
   </Card>
-  <Card title="MCP client" icon="plug" href="/ai-agents/mcp-server">
+  <Card title="MCP server" icon="plug" href="/ai-agents/mcp-server">
     Per-repo MCP endpoint: connect a client or opt out.
   </Card>
   <Card title="Agent skills" icon="wand-magic-sparkles" href="/ai-agents/agent-skills">

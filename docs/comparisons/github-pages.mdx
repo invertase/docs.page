@@ -1,5 +1,5 @@
 ---
-title: docs.page vs GitHub Pages
+title: GitHub Pages
 description: Decide between docs.page as a docs platform and GitHub Pages as hosting infrastructure.
 ---
 
@@ -9,9 +9,9 @@ GitHub Pages is familiar — enable it on a repo, point at a branch or Actions w
 
 GitHub Pages provides **hosting infrastructure**. You still choose and run a generator — Jekyll, Hugo, Docusaurus, or a custom Actions pipeline — to produce what Pages serves.
 
-docs.page reads `docs.json` and `docs/**/*.mdx` from a **public GitHub repository** and returns a complete documentation site on push — no Pages project, no workflow YAML, no artifact upload. Search, themes, branch previews, and [agent surfaces](/ai-agents/agent-ready-docs) are part of the platform, not plugins you wire up.
+docs.page reads `docs.json` and `docs/**/*.mdx` from a **public GitHub repository** and returns a complete documentation site on push — no Pages project, no workflow YAML, no artifact upload. Search, themes, branch previews, and [agent surfaces](/ai-agents/overview) are part of the platform, not plugins you wire up.
 
-See [Public GitHub hosting](/features/github-hosting) for the docs.page request model.
+See [Public GitHub hosting](/features/public-github-hosting) for the docs.page request model.
 
 ## How it works
 
@@ -51,5 +51,5 @@ Teams that need private or login-gated docs should use GitHub Pages (with approp
 
 - [Introduction](/) — docs-as-code with no hosting setup
 - [GitHub App](/features/github-app) — automatic PR preview comments
-- [Agent-ready docs](/ai-agents/agent-ready-docs) — llms.txt, MCP, and Ask AI
-- [docs.page vs Docusaurus](/comparisons/docs-page-vs-docusaurus) — a common generator behind Pages
+- [Agent-ready docs](/ai-agents/overview) — llms.txt, MCP, and Ask AI
+- [docs.page vs Docusaurus](/comparisons/docusaurus) — a common generator behind Pages
