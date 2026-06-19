@@ -20,7 +20,7 @@ export function Hero() {
         GitHub branch as modern, agent-ready docs, with AI chat, MCP, and
         llms.txt.
       </p>
-      <div className="flex flex-col items-center gap-3 sm:flex-row sm:gap-4">
+      <div className="flex flex-col items-center gap-3 sm:flex-row sm:items-stretch sm:gap-4">
         <Button
           asChild
           size="lg"
@@ -39,8 +39,14 @@ export function Hero() {
 
 function Eyebrow() {
   return (
-    <div className="border rounded-full px-4 py-2 bg-periwinkle-950 text-sm hover:cursor-pointer text-muted-foreground hover:text-foreground transition-colors">
-      Free and open-source
+    <div className="group relative">
+      <div
+        className="pointer-events-none absolute -inset-2 -z-10 rounded-full bg-periwinkle-500/10 opacity-0 blur-sm transition-opacity group-hover:opacity-100"
+        aria-hidden
+      />
+      <div className="border rounded-full px-4 py-2 bg-periwinkle-950 text-sm hover:cursor-pointer text-muted-foreground hover:text-foreground transition-colors">
+        Free and open-source
+      </div>
     </div>
   );
 }
@@ -50,7 +56,7 @@ function Terminal() {
   const { copied, copy } = useCopy(command);
 
   return (
-    <div className="group flex items-center gap-2 rounded-xl border border-primary bg-periwinkle-950 px-3 py-2.5 sm:px-4 sm:py-3">
+    <div className="group flex w-full items-center gap-2 rounded-xl border border-primary bg-periwinkle-950 px-3 py-2.5 sm:w-auto sm:px-4 sm:py-0">
       <div className="flex min-w-0 flex-1 items-center gap-2 overflow-x-auto opacity-75 transition-opacity group-hover:opacity-100 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <span className="shrink-0 text-neutral-500">$</span>
         <span className="text-sm text-neutral-200 sm:text-base">{command}</span>

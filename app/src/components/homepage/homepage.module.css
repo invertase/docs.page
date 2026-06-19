@@ -1,7 +1,7 @@
 .site {
   --primary: var(--color-honey-500);
   --font-heading: var(--font-lexend);
-  --border: var(--color-neutral-800);
+  --border: var(--color-neutral-700);
 }
 
 .homepage-spot-grid {
@@ -34,7 +34,7 @@
     pointer-events: none;
     background-image: radial-gradient(
       circle,
-      color-mix(in srgb, white 12%, transparent) var(--homepage-dot-r),
+      color-mix(in srgb, white 8%, transparent) var(--homepage-dot-r),
       transparent var(--homepage-dot-r)
     );
     background-size: var(--homepage-dot-cell) var(--homepage-dot-cell);
