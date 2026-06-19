@@ -6,7 +6,7 @@ description: Configure translated pages, locale sidebars, and root redirects so 
 **Before you begin**
 
 - A single-locale site you want to split into languages — or a plan for which pages need translation first
-- [Organise](/authoring/organise) familiarity with sidebar groups and `href` values
+- [Organize](/authoring/organise) familiarity with sidebar groups and `href` values
 - [Preview](/authoring/preview) running locally when you want to confirm locale URLs, navigation, and the language switcher
 
 Multi-locale behavior is driven by the **`sidebar`** property in `docs.json`, not a separate `locales` field. For how locale keys shape URLs, link prefixing, and the language switcher, see [Locales](/features/locales).
@@ -140,7 +140,7 @@ Replace the flat `sidebar` array in `docs.json` with an object keyed by locale c
     When the URL has no recognized locale segment, docs.page renders `sidebar.default` (or an empty sidebar if `default` is omitted). See [Locales](/features/locales) for when each pattern fits.
   </Step>
   <Step title="Align each locale tree with its files">
-    Every `href` in a locale's sidebar must resolve to a page under `docs/{locale}/`. Use [Organise](/authoring/organise) for groups, nesting, tabs, and ordering within each tree.
+    Every `href` in a locale's sidebar must resolve to a page under `docs/{locale}/`. Use [Organize](/authoring/organise) for groups, nesting, tabs, and ordering within each tree.
   </Step>
 </Steps>
 
@@ -187,6 +187,6 @@ Replace the flat `sidebar` array in `docs.json` with an object keyed by locale c
 ## Related
 
 - [Locales](/features/locales) — How locale keys, link prefixing, and the language switcher work in production.
-- [Organise](/authoring/organise) — Structure groups, tabs, and page links before you split them by locale.
+- [Organize](/authoring/organise) — Structure groups, tabs, and page links before you split them by locale.
 - [Redirects](/authoring/redirects) — Send `/` or renamed URLs to a default locale or new path.
 - [Preview](/authoring/preview) — Reload locally to confirm locale URLs, sidebars, and the language switcher.

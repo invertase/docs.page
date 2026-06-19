@@ -77,7 +77,7 @@
           "href": "/authoring/write"
         },
         {
-          "title": "Organise",
+          "title": "Organize",
           "href": "/authoring/organise"
         },
         {
@@ -104,7 +104,7 @@
       ]
     },
     {
-      "group": "Customize",
+      "group": "Site setup",
       "icon": "palette",
       "tab": "docs",
       "pages": [
