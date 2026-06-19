@@ -10,7 +10,8 @@ export function Explore() {
     <div className="border-t border-b border-border lg:grid lg:grid-cols-[minmax(0,10fr)_minmax(0,6fr)_minmax(0,6fr)_minmax(0,6fr)_minmax(0,6fr)]">
       <div className="border-b border-border py-8 px-6 text-center bg-black/60 lg:border-b-0 lg:border-r lg:px-10 lg:text-left">
         <p className="text-xl font-extralight">
-          Explore <span className="text-honey-500">open-source</span> projects powered by docs.page
+          Explore <span className="text-honey-500">open-source</span> projects
+          powered by docs.page
         </p>
       </div>
       <div className="grid grid-cols-2 max-lg:gap-px max-lg:bg-border lg:col-span-4 lg:grid lg:grid-cols-4 lg:divide-x lg:divide-border">

@@ -44,10 +44,10 @@ export function Homepage() {
             style={{ backgroundImage: `url(${hexagon.src})` }}
           />
           <div className="border-x">
-          <div
-            className="absolute bottom-72 -left-72 bg-no-repeat size-[700px] bg-center bg-cover opacity-60 z-[-1]"
-            style={{ backgroundImage: `url(${hexagon.src})` }}
-          />
+            <div
+              className="absolute bottom-72 -left-72 bg-no-repeat size-[700px] bg-center bg-cover opacity-60 z-[-1]"
+              style={{ backgroundImage: `url(${hexagon.src})` }}
+            />
             <Header />
             <Hero />
             <Preview />
