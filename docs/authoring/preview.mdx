@@ -6,7 +6,7 @@ description: See documentation in your browser as you edit, then run an automate
 **Before you begin**
 
 - [Install the CLI](/features/cli#install) or use `npx @docs.page/cli`
-- Page files or `docs.json` edits ready to review — see [Write](/authoring/write) if you still need to create content
+- Page files or `docs.json` edits ready to review, see [Write](/authoring/write) if you still need to create content
 
 Run commands from the directory that contains `docs.json`. For flag-level detail and exit codes, see [CLI](/reference/cli).
 
@@ -14,16 +14,16 @@ Run commands from the directory that contains `docs.json`. For flag-level detail
 
 This page covers two local tasks before you continue to [Publish](/authoring/publish):
 
-- **Preview** — open your docs in the browser and watch edits reload as you save files
-- **Check** — scan the project for broken links, missing assets, and invalid frontmatter targets
+- **Preview:** open your docs in the browser and watch edits reload as you save files
+- **Check:** scan the project for broken links, missing assets, and invalid frontmatter targets
 
-Preview while you edit so you can judge layout, navigation, and components. Run check when you want an automated pass over the whole site — it catches problems preview will not surface, such as a typo in a link on another page.
+Preview while you edit so you can judge layout, navigation, and components. Run check when you want an automated pass over the whole site, it catches problems preview will not surface, such as a typo in a link on another page.
 
 ## Local preview
 
 <Steps>
   <Step title="Start from the folder that contains docs.json">
-    Open a terminal at your project root — the directory with `docs.json`.
+    Open a terminal at your project root (the directory with `docs.json`).
   </Step>
   <Step title="See your docs in the browser">
     ```bash
@@ -73,7 +73,7 @@ Preview while you edit so you can judge layout, navigation, and components. Run 
     npx @docs.page/cli check --external-links warn --internal-links error --assets error
     ```
 
-    Each of `--external-links`, `--internal-links`, and `--assets` accepts `off`, `warn`, or `error`. See [CLI — check](/reference/cli#docs-check) for defaults and exit codes.
+    Each of `--external-links`, `--internal-links`, and `--assets` accepts `off`, `warn`, or `error`. See [CLI: check](/reference/cli#docs-check) for defaults and exit codes.
   </Step>
   <Step title="Check a monorepo package path">
     Pass an optional path when `docs.json` lives outside the repository root:
@@ -94,7 +94,7 @@ When preview looks right and check exits with code `0`, continue to [Publish](/a
 | Browser shows a connection error | Preview server stopped or you opened an old URL | Restart preview and open the newly printed **Preview URL** |
 | Port already in use | Another process bound the port | Pass `--port` with a free port number |
 | Preview looks stale | Editor did not save the file | Save the file; confirm the terminal still shows the watcher running |
-| Check reports a broken internal link | Path typo, wrong root-relative path, or file not yet added | Use paths like `/authoring/preview` — no domain and no `.mdx` extension. See [Write — Links and assets](/authoring/write#links-and-assets) |
+| Check reports a broken internal link | Path typo, wrong root-relative path, or file not yet added | Use paths like `/authoring/preview`, no domain and no `.mdx` extension. See [Write: Links and assets](/authoring/write#links-and-assets) |
 | Check fails on `redirect`, `next`, or `previous` | Frontmatter target does not match a real page path | Fix the path or add the missing page. See [Page frontmatter](/reference/page-frontmatter) |
 | External link failures | Target blocks automated requests or is temporarily down | Fix the URL, or set `--external-links warn` or `off` for that run |
 | Check passes locally but fails elsewhere | A different working directory was checked | Pass the correct `[path]` argument or run from the project root that contains `docs.json` |

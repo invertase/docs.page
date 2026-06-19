@@ -3,12 +3,12 @@ title: Agent skills
 description: Learn what agent skills are, why teams add them, and how to publish SKILL.md files as MCP resources.
 ---
 
-Your documentation tells agents *what* your product does. [Agent skills](https://cursor.com/docs/skills) tell them *how* to work in your repository—review checklists, doc-writing pipelines, release steps, and other repeatable workflows you encode as markdown.
+Your documentation tells agents *what* your product does. [Agent skills](https://cursor.com/docs/skills) tell them *how* to work in your repository: review checklists, doc-writing pipelines, release steps, and other repeatable workflows you encode as markdown.
 
 **Before you begin**
 
-- MCP enabled on your published public site — see [MCP server](/ai-agents/mcp-server)
-- Context on how agent surfaces fit together — see [Agent-ready docs](/ai-agents/overview)
+- MCP enabled on your published public site (see [MCP server](/ai-agents/mcp-server))
+- Context on how agent surfaces fit together (see [Agent-ready docs](/ai-agents/overview))
 
 There is no skills toggle in `docs.json`. When MCP is on and the repo is public, docs.page scans `.agents/skills/**` and registers each `SKILL.md` automatically.
 
@@ -35,7 +35,7 @@ Each skill lives in its own folder under `.agents/skills/`. The entry point must
     templates.md
 ```
 
-Nested folders are supported—a file at `.agents/skills/team/deploy/SKILL.md` registers as skill slug `team/deploy`.
+Nested folders are supported. A file at `.agents/skills/team/deploy/SKILL.md` registers as skill slug `team/deploy`.
 
 Only paths matching `.agents/skills/**/SKILL.md` are published. Supporting files in the same folder stay in Git for authors but are not separate MCP resources.
 
@@ -57,18 +57,18 @@ See [Agent skills on Features](/features/agent-skills) for URI encoding and acce
 
 <Steps>
   <Step title="Create one folder per skill">
-    **Give agents a named entry point** — add `.agents/skills/{name}/SKILL.md` with markdown instructions. Use YAML frontmatter (`name`, `description`) when your client expects it.
+    **Give agents a named entry point:** add `.agents/skills/{name}/SKILL.md` with markdown instructions. Use YAML frontmatter (`name`, `description`) when your client expects it.
   </Step>
   <Step title="Push to the branch your MCP client targets">
-    **Publish on the resolved ref** — commit and push. Production MCP URLs use the default branch; branch previews use the `~{ref}` segment in the site URL.
+    **Publish on the resolved ref:** commit and push. Production MCP URLs use the default branch; branch previews use the `~{ref}` segment in the site URL.
   </Step>
   <Step title="Verify in your MCP client">
-    **Confirm resources appear** — list MCP resources on your docs server. You should see one entry per `SKILL.md`, plus `docs-page-config-schema`. Fetch a skill to load its instructions. Start a fresh MCP session after pushing if the catalog looks stale.
+    **Confirm resources appear:** list MCP resources on your docs server. You should see one entry per `SKILL.md`, plus `docs-page-config-schema`. Fetch a skill to load its instructions. Start a fresh MCP session after pushing if the catalog looks stale.
   </Step>
 </Steps>
 
 ## Related
 
-- [Agent-ready docs](/ai-agents/overview) — how skills fit alongside llms.txt and Ask AI
-- [MCP server](/ai-agents/mcp-server) — connect Cursor, Claude Code, or another MCP client
-- [Agent skills on Features](/features/agent-skills) — discovery mechanics and URI details
+- [Agent-ready docs](/ai-agents/overview): how skills fit alongside llms.txt and Ask AI
+- [MCP server](/ai-agents/mcp-server): connect Cursor, Claude Code, or another MCP client
+- [Agent skills on Features](/features/agent-skills): discovery mechanics and URI details

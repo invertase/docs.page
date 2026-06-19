@@ -3,13 +3,13 @@ title: GitHub App
 description: Put live docs preview links in every pull request so reviewers open branch previews without hand-building URLs.
 ---
 
-Documentation pull requests are easier to review when teammates can open the rendered site—not only the MDX diff. The docs.page GitHub App watches pull requests on your repository and posts a comment with a link to the live preview for that PR's head branch.
+Documentation pull requests are easier to review when teammates can open the rendered site, not only the MDX diff. The docs.page GitHub App watches pull requests on your repository and posts a comment with a link to the live preview for that PR's head branch.
 
 ## Overview
 
 The GitHub App is a one-time install on repositories that use [public GitHub hosting](/features/public-github-hosting). After installation, docs.page comments on pull requests with a preview URL built from [branch preview](/features/branch-preview) routing.
 
-You do not configure webhooks or add secrets to `docs.json`. The app uses GitHub pull request events and docs.page's existing `~ref` URL model to serve the same MDX and configuration as production—just from the PR branch.
+You do not configure webhooks or add secrets to `docs.json`. The app uses GitHub pull request events and docs.page's existing `~ref` URL model to serve the same MDX and configuration as production, just from the PR branch.
 
 ## How it works
 
@@ -17,7 +17,7 @@ You do not configure webhooks or add secrets to `docs.json`. The app uses GitHub
 
 When someone opens or updates a pull request on a connected repository, the GitHub App posts a comment with a link to the live documentation preview for that PR.
 
-The link targets the PR's head branch through docs.page ref routing. Reviewers click once to open the site as it would look if the branch merged—navigation, theme, search, and MDX components included.
+The link targets the PR's head branch through docs.page ref routing. Reviewers click once to open the site as it would look if the branch merged (navigation, theme, search, and MDX components included).
 
 ### How comments tie to ref URLs
 
@@ -28,7 +28,7 @@ https://docs.page/{owner}/{repo}~{ref}
 https://docs.page/{owner}/{repo}~{ref}/{page-path}
 ```
 
-For pull requests, a numeric ref resolves to that PR's head branch through the GitHub API—for example, `~42` opens the docs for pull request #42.
+For pull requests, a numeric ref resolves to that PR's head branch through the GitHub API. For example, `~42` opens the docs for pull request #42.
 
 The GitHub App constructs the same `~ref` URL in its comment. You can still build or share ref URLs manually; the app removes that step for the common pull request workflow.
 
@@ -45,7 +45,7 @@ Production, branch previews, and GitHub App comments stay consistent on whicheve
 
 ### Public repositories only
 
-The GitHub App only works with **public** repositories—the same constraint as docs.page hosting. Private repositories cannot be served or previewed through docs.page, even with the app installed.
+The GitHub App only works with **public** repositories, the same constraint as docs.page hosting. Private repositories cannot be served or previewed through docs.page, even with the app installed.
 
 <Info>
   Keep documentation in a public repository, or in a dedicated public docs repo. The GitHub App cannot substitute for hosting on private repos.
@@ -53,11 +53,11 @@ The GitHub App only works with **public** repositories—the same constraint as 
 
 ## Enable it
 
-1. **Open the app listing** — Go to [docs.page on GitHub](https://github.com/apps/docs-page) and click **Install**.
+1. **Open the app listing:** Go to [docs.page on GitHub](https://github.com/apps/docs-page) and click **Install**.
 
-2. **Select repositories** — Choose the organization or account, then install on the public repository that hosts your docs (or on all repositories if you prefer).
+2. **Select repositories:** Choose the organization or account, then install on the public repository that hosts your docs (or on all repositories if you prefer).
 
-3. **Open a pull request** — Push a branch with documentation changes and open a PR. The app posts a comment with the live preview link for that PR's head branch.
+3. **Open a pull request:** Push a branch with documentation changes and open a PR. The app posts a comment with the live preview link for that PR's head branch.
 
 No changes to `docs.json` are required. To preview before opening a PR, use [local preview](/features/local-preview) or share a [branch preview](/features/branch-preview) URL manually.
 

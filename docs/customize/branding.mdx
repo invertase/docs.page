@@ -6,7 +6,7 @@ description: Match your docs site to your product with theme colors, logos, head
 **Before you begin**
 
 - A [docs.page](https://docs.page) project with `docs.json` at the repository root and page files under `docs/`
-- [Install the CLI](/features/cli#install) or use `npx @docs.page/cli` — see [Preview](/authoring/preview) to check theme, logo, header, and footer changes before you push
+- [Install the CLI](/features/cli#install) or use `npx @docs.page/cli`; see [Preview](/authoring/preview) to check theme, logo, header, and footer changes before you push
 - Logo and favicon files committed under `docs/` (or hosted at stable URLs) when you plan custom assets
 
 ---
@@ -39,7 +39,7 @@ For how presets, fonts, and mode switching work, see [Theme](/features/theme). F
   </Step>
 </Steps>
 
-The schema accepts `defaultTheme` (`light` or `dark`) to pin the starting mode, but that field is **schema only** today — see [docs.json — Schema-only fields](/reference/docs-json#schema-only-fields).
+The schema accepts `defaultTheme` (`light` or `dark`) to pin the starting mode, but that field is **schema only** today; see [docs.json: Schema-only fields](/reference/docs-json#schema-only-fields).
 
 ## Add logo and favicon
 
@@ -55,7 +55,7 @@ Header logos and tab icons support separate light and dark assets. Use one varia
 }
 ```
 
-Place repo-relative paths under `docs/` — for example `/assets/logo-light.svg` resolves to `docs/assets/logo-light.svg`. See [Logo](/features/logo) for URL shapes, legacy v1 migration, and how favicon media queries differ from the site theme toggle.
+Place repo-relative paths under `docs/`, for example `/assets/logo-light.svg` resolves to `docs/assets/logo-light.svg`. See [Logo](/features/logo) for URL shapes, legacy v1 migration, and how favicon media queries differ from the site theme toggle.
 
 ## Configure the header
 
@@ -80,7 +80,7 @@ The header shows identity on the left and actions on the right: search, custom l
   </Step>
 </Steps>
 
-The schema also defines `showThemeToggle` and `showGitHubCard`, plus optional `locale` on each link—the header renderer does not apply those fields yet; the theme toggle and GitHub link always render on hosted sites today. See [Header](/features/header).
+The schema also defines `showThemeToggle` and `showGitHubCard`, plus optional `locale` on each link; the header renderer does not apply those fields yet. The theme toggle and GitHub link always render on hosted sites today. See [Header](/features/header).
 
 ## Add site tabs
 
@@ -116,18 +116,18 @@ Set `og.logo` or top-level `socialPreview` when share cards need artwork beyond 
 
 ## Verify
 
-1. Run [Preview](/authoring/preview) and toggle light and dark mode—confirm logo, colors, and favicon behave as expected.
-2. Open the homepage and at least one inner page—check header links, tabs (if configured), and footer icons.
-3. Paste a docs URL into a chat app or inspect meta tags—confirm title, description, and preview image look right when sharing.
+1. Run [Preview](/authoring/preview) and toggle light and dark mode; confirm logo, colors, and favicon behave as expected.
+2. Open the homepage and at least one inner page; check header links, tabs (if configured), and footer icons.
+3. Paste a docs URL into a chat app or inspect meta tags; confirm title, description, and preview image look right when sharing.
 
 ## Troubleshooting
 
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |
-| Theme colors do not change | Invalid hex or typo in `theme` keys | Use six-digit hex; invalid values are ignored—see [Theme](/features/theme) |
+| Theme colors do not change | Invalid hex or typo in `theme` keys | Use six-digit hex; invalid values are ignored; see [Theme](/features/theme) |
 | Logo missing in preview | Wrong path or file not under `docs/` | Commit assets under `docs/` and use a leading slash, e.g. `/assets/logo.svg` |
 | Tab shows the wrong sidebar | Group `tab` id does not match a tab entry | Align `sidebar[].tab` with `tabs[].id`; see [Navigation tabs](/features/tabs) |
-| Footer icon or share preview wrong | Empty social key, or `image` / `socialPreview` overrides | Use supported `social` keys; check frontmatter—see [Social links](/features/social-links) |
+| Footer icon or share preview wrong | Empty social key, or `image` / `socialPreview` overrides | Use supported `social` keys; check frontmatter; see [Social links](/features/social-links) |
 
 ## Related
 

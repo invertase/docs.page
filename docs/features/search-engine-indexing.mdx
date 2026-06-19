@@ -9,8 +9,8 @@ Your docs are public on the web as soon as you publish. Should Google index ever
 
 Published docs.page sites expose two HTTP endpoints crawlers expect:
 
-- **`robots.txt`** at `/{owner}/{repo}/robots.txt` — tells crawlers what they may fetch and where to find your sitemap
-- **`sitemap.xml`** at `/{owner}/{repo}/sitemap.xml` — lists every documentation page with update hints
+- **`robots.txt`** at `/{owner}/{repo}/robots.txt`: tells crawlers what they may fetch and where to find your sitemap
+- **`sitemap.xml`** at `/{owner}/{repo}/sitemap.xml`: lists every documentation page with update hints
 
 Each HTML page also ships standard metadata: title, description, Open Graph tags, and a canonical URL when one applies. Together, these signals help search engines find and rank your content.
 
@@ -26,11 +26,11 @@ When `seo.noindex` is `false` (the default), docs.page encourages crawlers to in
 2. **`sitemap.xml`** includes every page file in your repository. The index page gets priority `1.0`; other pages get `0.8`. All entries use `changefreq: weekly`.
 3. **Page `<head>` metadata** sets title and description from page frontmatter, falling back to `docs.json`. Open Graph and Twitter card tags use the same values plus an image from frontmatter, `socialPreview`, or a generated preview.
 
-These endpoints are served from your production URL, custom domain, or vanity path — the same origin readers use. [Local preview](/features/local-preview) does not generate `sitemap.xml` or `robots.txt`; use a [branch preview](/features/branch-preview) or production URL to verify them.
+These endpoints are served from your production URL, custom domain, or vanity path, the same origin readers use. [Local preview](/features/local-preview) does not generate `sitemap.xml` or `robots.txt`; use a [branch preview](/features/branch-preview) or production URL to verify them.
 
 ### Site-wide blocking with `seo.noindex`
 
-Add `seo.noindex: true` in `docs.json` when the entire site should stay out of search results — for example, internal runbooks on a public repository, pre-release documentation, or a staging site you do not want indexed.
+Add `seo.noindex: true` in `docs.json` when the entire site should stay out of search results, for example, internal runbooks on a public repository, pre-release documentation, or a staging site you do not want indexed.
 
 ```json
 {
@@ -47,7 +47,7 @@ This flag affects two layers:
 | **`robots.txt`** | `Disallow: /` for all user agents. The sitemap line is omitted. |
 | **Every page** | `<meta name="robots" content="noindex" />` in the document head |
 
-Crawlers that respect `robots.txt` or the `noindex` meta tag should stop indexing new content. Pages may remain in search results until engines re-crawl and drop them — allow time after you change the setting.
+Crawlers that respect `robots.txt` or the `noindex` meta tag should stop indexing new content. Pages may remain in search results until engines re-crawl and drop them. Allow time after you change the setting.
 
 If you migrated from docs.page v1, the top-level `noindex` field maps to `seo.noindex`.
 
@@ -55,7 +55,7 @@ If you migrated from docs.page v1, the top-level `noindex` field maps to `seo.no
 
 You can also set `noindex: true` in a page's YAML frontmatter. That adds the `noindex` meta tag for that page only. It does not change `robots.txt` or remove the page from `sitemap.xml`.
 
-Use site-wide `seo.noindex` when nothing on the site should appear in search. Use per-page `noindex` when most pages should be indexed but a few — draft changelogs, legal stubs, or redirect helpers — should not.
+Use site-wide `seo.noindex` when nothing on the site should appear in search. Use per-page `noindex` when most pages should be indexed but a few (draft changelogs, legal stubs, or redirect helpers) should not.
 
 ### Sitemap contents
 

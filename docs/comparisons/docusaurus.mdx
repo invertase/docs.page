@@ -3,13 +3,13 @@ title: Docusaurus
 description: Decide whether instant GitHub publishing beats maintaining a Docusaurus build and deploy pipeline.
 ---
 
-You already run — or are considering — a Docusaurus site with `docusaurus build` in CI. The question is whether that pipeline still earns its keep.
+You already run (or are considering) a Docusaurus site with `docusaurus build` in CI. The question is whether that pipeline still earns its keep.
 
 ## Overview
 
 Docusaurus is a React-based static site generator: local builds, plugins, webpack, and a deploy step that uploads artifacts. It excels when you need deep customization, a React plugin ecosystem, or self-hosted control.
 
-docs.page serves documentation from **public GitHub repositories** at request time — `docs.json` plus `docs/**/*.mdx`, live on push, with no build or deploy configuration. It is optimized for teams who want professional docs **without the infrastructure tax** of a static generator.
+docs.page serves documentation from **public GitHub repositories** at request time (`docs.json` plus `docs/**/*.mdx`, live on push, with no build or deploy configuration). It is optimized for teams who want professional docs **without the infrastructure tax** of a static generator.
 
 See [Public GitHub hosting](/features/public-github-hosting) for how docs.page bundles pages from Git.
 
@@ -17,41 +17,41 @@ See [Public GitHub hosting](/features/public-github-hosting) for how docs.page b
 
 ### Time to live: push vs build-and-deploy
 
-Docusaurus requires a build before anything reaches readers — locally or in CI — then a host for the output. docs.page is **push-to-publish**: commit MDX, open `https://docs.page/{owner}/{repo}`.
+Docusaurus requires a build before anything reaches readers (locally or in CI), then a host for the output. docs.page is **push-to-publish**: commit MDX, open `https://docs.page/{owner}/{repo}`.
 
 For open-source libraries and SDK docs that change with every release, that instant loop keeps documentation as current as the repository. Docusaurus wins when you need bespoke React pages, custom plugins, or a fully self-managed stack you already operate.
 
 ### Operational surface area
 
-A Docusaurus site brings webpack config, dependency upgrades, plugin compatibility, and deploy wiring. docs.page removes that layer — no `docusaurus build`, no static export bucket, no Pages project per repo.
+A Docusaurus site brings webpack config, dependency upgrades, plugin compatibility, and deploy wiring. docs.page removes that layer (no `docusaurus build`, no static export bucket, no Pages project per repo).
 
-That simplicity is intentional: docs.page is a **purpose-built docs host**, not a general application framework. Teams that want to ship documentation, not maintain a frontend toolchain, get a complete site — sidebar, search, themes, branch previews — from Git alone.
+That simplicity is intentional: docs.page is a **purpose-built docs host**, not a general application framework. Teams that want to ship documentation, not maintain a frontend toolchain, get a complete site (sidebar, search, themes, branch previews) from Git alone.
 
 ### Customization: framework depth vs opinionated defaults
 
-Docusaurus offers unlimited React customization — custom pages, swizzled components, versioned doc sets with full control. docs.page provides declarative configuration in `docs.json`, built-in MDX components, and theming — enough for most product and open-source docs without writing React.
+Docusaurus offers unlimited React customization (custom pages, swizzled components, versioned doc sets with full control). docs.page provides declarative configuration in `docs.json`, built-in MDX components, and theming, enough for most product and open-source docs without writing React.
 
 Choose Docusaurus when the documentation experience **is** a React application. Choose docs.page when markdown, navigation, and branding are sufficient and you prefer **convention over configuration**.
 
 ### Previews without production deploys
 
-Both workflows support review before merge. Docusaurus teams typically wire preview deploys into CI. docs.page offers [local preview](/features/local-preview) via the CLI and [shareable branch preview URLs](/features/branch-preview) with an optional [GitHub App](/features/github-app) that comments on pull requests — without standing up preview infrastructure yourself.
+Both workflows support review before merge. Docusaurus teams typically wire preview deploys into CI. docs.page offers [local preview](/features/local-preview) via the CLI and [shareable branch preview URLs](/features/branch-preview) with an optional [GitHub App](/features/github-app) that comments on pull requests, without standing up preview infrastructure yourself.
 
 ### Agent-ready from the same Git source
 
-Docusaurus outputs HTML for humans; wiring [llms.txt](/ai-agents/llms-txt), [MCP](/ai-agents/mcp-server), or agent skills on top is your project. docs.page generates those surfaces from the **same public repository** that powers the site — no mirror, no export job.
+Docusaurus outputs HTML for humans; wiring [llms.txt](/ai-agents/llms-txt), [MCP](/ai-agents/mcp-server), or agent skills on top is your project. docs.page generates those surfaces from the **same public repository** that powers the site (no mirror, no export job).
 
 That matters for open-source and SDK documentation where assistants and integrators read the same content as developers browsing the web.
 
 ### Built for public, open documentation
 
-docs.page targets **public GitHub repositories** — documentation that lives beside open-source code and benefits from public discoverability. Docusaurus can be self-hosted for private or access-controlled sites; docs.page does not compete there.
+docs.page targets **public GitHub repositories** (documentation that lives beside open-source code and benefits from public discoverability). Docusaurus can be self-hosted for private or access-controlled sites; docs.page does not compete there.
 
 If your docs belong in public Git, docs.page turns that choice into faster publishing and built-in agent access. If you need private docs or auth gates, Docusaurus (self-hosted) or another stack is the better match.
 
 ## Related
 
-- [Introduction](/) — when docs.page fits and what you skip
-- [Branch preview](/features/branch-preview) — shareable `~ref` URLs for pull requests
-- [Agent-ready docs](/ai-agents/overview) — llms.txt, MCP, and skills
-- [docs.page vs GitHub Pages](/comparisons/github-pages) — another static hosting path
+- [Introduction](/): when docs.page fits and what you skip
+- [Branch preview](/features/branch-preview): shareable `~ref` URLs for pull requests
+- [Agent-ready docs](/ai-agents/overview): llms.txt, MCP, and skills
+- [docs.page vs GitHub Pages](/comparisons/github-pages): another static hosting path

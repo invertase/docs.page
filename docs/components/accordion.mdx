@@ -3,9 +3,9 @@ title: Accordion
 description: Hide optional detail behind expandable sections, ideal for FAQs and progressive disclosure.
 ---
 
-Use `<Accordion>` to hide optional content behind a clickable header. Accordions suit progressive disclosure—FAQs, troubleshooting notes, or detail that not every reader needs on first load.
+Use `<Accordion>` to hide optional content behind a clickable header. Accordions suit progressive disclosure (FAQs, troubleshooting notes, or detail that not every reader needs on first load).
 
-Each accordion needs a `title` (the clickable header). Put any content—code blocks, callouts, or lists—inside the panel.
+Each accordion needs a `title` (the clickable header). Put any content (code blocks, callouts, or lists) inside the panel.
 
 ```mdx
 <Accordion title="Click to expand">Content here</Accordion>
@@ -70,15 +70,15 @@ Each accordion needs a `title` (the clickable header). Put any content—code bl
 <Property name="type" type="string" optional>
   Controls how many panels in the group can be open at the same time.
 
-  - `"multiple"` (default) — readers can expand more than one panel.
-  - `"single"` — only one panel stays open; opening another closes the rest.
+  - `"multiple"` (default): readers can expand more than one panel.
+  - `"single"`: only one panel stays open; opening another closes the rest.
 
   Defaults to `"multiple"`.
 </Property>
 
 ## Accordion groups
 
-Wrap related accordions in `<AccordionGroup>` so they share one bordered container. Each child must be an `<Accordion>`—other elements are ignored.
+Wrap related accordions in `<AccordionGroup>` so they share one bordered container. Each child must be an `<Accordion>`; other elements are ignored.
 
 Set `defaultOpen` on individual items to choose which panels start expanded. In a `type="single"` group, only the first item with `defaultOpen` opens on load.
 
@@ -112,7 +112,7 @@ Set `defaultOpen` on individual items to choose which panels start expanded. In 
 </AccordionGroup>
 ````
 
-Use `type="single"` when panels are mutually exclusive—for example, one answer per FAQ category.
+Use `type="single"` when panels are mutually exclusive, for example one answer per FAQ category.
 
 <AccordionGroup type="single">
   <Accordion title="Billing">
@@ -147,5 +147,5 @@ Use `type="single"` when panels are mutually exclusive—for example, one answer
 
 ## See also
 
-- [Tabs](/components/tabs) — switchable panels for parallel options
-- [Components overview](/components) — when to use tabs, code groups, and accordions
+- [Tabs](/components/tabs): switchable panels for parallel options
+- [Components overview](/components): when to use tabs, code groups, and accordions

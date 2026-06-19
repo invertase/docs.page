@@ -3,7 +3,7 @@ title: Sidebar
 description: Understand how groups, nested pages, and locale keys combine into the left navigation tree.
 ---
 
-When someone opens your docs site, the links in the left column come from the `sidebar` property in `docs.json` — not from the folder layout under `docs/`. You declare groups, page links, and optional nesting explicitly, and docs.page renders that tree in the sidebar.
+When someone opens your docs site, the links in the left column come from the `sidebar` property in `docs.json`, not from the folder layout under `docs/`. You declare groups, page links, and optional nesting explicitly, and docs.page renders that tree in the sidebar.
 
 ## Overview
 
@@ -15,7 +15,7 @@ That structure drives three behaviors readers notice:
 - Which nested sections expand to reveal the active page
 - Which translation tree loads when the URL includes a locale segment
 
-Field names, types, and defaults live in [docs.json](/reference/docs-json) — this page explains the model, not every key.
+Field names, types, and defaults live in [docs.json](/reference/docs-json): this page explains the model, not every key.
 
 ## How it works
 
@@ -29,7 +29,7 @@ A page item is a leaf link:
 { "title": "Introduction", "href": "/" }
 ```
 
-Groups without a `group` label still participate in the tree — they render as an unlabeled block of links. Groups with a `group` string render a section heading above their pages.
+Groups without a `group` label still participate in the tree. They render as an unlabeled block of links. Groups with a `group` string render a section heading above their pages.
 
 See [Introduction](/) for how paths under `docs/` map to URL segments; sidebar `href` values should match those public paths.
 
@@ -55,7 +55,7 @@ External URLs in `href` are supported and show an external-link indicator in the
 
 ### Flat array vs locale-keyed record
 
-**Flat array** — use when the site has one language. The entire navigation tree is the array:
+**Flat array:** use when the site has one language. The entire navigation tree is the array:
 
 ```json
 "sidebar": [
@@ -63,7 +63,7 @@ External URLs in `href` are supported and show an external-link indicator in the
 ]
 ```
 
-**Locale-keyed record** — use when each locale needs its own sidebar tree. Keys are locale codes; **`default`** holds the navigation for URLs without a locale prefix:
+**Locale-keyed record:** use when each locale needs its own sidebar tree. Keys are locale codes; **`default`** holds the navigation for URLs without a locale prefix:
 
 ```json
 "sidebar": {
@@ -76,7 +76,7 @@ External URLs in `href` are supported and show an external-link indicator in the
 }
 ```
 
-docs.page derives the site’s locale list from every key in that record **except** `default`. When a reader’s URL starts with a recognized locale segment (for example `/fr/...`), the matching keyed array replaces `default` for sidebar rendering. Internal links in a localized tree can omit the locale prefix — docs.page resolves them against the active locale.
+docs.page derives the site’s locale list from every key in that record **except** `default`. When a reader’s URL starts with a recognized locale segment (for example `/fr/...`), the matching keyed array replaces `default` for sidebar rendering. Internal links in a localized tree can omit the locale prefix. docs.page resolves them against the active locale.
 
 See [Locales](/features/locales) for how locale segments are detected from the path and how the locale switcher uses the same list.
 
@@ -84,11 +84,11 @@ See [Locales](/features/locales) for how locale segments are detected from the p
 
 Top-level [Tabs](/features/tabs) partition the site into separate doc areas. Each group can set `tab` to a tab id so it only appears when that tab is active. Groups without a `tab` field appear on every tab.
 
-Tab filtering applies to top-level groups after locale resolution — it does not split individual page links inside a group.
+Tab filtering applies to top-level groups after locale resolution. It does not split individual page links inside a group.
 
 ### What the sidebar does not control
 
-The sidebar defines navigation links and grouping. It does not replace [Search](/features/search), [Links](/features/links) anchor shortcuts in the sidebar footer, or [Navigation buttons](/features/previous-and-next-links) at the bottom of each page — those read sidebar order but have their own configuration surfaces.
+The sidebar defines navigation links and grouping. It does not replace [Search](/features/search), [Links](/features/links) anchor shortcuts in the sidebar footer, or [Navigation buttons](/features/previous-and-next-links) at the bottom of each page. Those read sidebar order but have their own configuration surfaces.
 
 ## Related
 

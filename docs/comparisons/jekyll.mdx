@@ -3,13 +3,13 @@ title: Jekyll
 description: Decide between purpose-built docs.page hosting and a Jekyll static site workflow.
 ---
 
-Jekyll has powered GitHub documentation for years — Liquid templates, gems, and a build step that produces static HTML. docs.page targets the same markdown-in-Git audience with a **docs-only hosting model** and no Ruby toolchain.
+Jekyll has powered GitHub documentation for years: Liquid templates, gems, and a build step that produces static HTML. docs.page targets the same markdown-in-Git audience with a **docs-only hosting model** and no Ruby toolchain.
 
 ## Overview
 
-Jekyll is a general-purpose static site generator. Teams use it for blogs, marketing pages, and documentation mixed in one site — with `_config.yml`, themes, and plugins you maintain.
+Jekyll is a general-purpose static site generator. Teams use it for blogs, marketing pages, and documentation mixed in one site, with `_config.yml`, themes, and plugins you maintain.
 
-docs.page is a **documentation platform** for public GitHub repositories: `docs.json` for site configuration, `docs/**/*.mdx` for pages, and live hosting on push — no `_site` artifact or gem dependencies.
+docs.page is a **documentation platform** for public GitHub repositories: `docs.json` for site configuration, `docs/**/*.mdx` for pages, and live hosting on push (no `_site` artifact or gem dependencies).
 
 See [Introduction](/) for how docs.page maps repository paths to URLs.
 
@@ -19,7 +19,7 @@ See [Introduction](/) for how docs.page maps repository paths to URLs.
 
 Jekyll requires Ruby, gems, and a local or CI build before deploy. Version drift across plugins and themes is a recurring maintenance cost.
 
-docs.page removes the build entirely — **push-to-publish** from Git. Contributors edit MDX; the platform bundles and serves pages from GitHub. That focus suits open-source maintainers who want docs online without babysitting a Jekyll stack.
+docs.page removes the build entirely (**push-to-publish** from Git). Contributors edit MDX; the platform bundles and serves pages from GitHub. That focus suits open-source maintainers who want docs online without babysitting a Jekyll stack.
 
 Jekyll remains strong when you already standardize on it org-wide or need Liquid templating across mixed content types.
 
@@ -29,27 +29,27 @@ Jekyll themes vary widely; search, sidebar behavior, and MDX-rich components oft
 
 docs.page ships opinionated defaults for **developer documentation**: [sidebar groups and tabs](/features/tabs), [full-text search](/features/search), [built-in MDX components](/features/components), [branch previews](/features/branch-preview), and [page actions](/features/public-github-hosting#page-actions) for contributors and integrators.
 
-Choose Jekyll when the site is more than docs — blog posts, landing pages, and custom layouts in one generator. Choose docs.page when the site **is** documentation and you want that scope handled for you.
+Choose Jekyll when the site is more than docs (blog posts, landing pages, and custom layouts in one generator). Choose docs.page when the site **is** documentation and you want that scope handled for you.
 
 ### Publish loop
 
-Jekyll's loop is edit → build → upload static files → invalidate cache. docs.page's loop is edit → push → live — with short edge caching so changes propagate quickly without redeploying artifacts.
+Jekyll's loop is edit → build → upload static files → invalidate cache. docs.page's loop is edit → push → live, with short edge caching so changes propagate quickly without redeploying artifacts.
 
 For teams publishing SDK or open-source docs on every merge, that shorter loop keeps public documentation aligned with the default branch.
 
 ### Agent-ready public docs
 
-Jekyll output is static HTML for browsers. [llms.txt](/ai-agents/llms-txt), [MCP](/ai-agents/mcp-server), and [agent skills](/ai-agents/agent-skills) on docs.page come from the same **public Git source** — no separate pipeline to maintain.
+Jekyll output is static HTML for browsers. [llms.txt](/ai-agents/llms-txt), [MCP](/ai-agents/mcp-server), and [agent skills](/ai-agents/agent-skills) on docs.page come from the same **public Git source** (no separate pipeline to maintain).
 
 ### Built for public, open documentation
 
-docs.page hosts **public GitHub repositories** by design — documentation meant to sit beside open-source code and be readable by humans and agents alike. Jekyll plus GitHub Pages can serve many visibility models; docs.page optimizes exclusively for **public, discoverable docs**.
+docs.page hosts **public GitHub repositories** by design (documentation meant to sit beside open-source code and be readable by humans and agents alike). Jekyll plus GitHub Pages can serve many visibility models; docs.page optimizes exclusively for **public, discoverable docs**.
 
 If access-controlled or private documentation is the requirement, a self-hosted Jekyll setup is the appropriate tool. If public docs in GitHub are the requirement, docs.page removes build and hosting setup from that path.
 
 ## Related
 
-- [Public GitHub hosting](/features/public-github-hosting) — how Git becomes a live site
-- [Components](/features/components) — built-in MDX without imports
-- [Agent-ready docs](/ai-agents/overview) — programmatic access from the same repo
-- [docs.page vs GitHub Pages](/comparisons/github-pages) — Jekyll's common deploy target
+- [Public GitHub hosting](/features/public-github-hosting): how Git becomes a live site
+- [Components](/features/components): built-in MDX without imports
+- [Agent-ready docs](/ai-agents/overview): programmatic access from the same repo
+- [docs.page vs GitHub Pages](/comparisons/github-pages): Jekyll's common deploy target

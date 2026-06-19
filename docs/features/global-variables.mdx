@@ -7,7 +7,7 @@ Your install guide names the same package version on a dozen pages. When you shi
 
 ## Overview
 
-**Global variables** let you store reusable strings in the `variables` object in `docs.json` and reference them from MDX with mustache placeholders. Define a value once — a semver, API base URL, product name, or support email — and every page that references it picks up the change on the next build.
+**Global variables** let you store reusable strings in the `variables` object in `docs.json` and reference them from MDX with mustache placeholders. Define a value once (a semver, API base URL, product name, or support email) and every page that references it picks up the change on the next build.
 
 Substitution runs during MDX bundling, the same path local preview and production hosting use. You edit placeholders in your page files; docs.page resolves them from config before headings, components, and links are rendered.
 
@@ -32,7 +32,7 @@ Add a top-level `variables` object to `docs.json`. Keys are plain names; nest ob
 }
 ```
 
-The object accepts arbitrary nesting. Only **string** values are substituted into page content — other types are ignored and the placeholder is left unchanged.
+The object accepts arbitrary nesting. Only **string** values are substituted into page content. Other types are ignored and the placeholder is left unchanged.
 
 ### Reference placeholders in MDX
 
@@ -46,7 +46,7 @@ Install **{{ product }}** version `{{ versions.default }}`:
 Open the [dashboard]({{ urls.dashboard }}) after you sign in.
 ```
 
-Placeholders work in prose, link targets, code fences, and component props — anywhere in the MDX body after frontmatter is stripped.
+Placeholders work in prose, link targets, code fences, and component props anywhere in the MDX body after frontmatter is stripped.
 
 ### Syntax rules
 
@@ -56,7 +56,7 @@ The parser looks for `{{`, whitespace, a path made of letters, numbers, dots, an
 | --- | --- |
 | `{{ versions.default }}` | Substituted when `variables.versions.default` is a string |
 | `{{ unknown.key }}` | Left as-is when the path is missing or the value is not a string |
-| `{{versions.default}}` | Not matched — include spaces inside the braces |
+| `{{versions.default}}` | Not matched. Include spaces inside the braces |
 
 If a path resolves to a non-string value (a number, boolean, or nested object), docs.page keeps the original placeholder so you notice the mismatch instead of coercing a value.
 
@@ -70,7 +70,7 @@ Variable substitution does **not** run inside frontmatter. Keep `title`, `descri
 
 ### What variables are for
 
-Use global variables for values that repeat across many pages and change together — release versions, canonical URLs, company or product names, and environment-specific endpoints you document in prose.
+Use global variables for values that repeat across many pages and change together: release versions, canonical URLs, company or product names, and environment-specific endpoints you document in prose.
 
 They are not a templating language: there is no logic, conditionals, or partials. For one-off page metadata, use frontmatter. For field-level config lookup, see [docs.json](/reference/docs-json#variables).
 

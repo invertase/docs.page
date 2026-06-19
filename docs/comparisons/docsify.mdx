@@ -3,13 +3,13 @@ title: docsify
 description: Decide between a hosted docs.page site and self-hosted client-side docsify.
 ---
 
-docsify keeps documentation lightweight — markdown files, a small client-side loader, and hosting you supply yourself. docs.page offers a similar markdown-first mindset with **hosting and platform features included**.
+docsify keeps documentation lightweight: markdown files, a small client-side loader, and hosting you supply yourself. docs.page offers a similar markdown-first mindset with **hosting and platform features included**.
 
 ## Overview
 
-docsify renders documentation in the browser by fetching markdown at runtime. You control where files live and how they are served — often a static bucket or simple web server.
+docsify renders documentation in the browser by fetching markdown at runtime. You control where files live and how they are served, often a static bucket or simple web server.
 
-docs.page also reads markdown from Git, but bundles and serves a full documentation site from **public GitHub repositories** — navigation, search, themes, branch previews, and [agent-ready exports](/ai-agents/overview) without assembling those pieces yourself.
+docs.page also reads markdown from Git, but bundles and serves a full documentation site from **public GitHub repositories** (navigation, search, themes, branch previews, and [agent-ready exports](/ai-agents/overview) without assembling those pieces yourself).
 
 See [Introduction](/) for the docs.page repository layout.
 
@@ -17,7 +17,7 @@ See [Introduction](/) for the docs.page repository layout.
 
 ### Hosting: included platform vs bring your own
 
-docsify's strength is minimalism — almost no server logic. The tradeoff is **you own hosting**, CDN setup, HTTPS, and often search and navigation wiring.
+docsify's strength is minimalism (almost no server logic). The tradeoff is **you own hosting**, CDN setup, HTTPS, and often search and navigation wiring.
 
 docs.page is fully hosted at `https://docs.page/{owner}/{repo}` (or a [custom domain](/features/custom-domains)). Push MDX and the site is live. That hosted completeness suits teams who want to **write docs, not operate doc infrastructure**.
 
@@ -33,23 +33,23 @@ Choose docsify for a thin viewer you extend yourself. Choose docs.page when you 
 
 ### Rendering model
 
-docsify fetches raw markdown in the browser. docs.page bundles MDX from GitHub on each request (cached at the edge) — the same pipeline for production and [local preview](/features/local-preview).
+docsify fetches raw markdown in the browser. docs.page bundles MDX from GitHub on each request (cached at the edge), the same pipeline for production and [local preview](/features/local-preview).
 
 That server-side model keeps one source of truth in Git and supports utilities like `/llms.txt`, `/mcp`, and `/search.json` at predictable URLs on every site.
 
 ### Agent surfaces
 
-docsify has no built-in path to [llms.txt](/ai-agents/llms-txt) or [MCP](/ai-agents/mcp-server). docs.page generates those from your **public repository** automatically — valuable when assistants and integrators consume the same docs as human readers.
+docsify has no built-in path to [llms.txt](/ai-agents/llms-txt) or [MCP](/ai-agents/mcp-server). docs.page generates those from your **public repository** automatically, valuable when assistants and integrators consume the same docs as human readers.
 
 ### Built for public, open documentation
 
-docs.page is designed for **public GitHub repositories** — open-source handbooks, SDK references, and product docs meant to be discoverable. docsify can serve files from any static host, public or private.
+docs.page is designed for **public GitHub repositories** (open-source handbooks, SDK references, and product docs meant to be discoverable). docsify can serve files from any static host, public or private.
 
 If your documentation is public and lives in GitHub already, docs.page collapses hosting, UX, and agent exports into one push-to-publish flow. If you need a tiny client-side stack on infrastructure you already run, docsify stays the lighter choice.
 
 ## Related
 
-- [Public GitHub hosting](/features/public-github-hosting) — push-to-publish from Git
-- [Local preview](/features/local-preview) — iterate before you push
-- [Agent-ready docs](/ai-agents/overview) — llms.txt and MCP from the same repo
-- [docs.page vs Jekyll](/comparisons/jekyll) — another self-hosted static path
+- [Public GitHub hosting](/features/public-github-hosting): push-to-publish from Git
+- [Local preview](/features/local-preview): iterate before you push
+- [Agent-ready docs](/ai-agents/overview): llms.txt and MCP from the same repo
+- [docs.page vs Jekyll](/comparisons/jekyll): another self-hosted static path

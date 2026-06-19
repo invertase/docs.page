@@ -62,7 +62,7 @@ See [Branch preview](/features/branch-preview), [Vanity subdomains](/features/va
 | `/{owner}/{repo}/{page-path}` | GET | Rendered documentation site (HTML) |
 | `/{owner}/{repo}~{ref}/{page-path}` | GET | Branch, commit, or pull request preview |
 
-`{page-path}` matches the file path under `docs/` without the extension — for example `docs/getting-started.mdx` → `/getting-started`.
+`{page-path}` matches the file path under `docs/` without the extension, for example `docs/getting-started.mdx` → `/getting-started`.
 
 ## Raw markdown
 
@@ -71,7 +71,7 @@ Append `.md` or `.mdx` to any page path to fetch the source file from GitHub as 
 | Route | Method | Returns |
 | --- | --- | --- |
 | `/{owner}/{repo}/{page-path}.md` | GET | Raw `.md` or `.mdx` source for one page |
-| `/{owner}/{repo}/{page-path}.mdx` | GET | Same as `.md` — either suffix resolves the source file |
+| `/{owner}/{repo}/{page-path}.mdx` | GET | Same as `.md`; either suffix resolves the source file |
 | `/{owner}/{repo}.md` | GET | Raw source for the site root page (`docs/index.mdx` or equivalent) |
 
 ```text
@@ -170,7 +170,7 @@ POST JSON body:
 
 ### /api/agent (POST)
 
-Browser-only chat endpoint for [Ask AI](/features/ask-ai) and [custom same-origin chat UI](/ai-agents/embed-ask-ai). Not a public API — requires session cookies issued when a reader loads a production doc page.
+Browser-only chat endpoint for [Ask AI](/features/ask-ai) and [custom same-origin chat UI](/ai-agents/embed-ask-ai). Not a public API; it requires session cookies issued when a reader loads a production doc page.
 
 **Required headers**
 
@@ -221,7 +221,7 @@ Example request:
 
 **Success response**
 
-Streamed UI message protocol from the [Vercel AI SDK](https://ai-sdk.dev/docs/ai-sdk-ui/chatbot) — the same format `@ai-sdk/react` `useChat` consumes. Response headers include rate limits:
+Streamed UI message protocol from the [Vercel AI SDK](https://ai-sdk.dev/docs/ai-sdk-ui/chatbot), the same format `@ai-sdk/react` `useChat` consumes. Response headers include rate limits:
 
 | Header | Description |
 | --- | --- |
@@ -258,5 +258,5 @@ See [Ask AI](/ai-agents/ask-ai), [Embed Ask AI](/ai-agents/embed-ask-ai), and [d
 
 ## See also
 
-- [CLI](/reference/cli) — local preview and check commands
-- [Public GitHub hosting](/features/public-github-hosting) — push-to-publish model
+- [CLI](/reference/cli): local preview and check commands
+- [Public GitHub hosting](/features/public-github-hosting): push-to-publish model

@@ -7,7 +7,7 @@ You want a warning callout and a tabbed install snippet on the same page. Markdo
 
 ## Overview
 
-docs.page ships a library of **built-in MDX components** for structure, code, emphasis, reference fields, and media. They are available in every page under `docs/` — you do not install a package, add imports, or register components in `docs.json`.
+docs.page ships a library of **built-in MDX components** for structure, code, emphasis, reference fields, and media. They are available in every page under `docs/`. You do not install a package, add imports, or register components in `docs.json`.
 
 Use plain Markdown when it is enough: paragraphs, lists, links, and fenced code blocks cover most writing. Reach for components when readers need switchable panels, numbered procedures, styled callouts, grouped code examples, API field rows, or embedded media.
 
@@ -17,7 +17,7 @@ The [Components](/components) tab is the lookup surface for props, child element
 
 ### Global components, no imports
 
-Author MDX with PascalCase JSX tags — `<Tabs>`, `<Info>`, `<Steps>`, and the rest. docs.page parses those tags during bundling and maps each name to a React component in the renderer. Your page files never need `import` statements for the built-in set.
+Author MDX with PascalCase JSX tags such as `<Tabs>`, `<Info>`, `<Steps>`, and the rest. docs.page parses those tags during bundling and maps each name to a React component in the renderer. Your page files never need `import` statements for the built-in set.
 
 ```mdx
 <Warning>
@@ -36,15 +36,15 @@ That tag is the contract: if docs.page recognizes the name, it renders with the 
 
 Components fall into a few roles. You mix them with normal Markdown inside the same file.
 
-**Structure and navigation** — `<Tabs>` and `<TabItem>` for switchable panels; `<Accordion>` and `<AccordionGroup>` for expandable detail; `<Steps>` and `<Step>` for numbered procedures; `<Card>` and `<CardGroup>` for linked overview tiles; `<Heading>` when you need explicit anchor behavior on a heading.
+**Structure and navigation:** `<Tabs>` and `<TabItem>` for switchable panels; `<Accordion>` and `<AccordionGroup>` for expandable detail; `<Steps>` and `<Step>` for numbered procedures; `<Card>` and `<CardGroup>` for linked overview tiles; `<Heading>` when you need explicit anchor behavior on a heading.
 
-**Code** — Fenced code blocks handle syntax highlighting, titles, and copy-to-clipboard. Wrap multiple fences in `<CodeGroup>` when readers should flip between languages or variants.
+**Code:** Fenced code blocks handle syntax highlighting, titles, and copy-to-clipboard. Wrap multiple fences in `<CodeGroup>` when readers should flip between languages or variants.
 
-**Callouts** — `<Info>`, `<Warning>`, `<Error>`, and `<Success>` replace a generic callout type. Pick the variant that matches the severity of the note.
+**Callouts:** `<Info>`, `<Warning>`, `<Error>`, and `<Success>` replace a generic callout type. Pick the variant that matches the severity of the note.
 
-**Reference** — `<Property>` documents API and config fields with name, type, and required badges — typical on Reference pages, not in tutorials.
+**Reference:** `<Property>` documents API and config fields with name, type, and required badges. Use it on Reference pages, not in tutorials.
 
-**Media** — `<Image>` for repo-relative images with optional light/dark variants and zoom; `<Icon>` for Font Awesome slugs; `<Video>`, `<YouTube>`, `<Vimeo>`, and `<Tweet>` (or `<X>`) for embedded media.
+**Media:** `<Image>` for repo-relative images with optional light/dark variants and zoom; `<Icon>` for Font Awesome slugs; `<Video>`, `<YouTube>`, `<Vimeo>`, and `<Tweet>` (or `<X>`) for embedded media.
 
 See the [Components overview](/components) for the full list and links to each component page.
 
@@ -64,7 +64,7 @@ Keep tutorials and how-tos focused on outcomes. Link to [Components](/components
 
 ### Same components in preview and production
 
-Local preview bundles MDX the same way production does, so component tags you add under `docs/` render when you run `docs preview` before you push. Push-to-publish then serves those pages from GitHub with the same component map — no separate build step to compile JSX on your machine.
+Local preview bundles MDX the same way production does, so component tags you add under `docs/` render when you run `docs preview` before you push. Push-to-publish then serves those pages from GitHub with the same component map. No separate build step compiles JSX on your machine.
 
 ## Related
 

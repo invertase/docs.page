@@ -7,15 +7,15 @@ The `@docs.page/cli` package is the local companion to [docs.page](https://docs.
 
 ## Overview
 
-docs.page serves documentation from a public GitHub repository — there is no separate deploy dashboard. The CLI fits that Git-native model: scaffold into an existing repo, lint before push or in CI, and preview work in progress without opening a branch on GitHub.
+docs.page serves documentation from a public GitHub repository. There is no separate deploy dashboard. The CLI fits that Git-native model: scaffold into an existing repo, lint before push or in CI, and preview work in progress without opening a branch on GitHub.
 
-Local preview renders page content on your machine while the browser loads the production preview shell — you see real theme and layout without embedding a full copy of the docs.page app. `check` improves quality before push; it does not upload or publish anything.
+Local preview renders page content on your machine while the browser loads the production preview shell. You see real theme and layout without embedding a full copy of the docs.page app. `check` improves quality before push; it does not upload or publish anything.
 
 | Command | Role in your workflow |
 | --- | --- |
 | `docs init` | Create `docs.json` and optional starter pages in a new or existing repo |
 | `docs preview` | Watch local files and render changes in the docs.page preview UI |
-| `docs check` | Lint configuration, links, and assets — a quality gate before you push |
+| `docs check` | Lint configuration, links, and assets: a quality gate before you push |
 | `docs agent` | Create or delete the in-docs chat agent for a repository |
 
 ## Quick start
@@ -128,9 +128,9 @@ For a full first-publish walkthrough including GitHub push, follow [Quickstart](
       next-steps.mdx
     ```
 
-    - **`docs.json`** — site name, description, sidebar, and theme
-    - **`docs/index.mdx`** — home page (served at `/`)
-    - **`docs/next-steps.mdx`** — second page (served at `/next-steps`)
+    - **`docs.json`:** site name, description, sidebar, and theme
+    - **`docs/index.mdx`:** home page (served at `/`)
+    - **`docs/next-steps.mdx`:** second page (served at `/next-steps`)
   </Step>
   <Step title="Initialize a subdirectory or skip starter pages when scripting">
     Pass flags to avoid prompts in CI or scripts:
@@ -205,7 +205,7 @@ After the server starts, confirm the terminal shows **Local preview server start
   Local preview does not include search, sitemap generation, or the in-docs agent panel. Those features require a published site or branch preview. Run `docs check` after preview looks right and before you push.
 </Info>
 
-Local asset resolution in preview mode has known gaps — prefer relative paths that match how files are laid out in your repository.
+Local asset resolution in preview mode has known gaps. Prefer relative paths that match how files are laid out in your repository.
 
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |
@@ -229,9 +229,9 @@ Run `docs check` after preview looks right and before you push. The command read
 
     The CLI checks that `docs.json` or `docs.yaml` is readable, then scans your pages for:
 
-    - Broken **internal links** — paths that do not resolve to another page or asset in the repo
-    - Missing **assets** — images and other referenced files that are not on disk
-    - Unreachable **external links** — HTTP targets that fail when fetched
+    - Broken **internal links:** paths that do not resolve to another page or asset in the repo
+    - Missing **assets:** images and other referenced files that are not on disk
+    - Unreachable **external links:** HTTP targets that fail when fetched
 
     Frontmatter fields `redirect`, `next`, and `previous` are included in link scanning.
   </Step>
@@ -258,7 +258,7 @@ Run `docs check` after preview looks right and before you push. The command read
       run: npx @docs.page/cli check
     ```
 
-    `check` does not publish or upload anything — [Public GitHub hosting](/features/public-github-hosting) updates the live site when you push to your default branch.
+    `check` does not publish or upload anything. [Public GitHub hosting](/features/public-github-hosting) updates the live site when you push to your default branch.
   </Step>
 </Steps>
 
@@ -346,8 +346,8 @@ After create, the CLI prints `Your documentation agent is ready to use` and a JS
 
 ## Related
 
-- [CLI](/reference/cli) — flags, severities, and exit codes
-- [Local preview](/features/local-preview) — feature overview for browser preview
-- [Branch preview](/features/branch-preview) — shareable ref URLs after you push
-- [Quickstart](/quickstart) — scaffold and go live
-- [Ask AI](/features/ask-ai) — configure the in-docs chat panel
+- [CLI](/reference/cli): flags, severities, and exit codes
+- [Local preview](/features/local-preview): feature overview for browser preview
+- [Branch preview](/features/branch-preview): shareable ref URLs after you push
+- [Quickstart](/quickstart): get a live site in minutes
+- [Ask AI](/features/ask-ai): configure the in-docs chat panel

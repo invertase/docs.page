@@ -5,7 +5,7 @@ description: Show syntax-highlighted code with copy, titles, and diff or focus a
 
 Use fenced code blocks to show commands, configuration, and snippets in your docs. Wrap content in triple backticks and add an optional language tag for syntax highlighting. Every block gets a header with the language label and a copy button.
 
-There is no `<CodeBlock />` component—standard Markdown fences are all you need. Line numbers are not supported.
+There is no `<CodeBlock />` component; standard Markdown fences are all you need. Line numbers are not supported.
 
 ````mdx
 ```js
@@ -38,7 +38,7 @@ export async function apiRequest(options) {
 
 ## Language tags
 
-Add a language identifier immediately after the opening backticks. docs.page uses [Shiki](https://shiki.style/) for highlighting and accepts any bundled Shiki language or alias—for example, `js`, `ts`, `bash`, or `json`.
+Add a language identifier immediately after the opening backticks. docs.page uses [Shiki](https://shiki.style/) for highlighting and accepts any bundled Shiki language or alias, for example `js`, `ts`, `bash`, or `json`.
 
 If the tag is missing or unrecognized, the block renders as plain text.
 
@@ -66,11 +66,11 @@ console.log("Hello World");
 ```
 ````
 
-The header shows the language, a divider, then the title—for example, **js** | **Logging: Hello World**.
+The header shows the language, a divider, then the title, for example **js** | **Logging: Hello World**.
 
 ## Annotations
 
-Shiki notation transformers add diff markers, line highlights, and focus effects. Add a comment at the end of each annotated line using the `// [!code …]` pattern. Use your language's comment syntax—for example, `#` in Python or `<!--` in HTML.
+Shiki notation transformers add diff markers, line highlights, and focus effects. Add a comment at the end of each annotated line using the `// [!code …]` pattern. Use your language's comment syntax, for example `#` in Python or `<!--` in HTML.
 
 ### Diff
 
@@ -134,7 +134,7 @@ console.log('Not focused');
 
 Each code block includes a copy button in the header. Click it to copy the raw fence content to the clipboard. The icon switches to a check mark for two seconds to confirm the copy.
 
-Readers copy source text—including annotation comments—not the rendered HTML.
+Readers copy source text, including annotation comments, not the rendered HTML.
 
 ## Behavior
 
@@ -151,5 +151,5 @@ Readers copy source text—including annotation comments—not the rendered HTML
 
 ## See also
 
-- [Code group](/components/code-group) — tabbed blocks for multiple languages or variants
-- [Components overview](/components) — when to use tabs, code groups, and accordions
+- [Code group](/components/code-group): tabbed blocks for multiple languages or variants
+- [Components overview](/components): when to use tabs, code groups, and accordions

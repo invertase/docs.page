@@ -14,15 +14,15 @@ description: Write clear, scannable MDX pages with structure, links, and media, 
 
 Each page is a `.mdx` or `.md` file under `docs/`. Work through these steps in order:
 
-1. **Choose a URL path** — add `docs/{path}.mdx` (or `.md`). The path without the extension becomes the URL.
-2. **Declare title and description** — set `title` and `description` in YAML frontmatter at the top of the file. See [Frontmatter](#frontmatter).
-3. **Make the page scannable** — structure the body with `##` headings and short paragraphs. See [Page structure and prose](#page-structure-and-prose).
-4. **Help readers follow along** — add root-relative links, fenced code blocks, and images where they clarify the task. See [Links and assets](#links-and-assets).
-5. **Expose the page to readers** — add it to the sidebar in [Organize](/authoring/organize), then confirm in [Preview](/authoring/preview).
+1. **Choose a URL path:** add `docs/{path}.mdx` (or `.md`). The path without the extension becomes the URL.
+2. **Declare title and description:** set `title` and `description` in YAML frontmatter at the top of the file. See [Frontmatter](#frontmatter).
+3. **Make the page scannable:** structure the body with `##` headings and short paragraphs. See [Page structure and prose](#page-structure-and-prose).
+4. **Help readers follow along:** add root-relative links, fenced code blocks, and images where they clarify the task. See [Links and assets](#links-and-assets).
+5. **Expose the page to readers:** add it to the sidebar in [Organize](/authoring/organize), then confirm in [Preview](/authoring/preview).
 
 ## Page structure and prose
 
-Structure the body with `##` headings. The **On this page** [table of contents](/features/table-of-contents) derives from Markdown heading levels — keep one main idea per section and nest subsections one level deeper. Set `content.headerDepth` in `docs.json` when you need deeper entries in that list.
+Structure the body with `##` headings. The **On this page** [table of contents](/features/table-of-contents) derives from Markdown heading levels, keep one main idea per section and nest subsections one level deeper. Set `content.headerDepth` in `docs.json` when you need deeper entries in that list.
 
 Write so a busy reader can skim: state the outcome first, keep paragraphs short, use imperative voice (**Run**, **Set**, **Open**), and bold UI labels while putting commands and paths in `backticks`.
 
@@ -48,7 +48,7 @@ description: Install the docs.page CLI on macOS, Linux, or Windows.
 ---
 ```
 
-At minimum, set `title` and `description`. Additional keys control redirects, previous/next links, hero images, and indexing — see [Page frontmatter](/reference/page-frontmatter).
+At minimum, set `title` and `description`. Additional keys control redirects, previous/next links, hero images, and indexing, see [Page frontmatter](/reference/page-frontmatter).
 
 ### Where pages live
 
@@ -64,17 +64,17 @@ Create a new file when you add a topic. Rename the file and add a [redirect](/au
 
 ## Links and assets
 
-**Internal links** — use root-relative paths with no domain and no `.mdx` extension:
+**Internal links:** use root-relative paths with no domain and no `.mdx` extension:
 
 ```mdx
 See [Preview](/authoring/preview) before you open a pull request.
 ```
 
-**Code examples** — wrap snippets in fenced blocks with a language tag (`bash`, `json`, `tsx`). For multiple equivalent snippets, use a [code group](/components/code-group) or [tabs](/components/tabs). See [Code blocks](/components/code-blocks) for titles and diff markers.
+**Code examples:** wrap snippets in fenced blocks with a language tag (`bash`, `json`, `tsx`). For multiple equivalent snippets, use a [code group](/components/code-group) or [tabs](/components/tabs). See [Code blocks](/components/code-blocks) for titles and diff markers.
 
-**Images** — commit under `docs/` and reference with a leading slash (`/assets/dashboard.png`). Use [`<Image>`](/components/image) when you need captions, light/dark variants, zoom behavior, or sizing — see `content.zoomImages` in [docs.json](/reference/docs-json).
+**Images:** commit under `docs/` and reference with a leading slash (`/assets/dashboard.png`). Use [`<Image>`](/components/image) when you need captions, light/dark variants, zoom behavior, or sizing, see `content.zoomImages` in [docs.json](/reference/docs-json).
 
-**Video and embeds** — [`<YouTube>`](/components/youtube), [`<Vimeo>`](/components/vimeo), [`<Video>`](/components/video) (public `https` URL only), or [`<Tweet>`](/components/tweet).
+**Video and embeds:** [`<YouTube>`](/components/youtube), [`<Vimeo>`](/components/vimeo), [`<Video>`](/components/video) (public `https` URL only), or [`<Tweet>`](/components/tweet).
 
 ## When to use components
 
@@ -93,7 +93,7 @@ Plain Markdown covers most writing. docs.page also ships **built-in MDX componen
 | API or config field rows | [`<Property>`](/components/property) on Reference pages |
 | Section landing links | [`<Card>`](/components/card) and [`<CardGroup>`](/components/card) |
 
-Author components with PascalCase JSX tags. Unknown names show an inline error in preview — match the tag to the [Components](/components) reference. For props and examples, use the Components tab; for how the library fits the product, see [Features → Components](/features/components).
+Author components with PascalCase JSX tags. Unknown names show an inline error in preview, match the tag to the [Components](/components) reference. For props and examples, use the Components tab; for how the library fits the product, see [Features → Components](/features/components).
 
 After you edit, use [Preview](/authoring/preview) to confirm layout, run `docs check` for broken links, then continue to [Publish](/authoring/publish).
 
@@ -105,7 +105,7 @@ After you edit, use [Preview](/authoring/preview) to confirm layout, run `docs c
 | Internal link goes nowhere | Link includes a domain, file extension, or wrong path | Use root-relative paths like `/authoring/preview`. No `https://` and no `.mdx`. |
 | Image does not render | Asset path is wrong or the file is not committed | Store images under `docs/` and reference them with a leading slash, e.g. `/assets/screenshot.png` |
 | Inline component error in preview | Misspelled or unsupported component name | Match the tag to the [Components](/components) reference. Names are PascalCase. |
-| `{{ variable }}` shows literally | Substitution used in frontmatter or the path is undefined | Use variables in the MDX body only; define values in `docs.json`. See [Global variables](/features/global-variables) or [docs.json — variables](/reference/docs-json#variables). |
+| `{{ variable }}` shows literally | Substitution used in frontmatter or the path is undefined | Use variables in the MDX body only; define values in `docs.json`. See [Global variables](/features/global-variables) or [docs.json: variables](/reference/docs-json#variables). |
 
 ## Related
 

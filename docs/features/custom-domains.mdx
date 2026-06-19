@@ -3,13 +3,13 @@ title: Custom domains
 description: Serve docs from your own hostname with clean paths that hide the GitHub owner and repository segments.
 ---
 
-Readers expect product documentation at a URL you control — `https://docs.example.com`, not `https://docs.page/acme/handbook`. Custom domains map a hostname to a single hosted repository so every page, preview link, and sitemap uses your brand at the root of the path.
+Readers expect product documentation at a URL you control, such as `https://docs.example.com`, not `https://docs.page/acme/handbook`. Custom domains map a hostname to a single hosted repository so every page, preview link, and sitemap uses your brand at the root of the path.
 
 ## Overview
 
 A custom domain is a **one hostname, one repository** mapping. When the mapping is active, production URLs drop the `/{owner}/{repo}` prefix that appears on the default docs.page host. The same MDX files and `docs.json` configuration power the site; only the public URL shape changes.
 
-docs.page still fetches content from your public GitHub repository on each request — the same [push-to-publish model](/features/public-github-hosting) as the default host. Custom domains change routing and link generation, not how content is stored or bundled.
+docs.page still fetches content from your public GitHub repository on each request, using the same [push-to-publish model](/features/public-github-hosting) as the default host. Custom domains change routing and link generation, not how content is stored or bundled.
 
 Compare with [Vanity subdomains](/features/vanity-subdomains), which shorten paths under `{owner}.docs.page` but keep the docs.page hostname. Custom domains use a hostname you own entirely.
 
@@ -37,7 +37,7 @@ https://docs.example.com/
 https://docs.example.com/installation
 ```
 
-[Branch preview](/features/branch-preview) ref segments work the same way — they move to the front of the path without the owner or repository prefix:
+[Branch preview](/features/branch-preview) ref segments work the same way. They move to the front of the path without the owner or repository prefix:
 
 ```
 https://docs.example.com/~feature-docs
@@ -52,7 +52,7 @@ The app maintains the mapping in both directions through the Invertase custom-do
 
 When a page is rendered on the default docs.page host, `getCustomDomain` queries the worker with `owner` and `repo` parameters. If a domain is registered, production **canonical URLs**, sitemap links, and internal link generation point readers at `https://{your-domain}` instead of `https://docs.page/{owner}/{repo}`.
 
-When a request arrives on your custom domain, the edge worker performs the reverse lookup — hostname to owner and repository — before the app bundles the page.
+When a request arrives on your custom domain, the edge worker performs the reverse lookup (hostname to owner and repository) before the app bundles the page.
 
 <Info>
   Custom domain mappings are managed outside your repository. You do not set the hostname in `docs.json`; the worker registry and DNS together connect your domain to a hosted repo.
@@ -63,14 +63,14 @@ When a request arrives on your custom domain, the edge worker performs the rever
 Features that resolve URLs against the current site context respect custom-domain mode automatically:
 
 - **Frontmatter redirects** resolve relative paths against your custom domain base instead of `docs.page/{owner}/{repo}`.
-- **[Locales](/features/locales)** keep the same first-segment locale pattern — only the host changes (`https://docs.example.com/fr/installation`).
+- **[Locales](/features/locales)** keep the same first-segment locale pattern. Only the host changes (`https://docs.example.com/fr/installation`).
 - **Canonical URLs**, sitemap links, and internal navigation use your custom domain in production when the worker returns a mapping.
 
 Development and [local preview](/features/local-preview) continue to use localhost or the default docs.page host. Custom-domain path rewriting applies in production when the worker returns a domain for your repository.
 
 ## Enable it
 
-Custom domain setup spans DNS, the worker registry, and TLS at the edge. These steps stay at a high level — full DNS record types, verification, and troubleshooting live in the procedural guide.
+Custom domain setup spans DNS, the worker registry, and TLS at the edge. These steps stay at a high level. Full DNS record types, verification, and troubleshooting live in the procedural guide.
 
 1. **Choose a hostname** for the public repository you already host on docs.page (for example `docs.example.com` for `acme/handbook`).
 

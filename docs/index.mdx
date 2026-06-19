@@ -5,7 +5,7 @@ description: Understand how docs.page turns a public GitHub repository into agen
 
 ## Overview
 
-Think of [docs.page](https://docs.page) as **docs-as-code with no hosting setup**: documentation for **humans + agents**, served from any public GitHub branch. Push updates and the live site refreshes instantly. It is free and open-source.
+[docs.page](https://docs.page) is a **docs-as-code platform with no hosting setup**: documentation for **humans + agents**, served from any public GitHub branch. Push updates and the live site refreshes instantly. It is free and open-source.
 
 ## Who it is for
 
@@ -25,8 +25,8 @@ It is a strong fit for:
 
 Every [docs.page](https://docs.page) site needs two things in a **public** GitHub repository:
 
-- **`docs.json`** at the repository root — site name, navigation, theme, and other configuration
-- **`docs/**/*.mdx`** or **`docs/**/*.md`** — your documentation pages as Markdown or MDX (with optional subdirectories)
+- **`docs.json`** at the repository root: site name, navigation, theme, and other configuration
+- **`docs/**/*.mdx`** or **`docs/**/*.md`**: your documentation pages as Markdown or MDX (with optional subdirectories)
 
 Push to GitHub and the site is live. There is no dashboard deploy step and no hosting account to configure.
 
@@ -38,9 +38,9 @@ Documentation is served at:
 https://docs.page/{owner}/{repo}
 ```
 
-For example, a repository at `https://github.com/acme/my-project` is available at `https://docs.page/acme/my-project`. Individual pages follow the path of their file under `docs/` — `docs/usage.md` or `docs/usage.mdx` becomes `/usage`.
+For example, a repository at `https://github.com/acme/my-project` is available at `https://docs.page/acme/my-project`. Individual pages follow the path of their file under `docs/`; `docs/usage.md` or `docs/usage.mdx` becomes `/usage`.
 
-Use **branches & versions** to serve a branch, tag, or release at a distinct URL — for example, `https://docs.page/acme/my-project~v2`. See [Branch preview](/features/branch-preview).
+Use **branches & versions** to serve a branch, tag, or release at a distinct URL, for example `https://docs.page/acme/my-project~v2`. See [Branch preview](/features/branch-preview).
 
 <Info>
   [docs.page](https://docs.page) only hosts **public** repositories. Private
@@ -52,17 +52,17 @@ Use **branches & versions** to serve a branch, tag, or release at a distinct URL
 
 Because [docs.page](https://docs.page) handles rendering and hosting, you can skip the usual documentation infrastructure:
 
-- **No build pipelines** — no webpack, Docusaurus build, or static export in CI
-- **No hosting configuration** — no S3 bucket, CDN, or Pages project per repository
-- **No docs dashboard** — configuration is a file in Git, not a web UI
+- **No build pipelines:** no webpack, Docusaurus build, or static export in CI
+- **No hosting configuration:** no S3 bucket, CDN, or Pages project per repository
+- **No docs dashboard:** configuration is a file in Git, not a web UI
 
-You still use Git for versioning, branches, and pull requests — the same workflow you already use for code.
+You still use Git for versioning, branches, and pull requests, the same workflow you already use for code.
 
 ## When [docs.page](https://docs.page) fits
 
 [docs.page](https://docs.page) works well when most of your documentation is Markdown-based, you want instant publishing from GitHub, and your content can live in a public repository.
 
-It is a strong default for open-source libraries, SDK docs sites, and product docs that teams are comfortable publishing publicly. If you need a heavily customized documentation experience — bespoke routing, proprietary auth gates, or a private-only docs site — a self-hosted static generator or custom app may be a better fit.
+It is a strong default for open-source libraries, SDK docs sites, and product docs that teams are comfortable publishing publicly. If you need a heavily customized documentation experience (bespoke routing, proprietary auth gates, or a private-only docs site), a self-hosted static generator or custom app may be a better fit.
 
 For side-by-side comparisons with Docusaurus, Mintlify, GitHub Pages, and similar tools, see [Comparisons](/comparisons).
 

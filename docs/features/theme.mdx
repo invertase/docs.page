@@ -3,11 +3,11 @@ title: Theme
 description: Understand how presets, colors, and fonts layer in docs.json so your docs match your brand in light and dark mode.
 ---
 
-Your docs should feel like part of your product—not a generic template. The `theme` block in `docs.json` controls that first impression: typography, accent colors, and how the site looks when readers switch between light and dark mode.
+Your docs should feel like part of your product, not a generic template. The `theme` block in `docs.json` controls that first impression: typography, accent colors, and how the site looks when readers switch between light and dark mode.
 
 ## Overview
 
-docs.page themes are **CSS-variable based**. When a reader opens your site, the renderer loads a base palette, optionally applies a [shadcn/ui](https://ui.shadcn.com) preset, then merges any custom hex colors you declare. Components—sidebar, callouts, buttons, code blocks—read from the same variables, so a small config change updates the whole site.
+docs.page themes are **CSS-variable based**. When a reader opens your site, the renderer loads a base palette, optionally applies a [shadcn/ui](https://ui.shadcn.com) preset, then merges any custom hex colors you declare. Components (sidebar, callouts, buttons, code blocks) read from the same variables, so a small config change updates the whole site.
 
 Everything lives under the top-level `theme` key in `docs.json`. You do not edit hosted CSS files or redeploy a theme package; commit changes to your GitHub repo and the live site picks them up on the next request.
 
@@ -18,7 +18,7 @@ Everything lives under the top-level `theme` key in `docs.json`. You do not edit
 }
 ```
 
-Field names, types, and defaults live in [docs.json](/reference/docs-json) — this page explains the model, not every key.
+Field names, types, and defaults live in [docs.json](/reference/docs-json): this page explains the model, not every key.
 
 ## How it works
 
@@ -28,15 +28,15 @@ A **preset** is a short code from the shadcn/ui theme registry. When you set `th
 
 Presets are the fastest way to get a cohesive look. Pick a code on [ui.shadcn.com](https://ui.shadcn.com), drop it into `docs.json`, and preview with [`docs preview`](/features/local-preview) or a [branch preview](/features/branch-preview) before you merge.
 
-If the code is invalid or cannot be resolved, docs.page falls back to the default site palette—other `theme` fields still apply.
+If the code is invalid or cannot be resolved, docs.page falls back to the default site palette. Other `theme` fields still apply.
 
 ### Light and dark mode
 
 Every hosted site supports **light** and **dark** appearance. docs.page toggles modes with a `dark` class on the document root (via [next-themes](https://github.com/pacocoursey/next-themes)). Preset CSS defines separate token values for `:root` and `.dark`, so backgrounds, borders, and text stay balanced in both modes.
 
-Readers switch modes from the **theme toggle** in the site header. The `header` schema also defines `showThemeToggle`, but that field is **schema only** — the toggle always renders on hosted sites today. See [Header](/features/header) and [docs.json — Schema-only fields](/reference/docs-json#schema-only-fields).
+Readers switch modes from the **theme toggle** in the site header. The `header` schema also defines `showThemeToggle`, but that field is **schema only:** the toggle always renders on hosted sites today. See [Header](/features/header) and [docs.json: Schema-only fields](/reference/docs-json#schema-only-fields).
 
-The `theme` block accepts `defaultTheme` (`light` or `dark`) to pin the starting mode. That field is also **schema only** — readers still get the platform default until default-theme support ships. Mode-specific color overrides apply only in the matching mode.
+The `theme` block accepts `defaultTheme` (`light` or `dark`) to pin the starting mode. That field is also **schema only:** readers still get the platform default until default-theme support ships. Mode-specific color overrides apply only in the matching mode.
 
 ### Colors
 
@@ -50,7 +50,7 @@ Invalid hex strings are ignored rather than breaking the site. Custom colors inj
 
 Typography comes from the preset when you set `theme.preset`. Each preset selects a **sans** font for body text and a **heading** font for titles; docs.page maps those choices onto CSS variables (`--font-sans`, `--font-heading`) and loads the matching [Google Fonts](https://fonts.google.com) faces at runtime.
 
-The platform maintains a fixed registry of supported families—Inter, Geist, Lexend, Instrument Sans, JetBrains Mono, and others—so preset font names always resolve to web-safe files. You do not configure font keys directly in `docs.json`; they travel with the preset code.
+The platform maintains a fixed registry of supported families (Inter, Geist, Lexend, Instrument Sans, JetBrains Mono, and others), so preset font names always resolve to web-safe files. You do not configure font keys directly in `docs.json`; they travel with the preset code.
 
 To change fonts, switch presets or pick a different code on shadcn/ui that pairs the typefaces you want.
 

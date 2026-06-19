@@ -3,14 +3,14 @@ title: Locales
 description: See how locale keys in docs.json sidebar shape URLs, navigation, and the language switcher.
 ---
 
-Readers who open `/fr/installation` should see French navigation and links that stay under `/fr` — without you repeating the locale prefix on every sidebar entry.
+Readers who open `/fr/installation` should see French navigation and links that stay under `/fr`, without you repeating the locale prefix on every sidebar entry.
 
 ## Overview
 
 Multi-locale documentation in docs.page is driven by the **`sidebar`** property in `docs.json`, not a separate locales block. You can define sidebar navigation in two shapes:
 
-- **Flat array** — one navigation tree for a single-language site. No language switcher appears.
-- **Locale-keyed object** — one navigation tree per locale, plus an optional `default` tree for pages without a locale prefix in the URL.
+- **Flat array:** one navigation tree for a single-language site. No language switcher appears.
+- **Locale-keyed object:** one navigation tree per locale, plus an optional `default` tree for pages without a locale prefix in the URL.
 
 When `sidebar` is an object, docs.page derives the list of available locales from its keys (every key except `default`). That list drives URL parsing, sidebar selection, link prefixing, and the language switcher in the header.
 
@@ -65,7 +65,7 @@ There is no standalone `locales` field to maintain. At config load time, docs.pa
 
 ### The `default` sidebar
 
-The `default` key is optional and **not** treated as a locale. Use it when pages at the site root (without a locale prefix in the URL) need their own sidebar — for example, a language picker landing page at `/`.
+The `default` key is optional and **not** treated as a locale. Use it when pages at the site root (without a locale prefix in the URL) need their own sidebar, for example, a language picker landing page at `/`.
 
 ```json
 {
@@ -97,7 +97,7 @@ docs.page reads the **first path segment** of the current page path. If that seg
 | `/fr` | `fr` | `sidebar.fr` |
 | `/` or `/about` | none | `sidebar.default` (if present) |
 
-Production URLs follow the same pattern on docs.page, vanity subdomains, and custom domains — only the host changes:
+Production URLs follow the same pattern on docs.page, vanity subdomains, and custom domains. Only the host changes:
 
 ```
 https://docs.page/{owner}/{repo}/en/installation

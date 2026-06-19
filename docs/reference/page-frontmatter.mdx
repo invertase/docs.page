@@ -3,7 +3,7 @@ title: Page frontmatter
 description: Set page title, SEO, redirects, and footer navigation for a single docs/ page.
 ---
 
-Frontmatter overrides site defaults from `docs.json` for this page only. Unknown keys are ignored — docs.page does not validate page YAML against a schema. For writing guidance, see [Write](/authoring/write).
+Frontmatter overrides site defaults from `docs.json` for this page only. Unknown keys are ignored; docs.page does not validate page YAML against a schema. For writing guidance, see [Write](/authoring/write).
 
 ```yaml
 ---
@@ -33,7 +33,7 @@ description: Install the docs.page CLI on macOS, Linux, or Windows.
 <Property name="image" type="string">
   Hero image path or URL rendered below the title block when `showPageImage` is enabled.
 
-  Overrides site-wide `socialPreview` for Open Graph on this page. Paths are resolved relative to the repository root — same rules as [Image](/components/image).
+  Overrides site-wide `socialPreview` for Open Graph on this page. Paths are resolved relative to the repository root, using the same rules as [Image](/components/image).
 </Property>
 
 ## showPageTitle
@@ -98,7 +98,7 @@ description: Install the docs.page CLI on macOS, Linux, or Windows.
 
 ## See also
 
-- [docs.json](/reference/docs-json) — site-wide defaults that frontmatter can override
-- [CLI](/reference/cli) — `docs check --metadata` for missing title and description
-- [Write](/authoring/write) — page structure, links, and media
-- [Organize](/authoring/organize) — sidebar order that drives default previous/next links
+- [docs.json](/reference/docs-json): site-wide defaults that frontmatter can override
+- [CLI](/reference/cli): `docs check --metadata` for missing title and description
+- [Write](/authoring/write): page structure, links, and media
+- [Organize](/authoring/organize): sidebar order that drives default previous/next links

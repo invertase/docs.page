@@ -53,11 +53,11 @@ By default, headings from `h2` through `h3` appear in the table of contents. The
 }
 ```
 
-Increase `headerDepth` to include deeper levels—for example, `4` includes `h4` headings, `5` includes `h5`, and `6` includes `h6`.
+Increase `headerDepth` to include deeper levels, for example `4` includes `h4` headings, `5` includes `h5`, and `6` includes `h6`.
 
 ## Custom headings
 
-When Markdown syntax is unavailable—for example, inside a component that does not parse Markdown—use `<Heading>` directly.
+When Markdown syntax is unavailable, for example inside a component that does not parse Markdown, use `<Heading>` directly.
 
 ```mdx
 <Heading type="h2" id="custom-section">Custom section</Heading>
@@ -70,7 +70,7 @@ Set `id` when you need a stable anchor link. Without `id`, the heading renders w
 <Property name="type" type="string" required>
   The heading level to render. Must be one of `h1` through `h6`.
 
-  Controls typography and spacing. Match the semantic level of the content—use `h2` for major sections, `h3` for subsections, and so on.
+  Controls typography and spacing. Match the semantic level of the content: use `h2` for major sections, `h3` for subsections, and so on.
 </Property>
 
 ---
@@ -83,7 +83,7 @@ Set `id` when you need a stable anchor link. Without `id`, the heading renders w
 
 ---
 
-Standard HTML heading attributes—such as `className`—are forwarded to the underlying element.
+Standard HTML heading attributes (such as `className`) are forwarded to the underlying element.
 
 ## Behavior
 
@@ -97,5 +97,5 @@ Standard HTML heading attributes—such as `className`—are forwarded to the un
 
 ## See also
 
-- [Components overview](/components) — when to use headings with other layout components
-- [docs.json](/reference/docs-json) — `content.headerDepth` and other content settings
+- [Components overview](/components): when to use headings with other layout components
+- [docs.json](/reference/docs-json): `content.headerDepth` and other content settings

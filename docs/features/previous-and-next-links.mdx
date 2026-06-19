@@ -3,7 +3,7 @@ title: Previous and next links
 description: Understand when bottom-of-page links follow sidebar order and when page frontmatter overrides that sequence.
 ---
 
-A reader finishes a tutorial and taps **Next** expecting the follow-up guide—not necessarily the next item in your sidebar tree. docs.page balances those two models: automatic neighbors from navigation order, with per-page overrides when the reading path should diverge.
+A reader finishes a tutorial and taps **Next** expecting the follow-up guide, not necessarily the next item in your sidebar tree. docs.page balances those two models: automatic neighbors from navigation order, with per-page overrides when the reading path should diverge.
 
 ## Overview
 
@@ -11,7 +11,7 @@ Previous and next links are button-style anchors at the bottom of every doc page
 
 By default, docs.page **infers** those links from where the current page sits in your `sidebar` configuration in `docs.json`. The flattened sidebar order becomes the reading sequence: the page before yours is **Previous**, the page after is **Next**.
 
-When a page needs a different path—skipping a reference page, jumping to a related how-to, or stitching a custom learning track—you set `previous` and `next` in that page's frontmatter. Frontmatter wins for whichever direction you set; the other direction can still come from inference.
+When a page needs a different path (skipping a reference page, jumping to a related how-to, or stitching a custom learning track), you set `previous` and `next` in that page's frontmatter. Frontmatter wins for whichever direction you set; the other direction can still come from inference.
 
 | Mechanism | What it controls |
 | --- | --- |
@@ -25,7 +25,7 @@ When a page needs a different path—skipping a reference page, jumping to a rel
 When `content.automaticallyInferNextPrevious` is `true` (the default), docs.page builds a single ordered list from your sidebar:
 
 1. Walk every group and page in `sidebar`, depth-first.
-2. Keep only **internal** links—external URLs are skipped because they are not docs pages on your site.
+2. Keep only **internal** links; external URLs are skipped because they are not docs pages on your site.
 3. Include nested group labels when a group has both a `group` name and an `href` pointing at an internal page.
 4. Find the current page in that list (locale-aware path matching) and take the items immediately before and after it.
 
@@ -55,15 +55,15 @@ nextTitle: Monitor your deployment
 ---
 ```
 
-Optional `previousTitle` and `nextTitle` set the button label. When you omit a title field, docs.page looks up the target path in the flattened sidebar and uses that entry's title. If the path is not in the sidebar and no title is provided, that button is hidden—docs.page does not render a link with an empty label.
+Optional `previousTitle` and `nextTitle` set the button label. When you omit a title field, docs.page looks up the target path in the flattened sidebar and uses that entry's title. If the path is not in the sidebar and no title is provided, that button is hidden. docs.page does not render a link with an empty label.
 
 Overrides are evaluated **after** inference. Setting only `next` keeps an inferred **Previous** when inference is enabled; setting only `previous` keeps an inferred **Next**. Setting both replaces both directions entirely.
 
-External URLs in `previous` or `next` are ignored—the navigation buttons are for moving between pages on your docs site, not for outbound links.
+External URLs in `previous` or `next` are ignored. The navigation buttons are for moving between pages on your docs site, not for outbound links.
 
 ### When nothing renders
 
-If docs.page cannot resolve a previous or next target with a display title, that side is omitted. When both sides are missing, the component renders nothing—no empty row at the bottom of the page.
+If docs.page cannot resolve a previous or next target with a display title, that side is omitted. When both sides are missing, the component renders nothing: no empty row at the bottom of the page.
 
 Common cases:
 

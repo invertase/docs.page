@@ -5,7 +5,7 @@ description: Add pages to sidebar groups, scope navigation with tabs, and order 
 
 **Before you begin**
 
-- At least one page file ready to link — see [Write](/authoring/write) if you still need to create content
+- At least one page file ready to link, see [Write](/authoring/write) if you still need to create content
 - [Preview](/authoring/preview) running locally when you want to confirm sidebar changes as you edit
 
 The sidebar is declared in `docs.json`, not inferred from folder layout. For how groups, nesting, and locale keys fit together, see [Sidebar](/features/sidebar).
@@ -33,7 +33,7 @@ The sidebar is declared in `docs.json`, not inferred from folder layout. For how
     ```
   </Step>
   <Step title="Make each page discoverable in the sidebar">
-    Add a leaf entry for your new page. Set `title` to the label readers see in the sidebar (keep it short — two to four words). Set `href` to the page's public URL path:
+    Add a leaf entry for your new page. Set `title` to the label readers see in the sidebar (keep it short, two to four words). Set `href` to the page's public URL path:
 
     ```json
     { "title": "Preview", "href": "/authoring/preview" }
@@ -42,7 +42,7 @@ The sidebar is declared in `docs.json`, not inferred from folder layout. For how
     The path must match the file under `docs/` without the extension. For example, `docs/authoring/preview.mdx` maps to `/authoring/preview`.
   </Step>
   <Step title="Scale up with nested sections">
-    When a group grows, replace a leaf entry with a nested group — same shape, with its own `pages` array:
+    When a group grows, replace a leaf entry with a nested group (same shape, with its own `pages` array):
 
     ```json
     {
@@ -61,7 +61,7 @@ The sidebar is declared in `docs.json`, not inferred from folder layout. For how
   </Step>
 </Steps>
 
-Groups without a `group` label still render — as an unlabeled block of links. External URLs in `href` are supported and show an external-link indicator.
+Groups without a `group` label still render, as an unlabeled block of links. External URLs in `href` are supported and show an external-link indicator.
 
 For every sidebar field and type, see [docs.json](/reference/docs-json).
 
@@ -94,27 +94,27 @@ When your site splits into major areas (guides, features, reference), use [site 
     ```
   </Step>
   <Step title="Share a section across every tab">
-    Leave `tab` off when a section should appear regardless of active tab — for example a global **About** group.
+    Leave `tab` off when a section should appear regardless of active tab, for example a global **About** group.
   </Step>
 </Steps>
 
-While a tab is active, docs.page shows groups tagged for that tab plus any untagged groups. The active tab is derived from the current URL — longest matching tab `href` wins.
+While a tab is active, docs.page shows groups tagged for that tab plus any untagged groups. The active tab is derived from the current URL, longest matching tab `href` wins.
 
 Site tabs split the header and sidebar. They are not the same as the [`<Tabs>`](/components/tabs) MDX component, which switches panels inside a single page.
 
 ## Add anchor shortcuts
 
-Pin GitHub, Discord, or app links **above** the sidebar — outside the main tree — with the top-level `anchors` array in `docs.json`. Each entry needs `title`, `href`, and optional `icon`. See [Links](/features/links).
+Pin GitHub, Discord, or app links **above** the sidebar (outside the main tree) with the top-level `anchors` array in `docs.json`. Each entry needs `title`, `href`, and optional `icon`. See [Links](/features/links).
 
 ## Verify navigation
 
 After you edit `docs.json`:
 
-1. **See changes as you edit** — reload [Preview](/authoring/preview) and open the page you added
-2. **Confirm the link landed in the right place** — check the new entry appears in the expected group and position
-3. **Check nested groups expand correctly** — click through nested groups; the section containing the active page should stay expanded
-4. **Confirm each tab shows the right tree** — switch between tab labels in the header and verify each tab's groups
-5. **Catch broken hrefs before push** — run `docs check` for internal link and href mismatches
+1. **See changes as you edit:** reload [Preview](/authoring/preview) and open the page you added
+2. **Confirm the link landed in the right place:** check the new entry appears in the expected group and position
+3. **Check nested groups expand correctly:** click through nested groups; the section containing the active page should stay expanded
+4. **Confirm each tab shows the right tree:** switch between tab labels in the header and verify each tab's groups
+5. **Catch broken hrefs before push:** run `docs check` for internal link and href mismatches
 
 ## Troubleshooting
 
@@ -129,9 +129,9 @@ After you edit `docs.json`:
 
 ## Related
 
-- [Write](/authoring/write) — Create page files and frontmatter before you add them to the sidebar.
-- [Preview](/authoring/preview) — Reload locally to confirm sidebar groups, tabs, and link order.
-- [Sidebar](/features/sidebar) — How groups, nested pages, and locale keys form the navigation tree.
-- [Tabs](/features/tabs) — Split large sites into header tabs and scope sidebar groups per tab.
-- [Links](/features/links) — Add GitHub, community, or app shortcuts above the sidebar with anchors.
-- [docs.json](/reference/docs-json) — Field lookup for `sidebar`, `tabs`, `anchors`, and every other config key.
+- [Write](/authoring/write): Create page files and frontmatter before you add them to the sidebar.
+- [Preview](/authoring/preview): Reload locally to confirm sidebar groups, tabs, and link order.
+- [Sidebar](/features/sidebar): How groups, nested pages, and locale keys form the navigation tree.
+- [Tabs](/features/tabs): Split large sites into header tabs and scope sidebar groups per tab.
+- [Links](/features/links): Add GitHub, community, or app shortcuts above the sidebar with anchors.
+- [docs.json](/reference/docs-json): Field lookup for `sidebar`, `tabs`, `anchors`, and every other config key.

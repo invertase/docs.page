@@ -4,15 +4,15 @@ description: Enable the in-docs chat panel on your production site with the CLI 
 ---
 
 <Info>
-  Ask AI is in **beta**. Behavior, providers, and rate limits may change. The panel loads only on your live default-branch site—not on [local preview](/features/local-preview), branch previews, or commit URLs.
+  Ask AI is in **beta**. Behavior, providers, and rate limits may change. The panel loads only on your live default-branch site, not on [local preview](/features/local-preview), branch previews, or commit URLs.
 </Info>
 
 **Before you begin**
 
-- A published docs.page site on your repository's **default branch** — see [Publish](/authoring/publish) if you have not shipped yet
+- A published docs.page site on your repository's **default branch** (see [Publish](/authoring/publish) if you have not shipped yet)
 - **GitHub admin** access on the repository and [GitHub CLI](https://cli.github.com/) authenticated (`gh auth login`) or a token for `--gh-auth`
 - An API key from **OpenAI**, **Anthropic**, **Google**, or **xAI**
-- Context on how Ask AI fits with llms.txt and MCP — see [Agent-ready docs](/ai-agents/overview)
+- Context on how Ask AI fits with llms.txt and MCP (see [Agent-ready docs](/ai-agents/overview))
 
 For how the panel searches MDX, session security, and rate limits, see [Ask AI on Features](/features/ask-ai).
 
@@ -28,7 +28,7 @@ Provisioning stores encrypted provider credentials on docs.page. Your `docs.json
 
 <Steps>
   <Step title="Provision credentials with the CLI">
-    **Register the agent** — from any directory, run create with your repository and provider. The CLI encrypts your API key locally, verifies GitHub admin access, and registers the agent with docs.page.
+    **Register the agent:** from any directory, run create with your repository and provider. The CLI encrypts your API key locally, verifies GitHub admin access, and registers the agent with docs.page.
 
     ```bash
     npx @docs.page/cli agent create --repo org/repo --provider openai
@@ -39,7 +39,7 @@ Provisioning stores encrypted provider credentials on docs.page. Your `docs.json
     For every flag, provider list, and error message, see [`docs agent create`](/reference/cli#docs-agent-create) in the CLI. To rotate keys, pass `--force` on a second create run.
   </Step>
   <Step title="Wire the key into docs.json">
-    **Connect the live site** — add an `agent` block at the top level of `docs.json` with the key from the CLI output:
+    **Connect the live site:** add an `agent` block at the top level of `docs.json` with the key from the CLI output:
 
     ```json
     "agent": {
@@ -50,7 +50,7 @@ Provisioning stores encrypted provider credentials on docs.page. Your `docs.json
     Commit the change on a branch and merge to your default branch, or push directly when you are ready.
   </Step>
   <Step title="Publish to the default branch">
-    **Ship the config** — push or merge so the production URL at `https://docs.page/org/repo` reads the updated `docs.json`. Branch previews and commit URLs do not load the panel even when `agent.key` is present.
+    **Ship the config:** push or merge so the production URL at `https://docs.page/org/repo` reads the updated `docs.json`. Branch previews and commit URLs do not load the panel even when `agent.key` is present.
   </Step>
 </Steps>
 
@@ -73,16 +73,16 @@ After the agent is enabled, tune reader-facing copy and limits in `docs.json` wi
 }
 ```
 
-- **`agent.placeholder`** — Text shown in the empty question input
-- **`agent.questions`** — Starter prompts before the first message; clicking one sends it immediately
-- **`agent.limits.ip`** — Maximum chat requests per client IP per hour (default **200**)
-- **`agent.limits.repo`** — Maximum chat requests per repository per hour (default **10,000**)
+- **`agent.placeholder`:** Text shown in the empty question input
+- **`agent.questions`:** Starter prompts before the first message; clicking one sends it immediately
+- **`agent.limits.ip`:** Maximum chat requests per client IP per hour (default **200**)
+- **`agent.limits.repo`:** Maximum chat requests per repository per hour (default **10,000**)
 
 Field behavior and defaults are documented on [Ask AI on Features](/features/ask-ai#customize-the-reader-experience).
 
 ## Verify
 
-Open your production docs URL on the default branch—for example `https://docs.page/org/repo`. Confirm the **Agent** control appears in the site header (or press **Ctrl**+**I**), open the panel, and send a test question. You should see a streamed reply with links back to your pages.
+Open your production docs URL on the default branch, for example `https://docs.page/org/repo`. Confirm the **Agent** control appears in the site header (or press **Ctrl**+**I**), open the panel, and send a test question. You should see a streamed reply with links back to your pages.
 
 If the control is missing, work through [Troubleshooting](#troubleshooting) before re-running create.
 
@@ -101,7 +101,7 @@ To remove stored credentials, run `npx @docs.page/cli agent delete --repo org/re
 
 ## Related
 
-- [Agent-ready docs](/ai-agents/overview) — llms.txt, MCP, and skills alongside Ask AI
-- [Embed Ask AI](/ai-agents/embed-ask-ai) — link, iframe, or custom chat UI in your product
-- [Ask AI on Features](/features/ask-ai) — how the panel works, session security, and rate limits
-- [CLI](/reference/cli#docs-agent-create) — flags and errors for `docs agent create` and `docs agent delete`
+- [Agent-ready docs](/ai-agents/overview): llms.txt, MCP, and skills alongside Ask AI
+- [Embed Ask AI](/ai-agents/embed-ask-ai): link, iframe, or custom chat UI in your product
+- [Ask AI on Features](/features/ask-ai): how the panel works, session security, and rate limits
+- [CLI](/reference/cli#docs-agent-create): flags and errors for `docs agent create` and `docs agent delete`

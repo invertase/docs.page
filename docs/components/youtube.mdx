@@ -3,7 +3,7 @@ title: YouTube
 description: Embed a YouTube video by pasting its video ID from the watch or Shorts URL.
 ---
 
-Use `<YouTube>` to embed a video from [YouTube](https://www.youtube.com/) in your documentation. Pass the video ID from the URL—the component renders a responsive iframe pointed at `youtube.com/embed/{id}`.
+Use `<YouTube>` to embed a video from [YouTube](https://www.youtube.com/) in your documentation. Pass the video ID from the URL; the component renders a responsive iframe pointed at `youtube.com/embed/{id}`.
 
 ```mdx
 <YouTube id="X8ipUgXH6jw" />
@@ -13,9 +13,9 @@ Use `<YouTube>` to embed a video from [YouTube](https://www.youtube.com/) in you
 
 Copy the ID from the `v` query parameter in a YouTube watch URL. For example, `https://www.youtube.com/watch?v=X8ipUgXH6jw` has ID `X8ipUgXH6jw`.
 
-Short links such as `https://youtu.be/X8ipUgXH6jw` use the same ID—the segment after the final slash.
+Short links such as `https://youtu.be/X8ipUgXH6jw` use the same ID: the segment after the final slash.
 
-Shorts URLs use the same ID—the path segment after `/shorts/`. For example, `https://www.youtube.com/shorts/X8ipUgXH6jw` has ID `X8ipUgXH6jw`.
+Shorts URLs use the same ID: the path segment after `/shorts/`. For example, `https://www.youtube.com/shorts/X8ipUgXH6jw` has ID `X8ipUgXH6jw`.
 
 ## Example
 
@@ -28,7 +28,7 @@ Shorts URLs use the same ID—the path segment after `/shorts/`. For example, `h
 ## Properties
 
 <Property name="id" type="string" required>
-  The YouTube video ID to embed. This is the value of the `v` parameter in a watch URL—for example, `X8ipUgXH6jw` from `https://www.youtube.com/watch?v=X8ipUgXH6jw`.
+  The YouTube video ID to embed. This is the value of the `v` parameter in a watch URL, for example `X8ipUgXH6jw` from `https://www.youtube.com/watch?v=X8ipUgXH6jw`.
 
   When `id` is omitted or empty, the component renders nothing.
 
@@ -42,8 +42,8 @@ Shorts URLs use the same ID—the path segment after `/shorts/`. For example, `h
 <Property name="allowFullScreen" type="boolean" optional>
   Controls whether the iframe can expand to full screen. Maps to the `allowFullScreen` attribute on the underlying `<iframe>`.
 
-  - omitted or `true` — full screen allowed (default)
-  - `allowFullScreen={false}` — full-screen mode disabled
+  - omitted or `true`: full screen allowed (default)
+  - `allowFullScreen={false}`: full-screen mode disabled
 
   ```mdx
   <YouTube id="X8ipUgXH6jw" allowFullScreen={false} />
@@ -78,6 +78,6 @@ The iframe uses a 16:9 aspect ratio, fills the content width, and has rounded co
 
 ## See also
 
-- [Vimeo](/components/vimeo) — embed Vimeo videos by ID
-- [Video](/components/video) — self-hosted or generic embedded video
-- [Components overview](/components) — when to use embeds, callouts, and media components
+- [Vimeo](/components/vimeo): embed Vimeo videos by ID
+- [Video](/components/video): self-hosted or generic embedded video
+- [Components overview](/components): when to use embeds, callouts, and media components

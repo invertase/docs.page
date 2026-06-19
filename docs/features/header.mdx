@@ -9,7 +9,7 @@ Your docs site keeps the same top bar on every page. You might want the logo alo
 
 The **header** is the sticky bar above page content. It holds identity on the left (logo, optional site name, branch preview badge) and actions on the right (optional Ask AI control, search, custom links, GitHub shortcut, theme toggle). When you configure [navigation tabs](/features/tabs), a second row under the main bar switches between major doc sections.
 
-Most header behavior is controlled by the `header` object in `docs.json`. Logo images come from [`logo`](/features/logo); the site title text comes from the top-level `name` field. Search, tabs, and the agent panel are separate features—they share the header layout but are not toggled through `header`.
+Most header behavior is controlled by the `header` object in `docs.json`. Logo images come from [`logo`](/features/logo); the site title text comes from the top-level `name` field. Search, tabs, and the agent panel are separate features. They share the header layout but are not toggled through `header`.
 
 Field names, types, and defaults live in [docs.json](/reference/docs-json).
 
@@ -48,7 +48,7 @@ Several controls always occupy the right side of the header on hosted docs sites
 - **GitHub** links to `https://github.com/{owner}/{repo}` for the hosted repository and shows a formatted star count on medium and larger viewports.
 - **Theme toggle** switches between light and dark mode using your [theme](/features/theme) settings.
 
-The `header` schema also defines `showThemeToggle` and `showGitHubCard` booleans (both default to `true`). Those fields are **schema only** — theme toggle and GitHub link always render on hosted sites today. See [docs.json — Schema-only fields](/reference/docs-json#schema-only-fields).
+The `header` schema also defines `showThemeToggle` and `showGitHubCard` booleans (both default to `true`). Those fields are **schema only**. Theme toggle and GitHub link always render on hosted sites today. See [docs.json: Schema-only fields](/reference/docs-json#schema-only-fields).
 
 ### Custom header links
 
@@ -75,7 +75,7 @@ Add outbound or in-site shortcuts with `header.links`, an array of link objects.
 
 Links render after search and before the GitHub control, in array order. Use internal paths for docs pages and full URLs for external destinations.
 
-The schema accepts an optional `locale` string on each link so a button could appear only for a given translation. That field is **schema only** — all configured links render on every locale today. See [docs.json — Schema-only fields](/reference/docs-json#schema-only-fields).
+The schema accepts an optional `locale` string on each link so a button could appear only for a given translation. That field is **schema only**. All configured links render on every locale today. See [docs.json: Schema-only fields](/reference/docs-json#schema-only-fields).
 
 ### How header settings fit together
 

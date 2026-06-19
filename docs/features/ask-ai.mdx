@@ -13,12 +13,12 @@ Readers often land on one page with a question that spans several guides. Ask AI
 
 Ask AI is a reader-facing **Agent** panel embedded in your docs site. When enabled, a sparkle icon appears in the site header. Readers open the panel, ask a question, and receive a streamed reply with links back to your pages.
 
-The agent does not answer from a static FAQ you maintain separately. It searches your repository's MDX files at request time—mounted in a sandbox under `/docs`—using bash tools such as `grep`, `find`, and `cat`. Answers stay tied to the content you ship in Git.
+The agent does not answer from a static FAQ you maintain separately. It searches your repository's MDX files at request time (mounted in a sandbox under `/docs`) using bash tools such as `grep`, `find`, and `cat`. Answers stay tied to the content you ship in Git.
 
 Two pieces work together:
 
-1. **Stored credentials** — You provision an agent with `docs agent create`. The CLI encrypts your LLM provider API key locally, verifies GitHub admin access, and registers the agent with the docs.page API.
-2. **`agent` in `docs.json`** — You add an `agent.key` that matches the provisioned record. Optional fields customize placeholder text, starter questions, and rate limits.
+1. **Stored credentials:** You provision an agent with `docs agent create`. The CLI encrypts your LLM provider API key locally, verifies GitHub admin access, and registers the agent with the docs.page API.
+2. **`agent` in `docs.json`:** You add an `agent.key` that matches the provisioned record. Optional fields customize placeholder text, starter questions, and rate limits.
 
 The panel appears only on **production** URLs for your repository's default branch, when `agent.key` matches the stored agent. Branch previews, commit URLs, and local preview do not load the panel.
 
@@ -42,16 +42,16 @@ Usage is rate limited per client IP and per repository. Defaults are **200 reque
 
 After the agent is enabled, tune the panel in `docs.json` without re-running create:
 
-- **`agent.placeholder`** — Text in the question input when the chat is empty
-- **`agent.questions`** — Starter prompts shown before the first message; clicking one sends it immediately
+- **`agent.placeholder`:** Text in the question input when the chat is empty
+- **`agent.questions`:** Starter prompts shown before the first message; clicking one sends it immediately
 
 If `agent.key` is missing or does not match the stored agent, the header control and panel do not appear.
 
-**Open in Claude** in the [page action menu](/features/public-github-hosting#page-actions) is separate—it opens Claude on the web with the current page URL. It does not use Ask AI credentials or search your full doc set.
+**Open in Claude** in the [page action menu](/features/public-github-hosting#page-actions) is separate. It opens Claude on the web with the current page URL. It does not use Ask AI credentials or search your full doc set.
 
 ## Enable it
 
-1. **Provision the agent** — From any directory, run `docs agent create` with your repository and LLM provider. You need GitHub admin on the repo and a provider API key. The CLI encrypts the key before upload.
+1. **Provision the agent:** From any directory, run `docs agent create` with your repository and LLM provider. You need GitHub admin on the repo and a provider API key. The CLI encrypts the key before upload.
 
    ```bash
    npx @docs.page/cli agent create --repo org/repo --provider openai
@@ -59,7 +59,7 @@ If `agent.key` is missing or does not match the stored agent, the header control
 
    Omit flags in an interactive terminal to be prompted. On success, the CLI prints an `agent.key` value.
 
-2. **Add the `agent` block to `docs.json`** — Paste the key into your repository configuration and commit:
+2. **Add the `agent` block to `docs.json`:** Paste the key into your repository configuration and commit:
 
    ```json
    "agent": {
@@ -67,7 +67,7 @@ If `agent.key` is missing or does not match the stored agent, the header control
    }
    ```
 
-3. **Push to your default branch** — Merge or push so the live site at `https://docs.page/org/repo` loads the panel. Open the site, click **Agent** in the header, and send a test question.
+3. **Push to your default branch:** Merge or push so the live site at `https://docs.page/org/repo` loads the panel. Open the site, click **Agent** in the header, and send a test question.
 
 For delete, rotate keys, provider flags, and troubleshooting, see [Manage the AI agent](/features/cli#manage-the-ai-agent) on the CLI page and [`docs agent create`](/reference/cli#docs-agent-create) in the CLI.
 

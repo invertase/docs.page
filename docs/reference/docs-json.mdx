@@ -143,7 +143,7 @@ See [Theme](/features/theme) and [Header](/features/header) for behavior that is
   </Property>
 
   <Property name="theme.defaultTheme" type="&quot;light&quot; | &quot;dark&quot;">
-    **Schema only.** Pin the starting light or dark mode. Not applied yet — see [Schema-only fields](#schema-only-fields).
+    **Schema only.** Pin the starting light or dark mode. Not applied yet; see [Schema-only fields](#schema-only-fields).
   </Property>
 </Accordion>
 
@@ -159,11 +159,11 @@ See [Theme](/features/theme) and [Header](/features/header) for behavior that is
   </Property>
 
   <Property name="header.showThemeToggle" type="boolean" optional>
-    **Schema only.** Hide the theme toggle when `false`. Not applied yet — see [Schema-only fields](#schema-only-fields).
+    **Schema only.** Hide the theme toggle when `false`. Not applied yet; see [Schema-only fields](#schema-only-fields).
   </Property>
 
   <Property name="header.showGitHubCard" type="boolean" optional>
-    **Schema only.** Hide the GitHub repository link when `false`. Not applied yet — see [Schema-only fields](#schema-only-fields).
+    **Schema only.** Hide the GitHub repository link when `false`. Not applied yet; see [Schema-only fields](#schema-only-fields).
   </Property>
 
   <Property name="header.links" type="array">
@@ -176,7 +176,7 @@ See [Theme](/features/theme) and [Header](/features/header) for behavior that is
     | `title` | string | Button label |
     | `href` | string | Link target |
     | `cta` | boolean | Style as primary CTA when `true`. Default: `false` |
-    | `locale` | string | **Schema only.** Show the link only for this locale. Not applied yet — see [Schema-only fields](#schema-only-fields) |
+    | `locale` | string | **Schema only.** Show the link only for this locale. Not applied yet; see [Schema-only fields](#schema-only-fields) |
   </Property>
 </Accordion>
 
@@ -193,7 +193,7 @@ Top-level navigation tabs. Each tab scopes sidebar groups with a matching `tab` 
 </Property>
 
 <Property name="tabs[].href" type="string" required>
-  Root-relative path opened when the tab is selected — usually the first page in that tab's sidebar.
+  Root-relative path opened when the tab is selected, usually the first page in that tab's sidebar.
 </Property>
 
 <Property name="tabs[].locale" type="string" optional>
@@ -206,7 +206,7 @@ See [Tabs](/features/tabs).
 
 Navigation tree for the site. Two shapes are supported:
 
-**Flat (single locale)** — array of group objects:
+**Flat (single locale):** array of group objects:
 
 ```json
 "sidebar": [
@@ -217,7 +217,7 @@ Navigation tree for the site. Two shapes are supported:
 ]
 ```
 
-**Locale-keyed** — object with locale codes as keys (plus optional `default`):
+**Locale-keyed:** object with locale codes as keys (plus optional `default`):
 
 ```json
 "sidebar": {
@@ -320,12 +320,12 @@ See [Links](/features/links).
   The {{ product }} API lives at {{ api.baseUrl }}.
   ```
 
-  Only **string** leaf values substitute — intermediate objects are traversed; non-string leaves leave the placeholder unchanged. Variables do not apply inside frontmatter. See [Global variables](/features/global-variables).
+  Only **string** leaf values substitute. Intermediate objects are traversed; non-string leaves leave the placeholder unchanged. Variables do not apply inside frontmatter. See [Global variables](/features/global-variables).
 </Property>
 
 ## scripts
 
-Analytics and tag-manager injection on **published** pages only — not during local preview.
+Analytics and tag-manager injection on **published** pages only, not during local preview.
 
 <Property name="scripts.googleTagManager" type="string">
   Google Tag Manager container ID (for example `GTM-XXXX`). When set, direct Google Analytics injection is skipped even if `googleAnalytics` is also present.
@@ -336,7 +336,7 @@ Analytics and tag-manager injection on **published** pages only — not during l
 </Property>
 
 <Property name="scripts.plausible" type="string | boolean">
-  Plausible analytics. Set to `true` for the hosted Plausible script, or a string URL for self-hosted Plausible. Requires a mapped [custom domain](/features/custom-domains) or [vanity subdomain](/features/vanity-subdomains) — inactive on the default `docs.page/{owner}/{repo}` path.
+  Plausible analytics. Set to `true` for the hosted Plausible script, or a string URL for self-hosted Plausible. Requires a mapped [custom domain](/features/custom-domains) or [vanity subdomain](/features/vanity-subdomains), and is inactive on the default `docs.page/{owner}/{repo}` path.
 </Property>
 
 See [Analytics](/features/analytics).
@@ -344,7 +344,7 @@ See [Analytics](/features/analytics).
 ## search
 
 <Accordion title="search.docsearch">
-  Optional Algolia DocSearch credentials. Built-in on-site search does not require this block — see [Search](/features/search).
+  Optional Algolia DocSearch credentials. Built-in on-site search does not require this block; see [Search](/features/search).
 
   | Field | Type | Default |
   | --- | --- | --- |
@@ -426,6 +426,6 @@ See [MCP server](/features/mcp-server).
 
 ## See also
 
-- [Page frontmatter](/reference/page-frontmatter) — per-page YAML fields
-- [CLI](/reference/cli) — `docs init`, `docs preview`, `docs check`, agent commands
-- [HTTP endpoints](/reference/http-endpoints) — published routes and platform APIs
+- [Page frontmatter](/reference/page-frontmatter): per-page YAML fields
+- [CLI](/reference/cli): `docs init`, `docs preview`, `docs check`, agent commands
+- [HTTP endpoints](/reference/http-endpoints): published routes and platform APIs

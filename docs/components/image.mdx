@@ -27,7 +27,7 @@ Markdown images render as `<Image>` without extra properties. They inherit zoom 
 
 Pass a full `http` or `https` URL to load an image from that address. Pass a path starting with `/` to load a file from your repository relative to the `/docs` directory.
 
-For example, if your repository contains `/docs/assets/my-image.png`, use `/assets/my-image.png` as the `src`. On preview builds—branches, pull requests, or commits—the image is resolved from that Git reference rather than the default branch.
+For example, if your repository contains `/docs/assets/my-image.png`, use `/assets/my-image.png` as the `src`. On preview builds (branches, pull requests, or commits), the image is resolved from that Git reference rather than the default branch.
 
 ```mdx
 <Image src="/assets/my-image.png" alt="Pretty picture" />
@@ -105,9 +105,9 @@ For example, if your repository contains `/docs/assets/my-image.png`, use `/asse
 <Property name="zoom" type="boolean" optional>
   Controls click-to-zoom behavior for this image.
 
-  - `zoom={true}` — enables zoom for this image
-  - `zoom={false}` — disables zoom even when [`content.zoomImages`](/reference/docs-json) is `true` in `docs.json`
-  - omitted — follows the global `content.zoomImages` setting (defaults to `false`)
+  - `zoom={true}`: enables zoom for this image
+  - `zoom={false}`: disables zoom even when [`content.zoomImages`](/reference/docs-json) is `true` in `docs.json`
+  - omitted: follows the global `content.zoomImages` setting (defaults to `false`)
 
   ```mdx
   <Image zoom src="https://cdn.example.com/detail.jpg" alt="Detail view" />
@@ -133,8 +133,8 @@ For example, if your repository contains `/docs/assets/my-image.png`, use `/asse
 <Property name="theme" type="string" optional>
   Restricts visibility to one color scheme. Omit `theme` to show the image in both light and dark modes.
 
-  - `theme="light"` — visible in light mode only
-  - `theme="dark"` — visible in dark mode only
+  - `theme="light"`: visible in light mode only
+  - `theme="dark"`: visible in dark mode only
 
   ```mdx
   <Image theme="light" src="/assets/logo-light.svg" alt="Logo" />
@@ -184,7 +184,7 @@ Add `caption` to show descriptive text below the image. The component wraps the 
 
 ## Theme
 
-By default, images appear in both light and dark modes. Set `theme` to show a variant only in the matching color scheme—useful for logos or screenshots that do not work on every background.
+By default, images appear in both light and dark modes. Set `theme` to show a variant only in the matching color scheme, which is useful for logos or screenshots that do not work on every background.
 
 ```mdx
 <Image caption="Light-mode logo" theme="light" src="/assets/logo-light.svg" alt="Logo" />
@@ -193,7 +193,7 @@ By default, images appear in both light and dark modes. Set `theme` to show a va
 
 ## Additional attributes
 
-`<Image>` extends the standard HTML `<img>` element. Any attribute not consumed by the properties above—`loading`, `decoding`, `crossOrigin`, `referrerPolicy`, `style`, and others—is forwarded to the underlying `<img>`.
+`<Image>` extends the standard HTML `<img>` element. Any attribute not consumed by the properties above (`loading`, `decoding`, `crossOrigin`, `referrerPolicy`, `style`, and others) is forwarded to the underlying `<img>`.
 
 The component always sets `loading="lazy"` on the image element.
 
@@ -222,6 +222,6 @@ The component always sets `loading="lazy"` on the image element.
 
 ## See also
 
-- [docs.json](/reference/docs-json) — `content.zoomImages` and other content settings
-- [Video](/components/video) — self-hosted video (no repo-relative path support)
-- [Components overview](/components) — when to use images, callouts, and embeds
+- [docs.json](/reference/docs-json): `content.zoomImages` and other content settings
+- [Video](/components/video): self-hosted video (no repo-relative path support)
+- [Components overview](/components): when to use images, callouts, and embeds

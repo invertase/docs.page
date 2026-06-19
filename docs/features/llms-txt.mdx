@@ -7,7 +7,7 @@ When an AI agent needs to answer questions about your product, it first needs to
 
 ## Overview
 
-Every published docs.page site exposes two auto-generated markdown exports: **`llms.txt`** and **`llms-full.txt`**. They follow the [llms.txt convention](https://llmstxt.org/) — a plain-text index that LLM tools can crawl or ingest without scraping HTML.
+Every published docs.page site exposes two auto-generated markdown exports: **`llms.txt`** and **`llms-full.txt`**. They follow the [llms.txt convention](https://llmstxt.org/), a plain-text index that LLM tools can crawl or ingest without scraping HTML.
 
 You do not enable these exports in `docs.json`, run a build step, or maintain a separate mirror. docs.page generates both files from the same GitHub source that powers your live site. Push a page update and the exports reflect it on the next request.
 
@@ -34,7 +34,7 @@ Product documentation for the Acme platform.
 - [Authentication](https://docs.page/acme/handbook/authentication): API keys, OAuth, and token refresh.
 ```
 
-Use `llms.txt` when a tool needs a map of your docs — titles, summaries, and canonical links — without downloading full page source.
+Use `llms.txt` when a tool needs a map of your docs (titles, summaries, and canonical links) without downloading full page source.
 
 ### What `llms-full.txt` contains
 
@@ -50,7 +50,7 @@ On each request, docs.page:
 2. Loads `docs.json` and page frontmatter for titles and descriptions
 3. Assembles the markdown export and returns it with `Content-Type: text/markdown; charset=utf-8`
 
-There is no export cache you manage. Content stays in sync with Git — the same model as [Public GitHub hosting](/features/public-github-hosting).
+There is no export cache you manage. Content stays in sync with Git, the same model as [Public GitHub hosting](/features/public-github-hosting).
 
 <Info>
   If your repository tree is very large, docs.page may truncate the file list. When that happens, the response includes an `x-docs-page-tree-truncated: 1` header so integrators know the export may be incomplete.
@@ -74,7 +74,7 @@ https://docs.page/{owner}/{repo}~{ref}/llms-full.txt
 
 On [vanity subdomains](/features/vanity-subdomains) and [custom domains](/features/custom-domains), links inside the export use that site's public origin and path layout. See [Branch preview](/features/branch-preview) for ref URL patterns.
 
-Readers can also open one page as raw markdown from the **View markdown** item in the [page action menu](/features/public-github-hosting#page-actions), or by appending `.md` to the page URL. See [HTTP endpoints — Raw markdown](/reference/http-endpoints#raw-markdown).
+Readers can also open one page as raw markdown from the **View markdown** item in the [page action menu](/features/public-github-hosting#page-actions), or by appending `.md` to the page URL. See [HTTP endpoints: Raw markdown](/reference/http-endpoints#raw-markdown).
 
 For method names, response headers, cache behavior, and the full route list, see [HTTP endpoints](/reference/http-endpoints).
 

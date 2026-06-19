@@ -3,7 +3,7 @@ title: Tweet
 description: Embed an X post in your docs with optional link previews and thread context.
 ---
 
-Use `<Tweet>` to embed a post from X (formerly Twitter) in your documentation. Pass the numeric tweet ID from the post URL—the component loads Twitter's embed script and renders the official widget.
+Use `<Tweet>` to embed a post from X (formerly Twitter) in your documentation. Pass the numeric tweet ID from the post URL; the component loads Twitter's embed script and renders the official widget.
 
 ```mdx
 <Tweet id="1513662173796605958" />
@@ -48,7 +48,7 @@ You can enable both options on the same embed.
 ## Properties
 
 <Property name="id" type="string" required>
-  The numeric ID of the post to embed. This is the number at the end of the post URL—for example, `1513662173796605958` from `https://x.com/docsdotpage/status/1513662173796605958`.
+  The numeric ID of the post to embed. This is the number at the end of the post URL, for example `1513662173796605958` from `https://x.com/docsdotpage/status/1513662173796605958`.
 
   ```mdx
   <Tweet id="1513662173796605958" />
@@ -60,8 +60,8 @@ You can enable both options on the same embed.
 <Property name="cards" type="boolean" optional>
   Controls whether link preview cards inside the tweet are shown.
 
-  - omitted or `false` — cards hidden (default)
-  - `cards` or `cards={true}` — cards visible
+  - omitted or `false`: cards hidden (default)
+  - `cards` or `cards={true}`: cards visible
 
   ```mdx
   <Tweet id="1513662173796605958" cards />
@@ -73,8 +73,8 @@ You can enable both options on the same embed.
 <Property name="conversation" type="boolean" optional>
   Controls whether thread replies are included in the embed.
 
-  - omitted or `false` — no thread context (default)
-  - `conversation` or `conversation={true}` — conversation shown
+  - omitted or `false`: no thread context (default)
+  - `conversation` or `conversation={true}`: conversation shown
 
   ```mdx
   <Tweet id="1513662173796605958" conversation />
@@ -91,7 +91,7 @@ You can enable both options on the same embed.
 | Site theme is dark | Widget uses Twitter's dark theme |
 | Site theme is light | Widget uses Twitter's light theme |
 
-The component loads `https://platform.twitter.com/widgets.js` once per page. While the script is loading, or when `id` is missing, nothing visible is rendered—readers see a brief empty area until the embed appears.
+The component loads `https://platform.twitter.com/widgets.js` once per page. While the script is loading, or when `id` is missing, nothing visible is rendered; readers see a brief empty area until the embed appears.
 
 ## Privacy
 
@@ -103,4 +103,4 @@ Embeds are created with **Do Not Track** (`dnt: true`) enabled. Twitter receives
 
 ## See also
 
-- [Components overview](/components) — when to use embeds, callouts, and media components
+- [Components overview](/components): when to use embeds, callouts, and media components

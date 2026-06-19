@@ -3,7 +3,7 @@ title: Vimeo
 description: Embed a Vimeo video by numeric ID from the video URL.
 ---
 
-Use `<Vimeo>` to embed a Vimeo video in your documentation. Pass the numeric video ID from the Vimeo URL—the component renders a responsive iframe pointed at `player.vimeo.com`.
+Use `<Vimeo>` to embed a Vimeo video in your documentation. Pass the numeric video ID from the Vimeo URL; the component renders a responsive iframe pointed at `player.vimeo.com`.
 
 ```mdx
 <Vimeo id="22439234" />
@@ -24,7 +24,7 @@ Copy the numeric ID from the end of the Vimeo URL. For example, `https://vimeo.c
 ## Properties
 
 <Property name="id" type="string" required>
-  The numeric ID of the Vimeo video to embed. This is the number at the end of the video URL—for example, `22439234` from `https://vimeo.com/22439234`.
+  The numeric ID of the Vimeo video to embed. This is the number at the end of the video URL, for example `22439234` from `https://vimeo.com/22439234`.
 
   The component loads the player from `https://player.vimeo.com/video/{id}`.
 
@@ -61,6 +61,6 @@ The iframe uses a 16:9 aspect ratio, fills the content width, and has rounded co
 
 ## See also
 
-- [YouTube](/components/youtube) — embed YouTube videos
-- [Video](/components/video) — self-hosted or generic embedded video
-- [Components overview](/components) — when to use embeds, callouts, and media components
+- [YouTube](/components/youtube): embed YouTube videos
+- [Video](/components/video): self-hosted or generic embedded video
+- [Components overview](/components): when to use embeds, callouts, and media components

@@ -3,12 +3,12 @@ title: Agents
 description: See which agent surfaces your public site already exposes, which you opt into, and where to learn about each one.
 ---
 
-Human readers browse sidebars and search. AI assistants need structured access to the same content—without scraping HTML or maintaining a separate mirror. When your docs live on docs.page in a **public** GitHub repository, most agent surfaces are already available from the Git source that powers your site.
+Human readers browse sidebars and search. AI assistants need structured access to the same content without scraping HTML or maintaining a separate mirror. When your docs live on docs.page in a **public** GitHub repository, most agent surfaces are already available from the Git source that powers your site.
 
 **Before you begin**
 
 - A [published public docs site](/authoring/publish) on your repository's default branch
-- A **public** GitHub repository — programmatic routes require public visibility (see [Public GitHub hosting](/features/public-github-hosting))
+- A **public** GitHub repository (programmatic routes require public visibility; see [Public GitHub hosting](/features/public-github-hosting))
 
 ---
 
@@ -25,23 +25,23 @@ Agent-ready docs serve two audiences from one Git source:
 
 **llms.txt** and **MCP** need no `docs.json` changes to exist. **Agent skills** are optional repo content you commit under `.agents/skills/`. **Ask AI** is the only surface you explicitly provision and enable.
 
-Most teams start with [llms.txt](/ai-agents/llms-txt) or [MCP](/ai-agents/mcp-server)—both are live on a public site before you change anything. Add [Agent skills](/ai-agents/agent-skills) when you encode team workflows in markdown. Enable [Ask AI](/ai-agents/ask-ai) when readers need an in-docs chat panel; use [Embed Ask AI](/ai-agents/embed-ask-ai) to surface chat from your product.
+Most teams start with [llms.txt](/ai-agents/llms-txt) or [MCP](/ai-agents/mcp-server); both are live on a public site before you change anything. Add [Agent skills](/ai-agents/agent-skills) when you encode team workflows in markdown. Enable [Ask AI](/ai-agents/ask-ai) when readers need an in-docs chat panel; use [Embed Ask AI](/ai-agents/embed-ask-ai) to surface chat from your product.
 
 ## How it works
 
-Every surface reads from the public GitHub repository and ref that power your docs site. Push an MDX update and exports, MCP listings, and Ask AI search reflect it on the next request—the same model as [Public GitHub hosting](/features/public-github-hosting).
+Every surface reads from the public GitHub repository and ref that power your docs site. Push an MDX update and exports, MCP listings, and Ask AI search reflect it on the next request, using the same model as [Public GitHub hosting](/features/public-github-hosting).
 
 You do not maintain a second documentation store or run an export job. Branch and pull request URLs use the same `~ref` segment as page previews, so tools can target a preview ref before merge.
 
-**Discovery vs interactive read** — [llms.txt](/ai-agents/llms-txt) answers "what exists?" in one HTTP fetch. [MCP](/ai-agents/mcp-server) lets assistants list and read individual pages on demand. Choose llms exports when any HTTP client needs a catalog; choose MCP when the agent works in an editor or terminal session.
+**Discovery vs interactive read:** [llms.txt](/ai-agents/llms-txt) answers "what exists?" in one HTTP fetch. [MCP](/ai-agents/mcp-server) lets assistants list and read individual pages on demand. Choose llms exports when any HTTP client needs a catalog; choose MCP when the agent works in an editor or terminal session.
 
-**Skills and chat** — [Agent skills](/ai-agents/agent-skills) extend MCP with repo-specific instructions you own. [Ask AI](/ai-agents/ask-ai) (**beta**) adds a reader-facing chat panel on your production site—optional, and separate from programmatic access.
+**Skills and chat:** [Agent skills](/ai-agents/agent-skills) extend MCP with repo-specific instructions you own. [Ask AI](/ai-agents/ask-ai) (**beta**) adds a reader-facing chat panel on your production site (optional, and separate from programmatic access).
 
-Set `mcp.enabled` to `false` in `docs.json` when you want a public site without MCP tools or skill resources. llms.txt exports stay available—there is no separate toggle for them.
+Set `mcp.enabled` to `false` in `docs.json` when you want a public site without MCP tools or skill resources. llms.txt exports stay available; there is no separate toggle for them.
 
 ## On every page
 
-Every doc page header includes a **Copy page** menu with shortcuts for readers and integrators—**View markdown** (raw `{path}.md`), **Install with MCP**, **Connect to Cursor**, **Connect to VSCode**, and **Open in Claude** (external Claude web chat about the current page). These complement site-wide surfaces like [llms.txt](/ai-agents/llms-txt) and [MCP](/ai-agents/mcp-server); they do not replace [Ask AI](/ai-agents/ask-ai), which is a separate in-docs panel you enable explicitly.
+Every doc page header includes a **Copy page** menu with shortcuts for readers and integrators, including **View markdown** (raw `{path}.md`), **Install with MCP**, **Connect to Cursor**, **Connect to VSCode**, and **Open in Claude** (external Claude web chat about the current page). These complement site-wide surfaces like [llms.txt](/ai-agents/llms-txt) and [MCP](/ai-agents/mcp-server); they do not replace [Ask AI](/ai-agents/ask-ai), which is a separate in-docs panel you enable explicitly.
 
 See [Page actions](/features/public-github-hosting#page-actions) for the full menu list and [MCP server](/ai-agents/mcp-server#connect-from-the-live-site) for setup from the live site.
 

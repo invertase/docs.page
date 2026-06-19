@@ -3,7 +3,7 @@ title: Tabs
 description: Split a large docs site into top-level sections so each tab shows only its own sidebar groups.
 ---
 
-When a docs site grows past a single sidebar, readers need a way to switch between major areas — guides, feature catalog, component reference — without scrolling one combined navigation tree.
+When a docs site grows past a single sidebar, readers need a way to switch between major areas (guides, feature catalog, component reference) without scrolling one combined navigation tree.
 
 ## Overview
 
@@ -11,7 +11,7 @@ When a docs site grows past a single sidebar, readers need a way to switch betwe
 
 The sidebar is still one configuration tree. You scope groups to a tab with the optional `tab` field on each sidebar group. While a tab is active, docs.page shows groups tagged for that tab, plus any groups with no `tab` value (shared across every tab).
 
-That is different from the **`<Tabs>` MDX component**, which creates switchable panels inside a page. Site tabs split the header and sidebar — tab labels in the header and matching sidebar groups — not inline content.
+That is different from the **`<Tabs>` MDX component**, which creates switchable panels inside a page. Site tabs split the header and sidebar (tab labels in the header and matching sidebar groups), not inline content.
 
 See [Sidebar](/features/sidebar) for how groups and pages are structured inside each tab's sidebar.
 
@@ -40,7 +40,7 @@ For every field on `tabs` entries, including optional `locale`, see [docs.json](
 
 docs.page does not store "current tab" separately. It derives the active tab from the page URL on each request.
 
-The platform compares the current doc path against each tab's `href`. The tab whose path prefix best matches the current page wins — longest match takes priority. A reader on `/features/public-github-hosting` activates the tab whose `href` is `/features`, not the tab rooted at `/`.
+The platform compares the current doc path against each tab's `href`. The tab whose path prefix best matches the current page wins. Longest match takes priority. A reader on `/features/public-github-hosting` activates the tab whose `href` is `/features`, not the tab rooted at `/`.
 
 If no tab's prefix matches, docs.page falls back to the first tab in the array. Tab resolution respects locale prefixing the same way sidebar links do, so localized URLs stay aligned with the correct tab.
 
@@ -70,7 +70,7 @@ Tag sidebar groups with the `tab` field set to a tab `id`:
 }
 ```
 
-While the **Features** tab is active, only groups where `tab` is `"features"` appear in the sidebar, along with any group that omits `tab`. Omit `tab` when a group should appear regardless of which header tab is selected — for example, a persistent link block or a cross-cutting section.
+While the **Features** tab is active, only groups where `tab` is `"features"` appear in the sidebar, along with any group that omits `tab`. Omit `tab` when a group should appear regardless of which header tab is selected, for example, a persistent link block or a cross-cutting section.
 
 You maintain one `sidebar` array (or one locale-keyed object when using [multi-locale navigation](/features/locales)). Tab scoping is a filter at render time, not a separate sidebar tree per tab.
 
@@ -78,7 +78,7 @@ You maintain one `sidebar` array (or one locale-keyed object when using [multi-l
 
 Each tab entry may include an optional `locale` field. On a locale-free URL, docs.page shows only tabs with no `locale` set. On a localized URL such as `/fr/installation`, only tabs whose `locale` matches the active locale appear.
 
-Use this when header sections differ by language — for example, a tab that only applies to the French navigation set. Most single-language sites leave `locale` off every tab.
+Use this when header sections differ by language, for example, a tab that only applies to the French navigation set. Most single-language sites leave `locale` off every tab.
 
 ## Related
 

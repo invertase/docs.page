@@ -3,7 +3,7 @@ title: Property
 description: Document API fields with name, type, and required badges in reference pages.
 ---
 
-Use `<Property>` to document a single field, parameter, or configuration key with a name, type badge, and optional **required** or **optional** labels. Put the description in the component body so you can use rich content—code blocks, lists, callouts, and nested components.
+Use `<Property>` to document a single field, parameter, or configuration key with a name, type badge, and optional **required** or **optional** labels. Put the description in the component body so you can use rich content (code blocks, lists, callouts, and nested components).
 
 Separate consecutive properties with a horizontal rule (`---`) so readers can scan long reference sections.
 
@@ -93,7 +93,7 @@ Component reference pages in this section use `<Property>` blocks for component 
 <Property name="type" type="string" optional>
   The type of the field, such as `string`, `boolean`, or a custom object name like `Theme`.
 
-  When set, the type appears as an outline badge next to the name. Omit `type` when the name alone is enough—for example, documenting `children`.
+  When set, the type appears as an outline badge next to the name. Omit `type` when the name alone is enough, for example when documenting `children`.
 </Property>
 
 ---
@@ -117,7 +117,7 @@ Component reference pages in this section use `<Property>` blocks for component 
 <Property name="children" optional>
   Content rendered as the field description. Supports paragraphs, fenced code blocks, lists, callouts, and nested components such as `<Accordion>`.
 
-  Leave empty only when the name and badges are sufficient—which is rare for reference pages.
+  Leave empty only when the name and badges are sufficient, which is rare for reference pages.
 </Property>
 
 ## Nesting
@@ -138,6 +138,6 @@ For deeply nested APIs, repeat the pattern: a parent `<Property>` for the object
 
 ## See also
 
-- [Components overview](/components) — when to use property blocks, tables, and accordions
-- [Accordion](/components/accordion) — collapsible panels for nested fields
-- [Write](/authoring/write) — structure for lookup pages like this one
+- [Components overview](/components): when to use property blocks, tables, and accordions
+- [Accordion](/components/accordion): collapsible panels for nested fields
+- [Write](/authoring/write): structure for lookup pages like this one

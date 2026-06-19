@@ -9,7 +9,7 @@ description: Link to hosted docs, iframe your site, or build same-origin chat UI
 
 **Before you begin**
 
-- Ask AI enabled on your repository — see [Ask AI](/ai-agents/ask-ai)
+- Ask AI enabled on your repository (see [Ask AI](/ai-agents/ask-ai))
 - Familiarity with how [Ask AI on Features](/features/ask-ai) secures chat with session cookies and a CSRF header
 
 ---
@@ -20,7 +20,7 @@ docs.page exposes three HTTP surfaces integrators often conflate:
 
 | Surface | Purpose | Auth model |
 | --- | --- | --- |
-| **`POST /api/agent`** | Stream chat replies to a browser that loaded your docs site | Session cookie + `X-Agent-Session` CSRF header — **not** a public API key |
+| **`POST /api/agent`** | Stream chat replies to a browser that loaded your docs site | Session cookie + `X-Agent-Session` CSRF header (**not** a public API key) |
 | **`POST /api/agent/create`** | Provision encrypted LLM credentials for a repo | GitHub admin token + JWE from the CLI |
 | **`GET /api/bundle`** | Load parsed MDX, navigation, and config | Public read; includes `hasAgent` |
 
@@ -28,7 +28,7 @@ docs.page exposes three HTTP surfaces integrators often conflate:
   **`POST /api/agent` is not a server-to-server chat API.** It accepts requests only from browsers that loaded a production docs page, hold a valid `agent_session` cookie, and send a matching `X-Agent-Session` header. You cannot call it from your product's backend with an API key, or from a cross-origin app on another domain.
 </Warning>
 
-For programmatic doc access without chat UI, use [MCP](/features/mcp-server) or [llms.txt](/features/llms-txt) — see [Agent-ready docs](/ai-agents/overview).
+For programmatic doc access without chat UI, use [MCP](/features/mcp-server) or [llms.txt](/features/llms-txt); see [Agent-ready docs](/ai-agents/overview).
 
 ## Choose an embed pattern
 
@@ -38,11 +38,11 @@ For programmatic doc access without chat UI, use [MCP](/features/mcp-server) or 
 | **iframe hosted docs** | Embedded help center in your app shell | Built-in panel inside the frame | iframe loads the docs.page origin; cookie policies may apply |
 | **Custom chat UI** | Branded assistant on the same host as docs | Your UI calling `POST /api/agent` | JavaScript must run on the **same site** as the docs |
 
-Link and iframe patterns reuse the hosted panel — no chat API integration required.
+Link and iframe patterns reuse the hosted panel, with no chat API integration required.
 
 ## Link to hosted docs
 
-**Give readers a path to docs that already include chat** — after [Ask AI](/ai-agents/ask-ai) setup, link from your app to the production URL (for example `https://docs.page/org/repo` or your [custom domain](/customize/custom-domain)). Readers toggle **Agent** when they need answers grounded in your MDX.
+**Give readers a path to docs that already include chat:** after [Ask AI](/ai-agents/ask-ai) setup, link from your app to the production URL (for example `https://docs.page/org/repo` or your [custom domain](/customize/custom-domain)). Readers toggle **Agent** when they need answers grounded in your MDX.
 
 No API calls from your product are required.
 
@@ -60,11 +60,11 @@ No API calls from your product are required.
 ></iframe>
 ```
 
-The iframe loads docs on the docs.page origin, so session cookies and the chat panel behave like a top-level visit. Test in browsers your customers use — strict third-party cookie settings can affect iframe sessions.
+The iframe loads docs on the docs.page origin, so session cookies and the chat panel behave like a top-level visit. Test in browsers your customers use; strict third-party cookie settings can affect iframe sessions.
 
 ## Build custom chat UI (same origin only)
 
-**Replace the built-in panel with your own UI** only when JavaScript runs on the same site as the docs — a docs.page URL, vanity subdomain, or custom domain — not from `app.example.com`.
+**Replace the built-in panel with your own UI** only when JavaScript runs on the same site as the docs (a docs.page URL, vanity subdomain, or custom domain, not from `app.example.com`).
 
 When a reader loads a production doc page and `hasAgent` is true, docs.page sets an HTTP-only `agent_session` cookie and a readable `agent_session_csrf` cookie. Chat requests need `credentials: "include"` and an `X-Agent-Session` header matching the CSRF cookie:
 
@@ -109,7 +109,7 @@ await fetch("/api/agent", {
 });
 ```
 
-For request headers, message shape, streamed response format, error codes, and rate-limit headers, see [HTTP endpoints — POST /api/agent](/reference/http-endpoints#apiagent-post).
+For request headers, message shape, streamed response format, error codes, and rate-limit headers, see [HTTP endpoints: POST /api/agent](/reference/http-endpoints#apiagent-post).
 
 **Check whether Ask AI is enabled** before rendering custom UI:
 
@@ -121,9 +121,9 @@ When `"hasAgent": true`, production pages issue session cookies. See [HTTP endpo
 
 ## Verify
 
-1. **Confirm `hasAgent`** — bundle response shows `"hasAgent": true`, or **Agent** appears in the hosted site header
-2. **Exercise your pattern** — link, iframe, or custom UI; send a documentation question and confirm streamed answers with page links
-3. **Confirm off-origin fails** — a direct `fetch` to `POST /api/agent` from another domain should return `401` or `403` without session cookies
+1. **Confirm `hasAgent`:** bundle response shows `"hasAgent": true`, or **Agent** appears in the hosted site header
+2. **Exercise your pattern:** link, iframe, or custom UI; send a documentation question and confirm streamed answers with page links
+3. **Confirm off-origin fails:** a direct `fetch` to `POST /api/agent` from another domain should return `401` or `403` without session cookies
 
 ## Troubleshooting
 
@@ -137,7 +137,7 @@ When `"hasAgent": true`, production pages issue session cookies. See [HTTP endpo
 
 ## Related
 
-- [Ask AI](/ai-agents/ask-ai) — enable the in-docs panel
-- [Agent-ready docs](/ai-agents/overview) — llms.txt, MCP, and skills overview
-- [Ask AI on Features](/features/ask-ai) — session security and rate limits
-- [HTTP endpoints](/reference/http-endpoints) — bundle query, POST /api/agent contract, and platform APIs
+- [Ask AI](/ai-agents/ask-ai): enable the in-docs panel
+- [Agent-ready docs](/ai-agents/overview): llms.txt, MCP, and skills overview
+- [Ask AI on Features](/features/ask-ai): session security and rate limits
+- [HTTP endpoints](/reference/http-endpoints): bundle query, POST /api/agent contract, and platform APIs

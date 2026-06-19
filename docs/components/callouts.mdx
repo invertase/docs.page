@@ -3,9 +3,9 @@ title: Callouts
 description: Highlight notes, cautions, blockers, and success messages with colored callout panels.
 ---
 
-Use `<Info>`, `<Warning>`, `<Error>`, and `<Success>` to emphasize content readers should notice. Each callout renders a colored panel with a fixed title and icon. Put any content—paragraphs, lists, or code blocks—inside the component.
+Use `<Info>`, `<Warning>`, `<Error>`, and `<Success>` to emphasize content readers should notice. Each callout renders a colored panel with a fixed title and icon. Put any content (paragraphs, lists, or code blocks) inside the component.
 
-docs.page provides four callout types. There is no generic `<Callout>` component and no separate **Note**, **Tip**, **Check**, or **Danger** variants—choose the type that best matches the message.
+docs.page provides four callout types. There is no generic `<Callout>` component and no separate **Note**, **Tip**, **Check**, or **Danger** variants; choose the type that best matches the message.
 
 ```mdx
 <Info>Your API key is shown once after creation.</Info>
@@ -20,7 +20,7 @@ docs.page provides four callout types. There is no generic `<Callout>` component
 | `<Error>` | Error | Failure, blocker, or requirement that prevents progress |
 | `<Success>` | Success | Confirmation that something completed or succeeded |
 
-Reserve `<Error>` for problems that matter—overusing it dilutes urgency. Prefer `<Info>` when the content is helpful but not alarming.
+Reserve `<Error>` for problems that matter; overusing it dilutes urgency. Prefer `<Info>` when the content is helpful but not alarming.
 
 ## Info
 
@@ -38,7 +38,7 @@ Use `<Info>` for neutral context: prerequisites, definitions, or helpful backgro
 
 ## Warning
 
-Use `<Warning>` for cautions readers should weigh before continuing—irreversible actions, deprecated behavior, or steps that may cause data loss.
+Use `<Warning>` for cautions readers should weigh before continuing (irreversible actions, deprecated behavior, or steps that may cause data loss).
 
 <Warning>
   Deleting a project removes all published pages and cannot be undone. Export your content first if you need a backup.
@@ -52,7 +52,7 @@ Use `<Warning>` for cautions readers should weigh before continuing—irreversib
 
 ## Error
 
-Use `<Error>` for failures, blockers, or constraints that stop progress—missing configuration, invalid input, or conditions that cause an operation to fail.
+Use `<Error>` for failures, blockers, or constraints that stop progress (missing configuration, invalid input, or conditions that cause an operation to fail).
 
 <Error>
   Builds fail when `docs.json` is missing from the repository root. Add the file and push again.
@@ -66,7 +66,7 @@ Use `<Error>` for failures, blockers, or constraints that stop progress—missin
 
 ## Success
 
-Use `<Success>` for positive outcomes—completed setup, verified checks, or confirmations that a step worked.
+Use `<Success>` for positive outcomes (completed setup, verified checks, or confirmations that a step worked).
 
 <Success>
   Your site is live at `https://acme.docs.page`. Share the URL with your team.
@@ -110,7 +110,7 @@ Callouts work inside other components. Use them within `<Tabs>`, `<Accordion>`, 
 
 ## See also
 
-- [Components overview](/components) — when to use callouts, tabs, and accordions
-- [Tabs](/components/tabs) — switchable panels that can contain callouts
-- [Accordion](/components/accordion) — collapsible sections that can contain callouts
-- [Steps](/components/steps) — numbered procedures for tutorials and guides
+- [Components overview](/components): when to use callouts, tabs, and accordions
+- [Tabs](/components/tabs): switchable panels that can contain callouts
+- [Accordion](/components/accordion): collapsible sections that can contain callouts
+- [Steps](/components/steps): numbered procedures for tutorials and guides

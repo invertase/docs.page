@@ -5,7 +5,7 @@ description: Keep bookmarked and linked URLs working when you rename or move a p
 
 **Before you begin**
 
-- The new URL path decided before you change files — see [Write → Where pages live](/authoring/write#where-pages-live) for how file paths map to URLs
+- The new URL path decided before you change files, see [Write → Where pages live](/authoring/write#where-pages-live) for how file paths map to URLs
 - [Preview](/authoring/preview) running locally when you want to confirm the new page and redirect
 
 For how redirects behave in production, branch previews, vanity subdomains, and custom domains, see [Redirects](/features/redirects). Field syntax lives in [Page frontmatter](/reference/page-frontmatter).
@@ -21,7 +21,7 @@ When you change a published URL, update three things: the file at the new path, 
     Rename or move the file under `docs/` to match the new URL. For example, move `docs/installation.mdx` to `docs/getting-started.mdx` so the page serves at `/getting-started`.
   </Step>
   <Step title="Point sidebar at the new href">
-    Update the sidebar in `docs.json` so the entry points at the new `href`. Remove or replace the old path — readers should not land on a dead link from navigation. See [Organize](/authoring/organize).
+    Update the sidebar in `docs.json` so the entry points at the new `href`. Remove or replace the old path, readers should not land on a dead link from navigation. See [Organize](/authoring/organize).
   </Step>
   <Step title="Keep bookmarks working with a redirect stub">
     Create a redirect stub at the old file path (next section). Without it, bookmarks and external links to the old URL return 404.
@@ -38,7 +38,7 @@ Leave a minimal file at the **old** path and set `redirect` in frontmatter to th
 
 <Steps>
   <Step title="Keep a stub file at the old path">
-    Create or replace the file at the old location — for example `docs/installation.mdx` after you moved content to `docs/getting-started.mdx`.
+    Create or replace the file at the old location, for example `docs/installation.mdx` after you moved content to `docs/getting-started.mdx`.
   </Step>
   <Step title="Declare the destination in frontmatter">
     Set `redirect` pointing at the new location:
@@ -54,11 +54,11 @@ Leave a minimal file at the **old** path and set `redirect` in frontmatter to th
     The body can be empty. docs.page reads `redirect` and returns a **307 Temporary Redirect** before any page content renders.
   </Step>
   <Step title="Resolve targets correctly across hosts">
-    **Internal moves** — use a root-relative path: `/getting-started`. No domain, no `.mdx` extension.
+    **Internal moves:** use a root-relative path: `/getting-started`. No domain, no `.mdx` extension.
 
-    **External destinations** — use a full URL starting with `https://` (or `http://`).
+    **External destinations:** use a full URL starting with `https://` (or `http://`).
 
-    Internal paths resolve against the same routing mode as the request — production, branch preview (`~ref`), vanity subdomain, or custom domain — so readers stay on the host and ref they started on. You do not need to hard-code `https://docs.page/owner/repo` for in-repo moves.
+    Internal paths resolve against the same routing mode as the request (production, branch preview (`~ref`), vanity subdomain, or custom domain), so readers stay on the host and ref they started on. You do not need to hard-code `https://docs.page/owner/repo` for in-repo moves.
   </Step>
 </Steps>
 
@@ -75,7 +75,7 @@ After you add or change redirect stubs:
     Open [Preview](/authoring/preview) and confirm the moved page renders at the new path. Confirm sidebar links point to the right `href`.
   </Step>
   <Step title="Confirm the old URL redirects in preview">
-    Open the old URL in the same preview session — for example `/installation` after you moved content to `/getting-started`. The browser should land on the new page without a 404.
+    Open the old URL in the same preview session, for example `/installation` after you moved content to `/getting-started`. The browser should land on the new page without a 404.
   </Step>
   <Step title="Catch broken redirect targets before merge">
     ```bash
@@ -94,13 +94,13 @@ After you add or change redirect stubs:
 | --- | --- | --- |
 | Old URL returns 404 | No stub file at the old path, or the stub was deleted | Recreate the file at the old path with `redirect` in frontmatter |
 | `docs check` reports a broken redirect | Target path does not match a page or asset in the repo | Use the correct root-relative path (no `.mdx`). Confirm the destination file exists |
-| Redirect sends readers to production from a branch preview | Unlikely with internal paths — they resolve per request context | Use a root-relative path, not a hard-coded production URL. See [Redirects](/features/redirects#how-internal-paths-resolve-across-routing-modes) |
+| Redirect sends readers to production from a branch preview | Unlikely with internal paths, they resolve per request context | Use a root-relative path, not a hard-coded production URL. See [Redirects](/features/redirects#how-internal-paths-resolve-across-routing-modes) |
 | External redirect fails validation | Typo in URL or unreachable host | Fix the `https://` target. Tune `--external-links` if CI flakes on third-party sites |
 | Old page still appears in the sidebar | `docs.json` still lists the old `href` | Update or remove the sidebar entry in [Organize](/authoring/organize) |
 
 ## Related
 
-- [Redirects](/features/redirects) — How per-page redirects work across routing modes, HTTP status, and limits.
-- [Page frontmatter](/reference/page-frontmatter) — Field reference for `redirect` and other per-page YAML options.
-- [Organize](/authoring/organize) — Point sidebar entries at the new URL after you move a page.
-- [Preview](/authoring/preview) — Confirm the new page and redirect locally.
+- [Redirects](/features/redirects): How per-page redirects work across routing modes, HTTP status, and limits.
+- [Page frontmatter](/reference/page-frontmatter): Field reference for `redirect` and other per-page YAML options.
+- [Organize](/authoring/organize): Point sidebar entries at the new URL after you move a page.
+- [Preview](/authoring/preview): Confirm the new page and redirect locally.

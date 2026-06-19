@@ -7,7 +7,7 @@ When an AI tool needs to answer questions about your product, it first needs to 
 
 **Before you begin**
 
-- A published site on a **public** GitHub repository — see [Agent-ready docs](/ai-agents/overview)
+- A published site on a **public** GitHub repository (see [Agent-ready docs](/ai-agents/overview))
 - Your `{owner}` and `{repo}` slugs from the production URL
 
 ---
@@ -16,8 +16,8 @@ When an AI tool needs to answer questions about your product, it first needs to 
 
 Every public docs.page site exposes two auto-generated markdown exports that follow the [llms.txt convention](https://llmstxt.org/):
 
-- **`llms.txt`** — a lightweight index with site title, description, and a **Docs** section listing each page as a markdown link with its title, summary, and canonical URL
-- **`llms-full.txt`** — the same header, then **full MDX source** for every page (title, `Source:` URL, and raw content in a fenced block)
+- **`llms.txt`:** a lightweight index with site title, description, and a **Docs** section listing each page as a markdown link with its title, summary, and canonical URL
+- **`llms-full.txt`:** the same header, then **full MDX source** for every page (title, `Source:` URL, and raw content in a fenced block)
 
 Neither export requires a `docs.json` toggle or build step. docs.page generates both from the same GitHub source as your live site. Push an update and the exports reflect it on the next request.
 
@@ -34,7 +34,7 @@ Branch and pull request previews use the same `~ref` segment as page URLs. Custo
 
 ### What agents get from llms.txt
 
-`llms.txt` is a map of your docs—titles, summaries, and canonical links—without downloading full page source. Example shape:
+`llms.txt` is a map of your docs (titles, summaries, and canonical links) without downloading full page source. Example shape:
 
 ```markdown
 # Acme Handbook
@@ -53,22 +53,22 @@ Agents and integrators often add this URL to a system prompt, tool manifest, or 
 
 `llms-full.txt` bundles full MDX source for every page in one response. Use it when an agent cannot follow links or prefers a single bulk download over many HTTP requests.
 
-The tradeoff is size—large sites produce large responses. Prefer `llms.txt` when discovery alone is enough.
+The tradeoff is size: large sites produce large responses. Prefer `llms.txt` when discovery alone is enough.
 
 | Agent need | Use |
 | --- | --- |
-| Map of pages — titles, summaries, links | `llms.txt` |
+| Map of pages: titles, summaries, links | `llms.txt` |
 | Full source in one download | `llms-full.txt` |
-| Per-page reads after discovery | `llms.txt`, then follow links — or use [MCP server](/ai-agents/mcp-server) |
+| Per-page reads after discovery | `llms.txt`, then follow links, or use [MCP server](/ai-agents/mcp-server) |
 | One page's raw source in the browser | Append `.md` to the page URL, or choose **View markdown** in the [page action menu](/features/public-github-hosting#page-actions) |
 
 ### How agents use exports in practice
 
 Typical workflows:
 
-1. **Prompt context** — include the `llms.txt` URL so the model knows where to find your catalog
-2. **Scheduled ingestion** — a job fetches `llms.txt` or `llms-full.txt` and loads content into a vector store
-3. **On-demand fetch** — an agent curls the index at the start of a session, then retrieves individual pages by URL
+1. **Prompt context:** include the `llms.txt` URL so the model knows where to find your catalog
+2. **Scheduled ingestion:** a job fetches `llms.txt` or `llms-full.txt` and loads content into a vector store
+3. **On-demand fetch:** an agent curls the index at the start of a session, then retrieves individual pages by URL
 
 RAG pipelines parse the **Docs** links from `llms.txt` and fetch pages selectively. One-shot pipelines ingest `llms-full.txt` when a single markdown blob is simpler than many requests.
 
@@ -80,13 +80,13 @@ curl -sS "https://docs.page/{owner}/{repo}/llms.txt" | head
 
 Expect markdown with a **Docs** section listing your pages.
 
-For branch previews, add `~{ref}` after the repository name—the same rules as [branch preview](/features/branch-preview):
+For branch previews, add `~{ref}` after the repository name (the same rules as [branch preview](/features/branch-preview)):
 
 ```bash
 curl -sS "https://docs.page/{owner}/{repo}~feature-branch/llms.txt" | head
 ```
 
-For very large repositories, the response may include an `x-docs-page-tree-truncated: 1` header—the export can be incomplete. Use [MCP server](/ai-agents/mcp-server) to read individual pages instead.
+For very large repositories, the response may include an `x-docs-page-tree-truncated: 1` header, meaning the export can be incomplete. Use [MCP server](/ai-agents/mcp-server) to read individual pages instead.
 
 ### Check one page
 
@@ -96,12 +96,12 @@ To verify raw source for a single page without fetching the full site index, ope
 https://docs.page/{owner}/{repo}/getting-started.md
 ```
 
-See [HTTP endpoints — Raw markdown](/reference/http-endpoints#raw-markdown) for path rules.
+See [HTTP endpoints: Raw markdown](/reference/http-endpoints#raw-markdown) for path rules.
 
 ## Related
 
-- [Agent-ready docs](/ai-agents/overview) — how llms.txt fits alongside MCP and Ask AI
-- [llms.txt on Features](/features/llms-txt) — generation, caching, and response headers
-- [MCP server](/ai-agents/mcp-server) — list and read individual pages through MCP
-- [Public GitHub hosting](/features/public-github-hosting#page-actions) — **View markdown** in the page action menu
-- [HTTP endpoints](/reference/http-endpoints) — route lookup for llms.txt, llms-full.txt, and raw markdown
+- [Agent-ready docs](/ai-agents/overview): how llms.txt fits alongside MCP and Ask AI
+- [llms.txt on Features](/features/llms-txt): generation, caching, and response headers
+- [MCP server](/ai-agents/mcp-server): list and read individual pages through MCP
+- [Public GitHub hosting](/features/public-github-hosting#page-actions): **View markdown** in the page action menu
+- [HTTP endpoints](/reference/http-endpoints): route lookup for llms.txt, llms-full.txt, and raw markdown

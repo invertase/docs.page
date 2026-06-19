@@ -3,7 +3,7 @@ title: Code group
 description: Compare the same example across languages in a tabbed code block.
 ---
 
-Use `<CodeGroup>` to show the same example in multiple languages or variants. Wrap fenced code blocks as children—each fence becomes a tab labeled with its language tag. Readers switch tabs to compare snippets without scrolling past duplicate blocks.
+Use `<CodeGroup>` to show the same example in multiple languages or variants. Wrap fenced code blocks as children; each fence becomes a tab labeled with its language tag. Readers switch tabs to compare snippets without scrolling past duplicate blocks.
 
 Prefer **Code group** over [Tabs](/components/tabs) when every panel is a code fence. Use **Tabs** when panels mix prose, lists, and callouts.
 
@@ -66,7 +66,7 @@ Prefer **Code group** over [Tabs](/components/tabs) when every panel is a code f
 ---
 
 <Property name="defaultLanguage" type="string" optional>
-  The language tab to show on first load. Must match a language tag on one of the child fences—for example, `python` or `javascript`.
+  The language tab to show on first load. Must match a language tag on one of the child fences, for example `python` or `javascript`.
 
   Defaults to the first fence in the group.
 </Property>
@@ -74,18 +74,18 @@ Prefer **Code group** over [Tabs](/components/tabs) when every panel is a code f
 ---
 
 <Property name="synchronize" type="boolean" optional>
-  When `true`, language selection is shared across every `<CodeGroup>` on the page that also sets `synchronize`. Groups stay in sync when they define the same language tags—for example, selecting **javascript** in one group selects **javascript** in the others.
+  When `true`, language selection is shared across every `<CodeGroup>` on the page that also sets `synchronize`. Groups stay in sync when they define the same language tags, for example selecting **javascript** in one group selects **javascript** in the others.
 
-  Sync state is held by `CodeGroupProvider`, which wraps page content automatically. Unlike `<Tabs groupId="…">`, there is no separate group ID—synchronized code groups on a page share one language state.
+  Sync state is held by `CodeGroupProvider`, which wraps page content automatically. Unlike `<Tabs groupId="…">`, there is no separate group ID; synchronized code groups on a page share one language state.
 </Property>
 
-Only fenced code blocks inside `<CodeGroup>` become tabs. Other page content is ignored. The renderer passes parsed blocks to the component internally—you do not set a `blocks` property yourself.
+Only fenced code blocks inside `<CodeGroup>` become tabs. Other page content is ignored. The renderer passes parsed blocks to the component internally; you do not set a `blocks` property yourself.
 
 ## Synchronization
 
 Code groups are independent by default. To keep language selection aligned across multiple groups, add `synchronize` to each `<CodeGroup>` that should follow the same choice.
 
-Use this when the same languages appear in more than one place—for example, a hello-world snippet and a matching exit call in JavaScript and Dart.
+Use this when the same languages appear in more than one place, for example a hello-world snippet and a matching exit call in JavaScript and Dart.
 
 The example below uses two groups with `synchronize`. Selecting **javascript** in either group selects **javascript** in both.
 
@@ -142,14 +142,14 @@ If a synchronized group does not include the currently selected language, it fal
 | `synchronize` omitted | Each group keeps its own language selection |
 | Selected language missing from a synchronized group | Falls back to `defaultLanguage`, then the first fence |
 
-Language tabs use the fence language tag as the label—for example, `javascript`, `python`, or `bash`. See [Code blocks](/components/code-blocks) for supported tags and highlighting.
+Language tabs use the fence language tag as the label, for example `javascript`, `python`, or `bash`. See [Code blocks](/components/code-blocks) for supported tags and highlighting.
 
-The copy button in the header copies the **active** tab's source—the raw fence content, not the highlighted HTML.
+The copy button in the header copies the **active** tab's source (the raw fence content, not the highlighted HTML).
 
 docs.page shows language tabs as buttons in the header. There is no dropdown mode; some other doc platforms expose a `dropdown` property for compact layouts, but that property is not supported here.
 
 ## See also
 
-- [Code blocks](/components/code-blocks) — single fences, titles, and annotations
-- [Tabs](/components/tabs) — switchable panels for prose and mixed content
-- [Components overview](/components) — when to use tabs, code groups, and accordions
+- [Code blocks](/components/code-blocks): single fences, titles, and annotations
+- [Tabs](/components/tabs): switchable panels for prose and mixed content
+- [Components overview](/components): when to use tabs, code groups, and accordions

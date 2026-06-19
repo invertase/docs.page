@@ -3,7 +3,7 @@ title: Steps
 description: Walk readers through install and setup procedures with numbered steps.
 ---
 
-Use `<Steps>` and `<Step>` to present a numbered sequence—installation guides, onboarding flows, or any procedure readers should follow in order. Each step shows an auto-incremented number in a circle, with an optional title and room for rich content underneath.
+Use `<Steps>` and `<Step>` to present a numbered sequence (installation guides, onboarding flows, or any procedure readers should follow in order). Each step shows an auto-incremented number in a circle, with an optional title and room for rich content underneath.
 
 Wrap one or more `<Step>` children inside `<Steps>`. Add code blocks, callouts, lists, or other components inside each step.
 
@@ -103,7 +103,7 @@ Wrap one or more `<Step>` children inside `<Steps>`. Add code blocks, callouts, 
 ---
 
 <Property name="icon" type="string" optional>
-  A [Font Awesome](/components/icon) icon slug that replaces the auto-incremented step number in the circle. Pass the slug without the `fa-` prefix—for example, `icon="gear"` for a settings step.
+  A [Font Awesome](/components/icon) icon slug that replaces the auto-incremented step number in the circle. Pass the slug without the `fa-` prefix, for example `icon="gear"` for a settings step.
 
   When `icon` is set, the step number is hidden for that step only; other steps without an icon continue numbering in sequence.
 </Property>
@@ -151,8 +151,8 @@ Wrap one or more `<Step>` children inside `<Steps>`. Add code blocks, callouts, 
 | Use steps when… | Consider alternatives when… |
 | --- | --- |
 | Readers must follow steps in order | Content is reference material with no sequence |
-| A tutorial or setup guide has 3+ stages | Options are parallel, not sequential—use [Tabs](/components/tabs) |
-| Each stage has its own code or callouts | Detail can stay hidden until needed—use [Accordion](/components/accordion) |
+| A tutorial or setup guide has 3+ stages | Options are parallel, not sequential; use [Tabs](/components/tabs) |
+| Each stage has its own code or callouts | Detail can stay hidden until needed; use [Accordion](/components/accordion) |
 
 ## Behavior
 
@@ -166,5 +166,5 @@ Wrap one or more `<Step>` children inside `<Steps>`. Add code blocks, callouts, 
 
 ## See also
 
-- [Components overview](/components) — when to use steps, tabs, and accordions
-- [Icon](/components/icon) — finding Font Awesome slugs for the `icon` property
+- [Components overview](/components): when to use steps, tabs, and accordions
+- [Icon](/components/icon): finding Font Awesome slugs for the `icon` property
