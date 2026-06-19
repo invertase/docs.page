@@ -1,0 +1,107 @@
+---
+title: Ask AI
+description: Enable the in-docs chat panel on your production site with the CLI and an agent block in docs.json.
+---
+
+<Info>
+  Ask AI is in **beta**. Behavior, providers, and rate limits may change. The panel loads only on your live default-branch site—not on [local preview](/features/local-preview), branch previews, or commit URLs.
+</Info>
+
+**Before you begin**
+
+- A published docs.page site on your repository's **default branch** — see [Publish](/authoring/publish) if you have not shipped yet
+- **GitHub admin** access on the repository and [GitHub CLI](https://cli.github.com/) authenticated (`gh auth login`) or a token for `--gh-auth`
+- An API key from **OpenAI**, **Anthropic**, **Google**, or **xAI**
+- Context on how Ask AI fits with llms.txt and MCP — see [Agent-ready docs](/ai-agents/agent-ready-docs)
+
+For how the panel searches MDX, session security, and rate limits, see [Ask AI on Features](/features/ask-ai).
+
+---
+
+## Enable the chat panel
+
+Provisioning stores encrypted provider credentials on docs.page. Your `docs.json` `agent.key` links the live site to that record.
+
+<Warning>
+  Passing `--apikey` on the command line stores the key in your shell history. Prefer an interactive prompt (omit the flag) or set the key in a short-lived environment variable. Never commit API keys to your repository.
+</Warning>
+
+<Steps>
+  <Step title="Provision credentials with the CLI">
+    **Register the agent** — from any directory, run create with your repository and provider. The CLI encrypts your API key locally, verifies GitHub admin access, and registers the agent with docs.page.
+
+    ```bash
+    npx @docs.page/cli agent create --repo org/repo --provider openai
+    ```
+
+    Omit flags in an interactive terminal to be prompted for the repository, provider, and API key. On success, the CLI prints an `agent.key` value and `Your documentation agent is ready to use`.
+
+    For every flag, provider list, and error message, see [`docs agent create`](/reference/cli-reference#docs-agent-create) in the CLI reference. To rotate keys, pass `--force` on a second create run.
+  </Step>
+  <Step title="Wire the key into docs.json">
+    **Connect the live site** — add an `agent` block at the top level of `docs.json` with the key from the CLI output:
+
+    ```json
+    "agent": {
+      "key": "your-agent-key"
+    }
+    ```
+
+    Commit the change on a branch and merge to your default branch, or push directly when you are ready.
+  </Step>
+  <Step title="Publish to the default branch">
+    **Ship the config** — push or merge so the production URL at `https://docs.page/org/repo` reads the updated `docs.json`. Branch previews and commit URLs do not load the panel even when `agent.key` is present.
+  </Step>
+</Steps>
+
+## Customize the panel (optional)
+
+After the agent is enabled, tune reader-facing copy and limits in `docs.json` without re-running create:
+
+```json
+"agent": {
+  "key": "your-agent-key",
+  "placeholder": "Ask a question about this documentation…",
+  "questions": [
+    "How do I get started?",
+    "Where is the API reference?"
+  ],
+  "limits": {
+    "ip": 200,
+    "repo": 10000
+  }
+}
+```
+
+- **`agent.placeholder`** — Text shown in the empty question input
+- **`agent.questions`** — Starter prompts before the first message; clicking one sends it immediately
+- **`agent.limits.ip`** — Maximum chat requests per client IP per hour (default **200**)
+- **`agent.limits.repo`** — Maximum chat requests per repository per hour (default **10,000**)
+
+Field behavior and defaults are documented on [Ask AI on Features](/features/ask-ai#customize-the-reader-experience).
+
+## Verify
+
+Open your production docs URL on the default branch—for example `https://docs.page/org/repo`. Confirm the **Agent** control appears in the site header (or press **Ctrl**+**I**), open the panel, and send a test question. You should see a streamed reply with links back to your pages.
+
+If the control is missing, work through [Troubleshooting](#troubleshooting) before re-running create.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| No **Agent** control on the live site | `agent.key` missing from `docs.json` on the default branch | Add the key from create output, commit, and push to the default branch |
+| Panel missing on a preview or PR URL | Agent loads only on the default-branch production URL | Open `https://docs.page/org/repo` without a `~branch` suffix |
+| Panel missing after a successful create | `agent.key` in `docs.json` does not match the stored agent | Copy the key printed by create exactly, or run create again with `--force` and update `docs.json` |
+| GitHub auth error during create | `gh` not logged in or token lacks access | Run `gh auth login` or pass `--gh-auth` with a token that has admin on the repo |
+| Agent creation failed (403) | Account is not a GitHub admin on the repository | Use an account with admin access |
+| Chat works locally in preview but not on the site | Local preview never loads the agent panel | Verify on the production default-branch URL after push |
+
+To remove stored credentials, run `npx @docs.page/cli agent delete --repo org/repo`. See [Manage the AI agent](/features/cli#manage-the-ai-agent) for delete workflows and API base URL options.
+
+## Related
+
+- [Agent-ready docs](/ai-agents/agent-ready-docs) — llms.txt, MCP, and skills alongside Ask AI
+- [Embed Ask AI](/ai-agents/embed-ask-ai) — link, iframe, or custom chat UI in your product
+- [Ask AI on Features](/features/ask-ai) — how the panel works, session security, and rate limits
+- [CLI reference](/reference/cli-reference#docs-agent-create) — flags and errors for `docs agent create` and `docs agent delete`

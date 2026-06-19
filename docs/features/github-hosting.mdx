@@ -61,6 +61,26 @@ See [Branch preview](/features/branch-preview) for ref URL patterns, when to use
 
 For iterating on your machine before you push, use [Local preview](/features/local-preview) instead.
 
+### Page actions
+
+Every rendered doc page includes a **Copy page** control in the header—a primary button plus a dropdown menu. Readers and contributors use it without configuration in `docs.json`.
+
+| Menu item | What it does |
+| --- | --- |
+| **Copy page** | Copies the current page as rendered markdown to the clipboard |
+| **Edit page** | Opens the source `.mdx` file on GitHub in the web editor (default branch or current preview ref) |
+| **View markdown** | Opens the current page at `{path}.md` — raw source from GitHub in the browser |
+| **Install with MCP** | Opens the **Install MCP** dialog with endpoint URL and client config snippets |
+| **Open in Claude** | Opens Claude on the web with a prompt to read the current page URL |
+| **Connect to VSCode** | Deep link to register this site's MCP server in VS Code |
+| **Connect to Cursor** | Deep link to register this site's MCP server in Cursor |
+
+**Edit page** is disabled during [local preview](/features/local-preview). **Install with MCP**, **Connect to VSCode**, and **Connect to Cursor** require a public site with MCP enabled—when `mcp.enabled` is `false`, the MCP endpoint is unavailable but the menu items may still appear.
+
+Several shortcuts also appear in the **⌘K** command palette when the input is empty—**Ask AI** (when enabled), **Install MCP** (when MCP is enabled), and **GitHub**. See [Search](/features/search#command-palette-k).
+
+Contributors fixing typos without a local clone can use **Edit page** from any live or branch preview URL—see [Publish](/authoring/publish#edit-a-page-on-github). For agent setup from the menu, see [MCP client](/ai-agents/mcp-server#connect-from-the-live-site).
+
 ## Related
 
 <CardGroup cols={2}>
@@ -75,5 +95,11 @@ For iterating on your machine before you push, use [Local preview](/features/loc
   </Card>
   <Card title="Branch preview" icon="code-branch" href="/features/branch-preview">
     Share branch, commit, and pull request URLs with teammates.
+  </Card>
+  <Card title="Search" icon="magnifying-glass" href="/features/search">
+    Command palette shortcuts that overlap with the page action menu.
+  </Card>
+  <Card title="Agent-ready docs" icon="robot" href="/ai-agents/agent-ready-docs">
+    llms.txt, MCP, and Ask AI surfaces from the same Git source.
   </Card>
 </CardGroup>

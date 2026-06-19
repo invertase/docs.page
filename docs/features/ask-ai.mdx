@@ -47,6 +47,8 @@ After the agent is enabled, tune the panel in `docs.json` without re-running cre
 
 If `agent.key` is missing or does not match the stored agent, the header control and panel do not appear.
 
+**Open in Claude** in the [page action menu](/features/github-hosting#page-actions) is separate—it opens Claude on the web with the current page URL. It does not use Ask AI credentials or search your full doc set.
+
 ## Enable it
 
 1. **Provision the agent** — From any directory, run `docs agent create` with your repository and LLM provider. You need GitHub admin on the repo and a provider API key. The CLI encrypts the key before upload.
@@ -80,6 +82,9 @@ For delete, rotate keys, provider flags, and troubleshooting, see [Manage the AI
   </Card>
   <Card title="MCP server" icon="plug" href="/features/mcp-server">
     Expose docs to external AI tools over MCP instead of an in-site chat panel.
+  </Card>
+  <Card title="Page actions" icon="copy" href="/features/github-hosting#page-actions">
+    **Open in Claude** and other header menu shortcuts on every page.
   </Card>
   <Card title="llms.txt" icon="file-lines" href="/features/llms-txt">
     Publish llms.txt exports for LLM discovery without a chat UI.

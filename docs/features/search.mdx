@@ -53,9 +53,11 @@ Search runs entirely in the browser after the initial fetch. The query string is
 Search lives in a command palette opened from the header **Search** button or **⌘K** (Ctrl+K on Windows and Linux). The palette is more than a search box—it also surfaces quick navigation when the input is empty:
 
 - **Navigate** — jump to configured [navigation tabs](/features/navigation-tabs)
-- **Ask AI** — open the in-docs agent panel when enabled
-- **Install MCP** — open MCP setup when configured in `docs.json`
+- **Ask AI** — open the in-docs agent panel when [Ask AI](/ai-agents/ask-ai) is enabled
+- **Install MCP** — open the **Install MCP** dialog when MCP is enabled (`mcp.enabled` is not `false`)
 - **GitHub** — open the source repository
+
+The same MCP and Ask AI shortcuts appear in the **page action menu** (**Copy page** chevron)—**Install with MCP**, **Connect to Cursor**, **Connect to VSCode**, plus **Open in Claude** for external Claude web chat. See [Page actions](/features/github-hosting#page-actions) and [MCP client](/ai-agents/mcp-server#connect-from-the-live-site).
 
 Type to search page titles and body text. Results show the page title, path, and a short snippet from the matching content.
 
@@ -76,6 +78,6 @@ Short queries return up to five results; longer queries return up to ten. Result
     Preview search on a branch or pull request before merge.
   </Card>
   <Card title="Public GitHub hosting" icon="github" href="/features/github-hosting">
-    How docs.page fetches and renders MDX from your repository.
+    Page action menu — Copy page, View markdown, and MCP shortcuts.
   </Card>
 </CardGroup>

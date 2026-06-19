@@ -154,6 +154,16 @@ Edge caching may delay updates by about a minute after the merge. Renaming the d
 | CI check fails but local preview looked fine | CI runs from a different directory or missing committed files | Pass the correct `[path]` to `check` or set `working-directory`; confirm all docs files are committed and pushed |
 | Numeric `~42` ref does not match expected PR | Wrong PR number or PR closed without merge | Use the open PR number, or switch to the branch name ref |
 
+## Edit a page on GitHub
+
+You do not need a local clone for small fixes. On any live or branch preview page, open the **Copy page** menu and choose **Edit page**. docs.page opens the matching `docs/{path}.mdx` file in GitHub's web editor on the resolved branch.
+
+<Info>
+  **Edit page** is unavailable during [local preview](/features/local-preview). Use your editor locally, or push a branch and open a [branch preview](/features/branch-preview) URL to edit on GitHub.
+</Info>
+
+After you save on GitHub, the preview or production site updates on the next request—there is no separate publish step. See [Page actions](/features/github-hosting#page-actions) for the full header menu.
+
 ## Related
 
 <CardGroup cols={2}>
@@ -168,6 +178,9 @@ Edge caching may delay updates by about a minute after the merge. Renaming the d
   </Card>
   <Card title="Public GitHub hosting" icon="github" href="/features/github-hosting">
     How default-branch URLs become your production site.
+  </Card>
+  <Card title="Page actions" icon="copy" href="/features/github-hosting#page-actions">
+    **Edit page** and **View markdown** from the header menu.
   </Card>
   <Card title="CLI" icon="terminal" href="/features/cli">
     `docs check` flags, monorepo paths, and severity options.

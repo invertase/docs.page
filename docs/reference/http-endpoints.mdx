@@ -1,6 +1,71 @@
 ---
 title: HTTP endpoints
-description: Published routes for agents, search, schema, and exports.
+description: Look up published routes for raw markdown, agent exports, MCP, search, and site discovery files.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+Published docs.page sites expose HTTP routes beyond rendered HTML pages. Paths below use the default host; [vanity subdomains](/features/vanity-subdomains) and [custom domains](/features/custom-domains) use the same path segments on their public origin. Branch, commit, and pull request previews insert `~{ref}` after the repository name—the same rules as [branch preview](/features/branch-preview).
+
+## Documentation pages
+
+| Route | Method | Returns |
+| --- | --- | --- |
+| `/{owner}/{repo}/{page-path}` | GET | Rendered documentation site (HTML) |
+| `/{owner}/{repo}~{ref}/{page-path}` | GET | Branch, commit, or pull request preview |
+
+`{page-path}` matches the file path under `docs/` without the extension—for example `docs/getting-started.mdx` → `/getting-started`.
+
+## Raw markdown
+
+Append `.md` or `.mdx` to any page path to fetch the source file from GitHub as plain text. This is the same content **View markdown** opens from the [page action menu](/features/github-hosting#page-actions).
+
+| Route | Method | Returns |
+| --- | --- | --- |
+| `/{owner}/{repo}/{page-path}.md` | GET | Raw `.md` or `.mdx` source for one page |
+| `/{owner}/{repo}/{page-path}.mdx` | GET | Same as `.md` — either suffix resolves the source file |
+| `/{owner}/{repo}.md` | GET | Raw source for the site root page (`docs/index.mdx` or equivalent) |
+
+```text
+https://docs.page/acme/handbook/getting-started.md
+https://docs.page/acme/handbook~feature-branch/authentication.md
+```
+
+Responses use `Content-Type: text/markdown; charset=utf-8`. Prefer site-wide [llms.txt](/features/llms-txt) for catalog discovery; use raw markdown URLs for a single page.
+
+## Agent exports
+
+| Route | Method | Returns |
+| --- | --- | --- |
+| `/{owner}/{repo}/llms.txt` | GET | Markdown index of all pages |
+| `/{owner}/{repo}/llms-full.txt` | GET | Markdown export with full MDX source per page |
+| `/{owner}/{repo}/mcp` | GET, POST | MCP server descriptor and streamable HTTP MCP session |
+
+See [llms.txt](/ai-agents/llms-txt) and [MCP client](/ai-agents/mcp-server). When `mcp.enabled` is `false`, the MCP route returns `404`.
+
+## Search and discovery
+
+| Route | Method | Returns |
+| --- | --- | --- |
+| `/{owner}/{repo}/search.json` | GET | JSON search index for on-site search |
+| `/{owner}/{repo}/sitemap.xml` | GET | XML sitemap for crawlers |
+| `/{owner}/{repo}/robots.txt` | GET | Crawler directives |
+
+See [Search](/features/search) and [Search engine indexing](/features/search-engine-indexing).
+
+## Platform APIs
+
+These routes live on the docs.page app host (`https://docs.page/api/…`), not under `/{owner}/{repo}/`:
+
+| Route | Method | Returns |
+| --- | --- | --- |
+| `/api/bundle?owner=&repository=&path=` | GET | Parsed MDX bundle, navigation, config; includes `hasAgent` |
+| `/api/agent` | POST | Streamed Ask AI chat (browser session required) |
+| `/api/agent/create` | POST | Provision agent credentials (CLI / integrator) |
+| `/api/schema.json` | GET | JSON schema for `docs.json` |
+
+See [Ask AI](/ai-agents/ask-ai), [Embed Ask AI](/ai-agents/embed-ask-ai), and [Reference](/reference).
+
+## See also
+
+- [Public GitHub hosting](/features/github-hosting) — page action menu and push-to-publish model
+- [llms.txt on Features](/features/llms-txt) — export generation and caching
+- [MCP server on Features](/features/mcp-server) — tools, resources, and access control

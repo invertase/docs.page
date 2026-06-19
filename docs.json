@@ -355,12 +355,12 @@
           "href": "/ai-agents/agent-skills"
         },
         {
-          "title": "AI chat",
-          "href": "/ai-agents/ai-chat"
+          "title": "Ask AI",
+          "href": "/ai-agents/ask-ai"
         },
         {
-          "title": "Embed assistant",
-          "href": "/ai-agents/embed-a-docs-assistant"
+          "title": "Embed Ask AI",
+          "href": "/ai-agents/embed-ask-ai"
         }
       ]
     },

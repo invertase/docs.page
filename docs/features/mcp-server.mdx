@@ -73,7 +73,12 @@ Omit the `mcp` block—or leave `enabled` unset—to keep the server available. 
 
 ### Connect a client
 
-Open your live docs site and use **Install MCP** from the command palette or page actions menu. The dialog copies the exact endpoint URL and client-specific config for your repository.
+Open your live docs site and connect from the [page action menu](/features/github-hosting#page-actions) or the command palette:
+
+- **Install with MCP** (page menu) or **Install MCP** (**Cmd+K** / **Ctrl+K**) — opens the **Install MCP** dialog with endpoint URL and client-specific config
+- **Connect to Cursor** or **Connect to VSCode** (page menu) — one-click deep links that register the MCP server for the site you have open
+
+The command palette shows **Install MCP** when `mcp.enabled` is not `false`. See [MCP client](/ai-agents/mcp-server#connect-from-the-live-site) for the full entry-point list.
 
 <Tabs>
   <TabItem label="Cursor" value="cursor">
@@ -102,14 +107,14 @@ claude mcp add --transport http \
   https://docs.page/owner/repo/mcp
 ```
 
-Use the URL from **Install MCP** for your site. Claude authenticates and registers the remote server for your workspace.
+Use the URL from **Install MCP** for your site.
 
   </TabItem>
 </Tabs>
 
-Other MCP clients—including VS Code and Antigravity—can connect to the same HTTP URL. **Install MCP** includes copy-ready snippets for those editors as well.
-
 After the client connects, invoke `list_doc_files` to see available pages, then `read_doc_page` with a path such as `docs/getting-started.mdx` to load source content into the conversation.
+
+Other MCP clients connect to the same HTTP URL. **Install MCP** includes copy-ready snippets for VS Code and Antigravity in the dialog.
 
 ## Related
 
