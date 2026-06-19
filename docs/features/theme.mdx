@@ -34,7 +34,7 @@ If the code is invalid or cannot be resolved, docs.page falls back to the defaul
 
 Every hosted site supports **light** and **dark** appearance. docs.page toggles modes with a `dark` class on the document root (via [next-themes](https://github.com/pacocoursey/next-themes)). Preset CSS defines separate token values for `:root` and `.dark`, so backgrounds, borders, and text stay balanced in both modes.
 
-Readers switch modes from the **theme toggle** in the site header. The `header` schema also defines `showThemeToggle`, but that field is **not yet applied** by the header renderer—the toggle currently always renders on hosted sites. See [Header](/features/header) for header chrome details.
+Readers switch modes from the **theme toggle** in the site header. The `header` schema also defines `showThemeToggle`, but that field is **not yet applied** by the header renderer—the toggle currently always renders on hosted sites. See [Header](/features/header) for header layout details.
 
 The `theme` block accepts `defaultTheme` (`light` or `dark`) to pin the starting mode. That field validates in `docs.json` but is **not yet wired** to the theme provider—readers still get the platform default until default-theme support ships. Mode-specific color overrides apply only in the matching mode.
 
@@ -42,7 +42,7 @@ The `theme` block accepts `defaultTheme` (`light` or `dark`) to pin the starting
 
 Beyond a preset, you can override individual tokens with **six-digit hex colors** (`#RRGGBB`, with or without the leading `#`).
 
-Use `primary` for accent color across links, buttons, and interactive chrome. When light and dark modes need different accents, set `primaryLight` and `primaryDark`; each falls back to `primary` when omitted. Set `backgroundLight` and `backgroundDark` to adjust page background per mode.
+Use `primary` for accent color across links, buttons, and other interactive elements. When light and dark modes need different accents, set `primaryLight` and `primaryDark`; each falls back to `primary` when omitted. Set `backgroundLight` and `backgroundDark` to adjust page background per mode.
 
 Invalid hex strings are ignored rather than breaking the site. Custom colors inject as CSS overrides on top of the preset (or the default palette when no preset is set), so you can keep a preset's typography while nudging brand orange into `--primary`.
 

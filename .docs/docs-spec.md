@@ -28,7 +28,7 @@ Ordered spine for documentation IA.
 1. **orient** — What docs.page is, when to use it, docs for humans + agents
 2. **first-success** — Quickstart: publish a live site from GitHub
 3. **author-content** — Write MDX, navigation, frontmatter, GitHub bot for PR previews
-4. **customize** — Theme, branding, domains, SEO, and site chrome (Features → Customize + Configure)
+4. **customize** — Theme, branding, domains, SEO, and site layout (Features → Customize + Configure)
 5. **integrate** — Agent-ready surfaces: llms.txt, MCP, agent skills, Ask AI (Features → AI)
 6. **lookup** — Reference for config fields, components, CLI flags, and HTTP endpoints
 

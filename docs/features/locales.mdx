@@ -12,7 +12,7 @@ Multi-locale documentation in docs.page is driven by the **`sidebar`** property 
 - **Flat array** — one navigation tree for a single-language site. No language switcher appears.
 - **Locale-keyed object** — one navigation tree per locale, plus an optional `default` tree for pages without a locale prefix in the URL.
 
-When `sidebar` is an object, docs.page derives the list of available locales from its keys (every key except `default`). That list drives URL parsing, sidebar selection, link prefixing, and the language switcher in the site chrome.
+When `sidebar` is an object, docs.page derives the list of available locales from its keys (every key except `default`). That list drives URL parsing, sidebar selection, link prefixing, and the language switcher in the header.
 
 Content files follow the same locale segments under `docs/`. A French page at `/fr/installation` lives at `docs/fr/installation.mdx`.
 

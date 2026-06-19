@@ -99,7 +99,7 @@ Goal-ordered capability catalog on the **Features** tab (`docs/features/index.md
 | ---------- | ------------- | --------------- | --------------------------------------------------------------------------------------------------------- |
 | Sidebar    | Explanation   | **Must have**   | How sidebar navigation is modelled: nested groups, pages, flat vs locale-keyed shapes. (`config-sidebar`) |
 | Tabs       | Explanation   | **Must have**   | How top-level tabs partition the site and scope sidebars. (`config-tabs`)                                 |
-| Links      | Explanation   | **Should have** | What anchor shortcuts are and where they appear in the chrome. (`config-anchors`)                         |
+| Links      | Explanation   | **Should have** | What anchor shortcuts are and where they appear in the sidebar. (`config-anchors`)                         |
 | Locales    | Explanation   | **Should have** | How multi-locale docs are derived from sidebar locale keys and resolved from the URL. (`locales`)         |
 | Redirects  | Explanation   | **Should have** | How frontmatter redirects preserve URLs when pages move. (`redirects`)                                    |
 | Search     | Explanation   | **Must have**   | How on-site search is built and surfaced in the command palette. (`docs-search`)                          |
@@ -110,8 +110,8 @@ Goal-ordered capability catalog on the **Features** tab (`docs/features/index.md
 | ----------------- | -------------------- | --------------- | --------------------------------------------------------------------------------------------------------------- |
 | Theme             | Explanation          | **Must have**   | How theming works: presets, light/dark, colors, fonts. Link to docs.json reference for fields. (`config-theme`) |
 | Logo              | Explanation          | **Must have**   | How logos and favicons are resolved for light and dark mode. (`config-logo`)                                    |
-| Header            | Explanation          | **Should have** | What the site header controls and how chrome options interact. (`config-header`)                                |
-| Social links      | Explanation          | **Should have** | Social profiles and Open Graph behaviour in site chrome. (`config-social`)                                       |
+| Header            | Explanation          | **Should have** | What the site header controls and how header options interact. (`config-header`)                                |
+| Social links      | Explanation          | **Should have** | Social profiles in the footer and Open Graph behaviour for link previews. (`config-social`)                                       |
 | Vanity subdomains | Explanation          | **Should have** | `{owner}.docs.page` routing vs default path URLs. (`vanity-subdomains`)                                          |
 | Custom domains    | Explanation + How-to | **Should have** | How custom domains map to hosted repos. Short **Enable it**: DNS and worker expectations. (`custom-domains`)    |
 

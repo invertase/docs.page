@@ -1,6 +1,175 @@
 ---
 title: Improve search visibility
-description: Configure SEO metadata, sitemap, and robots.txt.
+description: Help search engines discover and rank your docs with metadata, sitemap, and indexing controls.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+On-site search (the **⌘K** palette) helps readers who are already on your docs. This page covers **search engine indexing** — metadata, `sitemap.xml`, and `robots.txt` for Google and other crawlers. See [Search](/features/search) for reader-facing search and [Search engine indexing](/features/search-engine-indexing) for how crawler files are built.
+
+**Before you begin**
+
+- A [branch preview](/features/branch-preview) or production URL — [local preview](/features/local-preview) does not serve `sitemap.xml` or `robots.txt`
+- Site identity fields in `docs.json` — see [Apply your branding](/customize/apply-your-branding) for `name`, logo, and related settings that feed share cards
+- Optional: a [custom domain](/customize/connect-a-custom-domain) when you want canonical URLs on your own host
+
+---
+
+## Set site-wide metadata in `docs.json`
+
+docs.page emits `<title>`, description, Open Graph, and Twitter Card tags on every published page. Set defaults once in `docs.json`; individual pages can override them in frontmatter.
+
+<Steps>
+  <Step title="Give crawlers a clear site title and summary">
+    Add `name` and `description` at the top level of `docs.json`. These values become the fallback when a page has no frontmatter:
+
+    ```json
+    {
+      "name": "Acme Docs",
+      "description": "Guides and API reference for the Acme platform."
+    }
+    ```
+
+    Search engines and social apps use these strings in result snippets and link previews. Keep the description concise — one or two sentences that say what the docs cover.
+  </Step>
+  <Step title="Control the default share-card image">
+    Set `socialPreview` to a repo-relative path under `docs/` or an absolute URL for a static preview image on every page:
+
+    ```json
+    {
+      "socialPreview": "/assets/og-default.png"
+    }
+    ```
+
+    When `socialPreview` is unset, docs.page generates a card from the resolved title, description, and logo (from [Apply your branding](/customize/apply-your-branding) or `og.logo`). Set `socialPreview` to `false` to omit a default image entirely.
+  </Step>
+  <Step title="Push and preview on a hosted URL">
+    Commit and push your changes, then open a [branch preview](/features/branch-preview) or production URL. Metadata and crawler files are served from the hosted origin — not from `docs preview` on localhost.
+  </Step>
+</Steps>
+
+| Field | Used when page frontmatter is empty |
+| --- | --- |
+| **Title** | `name` → `"Documentation"` |
+| **Description** | `description` in `docs.json` |
+| **Preview image** | `socialPreview` → auto-generated card |
+
+Field types and defaults: [docs.json reference](/reference/docs-json-reference).
+
+## Tune page-level metadata
+
+High-traffic or landing pages deserve their own titles and descriptions. Per-page YAML frontmatter overrides the site defaults for that file only.
+
+<Steps>
+  <Step title="Override title and description where it matters">
+    Add frontmatter at the top of the MDX file:
+
+    ```yaml
+    ---
+    title: Getting started with Acme
+    description: Install the SDK, authenticate, and send your first API request in under ten minutes.
+    ---
+    ```
+
+    The page `<head>` uses frontmatter `title` and `description` first, then falls back to `docs.json`. The same values feed Open Graph and Twitter Card tags.
+  </Step>
+  <Step title="Set a page-specific preview image when needed">
+    Add `image` in frontmatter to override `socialPreview` for one page — useful for launch announcements or guides with distinct artwork:
+
+    ```yaml
+    ---
+    title: API reference
+    description: Request and response shapes for every endpoint.
+    image: /assets/og-api.png
+    ---
+    ```
+  </Step>
+</Steps>
+
+For every frontmatter field, see [Page frontmatter](/reference/page-frontmatter).
+
+## Confirm `sitemap.xml` and `robots.txt`
+
+docs.page generates both files automatically from your repository. You do not add or edit them in the repo.
+
+When `seo.noindex` is `false` (the default):
+
+- **`robots.txt`** allows all paths and points crawlers to your sitemap URL
+- **`sitemap.xml`** lists one URL per documentation page under `docs/` — index pages at priority `1.0`, other pages at `0.8`, all with `changefreq: weekly`
+
+Open these URLs on your production site, custom domain, or branch preview (replace `{owner}` and `{repo}` with your GitHub coordinates):
+
+```text
+https://docs.page/{owner}/{repo}/robots.txt
+https://docs.page/{owner}/{repo}/sitemap.xml
+https://docs.page/{owner}/{repo}~{ref}/robots.txt
+https://docs.page/{owner}/{repo}~{ref}/sitemap.xml
+```
+
+On a [custom domain](/customize/connect-a-custom-domain), the same paths sit at the domain root. The sitemap includes every page file in the tree — it does not filter by sidebar visibility or per-page `noindex`.
+
+## Block search engine indexing
+
+Use indexing controls when the site or specific pages should stay out of search results — internal runbooks, pre-release docs, or draft stubs you still keep in the repository.
+
+<Steps>
+  <Step title="Block the entire site from search results">
+    Set `seo.noindex` to `true` in `docs.json`:
+
+    ```json
+    {
+      "seo": {
+        "noindex": true
+      }
+    }
+    ```
+
+    This updates two layers: `robots.txt` returns `Disallow: /` (and omits the sitemap line), and every page adds `<meta name="robots" content="noindex" />` in the document head. Crawlers that respect these signals stop indexing new content; existing listings may take time to drop after re-crawl.
+
+    If you migrated from docs.page v1, the top-level `noindex` field maps to `seo.noindex`.
+  </Step>
+  <Step title="Hide individual pages while keeping the site indexed">
+    Add `noindex: true` to a page's frontmatter when most pages should appear in search but a few should not — draft changelogs, legal stubs, or redirect helpers:
+
+    ```yaml
+    ---
+    title: Draft release notes
+    description: Work in progress — not for public search.
+    noindex: true
+    ---
+    ```
+
+    Per-page `noindex` adds the meta tag for that page only. It does not change `robots.txt` or remove the URL from `sitemap.xml`.
+  </Step>
+</Steps>
+
+| Goal | Setting |
+| --- | --- |
+| Nothing on the site should be indexed | `seo.noindex: true` in `docs.json` |
+| Most pages indexed; a few excluded | `noindex: true` in page frontmatter |
+
+## Verify
+
+1. Open your [branch preview](/features/branch-preview) or production URL — not local preview.
+2. Fetch `robots.txt` and confirm it allows crawling (or `Disallow: /` when `seo.noindex` is enabled) and references your sitemap when indexing is allowed.
+3. Open `sitemap.xml` and confirm your key pages appear with the expected URLs.
+4. View page source on a documentation page and check `<title>`, `<meta name="description">`, Open Graph tags, and `<meta name="robots">` when `noindex` applies.
+5. Optional: submit the sitemap URL in [Google Search Console](https://search.google.com/search-console) after you connect a custom domain or confirm your production URL.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| `sitemap.xml` or `robots.txt` returns 404 | Checked on [local preview](/features/local-preview) | Use a branch preview or production URL — crawler files are not generated locally |
+| Search snippet shows the wrong title or description | Missing or stale frontmatter; browser cache | Set `title` and `description` in page frontmatter; confirm the merged branch is live |
+| Share preview shows the wrong image | Page lacks `image`; `socialPreview` unset | Set frontmatter `image` or `socialPreview` in `docs.json`; confirm logo paths from [Apply your branding](/customize/apply-your-branding) |
+| Page still appears in Google after `noindex` | Crawlers have not re-crawled yet | Allow time for re-crawl; confirm the live page source includes `<meta name="robots" content="noindex" />` |
+| Page is in `sitemap.xml` but has `noindex` in frontmatter | Sitemap lists all repo pages; `noindex` is page-level only | Expected — crawlers should honor the meta tag; use site-wide `seo.noindex` to block everything |
+| `robots.txt` still lists a sitemap after enabling `seo.noindex` | Old response cached, or change not deployed | Confirm `seo.noindex: true` is on the deployed ref; hard-refresh or check the branch preview URL |
+
+## Related
+
+- [Search engine indexing](/features/search-engine-indexing) — how `sitemap.xml`, `robots.txt`, and metadata are generated
+- [Search](/features/search) — on-site **⌘K** search for readers already on your docs
+- [Apply your branding](/customize/apply-your-branding) — `name`, logo, and theme settings that feed share cards
+- [Connect a custom domain](/customize/connect-a-custom-domain) — serve docs and crawler files on your own domain
+- [Page frontmatter](/reference/page-frontmatter) — per-page `title`, `description`, `image`, and `noindex`
+- [docs.json reference](/reference/docs-json-reference) — `name`, `description`, `socialPreview`, and `seo.noindex`

@@ -11,7 +11,7 @@ When a docs site grows past a single sidebar, readers need a way to switch betwe
 
 The sidebar is still one configuration tree. You scope groups to a tab with the optional `tab` field on each sidebar group. While a tab is active, docs.page shows groups tagged for that tab, plus any groups with no `tab` value (shared across every tab).
 
-That is different from the **`<Tabs>` MDX component**, which creates switchable panels inside a page. Site tabs partition the whole site chrome — header labels and sidebar contents — not inline content.
+That is different from the **`<Tabs>` MDX component**, which creates switchable panels inside a page. Site tabs split the header and sidebar — tab labels in the header and matching sidebar groups — not inline content.
 
 See [Sidebar](/features/sidebar) for how groups and pages are structured inside each tab's sidebar.
 

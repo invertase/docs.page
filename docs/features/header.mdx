@@ -7,7 +7,7 @@ Your docs site keeps the same top bar on every page. You might want the logo alo
 
 ## Overview
 
-The **header** is the sticky site chrome above page content. It holds identity on the left (logo, optional site name, branch preview badge) and actions on the right (optional Ask AI control, search, custom links, GitHub shortcut, theme toggle). When you configure [navigation tabs](/features/navigation-tabs), a second row under the main bar switches between major doc sections.
+The **header** is the sticky bar above page content. It holds identity on the left (logo, optional site name, branch preview badge) and actions on the right (optional Ask AI control, search, custom links, GitHub shortcut, theme toggle). When you configure [navigation tabs](/features/navigation-tabs), a second row under the main bar switches between major doc sections.
 
 Most header behavior is controlled by the `header` object in `docs.json`. Logo images come from [`logo`](/features/logo); the site title text comes from the top-level `name` field. Search, tabs, and the agent panel are separate features—they share the header layout but are not toggled through `header`.
 
@@ -17,7 +17,7 @@ Field names, types, and defaults live in [docs.json reference](/reference/docs-j
 
 ### Layout and sticky behavior
 
-The header stays fixed at the top of the viewport while readers scroll. A thin border fades in after the first scroll to separate chrome from content.
+The header stays fixed at the top of the viewport while readers scroll. A thin border fades in after the first scroll to separate the header from the page.
 
 The main row is 56px tall and splits into two zones:
 
@@ -77,7 +77,7 @@ Links render after search and before the GitHub control, in array order. Use int
 
 The schema accepts an optional `locale` string on each link so a button could appear only for a given translation. That filter is **not yet applied** in the header renderer—locale-specific links in configuration are ignored until locale filtering ships.
 
-### How header chrome fits together
+### How header settings fit together
 
 Header options compose with other customization without duplicating configuration:
 

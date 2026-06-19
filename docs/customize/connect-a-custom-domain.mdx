@@ -1,6 +1,84 @@
 ---
 title: Connect a custom domain
-description: Serve documentation on your own domain.
+description: Point a hostname you own at your hosted docs repository and confirm DNS and TLS before going live.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+**Before you begin**
+
+- A docs.page site already configured in your repository — see [Apply your branding](/customize/apply-your-branding) for `docs.json` and theme setup
+- A **public** GitHub repository that docs.page already serves — see [Public GitHub hosting](/features/github-hosting)
+- Admin access to DNS for the hostname you want (for example `docs.example.com`)
+
+Custom domain mappings are **one hostname, one repository**. You cannot point the same hostname at multiple docs repos, or share one domain across several repositories.
+
+If a shorter URL on `docs.page` is enough, use [Vanity subdomains](/features/vanity-subdomains) instead — no DNS changes and no worker registration.
+
+For how request routing, canonical URLs, and branch previews behave on your hostname, see [Custom domains](/features/custom-domains).
+
+---
+
+## Connect your domain
+
+<Steps>
+  <Step title="Pick the public hostname for one repository">
+    Choose a hostname that will serve a single GitHub repository — for example `docs.example.com` for `acme/handbook`.
+
+    Subdomains (`docs.example.com`) and apex domains (`example.com`) both work when your DNS provider supports the record type docs.page specifies. Plan one hostname per repo; a second repository needs its own hostname.
+  </Step>
+  <Step title="Register the hostname-to-repo mapping">
+    Custom domains are **not** configured in `docs.json`. Register the mapping in the external **custom-domain worker** registry at `custom-domain.invertase.workers.dev` so the hostname resolves to your GitHub `owner` and `repository`.
+
+    Coordinate with docs.page to add the mapping. The worker stores the link between your hostname and repo; the app reads that registry when routing requests and when generating production canonical URLs.
+  </Step>
+  <Step title="Point DNS at the docs.page edge">
+    Add the DNS record docs.page provides — typically a **CNAME** (or an equivalent record your provider requires for apex domains) — so traffic for your hostname reaches the edge worker that sets the `x-docs-page-custom-domain` header.
+
+    Propagation can take minutes to a few hours depending on your DNS provider and TTL. Leave existing records in place until the new target is confirmed.
+  </Step>
+  <Step title="Confirm TLS at the edge">
+    docs.page terminates **HTTPS** for your hostname at the edge once DNS points correctly and the worker mapping is active. Open `https://{your-hostname}/` and confirm the browser shows a valid certificate before you share the URL widely.
+
+    Certificate provisioning may lag DNS by a short period. Retry after propagation completes if you see a certificate warning.
+  </Step>
+</Steps>
+
+<Info>
+  You do not add a domain field to `docs.json`. DNS, the worker registry, and edge TLS together connect your hostname to the repository. Content and navigation still come from the same `docs.json` and `docs/` files as on the default host.
+</Info>
+
+## Verify
+
+After DNS propagates and the worker mapping is active:
+
+1. **Open the domain root** — visit `https://{your-hostname}/`. You should see the same home page as `https://docs.page/{owner}/{repo}` with paths rooted at `/`, not `/{owner}/{repo}`.
+2. **Open an inner page** — pick a known path (for example `/installation`). The URL should stay on your hostname with no owner or repository segment in the path.
+3. **Compare branch preview shape** — if you use [Branch preview](/features/branch-preview), confirm ref URLs use your hostname with a `~ref` prefix:
+
+   ```text
+   https://docs.example.com/~feature-docs
+   https://docs.example.com/~feature-docs/installation
+   ```
+
+4. **Check utility routes** — `/sitemap.xml`, `/robots.txt`, and `/search.json` should respond at the domain root (or under `~ref` when previewing a ref).
+
+<Info>
+  [Local preview](/features/local-preview) and development builds continue to use localhost or the default `docs.page` host. Custom-domain path rewriting applies in production when the worker returns a mapping for your repository.
+</Info>
+
+## Troubleshooting
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| Hostname does not resolve | DNS record missing, wrong target, or still propagating | Confirm the CNAME (or apex equivalent) matches what docs.page provided; wait for TTL to expire and flush local DNS cache |
+| Certificate warning or HTTP only | TLS not yet provisioned at the edge | Ensure DNS points at the docs.page edge target; wait a few minutes after propagation and retry `https://` |
+| Wrong repository or 404 at the root | Worker mapping points at a different `owner`/`repo` | Ask docs.page to verify the hostname mapping in the custom-domain worker registry |
+| Site still links to `docs.page/{owner}/{repo}` | Mapping not registered yet, or browser cache | Confirm the worker returns your domain for the repo; hard-refresh or open an incognito window |
+| Custom domain shape missing in local preview | Expected — preview does not simulate custom-domain mode | Verify on production or a [branch preview](/features/branch-preview) URL after merge |
+| Plausible or analytics not loading | Some providers require the request hostname to match | Confirm analytics config against your live custom domain; see [Analytics](/features/analytics) |
+
+## Related
+
+- [Custom domains](/features/custom-domains) — routing, canonical URLs, and request modes
+- [Vanity subdomains](/features/vanity-subdomains) — shorter URLs without bringing your own domain
+- [Branch preview](/features/branch-preview) — share ref URLs on your custom hostname
+- [Apply your branding](/customize/apply-your-branding) — theme, logo, and footer links in `docs.json`
