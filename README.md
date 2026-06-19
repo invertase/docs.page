@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://static.invertase.io/assets/docs.page/docs-page-logo.png" alt="docs.page" height="120" /> <br /><br />
+  <img src="https://static.invertase.io/assets/docs.page/docs-page-logo-v2.png" alt="docs.page" height="120" /> <br /><br />
   <span>Instant Open Source docs with zero configuration.</span>
 </p>
 
