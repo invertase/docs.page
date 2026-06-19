@@ -1,9 +1,7 @@
 ---
-title: CLI reference
-description: Look up docs.page CLI commands, flags, defaults, and exit codes.
+title: CLI
+description: Run the right docs command with the right flags — init, preview, check, and agent setup.
 ---
-
-Use this page when you need exact syntax for `@docs.page/cli`. Workflow guides live on [CLI](/features/cli).
 
 ## Global options
 
@@ -58,6 +56,8 @@ docs init [path] [flags]
 <Property name="--overwrite" type="flag" optional>
   Replace existing files created by docs.page init.
 </Property>
+
+In an interactive terminal, the CLI prompts for missing values. In non-interactive mode (CI or piped stdin), pass `--name`, `--docs` or `--no-docs`, and `--overwrite` when replacing existing files — otherwise the command exits with a `Missing --<flag>` error.
 
 ### Errors
 
@@ -132,6 +132,16 @@ docs check [path] [flags]
   Fetch external URLs and report failures. Default: `error`.
 </Property>
 
+<Property name="--render" type="off | warn | error" optional>
+  Validate that each page's MDX renders without errors. Default: `error`.
+</Property>
+
+<Property name="--metadata" type="off | warn | error" optional>
+  Warn when `title` or `description` is missing on pages that use auto-generated social preview images. Also checks site `name` and `description` in `docs.json`. Default: `error`.
+</Property>
+
+All five severity flags accept `off`, `warn`, or `error`. Default for each: `error`.
+
 ### Exit codes
 
 | Code | Meaning |
@@ -195,7 +205,7 @@ The CLI prints `Your documentation agent is ready to use.` and a JSON snippet wi
 | API key too short | `` `--apikey` must be longer than 1 character. `` |
 | `gh` not installed | `GitHub CLI (\`gh\`) is required when \`--gh-auth\` is not provided.` |
 | `gh` not authenticated | `Unable to read a GitHub auth token from \`gh\`. Run \`gh auth login\`, or pass \`--gh-auth\`.` |
-| API error response | `` Server `error` string or `Agent creation failed (&lt;status&gt; …).` `` |
+| API error response | `` Server `error` string or `Agent creation failed (<status> …).` `` |
 | Missing token in response | `Agent creation failed: response did not include a token.` |
 
 ---
@@ -227,7 +237,7 @@ The CLI prints `Deleted agent for org/name.`
 | Missing `--repo` in non-interactive mode | `Missing --repo.` |
 | Invalid repository format | `` `--repo` must be in the form `org/name`. `` |
 | GitHub auth failure | Same messages as `agent create` |
-| API error response | `` Server `error` string or `Agent deletion failed (&lt;status&gt; …).` `` |
+| API error response | `` Server `error` string or `Agent deletion failed (<status> …).` `` |
 
 ---
 
@@ -235,4 +245,4 @@ The CLI prints `Deleted agent for org/name.`
 
 - [CLI](/features/cli) — install, init, preview, check, and agent workflows
 - [Local preview](/features/local-preview) — feature overview
-- [CLI reference](/reference/cli-reference) — this page
+- [HTTP endpoints](/reference/http-endpoints) — platform API routes

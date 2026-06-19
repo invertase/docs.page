@@ -34,7 +34,7 @@ https://docs.page/{owner}/{repo}~{ref}/search.json
 
 On custom domains and vanity subdomains, the path follows the same routing rules as doc pages—only the host changes.
 
-The JSON response includes a `documents` array and a `meta` object with the resolved ref, commit SHA, file count, and whether the repository tree was truncated. See [Search index](/reference/search-index) for the response shape and [HTTP endpoints](/reference/http-endpoints) for the route listing.
+The JSON response includes a `documents` array and a `meta` object with the resolved ref, commit SHA, file count, and whether the repository tree was truncated. See [HTTP endpoints — search.json](/reference/http-endpoints#searchjson) for the response shape.
 
 ### Client-side full-text search
 
@@ -68,11 +68,11 @@ Short queries return up to five results; longer queries return up to ten. Result
 ## Related
 
 <CardGroup cols={2}>
-  <Card title="Search index" icon="magnifying-glass" href="/reference/search-index">
+  <Card title="HTTP endpoints" icon="globe" href="/reference/http-endpoints#searchjson">
     Response shape, indexed fields, and metadata for `search.json`.
   </Card>
-  <Card title="HTTP endpoints" icon="globe" href="/reference/http-endpoints">
-    Published routes including `search.json` and agent exports.
+  <Card title="Search engine indexing" icon="chart-line" href="/features/search-engine-indexing">
+    Sitemap, robots.txt, and crawler-facing SEO settings.
   </Card>
   <Card title="Branch preview" icon="code-branch" href="/features/branch-preview">
     Preview search on a branch or pull request before merge.

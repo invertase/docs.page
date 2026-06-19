@@ -59,7 +59,7 @@ After DNS propagates and the worker mapping is active:
    https://docs.example.com/~feature-docs/installation
    ```
 
-4. **Check utility routes** — `/sitemap.xml`, `/robots.txt`, and `/search.json` should respond at the domain root (or under `~ref` when previewing a ref).
+4. **Check utility routes** — `/sitemap.xml`, `/robots.txt`, and [`/search.json`](/reference/http-endpoints#searchjson) should respond at the domain root (or under `~ref` when previewing a ref).
 
 <Info>
   [Local preview](/features/local-preview) and development builds continue to use localhost or the default `docs.page` host. Custom-domain path rewriting applies in production when the worker returns a mapping for your repository.

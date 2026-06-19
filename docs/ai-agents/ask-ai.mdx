@@ -36,7 +36,7 @@ Provisioning stores encrypted provider credentials on docs.page. Your `docs.json
 
     Omit flags in an interactive terminal to be prompted for the repository, provider, and API key. On success, the CLI prints an `agent.key` value and `Your documentation agent is ready to use`.
 
-    For every flag, provider list, and error message, see [`docs agent create`](/reference/cli-reference#docs-agent-create) in the CLI reference. To rotate keys, pass `--force` on a second create run.
+    For every flag, provider list, and error message, see [`docs agent create`](/reference/cli-reference#docs-agent-create) in the CLI. To rotate keys, pass `--force` on a second create run.
   </Step>
   <Step title="Wire the key into docs.json">
     **Connect the live site** — add an `agent` block at the top level of `docs.json` with the key from the CLI output:
@@ -104,4 +104,4 @@ To remove stored credentials, run `npx @docs.page/cli agent delete --repo org/re
 - [Agent-ready docs](/ai-agents/agent-ready-docs) — llms.txt, MCP, and skills alongside Ask AI
 - [Embed Ask AI](/ai-agents/embed-ask-ai) — link, iframe, or custom chat UI in your product
 - [Ask AI on Features](/features/ask-ai) — how the panel works, session security, and rate limits
-- [CLI reference](/reference/cli-reference#docs-agent-create) — flags and errors for `docs agent create` and `docs agent delete`
+- [CLI](/reference/cli-reference#docs-agent-create) — flags and errors for `docs agent create` and `docs agent delete`

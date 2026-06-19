@@ -407,7 +407,7 @@
           "href": "/reference"
         },
         {
-          "title": "docs.json reference",
+          "title": "docs.json",
           "href": "/reference/docs-json-reference"
         },
         {
@@ -415,32 +415,12 @@
           "href": "/reference/page-frontmatter"
         },
         {
-          "title": "CLI reference",
+          "title": "CLI",
           "href": "/reference/cli-reference"
-        },
-        {
-          "title": "Routing and URL resolution",
-          "href": "/reference/routing-url-resolution"
         },
         {
           "title": "HTTP endpoints",
           "href": "/reference/http-endpoints"
-        },
-        {
-          "title": "Analytics providers",
-          "href": "/reference/analytics-providers"
-        },
-        {
-          "title": "Variables",
-          "href": "/reference/variables"
-        },
-        {
-          "title": "Search index",
-          "href": "/reference/search-index"
-        },
-        {
-          "title": "Platform architecture",
-          "href": "/reference/platform-architecture"
         }
       ]
     }

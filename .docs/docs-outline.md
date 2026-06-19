@@ -1,6 +1,6 @@
 ---
-version: "4.0.0"
-updatedAt: 2026-06-18
+version: "4.1.0"
+updatedAt: 2026-06-19
 status: approved
 ---
 
@@ -17,7 +17,7 @@ The mental model to build: **docs.page is docs-as-code with no hosting setup**. 
 1. **Documentation** — journey-ordered guides: Getting Started, Authoring, Customize, Agents, Comparisons.
 2. **Features** (`/features`) — goal-ordered capability catalog: **Publish → Organize → Customize → Configure → AI → Integrate**. One **Explanation** page per capability. Short **Enable it** sections only when setup is required; procedural depth lives on the Documentation tab.
 3. **Components** (`/components`) — per-component **Reference** lookup.
-4. **Reference** (`/reference`) — config fields, CLI flags, HTTP endpoints, and editorial page templates (interim).
+4. **Reference** (`/reference`) — thin Overview hub plus four lookup pages: `docs.json`, frontmatter, CLI, HTTP endpoints.
 
 **Two-layer model:**
 
@@ -38,11 +38,11 @@ The mental model to build: **docs.page is docs-as-code with no hosting setup**. 
 | ------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | **Get started** (Introduction, Quickstart)        | Short orient + hands-on first publish                           | **Getting Started**: Introduction + Quickstart only — slim, no nested templates                                                   |
 | **Create** (Format text, code, images, redirects) | Writing-oriented how-tos, not "MDX" framing                     | **Authoring → Write** uses content-writing language; MDX is implementation detail in prose                                        |
-| **Organize** (Navigation, pages, settings)        | Split across many config pages                                  | **Features → Organize** for the model; **Authoring → Organise** for workflow; field lookup in **docs.json reference**             |
+| **Organize** (Navigation, pages, settings)        | Split across many config pages                                  | **Features → Organize** for the model; **Authoring → Organise** for workflow; field lookup in **docs.json**             |
 | **Components**                                    | Dedicated top-level section with overview + per-component pages | **Components tab** — separate from config/API reference                                                                         |
 | **Customize** (Themes, custom domain, fonts)      | Appearance goals                                                | **Customize** — Branding, Custom domain, SEO, Analytics as goal-oriented how-tos                                                 |
 | **Deploy** (GitHub, previews, monorepo)           | Heavy infra section                                             | **Authoring → Preview** (local) and **Publish** (remote); no deploy dashboard docs                                              |
-| **CLI**                                           | Dedicated CLI section                                           | **Features → CLI** explains commands; **CLI reference** holds flags; **Authoring → Preview/Publish** hold workflows             |
+| **CLI**                                           | Dedicated CLI section                                           | **Features → CLI** explains commands; **CLI** holds flags; **Authoring → Preview/Publish** hold workflows             |
 | **Editor** (web WYSIWYG)                          | Major differentiator                                            | **Omit** — note in product comparisons                                                                                            |
 | **AI-native / Assistant / Agent**                 | Large AI section                                                | **Features → AI** for Explanation; **Agents** on Documentation tab for setup how-tos                                               |
 | **API playground** (OpenAPI)                      | Entire vertical                                                 | **Omit** — note in comparisons                                                                                                    |
@@ -91,7 +91,7 @@ Goal-ordered capability catalog on the **Features** tab (`docs/features/index.md
 | Components            | Explanation          | **Must have** | What built-in MDX components are, why no imports are needed, and when to use them vs plain Markdown. Link to Components tab for props. (`mdx-components`)           |
 | Local preview         | Explanation + How-to | **Must have** | How local preview fits the publish loop; WebSocket + `docs.page/preview` architecture. Short **Enable it**: run `docs preview`. (`local-preview`, `cli-preview`) |
 | Branch preview        | Explanation          | **Must have** | Shareable `~ref` URLs for branches, commits, and pull requests — routing model and when to use vs local preview. (`ref-previews`)                                |
-| CLI                   | Explanation          | **Must have** | What `@docs.page/cli` is for and what each command does conceptually. Link to CLI reference for flags. (`cli-init`, `cli-preview`, `cli-check`, `cli-agent-*`)   |
+| CLI                   | Explanation          | **Must have** | What `@docs.page/cli` is for and what each command does conceptually. Link to CLI for flags. (`cli-init`, `cli-preview`, `cli-check`, `cli-agent-*`)   |
 
 #### Organize
 
@@ -108,7 +108,7 @@ Goal-ordered capability catalog on the **Features** tab (`docs/features/index.md
 
 | Page Title        | Diátaxis Type        | Priority        | Purpose                                                                                                         |
 | ----------------- | -------------------- | --------------- | --------------------------------------------------------------------------------------------------------------- |
-| Theme             | Explanation          | **Must have**   | How theming works: presets, light/dark, colors, fonts. Link to docs.json reference for fields. (`config-theme`) |
+| Theme             | Explanation          | **Must have**   | How theming works: presets, light/dark, colors, fonts. Link to docs.json for fields. (`config-theme`) |
 | Logo              | Explanation          | **Must have**   | How logos and favicons are resolved for light and dark mode. (`config-logo`)                                    |
 | Header            | Explanation          | **Should have** | What the site header controls and how header options interact. (`config-header`)                                |
 | Social links      | Explanation          | **Should have** | Social profiles in the footer and Open Graph behaviour for link previews. (`config-social`)                                       |
@@ -179,7 +179,7 @@ Workflow-oriented how-tos for contributors after first publish. Link to **Featur
 
 | Page Title | Nav label | Path                  | Diátaxis Type | Priority      | Purpose |
 | ---------- | --------- | --------------------- | ------------- | ------------- | ------- |
-| Organise   | Organise  | `/authoring/organise` | How-to        | **Must have** | Structure the sidebar so readers can find content: groups, nested pages, tabs, and ordering. Link to **Features → Sidebar**, **Tabs**, and **Links**; defer field lookup to **docs.json reference**. |
+| Organise   | Organise  | `/authoring/organise` | How-to        | **Must have** | Structure the sidebar so readers can find content: groups, nested pages, tabs, and ordering. Link to **Features → Sidebar**, **Tabs**, and **Links**; defer field lookup to **docs.json**. |
 
 **Content sections to include:** Before you begin · Add pages to the sidebar · Use tabs · Verify navigation · Related.
 
@@ -195,7 +195,7 @@ Workflow-oriented how-tos for contributors after first publish. Link to **Featur
 2. **`docs check`** — run locally from project root, fix link/asset/redirect-target issues, tune severity flags inline.
 3. **When to stop** — clean local check; ready to push.
 
-**Link out (do not duplicate):** [Local preview](/features/local-preview), [CLI](/features/cli), [CLI reference](/reference/cli-reference) for full flag tables.
+**Link out (do not duplicate):** [Local preview](/features/local-preview), [CLI](/features/cli), [CLI](/reference/cli-reference) for full flag tables.
 
 **Do not include:** `git push`, branch `~ref` URLs, GitHub App, GitHub Actions — those belong on **Publish**.
 
@@ -293,38 +293,23 @@ Per-component **Reference** lookup on the **Components** tab (`/components`).
 
 ### Reference (tab)
 
-Lookup for configuration fields, page metadata, CLI commands, HTTP endpoints, and editorial templates — not workflow guides.
+Flat lookup for configuration fields, page metadata, CLI commands, and HTTP routes — not workflow guides. A thin **Overview** hub links to four lookup pages.
 
-#### Configuration and API lookup
+**Nav structure:** `Reference` → `Overview` · `docs.json` · `Page frontmatter` · `CLI` · `HTTP endpoints`
 
-| Page Title            | Diátaxis Type | Priority       | Purpose                                                                                                                                                                      |
-| --------------------- | ------------- | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| docs.json reference   | Reference     | **Must have**  | Complete field reference for site configuration: types, defaults, and valid values.                                                                                          |
-| Page frontmatter      | Reference     | **Must have**  | Exhaustive lookup for per-page YAML fields: title, description, redirects, previous/next overrides, and SEO fields.                                                          |
-| CLI reference         | Reference     | **Must have**  | Flag and exit-code lookup: `docs init`, `docs preview`, `docs check`, `docs agent create`, `docs agent delete`. Conceptual coverage on **Features → CLI**; workflow sequencing on **Authoring → Preview** and **Publish**. |
-| HTTP endpoints        | Reference     | **Must have**  | Lookup for published routes: `llms.txt`, `llms-full.txt`, MCP, `search.json`, `schema.json`, bundle/chat/agent APIs, sitemap, robots.txt, and raw markdown URLs.             |
-| Analytics providers   | Reference     | **Could have** | Supported analytics integration keys and config shapes.                                                                                                                      |
-| Variables             | Reference     | **Could have** | `{{ dotted.path }}` substitution syntax and config object structure. Conceptual overview on **Features → Global variables**.                                                |
-| Search index          | Reference     | **Could have** | How `search.json` is built and what content is indexed. Conceptual overview on **Features → Search**.                                                                        |
-| Platform architecture | Reference     | **Could have** | High-level overview of GitHub fetch, MDX bundling, routing modes, and request lifecycle — optional internals reading.                                                          |
+| Page Title | Diátaxis Type | Priority | Purpose |
+| ---------- | ------------- | -------- | ------- |
+| Overview | Reference | **Must have** | Card hub linking to the four lookup pages. **Written.** |
+| docs.json | Reference | **Must have** | Complete field reference for `docs.json` / `docs.yaml`: types, defaults, valid values. Includes `variables` and `scripts` (analytics) sections — no separate pages. **Written.** |
+| Page frontmatter | Reference | **Must have** | Exhaustive lookup for per-page YAML fields. **Written.** |
+| CLI | Reference | **Must have** | Flag and exit-code lookup. Conceptual coverage on **Features → CLI**; workflows on **Authoring → Preview** and **Publish**. **Written.** |
+| HTTP endpoints | Reference | **Must have** | URL patterns (production, ref, vanity, custom domain), repo-scoped routes, `search.json` response shape, and platform APIs. Merged from former Routing page. **Written.** |
 
-#### Page templates (interim)
+**Removed from nav (redirect stubs):** Analytics providers, Variables, Search index, Platform architecture, Routing and URL resolution.
 
-Editorial guides for Diátaxis page layouts — **not** docs.page product reference. Interim home until placement is decided; do not promote from Getting Started or Authoring nav.
+**Not on Reference tab:** Page templates (editorial Diátaxis layouts) — deferred; legacy `/templates/*` redirects to `/authoring/write`. Platform architecture omitted per spec (advanced-only).
 
-**Nav structure:** `Reference` → `Page templates` → …
-
-| Page Title           | Diátaxis Type | Priority        | Purpose                                                                                                                                                                                                                                                             |
-| -------------------- | ------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Page templates       | Explanation   | **Could have**  | Index: what these templates are (editorial patterns for your own docs), placement TBD.                                                                                                                                                                              |
-| Tutorial template    | Tutorial      | **Could have**  | Learning-oriented layout: narrative, hands-on steps toward one clear objective. Sections: Introduction, Prerequisites, Step-by-step instructions, Next steps.                                                                                                       |
-| How-to template      | How-to        | **Could have**  | Task-oriented layout for readers who know the basics. Sections: Goal or scenario, Implementation steps, Verification.                                                                                                                                             |
-| Reference template   | Reference     | **Could have**  | Lookup-oriented layout for facts, API specs, config keys, or command syntax. Sections: Syntax or blueprint, Parameters or options table, Examples.                                                                                                                  |
-| Explanation template | Explanation   | **Could have**  | Understanding-oriented layout for background and design decisions. Sections: The concept, How it works, Design decisions.                                                                                                                                           |
-
-**Note:** Template pages are not yet in `docs.json` Reference nav; legacy `/templates/*` and `/authoring/write-documentation/*` URLs redirect to `/authoring/write` until template pages are restored under Reference.
-
-**Deferred (not in sitemap):** Self-hosting, migration guides, Core concepts as a Documentation section — Won't have per spec and author feedback.
+**Deferred (not in sitemap):** Self-hosting, migration guides, Core concepts as a Documentation section, standalone Markdown syntax reference — Won't have per spec and author feedback.
 
 ---
 
@@ -340,7 +325,8 @@ Yes, with revision 4.0.0:
 - **Manage:** deprioritized edge cases (redirects, locales) — not mixed into daily workflow.
 - **No Core concepts on Documentation:** Features tab owns capability explanations.
 - **Components and Reference:** separate tabs for lookup depth.
-- **Page templates:** interim on Reference, not in Authoring or Getting Started.
+- **Page templates:** deferred — not on Reference tab; legacy URLs redirect to Authoring → Write.
+- **Reference tab:** thin Overview hub plus four flat lookup pages — no nested groups.
 - **Nav titles:** short leaf labels (2–4 words).
 
 **Writing order:** Authoring → Preview and Publish (highest workflow value) → Write and Organise → Manage → Customize → Agents how-tos. Features and Components stubs continue in parallel as needed.
@@ -363,7 +349,7 @@ Documentation tab
 
 Features tab            Overview · Publish · Organize · Customize · Configure · AI · Integrate
 Components tab          Overview · Accordion · …
-Reference tab           Overview · docs.json · frontmatter · CLI · HTTP · … (+ Page templates when added)
+Reference tab           Overview · docs.json · Page frontmatter · CLI · HTTP endpoints
 ```
 
 Proceed with [docs-write](../.agents/skills/docs-write/SKILL.md) — **Authoring → Preview** and **Publish** first, then Write and Organise.

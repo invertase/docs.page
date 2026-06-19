@@ -34,7 +34,7 @@ Add a `tabs` array at the top level of `docs.json`. Each entry needs a stable `i
 
 When `tabs` is non-empty, docs.page renders those labels in the header below the logo row. Clicking a tab navigates to its `href`. With no `tabs` array (or an empty one), that tab row is omitted and the full sidebar is always visible.
 
-For every field on `tabs` entries, including optional `locale`, see [docs.json reference](/reference/docs-json-reference).
+For every field on `tabs` entries, including optional `locale`, see [docs.json](/reference/docs-json-reference).
 
 ### How the active tab is chosen
 
@@ -64,7 +64,7 @@ Tag sidebar groups with the `tab` field set to a tab `id`:
     {
       "group": "Reference",
       "tab": "reference",
-      "pages": [{ "title": "docs.json reference", "href": "/reference/docs-json-reference" }]
+      "pages": [{ "title": "docs.json", "href": "/reference/docs-json-reference" }]
     }
   ]
 }
@@ -92,7 +92,7 @@ Use this when header sections differ by language — for example, a tab that onl
   <Card title="Locales" icon="language" href="/features/locales">
     How locale keys in sidebar shape URLs and the language switcher.
   </Card>
-  <Card title="Reference" icon="book" href="/reference">
+  <Card title="Reference" icon="book" href="/reference/docs-json-reference">
     Field-level lookup for docs.json, CLI commands, and HTTP endpoints.
   </Card>
 </CardGroup>

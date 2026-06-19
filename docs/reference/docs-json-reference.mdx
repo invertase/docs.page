@@ -1,6 +1,410 @@
 ---
-title: docs.json reference
-description: Complete field reference for site configuration.
+title: docs.json
+description: Use when you need types, defaults, or valid values for any docs.json key.
 ---
 
-> This page is a placeholder. Full content will be added in a future update.
+Site configuration lives in `docs.json` or `docs.yaml` at the repository root. For how each area behaves, see the matching page on [Features](/features). Machine-readable schema: [`/schema.json`](https://docs.page/schema.json).
+
+```json
+{
+  "$schema": "https://docs.page/schema.json",
+  "name": "My project",
+  "description": "Documentation for My project.",
+  "sidebar": []
+}
+```
+
+| Field | Section |
+| --- | --- |
+| `name`, `description`, `socialPreview` | [name](#name), [description](#description), [socialPreview](#socialpreview) |
+| `logo`, `favicon`, `banner`, `theme` | [logo](#logo), [favicon](#favicon), [banner](#banner), [theme](#theme) |
+| `header`, `tabs`, `sidebar`, `anchors` | [header](#header), [tabs](#tabs), [sidebar](#sidebar), [anchors](#anchors) |
+| `content`, `seo`, `variables` | [content](#content), [seo](#seo), [variables](#variables) |
+| `scripts`, `search`, `social`, `og` | [scripts](#scripts), [search](#search), [social](#social), [og](#og) |
+| `agent`, `mcp` | [agent](#agent), [mcp](#mcp) |
+
+## $schema
+
+<Property name="$schema" type="string" optional>
+  Optional JSON Schema URL for editor autocompletion and validation (for example `https://docs.page/schema.json`). Not read by docs.page at runtime.
+</Property>
+
+## name
+
+<Property name="name" type="string">
+  Site title used in the header, browser tab, and generated Open Graph images when a page has no frontmatter `title`.
+
+  Falls back to **Documentation** when omitted.
+</Property>
+
+## description
+
+<Property name="description" type="string">
+  Default site description for metadata and social previews when a page has no frontmatter `description`.
+</Property>
+
+## socialPreview
+
+<Property name="socialPreview" type="string | false">
+  Static Open Graph image URL applied site-wide. Set to `false` to disable the default generated image without setting a custom URL.
+
+  Per-page frontmatter `image` overrides this value. See [Page frontmatter](/reference/page-frontmatter).
+</Property>
+
+## logo
+
+<Property name="logo.light" type="string">
+  Logo URL for light mode. Paths are resolved relative to the repository root.
+</Property>
+
+<Property name="logo.dark" type="string">
+  Logo URL for dark mode. When omitted, light mode logo is reused.
+</Property>
+
+## favicon
+
+<Property name="favicon" type="string | object">
+  Favicon URL or mode-specific URLs.
+
+  ```json
+  "favicon": "/docs/favicon.png"
+  ```
+
+  ```json
+  "favicon": {
+    "light": "/docs/favicon-light.png",
+    "dark": "/docs/favicon-dark.png"
+  }
+  ```
+
+  A string sets the same icon for both modes.
+</Property>
+
+## banner
+
+<Property name="banner.message" type="string">
+  Announcement text shown in the site-wide banner strip.
+</Property>
+
+<Property name="banner.href" type="string">
+  Optional link target when the banner is clicked.
+</Property>
+
+<Property name="banner.backgroundColor" type="string">
+  Banner background color.
+</Property>
+
+<Property name="banner.foregroundColor" type="string">
+  Banner text color.
+</Property>
+
+## theme
+
+<Accordion title="theme fields">
+  <Property name="theme.preset" type="string">
+    Shadcn preset code that maps to theme CSS variables. See [Theme](/features/theme).
+  </Property>
+
+  <Property name="theme.primary" type="string (#RRGGBB)">
+    Accent color applied in both light and dark mode when mode-specific colors are omitted.
+  </Property>
+
+  <Property name="theme.primaryLight" type="string (#RRGGBB)">
+    Accent color in light mode.
+  </Property>
+
+  <Property name="theme.primaryDark" type="string (#RRGGBB)">
+    Accent color in dark mode.
+  </Property>
+
+  <Property name="theme.backgroundLight" type="string (#RRGGBB)">
+    Page background in light mode.
+  </Property>
+
+  <Property name="theme.backgroundDark" type="string (#RRGGBB)">
+    Page background in dark mode.
+  </Property>
+
+  <Property name="theme.defaultTheme" type="&quot;light&quot; | &quot;dark&quot;">
+    **Schema only** — validates in `docs.json` but is not yet applied by the theme provider. Readers currently get the platform default until default-theme support ships.
+  </Property>
+</Accordion>
+
+## header
+
+<Accordion title="header fields">
+  <Property name="header.showName" type="boolean" optional>
+    Show the site name beside the logo in the header. Default: `true`.
+  </Property>
+
+  <Property name="header.showThemeToggle" type="boolean" optional>
+    **Schema only** — validates in `docs.json` but the theme toggle currently always renders on hosted sites.
+  </Property>
+
+  <Property name="header.showGitHubCard" type="boolean" optional>
+    **Schema only** — validates in `docs.json` but the GitHub link currently always renders on hosted sites.
+  </Property>
+
+  <Property name="header.links" type="array">
+    Custom call-to-action buttons in the header.
+
+    Each item:
+
+    | Field | Type | Description |
+    | --- | --- | --- |
+    | `title` | string | Button label |
+    | `href` | string | Link target |
+    | `cta` | boolean | Style as primary CTA when `true`. Default: `false` |
+    | `locale` | string | **Schema only** — locale filter is not yet applied in the header renderer |
+  </Property>
+</Accordion>
+
+## tabs
+
+Top-level navigation tabs. Each tab scopes sidebar groups with a matching `tab` id.
+
+<Property name="tabs[].id" type="string" required>
+  Tab identifier referenced by sidebar `tab` fields.
+</Property>
+
+<Property name="tabs[].title" type="string" required>
+  Label shown in the tab bar.
+</Property>
+
+<Property name="tabs[].href" type="string" required>
+  Root-relative path opened when the tab is selected — usually the first page in that tab's sidebar.
+</Property>
+
+<Property name="tabs[].locale" type="string" optional>
+  When set, show this tab only for the matching locale sidebar.
+</Property>
+
+See [Tabs](/features/navigation-tabs).
+
+## sidebar
+
+Navigation tree for the site. Two shapes are supported:
+
+**Flat (single locale)** — array of group objects:
+
+```json
+"sidebar": [
+  {
+    "group": "Getting Started",
+    "pages": [{ "title": "Introduction", "href": "/" }]
+  }
+]
+```
+
+**Locale-keyed** — object with locale codes as keys (plus optional `default`):
+
+```json
+"sidebar": {
+  "default": [{ "group": "Guide", "pages": [] }],
+  "fr": [{ "group": "Guide", "pages": [] }]
+}
+```
+
+<Accordion title="sidebar group and page fields">
+  **Group object**
+
+  | Field | Type | Description |
+  | --- | --- | --- |
+  | `group` | string | Sidebar section label |
+  | `tab` | string | Tab id this group belongs to |
+  | `href` | string | When set on a group, the group label links to this internal path |
+  | `icon` | string | Font Awesome icon slug for the group |
+  | `pages` | array | Nested page links or child groups |
+
+  **Page item**
+
+  | Field | Type | Description |
+  | --- | --- | --- |
+  | `title` | string | Link label |
+  | `href` | string | Root-relative path or external URL |
+  | `icon` | string | Font Awesome icon slug |
+</Accordion>
+
+See [Sidebar](/features/sidebar) and [Organise](/authoring/organise).
+
+## anchors
+
+Shortcut links rendered below the sidebar search box.
+
+<Property name="anchors[].icon" type="string" required>
+  Font Awesome icon slug.
+</Property>
+
+<Property name="anchors[].title" type="string" required>
+  Link label.
+</Property>
+
+<Property name="anchors[].href" type="string" required>
+  Root-relative path or external URL.
+</Property>
+
+<Property name="anchors[].locale" type="string" optional>
+  Show this anchor only for the matching locale.
+</Property>
+
+<Property name="anchors[].tab" type="string" optional>
+  Show this anchor only when the active tab matches.
+</Property>
+
+See [Links](/features/navigation-links).
+
+## content
+
+<Accordion title="content fields">
+  <Property name="content.headerDepth" type="number">
+    Maximum Markdown heading level included in the on-page table of contents. Default: `3` (`##` through `###`).
+  </Property>
+
+  <Property name="content.zoomImages" type="boolean">
+    Enable click-to-zoom on images site-wide. Default: `false`. Per-image override: [`<Image zoom={false}>`](/components/image).
+  </Property>
+
+  <Property name="content.automaticallyInferNextPrevious" type="boolean">
+    Infer previous/next footer links from sidebar order. Default: `true`. Per-page override: frontmatter `previous` and `next`.
+  </Property>
+
+  <Property name="content.showPageTitle" type="boolean">
+    Render frontmatter `title` and `description` as a page hero. Default: `true`. Per-page override: frontmatter `showPageTitle`.
+  </Property>
+
+  <Property name="content.showPageImage" type="boolean">
+    Render frontmatter `image` below the title block. Default: `true`. Per-page override: frontmatter `showPageImage`.
+  </Property>
+</Accordion>
+
+## seo
+
+<Property name="seo.noindex" type="boolean">
+  When `true`, add `noindex` to every page on the site. Default: `false`. Per-page override: frontmatter `noindex`. See [Search engine indexing](/features/search-engine-indexing).
+</Property>
+
+## variables
+
+<Property name="variables" type="object">
+  Arbitrary nested object whose **string** leaf values are substituted into MDX bodies with `{{ dotted.path }}` syntax during bundling.
+
+  ```json
+  "variables": {
+    "product": "Handbook",
+    "api": { "baseUrl": "https://api.example.com" }
+  }
+  ```
+
+  ```mdx
+  The {{ product }} API lives at {{ api.baseUrl }}.
+  ```
+
+  Only **string** leaf values substitute — intermediate objects are traversed; non-string leaves leave the placeholder unchanged. Variables do not apply inside frontmatter. See [Global variables](/features/global-variables).
+</Property>
+
+## scripts
+
+Analytics and tag-manager injection on **published** pages only — not during local preview.
+
+<Property name="scripts.googleTagManager" type="string">
+  Google Tag Manager container ID (for example `GTM-XXXX`). When set, direct Google Analytics injection is skipped even if `googleAnalytics` is also present.
+</Property>
+
+<Property name="scripts.googleAnalytics" type="string">
+  GA4 measurement ID (for example `G-GXXXX`). Used only when `googleTagManager` is not set.
+</Property>
+
+<Property name="scripts.plausible" type="string | boolean">
+  Plausible analytics. Set to `true` for the hosted Plausible script, or a string URL for self-hosted Plausible. Requires a mapped [custom domain](/features/custom-domains) or [vanity subdomain](/features/vanity-subdomains) — inactive on the default `docs.page/{owner}/{repo}` path.
+</Property>
+
+See [Analytics](/features/analytics).
+
+## search
+
+<Accordion title="search.docsearch">
+  Optional Algolia DocSearch credentials. Built-in on-site search does not require this block — see [Search](/features/search).
+
+  | Field | Type | Default |
+  | --- | --- | --- |
+  | `search.docsearch.appId` | string | `""` |
+  | `search.docsearch.apiKey` | string | `""` |
+  | `search.docsearch.indexName` | string | `""` |
+</Accordion>
+
+## social
+
+Footer social profile URLs. Each key is an optional URL string.
+
+| Key | Description |
+| --- | --- |
+| `social.website` | Project or company website |
+| `social.x` | X (Twitter) profile |
+| `social.youtube` | YouTube channel |
+| `social.facebook` | Facebook page |
+| `social.instagram` | Instagram profile |
+| `social.linkedin` | LinkedIn page |
+| `social.github` | GitHub organization or user |
+| `social.slack` | Slack community invite or workspace |
+| `social.discord` | Discord server invite |
+
+```json
+"social": {
+  "github": "https://github.com/acme",
+  "x": "https://x.com/acme"
+}
+```
+
+See [Social links](/features/social-links).
+
+## og
+
+Open Graph image generation defaults when no page or site image is set.
+
+<Property name="og.logo" type="string">
+  Logo URL embedded in auto-generated social preview images.
+</Property>
+
+<Property name="og.github" type="boolean">
+  Include the GitHub repository name in generated preview images. Default: `true`.
+</Property>
+
+## agent
+
+Ask AI chat panel configuration. **Beta.**
+
+<Property name="agent.key" type="string">
+  Agent credential key returned by `docs agent create`. Required to enable the in-docs chat panel.
+</Property>
+
+<Property name="agent.placeholder" type="string">
+  Placeholder text in the empty question input.
+</Property>
+
+<Property name="agent.questions" type="string[]">
+  Suggested starter questions shown before the reader types.
+</Property>
+
+<Property name="agent.limits.ip" type="number">
+  Maximum chat requests per IP per day. Default: `200`.
+</Property>
+
+<Property name="agent.limits.repo" type="number">
+  Maximum chat requests per repository per day. Default: `10000`.
+</Property>
+
+See [Ask AI](/features/ask-ai).
+
+## mcp
+
+<Property name="mcp.enabled" type="boolean">
+  Expose the per-repository MCP endpoint at `/{owner}/{repo}/mcp`. Default: `true`. Set to `false` to return `404` on the MCP route.
+</Property>
+
+See [MCP server](/features/mcp-server).
+
+## See also
+
+- [Page frontmatter](/reference/page-frontmatter) — per-page YAML fields
+- [CLI](/reference/cli-reference) — `docs init`, `docs preview`, `docs check`, agent commands
+- [HTTP endpoints](/reference/http-endpoints) — published routes and platform APIs

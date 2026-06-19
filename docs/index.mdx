@@ -19,7 +19,7 @@ It is a strong fit for:
 
 ## How hosting works
 
-[docs.page](https://docs.page) uses **Git publishing**: it fetches your repository content, caches rendered pages at the edge, and serves a complete documentation site from any branch, tag, or release. You do not run a local build or upload artifacts to a host.
+[docs.page](https://docs.page) uses **Git publishing**: it fetches your repository content, caches rendered pages at the edge, and serves a complete documentation site from any branch, tag, or release. You do not run a local build or upload artifacts to a host. See [Public GitHub hosting](/features/github-hosting) for URL patterns, caching, and branch previews.
 
 ### What goes in your repository
 
@@ -40,7 +40,7 @@ https://docs.page/{owner}/{repo}
 
 For example, a repository at `https://github.com/acme/my-project` is available at `https://docs.page/acme/my-project`. Individual pages follow the path of their file under `docs/` — `docs/usage.md` or `docs/usage.mdx` becomes `/usage`.
 
-Use **branches & versions** to serve a branch, tag, or release at a distinct URL — for example, `https://docs.page/acme/my-project~v2`.
+Use **branches & versions** to serve a branch, tag, or release at a distinct URL — for example, `https://docs.page/acme/my-project~v2`. See [Branch preview](/features/branch-preview).
 
 <Info>
   [docs.page](https://docs.page) only hosts **public** repositories. Private
@@ -64,7 +64,7 @@ You still use Git for versioning, branches, and pull requests — the same workf
 
 It is a strong default for open-source libraries, SDK docs sites, and product docs that teams are comfortable publishing publicly. If you need a heavily customized documentation experience — bespoke routing, proprietary auth gates, or a private-only docs site — a self-hosted static generator or custom app may be a better fit.
 
-For side-by-side comparisons with Docusaurus, Mintlify, GitHub Pages, and similar tools, see [Comparisons](/comparisons/docs-page-vs-mintlify).
+For side-by-side comparisons with Docusaurus, Mintlify, GitHub Pages, and similar tools, see [Comparisons](/comparisons/index).
 
 ## Related
 
@@ -90,7 +90,7 @@ For side-by-side comparisons with Docusaurus, Mintlify, GitHub Pages, and simila
     chat.
   </Card>
   <Card
-    title="docs.json reference"
+    title="docs.json"
     icon="book"
     href="/reference/docs-json-reference"
   >

@@ -57,13 +57,13 @@ The sidebar is declared in `docs.json`, not inferred from folder layout. For how
     Nested groups can stack several levels deep. When the active page matches a nested group's `href` or any link inside it, that section stays expanded.
   </Step>
   <Step title="Match sidebar order to reading flow">
-    Array order is sidebar order top to bottom. It also drives default [previous/next](/features/navigation-buttons) links unless a page overrides them in frontmatter.
+    Array order is sidebar order top to bottom. It also drives default [previous/next](/features/navigation-buttons) links unless a page overrides them with `previous` and `next` in [page frontmatter](/reference/page-frontmatter).
   </Step>
 </Steps>
 
 Groups without a `group` label still render — as an unlabeled block of links. External URLs in `href` are supported and show an external-link indicator.
 
-For every sidebar field and type, see [docs.json reference](/reference/docs-json-reference).
+For every sidebar field and type, see [docs.json](/reference/docs-json-reference).
 
 ## Use tabs
 
@@ -102,6 +102,10 @@ While a tab is active, docs.page shows groups tagged for that tab plus any untag
 
 Site tabs split the header and sidebar. They are not the same as the [`<Tabs>`](/components/tabs) MDX component, which switches panels inside a single page.
 
+## Add anchor shortcuts
+
+Pin GitHub, Discord, or app links **above** the sidebar — outside the main tree — with the top-level `anchors` array in `docs.json`. Each entry needs `title`, `href`, and optional `icon`. See [Links](/features/navigation-links).
+
 ## Verify navigation
 
 After you edit `docs.json`:
@@ -130,4 +134,4 @@ After you edit `docs.json`:
 - [Sidebar](/features/sidebar) — How groups, nested pages, and locale keys form the navigation tree.
 - [Tabs](/features/navigation-tabs) — Split large sites into header tabs and scope sidebar groups per tab.
 - [Links](/features/navigation-links) — Add GitHub, community, or app shortcuts above the sidebar with anchors.
-- [docs.json reference](/reference/docs-json-reference) — Field lookup for `sidebar`, `tabs`, `anchors`, and every other config key.
+- [docs.json](/reference/docs-json-reference) — Field lookup for `sidebar`, `tabs`, `anchors`, and every other config key.
