@@ -77,6 +77,7 @@ function Logo() {
   const hasDarkLogo = Boolean(logo?.dark);
   const lightLogoSrc = hasLightLogo ? getAssetSrc(bundle, logo!.light!) : "";
   const darkLogoSrc = hasDarkLogo ? getAssetSrc(bundle, logo!.dark!) : "";
+  const logoAlt = showName && name ? "" : (name || "Home");
 
   return (
     <div className="flex min-w-0 flex-1 items-center justify-start gap-3">
@@ -85,14 +86,14 @@ function Logo() {
           <img
             className={`relative block h-6 w-auto shrink-0 ${hasDarkLogo ? "dark:hidden" : ""}`}
             src={lightLogoSrc}
-            alt="Light logo"
+            alt={logoAlt}
           />
         )}
         {hasDarkLogo && (
           <img
             className={`relative h-6 w-auto shrink-0 ${hasLightLogo ? "hidden dark:block" : "block"}`}
             src={darkLogoSrc}
-            alt="Dark logo"
+            alt={logoAlt}
           />
         )}
         {showName && !!name && (
@@ -168,7 +169,7 @@ function GitHubLink() {
     <Button
       variant="ghost"
       size="lg"
-      aria-label="Toggle theme"
+      aria-label="View repository on GitHub"
       className="gap-2"
       asChild
     >
