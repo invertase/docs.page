@@ -52,7 +52,11 @@ export function ActionMenu() {
       </Button>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button variant="outline" className="pl-2!" aria-label="More page actions">
+          <Button
+            variant="outline"
+            className="pl-2!"
+            aria-label="More page actions"
+          >
             <RiArrowDownSLine />
           </Button>
         </DropdownMenuTrigger>
