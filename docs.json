@@ -1,14 +1,33 @@
 {
   "$schema": "https://docs.page/schema.json",
   "name": "docs.page",
-  "description": "Instantly serve markdown from any GitHub branch as modern, agent-ready docs.",
+  "description": "Ship documentation, like you ship code",
   "logo": {
     "light": "https://static.invertase.io/assets/docs.page/docs-page-logo-v2.png",
     "dark": "https://static.invertase.io/assets/docs.page/docs-page-logo-v2.png"
   },
+  "favicon": "https://static.invertase.io/assets/docs.page/docs-page-logo-v2.png",
   "theme": {
     "preset": "bcj0c6sa",
     "primary": "#E69135"
+  },
+  "social": {
+    "x": "invertaseio",
+    "github": "invertase/docs.page",
+    "discord": "invertase"
+  },
+  "agent": {
+    "key": "1a070e07-dd4f-4d56-b8f5-35537e58c0c0",
+    "questions": [
+      "How do I setup docs.page?",
+      "Is it free to use?",
+      "How do I customize the theme?",
+      "How is docs.page agent ready?"
+    ]
+  },
+  "content": {
+    "showPageTitle": true,
+    "showPageImage": true
   },
   "tabs": [
     {
@@ -371,7 +390,7 @@
       "pages": [
         {
           "group": "Platforms",
-          "href": "/comparisons/index",
+          "href": "/comparisons",
           "pages": [
             {
               "title": "Mintlify",
@@ -424,5 +443,8 @@
         }
       ]
     }
-  ]
+  ],
+  "scripts": {
+    "googleTagManager": "GTM-W89J6BX"
+  }
 }
