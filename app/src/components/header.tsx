@@ -77,7 +77,7 @@ function Logo() {
   const hasDarkLogo = Boolean(logo?.dark);
   const lightLogoSrc = hasLightLogo ? getAssetSrc(bundle, logo!.light!) : "";
   const darkLogoSrc = hasDarkLogo ? getAssetSrc(bundle, logo!.dark!) : "";
-  const logoAlt = showName && name ? "" : (name || "Home");
+  const logoAlt = showName && name ? "" : name || "Home";
 
   return (
     <div className="flex min-w-0 flex-1 items-center justify-start gap-3">
