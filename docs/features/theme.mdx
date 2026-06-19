@@ -34,9 +34,9 @@ If the code is invalid or cannot be resolved, docs.page falls back to the defaul
 
 Every hosted site supports **light** and **dark** appearance. docs.page toggles modes with a `dark` class on the document root (via [next-themes](https://github.com/pacocoursey/next-themes)). Preset CSS defines separate token values for `:root` and `.dark`, so backgrounds, borders, and text stay balanced in both modes.
 
-Readers switch modes from the **theme toggle** in the site header. The `header` schema also defines `showThemeToggle`, but that field is **not yet applied** by the header renderer—the toggle currently always renders on hosted sites. See [Header](/features/header) for header layout details.
+Readers switch modes from the **theme toggle** in the site header. The `header` schema also defines `showThemeToggle`, but that field is **schema only** — the toggle always renders on hosted sites today. See [Header](/features/header) and [docs.json — Schema-only fields](/reference/docs-json-reference#schema-only-fields).
 
-The `theme` block accepts `defaultTheme` (`light` or `dark`) to pin the starting mode. That field validates in `docs.json` but is **not yet wired** to the theme provider—readers still get the platform default until default-theme support ships. Mode-specific color overrides apply only in the matching mode.
+The `theme` block accepts `defaultTheme` (`light` or `dark`) to pin the starting mode. That field is also **schema only** — readers still get the platform default until default-theme support ships. Mode-specific color overrides apply only in the matching mode.
 
 ### Colors
 

@@ -23,6 +23,19 @@ Site configuration lives in `docs.json` or `docs.yaml` at the repository root. F
 | `scripts`, `search`, `social`, `og` | [scripts](#scripts), [search](#search), [social](#social), [og](#og) |
 | `agent`, `mcp` | [agent](#agent), [mcp](#mcp) |
 
+## Schema-only fields
+
+These keys validate in `docs.json` and appear in [`/schema.json`](https://docs.page/schema.json), but the hosted site does not apply them yet. Setting them has no visible effect until support ships.
+
+| Field | Validates | Applied | Workaround |
+| --- | --- | --- | --- |
+| `theme.defaultTheme` | yes | no | Readers use the platform default starting mode; they can still toggle light/dark in the header |
+| `header.showThemeToggle` | yes | no | Theme toggle always renders on hosted sites |
+| `header.showGitHubCard` | yes | no | GitHub link always renders on hosted sites |
+| `header.links[].locale` | yes | no | All configured links render on every locale |
+
+See [Theme](/features/theme) and [Header](/features/header) for behavior that is implemented today.
+
 ## $schema
 
 <Property name="$schema" type="string" optional>
@@ -100,6 +113,10 @@ Site configuration lives in `docs.json` or `docs.yaml` at the repository root. F
 
 ## theme
 
+<Info>
+  **Schema only:** `theme.defaultTheme` validates in `docs.json` but is not applied by the theme provider yet. See [Schema-only fields](#schema-only-fields).
+</Info>
+
 <Accordion title="theme fields">
   <Property name="theme.preset" type="string">
     Shadcn preset code that maps to theme CSS variables. See [Theme](/features/theme).
@@ -126,11 +143,15 @@ Site configuration lives in `docs.json` or `docs.yaml` at the repository root. F
   </Property>
 
   <Property name="theme.defaultTheme" type="&quot;light&quot; | &quot;dark&quot;">
-    **Schema only** — validates in `docs.json` but is not yet applied by the theme provider. Readers currently get the platform default until default-theme support ships.
+    **Schema only.** Pin the starting light or dark mode. Not applied yet — see [Schema-only fields](#schema-only-fields).
   </Property>
 </Accordion>
 
 ## header
+
+<Info>
+  **Schema only:** `header.showThemeToggle`, `header.showGitHubCard`, and `header.links[].locale` validate in `docs.json` but are not applied by the header renderer yet. Theme toggle and GitHub link always render on hosted sites. See [Schema-only fields](#schema-only-fields).
+</Info>
 
 <Accordion title="header fields">
   <Property name="header.showName" type="boolean" optional>
@@ -138,11 +159,11 @@ Site configuration lives in `docs.json` or `docs.yaml` at the repository root. F
   </Property>
 
   <Property name="header.showThemeToggle" type="boolean" optional>
-    **Schema only** — validates in `docs.json` but the theme toggle currently always renders on hosted sites.
+    **Schema only.** Hide the theme toggle when `false`. Not applied yet — see [Schema-only fields](#schema-only-fields).
   </Property>
 
   <Property name="header.showGitHubCard" type="boolean" optional>
-    **Schema only** — validates in `docs.json` but the GitHub link currently always renders on hosted sites.
+    **Schema only.** Hide the GitHub repository link when `false`. Not applied yet — see [Schema-only fields](#schema-only-fields).
   </Property>
 
   <Property name="header.links" type="array">
@@ -155,7 +176,7 @@ Site configuration lives in `docs.json` or `docs.yaml` at the repository root. F
     | `title` | string | Button label |
     | `href` | string | Link target |
     | `cta` | boolean | Style as primary CTA when `true`. Default: `false` |
-    | `locale` | string | **Schema only** — locale filter is not yet applied in the header renderer |
+    | `locale` | string | **Schema only.** Show the link only for this locale. Not applied yet — see [Schema-only fields](#schema-only-fields) |
   </Property>
 </Accordion>
 
@@ -386,11 +407,11 @@ Ask AI chat panel configuration. **Beta.**
 </Property>
 
 <Property name="agent.limits.ip" type="number">
-  Maximum chat requests per IP per day. Default: `200`.
+  Maximum chat requests per IP per hour. Default: `200`.
 </Property>
 
 <Property name="agent.limits.repo" type="number">
-  Maximum chat requests per repository per day. Default: `10000`.
+  Maximum chat requests per repository per hour. Default: `10000`.
 </Property>
 
 See [Ask AI](/features/ask-ai).

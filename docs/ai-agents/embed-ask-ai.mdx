@@ -85,13 +85,39 @@ const { messages, sendMessage } = useChat({
 });
 ```
 
-Check whether Ask AI is enabled before rendering custom UI:
+Send the full conversation on each request. Each user message needs `role: "user"` and a `parts` array with `{ "type": "text", "text": "…" }`. The built-in panel limits input to 1000 characters.
+
+Without `@ai-sdk/react`, call the endpoint directly:
+
+```ts
+await fetch("/api/agent", {
+  method: "POST",
+  credentials: "include",
+  headers: {
+    "Content-Type": "application/json",
+    "X-Agent-Session": csrfToken,
+  },
+  body: JSON.stringify({
+    messages: [
+      {
+        id: "msg-1",
+        role: "user",
+        parts: [{ type: "text", text: "How do I configure search?" }],
+      },
+    ],
+  }),
+});
+```
+
+For request headers, message shape, streamed response format, error codes, and rate-limit headers, see [HTTP endpoints — POST /api/agent](/reference/http-endpoints#apiagent-post).
+
+**Check whether Ask AI is enabled** before rendering custom UI:
 
 ```bash
 curl "https://docs.page/api/bundle?owner=org&repository=repo&path=index"
 ```
 
-When `"hasAgent": true`, production pages issue session cookies. See [HTTP endpoints](/reference/http-endpoints) for the full bundle query shape.
+When `"hasAgent": true`, production pages issue session cookies. See [HTTP endpoints](/reference/http-endpoints) for bundle query parameters.
 
 ## Verify
 
@@ -114,4 +140,4 @@ When `"hasAgent": true`, production pages issue session cookies. See [HTTP endpo
 - [Ask AI](/ai-agents/ask-ai) — enable the in-docs panel
 - [Agent-ready docs](/ai-agents/agent-ready-docs) — llms.txt, MCP, and skills overview
 - [Ask AI on Features](/features/ask-ai) — session security and rate limits
-- [HTTP endpoints](/reference/http-endpoints) — bundle and agent route lookup
+- [HTTP endpoints](/reference/http-endpoints) — bundle query, POST /api/agent contract, and platform APIs
