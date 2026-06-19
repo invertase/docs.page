@@ -21,7 +21,7 @@ export function Card({ title, icon, href, children }: CardProps) {
   const container = (children: React.ReactNode) => {
     if (href) {
       return (
-        <Link href={href} className="block">
+        <Link href={href} className="block h-full">
           {children}
         </Link>
       );
@@ -32,7 +32,7 @@ export function Card({ title, icon, href, children }: CardProps) {
 
   return container(
     <CardPrimitive
-      className={cn("group", href && "border hover:border-primary")}
+      className={cn("group h-full", href && "border hover:border-primary")}
     >
       {title || icon || href ? (
         <CardHeader>
@@ -53,7 +53,7 @@ export function Card({ title, icon, href, children }: CardProps) {
       ) : null}
       <CardContent
         className={cn(
-          "space-y-4 text-foreground/90",
+          "flex-1 space-y-4 text-foreground/90",
           href && "group-hover:text-primary",
         )}
       >
@@ -78,7 +78,7 @@ export function CardGroup({ cols = 2, children }: CardGroupProps) {
   return (
     <div
       className={cn(
-        "grid grid-cols-1 gap-4",
+        "grid grid-cols-1 items-stretch gap-4",
         smGridCols[cols] ?? "sm:grid-cols-2",
       )}
     >
