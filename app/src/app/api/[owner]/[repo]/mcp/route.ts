@@ -1,4 +1,5 @@
 import { resolveDocsRoute } from "@/lib/docs-routing";
+import { getPostHogClient } from "@/lib/posthog";
 import { BundlerError } from "@/server/docs/bundle";
 import { loadDocsConfigForResolvedSha } from "@/server/docs/source-dataset";
 import { listGitHubDocFiles } from "@/server/github/tree";
@@ -78,7 +79,18 @@ export async function GET(req: Request, context: RouteContext) {
       return Response.json({ error: "Not found." }, { status: 404 });
     }
 
-    return Response.json(await createMcpDescriptor(context), { status: 200 });
+    const descriptor = await createMcpDescriptor(context);
+    getPostHogClient().capture({
+      distinctId: `${route.owner}/${route.repository}`,
+      event: "mcp server accessed",
+      properties: {
+        owner: route.owner,
+        repository: route.repository,
+        ref: route.ref ?? null,
+        $process_person_profile: false,
+      },
+    });
+    return Response.json(descriptor, { status: 200 });
   } catch (error) {
     if (error instanceof BundlerError) {
       return privateRepoResponse(error);
@@ -102,6 +114,16 @@ export async function POST(req: Request, context: RouteContext) {
       return Response.json({ error: "Not found." }, { status: 404 });
     }
 
+    getPostHogClient().capture({
+      distinctId: `${route.owner}/${route.repository}`,
+      event: "mcp tool called",
+      properties: {
+        owner: route.owner,
+        repository: route.repository,
+        ref: route.ref ?? null,
+        $process_person_profile: false,
+      },
+    });
     return handleMcpPost(req, context);
   } catch (error) {
     if (error instanceof BundlerError) {

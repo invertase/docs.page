@@ -43,6 +43,7 @@ import {
   RAW_DOC_CACHE_HEADERS,
   setDocsCacheHeaders,
 } from "@/proxy";
+import { getPostHogClient } from "@/lib/posthog";
 import {
   createAgentSession,
   createAgentSessionCookies,
@@ -261,6 +262,17 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
       };
     }
 
+    getPostHogClient().capture({
+      distinctId: `${owner}/${repo}`,
+      event: "doc page error",
+      properties: {
+        owner,
+        repository: repo,
+        error_message: error.message,
+        $process_person_profile: false,
+      },
+    });
+
     return {
       props: {
         kind: "error" as const,
@@ -303,7 +315,31 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
         csrfCookiePath,
       ),
     );
+
+    getPostHogClient().capture({
+      distinctId: `${route.owner}/${route.repository}`,
+      event: "agent session created",
+      properties: {
+        owner: route.owner,
+        repository: route.repository,
+        ref: route.ref ?? null,
+        $process_person_profile: false,
+      },
+    });
   }
+
+  getPostHogClient().capture({
+    distinctId: `${route.owner}/${route.repository}`,
+    event: "doc page viewed",
+    properties: {
+      owner: route.owner,
+      repository: route.repository,
+      ref: route.ref ?? null,
+      path: route.docPath ?? null,
+      has_agent: successResponse.hasAgent,
+      $process_person_profile: false,
+    },
+  });
 
   return {
     props: {
