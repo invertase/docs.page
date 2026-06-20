@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
+import { getPostHogClient } from "@/lib/posthog";
 import {
   AgentCredentialsDecryptionError,
   decryptAgentCredentialsJwe,
@@ -7,7 +8,6 @@ import {
 import { encryptAgentPayload } from "@/server/agent/encryption";
 import { checkAdminAccess, parseRepo } from "@/server/agent/github-admin";
 import { getAgentStore } from "@/server/agent/storage";
-import { getPostHogClient } from "@/lib/posthog";
 
 const CreateAgentSchema = z.object({
   repo: z.string().trim().min(1),

@@ -23,13 +23,13 @@ import {
   acceptPrefersMarkdown,
   incomingHttpHeadersToWebHeaders,
 } from "@/lib/incoming-http-headers";
+import { getPostHogClient } from "@/lib/posthog";
 import type { DocPageProps, ErrorPageProps, PageProps } from "@/lib/types";
 import {
   DOCS_HTML_CACHE_HEADERS,
   RAW_DOC_CACHE_HEADERS,
   setDocsCacheHeaders,
 } from "@/proxy";
-import { getPostHogClient } from "@/lib/posthog";
 import {
   createAgentSession,
   createAgentSessionCookies,
