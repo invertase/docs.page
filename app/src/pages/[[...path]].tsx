@@ -32,6 +32,7 @@ import {
   acceptPrefersMarkdown,
   incomingHttpHeadersToWebHeaders,
 } from "@/lib/incoming-http-headers";
+import { getPostHogClient } from "@/lib/posthog";
 import type {
   DocPageProps,
   ErrorPageProps,
@@ -43,7 +44,6 @@ import {
   RAW_DOC_CACHE_HEADERS,
   setDocsCacheHeaders,
 } from "@/proxy";
-import { getPostHogClient } from "@/lib/posthog";
 import {
   createAgentSession,
   createAgentSessionCookies,
