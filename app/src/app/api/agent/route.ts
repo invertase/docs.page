@@ -8,6 +8,7 @@ import {
   RateLimiterRes,
 } from "rate-limiter-flexible";
 import { z } from "zod";
+import { getPostHogClient } from "@/lib/posthog";
 import { getRequestClientIp } from "@/lib/request-client-ip";
 import { decryptAgentPayload } from "@/server/agent/encryption";
 import { checkAdminAccess, parseRepo } from "@/server/agent/github-admin";
@@ -105,6 +106,16 @@ export async function DELETE(req: Request) {
 
     await store.deleteByRepo(repo);
 
+    getPostHogClient().capture({
+      distinctId: repo,
+      event: "agent removed",
+      properties: {
+        owner: repoParts.owner,
+        repository: repoParts.repo,
+        $process_person_profile: false,
+      },
+    });
+
     return Response.json({ ok: true }, { status: 200 });
   } catch (error) {
     console.error(error);
@@ -183,6 +194,16 @@ export async function POST(req: Request) {
   });
 
   if (ipLimit.response) {
+    getPostHogClient().capture({
+      distinctId: ip,
+      event: "agent rate limited",
+      properties: {
+        owner: session.owner,
+        repository: session.repo,
+        limit_type: "ip",
+        $process_person_profile: false,
+      },
+    });
     return ipLimit.response;
   }
 
@@ -194,6 +215,16 @@ export async function POST(req: Request) {
   });
 
   if (repoLimit.response) {
+    getPostHogClient().capture({
+      distinctId: repoSlug,
+      event: "agent rate limited",
+      properties: {
+        owner: session.owner,
+        repository: session.repo,
+        limit_type: "repo",
+        $process_person_profile: false,
+      },
+    });
     return repoLimit.response;
   }
 
@@ -285,6 +316,18 @@ export async function POST(req: Request) {
       bash: bashToolkit.tools.bash as never,
     },
     stopWhen: stepCountIs(20),
+  });
+
+  getPostHogClient().capture({
+    distinctId: ip,
+    event: "agent message sent",
+    properties: {
+      owner: session.owner,
+      repository: session.repo,
+      provider,
+      message_count: messages.length,
+      $process_person_profile: false,
+    },
   });
 
   return createAgentUIStreamResponse({

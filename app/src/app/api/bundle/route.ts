@@ -3,6 +3,7 @@ import type {
   DocsBundleApiErrorResponse,
   DocsBundleApiResponse,
 } from "@/lib/docs-bundle-api";
+import { getPostHogClient } from "@/lib/posthog";
 import { getBundleJsonCacheHeaders } from "@/proxy";
 import { isAgentEnabledForRepository } from "@/server/agent/repository";
 import { BundlerError, getDocBundle } from "@/server/docs/bundle";
@@ -44,6 +45,19 @@ export async function GET(req: Request) {
       }),
     ]);
 
+    getPostHogClient().capture({
+      distinctId: `${input.data.owner}/${input.data.repository}`,
+      event: "docs bundle loaded",
+      properties: {
+        owner: input.data.owner,
+        repository: input.data.repository,
+        ref: input.data.ref ?? null,
+        path: input.data.path,
+        has_agent: hasAgent,
+        $process_person_profile: false,
+      },
+    });
+
     const response = Response.json(
       {
         code: "OK",
@@ -59,6 +73,20 @@ export async function GET(req: Request) {
   } catch (error) {
     if (error instanceof BundlerError) {
       logBundlerError(error);
+      getPostHogClient().capture({
+        distinctId: `${input.data.owner}/${input.data.repository}`,
+        event: "docs bundle failed",
+        properties: {
+          owner: input.data.owner,
+          repository: input.data.repository,
+          ref: input.data.ref ?? null,
+          path: input.data.path,
+          error_code: error.code,
+          error_name: error.name,
+          error_message: error.message,
+          $process_person_profile: false,
+        },
+      });
       return Response.json(
         {
           code: error.code,
