@@ -9,7 +9,7 @@ On-site search (the **⌘K** palette) helps readers who are already on your docs
 
 - A [branch preview](/features/branch-preview) or production URL ([local preview](/features/local-preview) does not serve `sitemap.xml` or `robots.txt`)
 - Site identity fields in `docs.json`; see [Apply your branding](/customize/branding) for `name`, logo, and related settings that feed share cards
-- Optional: a [custom domain](/customize/custom-domain) when you want canonical URLs on your own host
+- Optional: a [custom domain](/customize/custom-domain) when you want canonical URLs on your own host (requires a setup request)
 
 ---
 
@@ -152,7 +152,7 @@ Use indexing controls when the site or specific pages should stay out of search 
 2. Fetch `robots.txt` and confirm it allows crawling (or `Disallow: /` when `seo.noindex` is enabled) and references your sitemap when indexing is allowed.
 3. Open `sitemap.xml` and confirm your key pages appear with the expected URLs.
 4. View page source on a documentation page and check `<title>`, `<meta name="description">`, Open Graph tags, and `<meta name="robots">` when `noindex` applies.
-5. Optional: submit the sitemap URL in [Google Search Console](https://search.google.com/search-console) after you connect a custom domain or confirm your production URL.
+5. Optional: submit the sitemap URL in [Google Search Console](https://search.google.com/search-console) after you [request a custom domain](/customize/custom-domain) or confirm your production URL.
 
 ## Troubleshooting
 
@@ -170,6 +170,6 @@ Use indexing controls when the site or specific pages should stay out of search 
 - [Search engine indexing](/features/search-engine-indexing): how `sitemap.xml`, `robots.txt`, and metadata are generated
 - [Search](/features/search): on-site **⌘K** search for readers already on your docs
 - [Apply your branding](/customize/branding): `name`, logo, and theme settings that feed share cards
-- [Connect a custom domain](/customize/custom-domain): serve docs and crawler files on your own domain
+- [Custom domain](/customize/custom-domain): request a hostname for docs and crawler files on your own domain
 - [Page frontmatter](/reference/page-frontmatter): per-page `title`, `description`, `image`, and `noindex`
 - [docs.json](/reference/docs-json): `name`, `description`, `socialPreview`, and `seo.noindex`
