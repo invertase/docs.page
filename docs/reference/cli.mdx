@@ -1,6 +1,6 @@
 ---
 title: CLI
-description: Run the right docs command with the right flags: init, preview, check, and agent setup.
+description: "Run the right docs command with the right flags: init, preview, check, and agent setup."
 ---
 
 ## Global options
@@ -159,7 +159,7 @@ All five severity flags accept `off`, `warn`, or `error`. Default for each: `err
 | No page files | `No docs/**/*.mdx files were found.` |
 | Broken internal link | `Internal link points to a missing docs page.` (or frontmatter variant) |
 | Missing asset | `Referenced asset does not exist.` |
-| Unreachable external URL | `Unable to reach external link: …` or `External link returned <status> …` |
+| Unreachable external URL | `Unable to reach external link: …` or `External link returned &lt;status&gt; …` |
 
 ---
 
@@ -205,7 +205,7 @@ The CLI prints `Your documentation agent is ready to use.` and a JSON snippet wi
 | API key too short | `` `--apikey` must be longer than 1 character. `` |
 | `gh` not installed | `GitHub CLI (\`gh\`) is required when \`--gh-auth\` is not provided.` |
 | `gh` not authenticated | `Unable to read a GitHub auth token from \`gh\`. Run \`gh auth login\`, or pass \`--gh-auth\`.` |
-| API error response | `` Server `error` string or `Agent creation failed (<status> …).` `` |
+| API error response | `Server \`error\` string or Agent creation failed (&lt;status&gt; …).` |
 | Missing token in response | `Agent creation failed: response did not include a token.` |
 
 ---
@@ -237,7 +237,7 @@ The CLI prints `Deleted agent for org/name.`
 | Missing `--repo` in non-interactive mode | `Missing --repo.` |
 | Invalid repository format | `` `--repo` must be in the form `org/name`. `` |
 | GitHub auth failure | Same messages as `agent create` |
-| API error response | `` Server `error` string or `Agent deletion failed (<status> …).` `` |
+| API error response | `Server \`error\` string or Agent deletion failed (&lt;status&gt; …).` |
 
 ---
 
