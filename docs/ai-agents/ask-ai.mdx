@@ -22,10 +22,6 @@ For how the panel searches MDX, session security, and rate limits, see [Ask AI o
 
 Enable the Ask AI panel by running a CLI command, then set `agent.key` in `docs.json`:
 
-<Warning>
-  Passing `--apikey` on the command line stores the key in your shell history. Prefer an interactive prompt (omit the flag) or set the key in a short-lived environment variable. Never commit API keys to your repository.
-</Warning>
-
 <Steps>
   <Step title="Provision credentials with the CLI">
     **Register the agent:** from any directory, run create with your repository and provider. The CLI encrypts your API key locally, verifies GitHub admin access, and registers the agent with docs.page.
