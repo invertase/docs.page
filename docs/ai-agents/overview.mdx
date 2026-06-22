@@ -31,8 +31,6 @@ Most teams start with [llms.txt](/ai-agents/llms-txt) or [MCP](/ai-agents/mcp-se
 
 Every surface reads from the public GitHub repository and ref that power your docs site. Push an MDX update and exports, MCP listings, and Ask AI search reflect it on the next request, using the same model as [Public GitHub hosting](/features/public-github-hosting).
 
-You do not maintain a second documentation store or run an export job. Branch and pull request URLs use the same `~ref` segment as page previews, so tools can target a preview ref before merge.
-
 **Discovery vs interactive read:** [llms.txt](/ai-agents/llms-txt) answers "what exists?" in one HTTP fetch. [MCP](/ai-agents/mcp-server) lets assistants list and read individual pages on demand. Choose llms exports when any HTTP client needs a catalog; choose MCP when the agent works in an editor or terminal session.
 
 **Skills and chat:** [Agent skills](/ai-agents/agent-skills) extend MCP with repo-specific instructions you own. [Ask AI](/ai-agents/ask-ai) (**beta**) adds a reader-facing chat panel on your production site (optional, and separate from programmatic access).
