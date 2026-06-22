@@ -20,7 +20,7 @@ For how the panel searches MDX, session security, and rate limits, see [Ask AI o
 
 ## Enable the chat panel
 
-Provisioning stores encrypted provider credentials on docs.page. Your `docs.json` `agent.key` links the live site to that record.
+Enable the Ask AI panel by running a CLI command, then set `agent.key` in `docs.json`:
 
 <Warning>
   Passing `--apikey` on the command line stores the key in your shell history. Prefer an interactive prompt (omit the flag) or set the key in a short-lived environment variable. Never commit API keys to your repository.
