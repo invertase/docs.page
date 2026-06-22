@@ -39,18 +39,13 @@ This tutorial walks you through your first publish: scaffold the required files,
     Open `docs/index.mdx` and change the title or add a sentence so you can confirm your changes later on the live site.
   </Step>
   <Step title="Push to a public GitHub repository">
-    [docs.page](https://docs.page) only hosts **public** repositories. Create a new public repo on GitHub (for example `acme/my-docs`), then commit and push from your project directory:
+    [docs.page](https://docs.page) only hosts **public** repositories. Commit and push from your project directory:
 
     ```bash
-    git init
     git add docs.json docs/
     git commit -m "Add docs.page site"
-    git branch -M main
-    git remote add origin https://github.com/acme/my-docs.git
-    git push -u origin main
+    git push
     ```
-
-    Replace `acme/my-docs` with your GitHub owner and repository name.
 
     <Warning>
       If the repository is private, [docs.page](https://docs.page) returns an error and does not serve your documentation. Make the repository public before opening your live URL.
