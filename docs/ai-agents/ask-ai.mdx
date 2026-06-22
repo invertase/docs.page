@@ -24,11 +24,27 @@ Enable the Ask AI panel by running a CLI command, then set `agent.key` in `docs.
 
 <Steps>
   <Step title="Provision credentials with the CLI">
-    **Register the agent:** from any directory, run create with your repository and provider. The CLI encrypts your API key locally, verifies GitHub admin access, and registers the agent with docs.page.
+    **Register the agent:** from any directory, run the `create` command with your GitHub repository and LLM provider name. The CLI encrypts your API key locally, verifies GitHub admin access, and registers the agent with docs.page. docs.page assigns a default model per provider:
 
-    ```bash
+    <CodeGroup>
+
+    ```bash title="OpenAI (gpt-4.1-mini)"
     npx @docs.page/cli agent create --repo org/repo --provider openai
     ```
+
+    ```bash title="Anthropic (claude-haiku-4-5)"
+    npx @docs.page/cli agent create --repo org/repo --provider anthropic
+    ```
+
+    ```bash title="Google (gemini-2.5-flash)"
+    npx @docs.page/cli agent create --repo org/repo --provider google
+    ```
+
+    ```bash title="xAI (grok-3-mini)"
+    npx @docs.page/cli agent create --repo org/repo --provider xai
+    ```
+
+    </CodeGroup>
 
     Omit flags in an interactive terminal to be prompted for the repository, provider, and API key. On success, the CLI prints an `agent.key` value and `Your documentation agent is ready to use`.
 
