@@ -89,16 +89,6 @@ External URLs pass through unchanged:
 
 Repo-relative paths point at files under your `docs/` directory. For example, `/assets/logo-light.svg` resolves to `docs/assets/logo-light.svg` on the branch being served. Commit assets alongside your MDX so branch previews and production share the same files.
 
-### Legacy v1 config
-
-Older `docs.json` files used flat string fields: `logo`, `logoDark`, and `favicon`. docs.page detects that shape and migrates it automatically:
-
-- `logo` → `logo.light`
-- `logoDark` → `logo.dark`
-- `favicon` (string) → both `favicon.light` and `favicon.dark`
-
-You do not need to rewrite v1 configs to get light/dark behavior, but new projects should use the object form.
-
 ### Open Graph fallback
 
 Social preview cards can use a dedicated image via `og.logo`. When that is unset, docs.page falls back to `logo.dark`, then `logo.light`, when generating default Open Graph images. Header and favicon settings do not replace `socialPreview` or per-page `image` frontmatter. Those still take precedence for link previews.
