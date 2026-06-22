@@ -37,7 +37,17 @@ Route component selection here. **Published docs are the source of truth for syn
 | Tutorial | `<Steps>`, `<Info>` for prerequisites |
 | How-To | `<Steps>` when steps are long; ordered lists when short; `<Warning>` for risky actions |
 | Reference | `<Property>`, `<Accordion>` for nested groups, tables |
-| Explanation | Prose; `<CardGroup>` for related links; mermaid only if user/project uses it |
+| Explanation | Prose for concepts; **example-first** for mechanic explanations ([templates.md — Explanation (mechanic)](templates.md#explanation-mechanic)); `<CardGroup>` for related links; mermaid only if user/project uses it |
+
+## Artifact placement
+
+When the page teaches config or CLI, place the artifact **before** explanatory bullets:
+
+| Situation | Component(s) | Placement |
+| --- | --- | --- |
+| `docs.json`, frontmatter, or CLI | Fence or `<CodeGroup>` | Top of first `##`, before bullet lists |
+| Two config shapes (single vs multi-locale, internal vs external redirect) | `<CodeGroup>` | Section opener |
+| Reader recognizes feature visually (search, preview UI) | `<Image>` | Near top when asset available |
 
 ## Hard rules
 

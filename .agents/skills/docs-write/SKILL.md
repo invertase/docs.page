@@ -10,7 +10,7 @@ description: >-
 
 # Docs Write
 
-Write **prose** for pages that are already planned in `docs.json`. Routing and navigation belong to upstream skills.
+Write **prose and scannable MDX** for pages that are already planned in `docs.json`. Routing and navigation belong to upstream skills.
 
 ## Pipeline position
 
@@ -76,7 +76,7 @@ Docs Writer Progress:
 - [ ] 3. Template — read templates.md; pick skeleton for docType
 - [ ] 3b. Components — read components.md; for each MDX component you plan to use, read the matching page at https://use.docs.page/components/… before drafting syntax
 - [ ] 4. Draft — write .mdx with tone and formatting rules
-- [ ] 5. Lint — read style-lint.md; run self-correction pass (description voice, intro duplication, fence tags, step why-first, hub scope)
+- [ ] 5. Lint — read style-lint.md; run self-correction pass (description voice, intro duplication, fence tags, step why-first, visual rhythm, artifact-first sections, hub scope)
 - [ ] 6. Deliver — write files; summarize changes
 ```
 
@@ -132,7 +132,7 @@ When drafting multiple pages in the same sidebar group, **do not copy-paste the 
 
 Some how-tos are **section hubs** (e.g. Write) that cover several subtopics in one page. Keep hub pages task-oriented:
 
-- **One** decision table or comparison per subtopic; **one** short inline example max.
+- **One** decision table or comparison per subtopic; **one** short inline example max — place the example at the **top of each subtopic `##`**, not after explanatory prose.
 - Link out for field lookup (Reference), component props (Components tab), and feature mechanics (Features tab) — do not reproduce those pages.
 - Target **~120 lines** body content. If a draft exceeds that, move detail to a linked page and leave a one-sentence pointer.
 
@@ -150,7 +150,10 @@ Before delivering final content:
 
 - **Imperative & active voice:** *"Click **Submit**"* not *"The user should click submit"*
 - **Cognitive load:** Paragraphs ≤ 3 lines; use bullets
-- **Why before how:** State outcome before each setting change. In numbered steps, the **first bold phrase** should carry the why or outcome, not only the verb (*"**Declare navigation explicitly** — open `docs.json`…"* not *"**Open `docs.json**"*)
+- **Lead with artifact (scan-first layout):** After **`Before you begin`**, the first screen should include a fence, `<CodeGroup>`, table, `<Steps>`, or image — not a paragraph stack. Config, CLI, and frontmatter pages: each task `##` opens with **one setup sentence max**, then the smallest working example; bullets and edge cases follow. Prefer moving examples **up** over adding intro prose. See [style-lint.md — Visual rhythm](style-lint.md#visual-rhythm-first-screen).
+- **Why before how** (scoped):
+  - **Inside `<Step>` / numbered steps:** the **first bold phrase** carries why or outcome, not only the verb (*"**Declare navigation explicitly** — open `docs.json`…"* not *"**Open `docs.json**"*).
+  - **Page and section intros:** **artifact first**, then brief why in a caption or second sentence — not essay then code.
 - **Reader-first descriptions:** Frontmatter `description` answers *why would I open this page?* — task, outcome, or common use case. Use second person or imperative (*"Use … to …"*, *"When you need …"*). Do not list props, implementation details, or copy `summary` text from inventory. Rewrite outline `description` / purpose; never paste capability summaries verbatim.
 - **Description vs opening paragraph:** These are **different fields with different jobs** — never paraphrase one from the other. `description` = discoverability (search, nav, previews). Opening paragraph = scope, workflow position, or first action — see [templates.md — Description vs opening paragraph](templates.md#description-vs-opening-paragraph). **How-to and reference:** omit the opening paragraph when **`Before you begin`** or the first `##` section already orients the reader.
 - **Semantic UI formatting:** Bold UI labels; backtick code, paths, env vars
@@ -173,7 +176,7 @@ For how-tos and tutorials:
 
 Honor `docType` from outline. Templates: [templates.md](templates.md). Lint: [style-lint.md](style-lint.md).
 
-**Explanation pages:** Follow the Hook → Overview → How it works → Related skeleton. Do not add a standalone `## Design tradeoffs` section unless the outline explicitly calls for one — weave rationale into `## How it works` when needed.
+**Explanation pages:** Pick the template in [templates.md](templates.md) by scope — **mechanic** (one config key or HTTP behavior: example-first, then `## How it works`) or **concept** (architecture and mental models: Hook → Overview → How it works → Related). Do not add a standalone `## Design tradeoffs` section unless the outline explicitly calls for one — weave rationale into `## How it works` when needed.
 
 ## Create vs update
 
@@ -192,6 +195,7 @@ Summarize:
 - `docType` followed per outline
 - `capabilityIds` covered
 - Lint fixes applied
+- Pages where **artifact-first** layout was applied or an intro paragraph was cut for scanability
 - Outline pages not yet written
 - Anything `schema-only` or unverified in code
 

@@ -44,9 +44,9 @@ $SCOPE_AND_SETUP
 - $EXPLANATION_LINK
 ```
 
-**Opening paragraph (`$SCOPE_AND_SETUP`):** What the reader will do in *this* guide and any sandbox constraints — not a restatement of `$FINISHED_OUTCOME`. Example: *"In this guide you create a preview project and publish it to a test branch."*
+**Opening paragraph (`$SCOPE_AND_SETUP`):** **One sentence max** before `## Prerequisites` — what the reader will do in *this* guide and any sandbox constraints, not a restatement of `$FINISHED_OUTCOME`. Example: *"In this guide you create a preview project and publish it to a test branch."* The first `<Step>` must contain a command or fence.
 
-**Forbidden in tutorials:** API reference tables, long concept sections, "alternatively" branches, production hardening.
+**Forbidden in tutorials:** API reference tables, long concept sections, "alternatively" branches, production hardening, multi-paragraph scope blocks before the first `<Step>`.
 
 ---
 
@@ -69,6 +69,10 @@ $WORKFLOW_CONTEXT
 
 ## $TASK_SECTION
 
+$SECTION_LEAD
+
+$ARTIFACT
+
 $ORDERED_STEPS_OR_STEPS_COMPONENT
 
 ## Verify
@@ -86,7 +90,11 @@ $VERIFY_INSTRUCTION
 $RELATED_LINKS
 ```
 
-**Opening paragraph (`$WORKFLOW_CONTEXT`):** Optional. When present: where this task fits in the reader's workflow, scope boundaries, or a constraint — **not** a restatement of `$PROBLEM_OUTCOME`. Example: *"After local preview looks right, run check in CI before you merge."* When absent: start directly at **`Before you begin`**.
+**Opening paragraph (`$WORKFLOW_CONTEXT`):** Optional. When present: **one sentence** of workflow context — where this task fits, scope boundaries, or a constraint — **not** a restatement of `$PROBLEM_OUTCOME`. Example: *"After local preview looks right, run check in CI before you merge."* When absent: start directly at **`Before you begin`**. Delete or shorten when the first `##` already orients the reader.
+
+**Section opener (`$SECTION_LEAD` + `$ARTIFACT`):** Each config or CLI `##` section: optional **one sentence** naming the config surface (`$SECTION_LEAD`), then immediately `$ARTIFACT` (fence or `<CodeGroup>`). Bullets, `<Steps>`, and edge cases follow the example — not before it.
+
+**Section opener pattern:** Heading → one setup sentence → `<CodeGroup>` or fence → bullets or `<Steps>`. Example flow: `## Add sidebar navigation` → *"Define navigation in the `sidebar` property of `docs.json`:"* → single-locale and multi-locale JSON tabs → locale edge-case bullets.
 
 **Prerequisites heading:** Use bold **`Before you begin`** (not `## Before you begin`) so the block stays visually light above the fold. An optional `---` rule after the bullets is fine.
 
@@ -213,6 +221,42 @@ $SUBCONCEPT_B_BODY
 
 ---
 
+## Explanation (mechanic)
+
+**When:** Outline `docType: explanation` but the capability is a **single config key, frontmatter field, or HTTP behavior** — redirects, anchors, tab scoping. Not architecture, comparisons, or multi-system flows (use **Explanation** above).
+
+````mdx
+---
+title: $CONCEPT_NAME
+description: $UNDERSTANDING_GAINED
+---
+
+$ONE_LINE_PROBLEM
+
+```yaml
+$MINIMAL_EXAMPLE
+```
+
+## How it works
+
+$SHORT_MECHANIC_EXPLANATION
+
+### $SUBCONCEPT_A
+
+$SUBCONCEPT_A_BODY
+
+## Related
+
+- $HOWTO_LINK
+- $REFERENCE_LINK
+````
+
+**Opening (`$ONE_LINE_PROBLEM`):** One sentence stating the reader problem or scenario — **not** a restatement of `$UNDERSTANDING_GAINED`. Immediately followed by the smallest working `$MINIMAL_EXAMPLE`. Skip `## Overview` unless the outline requires a mental model section before mechanics.
+
+**When to use:** `capabilityIds` surface is one config key or one HTTP behavior. **When not:** architecture essays, hosting models, comparison pages — use full Hook → Overview template.
+
+---
+
 ## Frontmatter and metadata
 
 | Field | Required | Guidance |
@@ -234,10 +278,13 @@ These fields answer **different questions**. Never paraphrase the opening from `
 
 | Doc type | `description` | Opening paragraph |
 | --- | --- | --- |
-| Tutorial | Outcome when finished (`$FINISHED_OUTCOME`) | Scope and setup (`$SCOPE_AND_SETUP`) — what happens *in this guide* |
-| How-To | Problem solved (`$PROBLEM_OUTCOME`) | Workflow context (`$WORKFLOW_CONTEXT`) — **optional**; omit if `## Before you begin` suffices |
+| Tutorial | Outcome when finished (`$FINISHED_OUTCOME`) | Scope and setup (`$SCOPE_AND_SETUP`) — **one sentence max** before `## Prerequisites` |
+| How-To | Problem solved (`$PROBLEM_OUTCOME`) | Workflow context (`$WORKFLOW_CONTEXT`) — **optional**; omit if `Before you begin` or first `##` suffices |
 | Reference | When/why to use this surface (`$REFERENCE_DESCRIPTION`) | Syntax pointer (`$SYNTAX_POINTER`) — **optional**; omit if the first `##` group is self-explanatory |
-| Explanation | Insight gained (`$UNDERSTANDING_GAINED`) | Hook (`$HOOK`) — scenario or question, not the insight restated |
+| Explanation (concept) | Insight gained (`$UNDERSTANDING_GAINED`) | Hook (`$HOOK`) — scenario or question, not the insight restated |
+| Explanation (mechanic) | Insight gained (`$UNDERSTANDING_GAINED`) | One-line problem (`$ONE_LINE_PROBLEM`) + minimal example — **not** a multi-paragraph hook |
+
+**Artifact-first pages:** When the first `##` heading plus an immediate fence or component orient the reader, **omit** the opening paragraph entirely (extends the how-to and reference optional-intro rule).
 
 ### Duplication test
 
@@ -256,7 +303,8 @@ Before delivering, read `description` and the opening paragraph aloud. **Fail** 
 | Tutorial | `$FINISHED_OUTCOME` | What the reader will have done when finished |
 | How-To | `$PROBLEM_OUTCOME` | The problem solved or result achieved |
 | Reference | `$REFERENCE_DESCRIPTION` | When/why to use this API, component, or config surface |
-| Explanation | `$UNDERSTANDING_GAINED` | What mental model or insight the reader takes away |
+| Explanation (concept) | `$UNDERSTANDING_GAINED` | What mental model or insight the reader takes away |
+| Explanation (mechanic) | `$UNDERSTANDING_GAINED` | What behavior or config the reader understands after seeing the example |
 
 ---
 

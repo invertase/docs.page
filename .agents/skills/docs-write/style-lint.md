@@ -54,10 +54,24 @@ Use **international English** (American spelling and conventions) in **body pros
 - [ ] Numbered steps: first **bold phrase** states why or outcome, not only the action verb
 - [ ] No passive hedging ("It is recommended that…" → "Enable…")
 - [ ] Paragraphs ≤ 3 lines; split or bulletize longer blocks
-- [ ] Every setting change states **why** before **how**
+- [ ] **Inside steps:** why before how in the bold lead-in; **section level:** artifact before explanatory bullets
 - [ ] UI labels bold: **Settings**, **Save**
 - [ ] Code, paths, env vars, JSON keys in `backticks`
 - [ ] `status: beta` / `deprecated` called out near first mention
+
+## Visual rhythm (first screen)
+
+| Check | Pass criteria |
+| --- | --- |
+| First screen | After **`Before you begin`** (and optional `---`), a fence, component, table, or image appears within **8 lines** on how-tos and mechanic explanations |
+| Section openers | Config or CLI `##` sections: fence or `<CodeGroup>` within **5 lines** of the section heading |
+| Prose density | No more than **2 short paragraphs** in a row without a visual break (fence, list, table, component) |
+| Tutorial entry | First `<Step>` or fence before any multi-paragraph scope block |
+| UI features | Search, preview, and similar pages: image or screenshot near the top when assets exist (optional; outline-dependent) |
+
+- [ ] First screen includes a scannable artifact on how-tos and mechanic explanations — not a paragraph stack
+- [ ] Config and CLI sections lead with example, then bullets — not essay then code
+- [ ] No long prose runs without a visual break between fences or components
 
 ## Section prerequisites
 
@@ -171,6 +185,7 @@ Content inside `<Step>` is indented for MDX. At that indent, markdown **tables**
 For section-hub how-tos (outline lists multiple subtopics on one page):
 
 - [ ] One decision table + one short example max per subtopic
+- [ ] Example at the **top** of each subtopic `##`, not after explanatory prose
 - [ ] Component props, CLI flag tables, and schema fields link out — not copied inline
 - [ ] Body stays near **~120 lines**; excess detail moved to linked Reference/Features/Components pages
 
@@ -328,3 +343,49 @@ https://docs.page/{owner}/{repo}~{ref}
 ```text
 https://docs.page/{owner}/{repo}~{ref}
 ```
+
+---
+
+**Before (prose-first redirects — mechanic explanation):**
+
+What happens when a reader bookmarks `/installation` and you rename the page to `/getting-started`? Without a redirect, the old path returns a 404…
+
+## Overview
+
+docs.page redirects readers with the `redirect` field in page frontmatter…
+
+(three paragraphs before any YAML)
+
+**After:**
+
+When a reader opens an old bookmark after a rename, a stub file with `redirect` sends them to the new URL:
+
+```yaml title="docs/installation.mdx"
+---
+redirect: /getting-started
+---
+```
+
+## How it works
+
+On each request, docs.page reads frontmatter. If `redirect` is set, the server returns a **307 Temporary Redirect**…
+
+---
+
+**Before (anchors explained in prose only):**
+
+Pin GitHub, Discord, or app links above the sidebar with the top-level `anchors` array in `docs.json`. Each entry needs `title`, `href`, and optional `icon`. See Links for icon names.
+
+**After:**
+
+Pin GitHub, Discord, or app links above the sidebar with the top-level `anchors` array in `docs.json`:
+
+```json
+{
+  "anchors": [
+    { "icon": "github", "title": "GitHub", "href": "https://github.com/acme/handbook" }
+  ]
+}
+```
+
+See [Links](/features/links) for icon names and scoping.
