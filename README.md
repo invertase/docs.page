@@ -35,7 +35,7 @@ https://docs.page/{owner}/{repo}
 ## Features
 
 - **[Agent-ready](https://use.docs.page/ai-agents/overview):** MCP server and auto-generated `llms.txt` on every public site. Add optional [agent skills](https://use.docs.page/ai-agents/agent-skills) and enable [Ask AI](https://use.docs.page/ai-agents/ask-ai) (beta) so LLMs and readers can query your docs without a separate mirror.
-- **Git publishing:** Deploy updates directly from your public GitHub repository. Eliminate build pipelines, hosting configuration, or infrastructure maintenance.
+- **[Git publishing](https://use.docs.page/features/public-github-hosting):** Deploy updates directly from your public GitHub repository. Eliminate build pipelines, hosting configuration, or infrastructure maintenance.
 - **[Intelligent search](https://use.docs.page/features/search):** Built-in full-text index (Cmd+K) plus embedded AI chat. Locate information instantly without third-party tracking scripts or external setup.
 - **[Markdown components](https://use.docs.page/components):** Add interactive components to your docs with MDX for richer experiences than standard Markdown.
 - **[Branches & versions](https://use.docs.page/features/branch-preview):** Serve any Git branch, tag, or release as a distinct documentation site. Organise versions and live staging previews on the fly.
