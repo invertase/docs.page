@@ -3,13 +3,15 @@ title: Redirects
 description: Keep old URLs working when you move or rename pages anywhere across your public docs site.
 ---
 
-What happens when a reader bookmarks `/installation` and you rename the page to `/getting-started`? Without a redirect, the old path returns a 404 even though the content still exists under a new URL.
+Leave a stub at the old path and set `redirect` in frontmatter:
 
-## Overview
+```yaml title="docs/installation.mdx"
+---
+redirect: /getting-started
+---
+```
 
-docs.page redirects readers with the `redirect` field in page frontmatter. Leave a stub file at the old path, set `redirect` to the new destination, and the platform sends a temporary HTTP redirect before any page body renders.
-
-Redirects are **per page file**, not a central redirect table in `docs.json`. That keeps one-off renames simple: one old file, one target path. It is not a bulk URL migration tool. Each old URL needs its own stub.
+docs.page returns a **307 Temporary Redirect** to the destination before any page body renders. Redirects are **per page file**, not a central table in `docs.json` — one old URL, one stub.
 
 For step-by-step rename workflows, see [Redirects](/authoring/redirects). Field syntax and other frontmatter options live in [Page frontmatter](/reference/page-frontmatter).
 
@@ -26,12 +28,6 @@ The redirect runs in the same request path as normal page rendering. There is no
 **External URLs** (values starting with `http://`, `https://`, or `//`) are returned unchanged. Use these when the destination lives off your docs site.
 
 **Internal paths** (root-relative paths such as `/getting-started`) are resolved against the **current request context**. You write the path once; docs.page builds the full URL from how the reader opened the page.
-
-```yaml title="docs/installation.mdx"
----
-redirect: /getting-started
----
-```
 
 ```yaml title="docs/legacy-docs.mdx"
 ---
