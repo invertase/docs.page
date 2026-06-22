@@ -46,7 +46,7 @@ Enable the Ask AI panel by running a CLI command, then set `agent.key` in `docs.
 
     </CodeGroup>
 
-    Omit flags in an interactive terminal to be prompted for the repository, provider, and API key. On success, the CLI prints an `agent.key` value and `Your documentation agent is ready to use`.
+    Omit flags in an interactive terminal to be prompted for the repository, provider, and API key. On success, the CLI prints a random UUID string. Add this value to your `agent.key` configuration.
 
     For every flag, provider list, and error message, see [`docs agent create`](/reference/cli#docs-agent-create) in the CLI. To rotate keys, pass `--force` on a second create run.
   </Step>
