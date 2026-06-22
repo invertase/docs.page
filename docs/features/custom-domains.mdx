@@ -25,21 +25,21 @@ Inside the app, that header selects **custom-domain request mode**. Routing, can
 
 On the default host, production docs live under `/{owner}/{repo}`:
 
-```
+```text
 https://docs.page/acme/handbook
 https://docs.page/acme/handbook/installation
 ```
 
 On a custom domain for `acme/handbook`, the same pages are served at the domain root:
 
-```
+```text
 https://docs.example.com/
 https://docs.example.com/installation
 ```
 
 [Branch preview](/features/branch-preview) ref segments work the same way. They move to the front of the path without the owner or repository prefix:
 
-```
+```text
 https://docs.example.com/~feature-docs
 https://docs.example.com/~feature-docs/installation
 ```
@@ -48,14 +48,14 @@ Per-repo utility routes follow the same pattern: `/search.json`, `/sitemap.xml`,
 
 ### Domain lookup
 
-The app maintains the mapping in both directions through the Invertase custom-domain worker API at `custom-domain.invertase.workers.dev`.
+The app maintains hostname-to-repository mappings through a platform-managed registry. docs.page looks up the mapping when rendering canonical URLs and when routing incoming requests on your hostname.
 
-When a page is rendered on the default docs.page host, `getCustomDomain` queries the worker with `owner` and `repo` parameters. If a domain is registered, production **canonical URLs**, sitemap links, and internal link generation point readers at `https://{your-domain}` instead of `https://docs.page/{owner}/{repo}`.
+When a domain is registered for your repository, production **canonical URLs**, sitemap links, and internal link generation point readers at `https://{your-domain}` instead of `https://docs.page/{owner}/{repo}`.
 
 When a request arrives on your custom domain, the edge worker performs the reverse lookup (hostname to owner and repository) before the app bundles the page.
 
 <Info>
-  Custom domain mappings are managed outside your repository. You do not set the hostname in `docs.json`; the worker registry and DNS together connect your domain to a hosted repo.
+  Custom domain mappings are managed outside your repository. You do not set the hostname in `docs.json`; DNS and the platform registry together connect your domain to a hosted repo.
 </Info>
 
 ### Links, redirects, and locales
@@ -64,29 +64,25 @@ Features that resolve URLs against the current site context respect custom-domai
 
 - **Frontmatter redirects** resolve relative paths against your custom domain base instead of `docs.page/{owner}/{repo}`.
 - **[Locales](/features/locales)** keep the same first-segment locale pattern. Only the host changes (`https://docs.example.com/fr/installation`).
-- **Canonical URLs**, sitemap links, and internal navigation use your custom domain in production when the worker returns a mapping.
+- **Canonical URLs**, sitemap links, and internal navigation use your custom domain in production when a mapping is active.
 
-Development and [local preview](/features/local-preview) continue to use localhost or the default docs.page host. Custom-domain path rewriting applies in production when the worker returns a domain for your repository.
+Development and [local preview](/features/local-preview) continue to use localhost or the default docs.page host. Custom-domain path rewriting applies in production when a mapping is active for your repository.
 
-## Enable it
+## Request a custom domain
 
-Custom domain setup spans DNS, the worker registry, and TLS at the edge. These steps stay at a high level. Full DNS record types, verification, and troubleshooting live in the procedural guide.
+Custom domains are available today through manual setup by the docs.page team. Open a [GitHub issue on invertase/docs.page](https://github.com/invertase/docs.page/issues/new) with your repository, desired hostname, and DNS context. See [Custom domain](/customize/custom-domain) for what to include.
 
-1. **Choose a hostname** for the public repository you already host on docs.page (for example `docs.example.com` for `acme/handbook`).
+Self-serve CLI setup (`docs domain add`) is planned but not available yet.
 
-2. **Register the mapping** in the custom-domain worker so the hostname resolves to that GitHub `owner` and `repository`. The app reads this registry when generating canonical URLs and when the edge worker routes incoming requests.
+For a self-serve shorter URL today, use [Vanity subdomains](/features/vanity-subdomains) — no DNS changes or request required.
 
-3. **Point DNS** at the docs.page edge infrastructure. Add the CNAME or equivalent record your operator documents so traffic for the hostname reaches the worker that sets `x-docs-page-custom-domain`.
-
-4. **Confirm TLS** terminates correctly for the hostname, then open the domain root in a browser. You should see the same home page as `https://docs.page/{owner}/{repo}` with paths rooted at `/`.
-
-For step-by-step DNS and verification detail, see [Custom domain](/customize/custom-domain). For HTTP routes, worker behavior, and platform internals, see [HTTP endpoints](/reference/http-endpoints).
+For HTTP routes and platform internals once a domain is active, see [HTTP endpoints](/reference/http-endpoints).
 
 ## Related
 
 <CardGroup cols={2}>
   <Card title="Custom domain" icon="link" href="/customize/custom-domain">
-    DNS, TLS, and verification steps to go live on your hostname.
+    Request a hostname and prepare DNS for your docs repository.
   </Card>
   <Card title="Vanity subdomains" icon="globe" href="/features/vanity-subdomains">
     Shorten paths under `{owner}.docs.page` without bringing your own domain.
