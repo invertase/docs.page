@@ -36,14 +36,6 @@ When `tabs` is non-empty, docs.page renders those labels in the header below the
 
 For every field on `tabs` entries, including optional `locale`, see [docs.json](/reference/docs-json).
 
-### How the active tab is chosen
-
-docs.page does not store "current tab" separately. It derives the active tab from the page URL on each request.
-
-The platform compares the current doc path against each tab's `href`. The tab whose path prefix best matches the current page wins. Longest match takes priority. A reader on `/features/public-github-hosting` activates the tab whose `href` is `/features`, not the tab rooted at `/`.
-
-If no tab's prefix matches, docs.page falls back to the first tab in the array. Tab resolution respects locale prefixing the same way sidebar links do, so localized URLs stay aligned with the correct tab.
-
 ### Per-tab sidebars
 
 Tag sidebar groups with the `tab` field set to a tab `id`:
