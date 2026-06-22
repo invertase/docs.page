@@ -152,7 +152,26 @@ Site tabs split the header and sidebar. They are not the same as the [`<Tabs>`](
 
 ## Add anchor shortcuts
 
-Pin GitHub, Discord, or app links **above** the sidebar (outside the main tree) with the top-level `anchors` array in `docs.json`. Each entry needs `title`, `href`, and optional `icon`. See [Links](/features/links).
+Pin GitHub, Discord, or app links **above** the sidebar (outside the main tree) with the top-level `anchors` array in `docs.json`. Each entry needs `title`, `href`, and optional `icon`:
+
+```json
+{
+  "anchors": [
+    {
+      "icon": "github",
+      "title": "GitHub",
+      "href": "https://github.com/acme/handbook"
+    },
+    {
+      "icon": "message",
+      "title": "Discord",
+      "href": "https://discord.gg/acme"
+    }
+  ]
+}
+```
+
+See [Links](/features/links) for icon names and locale or tab scoping.
 
 ## Verify navigation
 
