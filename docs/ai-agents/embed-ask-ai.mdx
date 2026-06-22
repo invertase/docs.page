@@ -1,0 +1,143 @@
+---
+title: Embed Ask AI
+description: Link to hosted docs, iframe your site, or build same-origin chat UI that calls the Ask AI agent API.
+---
+
+<Info>
+  Ask AI is in **beta**. Behavior, providers, rate limits, and embed constraints may change. The chat panel and agent session cookies are not available on branch previews or [local preview](/features/local-preview).
+</Info>
+
+**Before you begin**
+
+- Ask AI enabled on your repository (see [Ask AI](/ai-agents/ask-ai))
+- Familiarity with how [Ask AI on Features](/features/ask-ai) secures chat with session cookies and a CSRF header
+
+---
+
+## Understand what you can embed
+
+docs.page exposes three HTTP surfaces integrators often conflate:
+
+| Surface | Purpose | Auth model |
+| --- | --- | --- |
+| **`POST /api/agent`** | Stream chat replies to a browser that loaded your docs site | Session cookie + `X-Agent-Session` CSRF header (**not** a public API key) |
+| **`POST /api/agent/create`** | Provision encrypted LLM credentials for a repo | GitHub admin token + JWE from the CLI |
+| **`GET /api/bundle`** | Load parsed MDX, navigation, and config | Public read; includes `hasAgent` |
+
+<Warning>
+  **`POST /api/agent` is not a server-to-server chat API.** It accepts requests only from browsers that loaded a production docs page, hold a valid `agent_session` cookie, and send a matching `X-Agent-Session` header. You cannot call it from your product's backend with an API key, or from a cross-origin app on another domain.
+</Warning>
+
+For programmatic doc access without chat UI, use [MCP](/features/mcp-server) or [llms.txt](/features/llms-txt); see [Agent-ready docs](/ai-agents/overview).
+
+## Choose an embed pattern
+
+| Pattern | Best for | Ask AI in your UI | Constraints |
+| --- | --- | --- | --- |
+| **Link to hosted docs** | Help menu, docs portal, onboarding | Built-in **Agent** panel on docs.page | Opens docs in a new tab or window |
+| **iframe hosted docs** | Embedded help center in your app shell | Built-in panel inside the frame | iframe loads the docs.page origin; cookie policies may apply |
+| **Custom chat UI** | Branded assistant on the same host as docs | Your UI calling `POST /api/agent` | JavaScript must run on the **same site** as the docs |
+
+Link and iframe patterns reuse the hosted panel, with no chat API integration required.
+
+## Link to hosted docs
+
+**Give readers a path to docs that already include chat:** after [Ask AI](/ai-agents/ask-ai) setup, link from your app to the production URL (for example `https://docs.page/org/repo` or your [custom domain](/customize/custom-domain)). Readers toggle **Agent** when they need answers grounded in your MDX.
+
+No API calls from your product are required.
+
+## Embed docs in an iframe
+
+**Show the full docs experience inside your app shell:**
+
+```html
+<iframe
+  src="https://docs.page/org/repo/getting-started"
+  title="Product documentation"
+  width="100%"
+  height="720"
+  loading="lazy"
+></iframe>
+```
+
+The iframe loads docs on the docs.page origin, so session cookies and the chat panel behave like a top-level visit. Test in browsers your customers use; strict third-party cookie settings can affect iframe sessions.
+
+## Build custom chat UI (same origin only)
+
+**Replace the built-in panel with your own UI** only when JavaScript runs on the same site as the docs (a docs.page URL, vanity subdomain, or custom domain, not from `app.example.com`).
+
+When a reader loads a production doc page and `hasAgent` is true, docs.page sets an HTTP-only `agent_session` cookie and a readable `agent_session_csrf` cookie. Chat requests need `credentials: "include"` and an `X-Agent-Session` header matching the CSRF cookie:
+
+```tsx
+import { useChat } from "@ai-sdk/react";
+import { DefaultChatTransport } from "ai";
+import Cookies from "js-cookie";
+
+const { messages, sendMessage } = useChat({
+  transport: new DefaultChatTransport({
+    api: "/api/agent",
+    credentials: "include",
+    headers: (): Record<string, string> => {
+      const csrfToken = Cookies.get("agent_session_csrf");
+      return csrfToken ? { "X-Agent-Session": csrfToken } : {};
+    },
+  }),
+});
+```
+
+Send the full conversation on each request. Each user message needs `role: "user"` and a `parts` array with `{ "type": "text", "text": "…" }`. The built-in panel limits input to 1000 characters.
+
+Without `@ai-sdk/react`, call the endpoint directly:
+
+```ts
+await fetch("/api/agent", {
+  method: "POST",
+  credentials: "include",
+  headers: {
+    "Content-Type": "application/json",
+    "X-Agent-Session": csrfToken,
+  },
+  body: JSON.stringify({
+    messages: [
+      {
+        id: "msg-1",
+        role: "user",
+        parts: [{ type: "text", text: "How do I configure search?" }],
+      },
+    ],
+  }),
+});
+```
+
+For request headers, message shape, streamed response format, error codes, and rate-limit headers, see [HTTP endpoints: POST /api/agent](/reference/http-endpoints#apiagent-post).
+
+**Check whether Ask AI is enabled** before rendering custom UI:
+
+```bash
+curl "https://docs.page/api/bundle?owner=org&repository=repo&path=index"
+```
+
+When `"hasAgent": true`, production pages issue session cookies. See [HTTP endpoints](/reference/http-endpoints) for bundle query parameters.
+
+## Verify
+
+1. **Confirm `hasAgent`:** bundle response shows `"hasAgent": true`, or **Agent** appears in the hosted site header
+2. **Exercise your pattern:** link, iframe, or custom UI; send a documentation question and confirm streamed answers with page links
+3. **Confirm off-origin fails:** a direct `fetch` to `POST /api/agent` from another domain should return `401` or `403` without session cookies
+
+## Troubleshooting
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| No **Agent** control | Agent not provisioned or `agent.key` mismatch | Complete [Ask AI](/ai-agents/ask-ai); verify default-branch production URL |
+| `401` Invalid or expired session | Session TTL expired (one hour) or cookies blocked | Refresh the doc page; check cookie settings in iframes |
+| `403` Invalid session header | Missing or wrong `X-Agent-Session` | Send CSRF cookie value as header; use `credentials: "include"` |
+| Chat works on docs.page but not in iframe | Third-party cookie restrictions | Open docs in a new tab, or test customer browser policies |
+| Need backend doc access without chat | Wrong API for the job | Use [MCP](/features/mcp-server) or [llms.txt](/features/llms-txt) |
+
+## Related
+
+- [Ask AI](/ai-agents/ask-ai): enable the in-docs panel
+- [Agent-ready docs](/ai-agents/overview): llms.txt, MCP, and skills overview
+- [Ask AI on Features](/features/ask-ai): session security and rate limits
+- [HTTP endpoints](/reference/http-endpoints): bundle query, POST /api/agent contract, and platform APIs

@@ -14,6 +14,18 @@ const icons: Record<string, string> = {
   discord: "fa-brands fa-discord",
 };
 
+const networkLabels: Record<string, string> = {
+  website: "Website",
+  x: "X",
+  youtube: "YouTube",
+  facebook: "Facebook",
+  instagram: "Instagram",
+  linkedin: "LinkedIn",
+  github: "GitHub",
+  slack: "Slack",
+  discord: "Discord",
+};
+
 const links: Record<string, (value: string) => string> = {
   website: (value) => value,
   x: (value) => `https://twitter.com/${value}`,
@@ -40,7 +52,9 @@ export function Footer() {
 
   // Sorting here ensures that the socials are always displayed in the same order,
   // on client and server side.
-  const sorted = socials.sort(([a], [b]) => a.localeCompare(b));
+  const sorted = socials
+    .filter(([name, url]) => Boolean(url) && links[name])
+    .sort(([a], [b]) => a.localeCompare(b));
 
   return (
     <footer className="py-12 border-t flex text-muted-foreground">
@@ -66,6 +80,7 @@ export function Footer() {
               href={links[name](url)}
               target="_blank"
               rel="noopener noreferrer"
+              aria-label={networkLabels[name] ?? name}
             >
               <i className={cn(icons[name], "text-[16px]")} />
             </a>

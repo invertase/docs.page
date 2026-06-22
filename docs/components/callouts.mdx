@@ -1,49 +1,116 @@
 ---
 title: Callouts
-description: Add callout boxes to your pages to display important information.
+description: Highlight notes, cautions, blockers, and success messages with colored callout panels.
 ---
 
-Use one of the callout components to draw attention to important information on your page, such as a success, warning, information or error message.
+Use `<Info>`, `<Warning>`, `<Error>`, and `<Success>` to emphasize content readers should notice. Each callout renders a colored panel with a fixed title and icon. Put any content (paragraphs, lists, or code blocks) inside the component.
 
-## Examples
+docs.page provides four callout types. There is no generic `<Callout>` component and no separate **Note**, **Tip**, **Check**, or **Danger** variants; choose the type that best matches the message.
 
-### Info Callout
-
-Displays a soft blue box with an info icon, useful for information based information.
-
-<Info>This draws attention to useful page information.</Info>
-
-```jsx
-<Info>This draws attention to useful page information.</Info>
+```mdx
+<Info>Your API key is shown once after creation.</Info>
 ```
 
-### Warning Callout
+## Choosing the right callout
 
-Displays a yellow box with a warning icon, useful for warning the user about something.
+| Type | Panel title | Use when |
+| --- | --- | --- |
+| `<Info>` | Information | Context, notes, or optional detail that aids understanding |
+| `<Warning>` | Warning | Caution before an action; deprecated or risky behavior |
+| `<Error>` | Error | Failure, blocker, or requirement that prevents progress |
+| `<Success>` | Success | Confirmation that something completed or succeeded |
 
-<Warning>This draws attention to a warning they should take notice of.</Warning>
+Reserve `<Error>` for problems that matter; overusing it dilutes urgency. Prefer `<Info>` when the content is helpful but not alarming.
 
-```jsx
-<Warning>This draws attention to a warning they should take notice of.</Warning>
-```
+## Info
 
-### Error Callout
+Use `<Info>` for neutral context: prerequisites, definitions, or helpful background that supports the main content without implying risk or success.
 
-Displays a red box with an error icon, useful for loud pieces of information.
+<Info>
+  Repository webhooks fire after each push to the default branch. Allow a few seconds for the build to appear in the dashboard.
+</Info>
 
-<Error>This draws attention to an error the user might run into if they don't pay attenion.</Error>
+````mdx
+<Info>
+  Repository webhooks fire after each push to the default branch. Allow a few seconds for the build to appear in the dashboard.
+</Info>
+````
 
-```jsx
-<Error>This draws attention to an error the user might run into if they don't pay attenion.</Error>
-```
+## Warning
 
-### Success Callout
+Use `<Warning>` for cautions readers should weigh before continuing (irreversible actions, deprecated behavior, or steps that may cause data loss).
 
-Displays a green box with a check icon, useful for showing the user they did something right.
+<Warning>
+  Deleting a project removes all published pages and cannot be undone. Export your content first if you need a backup.
+</Warning>
 
-<Success>This draws attention to a successful action the user has taken.</Success>
+````mdx
+<Warning>
+  Deleting a project removes all published pages and cannot be undone. Export your content first if you need a backup.
+</Warning>
+````
 
-```jsx
-<Success>This draws attention to a successful action the user has taken.</Success>
-```
+## Error
 
+Use `<Error>` for failures, blockers, or constraints that stop progress (missing configuration, invalid input, or conditions that cause an operation to fail).
+
+<Error>
+  Builds fail when `docs.json` is missing from the repository root. Add the file and push again.
+</Error>
+
+````mdx
+<Error>
+  Builds fail when `docs.json` is missing from the repository root. Add the file and push again.
+</Error>
+````
+
+## Success
+
+Use `<Success>` for positive outcomes (completed setup, verified checks, or confirmations that a step worked).
+
+<Success>
+  Your site is live at `https://acme.docs.page`. Share the URL with your team.
+</Success>
+
+````mdx
+<Success>
+  Your site is live at `https://acme.docs.page`. Share the URL with your team.
+</Success>
+````
+
+## Nesting
+
+Callouts work inside other components. Use them within `<Tabs>`, `<Accordion>`, `<Steps>`, and similar containers when a panel or step needs emphasized detail.
+
+<Accordion title="Webhook troubleshooting">
+  If events do not arrive, check the delivery log in your repository settings.
+
+  <Warning>
+    Webhook secrets rotate when you reconnect a repository. Update the secret in any external integrations.
+  </Warning>
+</Accordion>
+
+````mdx
+<Accordion title="Webhook troubleshooting">
+  If events do not arrive, check the delivery log in your repository settings.
+
+  <Warning>
+    Webhook secrets rotate when you reconnect a repository. Update the secret in any external integrations.
+  </Warning>
+</Accordion>
+````
+
+## Behavior
+
+| Condition | Result |
+| --- | --- |
+| Children only | No custom `title`, `icon`, or styling attributes |
+| Fixed titles | **Information**, **Warning**, **Error**, and **Success** are set by the component |
+| Empty children | Renders an empty panel |
+
+## See also
+
+- [Components overview](/components): when to use callouts, tabs, and accordions
+- [Tabs](/components/tabs): switchable panels that can contain callouts
+- [Accordion](/components/accordion): collapsible sections that can contain callouts
+- [Steps](/components/steps): numbered procedures for tutorials and guides

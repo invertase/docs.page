@@ -1,0 +1,152 @@
+---
+title: Locales
+description: See how locale keys in docs.json sidebar shape URLs, navigation, and the language switcher.
+---
+
+Readers who open `/fr/installation` should see French navigation and links that stay under `/fr`, without you repeating the locale prefix on every sidebar entry.
+
+## Overview
+
+Multi-locale documentation in docs.page is driven by the **`sidebar`** property in `docs.json`, not a separate locales block. You can define sidebar navigation in two shapes:
+
+- **Flat array:** one navigation tree for a single-language site. No language switcher appears.
+- **Locale-keyed object:** one navigation tree per locale, plus an optional `default` tree for pages without a locale prefix in the URL.
+
+When `sidebar` is an object, docs.page derives the list of available locales from its keys (every key except `default`). That list drives URL parsing, sidebar selection, link prefixing, and the language switcher in the header.
+
+Content files follow the same locale segments under `docs/`. A French page at `/fr/installation` lives at `docs/fr/installation.mdx`.
+
+See [Sidebar](/features/sidebar) for how groups, pages, and tabs are modeled inside each locale tree.
+
+## How it works
+
+### Locale keys in `sidebar`
+
+Replace the flat `sidebar` array with an object whose keys are [ISO 639-1 language codes](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) (two characters, such as `en` or `fr`). Each value is the same nested group structure you would use for a single-language site:
+
+```json
+{
+  "sidebar": {
+    "en": [
+      {
+        "group": "Getting Started",
+        "pages": [
+          { "title": "Get started", "href": "/" },
+          { "title": "Installation", "href": "/installation" }
+        ]
+      }
+    ],
+    "fr": [
+      {
+        "group": "Commencer",
+        "pages": [
+          { "title": "Commencer", "href": "/" },
+          { "title": "Installation", "href": "/installation" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+Match your repository layout to those paths:
+
+```
+docs/
+  en/
+    index.mdx
+    installation.mdx
+  fr/
+    index.mdx
+    installation.mdx
+```
+
+There is no standalone `locales` field to maintain. At config load time, docs.page sets `locales` to the object keys minus `default`.
+
+### The `default` sidebar
+
+The `default` key is optional and **not** treated as a locale. Use it when pages at the site root (without a locale prefix in the URL) need their own sidebar, for example, a language picker landing page at `/`.
+
+```json
+{
+  "sidebar": {
+    "default": [
+      {
+        "group": "Languages",
+        "pages": [
+          { "title": "English", "href": "/en" },
+          { "title": "Français", "href": "/fr" }
+        ]
+      }
+    ],
+    "en": [],
+    "fr": []
+  }
+}
+```
+
+When the current URL has no recognized locale segment, docs.page renders the `default` sidebar (or an empty sidebar if `default` is omitted).
+
+### How the active locale is resolved
+
+docs.page reads the **first path segment** of the current page path. If that segment matches a configured locale, that locale is active.
+
+| URL path | Active locale | Sidebar used |
+| --- | --- | --- |
+| `/en/installation` | `en` | `sidebar.en` |
+| `/fr` | `fr` | `sidebar.fr` |
+| `/` or `/about` | none | `sidebar.default` (if present) |
+
+Production URLs follow the same pattern on docs.page, vanity subdomains, and custom domains. Only the host changes:
+
+```
+https://docs.page/{owner}/{repo}/en/installation
+https://sdk.example.com/fr/installation
+```
+
+### Automatic link prefixing
+
+Sidebar `href` values stay locale-neutral (`/installation`, not `/fr/installation`). While a locale is active, docs.page prefixes internal links with that locale when building navigation and in-page links.
+
+A link to `/installation` on the French site resolves to `/fr/installation`. External URLs are unchanged. The same prefixing applies when matching the active tab and previous/next navigation order.
+
+You write one href per page in each locale's sidebar; the platform keeps readers inside the current language as they browse.
+
+### Language switcher
+
+When the active page is under a configured locale and at least one locale exists, a **language switcher** appears in the sidebar. It lists locales whose keys are recognized ISO 639-1 codes. Selecting a language navigates to that locale's root (`/en`, `/fr`, and so on).
+
+The switcher does not appear on locale-free root pages, even if `sidebar.default` is defined.
+
+### Root page without a locale
+
+The page at `/` (typically `docs/index.mdx`) can serve content on its own or hand readers off to a default locale.
+
+To redirect the root to English, add `redirect` to the root page frontmatter:
+
+```yaml title="docs/index.mdx"
+---
+title: Documentation
+description: Product documentation and guides.
+redirect: /en
+---
+```
+
+See [Redirects](/authoring/redirects) for redirect behavior and URL formats.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Locales" icon="language" href="/authoring/locales">
+    Set up translated content, folder layout, and sidebar entries for each locale.
+  </Card>
+  <Card title="Organize" icon="sitemap" href="/authoring/organize">
+    Structure groups, tabs, and page links before you split them by locale.
+  </Card>
+  <Card title="Sidebar" icon="bars" href="/features/sidebar">
+    How nested groups and page links are defined in docs.json.
+  </Card>
+  <Card title="Reference" icon="book" href="/reference/docs-json">
+    Field-level lookup for docs.json, CLI commands, and HTTP endpoints.
+  </Card>
+</CardGroup>

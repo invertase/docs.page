@@ -1,0 +1,119 @@
+---
+title: Preview
+description: See documentation in your browser as you edit, then run an automated link and asset check on your machine.
+---
+
+**Before you begin**
+
+- [Install the CLI](/features/cli#install) or use `npx @docs.page/cli`
+- Page files or `docs.json` edits ready to review, see [Write](/authoring/write) if you still need to create content
+
+Run commands from the directory that contains `docs.json`. For flag-level detail and exit codes, see [CLI](/reference/cli).
+
+---
+
+This page covers two local tasks before you continue to [Publish](/authoring/publish):
+
+- **Preview:** open your docs in the browser and watch edits reload as you save files
+- **Check:** scan the project for broken links, missing assets, and invalid frontmatter targets
+
+Preview while you edit so you can judge layout, navigation, and components. Run check when you want an automated pass over the whole site, it catches problems preview will not surface, such as a typo in a link on another page.
+
+## Local preview
+
+<Steps>
+  <Step title="Start from the folder that contains docs.json">
+    Open a terminal at your project root (the directory with `docs.json`).
+  </Step>
+  <Step title="See your docs in the browser">
+    ```bash
+    npx @docs.page/cli preview
+    ```
+
+    The CLI watches `docs.json` (or `docs.yaml`) and `docs/**/*.mdx`, starts a WebSocket server on `localhost`, and opens your browser to a URL shaped like:
+
+    ```text
+    https://docs.page/preview?url=ws://localhost:57250
+    ```
+
+    The browser loads the production preview shell while file reads and bundling stay on your machine. Save a file under `docs/` or update `docs.json` and the page reloads within a few seconds.
+  </Step>
+  <Step title="Override port or skip auto-open when needed">
+    ```bash
+    npx @docs.page/cli preview --port 4000
+    npx @docs.page/cli preview --no-browser
+    ```
+
+    Use `--port` when the default port is taken or you need a fixed number. Use `--no-browser` in remote development or when you want to copy the printed **Preview URL** manually.
+  </Step>
+  <Step title="Stop the preview server when finished">
+    Press `Ctrl+C` in the terminal when you are done.
+  </Step>
+</Steps>
+
+<Info>
+  Local preview does not include [Search](/features/search), sitemap generation ([Search engine indexing](/features/search-engine-indexing)), or the in-docs [Ask AI](/features/ask-ai) panel. Those features require a published site. See [Local preview](/features/local-preview) for how the preview shell works and known limitations.
+</Info>
+
+## Check links and assets
+
+<Steps>
+  <Step title="Catch link and asset problems automatically">
+    ```bash
+    npx @docs.page/cli check
+    ```
+
+    By default, all categories report at **error** severity. The CLI validates **internal links** (paths to pages or assets in the repo), **assets** (images and files on disk), **external links** (reachable URLs), and **frontmatter paths** (`redirect`, `next`, and `previous` targets).
+  </Step>
+  <Step title="Fix every reported issue before you push">
+    Resolve typos in paths, missing files under `docs/`, broken external URLs, or invalid frontmatter targets. Re-run check after each fix. A clean run prints no `error`-level issues and exits with code `0`.
+  </Step>
+  <Step title="Tune severity when external checks are noisy">
+    ```bash
+    npx @docs.page/cli check --external-links warn --internal-links error --assets error
+    ```
+
+    Each of `--external-links`, `--internal-links`, and `--assets` accepts `off`, `warn`, or `error`. See [CLI: check](/reference/cli#docs-check) for defaults and exit codes.
+  </Step>
+  <Step title="Check a monorepo package path">
+    Pass an optional path when `docs.json` lives outside the repository root:
+
+    ```bash
+    npx @docs.page/cli check ./packages/docs
+    ```
+  </Step>
+</Steps>
+
+When preview looks right and check exits with code `0`, continue to [Publish](/authoring/publish) to share your changes on GitHub.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| CLI exits before preview starts | Missing `docs.json`, no `docs/` directory, or no `.mdx` files | Add the required files or run [init](/features/cli#initialize-a-project) |
+| Browser shows a connection error | Preview server stopped or you opened an old URL | Restart preview and open the newly printed **Preview URL** |
+| Port already in use | Another process bound the port | Pass `--port` with a free port number |
+| Preview looks stale | Editor did not save the file | Save the file; confirm the terminal still shows the watcher running |
+| Check reports a broken internal link | Path typo, wrong root-relative path, or file not yet added | Use paths like `/authoring/preview`, no domain and no `.mdx` extension. See [Write: Links and assets](/authoring/write#links-and-assets) |
+| Check fails on `redirect`, `next`, or `previous` | Frontmatter target does not match a real page path | Fix the path or add the missing page. See [Page frontmatter](/reference/page-frontmatter) |
+| External link failures | Target blocks automated requests or is temporarily down | Fix the URL, or set `--external-links warn` or `off` for that run |
+| Check passes locally but fails elsewhere | A different working directory was checked | Pass the correct `[path]` argument or run from the project root that contains `docs.json` |
+
+For more detail on both commands, see [CLI](/features/cli).
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Publish" icon="rocket" href="/authoring/publish">
+    Share changes on GitHub and send branch previews to reviewers.
+  </Card>
+  <Card title="CLI" icon="terminal" href="/reference/cli">
+    Flags, severities, exit codes, and error messages for every command.
+  </Card>
+  <Card title="Local preview" icon="eye" href="/features/local-preview">
+    How the preview shell works, what it watches, and what it does not include.
+  </Card>
+  <Card title="Search" icon="magnifying-glass" href="/features/search">
+    On-site **⌘K** search: available on published sites, not in local preview.
+  </Card>
+</CardGroup>

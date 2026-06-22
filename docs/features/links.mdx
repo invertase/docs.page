@@ -1,0 +1,71 @@
+---
+title: Links
+description: Surface GitHub, community, or app shortcuts above the sidebar without crowding your navigation tree.
+---
+
+Your sidebar is for documentation pages, but readers often need a link that is not a doc page. A source repository, issue tracker, or sign-in URL does not belong in a navigation group. Anchor links place those shortcuts in the sidebar so they stay visible without reshaping the sidebar tree.
+
+## Overview
+
+Anchor links (configured under the `anchors` key in `docs.json`) are icon shortcuts that appear at the top of the sidebar, above navigation groups. Each entry shows a [Font Awesome icon](/components/icon) beside a short title and links to any internal or external URL.
+
+They are separate from [sidebar](/features/sidebar) groups, [header](/features/header) CTAs, and [social links](/features/social-links). Sidebar groups organize doc pages; anchors are persistent shortcuts for destinations outside that hierarchy.
+
+## How it works
+
+### Where links appear
+
+The site renders anchor links inside the sidebar column, directly below the locale switcher (when locales are enabled) and above the first navigation group. Each link is an outline icon button with a title label. When no anchors match the current view, the block is omitted entirely.
+
+### Configuring anchors
+
+Add an `anchors` array to `docs.json`. Each object needs an `icon`, `title`, and `href`:
+
+```json
+{
+  "anchors": [
+    {
+      "icon": "github",
+      "title": "GitHub",
+      "href": "https://github.com/acme/handbook"
+    },
+    {
+      "icon": "message",
+      "title": "Discord",
+      "href": "https://discord.gg/acme"
+    }
+  ]
+}
+```
+
+Use any icon name from the [Icon component](/components/icon) reference. `href` accepts site-relative paths (for example `/reference`) or full external URLs.
+
+### Scoping by locale or tab
+
+When your site uses [locales](/features/locales) or [tabs](/features/tabs), you can limit which anchors appear in a given context:
+
+- **`locale`:** show the anchor only when the reader is viewing that locale. Anchors without a `locale` field appear for every locale.
+- **`tab`:** show the anchor only when that tab is active. Anchors without a `tab` field appear on every tab.
+
+This keeps API-reference shortcuts on the API tab, or community links on a specific translation, without duplicating the entire sidebar.
+
+### When to use anchors
+
+Reach for anchors when a link should stay visible across every page but is not part of your doc hierarchy: repository source, changelog, status page, or a link back to your product dashboard. For actions that belong in the top bar, use [header links](/features/header) instead. For social profile metadata and Open Graph tags, use [social links](/features/social-links).
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="docs.json" icon="file-code" href="/reference/docs-json">
+    Field lookup for `anchors` and every other configuration key.
+  </Card>
+  <Card title="Sidebar" icon="bars" href="/features/sidebar">
+    How navigation groups and page links structure your docs tree.
+  </Card>
+  <Card title="Tabs" icon="folder" href="/features/tabs">
+    Partition the site and scope sidebars and anchor visibility by tab.
+  </Card>
+  <Card title="Locales" icon="language" href="/features/locales">
+    Serve translated sidebars and scope anchors by locale.
+  </Card>
+</CardGroup>

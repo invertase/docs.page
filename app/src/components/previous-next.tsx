@@ -119,7 +119,14 @@ export function PreviousNext() {
 function Anchor(props: AnchorSource & { type: "previous" | "next" }) {
   return (
     <Button variant="secondary" asChild>
-      <Link href={props.href}>
+      <Link
+        href={props.href}
+        aria-label={
+          props.type === "previous"
+            ? `Previous: ${props.title}`
+            : `Next: ${props.title}`
+        }
+      >
         {props.type === "previous" ? <RiArrowLeftLine size={16} /> : ""}
         <span>{props.title}</span>
         {props.type === "next" ? <RiArrowRightLine size={16} /> : ""}

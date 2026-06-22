@@ -1,80 +1,170 @@
 ---
 title: Steps
-description: Steps allow users to navigate through a series of steps in a sequenced order.
+description: Walk readers through install and setup procedures with numbered steps.
 ---
 
-Use the `<Steps />` & `<Step />` component to display data in a sequential order to your users, useful for onboarding or guiding users through a process.
+Use `<Steps>` and `<Step>` to present a numbered sequence (installation guides, onboarding flows, or any procedure readers should follow in order). Each step shows an auto-incremented number in a circle, with an optional title and room for rich content underneath.
+
+Wrap one or more `<Step>` children inside `<Steps>`. Add code blocks, callouts, lists, or other components inside each step.
+
+```mdx
+<Steps>
+  <Step title="Install dependencies">
+    Run `npm install` in your project root.
+  </Step>
+  <Step title="Start the dev server">
+    Run `npm run dev`.
+  </Step>
+</Steps>
+```
 
 ## Example
 
 <Steps>
-  <Step title="Install via NPM">
-    Install via npm:
+  <Step title="Install via npm">
+    Install the package:
 
-    ```js
+    ```bash
     npm install newpackage
     ```
 
     The `newpackage` executable will be available in your terminal.
   </Step>
   <Step title="Configure" icon="gear">
-    Configure the package
+    Initialize configuration:
 
-    ```js
+    ```bash
     newpackage configure --init
     ```
-  </Step>
-  <Step title="Local Development">
-    Start your development server.
 
-    ```js
+    <Info>
+      Callouts and other components work inside steps.
+    </Info>
+  </Step>
+  <Step title="Local development">
+    Start your development server:
+
+    ```bash
     newpackage dev --port 3000
     ```
   </Step>
 </Steps>
 
-
-````jsx
+````mdx
 <Steps>
-  <Step title="Install via NPM">
-    Install via npm:
+  <Step title="Install via npm">
+    Install the package:
 
-    ```js
+    ```bash
     npm install newpackage
     ```
 
     The `newpackage` executable will be available in your terminal.
   </Step>
   <Step title="Configure" icon="gear">
-    Configure the package
+    Initialize configuration:
 
-    ```js
+    ```bash
     newpackage configure --init
     ```
-  </Step>
-  <Step>
-    Start your development server.
 
-    ```js
-    newpackage dev
+    <Info>
+      Callouts and other components work inside steps.
+    </Info>
+  </Step>
+  <Step title="Local development">
+    Start your development server:
+
+    ```bash
+    newpackage dev --port 3000
     ```
   </Step>
 </Steps>
 ````
 
-This example will render the following:
+## Properties
 
+### `Steps`
 
+<Property name="children" optional>
+  One or more `<Step>` elements. `<Steps>` renders a list element with a CSS counter reset so step numbers start at 1.
 
-## Props
+  Standard `<ul>` attributes such as `className` are forwarded to the list element.
+</Property>
 
-<Property name="title" type="string" required>
-  The title of the Step.
+### `Step`
+
+<Property name="title" type="string" optional>
+  An optional heading rendered as an `<h3>` above the step content. Use short, action-oriented titles such as **Install dependencies** or **Deploy to production**.
+
+  Omit `title` when the step body is self-explanatory or you only need the step number for context.
 </Property>
 
 ---
 
 <Property name="icon" type="string" optional>
-  An optional [Font Awesome Icon](/components/icons) to display instead of the current step index.
+  A [Font Awesome](/components/icon) icon slug that replaces the auto-incremented step number in the circle. Pass the slug without the `fa-` prefix, for example `icon="gear"` for a settings step.
+
+  When `icon` is set, the step number is hidden for that step only; other steps without an icon continue numbering in sequence.
 </Property>
 
+## Step without a title
+
+`title` is optional. Use a titleless step when the content speaks for itself or when you want a lighter visual hierarchy.
+
+<Steps>
+  <Step title="Create a project">
+    ```bash
+    npm create docs-page@latest my-docs
+    ```
+  </Step>
+  <Step>
+    Open `docs.json` and add your first page to the `sidebar` array.
+  </Step>
+  <Step title="Preview locally">
+    ```bash
+    npm run dev
+    ```
+  </Step>
+</Steps>
+
+````mdx
+<Steps>
+  <Step title="Create a project">
+    ```bash
+    npm create docs-page@latest my-docs
+    ```
+  </Step>
+  <Step>
+    Open `docs.json` and add your first page to the `sidebar` array.
+  </Step>
+  <Step title="Preview locally">
+    ```bash
+    npm run dev
+    ```
+  </Step>
+</Steps>
+````
+
+## When to use steps
+
+| Use steps when… | Consider alternatives when… |
+| --- | --- |
+| Readers must follow steps in order | Content is reference material with no sequence |
+| A tutorial or setup guide has 3+ stages | Options are parallel, not sequential; use [Tabs](/components/tabs) |
+| Each stage has its own code or callouts | Detail can stay hidden until needed; use [Accordion](/components/accordion) |
+
+## Behavior
+
+| Condition | Result |
+| --- | --- |
+| Empty `<Steps>` or no `<Step>` children | Renders an empty list |
+| `title` omitted on `<Step>` | Renders the step number and body content only |
+| `icon` set on `<Step>` | Replaces the step number with the icon for that step |
+| Mixed `icon` and numbered steps | Numbering continues for steps without an icon |
+| Nested content inside `<Step>` | Rendered in the step body |
+
+## See also
+
+- [Components overview](/components): when to use steps, tabs, and accordions
+- [Icon](/components/icon): finding Font Awesome slugs for the `icon` property

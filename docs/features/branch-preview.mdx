@@ -1,0 +1,64 @@
+---
+title: Branch preview
+description: Preview any branch, commit, or pull request at a shareable ref URL before merging to main.
+---
+
+Shareable previews let teammates review documentation changes on docs.page before they merge to your default branch. Push a branch or open a pull request, then open a URL with a `~ref` segment. No local CLI required.
+
+## Overview
+
+[Public GitHub hosting](/features/public-github-hosting) serves production docs from your default branch. Branch preview adds a ref segment so docs.page fetches `docs.json` and page files from a specific branch, commit, or pull request instead.
+
+Use shareable previews when you need feedback from others, want to compare a branch against production, or need search, sitemap, or agent features that [local preview](/features/local-preview) does not include.
+
+## How it works
+
+### Ref URL patterns
+
+Add `~{ref}` immediately after the repository name:
+
+```
+https://docs.page/{owner}/{repo}~{ref}
+https://docs.page/{owner}/{repo}~{ref}/{page-path}
+```
+
+Examples:
+
+| URL segment | Resolves to |
+| --- | --- |
+| `~feature-docs` | Branch `feature-docs` |
+| `~abc123…` (40-character SHA) | That commit |
+| `~42` | Pull request #42 head branch |
+
+Production URLs omit the `~ref` segment entirely. docs.page resolves numeric refs to pull request head branches through the GitHub API.
+
+### When to use each preview mode
+
+| Mode | When | How |
+| --- | --- | --- |
+| Local preview | Fast iteration on your machine before push | [`docs preview`](/features/local-preview) |
+| Branch preview | Share with reviewers after push | `~ref` URL on docs.page |
+| Production | Merged default branch | `https://docs.page/{owner}/{repo}` |
+
+Run [`docs check`](/features/cli#check-documentation) after local preview looks right and before you push for shareable preview.
+
+### GitHub App for pull requests
+
+Install the [GitHub App](/features/github-app) to post automatic pull request comments with live preview links. Each comment points at the `~ref` URL for that PR's head branch so reviewers can open docs without constructing URLs manually.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Local preview" icon="eye" href="/features/local-preview">
+    Iterate on theme and layout on your machine before you push.
+  </Card>
+  <Card title="Public GitHub hosting" icon="github" href="/features/public-github-hosting">
+    How default-branch URLs become your production site.
+  </Card>
+  <Card title="GitHub App" icon="robot" href="/features/github-app">
+    Automatic PR comments with preview links.
+  </Card>
+  <Card title="Publish" icon="share-nodes" href="/authoring/publish">
+    Workflow for pushing a branch and sharing ref URLs with teammates.
+  </Card>
+</CardGroup>
