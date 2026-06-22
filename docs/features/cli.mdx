@@ -39,7 +39,7 @@ Install `@docs.page/cli` once, then run commands from any docs.page project on y
 To try a command without a global install, prefix it with `npx`:
 
 ```bash
-npx @docs.page/cli <command>
+npx @docs.page/cli [command]
 ```
 
 `npx` downloads the package when needed and runs it immediately. This works well for one-off scaffolding or CI jobs.
@@ -83,7 +83,7 @@ pnpm add -g @docs.page/cli@latest
 
 </CodeGroup>
 
-For a single project, `npx @docs.page/cli@latest <command>` always resolves the newest release.
+For a single project, `npx @docs.page/cli@latest [command]` always resolves the newest release.
 
 ### Verify
 
@@ -91,7 +91,7 @@ Run `docs --version` to print the installed CLI version. Run `docs <command> --h
 
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |
-| `command not found: docs` | CLI not installed globally and `npx` not used | Run `npx @docs.page/cli <command>` or install globally |
+| `command not found: docs` | CLI not installed globally and `npx` not used | Run `npx @docs.page/cli [command]` or install globally |
 | `EACCES` or permission error on global install | npm global directory is not writable | Fix npm permissions or use `npx` instead of a global install |
 | Preview or agent commands fail to connect | Outdated CLI | Reinstall with `@latest` |
 
