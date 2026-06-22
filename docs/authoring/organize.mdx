@@ -12,14 +12,62 @@ The sidebar is declared in `docs.json`, not inferred from folder layout. For how
 
 ---
 
-## Add pages to the sidebar
+## Add sidebar navigation
+
+Define your site's navigation explicitly in the `sidebar` property of `docs.json`. By default, `sidebar` is a flat array of groups for a single-language site. For multi-locale sites, replace that array with an object keyed by [locale code](/authoring/locales) (for example `en`, `fr`) — each key holds its own navigation tree, and docs.page loads the tree that matches the locale segment in the URL:
+
+<CodeGroup>
+
+```json title="Single locale"
+{
+  "sidebar": [
+    {
+      "group": "Getting Started",
+      "pages": [
+        { "title": "Introduction", "href": "/" }
+      ]
+    }
+  ]
+}
+```
+
+```json title="Multi-locale"
+{
+  "sidebar": {
+    "en": [
+      {
+        "group": "Getting Started",
+        "pages": [
+          { "title": "Introduction", "href": "/" }
+        ]
+      }
+    ],
+    "fr": [
+      {
+        "group": "Commencer",
+        "pages": [
+          { "title": "Introduction", "href": "/" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+</CodeGroup>
+
+In a multi-locale setup:
+
+- **Locale keys** become URL segments (`/en/installation`, `/fr/installation`) and match folders under `docs/{locale}/`
+- **Each locale tree** uses the same group and page shape as a single-locale site
+- **`default`** (optional) holds navigation for root URLs without a locale prefix, for example a language picker at `/`
+- **`href` values** stay locale-neutral (`/installation`, not `/fr/installation`) — docs.page prefixes the active locale when building links
+
+For field reference, folder layout, and the full locale workflow, see [Sidebar](/features/sidebar) and [Locales](/authoring/locales).
 
 <Steps>
-  <Step title="Define navigation explicitly">
-    Open `docs.json` and find the `sidebar` property. Single-locale sites use a flat array of groups. Multi-locale sites use a record keyed by locale code, with `default` holding the tree for URLs without a locale prefix.
-  </Step>
-  <Step title="Keep related pages in one group">
-    Pick a group inside that array (or create one). Each group is an object with a `pages` array and optional `group` label, `icon`, landing `href`, and `tab` assignment:
+  <Step title="Group related pages together">
+    Pick a group inside the sidebar array (or inside a locale key when using multi-locale). Each group is an object with a `pages` array and optional `group` label, `icon`, landing `href`, and `tab` assignment:
 
     ```json
     {
@@ -32,7 +80,7 @@ The sidebar is declared in `docs.json`, not inferred from folder layout. For how
     }
     ```
   </Step>
-  <Step title="Make each page discoverable in the sidebar">
+  <Step title="Add a page link to the sidebar">
     Add a leaf entry for your new page. Set `title` to the label readers see in the sidebar (keep it short, two to four words). Set `href` to the page's public URL path:
 
     ```json
