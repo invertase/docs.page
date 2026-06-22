@@ -45,18 +45,16 @@ Leave a minimal file at the **old** path and set `redirect` in frontmatter to th
 
     ```yaml
     ---
-    title: Installation
-    description: Redirects to Getting started.
     redirect: /getting-started
     ---
     ```
 
-    The body can be empty. docs.page reads `redirect` and returns a **307 Temporary Redirect** before any page content renders.
+    `title` and `description` are not required. The body can be empty. docs.page reads `redirect` and returns a **307 Temporary Redirect** before any page content renders.
   </Step>
   <Step title="Resolve targets correctly across hosts">
     **Internal moves:** use a root-relative path: `/getting-started`. No domain, no `.mdx` extension.
 
-    **External destinations:** use a full URL starting with `https://` (or `http://`).
+    **External destinations:** use a full URL starting with `https://`.
 
     Internal paths resolve against the same routing mode as the request (production, branch preview (`~ref`), vanity subdomain, or custom domain), so readers stay on the host and ref they started on. You do not need to hard-code `https://docs.page/owner/repo` for in-repo moves.
   </Step>
