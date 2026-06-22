@@ -107,17 +107,6 @@ Add a job step that runs from the directory containing `docs.json`:
 
 The command exits with code `1` when any `error`-level issue is found, which fails the job. It does not publish or upload anything, [Public GitHub hosting](/features/public-github-hosting) updates the live site when you merge to your default branch.
 
-### Monorepo
-
-When `docs.json` lives in a subdirectory, pass that path:
-
-```yaml
-- name: Check documentation
-  run: npx @docs.page/cli check ./packages/docs
-```
-
-Alternatively, set the job's `working-directory` to the package that contains your docs.
-
 ### Flaky external links
 
 External targets sometimes block automated requests or are temporarily unreachable in CI. Keep internal links and assets strict while relaxing externals:
@@ -151,7 +140,7 @@ Edge caching may delay updates by about a minute after the merge. Renaming the d
 | GitHub App did not comment on the PR | App not installed on this repo, or repository is private | Install [docs.page on GitHub](https://github.com/apps/docs-page) on the public docs repo; see [GitHub App](/features/github-app) |
 | `403` on preview or production URL | Repository is private | docs.page only hosts public repositories, see [Public GitHub hosting](/features/public-github-hosting) |
 | CI check fails on external links | Target blocks bots or is down | Add `--external-links warn` (or `off`) for that workflow; keep `--internal-links error` |
-| CI check fails but local preview looked fine | CI runs from a different directory or missing committed files | Pass the correct `[path]` to `check` or set `working-directory`; confirm all docs files are committed and pushed |
+| CI check fails but local preview looked fine | CI runs from the wrong directory or missing committed files | Confirm the job runs from the repository root where `docs.json` lives; confirm all docs files are committed and pushed |
 | Numeric `~42` ref does not match expected PR | Wrong PR number or PR closed without merge | Use the open PR number, or switch to the branch name ref |
 
 ## Edit a page on GitHub
@@ -183,7 +172,7 @@ After you save on GitHub, the preview or production site updates on the next req
     **Edit page** and **View markdown** from the header menu.
   </Card>
   <Card title="CLI" icon="terminal" href="/features/cli">
-    `docs check` flags, monorepo paths, and severity options.
+    `docs check` flags and severity options.
   </Card>
   <Card title="Write" icon="pen" href="/authoring/write">
     Structure pages, links, and components before you publish.
