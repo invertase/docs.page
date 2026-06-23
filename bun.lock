@@ -56,6 +56,7 @@
         "react-resizable-panels": "^4.10.0",
         "redis": "^4.7.1",
         "rehype-parse": "^9.0.1",
+        "rehype-raw": "^7.0.0",
         "rehype-sanitize": "^6.0.0",
         "rehype-stringify": "^10.0.1",
         "remark-gfm": "^4.0.1",
@@ -89,7 +90,7 @@
     },
     "packages/cli": {
       "name": "@docs.page/cli",
-      "version": "2.0.0-next.1",
+      "version": "2.0.0",
       "bin": {
         "docs.page": "./dist/cli.js",
         "docs": "./dist/cli.js",
@@ -129,6 +130,7 @@
         "rehype-parse": "^9.0.1",
         "rehype-sanitize": "^6.0.0",
         "rehype-stringify": "^10.0.1",
+        "remark-gfm": "^4.0.1",
         "remark-mdx": "^3.1.1",
         "remark-parse": "^11.0.0",
         "shiki": "^4.0.2",

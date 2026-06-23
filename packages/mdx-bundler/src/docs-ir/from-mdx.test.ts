@@ -106,4 +106,25 @@ describe("mdxToDocIr", () => {
       expect(tabs.children[0].props.value).toBe("first");
     }
   });
+
+  test("keeps GFM tables with inline code and br tags in a single markdown leaf", async () => {
+    const ir = await mdxToDocIr(
+      `| Parameter | Required | Description |
+| --- | --- | --- |
+| \`name\` | ✅ | The name of the use-case. |
+| \`path\` | - | Text before <br /> For example: \`foo\` |`,
+    );
+
+    const markdownLeaves = ir.children.filter(
+      (child) => child.kind === "markdown",
+    );
+    expect(markdownLeaves).toHaveLength(1);
+    const table = markdownLeaves[0];
+    expect(table?.kind).toBe("markdown");
+    if (table?.kind === "markdown") {
+      expect(table.source).toContain("| `name` | ✅ |");
+      expect(table.source).toContain("<br />");
+      expect(table.source).toContain("| `path` | - |");
+    }
+  });
 });

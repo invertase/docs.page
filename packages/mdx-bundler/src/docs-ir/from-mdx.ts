@@ -1,4 +1,5 @@
 import type { Root } from "mdast";
+import remarkGfm from "remark-gfm";
 import remarkMdx from "remark-mdx";
 import remarkParse from "remark-parse";
 import { unified } from "unified";
@@ -82,12 +83,15 @@ export async function mdxToDocIr(source: string): Promise<DocIrNode> {
 }
 
 function parseToMdast(source: string): Root {
-  const mdxProcessor = unified().use(remarkParse).use(remarkMdx);
+  const mdxProcessor = unified()
+    .use(remarkParse)
+    .use(remarkGfm)
+    .use(remarkMdx);
 
   try {
     return mdxProcessor.parse(source) as Root;
   } catch {
-    return unified().use(remarkParse).parse(source) as Root;
+    return unified().use(remarkParse).use(remarkGfm).parse(source) as Root;
   }
 }
 

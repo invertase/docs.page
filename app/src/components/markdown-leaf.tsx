@@ -1,5 +1,7 @@
 import type { ComponentProps } from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
 import remarkGfm from "remark-gfm";
 import { Heading, type HeadingTag } from "@/components/mdx/heading";
 import { Image } from "@/components/mdx/image";
@@ -137,7 +139,11 @@ export function MarkdownLeaf({ source, takeNextHeadingId }: MarkdownLeafProps) {
   };
 
   return (
-    <ReactMarkdown components={components} remarkPlugins={[remarkGfm]}>
+    <ReactMarkdown
+      components={components}
+      remarkPlugins={[remarkGfm]}
+      rehypePlugins={[rehypeRaw, [rehypeSanitize, defaultSchema]]}
+    >
       {source}
     </ReactMarkdown>
   );
