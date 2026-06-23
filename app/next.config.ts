@@ -1,10 +1,25 @@
 import type { NextConfig } from "next";
+/** Paths whose responses are CDN-cacheable; override App Router RSC `Vary` values. */
+const CDN_CACHEABLE_API_SOURCES = [
+  "/api/bundle",
+  "/api/:owner/:repo/search.json",
+  "/api/:owner/:repo/sitemap.xml",
+  "/api/:owner/:repo/robots.txt",
+  "/api/:owner/:repo/llms.txt",
+  "/api/:owner/:repo/llms-full.txt",
+] as const;
 
 const nextConfig: NextConfig = {
   output: "standalone",
   reactCompiler: true,
   devIndicators: false,
   transpilePackages: ["@docs.page/mdx-bundler"],
+  async headers() {
+    return CDN_CACHEABLE_API_SOURCES.map((source) => ({
+      source,
+      headers: [{ key: "Vary", value: "Accept-Encoding" }],
+    }));
+  },
   async rewrites() {
     return {
       beforeFiles: [
