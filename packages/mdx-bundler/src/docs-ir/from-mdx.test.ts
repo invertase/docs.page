@@ -206,4 +206,35 @@ describe("mdxToDocIr", () => {
       ),
     ).toBe(true);
   });
+
+  test("normalizes indented GFM tables inside Step components", async () => {
+    const ir = await mdxToDocIr(
+      `<Step title="Create OAuth Application">
+    Go to **"Group Settings"** > **"Applications"**.
+
+    | Field          | Value                                |
+    | -------------- | ------------------------------------ |
+    | Name           | Widgetbook                           |
+    | Redirect URI   | \`https://clerk.widgetbook.io/v1/oauth_callback\` |
+</Step>`,
+    );
+
+    const step = ir.children.find(
+      (child): child is Extract<typeof child, { kind: "component" }> =>
+        child.kind === "component" && child.name === "Step",
+    );
+    const table = step?.children.find(
+      (child): child is Extract<typeof child, { kind: "markdown" }> =>
+        child.kind === "markdown" && child.source.includes("| Field"),
+    );
+    expect(table).toBeDefined();
+    if (table?.kind === "markdown") {
+      expect(table.source).toBe(
+        `| Field          | Value                                |
+| -------------- | ------------------------------------ |
+| Name           | Widgetbook                           |
+| Redirect URI   | \`https://clerk.widgetbook.io/v1/oauth_callback\` |`,
+      );
+    }
+  });
 });

@@ -462,6 +462,10 @@ function normalizeMarkdownLeaf(markdown: string): string {
   }
 
   const contentLines = lines.slice(firstContent, lastContent + 1);
+  if (contentLines.some((line) => /^\s*\|/.test(line))) {
+    return normalizeTableMarkdown(contentLines);
+  }
+
   const minimumIndent = Math.min(
     ...contentLines
       .filter((line) => line.trim().length > 0)
@@ -474,5 +478,13 @@ function normalizeMarkdownLeaf(markdown: string): string {
 
   return contentLines
     .map((line) => line.slice(Math.min(minimumIndent, line.length)))
+    .join("\n");
+}
+
+function normalizeTableMarkdown(lines: string[]): string {
+  return lines
+    .map((line) =>
+      line.trim().length === 0 ? line : line.replace(/^[ \t]+(?=\|)/, ""),
+    )
     .join("\n");
 }
