@@ -145,6 +145,16 @@ function isPhrasingContent(node: MdastNode): boolean {
   return node.type !== undefined && PHRASING_NODE_TYPES.has(node.type);
 }
 
+function listItemHasStructuredBlocks(node: MdastNode): boolean {
+  return (node.children ?? []).some(
+    (child) => child.type !== "paragraph" && child.type !== "list",
+  );
+}
+
+function listHasStructuredItems(node: MdastNode): boolean {
+  return (node.children ?? []).some(listItemHasStructuredBlocks);
+}
+
 function markdownFromNodeRange(nodes: MdastNode[], source: string): string {
   if (nodes.length === 0) {
     return "";
@@ -218,6 +228,16 @@ function nodeToIr(node: MdastNode, source: string): DocIrNode[] {
         return result;
       }
 
+      return markdownLeafOrChildren(node, source);
+    case "list":
+      if (listHasStructuredItems(node)) {
+        return childrenToIr(node.children ?? [], source);
+      }
+      return markdownLeafOrChildren(node, source);
+    case "listItem":
+      if (listItemHasStructuredBlocks(node)) {
+        return childrenToIr(node.children ?? [], source);
+      }
       return markdownLeafOrChildren(node, source);
     case "thematicBreak":
       return [{ kind: "thematicBreak" }];

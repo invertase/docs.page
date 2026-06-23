@@ -127,4 +127,83 @@ describe("mdxToDocIr", () => {
       expect(table.source).toContain("| `path` | - |");
     }
   });
+
+  test("parses Info and code blocks inside list items as structured IR", async () => {
+    const ir = await mdxToDocIr(
+      `1. Create a file inside your \`widgetbook\` app at \`widgetbook/lib/cool_button.dart\`
+
+   <Info>
+     If your widget needs some parameters, you can pass some constants for now
+     for simplicity. Later you can check how to use [Knobs](/knobs/overview).
+   </Info>
+
+   \`\`\`dart
+   import 'package:flutter/material.dart';
+   \`\`\`
+`,
+    );
+
+    expect(ir.children.some((child) => child.kind === "component")).toBe(true);
+    expect(ir.children.some((child) => child.kind === "code")).toBe(true);
+    expect(
+      ir.children.some(
+        (child) =>
+          child.kind === "markdown" &&
+          child.source.includes("widgetbook/lib/cool_button.dart"),
+      ),
+    ).toBe(true);
+    expect(
+      ir.children.some(
+        (child) => child.kind === "component" && child.name === "Info",
+      ),
+    ).toBe(true);
+
+    const info = ir.children.find(
+      (child): child is Extract<typeof child, { kind: "component" }> =>
+        child.kind === "component" && child.name === "Info",
+    );
+    expect(info?.children).toHaveLength(1);
+    const infoContent = info?.children[0];
+    expect(infoContent?.kind).toBe("markdown");
+    if (infoContent?.kind === "markdown") {
+      expect(infoContent.source).toContain("[Knobs](/knobs/overview)");
+    }
+  });
+
+  test("parses Info and code blocks inside Step list items", async () => {
+    const ir = await mdxToDocIr(
+      `<Step>
+1. Create a file inside your \`widgetbook\` app
+
+   <Info>
+     Later you can check how to use [Knobs](/knobs/overview).
+   </Info>
+
+   \`\`\`dart
+   import 'package:flutter/material.dart';
+   \`\`\`
+</Step>`,
+    );
+
+    const step = ir.children.find(
+      (child): child is Extract<typeof child, { kind: "component" }> =>
+        child.kind === "component" && child.name === "Step",
+    );
+    expect(step?.children.some((child) => child.kind === "component")).toBe(
+      true,
+    );
+    expect(step?.children.some((child) => child.kind === "code")).toBe(true);
+    expect(
+      step?.children.some(
+        (child) =>
+          child.kind === "component" &&
+          child.name === "Info" &&
+          child.children.some(
+            (grandchild) =>
+              grandchild.kind === "markdown" &&
+              grandchild.source.includes("[Knobs](/knobs/overview)"),
+          ),
+      ),
+    ).toBe(true);
+  });
 });
