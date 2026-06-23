@@ -7,7 +7,12 @@ import { replaceMoustacheVariables } from "./variables";
 
 export { mdxToDocIr, preprocessMdxSource } from "./docs-ir/from-mdx";
 export { highlightCodeBlocksInIr } from "./docs-ir/highlight-code-blocks";
-export { sanitizeHtml, sanitizeHtmlInIr } from "./docs-ir/sanitize-html";
+export {
+  docsHtmlSchema,
+  preprocessMarkdownInHtml,
+  sanitizeHtml,
+  sanitizeHtmlInIr,
+} from "./docs-ir/sanitize-html";
 export type { DocIrNode, DocIrPropValue } from "./docs-ir/types";
 export type { HeadingNode } from "./markdown/headings";
 export { extractHeadingNodes } from "./markdown/headings";

@@ -50,12 +50,14 @@ function renderNode(
         />
       );
     case "html":
-      // Sanitized with rehype-sanitize when the bundle is built (see sanitize-html.ts).
+      // Sanitized when the bundle is built (see sanitize-html.ts). Render through
+      // MarkdownLeaf so tables and images use the same components as GFM content.
       return (
-        <div
+        <MarkdownLeaf
           key={key}
-          className="not-prose contents"
-          dangerouslySetInnerHTML={{ __html: node.source }}
+          source={node.source}
+          takeNextHeadingId={takeNextHeadingId}
+          htmlLayout
         />
       );
     case "code":

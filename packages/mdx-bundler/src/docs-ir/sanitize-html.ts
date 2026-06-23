@@ -11,7 +11,7 @@ import { mapIrChildren } from "./visit";
 /** Tailwind / utility classes used in docs HTML (badges, layout). */
 const classNamePattern = /^[\w\s#:./[\]()%&=-]+$/;
 
-const docsHtmlSchema: SanitizeSchema = {
+export const docsHtmlSchema: SanitizeSchema = {
   ...defaultSchema,
   tagNames: [...(defaultSchema.tagNames ?? []), "iframe"],
   attributes: {
@@ -49,8 +49,20 @@ const sanitizeProcessor = unified()
   .use(rehypeSanitize, docsHtmlSchema)
   .use(rehypeStringify);
 
+/**
+ * Converts markdown image links embedded in HTML (e.g. `[<img ...>](url)` inside
+ * `<td>`) into plain HTML anchors. CommonMark does not parse markdown inside
+ * block HTML, so this runs before sanitization.
+ */
+export function preprocessMarkdownInHtml(html: string): string {
+  return html.replace(
+    /\[(\s*<img\b[^>]*\/?>\s*)\]\(([^)]+)\)/gi,
+    '<a href="$2">$1</a>',
+  );
+}
+
 export async function sanitizeHtml(html: string): Promise<string> {
-  const trimmed = html.trim();
+  const trimmed = preprocessMarkdownInHtml(html.trim());
   if (!trimmed) {
     return "";
   }

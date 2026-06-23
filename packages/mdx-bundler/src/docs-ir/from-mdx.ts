@@ -83,10 +83,7 @@ export async function mdxToDocIr(source: string): Promise<DocIrNode> {
 }
 
 function parseToMdast(source: string): Root {
-  const mdxProcessor = unified()
-    .use(remarkParse)
-    .use(remarkGfm)
-    .use(remarkMdx);
+  const mdxProcessor = unified().use(remarkParse).use(remarkGfm).use(remarkMdx);
 
   try {
     return mdxProcessor.parse(source) as Root;

@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { sanitizeHtml } from "./sanitize-html";
+import { preprocessMarkdownInHtml, sanitizeHtml } from "./sanitize-html";
 
 describe("sanitizeHtml", () => {
   test("removes script tags and event handlers", async () => {
@@ -40,5 +40,17 @@ describe("sanitizeHtml", () => {
     expect(result).toContain("<iframe");
     expect(result).not.toContain("javascript:");
     expect(result).not.toContain('src="javascript:');
+  });
+
+  test("converts markdown image links embedded in HTML table cells", async () => {
+    const input = `<table><tr><td>[<img src="https://example.com/thumb.png" width="150"/>](https://example.com/full.png)</td></tr></table>`;
+    const preprocessed = preprocessMarkdownInHtml(input);
+    expect(preprocessed).toContain(
+      '<a href="https://example.com/full.png"><img src="https://example.com/thumb.png" width="150"/>',
+    );
+
+    const result = await sanitizeHtml(input);
+    expect(result).toContain('href="https://example.com/full.png"');
+    expect(result).not.toContain("](");
   });
 });

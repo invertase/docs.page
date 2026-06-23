@@ -1,7 +1,8 @@
+import { docsHtmlSchema } from "@docs.page/mdx-bundler";
 import type { ComponentProps } from "react";
 import ReactMarkdown, { type Components } from "react-markdown";
 import rehypeRaw from "rehype-raw";
-import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
+import rehypeSanitize from "rehype-sanitize";
 import remarkGfm from "remark-gfm";
 import { Heading, type HeadingTag } from "@/components/mdx/heading";
 import { Image } from "@/components/mdx/image";
@@ -11,6 +12,8 @@ import { Link } from "./doc-link";
 type MarkdownLeafProps = {
   source: string;
   takeNextHeadingId: () => string | undefined;
+  /** Raw HTML blocks (e.g. author layout tables) need compact cells and inline images. */
+  htmlLayout?: boolean;
 };
 
 /** Markdown wraps images in <p>; our Image uses <figure>, which must not sit inside <p>. */
@@ -30,7 +33,28 @@ function hastSubtreeHasTag(node: unknown, tagName: string): boolean {
   return false;
 }
 
-export function MarkdownLeaf({ source, takeNextHeadingId }: MarkdownLeafProps) {
+function compactTableImage(props: ComponentProps<"img">) {
+  const { width, height, className, alt, ...other } = props;
+
+  return (
+    <img
+      {...other}
+      alt={alt ?? ""}
+      loading="lazy"
+      className={cn("rounded-lg", className)}
+      style={{
+        width: width ? Number.parseInt(String(width), 10) : undefined,
+        height: height ? Number.parseInt(String(height), 10) : undefined,
+      }}
+    />
+  );
+}
+
+export function MarkdownLeaf({
+  source,
+  takeNextHeadingId,
+  htmlLayout = false,
+}: MarkdownLeafProps) {
   const components: Components = {
     h1: (props) => renderHeading("h1", props, takeNextHeadingId),
     h2: (props) => renderHeading("h2", props, takeNextHeadingId),
@@ -45,16 +69,24 @@ export function MarkdownLeaf({ source, takeNextHeadingId }: MarkdownLeafProps) {
         <Tag className={cn("leading-7 opacity-90", className)} {...props} />
       );
     },
-    a: ({ node: _node, className, ...props }) => (
-      <Link
-        href={props.href ?? "/"}
-        className={cn(
-          "font-medium underline decoration-primary underline-offset-4 hover:opacity-80 transition-opacity",
-          className,
-        )}
-        {...props}
-      />
-    ),
+    a: ({ node, className, children, ...props }) => {
+      const wrapsImage = htmlLayout && hastSubtreeHasTag(node, "img");
+
+      return (
+        <Link
+          href={props.href ?? "/"}
+          className={cn(
+            wrapsImage
+              ? "inline-block transition-opacity hover:opacity-80"
+              : "font-medium underline decoration-primary underline-offset-4 hover:opacity-80 transition-opacity",
+            className,
+          )}
+          {...props}
+        >
+          {children}
+        </Link>
+      );
+    },
     strong: ({ node: _node, className, ...props }) => (
       <strong
         className={cn("font-semibold text-foreground", className)}
@@ -107,9 +139,18 @@ export function MarkdownLeaf({ source, takeNextHeadingId }: MarkdownLeafProps) {
       />
     ),
     table: ({ node: _node, className, ...props }) => (
-      <div className="my-6 overflow-x-auto rounded-lg border">
+      <div
+        className={cn(
+          "my-6 overflow-x-auto",
+          htmlLayout ? undefined : "rounded-lg border",
+        )}
+      >
         <table
-          className={cn("w-full border-collapse text-sm", className)}
+          className={cn(
+            "border-collapse",
+            htmlLayout ? "table-auto" : "w-full text-sm",
+            className,
+          )}
           {...props}
         />
       </div>
@@ -130,19 +171,26 @@ export function MarkdownLeaf({ source, takeNextHeadingId }: MarkdownLeafProps) {
       />
     ),
     td: ({ node: _node, className, ...props }) => (
-      <td className={cn("px-4 py-3 align-top", className)} {...props} />
+      <td
+        className={cn(
+          htmlLayout ? "p-0.5 align-top" : "px-4 py-3 align-top",
+          className,
+        )}
+        {...props}
+      />
     ),
     hr: ({ node: _node, className, ...props }) => (
       <hr className={cn("my-8 border-border", className)} {...props} />
     ),
-    img: ({ node: _node, ...props }) => <Image {...props} />,
+    img: ({ node: _node, ...props }) =>
+      htmlLayout ? compactTableImage(props) : <Image {...props} />,
   };
 
   return (
     <ReactMarkdown
       components={components}
       remarkPlugins={[remarkGfm]}
-      rehypePlugins={[rehypeRaw, [rehypeSanitize, defaultSchema]]}
+      rehypePlugins={[rehypeRaw, [rehypeSanitize, docsHtmlSchema]]}
     >
       {source}
     </ReactMarkdown>
