@@ -1,7 +1,7 @@
 {
   "name": "@docs.page/cli",
   "description": "The docs.page cli tool for managing your documentation.",
-  "version": "2.0.0-next.1",
+  "version": "2.0.0",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
@@ -19,8 +19,7 @@
     "docs": "./dist/cli.js"
   },
   "publishConfig": {
-    "access": "public",
-    "tag": "next"
+    "access": "public"
   },
   "scripts": {
     "dev": "bun run src/cli.ts",

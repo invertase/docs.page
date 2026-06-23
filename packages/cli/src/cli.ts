@@ -8,10 +8,11 @@ import { registerInitCommand } from "./commands/init";
 import { registerPreviewCommand } from "./commands/preview";
 import { DEFAULT_API_BASE_URL } from "./lib/api";
 import { handleCliError } from "./lib/errors";
+import { version } from "../package.json";
 
 const program = new Command();
 
-program.name("docs").version("2.0.0").description("docs.page CLI");
+program.name("docs").version(version).description("docs.page CLI");
 program.addOption(
   new Option("--api-url <url>", "Base docs.page API URL").default(
     process.env.DOCS_PAGE_API_BASE?.trim() || DEFAULT_API_BASE_URL,
