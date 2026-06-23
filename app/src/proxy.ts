@@ -16,13 +16,8 @@ const SECONDS_PER_DAY = 24 * 60 * 60;
 /** CDN edge: allow stale serve + async revalidate / error fallback for up to 7 days after freshness TTL. */
 const CDN_STALE_SECONDS = 7 * SECONDS_PER_DAY;
 
-/** Cloudflare only caches when `Vary` is `Accept-Encoding` (or `Accept-Language`). */
-const CDN_CACHE_VARY = "Accept-Encoding";
-
 export type DocsCacheHeaders = {
   cacheControl: string;
-  /** Set on CDN-backed responses so App Router RSC `Vary` values do not bypass edge cache. */
-  vary?: string;
 };
 
 const SEARCH_JSON_BROWSER_MAX_AGE_SECONDS = 5 * 60;
@@ -55,7 +50,6 @@ function buildCdnCacheHeaders(args: {
       `stale-while-revalidate=${args.staleWhileRevalidate}`,
       `stale-if-error=${args.staleIfError}`,
     ].join(", "),
-    vary: CDN_CACHE_VARY,
   };
 }
 
@@ -119,34 +113,19 @@ export function getBundleJsonCacheHeaders(
   });
 }
 
-function applyHeader(
-  target:
-    | { setHeader(name: string, value: string): void }
-    | Pick<Headers, "set" | "delete">,
-  name: string,
-  value: string,
-) {
-  if ("setHeader" in target) {
-    target.setHeader(name, value);
-    return;
-  }
-
-  target.delete(name);
-  target.set(name, value);
-}
-
-/** Apply Cache-Control (and CDN `Vary` when configured) for docs responses. */
+/** Apply Cache-Control for docs responses (browser-only or CDN-backed). */
 export function setDocsCacheHeaders(
   target:
     | { setHeader(name: string, value: string): void }
-    | Pick<Headers, "set" | "delete">,
+    | Pick<Headers, "set">,
   headers: DocsCacheHeaders,
 ): void {
-  applyHeader(target, "Cache-Control", headers.cacheControl);
-
-  if (headers.vary) {
-    applyHeader(target, "Vary", headers.vary);
+  if ("setHeader" in target) {
+    target.setHeader("Cache-Control", headers.cacheControl);
+    return;
   }
+
+  target.set("Cache-Control", headers.cacheControl);
 }
 
 function isMcpPath(pathname: string) {
