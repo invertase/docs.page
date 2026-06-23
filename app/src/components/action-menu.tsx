@@ -13,7 +13,7 @@ import {
 import { useCallback, useState } from "react";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { useSourceUrl } from "@/hooks/use-source-url";
-import { getMcpEndpointUrl } from "@/lib/docs-paths";
+import { buildRawDocPathname, getMcpEndpointUrl } from "@/lib/docs-paths";
 import { useMcpDialog } from "./mcp-dialog";
 import { Button } from "./ui/button";
 import { ButtonGroup } from "./ui/button-group";
@@ -76,8 +76,10 @@ export function ActionMenu() {
             <DropdownMenuItem
               className="gap-4"
               onClick={() => {
-                const pathname = `${window.location.pathname}.md`;
-                const url = new URL(pathname, window.location.origin);
+                const url = new URL(
+                  buildRawDocPathname(route.publicPathname),
+                  window.location.origin,
+                );
                 window.open(url.toString(), "_blank");
               }}
             >

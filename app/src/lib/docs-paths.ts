@@ -99,6 +99,13 @@ export function buildPublicPathname(args: {
   return `/${owner}/${repository}${refSegment}${docSegment}`;
 }
 
+/** Public URL for the raw markdown version of a docs page. */
+export function buildRawDocPathname(publicPathname: string): string {
+  const base = publicPathname.replace(/\/$/, "") || "";
+
+  return base ? `${base}.md` : "/index.md";
+}
+
 export function getMcpEndpointPathname(route: DocsPathRoute) {
   const refSegment = formatRefPathSegment(route.ref);
 
