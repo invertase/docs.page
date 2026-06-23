@@ -164,6 +164,7 @@ function renderComponent(
         key={key}
         groupId={stringProp(node.props.groupId)}
         defaultValue={stringProp(node.props.defaultValue)}
+        values={tabValuesFromIr(node.props)}
       >
         {children}
       </Tabs>
@@ -171,7 +172,7 @@ function renderComponent(
     TabItem: (
       <TabItem
         key={key}
-        label={stringProp(node.props.label) ?? ""}
+        label={stringProp(node.props.label)}
         value={stringProp(node.props.value) ?? ""}
       >
         {children}
@@ -304,6 +305,33 @@ function stringProp(value: unknown): string | undefined {
     return String(value);
   }
   return undefined;
+}
+
+function tabValuesFromIr(
+  props: Record<string, unknown>,
+): Array<{ label: string; value: string }> | undefined {
+  const values = props.values;
+  if (!Array.isArray(values)) {
+    return undefined;
+  }
+
+  const parsed: Array<{ label: string; value: string }> = [];
+  for (const entry of values) {
+    if (!entry || typeof entry !== "object" || Array.isArray(entry)) {
+      continue;
+    }
+
+    const record = entry as Record<string, unknown>;
+    const label = stringProp(record.label);
+    const value = stringProp(record.value);
+    if (!label || !value) {
+      continue;
+    }
+
+    parsed.push({ label, value });
+  }
+
+  return parsed.length > 0 ? parsed : undefined;
 }
 
 function booleanProp(value: unknown): boolean | undefined {

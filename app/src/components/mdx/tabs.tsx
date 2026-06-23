@@ -23,9 +23,15 @@ import {
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import type { DocsRequestMode } from "@/lib/docs-routing";
 
+type TabDefinition = {
+  label: string;
+  value: string;
+};
+
 type TabProps = PropsWithChildren<{
   groupId?: string;
   defaultValue?: string;
+  values?: TabDefinition[];
 }>;
 
 type TabsContextValue = {
@@ -84,7 +90,7 @@ export function TabsProvider({ children }: PropsWithChildren) {
 }
 
 type TabItemElementProps = {
-  label: string;
+  label?: string;
   value: string;
   children?: ReactNode;
 };
@@ -96,8 +102,7 @@ function isTabItemElement(child: ReactNode): child is TabItemElement {
     return false;
   }
 
-  const { label, value } = child.props;
-  return typeof label === "string" && typeof value === "string";
+  return typeof child.props.value === "string";
 }
 
 function getTabItems(children: ReactNode): TabItemElement[] {
@@ -107,12 +112,18 @@ function getTabItems(children: ReactNode): TabItemElement[] {
 export function Tabs(props: TabProps) {
   const tabs = useTabs();
   const { route } = useDocPageContext();
-  const { groupId, defaultValue, children } = props;
+  const { groupId, defaultValue, values: configuredValues, children } = props;
   const tabItems = getTabItems(children);
-  const values = tabItems.map((item) => ({
-    label: item.props.label,
-    value: item.props.value,
-  }));
+  const values = useMemo<TabDefinition[]>(() => {
+    if (configuredValues && configuredValues.length > 0) {
+      return configuredValues;
+    }
+
+    return tabItems.map((item) => ({
+      label: item.props.label ?? "",
+      value: item.props.value,
+    }));
+  }, [configuredValues, tabItems]);
   const [selected, setSelected] = useState(
     defaultValue ?? values[0]?.value ?? "",
   );
@@ -215,7 +226,7 @@ export function TabItem({
   value: _value,
   children,
 }: PropsWithChildren<{
-  label: string;
+  label?: string;
   value: string;
 }>) {
   return <>{children}</>;
