@@ -1,7 +1,7 @@
 import { resolvePublicDocsPublishingContext } from "@/lib/docs-canonical";
 import { buildPublicPathname } from "@/lib/docs-paths";
 import { resolveDocsRoute } from "@/lib/docs-routing";
-import { LLMS_TXT_CACHE_HEADERS } from "@/proxy";
+import { LLMS_TXT_CACHE_HEADERS, setDocsCacheHeaders } from "@/proxy";
 import { BundlerError } from "@/server/docs/bundle";
 import {
   buildDocsSourceDataset,
@@ -112,11 +112,7 @@ export async function GET(req: Request, context: RouteContext) {
       "Content-Type": "text/markdown; charset=utf-8",
     },
   });
-  response.headers.set("Cache-Control", LLMS_TXT_CACHE_HEADERS.cacheControl);
-  response.headers.set(
-    "Surrogate-Control",
-    LLMS_TXT_CACHE_HEADERS.surrogateControl,
-  );
+  setDocsCacheHeaders(response.headers, LLMS_TXT_CACHE_HEADERS);
 
   if (docList.truncated) {
     response.headers.set("x-docs-page-tree-truncated", "1");

@@ -3,7 +3,7 @@ import type {
   DocsBundleApiErrorResponse,
   DocsBundleApiResponse,
 } from "@/lib/docs-bundle-api";
-import { getBundleJsonCacheHeaders } from "@/proxy";
+import { getBundleJsonCacheHeaders, setDocsCacheHeaders } from "@/proxy";
 import { isAgentEnabledForRepository } from "@/server/agent/repository";
 import { BundlerError, getDocBundle } from "@/server/docs/bundle";
 import { logBundlerError } from "@/server/docs/bundler/error";
@@ -53,8 +53,7 @@ export async function GET(req: Request) {
       { status: 200 },
     );
     const cacheHeaders = getBundleJsonCacheHeaders(input.data.ref);
-    response.headers.set("Cache-Control", cacheHeaders.cacheControl);
-    response.headers.set("Surrogate-Control", cacheHeaders.surrogateControl);
+    setDocsCacheHeaders(response.headers, cacheHeaders);
     return response;
   } catch (error) {
     if (error instanceof BundlerError) {

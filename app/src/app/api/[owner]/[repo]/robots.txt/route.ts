@@ -1,7 +1,7 @@
 import { getCustomDomain } from "@/lib/custom-domain";
 import { resolvePublicSitemapUrl } from "@/lib/docs-canonical";
 import { resolveDocsRoute } from "@/lib/docs-routing";
-import { ROBOTS_TXT_CACHE_HEADERS } from "@/proxy";
+import { ROBOTS_TXT_CACHE_HEADERS, setDocsCacheHeaders } from "@/proxy";
 import { BundlerError } from "@/server/docs/bundle";
 import { buildDocsRepoRobotsTxt } from "@/server/docs/robots-txt";
 import { loadDocsConfigForResolvedSha } from "@/server/docs/source-dataset";
@@ -69,11 +69,7 @@ export async function GET(req: Request, context: RouteContext) {
       "Content-Type": "text/plain; charset=utf-8",
     },
   });
-  response.headers.set("Cache-Control", ROBOTS_TXT_CACHE_HEADERS.cacheControl);
-  response.headers.set(
-    "Surrogate-Control",
-    ROBOTS_TXT_CACHE_HEADERS.surrogateControl,
-  );
+  setDocsCacheHeaders(response.headers, ROBOTS_TXT_CACHE_HEADERS);
 
   return response;
 }

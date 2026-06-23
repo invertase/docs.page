@@ -1,5 +1,5 @@
 import { resolveDocsRoute } from "@/lib/docs-routing";
-import { SITEMAP_CACHE_HEADERS } from "@/proxy";
+import { SITEMAP_CACHE_HEADERS, setDocsCacheHeaders } from "@/proxy";
 import { BundlerError } from "@/server/docs/bundle";
 import { buildDocsRepoSitemapXml } from "@/server/docs/sitemap-xml";
 import {
@@ -59,11 +59,7 @@ export async function GET(req: Request, context: RouteContext) {
       "Content-Type": "application/xml; charset=utf-8",
     },
   });
-  response.headers.set("Cache-Control", SITEMAP_CACHE_HEADERS.cacheControl);
-  response.headers.set(
-    "Surrogate-Control",
-    SITEMAP_CACHE_HEADERS.surrogateControl,
-  );
+  setDocsCacheHeaders(response.headers, SITEMAP_CACHE_HEADERS);
 
   if (docList.truncated) {
     response.headers.set("x-docs-page-tree-truncated", "1");

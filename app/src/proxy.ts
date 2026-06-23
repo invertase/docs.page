@@ -13,71 +13,55 @@ import {
 import { resolvePlausibleOwnerRepo, trackPageRequest } from "@/lib/plausible";
 
 const SECONDS_PER_DAY = 24 * 60 * 60;
-/** Fastly edge: allow stale serve + async revalidate / error fallback for up to 7 days after freshness TTL. */
+/** CDN edge: allow stale serve + async revalidate / error fallback for up to 7 days after freshness TTL. */
 const CDN_STALE_SECONDS = 7 * SECONDS_PER_DAY;
-
-/**
- * Browser-oriented caching only. Stale-while-revalidate / long TTLs for the CDN live in
- * {@link DocsCacheHeaders.surrogateControl} (Surrogate-Control), which Fastly applies at the edge
- * and strips before the response reaches clients.
- */
-const BROWSER_CACHE_CONTROL = "public, max-age=0";
 
 export type DocsCacheHeaders = {
   cacheControl: string;
-  surrogateControl: string;
 };
-
-/** Fastly: same directive shapes as Cache-Control, but use `max-age` (not `s-maxage`) for edge TTL. */
-function buildSurrogateControl(args: {
-  edgeMaxAgeSeconds: number;
-  staleWhileRevalidate: number;
-  staleIfError: number;
-}) {
-  return [
-    `max-age=${args.edgeMaxAgeSeconds}`,
-    `stale-while-revalidate=${args.staleWhileRevalidate}`,
-    `stale-if-error=${args.staleIfError}`,
-  ].join(", ");
-}
 
 const SEARCH_JSON_BROWSER_MAX_AGE_SECONDS = 5 * 60;
 
-function buildDocsCacheHeaders(args: {
-  edgeMaxAgeSeconds: number;
-  staleWhileRevalidate: number;
-  staleIfError: number;
-  /** When set, browsers may reuse the response without revalidating for this many seconds (e.g. local search index). */
-  browserMaxAgeSeconds?: number;
-}): DocsCacheHeaders {
-  const browserMaxAge = args.browserMaxAgeSeconds ?? 0;
-  const cacheControl =
-    browserMaxAge > 0
-      ? `public, max-age=${browserMaxAge}`
-      : BROWSER_CACHE_CONTROL;
-
+/** Browser-only: never store HTML document responses in any cache. */
+function buildBrowserCacheHeaders(): DocsCacheHeaders {
   return {
-    cacheControl,
-    surrogateControl: buildSurrogateControl({
-      edgeMaxAgeSeconds: args.edgeMaxAgeSeconds,
-      staleWhileRevalidate: args.staleWhileRevalidate,
-      staleIfError: args.staleIfError,
-    }),
+    cacheControl: "no-store",
   };
 }
 
-export const DOCS_HTML_CACHE_HEADERS = buildDocsCacheHeaders({
-  edgeMaxAgeSeconds: 60,
-  staleWhileRevalidate: CDN_STALE_SECONDS,
-  staleIfError: CDN_STALE_SECONDS,
-});
-export const RAW_DOC_CACHE_HEADERS = buildDocsCacheHeaders({
+/**
+ * CDN cache policy for deterministic API/utility responses (`/api/bundle`, search.json, etc.).
+ * Browsers use `max-age=0`; edge TTL + stale-* live in `s-maxage`.
+ */
+function buildCdnCacheHeaders(args: {
+  edgeMaxAgeSeconds: number;
+  staleWhileRevalidate: number;
+  staleIfError: number;
+  /** When set, browsers may reuse the response without revalidating for this many seconds. */
+  browserMaxAgeSeconds?: number;
+}): DocsCacheHeaders {
+  const browserMaxAge = args.browserMaxAgeSeconds ?? 0;
+
+  return {
+    cacheControl: [
+      "public",
+      `max-age=${browserMaxAge}`,
+      `s-maxage=${args.edgeMaxAgeSeconds}`,
+      `stale-while-revalidate=${args.staleWhileRevalidate}`,
+      `stale-if-error=${args.staleIfError}`,
+    ].join(", "),
+  };
+}
+
+/** SSR HTML pages: always revalidate in the browser; do not cache at the CDN. */
+export const DOCS_HTML_CACHE_HEADERS = buildBrowserCacheHeaders();
+export const RAW_DOC_CACHE_HEADERS = buildCdnCacheHeaders({
   edgeMaxAgeSeconds: 300,
   staleWhileRevalidate: CDN_STALE_SECONDS,
   staleIfError: CDN_STALE_SECONDS,
 });
 /** `search.json`: short browser TTL so SPAs can reuse the FlexSearch payload during a session without extra round-trips. */
-export const SEARCH_CACHE_HEADERS = buildDocsCacheHeaders({
+export const SEARCH_CACHE_HEADERS = buildCdnCacheHeaders({
   edgeMaxAgeSeconds: 300,
   staleWhileRevalidate: CDN_STALE_SECONDS,
   staleIfError: CDN_STALE_SECONDS,
@@ -85,23 +69,23 @@ export const SEARCH_CACHE_HEADERS = buildDocsCacheHeaders({
 });
 
 /** Same edge policy as search; keep `max-age=0` for clients (llms.txt consumers often want a fresh aggregate). */
-export const LLMS_TXT_CACHE_HEADERS = buildDocsCacheHeaders({
+export const LLMS_TXT_CACHE_HEADERS = buildCdnCacheHeaders({
   edgeMaxAgeSeconds: 300,
   staleWhileRevalidate: CDN_STALE_SECONDS,
   staleIfError: CDN_STALE_SECONDS,
 });
 /** `llms-full.txt` can be larger and expensive to rebuild; reuse llms.txt edge/browser policy. */
-export const LLMS_FULL_TXT_CACHE_HEADERS = buildDocsCacheHeaders({
+export const LLMS_FULL_TXT_CACHE_HEADERS = buildCdnCacheHeaders({
   edgeMaxAgeSeconds: 300,
   staleWhileRevalidate: CDN_STALE_SECONDS,
   staleIfError: CDN_STALE_SECONDS,
 });
-export const SITEMAP_CACHE_HEADERS = buildDocsCacheHeaders({
+export const SITEMAP_CACHE_HEADERS = buildCdnCacheHeaders({
   edgeMaxAgeSeconds: 3600,
   staleWhileRevalidate: CDN_STALE_SECONDS,
   staleIfError: CDN_STALE_SECONDS,
 });
-export const ROBOTS_TXT_CACHE_HEADERS = buildDocsCacheHeaders({
+export const ROBOTS_TXT_CACHE_HEADERS = buildCdnCacheHeaders({
   edgeMaxAgeSeconds: 3600,
   staleWhileRevalidate: CDN_STALE_SECONDS,
   staleIfError: CDN_STALE_SECONDS,
@@ -110,31 +94,38 @@ export const ROBOTS_TXT_CACHE_HEADERS = buildDocsCacheHeaders({
 const MUTABLE_BUNDLE_EDGE_MAX_AGE = 60;
 const PINNED_BUNDLE_EDGE_MAX_AGE = CDN_STALE_SECONDS;
 
+/** Primary CDN cache target: expensive GitHub fetch + MDX bundle work, shared across all page renders. */
 export function getBundleJsonCacheHeaders(
   ref: string | null | undefined,
 ): DocsCacheHeaders {
   if (isPinnedCommitRef(ref)) {
-    return buildDocsCacheHeaders({
+    return buildCdnCacheHeaders({
       edgeMaxAgeSeconds: PINNED_BUNDLE_EDGE_MAX_AGE,
       staleWhileRevalidate: CDN_STALE_SECONDS,
       staleIfError: CDN_STALE_SECONDS,
     });
   }
 
-  return buildDocsCacheHeaders({
+  return buildCdnCacheHeaders({
     edgeMaxAgeSeconds: MUTABLE_BUNDLE_EDGE_MAX_AGE,
     staleWhileRevalidate: CDN_STALE_SECONDS,
     staleIfError: CDN_STALE_SECONDS,
   });
 }
 
-/** Apply Cache-Control + Surrogate-Control (Fastly edge policy). */
+/** Apply Cache-Control for docs responses (browser-only or CDN-backed). */
 export function setDocsCacheHeaders(
-  res: { setHeader(name: string, value: string): void },
+  target:
+    | { setHeader(name: string, value: string): void }
+    | Pick<Headers, "set">,
   headers: DocsCacheHeaders,
 ): void {
-  res.setHeader("Cache-Control", headers.cacheControl);
-  res.setHeader("Surrogate-Control", headers.surrogateControl);
+  if ("setHeader" in target) {
+    target.setHeader("Cache-Control", headers.cacheControl);
+    return;
+  }
+
+  target.set("Cache-Control", headers.cacheControl);
 }
 
 function isMcpPath(pathname: string) {
@@ -236,8 +227,7 @@ function withDocsCache(
   headers: DocsCacheHeaders | null,
 ) {
   if (headers) {
-    response.headers.set("Cache-Control", headers.cacheControl);
-    response.headers.set("Surrogate-Control", headers.surrogateControl);
+    setDocsCacheHeaders(response.headers, headers);
   }
 
   return response;

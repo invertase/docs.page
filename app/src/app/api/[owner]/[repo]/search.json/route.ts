@@ -1,5 +1,5 @@
 import { resolveDocsRoute } from "@/lib/docs-routing";
-import { SEARCH_CACHE_HEADERS } from "@/proxy";
+import { SEARCH_CACHE_HEADERS, setDocsCacheHeaders } from "@/proxy";
 import { BundlerError } from "@/server/docs/bundle";
 import {
   buildDocsFlexSearchIndex,
@@ -55,11 +55,7 @@ export async function GET(req: Request, context: RouteContext) {
       : await buildDocsFlexSearchIndex(docList);
 
   const response = Response.json(payload, { status: 200 });
-  response.headers.set("Cache-Control", SEARCH_CACHE_HEADERS.cacheControl);
-  response.headers.set(
-    "Surrogate-Control",
-    SEARCH_CACHE_HEADERS.surrogateControl,
-  );
+  setDocsCacheHeaders(response.headers, SEARCH_CACHE_HEADERS);
 
   if (docList.truncated) {
     response.headers.set("x-docs-page-tree-truncated", "1");
