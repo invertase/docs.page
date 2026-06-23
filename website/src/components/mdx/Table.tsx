@@ -4,7 +4,7 @@ type TableProps = ComponentProps<"table">;
 
 export function Table(props: TableProps) {
   return (
-    <div className="[& img]:inline">
+    <div className="overflow-x-auto [&_img]:inline">
       <table {...props} className="table" />
     </div>
   );
