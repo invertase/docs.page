@@ -29,6 +29,11 @@ export function Heading(props: HeadingTagProps) {
       className={cn(
         "group relative flex items-center gap-3 font-heading text-balance text-foreground",
         styles[type],
+        // Raw FA icons in markdown headings inherit the heading font size (huge).
+        "[&_i.fa-solid]:text-[0.7em] [&_i.fa-brands]:text-[0.7em] [&_i]:leading-none",
+        // text-decoration skips ::before glyphs; border-b spans icon + label.
+        "[&_a]:inline-flex [&_a]:items-center [&_a]:gap-1.5",
+        "[&_a]:border-b [&_a]:border-primary [&_a]:no-underline!",
       )}
     >
       <span id={id} data-heading="true" className="absolute -mt-36 pt-36" />

@@ -60,7 +60,7 @@ export function extractHeadingNodes(
     }
 
     const rank = hashes.length;
-    const title = rawTitle.replace(/\s+#+\s*$/, "").trim();
+    const title = cleanHeadingTitle(rawTitle.replace(/\s+#+\s*$/, "").trim());
     if (!title) {
       continue;
     }
@@ -93,6 +93,37 @@ function getFenceRun(line: string): { marker: string; length: number } | null {
   }
 
   return { marker, length: token.length };
+}
+
+/** Strip markdown/HTML from heading text for TOC labels and slug generation. */
+function cleanHeadingTitle(raw: string): string {
+  let title = raw.trim();
+
+  const linkMatch = /^\[(.+)\]\([^)]*\)$/.exec(title);
+  if (linkMatch?.[1]) {
+    title = linkMatch[1];
+  }
+
+  title = title.replace(/<[^>]+>/g, "");
+  title = decodeHtmlEntities(title);
+  title = title.replace(/\s+/g, " ").trim();
+
+  return title;
+}
+
+function decodeHtmlEntities(value: string): string {
+  return value
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/&quot;/gi, '"')
+    .replace(/&#(\d+);/g, (_, code) =>
+      String.fromCodePoint(Number.parseInt(code, 10)),
+    )
+    .replace(/&#x([0-9a-f]+);/gi, (_, code) =>
+      String.fromCodePoint(Number.parseInt(code, 16)),
+    );
 }
 
 function slugifyHeading(value: string) {

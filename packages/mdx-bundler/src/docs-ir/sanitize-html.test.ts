@@ -42,6 +42,13 @@ describe("sanitizeHtml", () => {
     expect(result).not.toContain('src="javascript:');
   });
 
+  test("preserves class on i tags for Font Awesome icons", async () => {
+    const result = await sanitizeHtml(
+      '<i class="fa-fw fa-solid fa-users"></i>',
+    );
+    expect(result).toContain('class="fa-fw fa-solid fa-users"');
+  });
+
   test("converts markdown image links embedded in HTML table cells", async () => {
     const input = `<table><tr><td>[<img src="https://example.com/thumb.png" width="150"/>](https://example.com/full.png)</td></tr></table>`;
     const preprocessed = preprocessMarkdownInHtml(input);

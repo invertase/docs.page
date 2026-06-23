@@ -39,6 +39,7 @@ export const docsHtmlSchema: SanitizeSchema = {
       ...(defaultSchema.attributes?.img ?? []),
       ["className", classNamePattern],
     ],
+    i: [["className", classNamePattern]],
     p: [["className", classNamePattern]],
     span: [["className", classNamePattern]],
   },
