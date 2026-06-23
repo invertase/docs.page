@@ -55,6 +55,14 @@ export function Metadata() {
     image = `https://docspage-production.up.railway.app/api/og?params=${toBase64(params)}`;
   }
 
+  const faviconLight = bundle.config.favicon?.light
+    ? getAssetSrc(bundle, bundle.config.favicon.light)
+    : undefined;
+  const faviconDark = bundle.config.favicon?.dark
+    ? getAssetSrc(bundle, bundle.config.favicon.dark)
+    : undefined;
+  const faviconDefault = faviconLight ?? faviconDark;
+
   return (
     <Head>
       <title>{String(title)}</title>
@@ -77,30 +85,17 @@ export function Metadata() {
         </>
       ) : null}
 
-      {bundle.config.favicon?.light ? (
-        <link
-          rel="icon"
-          media={
-            bundle.config.favicon?.dark
-              ? // If there is a dark favicon, add a media query to prefer light mode only.
-                "(prefers-color-scheme: light)"
-              : undefined
-          }
-          href={getAssetSrc(bundle, bundle.config.favicon.light)}
-        />
-      ) : null}
-
-      {bundle.config.favicon?.dark ? (
-        <link
-          rel="icon"
-          media={
-            bundle.config.favicon?.light
-              ? // If there is a light favicon, add a media query to prefer dark mode only.
-                "(prefers-color-scheme: dark)"
-              : undefined
-          }
-          href={getAssetSrc(bundle, bundle.config.favicon.dark)}
-        />
+      {faviconDefault ? (
+        <>
+          <link rel="icon" href={faviconDefault} />
+          {faviconLight && faviconDark && faviconLight !== faviconDark ? (
+            <link
+              rel="icon"
+              href={faviconDark}
+              media="(prefers-color-scheme: dark)"
+            />
+          ) : null}
+        </>
       ) : null}
 
       {route.canonicalUrl ? (

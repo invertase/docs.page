@@ -19,6 +19,7 @@ export function Homepage() {
   return (
     <>
       <Head>
+        <link rel="icon" href="/_docs.page/logo-icon.svg" />
         <title>{title}</title>
         <meta name="description" content={description} />
         <meta property="og:title" content={title} />
