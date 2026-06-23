@@ -13,6 +13,7 @@ const classNamePattern = /^[\w\s#:./[\]()%&=-]+$/;
 
 const docsHtmlSchema: SanitizeSchema = {
   ...defaultSchema,
+  tagNames: [...(defaultSchema.tagNames ?? []), "iframe"],
   attributes: {
     ...defaultSchema.attributes,
     a: [
@@ -21,6 +22,17 @@ const docsHtmlSchema: SanitizeSchema = {
     ],
     div: [
       ...(defaultSchema.attributes?.div ?? []),
+      ["className", classNamePattern],
+    ],
+    iframe: [
+      "src",
+      "width",
+      "height",
+      "title",
+      "allow",
+      "allowFullScreen",
+      "sandbox",
+      "loading",
       ["className", classNamePattern],
     ],
     img: [

@@ -65,6 +65,20 @@ describe("mdxToDocIr", () => {
     }
   });
 
+  test("preserves iframe embeds in html IR nodes", async () => {
+    const ir = await mdxToDocIr(`<iframe
+  src="https://preview.widgetbook.io/#/?path=knobpreview/bool-knob&panels=knobs"
+  width="100%"
+  height="240px"
+/>`);
+    const html = ir.children.find((child) => child.kind === "html");
+    expect(html?.kind).toBe("html");
+    if (html?.kind === "html") {
+      expect(html.source).toContain("<iframe");
+      expect(html.source).toContain("preview.widgetbook.io");
+    }
+  });
+
   test("falls back to markdown-only parse when MDX still fails", async () => {
     const ir = await mdxToDocIr("## Still works\n\nPlain text.");
     expect(ir.kind).toBe("root");

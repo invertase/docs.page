@@ -24,4 +24,21 @@ describe("sanitizeHtml", () => {
     const result = await sanitizeHtml('<a href="javascript:alert(1)">bad</a>');
     expect(result).not.toContain("javascript:");
   });
+
+  test("preserves safe iframe embeds", async () => {
+    const result = await sanitizeHtml(
+      '<iframe src="https://preview.widgetbook.io/#/?path=knobpreview/bool-knob&panels=knobs" width="100%" height="240px" />',
+    );
+    expect(result).toContain("<iframe");
+    expect(result).toContain('src="https://preview.widgetbook.io/');
+    expect(result).toContain('width="100%"');
+    expect(result).toContain('height="240px"');
+  });
+
+  test("strips javascript: iframe src", async () => {
+    const result = await sanitizeHtml('<iframe src="javascript:alert(1)" />');
+    expect(result).toContain("<iframe");
+    expect(result).not.toContain("javascript:");
+    expect(result).not.toContain('src="javascript:');
+  });
 });
