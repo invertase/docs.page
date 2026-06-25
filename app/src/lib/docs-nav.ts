@@ -49,6 +49,13 @@ export function resolveInternalDocHref(
   href: string,
   locales: string[] = [],
 ): string {
+  const trimmed = href.trim();
+
+  // Hash-only links are same-page anchors; do not prefix with site path.
+  if (trimmed.startsWith("#")) {
+    return trimmed;
+  }
+
   const docPath = resolveLocalizedDocPath(route.docPath, href, locales);
   if (isExternalLink(docPath)) {
     return docPath;
