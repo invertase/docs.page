@@ -8,6 +8,12 @@ export function useSourceUrl() {
   }
 
   const source = ctx.bundle.source;
+  const editRef =
+    (source.type === "branch" || source.type === "PR") &&
+    source.ref &&
+    source.ref !== "HEAD"
+      ? source.ref
+      : ctx.bundle.baseBranch;
 
   return [
     "https://github.com/",
@@ -15,9 +21,7 @@ export function useSourceUrl() {
     "/",
     ctx.bundle.source.repository,
     "/edit/",
-    source.type === "branch" && source.ref !== "HEAD"
-      ? source.ref
-      : ctx.bundle.baseBranch,
+    editRef,
     "/docs/",
     ctx.bundle.path,
     ".mdx",
