@@ -18,22 +18,19 @@ type CardProps = PropsWithChildren<{
 }>;
 
 export function Card({ title, icon, href, children }: CardProps) {
-  const container = (children: React.ReactNode) => {
-    if (href) {
-      return (
-        <Link href={href} className="block">
-          {children}
-        </Link>
-      );
-    }
-
-    return children;
-  };
-
-  return container(
+  return (
     <CardPrimitive
-      className={cn("group", href && "border hover:border-primary")}
+      className={cn("group relative", href && "border hover:border-primary")}
     >
+      {href ? (
+        <Link
+          href={href}
+          aria-label={title ?? href}
+          className="absolute inset-0 z-10 rounded-xl focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+        >
+          <span className="sr-only">{title ?? href}</span>
+        </Link>
+      ) : null}
       {title || icon || href ? (
         <CardHeader>
           {href ? (
@@ -54,12 +51,13 @@ export function Card({ title, icon, href, children }: CardProps) {
       <CardContent
         className={cn(
           "space-y-4 text-foreground/90",
-          href && "group-hover:text-primary",
+          href &&
+            "group-hover:text-primary [&_a]:relative [&_a]:z-20 [&_button]:relative [&_button]:z-20",
         )}
       >
         {children}
       </CardContent>
-    </CardPrimitive>,
+    </CardPrimitive>
   );
 }
 
