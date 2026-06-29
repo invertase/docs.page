@@ -1,18 +1,17 @@
 {
-  "$schema": "https://biomejs.dev/schemas/1.8.3/schema.json",
+  "$schema": "https://biomejs.dev/schemas/2.5.0/schema.json",
   "files": {
-    "ignore": [
-      "node_modules",
-      ".git",
-      ".vercel",
-      "dist/**",
-      "website/build/**",
-      "website/public/**"
+    "includes": [
+      "**",
+      "!**/node_modules",
+      "!**/.git",
+      "!**/dist",
+      "!**/.next",
+      "!**/*.css",
+      "!**/app/public"
     ]
   },
-  "organizeImports": {
-    "enabled": true
-  },
+  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "formatter": {
     "enabled": true,
     "indentStyle": "space"
@@ -20,19 +19,27 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true,
+      "preset": "recommended",
       "style": {
         "noNonNullAssertion": "off"
       },
       "suspicious": {
         "noShadowRestrictedNames": "off",
-        "noArrayIndexKey": "off"
+        "noArrayIndexKey": "off",
+        "noDocumentCookie": "off"
       },
       "security": {
         "noDangerouslySetInnerHtml": "off"
       },
       "complexity": {
         "noUselessFragments": "off"
+      },
+      "a11y": {
+        "useSemanticElements": "off",
+        "useKeyWithClickEvents": "off"
+      },
+      "performance": {
+        "noImgElement": "off"
       }
     }
   }

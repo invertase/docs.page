@@ -7,12 +7,15 @@ description: The `check` command scans the current project for errors and warnin
 
 ```bash
 @docs.page/cli check [path]
+@docs.page/cli check --render error --metadata warn
 ```
 
-The command current performs the following checks:
+The command currently performs the following checks:
 
 - Broken Links: Checks markdown content for any broken relative links.
 - Missing Assets: Checks markdown content for any local [assets](/assets) that are missing.
+- Render: Checks each MDX file can be rendered by the same pipeline used by preview and production.
+- Metadata: Checks page and project metadata for values that can break client-side social image generation.
 
 ## Arguments
 
@@ -25,3 +28,49 @@ The command current performs the following checks:
   @docs.page/cli check my-project
   ```
 </Property>
+
+## Options
+
+<Property name="external-links" type="off | warn | error" optional>
+  Checks that external links resolve.
+
+  Defaults to `error`.
+</Property>
+
+---
+
+<Property name="internal-links" type="off | warn | error" optional>
+  Checks that internal links point to an existing docs page.
+
+  Defaults to `error`.
+</Property>
+
+---
+
+<Property name="assets" type="off | warn | error" optional>
+  Checks that local image assets referenced from markdown or MDX components exist.
+
+  Defaults to `error`.
+</Property>
+
+---
+
+<Property name="render" type="off | warn | error" optional>
+  Checks that every `docs/**/*.mdx` file can be converted into the docs.page render payload.
+
+  Defaults to `error`.
+</Property>
+
+---
+
+<Property name="metadata" type="off | warn | error" optional>
+  Checks project and page metadata for invalid types and characters that can break client-side social image generation.
+
+  Defaults to `error`.
+</Property>
+
+## Metadata Unicode
+
+If a page does not set `image` and the project does not set `socialPreview`, docs.page generates a social image URL from the page title and description. The metadata check warns when those fields include characters that browser `btoa` cannot encode, such as U+2014.
+
+You can fix this by using ASCII text in metadata, or by setting `socialPreview` in `docs.json` or `image` in page frontmatter.

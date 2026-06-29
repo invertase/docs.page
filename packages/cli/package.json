@@ -1,34 +1,55 @@
 {
   "name": "@docs.page/cli",
-  "version": "1.0.4",
-  "author": "Invertase <oss@invertase.io> (http://invertase.io)",
+  "description": "The docs.page cli tool for managing your documentation.",
+  "version": "2.0.0",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/invertase/docs.page.git",
+    "directory": "packages/cli"
+  },
+  "module": "src/index.ts",
+  "files": [
+    "dist",
+    "templates"
+  ],
   "type": "module",
   "bin": {
-    "@docs.page/cli": "dist/cli.js"
+    "docs.page": "./dist/cli.js",
+    "docs": "./dist/cli.js"
   },
-  "keywords": ["docs.page", "documentation", "docs"],
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
-    "build": "rimraf dist && npx tsup src/index.ts src/cli.ts --format esm --dts",
-    "watch": "npx tsup src/index.ts src/cli.ts --format esm --dts --watch",
-    "prepublishOnly": "npm run build"
+    "dev": "bun run src/cli.ts",
+    "typecheck": "bunx tsc --noEmit",
+    "build": "rm -rf dist && bun build ./src/cli.ts --outdir ./dist --target node --format esm --minify",
+    "prepublishOnly": "bun run build"
   },
-  "files": ["dist", "LICENSE", "README.md"],
   "dependencies": {
-    "@inquirer/prompts": "^5.3.8",
+    "@clack/prompts": "^1.5.1",
     "chalk": "^5.3.0",
+    "chokidar": "^4.0.0",
     "commander": "^12.1.0",
-    "rimraf": "^6.0.1"
+    "fast-glob": "^3.3.3",
+    "gray-matter": "^4.0.3",
+    "handlebars": "^4.7.9",
+    "jose": "^6.2.3",
+    "js-yaml": "^4.1.1",
+    "remark-frontmatter": "^5.0.0",
+    "remark-mdx": "^3.1.1",
+    "remark-parse": "^11.0.0",
+    "unified": "^11.0.5",
+    "ws": "^8.18.0"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
-    "tsup": "^8.2.4",
-    "typescript": "^5.5.4"
+    "@docs.page/mdx-bundler": "workspace:*",
+    "@types/js-yaml": "^4.0.9",
+    "@types/node": "^25.9.2",
+    "@types/ws": "^8.5.13"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
   }
 }

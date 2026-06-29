@@ -3,12 +3,20 @@
   "name": "docs.page",
   "description": "Ship documentation, like you ship code",
   "logo": {
-    "light": "https://static.invertase.io/assets/docs.page/docs-page-logo.png"
+    "light": "https://static.invertase.io/assets/docs.page/docs-page-logo-v2.png"
   },
-  "favicon": "https://static.invertase.io/assets/docs.page/docs-page-logo.png",
+  "favicon": "https://static.invertase.io/assets/docs.page/docs-page-logo-v2.png",
   "theme": {
-    "primary": "#ECC918",
-    "primaryLight": "#BFA213"
+    "primary": "#E69135"
+  },
+  "agent": {
+    "key": "1a070e07-dd4f-4d56-b8f5-35537e58c0c0",
+    "questions": [
+      "How do I setup docs.page?",
+      "Is it free to use?",
+      "How do I customize the theme?",
+      "How is docs.page agent ready?"
+    ]
   },
   "content": {
     "showPageTitle": true,
@@ -117,6 +125,11 @@
           "icon": "laptop-code"
         },
         {
+          "title": "Mermaid",
+          "href": "/components/mermaid",
+          "icon": "diagram-project"
+        },
+        {
           "title": "Headings",
           "href": "/components/headings",
           "icon": "heading"
@@ -217,6 +230,7 @@
         { "title": "Overview", "href": "/cli" },
         {
           "group": "Commands",
+          "href": "/cli/commands",
           "pages": [
             { "title": "init", "href": "/cli/init" },
             { "title": "check", "href": "/cli/check" }
@@ -236,13 +250,6 @@
       ]
     }
   ],
-  "search": {
-    "docsearch": {
-      "apiKey": "9b58d13ee3195094105d528fc6161a01",
-      "appId": "BH4D9OD16A",
-      "indexName": "use_docs_page"
-    }
-  },
   "scripts": {
     "googleTagManager": "GTM-W89J6BX"
   }

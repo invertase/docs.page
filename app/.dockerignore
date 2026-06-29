@@ -1,0 +1,30 @@
+# Dependencies & caches
+node_modules
+.pnp
+.pnp.*
+
+# Next.js build output (rebuilt in container)
+.next
+out
+
+# Dev / tooling
+.git
+.gitignore
+.env
+.env*.local
+*.log
+.DS_Store
+
+# Tests & coverage
+coverage
+.nyc_output
+
+# IDE
+.idea
+.vscode
+
+# docs.page
+.db
+.agents/
+skills-lock.json
+cache-handler.cjs
