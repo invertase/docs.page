@@ -1,7 +1,12 @@
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 
 import { Docs } from "@/components/docs";
-import { DocsBundleErrorCard, DocsDebug } from "@/components/docs-debug";
+import {
+  DocsBundleErrorCard,
+  DocsDebug,
+  DocsDebugDetails,
+} from "@/components/docs-debug";
+import { DocsNotFoundPage } from "@/components/docs-not-found";
 import { Homepage } from "@/components/homepage";
 import { Preset } from "@/components/preset";
 import { DocPageContext } from "@/hooks/use-doc-page-context";
@@ -11,7 +16,11 @@ import type {
   DocsBundleApiResponse,
   DocsBundleApiSuccessResponse,
 } from "@/lib/docs-bundle-api";
-import { buildDocsBundleApiPath } from "@/lib/docs-bundle-api";
+import {
+  buildDocsBundleApiPath,
+  isDocsBundleNotFoundResponse,
+  parseDocsBundleApiError,
+} from "@/lib/docs-bundle-api";
 import {
   resolveCanonicalUrl,
   resolvePublicDocsPublishingContext,
@@ -23,7 +32,12 @@ import {
   acceptPrefersMarkdown,
   incomingHttpHeadersToWebHeaders,
 } from "@/lib/incoming-http-headers";
-import type { DocPageProps, ErrorPageProps, PageProps } from "@/lib/types";
+import type {
+  DocPageProps,
+  ErrorPageProps,
+  NotFoundPageProps,
+  PageProps,
+} from "@/lib/types";
 import {
   DOCS_HTML_CACHE_HEADERS,
   RAW_DOC_CACHE_HEADERS,
@@ -37,6 +51,7 @@ import {
 } from "@/server/agent/session";
 
 export const getServerSideProps = (async ({ params, req, res, query }) => {
+  const isDebug = query.debug !== undefined;
   const raw = params?.path;
   const chunks = raw ? (Array.isArray(raw) ? raw : [raw]) : [];
 
@@ -49,7 +64,27 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
   }
 
   if (chunks.length === 1) {
-    return { notFound: true };
+    res.statusCode = 404;
+
+    return {
+      props: {
+        kind: "notFound" as const,
+        notFound: {
+          ...(isDebug
+            ? {
+                debug: {
+                  pathChunks: chunks,
+                  error: {
+                    code: 404,
+                    message:
+                      "Incomplete docs route. Expected /owner/repository/...",
+                  },
+                },
+              }
+            : {}),
+        },
+      } satisfies NotFoundPageProps,
+    };
   }
 
   const [owner, repo, ...path] = chunks;
@@ -196,10 +231,35 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
 
   if (!bundleResponse.ok || bundlePayload.code !== "OK") {
     const errorResponse = bundlePayload as DocsBundleApiErrorResponse;
-    const error =
-      typeof errorResponse.error === "string"
-        ? { message: errorResponse.error }
-        : errorResponse.error;
+    const error = parseDocsBundleApiError(errorResponse);
+
+    if (isDocsBundleNotFoundResponse(errorResponse)) {
+      res.statusCode = 404;
+
+      return {
+        props: {
+          kind: "notFound" as const,
+          notFound: {
+            description: error.message,
+            ...(error.source ? { source: error.source } : {}),
+            ...(error.branding ? { branding: error.branding } : {}),
+            ...(isDebug
+              ? {
+                  debug: {
+                    route,
+                    bundleApiPath,
+                    error: {
+                      code: errorResponse.code,
+                      message: error.message,
+                      ...(error.source ? { source: error.source } : {}),
+                    },
+                  },
+                }
+              : {}),
+          },
+        } satisfies NotFoundPageProps,
+      };
+    }
 
     return {
       props: {
@@ -228,8 +288,6 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
       },
     };
   }
-
-  const isDebug = query.debug !== undefined;
 
   if (!isDebug && successResponse.hasAgent) {
     const session = await createAgentSession({
@@ -271,6 +329,16 @@ export default function RepoDocsCatchAllPage(
 
   if (props.kind === "home") {
     return <Homepage />;
+  }
+
+  if (props.kind === "notFound") {
+    const { debug, ...notFound } = props.notFound;
+
+    if (debug) {
+      return <DocsDebugDetails {...debug} />;
+    }
+
+    return <DocsNotFoundPage {...notFound} />;
   }
 
   if (props.kind === "error") {

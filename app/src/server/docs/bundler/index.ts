@@ -4,13 +4,14 @@ import {
   renderDoc,
 } from "@docs.page/mdx-bundler";
 import { assertPublicRepo } from "@/lib/docs-access";
+import { getAssetSrc } from "@/lib/docs-assets";
 import { type Config, defaultConfig, parseConfig } from "@/server/config";
 import {
   type GitHubSource,
   getGitHubContents,
   resolveGitHubSource,
 } from "@/server/github/contents";
-import { BundlerError } from "./error";
+import { BundlerError, type DocsBranding } from "./error";
 
 export const ERROR_CODES = {
   CONFIG_NOT_FOUND: "CONFIG_NOT_FOUND",
@@ -20,6 +21,8 @@ export const ERROR_CODES = {
   PRIVATE_REPO_BLOCKED: "PRIVATE_REPO_BLOCKED",
   INVALID_DOC_PATH: "INVALID_DOC_PATH",
 } as const;
+
+export type { DocsBranding } from "./error";
 
 export type ErrorCodes = (typeof ERROR_CODES)[keyof typeof ERROR_CODES];
 
@@ -74,6 +77,45 @@ export class Bundler {
     });
   }
 
+  private resolveBranding(
+    metadata: {
+      baseBranch: string;
+      config: {
+        configJson?: string;
+        configYaml?: string;
+      };
+    },
+    source: Source,
+  ): DocsBranding | undefined {
+    try {
+      const config = parseConfig({
+        json: metadata.config.configJson,
+        yaml: metadata.config.configYaml,
+      });
+      const assetContext = {
+        source,
+        baseBranch: metadata.baseBranch,
+      };
+      const light = config.logo?.light
+        ? getAssetSrc(assetContext, config.logo.light)
+        : undefined;
+      const dark = config.logo?.dark
+        ? getAssetSrc(assetContext, config.logo.dark)
+        : undefined;
+
+      if (!config.name && !light && !dark) {
+        return undefined;
+      }
+
+      return {
+        ...(config.name ? { name: config.name } : {}),
+        ...(light || dark ? { logo: { light, dark } } : {}),
+      };
+    } catch {
+      return undefined;
+    }
+  }
+
   async build(): Promise<BundlerOutput> {
     this.#source = await this.getSource();
     this.#ref = this.#source.ref;
@@ -109,8 +151,9 @@ export class Bundler {
       throw new BundlerError({
         code: 404,
         name: ERROR_CODES.FILE_NOT_FOUND,
-        message: `No file was found in the repository matching this path. Ensure a file exists at <code>/docs/${this.#path}.mdx<code> or <code>/docs/${this.#path}/index.mdx<code>.`,
+        message: `No file was found in the repository matching this path. Ensure a file exists at <code>/docs/${this.#path}.mdx</code> or <code>/docs/${this.#path}/index.mdx</code>.`,
         source: `https://github.com/${this.#source.owner}/${this.#source.repository}`,
+        branding: this.resolveBranding(metadata, this.#source),
       });
     }
 

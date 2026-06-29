@@ -1,54 +1,125 @@
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
+import type { ResolvedDocsRoute } from "@/lib/docs-routing";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 
-export function DocsDebug() {
-  const { route, bundle } = useDocPageContext();
+export type DocsDebugError = {
+  code?: string | number;
+  name?: string;
+  message: string;
+  source?: string;
+};
+
+export type DocsDebugDetailsProps = {
+  route?: ResolvedDocsRoute;
+  bundle?: unknown;
+  error?: DocsDebugError;
+  bundleApiPath?: string;
+  pathChunks?: string[];
+};
+
+function RouteTable({ route }: { route: ResolvedDocsRoute }) {
+  return (
+    <Table>
+      <TableBody>
+        <TableRow>
+          <TableCell className="w-[200px]">Owner</TableCell>
+          <TableCell>{route.owner}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell className="w-[200px]">Repository</TableCell>
+          <TableCell>{route.repository}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell className="w-[200px]">Ref</TableCell>
+          <TableCell>{route.ref ?? "(default branch)"}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell className="w-[200px]">Path</TableCell>
+          <TableCell>{route.docPath || "(root document)"}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell className="w-[200px]">Request mode</TableCell>
+          <TableCell>{route.requestMode}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell className="w-[200px]">Public pathname</TableCell>
+          <TableCell>{route.publicPathname}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell className="w-[200px]">Canonical pathname</TableCell>
+          <TableCell>{route.canonicalPathname}</TableCell>
+        </TableRow>
+        <TableRow>
+          <TableCell className="w-[200px]">Canonical URL</TableCell>
+          <TableCell>{route.canonicalUrl ?? "(none)"}</TableCell>
+        </TableRow>
+      </TableBody>
+    </Table>
+  );
+}
+
+export function DocsDebugDetails({
+  route,
+  bundle,
+  error,
+  bundleApiPath,
+  pathChunks,
+}: DocsDebugDetailsProps) {
+  const title = route
+    ? `${route.owner}/${route.repository}`
+    : pathChunks?.length
+      ? pathChunks.join("/")
+      : "Debug";
 
   return (
-    <div className="max-w-5xl mx-auto px-4 mt-12">
+    <div className="mx-auto mt-12 w-full max-w-5xl px-4">
       <Card className="shadow-lg">
         <CardHeader>
-          <CardTitle className="text-3xl font-semibold">
-            {route.owner}/{route.repository}
-          </CardTitle>
+          <CardTitle className="text-3xl font-semibold">{title}</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <Table>
-            <TableBody>
-              <TableRow>
-                <TableCell className="w-[200px]">Ref</TableCell>
-                <TableCell>{route.ref ?? "(default branch)"}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="w-[200px]">Path</TableCell>
-                <TableCell>{route.docPath || "(root document)"}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="w-[200px]">Request mode</TableCell>
-                <TableCell>{route.requestMode}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="w-[200px]">Public pathname</TableCell>
-                <TableCell>{route.publicPathname}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="w-[200px]">Canonical pathname</TableCell>
-                <TableCell>{route.canonicalPathname}</TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell className="w-[200px]">Canonical URL</TableCell>
-                <TableCell>{route.canonicalUrl ?? "(none)"}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-          <pre className="overflow-x-auto rounded-lg border p-4 text-sm">
-            {JSON.stringify(bundle, null, 2)}
-          </pre>
+          {pathChunks?.length ? (
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell className="w-[200px]">Path segments</TableCell>
+                  <TableCell>{pathChunks.join(" / ")}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          ) : null}
+          {route ? <RouteTable route={route} /> : null}
+          {bundleApiPath ? (
+            <Table>
+              <TableBody>
+                <TableRow>
+                  <TableCell className="w-[200px]">Bundle API</TableCell>
+                  <TableCell className="break-all">{bundleApiPath}</TableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          ) : null}
+          {error ? (
+            <pre className="overflow-x-auto rounded-lg border p-4 text-sm">
+              {JSON.stringify(error, null, 2)}
+            </pre>
+          ) : null}
+          {bundle ? (
+            <pre className="overflow-x-auto rounded-lg border p-4 text-sm">
+              {JSON.stringify(bundle, null, 2)}
+            </pre>
+          ) : null}
         </CardContent>
       </Card>
     </div>
   );
+}
+
+export function DocsDebug() {
+  const { route, bundle } = useDocPageContext();
+
+  return <DocsDebugDetails route={route} bundle={bundle} />;
 }
 
 export function DocsBundleErrorCard({
