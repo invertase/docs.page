@@ -38,15 +38,15 @@ describe("extractHeadingNodes", () => {
     expect(
       extractHeadingNodes("## Using `docs.page` in your project")[0]?.title,
     ).toBe("Using docs.page in your project");
-    expect(
-      extractHeadingNodes("## **Bold** and *italic* text")[0]?.title,
-    ).toBe("Bold and italic text");
-    expect(
-      extractHeadingNodes("## ~~strikethrough~~ heading")[0]?.title,
-    ).toBe("strikethrough heading");
-    expect(
-      extractHeadingNodes("## _underscore_ emphasis")[0]?.title,
-    ).toBe("underscore emphasis");
+    expect(extractHeadingNodes("## **Bold** and *italic* text")[0]?.title).toBe(
+      "Bold and italic text",
+    );
+    expect(extractHeadingNodes("## ~~strikethrough~~ heading")[0]?.title).toBe(
+      "strikethrough heading",
+    );
+    expect(extractHeadingNodes("## _underscore_ emphasis")[0]?.title).toBe(
+      "underscore emphasis",
+    );
   });
 
   test("strips mixed inline markdown from heading titles", () => {
