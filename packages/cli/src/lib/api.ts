@@ -1,5 +1,4 @@
-export const DEFAULT_API_BASE_URL =
-  "https://docspage-production.up.railway.app";
+export const DEFAULT_API_BASE_URL = "https://docs.page";
 
 export type GlobalCliOptions = {
   apiUrl?: string;
