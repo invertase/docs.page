@@ -40,7 +40,23 @@ export function Footer() {
 
   // Sorting here ensures that the socials are always displayed in the same order,
   // on client and server side.
-  const sorted = socials.sort(([a], [b]) => a.localeCompare(b));
+  const sorted = socials
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([name, url]) => {
+      const href = links[name]?.(url);
+
+      if (!url || !href) {
+        return null;
+      }
+
+      return (
+        <Button key={name} variant="ghost" size="icon-sm" asChild>
+          <a href={href} target="_blank" rel="noopener noreferrer">
+            <i className={cn(icons[name], "text-[16px]")} />
+          </a>
+        </Button>
+      );
+    });
 
   return (
     <footer className="py-12 border-t flex text-muted-foreground">
@@ -60,17 +76,7 @@ export function Footer() {
         </a>
       </div>
       <div className="flex-1 flex items-center justify-end gap-0.5">
-        {sorted.map(([name, url]) => (
-          <Button key={name} variant="ghost" size="icon-sm" asChild>
-            <a
-              href={links[name](url)}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <i className={cn(icons[name], "text-[16px]")} />
-            </a>
-          </Button>
-        ))}
+        {sorted}
       </div>
     </footer>
   );
