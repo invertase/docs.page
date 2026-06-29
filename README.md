@@ -16,7 +16,7 @@
   <a href="https://docs.page">Homepage</a> &bull;
   <a href="https://use.docs.page">Documentation</a> &bull;
   <a href="https://use.docs.page/quickstart">Quickstart</a> &bull;
-  <a href="https://github.com/invertase/docs.page/blob/ai/CONTRIBUTING.md">Contribute</a> &bull;
+  <a href="https://github.com/invertase/docs.page/blob/main/CONTRIBUTING.md">Contribute</a> &bull;
   <a href="https://github.com/invertase/docs.page/discussions">Discussions</a>
 </p>
 
