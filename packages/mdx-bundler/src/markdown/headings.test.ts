@@ -24,4 +24,45 @@ describe("extractHeadingNodes", () => {
 
     expect(headings[0]?.title).toBe("Linked Title");
   });
+
+  test("strips inline markdown links from mixed heading titles", () => {
+    const headings = extractHeadingNodes(
+      "## When [docs.page](https://docs.page) fits",
+    );
+
+    expect(headings[0]?.title).toBe("When docs.page fits");
+    expect(headings[0]?.id).toBe("when-docspage-fits");
+  });
+
+  test("strips inline code and emphasis from heading titles", () => {
+    expect(
+      extractHeadingNodes("## Using `docs.page` in your project")[0]?.title,
+    ).toBe("Using docs.page in your project");
+    expect(
+      extractHeadingNodes("## **Bold** and *italic* text")[0]?.title,
+    ).toBe("Bold and italic text");
+    expect(
+      extractHeadingNodes("## ~~strikethrough~~ heading")[0]?.title,
+    ).toBe("strikethrough heading");
+    expect(
+      extractHeadingNodes("## _underscore_ emphasis")[0]?.title,
+    ).toBe("underscore emphasis");
+  });
+
+  test("strips mixed inline markdown from heading titles", () => {
+    const headings = extractHeadingNodes(
+      "## Mix `code`, [link](/path), and **bold**",
+    );
+
+    expect(headings[0]?.title).toBe("Mix code, link, and bold");
+    expect(headings[0]?.id).toBe("mix-code-link-and-bold");
+  });
+
+  test("strips markdown inside link labels", () => {
+    const headings = extractHeadingNodes(
+      "## When [`docs.page`](https://docs.page) fits",
+    );
+
+    expect(headings[0]?.title).toBe("When docs.page fits");
+  });
 });

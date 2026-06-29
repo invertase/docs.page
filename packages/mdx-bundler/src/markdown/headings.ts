@@ -99,13 +99,14 @@ function getFenceRun(line: string): { marker: string; length: number } | null {
 function cleanHeadingTitle(raw: string): string {
   let title = raw.trim();
 
-  const linkMatch = /^\[(.+)\]\([^)]*\)$/.exec(title);
-  if (linkMatch?.[1]) {
-    title = linkMatch[1];
-  }
-
+  title = title.replace(/!\[([^\]]*)\]\([^)]*\)/g, "$1");
+  title = title.replace(/\[([^\]]+)\]\([^)]*\)/g, "$1");
+  title = title.replace(/`([^`]+)`/g, "$1");
   title = title.replace(/<[^>]+>/g, "");
   title = decodeHtmlEntities(title);
+  title = title.replace(/(\*\*|__)(.+?)\1/g, "$2");
+  title = title.replace(/(\*|_)(.+?)\1/g, "$2");
+  title = title.replace(/~~(.+?)~~/g, "$1");
   title = title.replace(/\s+/g, " ").trim();
 
   return title;
