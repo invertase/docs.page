@@ -1,14 +1,13 @@
 #!/usr/bin/env node
 
 import { Command, Option } from "commander";
-
+import { version } from "../package.json";
 import { registerAgentCommand } from "./commands/agent";
 import { registerCheckCommand } from "./commands/check";
 import { registerInitCommand } from "./commands/init";
 import { registerPreviewCommand } from "./commands/preview";
 import { DEFAULT_API_BASE_URL } from "./lib/api";
 import { handleCliError } from "./lib/errors";
-import { version } from "../package.json";
 
 const program = new Command();
 
