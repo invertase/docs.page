@@ -1,0 +1,78 @@
+---
+title: Local preview
+description: Preview your theme and layout locally in the browser via the CLI before pushing to GitHub.
+---
+
+Run `docs preview` when you want to see layout and theme changes before pushing to GitHub. The CLI watches `docs.json` (or `docs.yaml`) and `docs/**/*.mdx` on your machine, renders each page with the same production content pipeline, and streams updates to the hosted preview UI.
+
+For the full command workflow (flags, troubleshooting, and CI integration), see [Preview locally](/features/cli#preview-locally) on the CLI page.
+
+## Before you begin
+
+- A [docs.page project](/features/cli#initialize-a-project) with `docs.json` (or `docs.yaml`) and at least one `.mdx` file under `docs/`
+- [Install the CLI](/features/cli#install) or use `npx @docs.page/cli`
+
+For shareable branch and pull request previews after you push, see [Branch preview](/features/branch-preview).
+
+## Steps
+
+<Steps>
+  <Step title="Open a terminal at your project root">
+    Use the directory that contains `docs.json`.
+  </Step>
+  <Step title="Start the preview server">
+    ```bash
+    npx @docs.page/cli preview
+    ```
+
+    The CLI starts a local WebSocket server, prints the socket URL, and opens your browser to a preview URL shaped like:
+
+    ```
+    https://docs.page/preview?url=ws://localhost:57250
+    ```
+
+    The browser loads the production preview shell while file reads and bundling stay on localhost.
+  </Step>
+  <Step title="Edit and save">
+    Change any watched file under `docs/` or update `docs.json`. The preview reloads without a Git push.
+  </Step>
+  <Step title="Customize port or browser behavior when needed">
+    ```bash
+    npx @docs.page/cli preview --port 4000
+    npx @docs.page/cli preview --no-browser
+    ```
+
+    Use `--no-browser` in remote development or when you want to copy the printed URL manually.
+  </Step>
+</Steps>
+
+## Verify
+
+After the server starts, confirm:
+
+- The terminal shows `Local preview server started` and a **Preview URL**
+- The browser renders your home page with the correct project name and sidebar
+- Saving a visible change in `docs/index.mdx` updates the preview within a few seconds
+
+## Limitations
+
+<Info>
+  Local preview does not include search, sitemap generation, or the in-docs agent panel. Those features require a published site or [branch preview](/features/branch-preview). Run [`docs check`](/features/cli#check-documentation) after preview looks right and before you push.
+</Info>
+
+Local asset resolution in preview mode has known gaps. Prefer relative paths that match how files are laid out in your repository.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| CLI exits before the server starts | Missing `docs.json` or no `.mdx` under `docs/` | Run [init](/features/cli#initialize-a-project) or add the required files |
+| Browser shows a connection error | Preview server stopped or wrong URL | Restart `docs preview` and open the newly printed URL |
+| Port already in use | Another process bound the default port | Pass `--port` with a free port number |
+| Preview looks stale | Editor did not save the file | Save the file; confirm the terminal still shows the watcher running |
+
+## Next steps
+
+- [Check documentation](/features/cli#check-documentation): catch broken links and missing assets before you push
+- [Branch preview](/features/branch-preview): preview branches and pull requests on docs.page
+- [CLI](/features/cli): all commands and workflows

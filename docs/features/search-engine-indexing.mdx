@@ -1,0 +1,81 @@
+---
+title: Search engine indexing
+description: Understand how docs.page helps search engines discover your site, and when to block indexing with seo.noindex.
+---
+
+Your docs are public on the web as soon as you publish. Should Google index every page, or should crawlers stay away while you draft internal documentation? docs.page handles both paths with generated discovery files and a single site-wide switch.
+
+## Overview
+
+Published docs.page sites expose two HTTP endpoints crawlers expect:
+
+- **`robots.txt`** at `/{owner}/{repo}/robots.txt`: tells crawlers what they may fetch and where to find your sitemap
+- **`sitemap.xml`** at `/{owner}/{repo}/sitemap.xml`: lists every documentation page with update hints
+
+Each HTML page also ships standard metadata: title, description, Open Graph tags, and a canonical URL when one applies. Together, these signals help search engines find and rank your content.
+
+Set **`seo.noindex`** in `docs.json` when you want the opposite: block indexing across the entire site without taking the site offline.
+
+## How it works
+
+### Default discoverability
+
+When `seo.noindex` is `false` (the default), docs.page encourages crawlers to index your site:
+
+1. **`robots.txt`** allows all paths and points to your sitemap URL.
+2. **`sitemap.xml`** includes every page file in your repository. The index page gets priority `1.0`; other pages get `0.8`. All entries use `changefreq: weekly`.
+3. **Page `<head>` metadata** sets title and description from page frontmatter, falling back to `docs.json`. Open Graph and Twitter card tags use the same values plus an image from frontmatter, `socialPreview`, or a generated preview.
+
+These endpoints are served from your production URL, custom domain, or vanity path, the same origin readers use. [Local preview](/features/local-preview) does not generate `sitemap.xml` or `robots.txt`; use a [branch preview](/features/branch-preview) or production URL to verify them.
+
+### Site-wide blocking with `seo.noindex`
+
+Add `seo.noindex: true` in `docs.json` when the entire site should stay out of search results, for example, internal runbooks on a public repository, pre-release documentation, or a staging site you do not want indexed.
+
+```json
+{
+  "seo": {
+    "noindex": true
+  }
+}
+```
+
+This flag affects two layers:
+
+| Layer | Behavior when `seo.noindex` is `true` |
+| --- | --- |
+| **`robots.txt`** | `Disallow: /` for all user agents. The sitemap line is omitted. |
+| **Every page** | `<meta name="robots" content="noindex" />` in the document head |
+
+Crawlers that respect `robots.txt` or the `noindex` meta tag should stop indexing new content. Pages may remain in search results until engines re-crawl and drop them. Allow time after you change the setting.
+
+If you migrated from docs.page v1, the top-level `noindex` field maps to `seo.noindex`.
+
+### Per-page `noindex`
+
+You can also set `noindex: true` in a page's YAML frontmatter. That adds the `noindex` meta tag for that page only. It does not change `robots.txt` or remove the page from `sitemap.xml`.
+
+Use site-wide `seo.noindex` when nothing on the site should appear in search. Use per-page `noindex` when most pages should be indexed but a few (draft changelogs, legal stubs, or redirect helpers) should not.
+
+### Sitemap contents
+
+`sitemap.xml` is built from the file tree docs.page reads from GitHub: one URL per documentation page. It does not filter by sidebar visibility or `noindex` frontmatter, so a page listed in the sitemap may still carry a `noindex` meta tag if you set one.
+
+If your repository has an unusually large tree, the sitemap response may include an `x-docs-page-tree-truncated` header when the file list is truncated.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="docs.json" icon="file-code" href="/reference/docs-json">
+    Field reference for `seo.noindex` and other configuration keys.
+  </Card>
+  <Card title="HTTP endpoints" icon="globe" href="/reference/http-endpoints">
+    Lookup for `sitemap.xml`, `robots.txt`, and other published routes.
+  </Card>
+  <Card title="Page frontmatter" icon="file-lines" href="/reference/page-frontmatter">
+    Per-page `noindex` and other YAML fields.
+  </Card>
+  <Card title="SEO" icon="magnifying-glass" href="/customize/seo">
+    Configure metadata, sitemap, and robots.txt for better discovery.
+  </Card>
+</CardGroup>

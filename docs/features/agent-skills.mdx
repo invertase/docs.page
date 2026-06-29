@@ -1,0 +1,76 @@
+---
+title: Agent skills
+description: Share repo-specific agent workflows so MCP clients can discover and load your skill files alongside docs.
+---
+
+Your documentation tells agents *what* your product does. Agent skills tell them *how* to work in your repository: review checklists, doc-writing pipelines, release steps, and other repeatable workflows you encode as markdown.
+
+## Overview
+
+[Agent skills](https://cursor.com/docs/skills) are instruction files you commit to your repository. docs.page scans `.agents/skills/**` on the same Git ref as your hosted docs and exposes each `SKILL.md` as an MCP resource on your site's [MCP server](/features/mcp-server).
+
+There is no separate skills toggle. When MCP is enabled and your repo is public, skills appear automatically in the server's resource catalog alongside the `docs.json` schema resource.
+
+## How it works
+
+### Repository layout
+
+Each skill lives in its own folder under `.agents/skills/`. The entry point must be named `SKILL.md`:
+
+```text
+.agents/skills/
+  docs-write/
+    SKILL.md
+  release/
+    SKILL.md
+    templates.md
+```
+
+Nested folders are supported. A file at `.agents/skills/team/deploy/SKILL.md` registers as skill slug `team/deploy`.
+
+Only paths that match `.agents/skills/**/SKILL.md` are published. Supporting files in the same folder (such as `templates.md` or `style-lint.md`) stay in Git for authors and agents that read the repo directly; they are not registered as separate MCP resources.
+
+### MCP resource URIs
+
+When docs.page builds the MCP descriptor, each skill becomes a markdown resource with a stable URI:
+
+```text
+docs-page://skills/{slug}
+```
+
+For example, `.agents/skills/docs-write/SKILL.md` maps to `docs-page://skills/docs-write`. Slashes in nested paths are preserved and URL-encoded in the URI.
+
+Clients list resources through the MCP session, then fetch the skill body as `text/markdown`, the same file content committed on GitHub at the resolved ref.
+
+### Same endpoint as your docs
+
+Skills ride on the per-repository MCP endpoint. Production, branch previews, and custom domains use the same URL patterns as [MCP server](/features/mcp-server). Discovery runs when the server starts a session: docs.page reads the GitHub tree for the current ref, registers every matching skill, and serves file contents on demand.
+
+If MCP is disabled (`mcp.enabled: false`) or the repository is private, neither docs tools nor skill resources are available.
+
+## Enable it
+
+1. **Add skills to your repo.** Create one folder per skill under `.agents/skills/` and put instructions in `SKILL.md`. Use YAML frontmatter (`name`, `description`) when your client expects it. The body is plain markdown either way.
+
+2. **Push to a public GitHub repository.** Skills follow the same visibility rules as hosted docs. Commit and push to the branch your MCP client targets (usually the default branch for production URLs).
+
+3. **Connect an MCP client.** MCP is on by default. Open your live site, choose **Install with MCP** from the [page action menu](/features/public-github-hosting#page-actions) or **Install MCP** from **Cmd+K**, and add the endpoint to Cursor, Claude Code, or another HTTP MCP client. See [MCP server](/ai-agents/mcp-server) for endpoint URLs and client setup.
+
+After connecting, list MCP resources on your docs server. You should see one entry per `SKILL.md`, plus `docs-page-config-schema`. Fetch a skill resource to load its instructions into the agent context.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="MCP server" icon="plug" href="/features/mcp-server">
+    Per-repo endpoint, tools, and how to connect a client.
+  </Card>
+  <Card title="llms.txt" icon="file-lines" href="/features/llms-txt">
+    Text exports for LLM discovery without MCP.
+  </Card>
+  <Card title="Public GitHub hosting" icon="github" href="/features/public-github-hosting">
+    Why docs.page reads from public repositories at request time.
+  </Card>
+  <Card title="HTTP endpoints" icon="globe" href="/reference/http-endpoints">
+    URL patterns for MCP and other published routes.
+  </Card>
+</CardGroup>

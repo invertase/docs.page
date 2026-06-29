@@ -1,45 +1,99 @@
 ---
-title: Overview
-description: Instant Open Source docs with zero configuration.
+title: Introduction
+description: Understand how docs.page turns a public GitHub repository into agent-ready documentation and when it is the right fit.
 ---
 
-<Image
-  src="https://static.invertase.io/assets/docs.page/docs-page-logo-v2.png"
-  alt="docs.page"
-  height="100"
-/>
+## Overview
 
-docs.page is a free Open Source project, allowing you to create instant, fast, beautiful documentation with zero configuration.
+[docs.page](https://docs.page) is a **docs-as-code platform with no hosting setup**: documentation for **humans + agents**, served from any public GitHub branch. Push updates and the live site refreshes instantly. It is free and open-source.
 
-Documentation is an important aspect for many projects, however creating a custom documentation website
-for each project is time consuming. Many common solutions to problems have to be duplicated, along with
-dealing with overheads such as website maintenance & hosting.
+## Who it is for
 
-Solutions such as [Jekyll](https://jekyllrb.com/docs/github-pages/), [Docusaurus](https://docusaurus.io/),
-[docsify](https://docsify.js.org/#/) and many others are great projects, however still require custom setup for each project
-and regular maintenance.
+[docs.page](https://docs.page) is for teams who want professional, developer-focused documentation without the infrastructure tax. Docs live next to your code in the repository. Easy for humans and agents to author. Easy for humans and agents to consume.
 
-docs.page is designed to deliver instant documentation websites, with the content sourced directly from any public
-GitHub repository. Features include:
+It is a strong fit for:
 
-- [Configurable](/configuration): Add your own logo, theme, analytics, navigation and more with a config file.
-- [Previewing](/previews): View the documentation of any branch, pull request or specific commit,.
-- [GitHub Bot](/github-bot): Install our [GitHub bot](https://github.com/apps/docs-page) to automatically get a URL to pull request documentation previews.
-- [Components](/components/accordion): Powered by [MDX](https://github.com/mdx-js/mdx), use React components such as Tabs (useful for projects with multiple languages) directly in your docs.
-- [Search](/search): Easily add full search support powered by [DocSearch](https://docsearch.algolia.com/).
-- [Custom Domains](/custom-domains): Serve your documentation using your own domain.
+- **Open-source maintainers and SDK authors** who want docs that stay in sync with source code, without static site generation, deploy pipelines, or hosting to maintain.
+- **Product and content teams** who want [Mintlify](/comparisons/mintlify)-level polish without paying for a SaaS docs platform.
+- **AI-forward integrators** who need documentation optimized for human reading and LLM ingestion from day one.
 
-Other useful features include:
+## How hosting works
 
-- Global variable injection (for managing common variables across the project).
-- Displaying assets using GitHub.
-- Dark/Light mode.
-- Responsive.
-- Code block highlighting and content copying.
-- Page redirects.
-- Per-page metadata support via Frontmatter.
+[docs.page](https://docs.page) uses **Git publishing**: it fetches your repository content, caches rendered pages at the edge, and serves a complete documentation site from any branch, tag, or release. You do not run a local build or upload artifacts to a host. See [Public GitHub hosting](/features/public-github-hosting) for URL patterns, caching, and branch previews.
 
-## Should I use docs.page?
+### What goes in your repository
 
-docs.page is a simple way to generate a documentation website with zero effort. It generally works for documentation websites with a lot of Markdown based content.
-If you require features which are more specific to your own project a custom solution might work better.
+Every [docs.page](https://docs.page) site needs two things in a **public** GitHub repository:
+
+- **`docs.json`** at the repository root: site name, navigation, theme, and other configuration
+- **`docs/**/*.mdx`** or **`docs/**/*.md`**: your documentation pages as Markdown or MDX (with optional subdirectories)
+
+Push to GitHub and the site is live. There is no dashboard deploy step and no hosting account to configure.
+
+### Your live URL
+
+Documentation is served at:
+
+```text
+https://docs.page/{owner}/{repo}
+```
+
+For example, a repository at `https://github.com/acme/my-project` is available at `https://docs.page/acme/my-project`. Individual pages follow the path of their file under `docs/`; `docs/usage.md` or `docs/usage.mdx` becomes `/usage`.
+
+Use **branches & versions** to serve a branch, tag, or release at a distinct URL, for example `https://docs.page/acme/my-project~v2`. See [Branch preview](/features/branch-preview).
+
+<Info>
+  [docs.page](https://docs.page) only hosts **public** repositories. Private
+  repos are blocked before any content is served. Keep documentation in a public
+  repo, or in a public docs-only repository linked from your project.
+</Info>
+
+### What you do not need
+
+Because [docs.page](https://docs.page) handles rendering and hosting, you can skip the usual documentation infrastructure:
+
+- **No build pipelines:** no webpack, static site generator builds, or static export in CI
+- **No hosting configuration:** no storage buckets, CDNs, or DNS to set up per site
+- **No docs dashboard:** configuration is a file in Git, not a web UI
+
+You still use Git for versioning, branches, and pull requests, the same workflow you already use for code.
+
+## When [docs.page](https://docs.page) fits
+
+[docs.page](https://docs.page) works well when most of your documentation is Markdown-based, you want instant publishing from GitHub, and your content can live in a public repository.
+
+It is a strong default for open-source libraries, SDK docs sites, and product docs that teams are comfortable publishing publicly. If you need a heavily customized documentation experience (bespoke routing, proprietary auth gates, or a private-only docs site), a self-hosted static generator or custom app may be a better fit.
+
+For side-by-side comparisons with Docusaurus, Mintlify, GitHub Pages, and similar tools, see [Comparisons](/comparisons).
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Scaffold a site, push to GitHub, and open your live
+    [docs.page](https://docs.page) URL.
+  </Card>
+  <Card
+    title="Write"
+    icon="pen-to-square"
+    href="/authoring/write"
+  >
+    Structure pages, write clear prose, and add **markdown components** for
+    richer experiences than standard Markdown.
+  </Card>
+  <Card
+    title="Agents"
+    icon="robot"
+    href="/ai-agents/overview"
+  >
+    Bring your docs into the agentic age with MCP servers, llms.txt, and AI
+    chat.
+  </Card>
+  <Card
+    title="docs.json"
+    icon="book"
+    href="/reference/docs-json"
+  >
+    Look up every configuration field when you need exact syntax.
+  </Card>
+</CardGroup>

@@ -1,9 +1,23 @@
 ---
-title: Code Groups
-description: Display groups of code blocks with syntax highlighting.
+title: Code group
+description: Compare the same example across languages in a tabbed code block.
 ---
 
-Use the `<CodeGroup />` component to display multiple code blocks together, useful for showing variations of the "same" code in a different language.
+Use `<CodeGroup>` to show the same example in multiple languages or variants. Wrap fenced code blocks as children; each fence becomes a tab labeled with its language tag. Readers switch tabs to compare snippets without scrolling past duplicate blocks.
+
+Prefer **Code group** over [Tabs](/components/tabs) when every panel is a code fence. Use **Tabs** when panels mix prose, lists, and callouts.
+
+````mdx
+<CodeGroup title="Logging: Hello World">
+  ```javascript
+  console.log("Hello World");
+  ```
+
+  ```python
+  print("Hello World!")
+  ```
+</CodeGroup>
+````
 
 ## Example
 
@@ -13,38 +27,67 @@ Use the `<CodeGroup />` component to display multiple code blocks together, usef
   ```
 
   ```python
-  print('Hello World!')
+  print("Hello World!")
   ```
 
   ```dart
   void main() {
-    print('Hello World!');
+    print("Hello World!");
   }
   ```
 </CodeGroup>
 
-````jsx
+````mdx
 <CodeGroup title="Logging: Hello World">
   ```javascript
   console.log("Hello World");
   ```
 
   ```python
-  print('Hello World!')
+  print("Hello World!")
   ```
 
   ```dart
   void main() {
-    print('Hello World!');
+    print("Hello World!");
   }
   ```
 </CodeGroup>
 ````
 
-## Synchronizing languages
+## Properties
 
-In some scenarios, you may wish to synchronize the language selection across multiple code groups. You can do this by setting the `synchronize` prop on each `<CodeGroup />` component. For example,
-the following code groups will synchronize their language selection:
+<Property name="title" type="string" optional>
+  A short label shown in the group header, for example **Logging: Hello World** or **Install dependencies**.
+
+  Omit `title` to show only the language tabs and copy button.
+</Property>
+
+---
+
+<Property name="defaultLanguage" type="string" optional>
+  The language tab to show on first load. Must match a language tag on one of the child fences, for example `python` or `javascript`.
+
+  Defaults to the first fence in the group.
+</Property>
+
+---
+
+<Property name="synchronize" type="boolean" optional>
+  When `true`, language selection is shared across every `<CodeGroup>` on the page that also sets `synchronize`. Groups stay in sync when they define the same language tags, for example selecting **javascript** in one group selects **javascript** in the others.
+
+  Sync state is held by `CodeGroupProvider`, which wraps page content automatically. Unlike `<Tabs groupId="…">`, there is no separate group ID; synchronized code groups on a page share one language state.
+</Property>
+
+Only fenced code blocks inside `<CodeGroup>` become tabs. Other page content is ignored. The renderer passes parsed blocks to the component internally; you do not set a `blocks` property yourself.
+
+## Synchronization
+
+Code groups are independent by default. To keep language selection aligned across multiple groups, add `synchronize` to each `<CodeGroup>` that should follow the same choice.
+
+Use this when the same languages appear in more than one place, for example a hello-world snippet and a matching exit call in JavaScript and Dart.
+
+The example below uses two groups with `synchronize`. Selecting **javascript** in either group selects **javascript** in both.
 
 <CodeGroup title="Logging" synchronize>
   ```javascript
@@ -52,7 +95,7 @@ the following code groups will synchronize their language selection:
   ```
 
   ```dart
-  print('Hello World!');
+  print("Hello World!");
   ```
 </CodeGroup>
 
@@ -66,20 +109,47 @@ the following code groups will synchronize their language selection:
   ```
 </CodeGroup>
 
-## Props
+````mdx
+<CodeGroup title="Logging" synchronize>
+  ```javascript
+  console.log("Hello World");
+  ```
 
-<Property name="title" type="string" optional>
-  The title of the code block.
-</Property>
+  ```dart
+  print("Hello World!");
+  ```
+</CodeGroup>
 
----
+<CodeGroup title="Exiting an application" synchronize>
+  ```javascript
+  process.exit(0);
+  ```
 
-<Property name="defaultLanguage" type="string" optional>
-  The default language to display code blocks in. Defaults to the first language in the group.
-</Property>
+  ```dart
+  exit(0);
+  ```
+</CodeGroup>
+````
 
----
+If a synchronized group does not include the currently selected language, it falls back to `defaultLanguage`, then the first fence in that group.
 
-<Property name="synchronize" type="boolean" optional>
-  If `true`, synchronizes the language selection across multiple code groups with the same language defined.
-</Property>
+## Behavior
+
+| Condition | Result |
+| --- | --- |
+| No fenced code children | Renders nothing |
+| `defaultLanguage` not in the group | Falls back to the first fence |
+| `synchronize` omitted | Each group keeps its own language selection |
+| Selected language missing from a synchronized group | Falls back to `defaultLanguage`, then the first fence |
+
+Language tabs use the fence language tag as the label, for example `javascript`, `python`, or `bash`. See [Code blocks](/components/code-blocks) for supported tags and highlighting.
+
+The copy button in the header copies the **active** tab's source (the raw fence content, not the highlighted HTML).
+
+docs.page shows language tabs as buttons in the header. There is no dropdown mode; some other doc platforms expose a `dropdown` property for compact layouts, but that property is not supported here.
+
+## See also
+
+- [Code blocks](/components/code-blocks): single fences, titles, and annotations
+- [Tabs](/components/tabs): switchable panels for prose and mixed content
+- [Components overview](/components): when to use tabs, code groups, and accordions

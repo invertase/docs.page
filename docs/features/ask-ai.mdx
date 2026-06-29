@@ -1,0 +1,92 @@
+---
+title: Ask AI
+description: Give readers an in-docs chat panel that answers from your MDX. Enable it with the CLI and an agent block in docs.json.
+---
+
+Readers often land on one page with a question that spans several guides. Ask AI adds a chat panel to your live docs site so they can ask in plain language and get answers grounded in the MDX you committed to GitHub.
+
+<Info>
+  Ask AI is in **beta**. Behavior, providers, and rate limits may change. The panel is not available on branch previews or [local preview](/features/local-preview).
+</Info>
+
+## Overview
+
+Ask AI is a reader-facing **Agent** panel embedded in your docs site. When enabled, a sparkle icon appears in the site header. Readers open the panel, ask a question, and receive a streamed reply with links back to your pages.
+
+The agent does not answer from a static FAQ you maintain separately. It searches your repository's MDX files at request time (mounted in a sandbox under `/docs`) using bash tools such as `grep`, `find`, and `cat`. Answers stay tied to the content you ship in Git.
+
+Two pieces work together:
+
+1. **Stored credentials:** You provision an agent with `docs agent create`. The CLI encrypts your LLM provider API key locally, verifies GitHub admin access, and registers the agent with the docs.page API.
+2. **`agent` in `docs.json`:** You add an `agent.key` that matches the provisioned record. Optional fields customize placeholder text, starter questions, and rate limits.
+
+The panel appears only on **production** URLs for your repository's default branch, when `agent.key` matches the stored agent. Branch previews, commit URLs, and local preview do not load the panel.
+
+## How it works
+
+### In-docs chat panel
+
+On desktop, the panel opens as a resizable column beside the page content. On smaller viewports it opens as a bottom sheet. Readers toggle it from the header or with **Ctrl**+**I**.
+
+Each message streams from a tool-loop agent backed by your chosen LLM provider. The agent is instructed to search documentation with bash, refuse off-topic questions, and cite pages as markdown links to your site paths.
+
+Supported providers at create time: `openai`, `anthropic`, `google`, and `xai`. docs.page picks a fast default model per provider suited to search and tool use.
+
+### Session security and rate limits
+
+Before the panel loads, docs.page creates a short-lived agent session and sets HTTP-only cookies. Chat requests include a CSRF header derived from that session so only browsers that loaded your docs site can call the chat API.
+
+Usage is rate limited per client IP and per repository. Defaults are **200 requests per IP per hour** and **10,000 requests per repository per hour**. Override both under `agent.limits` in `docs.json`.
+
+### Customize the reader experience
+
+After the agent is enabled, tune the panel in `docs.json` without re-running create:
+
+- **`agent.placeholder`:** Text in the question input when the chat is empty
+- **`agent.questions`:** Starter prompts shown before the first message; clicking one sends it immediately
+
+If `agent.key` is missing or does not match the stored agent, the header control and panel do not appear.
+
+**Open in Claude** in the [page action menu](/features/public-github-hosting#page-actions) is separate. It opens Claude on the web with the current page URL. It does not use Ask AI credentials or search your full doc set.
+
+## Enable it
+
+1. **Provision the agent:** From any directory, run `docs agent create` with your repository and LLM provider. You need GitHub admin on the repo and a provider API key. The CLI encrypts the key before upload.
+
+   ```bash
+   npx @docs.page/cli agent create --repo org/repo --provider openai
+   ```
+
+   Omit flags in an interactive terminal to be prompted. On success, the CLI prints an `agent.key` value.
+
+2. **Add the `agent` block to `docs.json`:** Paste the key into your repository configuration and commit:
+
+   ```json
+   "agent": {
+     "key": "your-agent-key"
+   }
+   ```
+
+3. **Push to your default branch:** Merge or push so the live site at `https://docs.page/org/repo` loads the panel. Open the site, click **Agent** in the header, and send a test question.
+
+For delete, rotate keys, provider flags, and troubleshooting, see [Manage the AI agent](/features/cli#manage-the-ai-agent) on the CLI page and [`docs agent create`](/reference/cli#docs-agent-create) in the CLI.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="CLI" icon="terminal" href="/features/cli">
+    Install the CLI and run agent create, preview, and check workflows.
+  </Card>
+  <Card title="CLI" icon="book" href="/reference/cli">
+    Flags and errors for `docs agent create` and `docs agent delete`.
+  </Card>
+  <Card title="MCP server" icon="plug" href="/features/mcp-server">
+    Expose docs to external AI tools over MCP instead of an in-site chat panel.
+  </Card>
+  <Card title="Page actions" icon="copy" href="/features/public-github-hosting#page-actions">
+    **Open in Claude** and other header menu shortcuts on every page.
+  </Card>
+  <Card title="llms.txt" icon="file-lines" href="/features/llms-txt">
+    Publish llms.txt exports for LLM discovery without a chat UI.
+  </Card>
+</CardGroup>

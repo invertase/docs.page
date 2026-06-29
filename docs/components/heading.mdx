@@ -1,0 +1,101 @@
+---
+title: Heading
+description: Link to page sections and control what appears in the table of contents.
+---
+
+Use standard Markdown `#` syntax for most headings. Each level renders through the `Heading` component with a slugified `id` and a hover anchor link. Use the `<Heading>` component only when Markdown syntax is not practical.
+
+```md
+# Heading 1
+## Heading 2
+### Heading 3
+#### Heading 4
+##### Heading 5
+###### Heading 6
+```
+
+## Page title
+
+The visible page title comes from frontmatter `title`, not from a Markdown `#` heading in the body. Set `title` and `description` in frontmatter; do not duplicate the page name as an `h1` in the content.
+
+<Info>
+  When `showPageTitle` is enabled in frontmatter or site config, the page title renders as an `h1` above the body content.
+</Info>
+
+<Warning>
+  Do not repeat the frontmatter `title` as `# Page title` in the body. That creates a duplicate heading and can confuse the table of contents.
+</Warning>
+
+## Markdown headings
+
+Markdown headings from `#` through `######` are parsed from the page source and assigned slugified `id` values. Those IDs power in-page anchor links and the **On this page** table of contents.
+
+Slugification lowercases the heading text, removes non-alphanumeric characters, and replaces spaces with hyphens. Duplicate titles on the same page receive numeric suffixes (`-1`, `-2`, and so on). Headings inside fenced code blocks are ignored.
+
+Hover a heading to reveal the anchor link. Every Markdown heading level receives an anchor when rendered.
+
+## Table of contents
+
+The table of contents lists Markdown headings only. Manual `<Heading>` components are not extracted.
+
+By default, headings from `h2` through `h3` appear in the table of contents. The minimum depth is fixed at `h2`; the maximum depth follows `content.headerDepth` in `docs.json` (defaults to `3`).
+
+| Setting | Default | Effect |
+| --- | --- | --- |
+| Minimum depth | `2` (`h2`) | `h1` headings are excluded from the table of contents |
+| Maximum depth | `content.headerDepth` (`3`) | Deepest heading level included in the table of contents |
+
+```json
+{
+  "content": {
+    "headerDepth": 3
+  }
+}
+```
+
+Increase `headerDepth` to include deeper levels, for example `4` includes `h4` headings, `5` includes `h5`, and `6` includes `h6`.
+
+## Custom headings
+
+When Markdown syntax is unavailable, for example inside a component that does not parse Markdown, use `<Heading>` directly.
+
+```mdx
+<Heading type="h2" id="custom-section">Custom section</Heading>
+```
+
+Set `id` when you need a stable anchor link. Without `id`, the heading renders without a hover anchor. Manual headings are never added to the table of contents, even when `id` is set.
+
+## Properties
+
+<Property name="type" type="string" required>
+  The heading level to render. Must be one of `h1` through `h6`.
+
+  Controls typography and spacing. Match the semantic level of the content: use `h2` for major sections, `h3` for subsections, and so on.
+</Property>
+
+---
+
+<Property name="id" type="string" optional>
+  A stable anchor identifier for the heading. When set, the heading shows a hover anchor link pointing to `#id`.
+
+  Omit `id` when you do not need a linkable target. Manual headings with an `id` still do not appear in the table of contents.
+</Property>
+
+---
+
+Standard HTML heading attributes (such as `className`) are forwarded to the underlying element.
+
+## Behavior
+
+| Condition | Result |
+| --- | --- |
+| Markdown `#` … `######` heading | Slugified `id`, hover anchor link, included in table of contents when depth is in range |
+| `<Heading>` with `id` | Renders heading with hover anchor link; not included in table of contents |
+| `<Heading>` without `id` | Renders heading without hover anchor link; not included in table of contents |
+| Duplicate heading titles | Slugs receive numeric suffixes (`-1`, `-2`, …) |
+| Heading inside a code fence | Ignored for IDs and table of contents |
+
+## See also
+
+- [Components overview](/components): when to use headings with other layout components
+- [docs.json](/reference/docs-json): `content.headerDepth` and other content settings

@@ -1,62 +1,106 @@
 ---
-title: Tweets
-description: Embed Tweets in your documentation.
+title: Tweet
+description: Embed an X post in your docs with optional link previews and thread context.
 ---
 
-Use the `<Tweet />` component to embed tweets in your documentation, using the Tweet ID.
+Use `<Tweet>` to embed a post from X (formerly Twitter) in your documentation. Pass the numeric tweet ID from the post URL; the component loads Twitter's embed script and renders the official widget.
+
+```mdx
+<Tweet id="1513662173796605958" />
+```
+
+## Tweet ID
+
+Copy the numeric ID from the end of the post URL. For example, `https://x.com/docsdotpage/status/1513662173796605958` has ID `1513662173796605958`.
 
 ## Example
 
 <Tweet id="1513662173796605958" />
 
-```jsx
+````mdx
 <Tweet id="1513662173796605958" />
-```
+````
 
-### Cards
+## Cards
 
-To display tweet preview cards alongside the tweet, provide the `cards` prop.
+By default, link preview cards inside the tweet are hidden. Set `cards` to show them.
 
-```jsx
+```mdx
 <Tweet id="1513662173796605958" cards />
 ```
 
-<Tweet id="1513662173796605958" cards />
+## Conversation
 
-### Conversation
+By default, thread context is not shown. Set `conversation` to include replies in the embed.
 
-To display conversation information about the tweet, provide the `conversation` prop.
-
-```jsx
+```mdx
 <Tweet id="1513662173796605958" conversation />
 ```
 
-<Tweet id="1513662173796605958" conversation />
+## Cards and conversation
 
-### Cards & Conversation
+You can enable both options on the same embed.
 
-Both card and conversational data can be displayed simultaneously.
-
-```jsx
+```mdx
 <Tweet id="1513662173796605958" cards conversation />
 ```
 
-<Tweet id="1513662173796605958" cards conversation />
-
-## Props
+## Properties
 
 <Property name="id" type="string" required>
-  The ID of the tweet to display.
+  The numeric ID of the post to embed. This is the number at the end of the post URL, for example `1513662173796605958` from `https://x.com/docsdotpage/status/1513662173796605958`.
+
+  ```mdx
+  <Tweet id="1513662173796605958" />
+  ```
 </Property>
 
 ---
 
 <Property name="cards" type="boolean" optional>
-  Whether or not to display tweet preview cards. Defaults to `false`.
+  Controls whether link preview cards inside the tweet are shown.
+
+  - omitted or `false`: cards hidden (default)
+  - `cards` or `cards={true}`: cards visible
+
+  ```mdx
+  <Tweet id="1513662173796605958" cards />
+  ```
 </Property>
 
 ---
 
 <Property name="conversation" type="boolean" optional>
-  Whether or not to display conversation information. Defaults to `false`.
+  Controls whether thread replies are included in the embed.
+
+  - omitted or `false`: no thread context (default)
+  - `conversation` or `conversation={true}`: conversation shown
+
+  ```mdx
+  <Tweet id="1513662173796605958" conversation />
+  ```
 </Property>
+
+## Behavior
+
+| Condition | Result |
+| --- | --- |
+| `id` omitted or empty | Renders an empty `<div>` |
+| Embed script not yet loaded | Renders an empty `<div>` until `widgets.js` is ready |
+| Script loaded and `id` set | Creates the tweet widget inside a centered container |
+| Site theme is dark | Widget uses Twitter's dark theme |
+| Site theme is light | Widget uses Twitter's light theme |
+
+The component loads `https://platform.twitter.com/widgets.js` once per page. While the script is loading, or when `id` is missing, nothing visible is rendered; readers see a brief empty area until the embed appears.
+
+## Privacy
+
+Embeds are created with **Do Not Track** (`dnt: true`) enabled. Twitter receives less tracking data for embedded posts than it would with DNT disabled.
+
+<Warning>
+  Embedded tweets load content and scripts from X's servers. Readers who block third-party scripts or cookies may see an empty area instead of the tweet. Consider your audience and any privacy policies that apply when embedding social content.
+</Warning>
+
+## See also
+
+- [Components overview](/components): when to use embeds, callouts, and media components
