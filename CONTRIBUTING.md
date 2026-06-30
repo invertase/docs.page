@@ -10,8 +10,6 @@ Using a coding agent? Jump to [Contributing with an agent](#contributing-with-an
 - **[Issues](https://github.com/invertase/docs.page/issues/new/choose)** — bugs and feature requests. Use the [issue templates](.github/ISSUE_TEMPLATE/); one problem per issue.
 - **[Pull requests](https://github.com/invertase/docs.page/compare)** — code, docs, or any change to the repo. Use the [PR template](.github/pull_request_template.md).
 
-Chat with the community on [Discord](https://invertase.link/discord).
-
 ## Development
 
 ```bash
