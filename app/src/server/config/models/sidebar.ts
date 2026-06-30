@@ -1,9 +1,30 @@
 import { z } from "zod";
+import type { ConfigTab } from "@/lib/config-tab";
 
 const optionalString = z
   .string()
   .optional()
   .transform((value) => value || undefined);
+
+const optionalConfigTab = z
+  .union([z.string(), z.array(z.string())])
+  .optional()
+  .transform((value): ConfigTab | undefined => {
+    if (value === undefined) {
+      return undefined;
+    }
+
+    if (typeof value === "string") {
+      return value || undefined;
+    }
+
+    const tabs = value.map((tab) => tab.trim()).filter(Boolean);
+    if (tabs.length === 0) {
+      return undefined;
+    }
+
+    return tabs.length === 1 ? tabs[0] : tabs;
+  });
 
 const SidebarPageItemSchema = z.object({
   title: z.string().min(1),
@@ -17,7 +38,7 @@ const SidebarPageItemSchema = z.object({
 
 export type SidebarGroup = {
   group?: string;
-  tab?: string;
+  tab?: ConfigTab;
   href?: string;
   icon?: string;
   pages: (z.infer<typeof SidebarPageItemSchema> | SidebarGroup)[];
@@ -26,7 +47,7 @@ export type SidebarGroup = {
 const SidebarSchema: z.ZodType<SidebarGroup> = z.lazy(() =>
   z.object({
     group: optionalString,
-    tab: optionalString,
+    tab: optionalConfigTab,
     href: optionalString,
     icon: optionalString,
     pages: z.array(z.union([SidebarPageItemSchema, SidebarSchema])),

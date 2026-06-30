@@ -1,3 +1,4 @@
+import { matchesConfigTab } from "@/lib/config-tab";
 import type { SidebarGroup } from "@/server/config/models/sidebar";
 import { useActiveTab } from "./use-active-tab";
 import { useDocPageContext } from "./use-doc-page-context";
@@ -19,9 +20,7 @@ export function useSidebar(): SidebarGroup[] {
   }
 
   if (activeTab !== undefined) {
-    return sidebar.filter((group) => {
-      return group.tab === activeTab || !group.tab;
-    });
+    return sidebar.filter((group) => matchesConfigTab(group.tab, activeTab));
   }
 
   return sidebar;

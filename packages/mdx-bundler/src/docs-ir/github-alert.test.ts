@@ -118,9 +118,8 @@ describe("tryParseGithubAlert", () => {
       tryParseGithubAlert(parseBlockquote("> [!TIP]\n> Body"))?.componentName,
     ).toBe("Success");
     expect(
-      tryParseGithubAlert(
-        parseBlockquote("> [!IMPORTANT]\n> Body"),
-      )?.componentName,
+      tryParseGithubAlert(parseBlockquote("> [!IMPORTANT]\n> Body"))
+        ?.componentName,
     ).toBe("Warning");
     expect(
       tryParseGithubAlert(parseBlockquote("> [!WARNING]\n> Body"))
@@ -150,7 +149,9 @@ describe("tryParseGithubAlert", () => {
   });
 
   test("returns null for empty blockquotes", () => {
-    expect(tryParseGithubAlert({ type: "blockquote", children: [] })).toBeNull();
+    expect(
+      tryParseGithubAlert({ type: "blockquote", children: [] }),
+    ).toBeNull();
   });
 
   test("allows marker-only alerts with empty bodies", () => {

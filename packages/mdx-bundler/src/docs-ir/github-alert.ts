@@ -116,10 +116,7 @@ function stripAlertMarkerFromParagraph(
     return null;
   }
 
-  const markerPattern = new RegExp(
-    `^\\[!${alertType}\\](?:[ \\t]*\\n?)?`,
-    "i",
-  );
+  const markerPattern = new RegExp(`^\\[!${alertType}\\](?:[ \\t]*\\n?)?`, "i");
   const value = first.value ?? "";
   if (!markerPattern.test(value)) {
     return null;

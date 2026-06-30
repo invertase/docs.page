@@ -285,9 +285,7 @@ describe("mdxToDocIr", () => {
     const body = component?.children[0];
     expect(body?.kind).toBe("markdown");
     if (body?.kind === "markdown") {
-      expect(body.source).toBe(
-        "**Bold** and [link](/docs) inside the alert.",
-      );
+      expect(body.source).toBe("**Bold** and [link](/docs) inside the alert.");
     }
   });
 
@@ -329,9 +327,7 @@ describe("mdxToDocIr", () => {
   test("leaves regular blockquotes unchanged", async () => {
     const ir = await mdxToDocIr("> Example of a blockquote.");
 
-    expect(ir.children.some((child) => child.kind === "component")).toBe(
-      false,
-    );
+    expect(ir.children.some((child) => child.kind === "component")).toBe(false);
     const markdown = ir.children.find((child) => child.kind === "markdown");
     expect(markdown?.kind).toBe("markdown");
     if (markdown?.kind === "markdown") {

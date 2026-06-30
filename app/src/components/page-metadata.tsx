@@ -38,9 +38,7 @@ export function PageMetadata() {
       {showPageTitle && !!description && (
         <p className="text-lg text-muted-foreground">{String(description)}</p>
       )}
-      {showPageImage && !!image && (
-        <Image zoom={false} src={String(image)} />
-      )}
+      {showPageImage && !!image && <Image zoom={false} src={String(image)} />}
     </div>
   );
 }
