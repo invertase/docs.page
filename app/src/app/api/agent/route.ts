@@ -106,7 +106,7 @@ export async function DELETE(req: Request) {
 
     await store.deleteByRepo(repo);
 
-    getPostHogClient().capture({
+    getPostHogClient()?.capture({
       distinctId: repo,
       event: "agent:registration_remove",
       properties: {
@@ -194,7 +194,7 @@ export async function POST(req: Request) {
   });
 
   if (ipLimit.response) {
-    getPostHogClient().capture({
+    getPostHogClient()?.capture({
       distinctId: anonymizeIp(ip),
       event: "agent:request_limit",
       properties: {
@@ -215,7 +215,7 @@ export async function POST(req: Request) {
   });
 
   if (repoLimit.response) {
-    getPostHogClient().capture({
+    getPostHogClient()?.capture({
       distinctId: repoSlug,
       event: "agent:request_limit",
       properties: {
@@ -318,7 +318,7 @@ export async function POST(req: Request) {
     stopWhen: stepCountIs(20),
   });
 
-  getPostHogClient().capture({
+  getPostHogClient()?.capture({
     distinctId: anonymizeIp(ip),
     event: "agent:message_send",
     properties: {

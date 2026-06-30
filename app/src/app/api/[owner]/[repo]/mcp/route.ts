@@ -80,7 +80,7 @@ export async function GET(req: Request, context: RouteContext) {
     }
 
     const descriptor = await createMcpDescriptor(context);
-    getPostHogClient().capture({
+    getPostHogClient()?.capture({
       distinctId: `${route.owner}/${route.repository}`,
       event: "mcp:server_view",
       properties: {
@@ -114,7 +114,7 @@ export async function POST(req: Request, context: RouteContext) {
       return Response.json({ error: "Not found." }, { status: 404 });
     }
 
-    getPostHogClient().capture({
+    getPostHogClient()?.capture({
       distinctId: `${route.owner}/${route.repository}`,
       event: "mcp:tool_call",
       properties: {

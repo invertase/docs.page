@@ -72,7 +72,7 @@ export async function POST(req: Request) {
       encrypted: payload.encrypted,
     });
 
-    getPostHogClient().capture({
+    getPostHogClient()?.capture({
       distinctId: repo,
       event: "agent:registration_create",
       properties: {

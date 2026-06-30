@@ -73,7 +73,7 @@ export async function onPullRequestOpened(
     body: comment,
   });
 
-  getPostHogClient().capture({
+  getPostHogClient()?.capture({
     distinctId: repository.full_name.toLowerCase(),
     event: "github:preview_comment_create",
     properties: {
