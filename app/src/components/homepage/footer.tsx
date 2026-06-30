@@ -1,5 +1,6 @@
 import { RiArrowRightSLine } from "@remixicon/react";
 import Link from "next/link";
+import { getPrivacyPolicyUrl } from "@/lib/legal";
 import { Button } from "../ui/button";
 
 export function Footer() {
@@ -39,14 +40,23 @@ export function Footer() {
           </div>
         </div>
         <div className="flex items-center justify-between p-6">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 text-sm text-neutral-400">
             <a
               href="https://invertase.io"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-sm text-neutral-400 hover:text-foreground"
+              className="hover:text-foreground"
             >
               Built by Invertase
+            </a>
+            <span aria-hidden>·</span>
+            <a
+              href={getPrivacyPolicyUrl()}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-foreground"
+            >
+              Privacy
             </a>
           </div>
           <div>

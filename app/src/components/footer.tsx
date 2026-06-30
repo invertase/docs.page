@@ -1,4 +1,5 @@
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
+import { getPrivacyPolicyUrl } from "@/lib/legal";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 
@@ -73,6 +74,15 @@ export function Footer() {
           className="underline underline-offset-5 hover:text-foreground"
         >
           invertase.io
+        </a>
+        <span className="text-muted-foreground">·</span>
+        <a
+          href={getPrivacyPolicyUrl()}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="underline underline-offset-5 hover:text-foreground"
+        >
+          Privacy
         </a>
       </div>
       <div className="flex-1 flex items-center justify-end gap-0.5">
