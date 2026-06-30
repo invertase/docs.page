@@ -237,4 +237,160 @@ describe("mdxToDocIr", () => {
       );
     }
   });
+
+  test("converts GitHub NOTE alerts into Info components", async () => {
+    const ir = await mdxToDocIr("> [!NOTE]\n> Useful information.");
+
+    const component = ir.children.find((child) => child.kind === "component");
+    expect(component).toMatchObject({
+      kind: "component",
+      name: "Info",
+    });
+    if (component?.kind === "component") {
+      expect(component.children).toHaveLength(1);
+      const body = component.children[0];
+      expect(body?.kind).toBe("markdown");
+      if (body?.kind === "markdown") {
+        expect(body.source).toBe("Useful information.");
+      }
+    }
+  });
+
+  test("maps GitHub alert types to callout components", async () => {
+    const cases = [
+      { source: "> [!NOTE]\n> Body", name: "Info" },
+      { source: "> [!TIP]\n> Body", name: "Success" },
+      { source: "> [!IMPORTANT]\n> Body", name: "Warning" },
+      { source: "> [!WARNING]\n> Body", name: "Warning" },
+      { source: "> [!CAUTION]\n> Body", name: "Error" },
+    ] as const;
+
+    for (const { source, name } of cases) {
+      const ir = await mdxToDocIr(source);
+      const component = ir.children.find((child) => child.kind === "component");
+      expect(component).toMatchObject({ kind: "component", name });
+    }
+  });
+
+  test("preserves nested markdown inside GitHub alerts", async () => {
+    const ir = await mdxToDocIr(
+      "> [!WARNING]\n> **Bold** and [link](/docs) inside the alert.",
+    );
+
+    const component = ir.children.find(
+      (child): child is Extract<typeof child, { kind: "component" }> =>
+        child.kind === "component" && child.name === "Warning",
+    );
+    expect(component?.children).toHaveLength(1);
+    const body = component?.children[0];
+    expect(body?.kind).toBe("markdown");
+    if (body?.kind === "markdown") {
+      expect(body.source).toBe(
+        "**Bold** and [link](/docs) inside the alert.",
+      );
+    }
+  });
+
+  test("preserves lists and code blocks inside GitHub alerts", async () => {
+    const ir = await mdxToDocIr(`> [!TIP]
+> - first item
+> - second item
+
+> [!CAUTION]
+>
+> \`\`\`js
+> console.log("nested")
+> \`\`\``);
+
+    const tip = ir.children.find(
+      (child): child is Extract<typeof child, { kind: "component" }> =>
+        child.kind === "component" && child.name === "Success",
+    );
+    expect(tip?.children).toHaveLength(1);
+    const tipBody = tip?.children[0];
+    expect(tipBody?.kind).toBe("markdown");
+    if (tipBody?.kind === "markdown") {
+      expect(tipBody.source).toContain("- first item");
+      expect(tipBody.source).toContain("- second item");
+    }
+
+    const caution = ir.children.find(
+      (child): child is Extract<typeof child, { kind: "component" }> =>
+        child.kind === "component" && child.name === "Error",
+    );
+    expect(caution?.children).toHaveLength(1);
+    expect(caution?.children[0]?.kind).toBe("code");
+    if (caution?.children[0]?.kind === "code") {
+      expect(caution.children[0].value).toBe('console.log("nested")');
+      expect(caution.children[0].lang).toBe("js");
+    }
+  });
+
+  test("leaves regular blockquotes unchanged", async () => {
+    const ir = await mdxToDocIr("> Example of a blockquote.");
+
+    expect(ir.children.some((child) => child.kind === "component")).toBe(
+      false,
+    );
+    const markdown = ir.children.find((child) => child.kind === "markdown");
+    expect(markdown?.kind).toBe("markdown");
+    if (markdown?.kind === "markdown") {
+      expect(markdown.source).toBe("> Example of a blockquote.");
+    }
+  });
+
+  test("converts GitHub alerts nested inside list items", async () => {
+    const ir = await mdxToDocIr(`1. First step
+
+   > [!NOTE]
+   > Nested in a list item.
+
+2. Second step`);
+
+    const info = ir.children.find(
+      (child): child is Extract<typeof child, { kind: "component" }> =>
+        child.kind === "component" && child.name === "Info",
+    );
+    expect(info).toBeDefined();
+    const body = info?.children[0];
+    expect(body?.kind).toBe("markdown");
+    if (body?.kind === "markdown") {
+      expect(body.source).toBe("Nested in a list item.");
+    }
+
+    expect(
+      ir.children.some(
+        (child) =>
+          child.kind === "markdown" && child.source.includes("First step"),
+      ),
+    ).toBe(true);
+    expect(
+      ir.children.some(
+        (child) =>
+          child.kind === "markdown" && child.source.includes("Second step"),
+      ),
+    ).toBe(true);
+  });
+
+  test("converts GitHub alerts nested inside Step components", async () => {
+    const ir = await mdxToDocIr(`<Step title="Install">
+> [!IMPORTANT]
+> Run \`npm install\` before continuing.
+</Step>`);
+
+    const step = ir.children.find(
+      (child): child is Extract<typeof child, { kind: "component" }> =>
+        child.kind === "component" && child.name === "Step",
+    );
+    const warning = step?.children.find(
+      (child): child is Extract<typeof child, { kind: "component" }> =>
+        child.kind === "component" && child.name === "Warning",
+    );
+    expect(warning).toBeDefined();
+    const body = warning?.children[0];
+    expect(body?.kind).toBe("markdown");
+    if (body?.kind === "markdown") {
+      expect(body.source).toBe("Run `npm install` before continuing.");
+    }
+  });
 });

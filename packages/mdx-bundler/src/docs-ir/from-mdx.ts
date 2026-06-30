@@ -3,6 +3,7 @@ import remarkGfm from "remark-gfm";
 import remarkMdx from "remark-mdx";
 import remarkParse from "remark-parse";
 import { unified } from "unified";
+import { tryParseGithubAlert } from "./github-alert";
 import { sanitizeHtmlInIr } from "./sanitize-html";
 import type { DocIrNode, DocIrPropValue } from "./types";
 
@@ -236,6 +237,21 @@ function nodeToIr(node: MdastNode, source: string): DocIrNode[] {
         return childrenToIr(node.children ?? [], source);
       }
       return markdownLeafOrChildren(node, source);
+    case "blockquote": {
+      const alert = tryParseGithubAlert(node);
+      if (alert) {
+        return [
+          {
+            kind: "component",
+            name: alert.componentName,
+            props: {},
+            children: childrenToIr(alert.bodyNodes, source),
+          },
+        ];
+      }
+
+      return markdownLeafOrChildren(node, source);
+    }
     case "thematicBreak":
       return [{ kind: "thematicBreak" }];
     case "code":
