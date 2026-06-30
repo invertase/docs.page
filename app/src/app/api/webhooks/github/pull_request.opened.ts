@@ -1,4 +1,5 @@
 import type { EmitterWebhookEvent } from "@octokit/webhooks";
+import { hasDocsChanges } from "./docs-files";
 import { getOctokitForInstallation } from "./octokit";
 
 export async function onPullRequestOpened(
@@ -18,6 +19,27 @@ export async function onPullRequestOpened(
 
   // org/repo
   const name = repository.full_name.toLowerCase();
+
+  const owner = repository.owner.login;
+  const repo = repository.name;
+  const pull_number = pull_request.number;
+
+  // Only comment when the pull request actually touches documentation files.
+  // In a monorepo the bot would otherwise comment on every opened PR. Paginate
+  // so PRs with more than 100 changed files are handled correctly.
+  const files = await octokit.paginate(octokit.rest.pulls.listFiles, {
+    owner,
+    repo,
+    pull_number,
+    per_page: 100,
+  });
+
+  if (!hasDocsChanges(files.map((file) => file.filename))) {
+    console.log(
+      `No documentation changes in ${name}#${pull_number}, skipping comment.`,
+    );
+    return;
+  }
 
   const domain = await fetch(
     `https://custom-domain.invertase.workers.dev/?owner=${repository.owner.login}&repo=${repository.name}`,
@@ -44,9 +66,9 @@ export async function onPullRequestOpened(
   > *Documentation is deployed and generated using [docs.page](https://docs.page)*`;
 
   await octokit.rest.issues.createComment({
-    owner: repository.owner.login,
-    repo: repository.name,
-    issue_number: pull_request.number,
+    owner,
+    repo,
+    issue_number: pull_number,
     body: comment,
   });
 }
