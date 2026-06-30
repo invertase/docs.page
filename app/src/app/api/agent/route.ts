@@ -8,7 +8,7 @@ import {
   RateLimiterRes,
 } from "rate-limiter-flexible";
 import { z } from "zod";
-import { getPostHogClient } from "@/lib/posthog";
+import { anonymizeIp, getPostHogClient } from "@/lib/posthog";
 import { getRequestClientIp } from "@/lib/request-client-ip";
 import { decryptAgentPayload } from "@/server/agent/encryption";
 import { checkAdminAccess, parseRepo } from "@/server/agent/github-admin";
@@ -108,7 +108,7 @@ export async function DELETE(req: Request) {
 
     getPostHogClient().capture({
       distinctId: repo,
-      event: "agent:removed",
+      event: "agent:registration_remove",
       properties: {
         owner: repoParts.owner,
         repository: repoParts.repo,
@@ -195,8 +195,8 @@ export async function POST(req: Request) {
 
   if (ipLimit.response) {
     getPostHogClient().capture({
-      distinctId: ip,
-      event: "agent:rate_limited",
+      distinctId: anonymizeIp(ip),
+      event: "agent:request_limit",
       properties: {
         owner: session.owner,
         repository: session.repo,
@@ -217,7 +217,7 @@ export async function POST(req: Request) {
   if (repoLimit.response) {
     getPostHogClient().capture({
       distinctId: repoSlug,
-      event: "agent:rate_limited",
+      event: "agent:request_limit",
       properties: {
         owner: session.owner,
         repository: session.repo,
@@ -319,8 +319,8 @@ export async function POST(req: Request) {
   });
 
   getPostHogClient().capture({
-    distinctId: ip,
-    event: "agent:message_sent",
+    distinctId: anonymizeIp(ip),
+    event: "agent:message_send",
     properties: {
       owner: session.owner,
       repository: session.repo,

@@ -264,7 +264,7 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
 
     getPostHogClient().capture({
       distinctId: `${owner}/${repo}`,
-      event: "docs:page_error",
+      event: "docs:page_fail",
       properties: {
         owner,
         repository: repo,
@@ -318,7 +318,7 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
 
     getPostHogClient().capture({
       distinctId: `${route.owner}/${route.repository}`,
-      event: "agent:session_created",
+      event: "agent:session_create",
       properties: {
         owner: route.owner,
         repository: route.repository,
@@ -330,7 +330,7 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
 
   getPostHogClient().capture({
     distinctId: `${route.owner}/${route.repository}`,
-    event: "docs:page_viewed",
+    event: "docs:page_view",
     properties: {
       owner: route.owner,
       repository: route.repository,
