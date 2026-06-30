@@ -72,6 +72,13 @@ export function Footer() {
         >
           invertase.io
         </a>
+        <span className="text-muted-foreground">&middot;</span>
+        <a
+          href="https://use.docs.page/legal/privacy"
+          className="underline underline-offset-5 hover:text-foreground"
+        >
+          Privacy
+        </a>
       </div>
       <div className="flex-1 flex items-center justify-end gap-0.5">
         {sorted.map(([name, url]) => (

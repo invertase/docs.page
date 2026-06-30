@@ -48,6 +48,12 @@ export function Footer() {
             >
               Built by Invertase
             </a>
+            <a
+              href="https://use.docs.page/legal/privacy"
+              className="text-sm text-neutral-400 hover:text-foreground"
+            >
+              Privacy
+            </a>
           </div>
           <div>
             <div className="text-sm text-neutral-400">
