@@ -20,7 +20,6 @@ docs.json               Site navigation for this repo's docs
 skills/                 Agent skills (SKILL.md per skill)
 ```
 
-Legacy paths (`api/`, `website/`, `og/`) are not part of the current architecture.
 
 ## Commands
 
