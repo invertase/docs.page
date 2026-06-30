@@ -1,0 +1,67 @@
+name: Feature request
+description: Suggest an improvement to docs.page, the CLI, or the docs experience
+title: "[Feature]: "
+labels:
+  - enhancement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Describe the problem you want solved. For open-ended questions or roadmap chat, use [Discussions](https://github.com/invertase/docs.page/discussions) instead.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or use case
+      description: What problem does this solve? Who benefits (site owners, readers, maintainers)?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: How would you like this to work? Mockups, examples, or links to other docs sites are welcome.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Other approaches, workarounds, or tools you considered.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Hosted platform (docs.page)
+        - CLI (`@docs.page/cli`)
+        - `docs.json` / configuration
+        - Search / analytics
+        - Preview mode
+        - MCP / agent / AI features
+        - Product documentation / DX
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: impact
+    attributes:
+      label: How important is this to you?
+      options:
+        - Nice to have
+        - Would improve my workflow
+        - Blocking — I can't use docs.page the way I need
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I am willing to open a PR for this (with maintainer guidance)
+        - label: I can help test a prototype

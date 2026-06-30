@@ -27,22 +27,18 @@ export function PageMetadata() {
   const description = bundle.frontmatter.description;
   const image = bundle.frontmatter.image;
 
-  const showMeta = showPageTitle || showPageImage;
-
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-4">
         <div className="flex-1">
-          {showMeta && title && <Heading type="h1">{title}</Heading>}
+          {showPageTitle && title && <Heading type="h1">{title}</Heading>}
         </div>
         <ActionMenu />
       </div>
-      {showMeta && !!description && (
+      {showPageTitle && !!description && (
         <p className="text-lg text-muted-foreground">{String(description)}</p>
       )}
-      {showMeta && !!image && showPageImage && (
-        <Image zoom={false} src={String(image)} />
-      )}
+      {showPageImage && !!image && <Image zoom={false} src={String(image)} />}
     </div>
   );
 }

@@ -73,7 +73,7 @@ export function Preview() {
           {tab === "source" && client && <PreviewSource />}
         </div>
       </div>
-      <div className="py-12">
+      <div className="py-12 px-6 sm:px-8">
         <h2 className="text-center text-3xl font-light font-heading text-neutral-300">
           Trusted by more than 75,000{" "}
           <span className="text-primary">open-source</span> developers

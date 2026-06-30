@@ -5,7 +5,78 @@ description: Add callout boxes to your pages to display important information.
 
 Use one of the callout components to draw attention to important information on your page, such as a success, warning, information or error message.
 
-## Examples
+You can write callouts as MDX components (e.g. `<Info>`) or using [GitHub alert syntax](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#alerts) in blockquotes. Both render the same styled callout boxes.
+
+## GitHub alerts
+
+GitHub-style alerts use blockquote syntax with a type marker on the first line:
+
+```markdown
+> [!NOTE]
+> Useful information that users should know.
+```
+
+| GitHub alert | Callout |
+| --- | --- |
+| `[!NOTE]` | Info |
+| `[!TIP]` | Success |
+| `[!IMPORTANT]` | Warning |
+| `[!WARNING]` | Warning |
+| `[!CAUTION]` | Error |
+
+The alert body supports the same Markdown as callout components, including **bold text**, [links](/components/callouts), lists, and code blocks.
+
+### Note
+
+> [!NOTE]
+> Useful information that users should know, even when skimming content.
+
+```markdown
+> [!NOTE]
+> Useful information that users should know, even when skimming content.
+```
+
+### Tip
+
+> [!TIP]
+> Helpful advice for doing things better or more easily.
+
+```markdown
+> [!TIP]
+> Helpful advice for doing things better or more easily.
+```
+
+### Important
+
+> [!IMPORTANT]
+> Key information users need to know to achieve their goal.
+
+```markdown
+> [!IMPORTANT]
+> Key information users need to know to achieve their goal.
+```
+
+### Warning
+
+> [!WARNING]
+> Urgent info that needs immediate user attention to avoid problems.
+
+```markdown
+> [!WARNING]
+> Urgent info that needs immediate user attention to avoid problems.
+```
+
+### Caution
+
+> [!CAUTION]
+> Advises about risks or negative outcomes of certain actions.
+
+```markdown
+> [!CAUTION]
+> Advises about risks or negative outcomes of certain actions.
+```
+
+## MDX components
 
 ### Info Callout
 

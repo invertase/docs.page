@@ -106,7 +106,7 @@ Each tab typically consists of a `title` and a `href`, for example:
 ```
 
 It is possible to only display certain sidebar groups when a specific tab is active. Set the `tab` key in a top-level sidebar
-group to match with the `id` of your tab:
+group to match with the `id` of your tab. You can pass a string for a single tab, or an array of tab ids to show the group on multiple tabs:
 
 ```json title="docs.json"
 {
@@ -118,6 +118,16 @@ group to match with the `id` of your tab:
         {
           "title": "Installation",
           "href": "/"
+        }
+      ]
+    },
+    {
+      "group": "Contributing",
+      "tab": ["backend", "frontend"],
+      "pages": [
+        {
+          "title": "Guidelines",
+          "href": "/contributing"
         }
       ]
     }

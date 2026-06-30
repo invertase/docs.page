@@ -11,8 +11,11 @@
     "start": "node .next/standalone/server.js"
   },
   "dependencies": {
+    "@ai-sdk/anthropic": "^3.0.90",
     "@ai-sdk/google": "^3.0.64",
+    "@ai-sdk/openai": "^3.0.78",
     "@ai-sdk/react": "^3.0.170",
+    "@ai-sdk/xai": "^3.0.100",
     "@docs.page/mdx-bundler": "workspace:*",
     "@mjackson/headers": "^0.11.1",
     "@modelcontextprotocol/sdk": "^1.29.0",

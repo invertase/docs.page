@@ -487,8 +487,8 @@ If your IDE supports JSON Schemas, you can add a `$schema` property to your `doc
     
     ---
 
-    <Property name="tab" type="string">
-      If provided, only show this sidebar item when viewing a specific [tab](/navigation#tabs).
+    <Property name="tab" type="string | string[]">
+      If provided, only show this sidebar item when viewing a specific [tab](/navigation#tabs). Pass a string to restrict to one tab, or an array of tab ids to show the item on multiple tabs.
     </Property>
   </Accordion>
 </Property>

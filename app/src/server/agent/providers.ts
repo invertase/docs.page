@@ -1,4 +1,7 @@
+import { createAnthropic } from "@ai-sdk/anthropic";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { createOpenAI } from "@ai-sdk/openai";
+import { createXai } from "@ai-sdk/xai";
 
 export const AGENT_PROVIDERS = [
   "xai",
@@ -10,6 +13,18 @@ export const AGENT_PROVIDERS = [
 export type AgentProvider = (typeof AGENT_PROVIDERS)[number];
 
 const providers = {
+  xai: (apiKey: string) =>
+    createXai({
+      apiKey,
+    }),
+  openai: (apiKey: string) =>
+    createOpenAI({
+      apiKey,
+    }),
+  anthropic: (apiKey: string) =>
+    createAnthropic({
+      apiKey,
+    }),
   google: (apiKey: string) =>
     createGoogleGenerativeAI({
       apiKey,
