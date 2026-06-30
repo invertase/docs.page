@@ -48,17 +48,18 @@ export function Footer() {
             >
               Built by Invertase
             </a>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-neutral-400">
+              &copy; {new Date().getFullYear()} docs.page
+            </span>
+            <span className="text-sm text-neutral-400">&middot;</span>
             <a
               href="https://use.docs.page/legal/privacy"
               className="text-sm text-neutral-400 hover:text-foreground"
             >
               Privacy
             </a>
-          </div>
-          <div>
-            <div className="text-sm text-neutral-400">
-              &copy; {new Date().getFullYear()} Invertase
-            </div>
           </div>
         </div>
       </footer>
