@@ -6,7 +6,7 @@ let _client: PostHog | null = null;
 export function getPostHogClient(): PostHog {
   if (!_client) {
     _client = new PostHog(process.env.POSTHOG_KEY ?? "", {
-      host: process.env.POSTHOG_HOST ?? "https://eu.i.posthog.com",
+      host: "https://eu.i.posthog.com",
       disableGeoip: true,
       enableExceptionAutocapture: true,
     });
