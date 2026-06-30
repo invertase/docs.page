@@ -53,7 +53,7 @@ export async function onPullRequestOpened(
 
   getPostHogClient().capture({
     distinctId: repository.full_name.toLowerCase(),
-    event: "pr preview comment posted",
+    event: "github:pr_preview_comment_posted",
     properties: {
       owner: repository.owner.login,
       repository: repository.name,

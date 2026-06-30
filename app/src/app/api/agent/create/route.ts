@@ -74,7 +74,7 @@ export async function POST(req: Request) {
 
     getPostHogClient().capture({
       distinctId: repo,
-      event: "agent registered",
+      event: "agent:registered",
       properties: {
         owner: repoParts.owner,
         repository: repoParts.repo,

@@ -108,7 +108,7 @@ export async function DELETE(req: Request) {
 
     getPostHogClient().capture({
       distinctId: repo,
-      event: "agent removed",
+      event: "agent:removed",
       properties: {
         owner: repoParts.owner,
         repository: repoParts.repo,
@@ -196,7 +196,7 @@ export async function POST(req: Request) {
   if (ipLimit.response) {
     getPostHogClient().capture({
       distinctId: ip,
-      event: "agent rate limited",
+      event: "agent:rate_limited",
       properties: {
         owner: session.owner,
         repository: session.repo,
@@ -217,7 +217,7 @@ export async function POST(req: Request) {
   if (repoLimit.response) {
     getPostHogClient().capture({
       distinctId: repoSlug,
-      event: "agent rate limited",
+      event: "agent:rate_limited",
       properties: {
         owner: session.owner,
         repository: session.repo,
@@ -320,7 +320,7 @@ export async function POST(req: Request) {
 
   getPostHogClient().capture({
     distinctId: ip,
-    event: "agent message sent",
+    event: "agent:message_sent",
     properties: {
       owner: session.owner,
       repository: session.repo,

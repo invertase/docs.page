@@ -47,7 +47,7 @@ export async function GET(req: Request) {
 
     getPostHogClient().capture({
       distinctId: `${input.data.owner}/${input.data.repository}`,
-      event: "docs bundle loaded",
+      event: "docs:bundle_loaded",
       properties: {
         owner: input.data.owner,
         repository: input.data.repository,
@@ -74,7 +74,7 @@ export async function GET(req: Request) {
       logBundlerError(error);
       getPostHogClient().capture({
         distinctId: `${input.data.owner}/${input.data.repository}`,
-        event: "docs bundle failed",
+        event: "docs:bundle_failed",
         properties: {
           owner: input.data.owner,
           repository: input.data.repository,

@@ -82,7 +82,7 @@ export async function GET(req: Request, context: RouteContext) {
     const descriptor = await createMcpDescriptor(context);
     getPostHogClient().capture({
       distinctId: `${route.owner}/${route.repository}`,
-      event: "mcp server accessed",
+      event: "mcp:accessed",
       properties: {
         owner: route.owner,
         repository: route.repository,
@@ -116,7 +116,7 @@ export async function POST(req: Request, context: RouteContext) {
 
     getPostHogClient().capture({
       distinctId: `${route.owner}/${route.repository}`,
-      event: "mcp tool called",
+      event: "mcp:tool_called",
       properties: {
         owner: route.owner,
         repository: route.repository,
