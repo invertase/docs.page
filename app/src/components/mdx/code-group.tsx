@@ -141,30 +141,39 @@ export function CodeGroup({
   return (
     <figure className="not-prose overflow-hidden rounded-lg border bg-card text-card-foreground">
       <figcaption className="flex h-9 items-center justify-between gap-3 px-4 font-mono text-muted-foreground text-xs">
-        <div className="flex min-w-0 items-center gap-3 truncate">
-          {labels.map((label) => (
-            <button
-              key={label}
-              type="button"
-              className={cn(
-                "font-mono text-xs transition-colors",
-                label === active
-                  ? "text-foreground"
-                  : "text-muted-foreground hover:text-foreground",
-              )}
-              onClick={() => selectLabel(label)}
-            >
-              {label}
-            </button>
-          ))}
-          {title ? (
-            <>
-              <Separator orientation="vertical" />
-              <span className="truncate font-medium">{title}</span>
-            </>
-          ) : null}
+        <div className="min-w-0 flex-1 overflow-x-auto no-scrollbar">
+          <div className="flex w-max items-center gap-3">
+            {labels.map((label) => (
+              <button
+                key={label}
+                type="button"
+                className={cn(
+                  "shrink-0 whitespace-nowrap font-mono text-xs transition-colors",
+                  label === active
+                    ? "text-foreground"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+                onClick={() => selectLabel(label)}
+              >
+                {label}
+              </button>
+            ))}
+            {title ? (
+              <>
+                <Separator orientation="vertical" />
+                <span className="shrink-0 whitespace-nowrap font-medium">
+                  {title}
+                </span>
+              </>
+            ) : null}
+          </div>
         </div>
-        <Button variant="ghost" size="icon-sm" onClick={onCopy}>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          className="shrink-0"
+          onClick={onCopy}
+        >
           {copied ? <RiCheckLine /> : <RiFileCopyLine />}
         </Button>
       </figcaption>
