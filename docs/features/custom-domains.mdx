@@ -15,12 +15,6 @@ Compare with [Vanity subdomains](/features/vanity-subdomains), which shorten pat
 
 ## How it works
 
-### Request routing
-
-Incoming requests on a configured custom domain pass through an edge **custom-domain worker** before they reach the docs.page app. The worker resolves the request hostname to a GitHub `owner` and `repository`, then forwards the request with an `x-docs-page-custom-domain` header.
-
-Inside the app, that header selects **custom-domain request mode**. Routing, canonical URLs, sitemaps, redirects, and utility endpoints all use shorter public paths than the default docs.page URL shape.
-
 ### Public URL shape
 
 On the default host, production docs live under `/{owner}/{repo}`:
@@ -51,8 +45,6 @@ Per-repo utility routes follow the same pattern: `/search.json`, `/sitemap.xml`,
 The app maintains hostname-to-repository mappings through a platform-managed registry. docs.page looks up the mapping when rendering canonical URLs and when routing incoming requests on your hostname.
 
 When a domain is registered for your repository, production **canonical URLs**, sitemap links, and internal link generation point readers at `https://{your-domain}` instead of `https://docs.page/{owner}/{repo}`.
-
-When a request arrives on your custom domain, the edge worker performs the reverse lookup (hostname to owner and repository) before the app bundles the page.
 
 <Info>
   Custom domain mappings are managed outside your repository. You do not set the hostname in `docs.json`; DNS and the platform registry together connect your domain to a hosted repo.
