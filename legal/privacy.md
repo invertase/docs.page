@@ -56,7 +56,7 @@ Platform analytics may include:
 | Product features | MCP access, agent panel sessions, GitHub App preview comments |
 | Abuse prevention | Rate-limit events (see Section 3.2) |
 
-PostHog receives technical request metadata such as **user agent** and **IP-derived network information** as part of normal HTTP requests. We do not use platform analytics to sell your data or for cross-site advertising.
+For platform analytics, we do not send your IP address to PostHog. Where we need to distinguish requests (for example, to measure rate-limiting), your IP address is irreversibly hashed before it is used as an identifier, and PostHog’s IP-based geolocation is disabled — so PostHog does not receive your raw IP address or infer your location. Events are recorded without building a person profile. We do not use platform analytics to sell your data or for cross-site advertising.
 
 ### 3.2 Ask AI and agent features
 
@@ -117,7 +117,7 @@ Where the GDPR or similar laws apply, we rely on:
 | Processing | Legal basis |
 | --- | --- |
 | Hosting and delivering documentation you request | **Performance of a service** / steps at your request |
-| Platform analytics and product improvement | **Legitimate interests** (understanding use of an free hosted platform, keeping it reliable), balanced against your rights |
+| Platform analytics and product improvement | **Legitimate interests** (understanding use of a free hosted platform, keeping it reliable), balanced against your rights |
 | Security, rate limiting, and fraud prevention | **Legitimate interests** / **legal obligation** |
 | Ask AI session cookies | **Legitimate interests** / **performance of a service** (strictly necessary for the feature you use) |
 | Responding to privacy requests | **Legal obligation** / **legitimate interests** |
@@ -182,7 +182,7 @@ The following categories of providers process data on our behalf. Specific vendo
 - **Source control** — GitHub (public API and GitHub App)
 - **AI inference** — whichever provider a publisher configures for Ask AI (not used for all sites)
 
-<!-- LEGAL REVIEW: Insert registered entity name, address, and complete subprocessor list before publication. -->
+docs.page is operated by **Invertase Limited**, registered at Banks Sheridan, Datum House, Electra Way, Crewe, Cheshire, England, CW1 6ZF.
 
 ---
 
@@ -198,12 +198,12 @@ We keep information only as long as necessary:
 
 | Data type | Retention |
 | --- | --- |
-| Platform analytics events | Per PostHog retention settings (typically months, not years) |
+| Platform analytics events (PostHog) | Retained for 12 months, after which it is deleted or aggregated |
+| Ask AI chat messages | Routed to the AI provider configured by the publisher; not retained by Invertase beyond what is needed to handle the request |
+| Ask AI rate-limiting identifiers (hashed) | Short-lived; not retained beyond the applicable rate-limit window |
 | Ask AI session data | Short-lived; session cookies expire within about an hour |
 | Encrypted publisher API keys | Until the publisher removes the agent or deletes the repository configuration |
-| Security and application logs | Limited operational retention |
-
-<!-- LEGAL REVIEW: Confirm exact retention periods with Ben / infra. -->
+| Security and infrastructure logs | Retained for up to 90 days |
 
 ---
 
@@ -219,8 +219,6 @@ Depending on where you live, you may have the right to:
 - **complain** to your local data protection authority.
 
 To exercise these rights, contact us via [GitHub Discussions](https://github.com/invertase/docs.page/discussions) on the docs.page repository, or email [products@invertase.io](mailto:products@invertase.io). We may need to verify your request. If your question relates to a specific documentation site’s optional analytics or content, we may direct you to that site’s publisher.
-
-<!-- LEGAL REVIEW: Confirm whether a DPO applies. -->
 
 ---
 
@@ -238,7 +236,8 @@ We may update this Privacy Policy from time to time. We will post the revised ve
 
 ## 14. Contact
 
-**Invertase**  
+**Invertase Limited**  
+Banks Sheridan, Datum House, Electra Way, Crewe, Cheshire, England, CW1 6ZF  
 Web: [invertase.io](https://invertase.io)
 
 For privacy questions about docs.page, open a [GitHub Discussion](https://github.com/invertase/docs.page/discussions) or email [products@invertase.io](mailto:products@invertase.io).
@@ -253,7 +252,3 @@ If you publish documentation on docs.page:
 2. **Platform analytics** — Invertase collects aggregated server-side usage data for all hosted sites (see Section 3.1).
 3. **Your analytics** — If you add GA, GTM, or Plausible in `docs.json`, you are responsible for compliance (notice, consent if required, and your processor agreements).
 4. **Ask AI** — If you enable the agent, you choose the AI provider and API key; you are responsible for informing your users and complying with applicable AI and data-protection rules.
-
----
-
-*This document is a draft for internal and legal review. Do not treat it as final legal advice until reviewed by counsel.*
