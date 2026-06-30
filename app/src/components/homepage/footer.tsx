@@ -60,6 +60,13 @@ export function Footer() {
             >
               Privacy
             </a>
+            <span className="text-sm text-neutral-400">&middot;</span>
+            <a
+              href="https://use.docs.page/legal/terms"
+              className="text-sm text-neutral-400 hover:text-foreground"
+            >
+              Terms
+            </a>
           </div>
         </div>
       </footer>
