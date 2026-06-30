@@ -21,6 +21,7 @@ export type { Sidebar } from "./models/sidebar";
 
 export const ConfigSchema = z
   .object({
+    $schema: z.string().url().optional().catch(undefined),
     name: z.string().min(1).optional().catch(undefined),
     description: z.string().min(1).optional().catch(undefined),
     socialPreview: z
@@ -46,11 +47,12 @@ export const ConfigSchema = z
     sidebar,
   })
   .transform((config) => {
+    const { $schema: _, ...rest } = config;
     return {
-      ...config,
-      locales: Array.isArray(config.sidebar)
+      ...rest,
+      locales: Array.isArray(rest.sidebar)
         ? []
-        : Object.keys(config.sidebar).filter((key) => key !== "default"),
+        : Object.keys(rest.sidebar).filter((key) => key !== "default"),
     };
   });
 
