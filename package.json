@@ -3,8 +3,7 @@
   "scripts": {
     "dev": "cd app && bun dev",
     "check": "bunx @biomejs/biome check --write .",
-    "test": "bun test --coverage",
-    "test:mdx": "bun ./test/run-all.ts"
+    "test": "bun test --coverage"
   },
   "dependencies": {
     "typescript": "^6.0.3"
