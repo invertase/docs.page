@@ -1,0 +1,106 @@
+name: Bug report
+description: Something is broken on docs.page, in the CLI, or in local preview
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Search [existing issues](https://github.com/invertase/docs.page/issues?q=is%3Aissue+is%3Aopen) first.
+
+        **Not sure where to start?** Use [Discussions](https://github.com/invertase/docs.page/discussions) for questions and ideas.
+
+        If this is about **your own published docs site**, include the docs.page URL and the GitHub repo below.
+
+  - type: dropdown
+    id: surface
+    attributes:
+      label: Where does this happen?
+      options:
+        - Hosted docs site (a URL on docs.page)
+        - CLI local preview (`docs.page preview`)
+        - Both hosted and preview
+        - Not sure
+    validations:
+      required: true
+
+  - type: input
+    id: docs_url
+    attributes:
+      label: docs.page URL
+      description: The page where you see the problem, if applicable.
+      placeholder: https://invertase.docs.page/configuration
+
+  - type: input
+    id: repo
+    attributes:
+      label: GitHub repository
+      description: The repo whose docs you are viewing, if applicable.
+      placeholder: invertase/docs.page
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what actually happened.
+      placeholder: |
+        When I …
+        I expected …
+        Instead …
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps, commands, or URLs. For CLI issues, include the exact command.
+      placeholder: |
+        1. Run `docs.page preview`
+        2. Open http://localhost:…/page
+        3. See …
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Rendering / navigation / sidebar
+        - Search
+        - Preview mode (hosted PR/branch previews)
+        - CLI (`@docs.page/cli`)
+        - `docs.json` / configuration
+        - MCP / agent features
+        - Product docs (use.docs.page content)
+        - Other
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: CLI version or browser
+      description: e.g. `@docs.page/cli 2.0.0-next.1`, Chrome 124, Safari 17
+      placeholder: "@docs.page/cli …"
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Console errors, CLI output, or stack traces.
+      render: shell
+
+  - type: upload
+    id: screenshots
+    attributes:
+      label: Screenshots or recordings
+      description: If applicable, upload images to help explain the problem.
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context
+      description: Preview URL, commit SHA, or anything else that helps reproduce the issue.

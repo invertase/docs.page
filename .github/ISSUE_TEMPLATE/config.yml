@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions, ideas & roadmap
+    url: https://github.com/invertase/docs.page/discussions
+    about: General questions, feedback, and roadmap — start here when you're not sure
+  - name: Configuration help
+    url: https://use.docs.page/configuration
+    about: docs.json options, navigation, themes — start here for setup questions
+  - name: Discord
+    url: https://invertase.link/discord
+    about: Chat with the community
