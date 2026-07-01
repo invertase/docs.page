@@ -1,113 +1,164 @@
 ---
 title: Tabs
-description: Learn how to display content within different tabs
+description: Organize related content into switchable panels readers can flip between.
 ---
 
-Use the `<Tabs />` component to display content within different tabs.
+Use `<Tabs>` to organize content into switchable panels. Add any number of `<TabItem>` children and include other content (code blocks, callouts, or lists) inside each panel.
+
+Each `<TabItem>` needs a `label` (what readers see) and a `value` (a stable ID for defaults, sync, and persistence). Keep `value` fixed even if you rename the label.
+
+```mdx
+<Tabs>
+  <TabItem label="First" value="first">Content here</TabItem>
+</Tabs>
+```
 
 ## Example
 
 <Tabs>
-  <TabItem label="First Tab" value="first">👋 This is the content for the first tab.</TabItem>
-  <TabItem label="Second Tab" value="second">...and this is the content for the second tab!</TabItem>
+  <TabItem label="First tab" value="first">
+    Welcome to the content inside the first tab.
+
+    You can nest other components inside tabs. For example, a code block:
+
+    ```js
+    export function greet(name) {
+      return `Hello, ${name}!`;
+    }
+    ```
+  </TabItem>
+  <TabItem label="Second tab" value="second">
+    Panels can contain lists too:
+
+    - Install dependencies
+    - Configure your project
+    - Deploy
+  </TabItem>
+  <TabItem label="Third tab" value="third">
+    <Info>
+      Callouts and other components work inside tabs as well.
+    </Info>
+  </TabItem>
 </Tabs>
 
-To display tabs, provide the `<Tabs>` component with child `<TabItem />` components:
-
-```jsx
+````mdx
 <Tabs>
-  <TabItem label="First Tab" value="first">👋 This is the content for the first tab.</TabItem>
-  <TabItem label="Second Tab" value="second">...and this is the content for the second tab!</TabItem>
-</Tabs>
-```
+  <TabItem label="First tab" value="first">
+    Welcome to the content inside the first tab.
 
-## `Tabs` Props
+    You can nest other components inside tabs. For example, a code block:
+
+    ```js
+    export function greet(name) {
+      return `Hello, ${name}!`;
+    }
+    ```
+  </TabItem>
+  <TabItem label="Second tab" value="second">
+    Panels can contain lists too:
+
+    - Install dependencies
+    - Configure your project
+    - Deploy
+  </TabItem>
+  <TabItem label="Third tab" value="third">
+    <Info>
+      Callouts and other components work inside tabs as well.
+    </Info>
+  </TabItem>
+</Tabs>
+````
+
+## Properties
+
+### `Tabs`
 
 <Property name="defaultValue" type="string" optional>
-  The default tab to display. Needs to match a `TabItem`'s `value` prop.
-  
+  The tab to show on first load. Must match a `TabItem` `value`.
+
   Defaults to the first tab.
 </Property>
 
-## `TabItem` Props
+---
+
+<Property name="groupId" type="string" optional>
+  A shared identifier for synchronized tab groups. Tabs with the same `groupId` stay in sync by matching `value` values across groups.
+
+  When set, the selected tab is stored in local storage and restored on reload. Preview mode uses the key `preview:tabs:{groupId}`; published docs use `docs.page:tabs:{owner}/{repository}:{groupId}`.
+</Property>
+
+### `TabItem`
 
 <Property name="label" type="string" required>
-  The label to display for the tab.
+  The text shown on the tab trigger. Use short, scannable labels such as **JavaScript** or **CLI**.
 </Property>
 
 ---
 
 <Property name="value" type="string" required>
-  The value of the tab. Use this to identify the tab for the `defaultValue` property.
+  A stable identifier for the tab within its group. Used by `defaultValue` and by `groupId` synchronization across tab groups.
+
+  Choose a `value` that won't change when you edit the label, for example `label="JavaScript"` with `value="js"`.
 </Property>
 
-## Synchronizing Tabs
+## Synchronization
 
-To synchronize the tabs across documentation, provide a unique `groupId` prop. Any tabs
-displayed across the documentation with this `groupId` will be synchronized. This state
-also persists across page reloads.
+Tab groups are independent by default. To keep multiple groups in sync, set the same `groupId` on each `<Tabs>` and use the same `value` on corresponding `<TabItem>` children.
 
-This is useful if you display content within tabs in multiple places with the same headings
-(e.g. examples of code snippets in different languages). If the user chooses a language, they
-don't have to keep selecting it everywhere.
+Use this when the same options appear in more than one place, for example language-specific install steps and matching API examples.
 
-```jsx
-<Tabs
-  groupId="language"
->
-```
-
-### Example
-
-The below examples shows how to perform a network request to our API.
-
-First, import the package:
+The example below uses two groups that share `groupId="language"`. Selecting **JavaScript** in either group selects **JavaScript** in both.
 
 <Tabs groupId="language">
   <TabItem label="JavaScript" value="js">
-    Import the `axios` package:
-
-    ```bash
-    npm i --save axios
-    ```
-
-    Now import it in your code:
-
     ```js
     import axios from 'axios';
     ```
-
   </TabItem>
   <TabItem label="Dart" value="dart">
-    Add the `dio` package:
-
-    ```bash
-    flutter pub add dio
-    ```
-
-    Now import it in your code:
-
     ```dart
     import 'package:dio/dio.dart';
     ```
-
   </TabItem>
 </Tabs>
-
-Next, perform a network request to 'https://example.com':
 
 <Tabs groupId="language">
   <TabItem label="JavaScript" value="js">
     ```js
     const response = await axios.get('https://example.com');
-    console.log(response.data);
     ```
   </TabItem>
   <TabItem label="Dart" value="dart">
     ```dart
-    var dio = Dio();
-    final response = await dio.get('https://example.com');
-    print(response.data);
+    final response = await Dio().get('https://example.com');
     ```
   </TabItem>
 </Tabs>
+
+````mdx
+<Tabs groupId="language">
+  <TabItem label="JavaScript" value="js">...</TabItem>
+  <TabItem label="Dart" value="dart">...</TabItem>
+</Tabs>
+
+<Tabs groupId="language">
+  <TabItem label="JavaScript" value="js">...</TabItem>
+  <TabItem label="Dart" value="dart">...</TabItem>
+</Tabs>
+````
+
+## Behavior
+
+| Condition | Result |
+| --- | --- |
+| No valid `<TabItem>` children | Renders nothing |
+| Selected `value` is not in the current group | Falls back to `defaultValue`, then the first tab |
+| `defaultValue` does not match any `value` | Falls back to the first tab |
+| `groupId` omitted | Tab groups on the page operate independently |
+| `groupId` set | Selection syncs across groups and persists in local storage on reload |
+
+## See also
+
+- [Code group](/components/code-group): tabbed code blocks for language switching
+- [Accordion](/components/accordion): collapsible sections for optional detail
+- [Components overview](/components): when to use tabs, code groups, and accordions

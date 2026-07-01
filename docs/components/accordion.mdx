@@ -1,58 +1,151 @@
 ---
 title: Accordion
-description: Display an accordion component with collapsible content panels.
+description: Hide optional detail behind expandable sections, ideal for FAQs and progressive disclosure.
 ---
 
-Use the `<Accordion />` component to collapsible content, useful for information which might not
-be relevant to all users.
+Use `<Accordion>` to hide optional content behind a clickable header. Accordions suit progressive disclosure (FAQs, troubleshooting notes, or detail that not every reader needs on first load).
+
+Each accordion needs a `title` (the clickable header). Put any content (code blocks, callouts, or lists) inside the panel.
+
+```mdx
+<Accordion title="Click to expand">Content here</Accordion>
+```
 
 ## Example
 
-<Accordion title="Click me to expand the accordion">This is collapsible content!</Accordion>
+<Accordion title="Click to expand the accordion">
+  This is collapsible content.
 
-```jsx
-<Accordion title="Click me to expand the accordion">This is collapsible content!</Accordion>
-```
+  You can nest other components inside an accordion. For example, a code block:
 
-## Props
+  ```js
+  export function greet(name) {
+    return `Hello, ${name}!`;
+  }
+  ```
 
-<Property name="title" type="string" optional>
-  The title of the accordion.
+  <Info>
+    Callouts and other components work inside accordions as well.
+  </Info>
+</Accordion>
+
+````mdx
+<Accordion title="Click to expand the accordion">
+  This is collapsible content.
+
+  You can nest other components inside an accordion. For example, a code block:
+
+  ```js
+  export function greet(name) {
+    return `Hello, ${name}!`;
+  }
+  ```
+
+  <Info>
+    Callouts and other components work inside accordions as well.
+  </Info>
+</Accordion>
+````
+
+## Properties
+
+### `Accordion`
+
+<Property name="title" type="string" required>
+  The text shown on the panel trigger. Use short, scannable titles such as **Installation** or **Troubleshooting**.
+
+  Without a `title`, the accordion renders nothing.
 </Property>
 
 ---
 
 <Property name="defaultOpen" type="boolean" optional>
-  Whether or not the accordion should be open by default. Defaults to `false`.
+  Whether the panel starts expanded on first load.
+
+  Defaults to `false`.
 </Property>
 
----
+### `AccordionGroup`
 
-<Property name="icon" type="string" optional>
-  The icon to display next to the accordion title.
+<Property name="type" type="string" optional>
+  Controls how many panels in the group can be open at the same time.
+
+  - `"multiple"` (default): readers can expand more than one panel.
+  - `"single"`: only one panel stays open; opening another closes the rest.
+
+  Defaults to `"multiple"`.
 </Property>
 
-## Accordion Groups
+## Accordion groups
 
-To group accordions into a single display unit, use the `<AccordionGroup>` component, with each
-`<Accordion>` component as a child:
+Wrap related accordions in `<AccordionGroup>` so they share one bordered container. Each child must be an `<Accordion>`; other elements are ignored.
+
+Set `defaultOpen` on individual items to choose which panels start expanded. In a `type="single"` group, only the first item with `defaultOpen` opens on load.
 
 <AccordionGroup>
   <Accordion defaultOpen title="Open by default">
-    This is collapsible content!
+    This panel starts expanded. Readers can collapse it like any other accordion.
   </Accordion>
-  <Accordion title="Click me to expand the accordion">
-    This is collapsible content!
+  <Accordion title="Click to expand">
+    Grouped accordions stack in a single panel. Add as many as you need.
+  </Accordion>
+  <Accordion title="Another section">
+  - Optional setup steps
+  - Advanced configuration
+  - Related links
   </Accordion>
 </AccordionGroup>
 
-```jsx
+````mdx
 <AccordionGroup>
   <Accordion defaultOpen title="Open by default">
-    This is collapsible content!
+    This panel starts expanded. Readers can collapse it like any other accordion.
   </Accordion>
-  <Accordion title="Click me to expand the accordion">
-    This is collapsible content!
+  <Accordion title="Click to expand">
+    Grouped accordions stack in a single panel. Add as many as you need.
+  </Accordion>
+  <Accordion title="Another section">
+  - Optional setup steps
+  - Advanced configuration
+  - Related links
   </Accordion>
 </AccordionGroup>
-```
+````
+
+Use `type="single"` when panels are mutually exclusive, for example one answer per FAQ category.
+
+<AccordionGroup type="single">
+  <Accordion title="Billing">
+    Manage plans and invoices from **Settings → Billing**.
+  </Accordion>
+  <Accordion title="Authentication">
+    Configure API keys under **Settings → API keys**.
+  </Accordion>
+  <Accordion title="Deployments">
+    Deploy from the CLI or connect a Git repository.
+  </Accordion>
+</AccordionGroup>
+
+````mdx
+<AccordionGroup type="single">
+  <Accordion title="Billing">...</Accordion>
+  <Accordion title="Authentication">...</Accordion>
+  <Accordion title="Deployments">...</Accordion>
+</AccordionGroup>
+````
+
+## Behavior
+
+| Condition | Result |
+| --- | --- |
+| `title` omitted on `<Accordion>` | Renders nothing |
+| No valid `<Accordion>` children in `<AccordionGroup>` | Renders nothing |
+| `type="multiple"` (default) | Multiple panels can stay open |
+| `type="single"` | Only one panel open at a time |
+| Several items with `defaultOpen` in `type="single"` | Only the first matching item starts open |
+| `defaultOpen` on items in `type="multiple"` | All matching items start open |
+
+## See also
+
+- [Tabs](/components/tabs): switchable panels for parallel options
+- [Components overview](/components): when to use tabs, code groups, and accordions

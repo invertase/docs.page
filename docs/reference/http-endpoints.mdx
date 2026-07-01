@@ -1,0 +1,138 @@
+---
+title: HTTP endpoints
+description: Use when you need published URL patterns, search.json shape, or platform API routes.
+---
+
+## URL patterns
+
+### File path to page URL
+
+Every page URL mirrors its path under `docs/`:
+
+| File | Live URL |
+| --- | --- |
+| `docs/index.mdx` | `/` |
+| `docs/next-steps.mdx` | `/next-steps` |
+| `docs/guides/setup/index.mdx` | `/guides/setup` |
+
+Nested directories become nested URL paths. A file named `index.mdx` inside a folder serves that folder's path.
+
+### Production URLs
+
+Production URLs serve content from the repository **default branch**.
+
+```text
+https://docs.page/{owner}/{repo}
+https://docs.page/{owner}/{repo}/{page-path}
+```
+
+### Ref URLs
+
+Append `~{ref}` immediately after the repository name to serve a branch, commit, or pull request:
+
+```text
+https://docs.page/{owner}/{repo}~{ref}
+https://docs.page/{owner}/{repo}~{ref}/{page-path}
+```
+
+| Ref segment | Resolves to |
+| --- | --- |
+| `~feature-docs` | Branch `feature-docs` |
+| `~abc123…` (40-character SHA) | That commit |
+| `~42` | Pull request #42 head branch |
+
+### Alternate hosts
+
+| Host type | URL pattern |
+| --- | --- |
+| Default | `https://docs.page/{owner}/{repo}[~{ref}]/{page-path}` |
+| Vanity subdomain | `https://{owner}.docs.page/{repo}[~{ref}]/{page-path}` |
+| Custom domain | `https://{domain}[~{ref}]/{page-path}` |
+
+On vanity subdomains and custom domains, the owner and repository segments drop from the path. Ref segments work the same way.
+
+See [Branch preview](/features/branch-preview), [Vanity subdomains](/features/vanity-subdomains), and [Custom domains](/features/custom-domains).
+
+---
+
+## Documentation pages
+
+| Route | Method | Returns |
+| --- | --- | --- |
+| `/{owner}/{repo}/{page-path}` | GET | Rendered documentation site (HTML) |
+| `/{owner}/{repo}~{ref}/{page-path}` | GET | Branch, commit, or pull request preview |
+
+`{page-path}` matches the file path under `docs/` without the extension, for example `docs/getting-started.mdx` → `/getting-started`.
+
+## Raw markdown
+
+Append `.md` or `.mdx` to any page path to fetch the source file from GitHub as plain text. Same content as **View markdown** in the [page action menu](/features/public-github-hosting#page-actions).
+
+| Route | Method | Returns |
+| --- | --- | --- |
+| `/{owner}/{repo}/{page-path}.md` | GET | Raw `.md` or `.mdx` source for one page |
+| `/{owner}/{repo}/{page-path}.mdx` | GET | Same as `.md`; either suffix resolves the source file |
+| `/{owner}/{repo}.md` | GET | Raw source for the site root page (`docs/index.mdx` or equivalent) |
+
+```text
+https://docs.page/acme/handbook/getting-started.md
+https://docs.page/acme/handbook~feature-branch/authentication.md
+```
+
+Responses use `Content-Type: text/markdown; charset=utf-8`. Prefer site-wide [llms.txt](/features/llms-txt) for catalog discovery; use raw markdown URLs for a single page.
+
+## Agent exports
+
+| Route | Method | Returns |
+| --- | --- | --- |
+| `/{owner}/{repo}/llms.txt` | GET | Markdown index of all pages |
+| `/{owner}/{repo}/llms-full.txt` | GET | Markdown export with full MDX source per page |
+| `/{owner}/{repo}/mcp` | GET, POST | MCP server descriptor and streamable HTTP MCP session |
+
+See [llms.txt](/features/llms-txt) and [MCP server](/features/mcp-server). When `mcp.enabled` is `false`, the MCP route returns `404`.
+
+## Search and discovery
+
+| Route | Method | Returns |
+| --- | --- | --- |
+| `/{owner}/{repo}/search.json` | GET | JSON search index for on-site search |
+| `/{owner}/{repo}/sitemap.xml` | GET | XML sitemap for crawlers |
+| `/{owner}/{repo}/robots.txt` | GET | Crawler directives |
+
+See [Search](/features/search) and [Search engine indexing](/features/search-engine-indexing).
+
+### search.json
+
+Built on each request from MDX files under `docs/` at the same ref as the page view.
+
+**Top-level**
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `version` | `4` | Index format version |
+| `documents` | array | Searchable page entries |
+| `meta` | object | Ref and indexing metadata |
+
+**Document entry**
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `path` | string | Root-relative URL path |
+| `title` | string | From frontmatter `title` or the first heading in the file |
+| `content` | string | Plain text stripped from the MDX body |
+
+**`meta` object**
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `resolvedRef` | string | Resolved Git ref |
+| `resolvedSha` | string | Commit SHA for the ref |
+| `fileCount` | number | Indexed document count |
+| `truncated` | boolean | Whether the repository tree was truncated during indexing |
+
+Pages with empty bodies are omitted from `documents`.
+
+## See also
+
+- [CLI](/reference/cli): local preview and check commands
+- [Public GitHub hosting](/features/public-github-hosting): push-to-publish model

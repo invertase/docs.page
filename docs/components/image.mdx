@@ -1,0 +1,227 @@
+---
+title: Image
+description: Add screenshots and diagrams with zoom, captions, and light or dark variants.
+---
+
+Display images from remote URLs or files in your repository. Standard Markdown image syntax works and renders through the same `<Image>` pipeline as the component. Use `<Image>` when you need captions, theme-specific variants, sizing, or explicit zoom control.
+
+Use SVG for logos and icons, PNG or WebP for screenshots, and JPEG for photos.
+
+```mdx
+<Image src="/assets/screenshot.png" alt="Dashboard overview" width={800} />
+```
+
+## Markdown images
+
+Use standard Markdown syntax for simple images:
+
+```md
+![Orange car](https://images.unsplash.com/photo-1671483579112-0872cb05978f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1469&q=80)
+```
+
+Markdown images render as `<Image>` without extra properties. They inherit zoom behavior from [`content.zoomImages`](/reference/docs-json) in `docs.json` but cannot set `caption`, `theme`, or per-image `zoom` without switching to the component.
+
+![Orange car](https://images.unsplash.com/photo-1671483579112-0872cb05978f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1469&q=80)
+
+## Image sources
+
+Pass a full `http` or `https` URL to load an image from that address. Pass a path starting with `/` to load a file from your repository relative to the `/docs` directory.
+
+For example, if your repository contains `/docs/assets/my-image.png`, use `/assets/my-image.png` as the `src`. On preview builds (branches, pull requests, or commits), the image is resolved from that Git reference rather than the default branch.
+
+```mdx
+<Image src="/assets/my-image.png" alt="Pretty picture" />
+<Image src="https://cdn.example.com/photo.jpg" alt="Remote photo" />
+```
+
+## Example
+
+<Image
+  src="https://images.unsplash.com/photo-1671483579112-0872cb05978f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1469&q=80"
+  alt="Orange car"
+  width={800}
+/>
+
+````mdx
+<Image
+  src="https://images.unsplash.com/photo-1671483579112-0872cb05978f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1469&q=80"
+  alt="Orange car"
+  width={800}
+/>
+````
+
+## Properties
+
+<Property name="src" type="string" required>
+  The image source. External URLs starting with `http` are used as-is. Relative paths such as `/assets/diagram.png` are resolved from the `/docs` directory in your Git repository.
+
+  On preview builds, repo-relative paths point at the same Git reference as the documentation preview.
+</Property>
+
+---
+
+<Property name="alt" type="string" optional>
+  Descriptive alternative text for accessibility. When omitted, the image renders with an empty `alt` attribute.
+
+  Always provide meaningful `alt` text for informative images.
+</Property>
+
+---
+
+<Property name="width" type="number | string" optional>
+  Sets the display width in pixels via an inline style. Accepts a number or a numeric string.
+
+  ```mdx
+  <Image src="/assets/ui.png" alt="UI screenshot" width={640} />
+  ```
+</Property>
+
+---
+
+<Property name="height" type="number | string" optional>
+  Sets the display height in pixels via an inline style. Accepts a number or a numeric string.
+
+  ```mdx
+  <Image src="/assets/ui.png" alt="UI screenshot" height={400} />
+  ```
+</Property>
+
+---
+
+<Property name="className" type="string" optional>
+  Additional CSS classes appended to the default image classes (`mx-auto`, `rounded-lg`). Use this to adjust margins, borders, or responsive layout.
+
+  ```mdx
+  <Image
+    src="/assets/banner.png"
+    alt="Product banner"
+    className="w-full max-w-3xl shadow-md"
+  />
+  ```
+</Property>
+
+---
+
+<Property name="zoom" type="boolean" optional>
+  Controls click-to-zoom behavior for this image.
+
+  - `zoom={true}`: enables zoom for this image
+  - `zoom={false}`: disables zoom even when [`content.zoomImages`](/reference/docs-json) is `true` in `docs.json`
+  - omitted: follows the global `content.zoomImages` setting (defaults to `false`)
+
+  ```mdx
+  <Image zoom src="https://cdn.example.com/detail.jpg" alt="Detail view" />
+  ```
+</Property>
+
+---
+
+<Property name="caption" type="string" optional>
+  Renders a centered caption below the image inside a `<figure>` wrapper.
+
+  ```mdx
+  <Image
+    caption="An abstract image"
+    src="https://images.unsplash.com/photo-1671519821564-ced7e41ee7ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=1364&q=80"
+    alt="Abstract shapes"
+  />
+  ```
+</Property>
+
+---
+
+<Property name="theme" type="string" optional>
+  Restricts visibility to one color scheme. Omit `theme` to show the image in both light and dark modes.
+
+  - `theme="light"`: visible in light mode only
+  - `theme="dark"`: visible in dark mode only
+
+  ```mdx
+  <Image theme="light" src="/assets/logo-light.svg" alt="Logo" />
+  <Image theme="dark" src="/assets/logo-dark.svg" alt="Logo" />
+  ```
+</Property>
+
+## Zoom
+
+Click an image with zoom enabled to open a full-size overlay. Set `zoom` on individual images, or enable zoom site-wide with `content.zoomImages` in `docs.json`.
+
+<Info>
+  When [`content.zoomImages`](/reference/docs-json) is `true`, all images zoom by default. Pass `zoom={false}` on an `<Image>` to opt out for a specific image.
+</Info>
+
+<Image
+  zoom
+  src="https://images.unsplash.com/photo-1671471433724-8de50b3f45f7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1472&q=80"
+  alt="Bald eagle in flight"
+/>
+
+````mdx
+<Image
+  zoom
+  src="https://images.unsplash.com/photo-1671471433724-8de50b3f45f7?ixlib=rb-4.0.3&auto=format&fit=crop&w=1472&q=80"
+  alt="Bald eagle in flight"
+/>
+````
+
+## Captions
+
+Add `caption` to show descriptive text below the image. The component wraps the image and caption in a `<figure>` element.
+
+<Image
+  caption="An abstract image"
+  src="https://images.unsplash.com/photo-1671519821564-ced7e41ee7ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=1364&q=80"
+  alt="Abstract shapes"
+/>
+
+````mdx
+<Image
+  caption="An abstract image"
+  src="https://images.unsplash.com/photo-1671519821564-ced7e41ee7ae?ixlib=rb-4.0.3&auto=format&fit=crop&w=1364&q=80"
+  alt="Abstract shapes"
+/>
+````
+
+## Theme
+
+By default, images appear in both light and dark modes. Set `theme` to show a variant only in the matching color scheme, which is useful for logos or screenshots that do not work on every background.
+
+```mdx
+<Image caption="Light-mode logo" theme="light" src="/assets/logo-light.svg" alt="Logo" />
+<Image caption="Dark-mode logo" theme="dark" src="/assets/logo-dark.svg" alt="Logo" />
+```
+
+## Additional attributes
+
+`<Image>` extends the standard HTML `<img>` element. Any attribute not consumed by the properties above (`loading`, `decoding`, `crossOrigin`, `referrerPolicy`, `style`, and others) is forwarded to the underlying `<img>`.
+
+The component always sets `loading="lazy"` on the image element.
+
+```mdx
+<Image
+  src="/assets/chart.png"
+  alt="Usage chart"
+  style={{ border: "1px solid var(--border)" }}
+  decoding="async"
+/>
+```
+
+## Behavior
+
+| Condition | Result |
+| --- | --- |
+| `src` starts with `http` | URL used as-is |
+| `src` is a path such as `/assets/file.png` | Resolved from `/docs` in the repository at the current Git reference |
+| `zoom={true}` | Click-to-zoom enabled for this image |
+| `zoom={false}` | Click-to-zoom disabled, even when `content.zoomImages` is `true` |
+| `zoom` omitted | Follows `content.zoomImages` in `docs.json` (defaults to `false`) |
+| `caption` set | Image and caption wrapped in `<figure>` with a `<figcaption>` |
+| `theme="light"` | Hidden in dark mode |
+| `theme="dark"` | Hidden in light mode |
+| Markdown `![alt](url)` syntax | Rendered through `<Image>` with the same source and zoom rules |
+
+## See also
+
+- [docs.json](/reference/docs-json): `content.zoomImages` and other content settings
+- [Video](/components/video): self-hosted video (no repo-relative path support)
+- [Components overview](/components): when to use images, callouts, and embeds

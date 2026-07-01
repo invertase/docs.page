@@ -1,0 +1,147 @@
+---
+title: Branding
+description: Match your docs site to your product with theme colors, logos, header actions, and footer profile links.
+---
+
+**Before you begin**
+
+- A [docs.page](https://docs.page) project with `docs.json` at the repository root and page files under `docs/`
+- [Install the CLI](/features/cli#install) or use `npx @docs.page/cli`; see [Preview](/authoring/preview) to check theme, logo, header, and footer changes before you push
+- Logo and favicon files committed under `docs/` (or hosted at stable URLs) when you plan custom assets
+
+---
+
+## Set theme and colors
+
+Theme settings control typography, accent colors, and how the site looks in light and dark mode. Pick a shadcn preset for a cohesive palette, then override individual tokens with hex colors when you need brand-specific accents.
+
+| Goal | Start here |
+| --- | --- |
+| Full palette and fonts quickly | Set `theme.preset` to a code from [ui.shadcn.com](https://ui.shadcn.com/create) |
+| Brand accent only | Set `theme.primary`, or `primaryLight` / `primaryDark` for mode-specific accents |
+| Page background tweak | Set `backgroundLight` and `backgroundDark` |
+
+For how presets, fonts, and mode switching work, see [Theme](/features/theme). Field names and defaults live in [docs.json](/reference/docs-json).
+
+<Steps>
+  <Step title="Choose a preset or set custom colors">
+    Add a `theme` object at the top level of `docs.json`. Include `preset` when you want a shadcn palette, or omit it and set color keys directly:
+
+    ```json
+    "theme": {
+      "preset": "bcj0c6sa",
+      "primary": "#E69135"
+    }
+    ```
+  </Step>
+  <Step title="Preview light and dark mode">
+    Run [Preview](/authoring/preview) and toggle the theme control in the header. Confirm accents and backgrounds look right in both modes before you push.
+  </Step>
+</Steps>
+
+The schema accepts `defaultTheme` (`light` or `dark`) to pin the starting mode, but that field is **schema only** today; see [docs.json: Schema-only fields](/reference/docs-json#schema-only-fields).
+
+## Add logo and favicon
+
+Header logos and tab icons support separate light and dark assets. Use one variant when a single mark works everywhere, or pair variants so each mode stays legible.
+
+```json
+{
+  "logo": {
+    "light": "/assets/logo-light.svg",
+    "dark": "/assets/logo-dark.svg"
+  },
+  "favicon": "/assets/favicon.png"
+}
+```
+
+Place repo-relative paths under `docs/`, for example `/assets/logo-light.svg` resolves to `docs/assets/logo-light.svg`. See [Logo](/features/logo) for URL shapes, legacy v1 migration, and how favicon media queries differ from the site theme toggle.
+
+## Configure the header
+
+The header shows identity on the left and actions on the right: search, custom links, GitHub, and the theme toggle. Control whether the site name appears beside the logo and add CTA buttons with `header.links`.
+
+<Steps>
+  <Step title="Tune identity and add header links">
+    Set `header.showName` to `false` when the logo alone carries your wordmark. Add `header.links` with `title`, `href`, and optional `cta: true` for a filled button:
+
+    ```json
+    "header": {
+      "showName": false,
+      "links": [
+        { "title": "Changelog", "href": "/changelog" },
+        { "title": "Get started", "href": "https://app.example.com/signup", "cta": true }
+      ]
+    }
+    ```
+  </Step>
+  <Step title="Preview the bar on a few page types">
+    Open the homepage and an inner page in preview. Confirm link order, CTA styling, and logo alignment.
+  </Step>
+</Steps>
+
+The schema also defines `showThemeToggle` and `showGitHubCard`, plus optional `locale` on each link; the header renderer does not apply those fields yet. The theme toggle and GitHub link always render on hosted sites today. See [Header](/features/header).
+
+## Add site tabs
+
+When your sidebar outgrows one tree, define top-level tabs in the header and scope sidebar groups to each tab's `id`.
+
+```json
+"tabs": [
+  { "id": "docs", "title": "Documentation", "href": "/" },
+  { "id": "features", "title": "Features", "href": "/features" }
+]
+```
+
+Tag each sidebar group with `"tab": "docs"` (or another tab `id`). Groups without `tab` appear on every tab. See [Navigation tabs](/features/tabs) for URL-based active tab resolution and [Organize](/authoring/organize) when you restructure navigation.
+
+## Add footer social links
+
+Footer icons link to your profiles on every page. Values are handles or path fragments, not full URLs (except `website`):
+
+```json
+{
+  "social": {
+    "website": "https://acme.dev",
+    "github": "acme",
+    "discord": "acme-community"
+  },
+  "og": {
+    "github": true
+  }
+}
+```
+
+Set `og.logo` or top-level `socialPreview` when share cards need artwork beyond your header logo. See [Social links](/features/social-links) for supported platforms and preview image resolution.
+
+## Verify
+
+1. Run [Preview](/authoring/preview) and toggle light and dark mode; confirm logo, colors, and favicon behave as expected.
+2. Open the homepage and at least one inner page; check header links, tabs (if configured), and footer icons.
+3. Paste a docs URL into a chat app or inspect meta tags; confirm title, description, and preview image look right when sharing.
+
+## Troubleshooting
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| Theme colors do not change | Invalid hex or typo in `theme` keys | Use six-digit hex; invalid values are ignored; see [Theme](/features/theme) |
+| Logo missing in preview | Wrong path or file not under `docs/` | Commit assets under `docs/` and use a leading slash, e.g. `/assets/logo.svg` |
+| Tab shows the wrong sidebar | Group `tab` id does not match a tab entry | Align `sidebar[].tab` with `tabs[].id`; see [Navigation tabs](/features/tabs) |
+| Footer icon or share preview wrong | Empty social key, or `image` / `socialPreview` overrides | Use supported `social` keys; check frontmatter; see [Social links](/features/social-links) |
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Theme" icon="palette" href="/features/theme">
+    Presets, colors, fonts, and light/dark behavior.
+  </Card>
+  <Card title="Preview" icon="eye" href="/authoring/preview">
+    Confirm branding locally before you push.
+  </Card>
+  <Card title="Organize" icon="sitemap" href="/authoring/organize">
+    Structure sidebar groups and tab scopes in `docs.json`.
+  </Card>
+  <Card title="docs.json" icon="book" href="/reference/docs-json">
+    Field lookup for `theme`, `logo`, `header`, `tabs`, and `social`.
+  </Card>
+</CardGroup>

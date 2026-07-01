@@ -1,0 +1,180 @@
+---
+title: Publish
+description: Push your branch to GitHub, share branch previews with reviewers, and merge to production.
+---
+
+**Before you begin**
+
+- A **public** GitHub repository, docs.page only hosts public repos. See [Public GitHub hosting](/features/public-github-hosting).
+- [Preview](/authoring/preview) and check already passed on your machine
+- Git installed and write access to the repository on GitHub
+
+---
+
+This page covers remote actions on GitHub after local [Preview](/authoring/preview): push your branch, share branch previews, enable PR preview comments, run check in CI, and merge to production.
+
+## Push your branch
+
+Commit your documentation changes and push the branch to GitHub so docs.page can read the files from the remote.
+
+<Steps>
+  <Step title="Capture documentation changes in git">
+    Stage at minimum `docs.json`, pages under `docs/`, and any assets you added:
+
+    ```bash
+    git add docs.json docs/
+    git commit -m "Update documentation"
+    ```
+  </Step>
+  <Step title="Make the branch available on GitHub">
+    Push the branch to the remote:
+
+    ```bash
+    git push -u origin [your-branch-name]
+    ```
+
+    Use your actual branch name instead of `your-branch-name`. After the push completes, the branch is available for [branch preview](/features/branch-preview) URLs and for pull request review.
+  </Step>
+</Steps>
+
+<Info>
+  docs.page does not run a separate deploy step. Pushing to GitHub is what makes branch content available for previews; merging to your default branch updates production. See [Public GitHub hosting](/features/public-github-hosting).
+</Info>
+
+## Share branch previews
+
+Share a live preview URL so reviewers can open the rendered site from your branch (navigation, theme, search, and MDX components included) without running the CLI locally.
+
+Replace `{ref}` in the URL with one of:
+
+| Ref | Example segment | Resolves to |
+| --- | --- | --- |
+| Branch name | `~feature-docs` | Branch `feature-docs` |
+| Commit SHA | `~abc123…` (40 characters) | That commit |
+| Pull request | `~42` | Pull request #42 head branch |
+
+<Steps>
+  <Step title="Build a ref URL reviewers can open">
+    Add `~{ref}` immediately after the repository name:
+
+    ```text
+    https://docs.page/{owner}/{repo}~{ref}
+    https://docs.page/{owner}/{repo}~{ref}/{page-path}
+    ```
+
+    Replace `{owner}` and `{repo}` with your GitHub organization or user and repository name. Pick the `{ref}` segment from the table above.
+  </Step>
+  <Step title="Confirm the branch site looks right">
+    Open the URL in a browser and confirm the pages you changed render as expected.
+  </Step>
+  <Step title="Share the link in your review thread">
+    Send the URL to reviewers in your pull request description, chat, or review comments.
+  </Step>
+</Steps>
+
+Production URLs omit the `~ref` segment entirely. For ref URL patterns, numeric PR resolution, and when to use branch preview instead of local preview, see [Branch preview](/features/branch-preview).
+
+## Enable PR preview comments
+
+Install the docs.page GitHub App once so every pull request gets an automatic comment with a live preview link, reviewers do not need to build ref URLs by hand.
+
+<Steps>
+  <Step title="Install the GitHub App once">
+    Open [docs.page on GitHub](https://github.com/apps/docs-page) and click **Install**.
+  </Step>
+  <Step title="Grant access to your public docs repository">
+    Select your account or organization, then install on the **public** repository that hosts your docs.
+  </Step>
+  <Step title="Get automatic preview links on pull requests">
+    Open or update a pull request with documentation changes. The app posts a comment linking to the live preview for that PR's head branch.
+  </Step>
+</Steps>
+
+The app uses the same `~ref` URL model as [branch preview](/features/branch-preview). It works on **public repositories only**, the same constraint as docs.page hosting. No webhook or secret configuration in `docs.json` is required.
+
+For how comments tie to ref URLs and custom-domain preview links, see [GitHub App](/features/github-app).
+
+## Run check in CI
+
+Run `docs check` in GitHub Actions so broken internal links, missing assets, and other problems fail the workflow before you merge, even when contributors skip local check.
+
+Add a job step that runs from the directory containing `docs.json`:
+
+```yaml
+- name: Check documentation
+  run: npx @docs.page/cli check
+```
+
+The command exits with code `1` when any `error`-level issue is found, which fails the job. It does not publish or upload anything, [Public GitHub hosting](/features/public-github-hosting) updates the live site when you merge to your default branch.
+
+### Flaky external links
+
+External targets sometimes block automated requests or are temporarily unreachable in CI. Keep internal links and assets strict while relaxing externals:
+
+```yaml
+- name: Check documentation
+  run: npx @docs.page/cli check --external-links warn --internal-links error --assets error
+```
+
+Each category accepts `off`, `warn`, or `error`. All three default to `error`. See the [CLI](/features/cli#check-documentation) reference for the full flag list.
+
+## Merge to production
+
+When review is complete and CI passes, merge your pull request into the repository's **default branch** (usually `main`).
+
+docs.page serves production from that default branch automatically. There is no separate build, upload, or promote step. After merge, open your canonical URL (without a `~ref` segment) and confirm the changes are live:
+
+```text
+https://docs.page/{owner}/{repo}
+https://docs.page/{owner}/{repo}/{page-path}
+```
+
+Edge caching may delay updates by about a minute after the merge. Renaming the default branch on GitHub updates what the production URL serves, you do not configure a production branch in `docs.json`. See [Public GitHub hosting](/features/public-github-hosting).
+
+## Troubleshooting
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| Branch preview returns 404 or old content | Wrong ref segment, branch not pushed, or cache delay | Confirm the branch exists on GitHub; match the ref in the URL; wait a minute and hard-refresh |
+| Production still shows old content after merge | Merge targeted a non-default branch, or cache delay | Confirm the PR merged to the default branch; wait briefly and refresh |
+| GitHub App did not comment on the PR | App not installed on this repo, or repository is private | Install [docs.page on GitHub](https://github.com/apps/docs-page) on the public docs repo; see [GitHub App](/features/github-app) |
+| `403` on preview or production URL | Repository is private | docs.page only hosts public repositories, see [Public GitHub hosting](/features/public-github-hosting) |
+| CI check fails on external links | Target blocks bots or is down | Add `--external-links warn` (or `off`) for that workflow; keep `--internal-links error` |
+| CI check fails but local preview looked fine | CI runs from the wrong directory or missing committed files | Confirm the job runs from the repository root where `docs.json` lives; confirm all docs files are committed and pushed |
+| Numeric `~42` ref does not match expected PR | Wrong PR number or PR closed without merge | Use the open PR number, or switch to the branch name ref |
+
+## Edit a page on GitHub
+
+You do not need a local clone for small fixes. On any live or branch preview page, open the **Copy page** menu and choose **Edit page**. docs.page opens the matching `docs/{path}.mdx` file in GitHub's web editor on the resolved branch.
+
+<Info>
+  **Edit page** is unavailable during [local preview](/features/local-preview). Use your editor locally, or push a branch and open a [branch preview](/features/branch-preview) URL to edit on GitHub.
+</Info>
+
+After you save on GitHub, the preview or production site updates on the next request. There is no separate publish step. See [Page actions](/features/public-github-hosting#page-actions) for the full header menu.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Preview" icon="eye" href="/authoring/preview">
+    Run local preview and check before you push.
+  </Card>
+  <Card title="Branch preview" icon="code-branch" href="/features/branch-preview">
+    Ref URL patterns for branches, commits, and pull requests.
+  </Card>
+  <Card title="GitHub App" icon="robot" href="/features/github-app">
+    Automatic pull request comments with live preview links.
+  </Card>
+  <Card title="Public GitHub hosting" icon="github" href="/features/public-github-hosting">
+    How default-branch URLs become your production site.
+  </Card>
+  <Card title="Page actions" icon="copy" href="/features/public-github-hosting#page-actions">
+    **Edit page** and **View markdown** from the header menu.
+  </Card>
+  <Card title="CLI" icon="terminal" href="/features/cli">
+    `docs check` flags and severity options.
+  </Card>
+  <Card title="Write" icon="pen" href="/authoring/write">
+    Structure pages, links, and components before you publish.
+  </Card>
+</CardGroup>

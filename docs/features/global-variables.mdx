@@ -1,0 +1,92 @@
+---
+title: Global variables
+description: Reuse version numbers, URLs, and product names across MDX by defining them once in docs.json.
+---
+
+Your install guide names the same package version on a dozen pages. When you ship the next release, you do not want to search every file for the old string.
+
+## Overview
+
+**Global variables** let you store reusable strings in the `variables` object in `docs.json` and reference them from MDX with mustache placeholders. Define a value once (a semver, API base URL, product name, or support email) and every page that references it picks up the change on the next build.
+
+Substitution runs during MDX bundling, the same path local preview and production hosting use. You edit placeholders in your page files; docs.page resolves them from config before headings, components, and links are rendered.
+
+## How it works
+
+### Define values in docs.json
+
+Add a top-level `variables` object to `docs.json`. Keys are plain names; nest objects when you want grouped values (for example, versions per package or URLs per environment).
+
+```json
+{
+  "variables": {
+    "product": "Acme SDK",
+    "versions": {
+      "default": "2.4.0",
+      "legacy": "1.9.2"
+    },
+    "urls": {
+      "dashboard": "https://app.acme.dev"
+    }
+  }
+}
+```
+
+The object accepts arbitrary nesting. Only **string** values are substituted into page content. Other types are ignored and the placeholder is left unchanged.
+
+### Reference placeholders in MDX
+
+In any file under `docs/`, write `{{ dotted.path }}` where you want the resolved value to appear. Use dot notation to reach nested keys: `{{ versions.default }}` reads `variables.versions.default`.
+
+```mdx
+Install **{{ product }}** version `{{ versions.default }}`:
+
+    npm install @acme/sdk@{{ versions.default }}
+
+Open the [dashboard]({{ urls.dashboard }}) after you sign in.
+```
+
+Placeholders work in prose, link targets, code fences, and component props anywhere in the MDX body after frontmatter is stripped.
+
+### Syntax rules
+
+The parser looks for `{{`, whitespace, a path made of letters, numbers, dots, and underscores, whitespace, then `}}`. Paths are case-sensitive and must match a key in your `variables` object.
+
+| Input | Result |
+| --- | --- |
+| `{{ versions.default }}` | Substituted when `variables.versions.default` is a string |
+| `{{ unknown.key }}` | Left as-is when the path is missing or the value is not a string |
+| `{{versions.default}}` | Not matched. Include spaces inside the braces |
+
+If a path resolves to a non-string value (a number, boolean, or nested object), docs.page keeps the original placeholder so you notice the mismatch instead of coercing a value.
+
+### When substitution runs
+
+Bundling reads each MDX file, removes YAML frontmatter, then runs variable substitution on the remaining content. Headings, table of contents, and component trees are built from that substituted markdown.
+
+The same `renderDoc` pipeline powers `docs preview` locally and the hosted GitHub bundler, so placeholders you add under `docs/` behave the same before and after you push.
+
+Variable substitution does **not** run inside frontmatter. Keep `title`, `description`, and other metadata literal in the YAML block at the top of each file.
+
+### What variables are for
+
+Use global variables for values that repeat across many pages and change together: release versions, canonical URLs, company or product names, and environment-specific endpoints you document in prose.
+
+They are not a templating language: there is no logic, conditionals, or partials. For one-off page metadata, use frontmatter. For field-level config lookup, see [docs.json](/reference/docs-json#variables).
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="docs.json" icon="code" href="/reference/docs-json#variables">
+    `variables` object shape and placeholder syntax.
+  </Card>
+  <Card title="Local preview" icon="desktop" href="/features/local-preview">
+    See substituted values while you edit MDX before you push.
+  </Card>
+  <Card title="Write" icon="pen" href="/authoring/write">
+    Structure pages with prose, links, code, and components in your workflow.
+  </Card>
+  <Card title="docs.json" icon="book" href="/reference/docs-json">
+    Config keys, CLI flags, and HTTP routes in one place.
+  </Card>
+</CardGroup>

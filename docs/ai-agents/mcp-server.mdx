@@ -1,0 +1,125 @@
+---
+title: MCP server
+description: Connect MCP clients to your per-repo server, learn what the endpoint exposes, and how to disable it.
+---
+
+When an assistant can pull raw MDX from your repository (not a one-time HTML scrape), it answers with the same wording, examples, and structure your team published. docs.page runs a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for every hosted public repository.
+
+**Before you begin**
+
+- A published docs URL you can open in a browser (see [Agent-ready docs](/ai-agents/overview))
+- A **public** GitHub repository; private repos return `404` for MCP
+
+MCP is **on by default**. You only edit `docs.json` when you want to turn the endpoint off. For server design, tools, and access control detail, see [MCP server on Features](/features/mcp-server).
+
+---
+
+## Overview
+
+Each docs.page site gets a read-only MCP endpoint scoped to that repository's owner, name, and optional ref (branch, commit, or pull request):
+
+```text
+https://docs.page/{owner}/{repo}/mcp
+```
+
+Branch and pull request previews add a `~ref` segment before `/mcp`. Custom domains serve the same path at `/mcp` on that host.
+
+The server speaks streamable HTTP MCP. There is no write access to your GitHub repo or `docs.json`.
+
+## How it works
+
+### Tools agents call
+
+| Tool | Purpose |
+| --- | --- |
+| `list_doc_files` | Returns `.mdx` pages in the current repository context |
+| `read_doc_page` | Fetches raw MDX source for a path such as `docs/getting-started.mdx` |
+
+`read_doc_page` returns source text (the same files under `docs/` that docs.page renders), not pre-rendered HTML. That keeps token use predictable and lets the agent cite exact headings and code blocks.
+
+### Resources
+
+Beyond tools, the server advertises MCP resources:
+
+- **`docs-page-config-schema`:** JSON schema for `docs.json`
+- **[Agent skills](/ai-agents/agent-skills):** when your repo includes `.agents/skills/**`, each `SKILL.md` is exposed as a markdown resource
+
+### A typical agent session
+
+1. Client connects to your MCP URL
+2. Agent calls `list_doc_files` to see available pages
+3. Agent calls `read_doc_page` for paths relevant to the user's question
+4. Agent cites headings and code blocks from the returned source
+
+Use MCP when the agent works in an editor or terminal, should load only relevant pages, or needs skill resources alongside docs. For a one-fetch catalog instead, see [llms.txt](/ai-agents/llms-txt).
+
+## Connect from the live site
+
+Open any page on your published docs site. MCP setup is available from two places in the UI:
+
+| Entry point | Options |
+| --- | --- |
+| **Page action menu** ( **Copy page** chevron) | **Install with MCP** (opens dialog), **Connect to Cursor**, **Connect to VSCode** |
+| **Command palette** (**Cmd+K** / **Ctrl+K**, empty query) | **Install MCP** (opens the same dialog) |
+
+**Install with MCP** / **Install MCP** opens a dialog titled **Install MCP** with your endpoint URL and copy-ready snippets for Cursor, Claude Code, VS Code, and Antigravity.
+
+**Connect to Cursor** and **Connect to VSCode** skip the dialog and register the server via a one-click deep link (`cursor://…` or `vscode:mcp/install?…`) using the MCP URL for the site you have open.
+
+The command palette shows **Install MCP** only when MCP is enabled (`mcp.enabled` is not `false`). The page menu lists MCP items on every hosted page.
+
+## Connect manually
+
+When you cannot use the live site UI, configure a client by hand:
+
+<Tabs>
+  <TabItem label="Cursor" value="cursor">
+
+Create or edit `.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "owner-repo": {
+      "url": "https://docs.page/owner/repo/mcp"
+    }
+  }
+}
+```
+
+Replace `owner`, `repo`, and the URL with your repository values (or copy from **Install MCP** on the live site).
+
+  </TabItem>
+  <TabItem label="Claude Code" value="claude">
+
+```bash
+claude mcp add --transport http \
+  https://docs.page/owner/repo/mcp
+```
+
+  </TabItem>
+</Tabs>
+
+After connecting, invoke `list_doc_files`, then `read_doc_page` with a path from the listing.
+
+## Disable MCP (optional)
+
+To keep a public site but block programmatic source access, set `mcp.enabled` to `false` in `docs.json`:
+
+```json
+{
+  "mcp": {
+    "enabled": false
+  }
+}
+```
+
+Commit and publish. The MCP route returns `404`, **Install MCP** disappears from the command palette, and MCP deep links point at an unavailable endpoint. [llms.txt](/ai-agents/llms-txt) exports are unaffected.
+
+## Related
+
+- [Agent-ready docs](/ai-agents/overview): how MCP fits alongside llms.txt and Ask AI
+- [Page actions](/features/public-github-hosting#page-actions): **Install with MCP**, **Connect to Cursor**, and **Connect to VSCode** in the header menu
+- [MCP server on Features](/features/mcp-server): server descriptor, access control, and URL patterns
+- [Agent skills](/ai-agents/agent-skills): expose `.agents/skills` as MCP resources
+- [HTTP endpoints](/reference/http-endpoints): MCP route lookup
