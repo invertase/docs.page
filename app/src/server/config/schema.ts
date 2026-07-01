@@ -40,6 +40,7 @@ export const ConfigSchema = z
     social,
     seo,
     variables: z.record(z.string(), z.unknown()).catch({}),
+    redirects: z.record(z.string(), z.string()).catch({}),
     search,
     scripts,
     content,
