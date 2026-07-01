@@ -1,20 +1,66 @@
 ---
 title: Vimeo
-description: Learn how to add Vimeo embeds to your documentation.
+description: Embed a Vimeo video by numeric ID from the video URL.
 ---
 
-Use the `<Vimeo />` component to embed Vimeo videos in your documentation.
+Use `<Vimeo>` to embed a Vimeo video in your documentation. Pass the numeric video ID from the Vimeo URL; the component renders a responsive iframe pointed at `player.vimeo.com`.
+
+```mdx
+<Vimeo id="22439234" />
+```
+
+## Video ID
+
+Copy the numeric ID from the end of the Vimeo URL. For example, `https://vimeo.com/22439234` has ID `22439234`.
 
 ## Example
 
-<Vimeo id="253989945" />
+<Vimeo id="22439234" />
 
-```jsx
-<Vimeo id="253989945" />
-```
+````mdx
+<Vimeo id="22439234" />
+````
 
-## Props
+## Properties
 
 <Property name="id" type="string" required>
-  The ID of the Vimeo video to display.
+  The numeric ID of the Vimeo video to embed. This is the number at the end of the video URL, for example `22439234` from `https://vimeo.com/22439234`.
+
+  The component loads the player from `https://player.vimeo.com/video/{id}`.
+
+  ```mdx
+  <Vimeo id="22439234" />
+  ```
 </Property>
+
+---
+
+<Property name="video" type="string" optional>
+  Legacy alias for `id`. Use `id` in new content; `video` is supported for backward compatibility with older pages.
+
+  When both are set, `id` is used.
+
+  ```mdx
+  <Vimeo video="22439234" />
+  ```
+</Property>
+
+## Behavior
+
+| Condition | Result |
+| --- | --- |
+| `id` or `video` set | Renders a responsive `<iframe>` at `https://player.vimeo.com/video/{id}` |
+| Both `id` and `video` set | `id` wins |
+| Neither `id` nor `video` set | Renders an empty `<div>` |
+
+The iframe uses a 16:9 aspect ratio, fills the content width, and has rounded corners. Full-screen viewing is enabled via `allowFullScreen`.
+
+<Info>
+  Vimeo embeds may fail silently when the video owner restricts playback to specific domains. Check the video's privacy settings on Vimeo if readers report a blank player.
+</Info>
+
+## See also
+
+- [YouTube](/components/youtube): embed YouTube videos
+- [Video](/components/video): self-hosted or generic embedded video
+- [Components overview](/components): when to use embeds, callouts, and media components

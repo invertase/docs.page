@@ -1,0 +1,59 @@
+---
+title: Mintlify
+description: Decide between Git-native docs.page and Mintlify when evaluating hosted documentation platforms.
+---
+
+Your team wants polished product docs, and you are weighing a Git-first workflow against Mintlify's hosted editor and dashboard.
+
+## Overview
+
+Both platforms target modern developer documentation with themes, search, and AI features. The split is **where work happens** and **what you optimize for**.
+
+Mintlify is a hosted SaaS product centered on a web editor, dashboard deploys, and a broad feature set that includes API reference tooling. docs.page is free, open-source hosting for **public GitHub repositories**: configuration in `docs.json`, pages in `docs/**/*.mdx`, and a live site on every push, with [agent-ready surfaces](/ai-agents/overview) wired into that same Git source.
+
+See [Introduction](/) for the docs.page file layout and publish model.
+
+## How it works
+
+### Authoring: Git workflow vs web editor
+
+Mintlify's web editor suits teams where non-developers write outside the repository. docs.page keeps **docs-as-code in Git**, the same pull request workflow you use for source. Contributors edit MDX in their IDE or through GitHub's web editor via **Edit page** on any live doc.
+
+That Git-native model is a strength when documentation must stay in sync with code reviews, versioning, and open-source contribution flows. Mintlify fits better when a visual editor and dashboard-centric authoring matter more than repository purity.
+
+### Publishing: push-to-publish vs dashboard deploys
+
+On docs.page, merge to your default branch and the live site updates (no build artifact, no deploy button, no hosting project). Mintlify typically routes changes through its dashboard and deployment flow.
+
+docs.page's push-to-publish model removes a whole class of CI and hosting configuration. Teams that already live in Git get **instant publishing** without maintaining a separate docs pipeline.
+
+### Cost, ownership, and open source
+
+docs.page is **free and open source**. Your `docs.json` and MDX files remain in your repository; there is no proprietary content store.
+
+Mintlify is a paid hosted platform with a managed editorial experience. Choose Mintlify when you want that full SaaS product and are willing to pay for it. Choose docs.page when you want **Mintlify-level presentation** (themes, components, search, custom domains) without a SaaS bill or platform lock-in.
+
+### AI and agents
+
+Both platforms invest in AI. docs.page treats agents as first-class readers from the same Git source: auto-generated [llms.txt](/ai-agents/llms-txt), a per-repo [MCP server](/ai-agents/mcp-server) on by default, optional [agent skills](/ai-agents/agent-skills), and optional [Ask AI](/ai-agents/ask-ai) (**beta**) for in-docs chat. You do not run a separate export job or mirror.
+
+Mintlify bundles AI into its hosted product. docs.page's advantage is **agent surfaces on every public site** without enabling them in a dashboard; they follow from public Git hosting.
+
+### Built for public, open documentation
+
+docs.page hosts **public GitHub repositories** by design, the model open-source maintainers and SDK authors use when docs belong beside code. Agent exports, branch previews, and shareable `~ref` URLs all assume that public Git source.
+
+Mintlify supports private documentation workflows docs.page deliberately does not target. If your docs must stay private, Mintlify or a self-hosted stack is the better fit. If your docs can live in public Git, docs.page turns that visibility into **discoverability for humans and agents**.
+
+### API reference and prose docs
+
+Mintlify ships **OpenAPI and API playground** tooling as a core product vertical alongside prose documentation. docs.page optimizes for **markdown documentation sites** in public Git (guides, handbooks, SDK prose, navigation, and [agent-ready exports](/ai-agents/overview)).
+
+Teams that need interactive API explorers often choose Mintlify or a dedicated API reference product for that layer while keeping long-form docs in Git.
+
+## Related
+
+- [Introduction](/): docs.page hosting model and who it is for
+- [Public GitHub hosting](/features/public-github-hosting): push-to-publish and page actions
+- [Agent-ready docs](/ai-agents/overview): llms.txt, MCP, and Ask AI
+- [docs.page vs Docusaurus](/comparisons/docusaurus): comparing to a static-site generator workflow

@@ -1,20 +1,83 @@
 ---
-title: Add YouTube videos to your documentation
-description: Learn how to add YouTube embeds to your documentation.
+title: YouTube
+description: Embed a YouTube video by pasting its video ID from the watch or Shorts URL.
 ---
 
-Use the `<YouTube />` component to embed [YouTube](https://youtube.com/) videos in your documentation.
+Use `<YouTube>` to embed a video from [YouTube](https://www.youtube.com/) in your documentation. Pass the video ID from the URL; the component renders a responsive iframe pointed at `youtube.com/embed/{id}`.
+
+```mdx
+<YouTube id="X8ipUgXH6jw" />
+```
+
+## Video ID
+
+Copy the ID from the `v` query parameter in a YouTube watch URL. For example, `https://www.youtube.com/watch?v=X8ipUgXH6jw` has ID `X8ipUgXH6jw`.
+
+Short links such as `https://youtu.be/X8ipUgXH6jw` use the same ID: the segment after the final slash.
+
+Shorts URLs use the same ID: the path segment after `/shorts/`. For example, `https://www.youtube.com/shorts/X8ipUgXH6jw` has ID `X8ipUgXH6jw`.
 
 ## Example
 
 <YouTube id="X8ipUgXH6jw" />
 
-```jsx
+````mdx
 <YouTube id="X8ipUgXH6jw" />
-```
+````
 
-## Props
+## Properties
 
 <Property name="id" type="string" required>
-  The ID of the YouTube video to display.
+  The YouTube video ID to embed. This is the value of the `v` parameter in a watch URL, for example `X8ipUgXH6jw` from `https://www.youtube.com/watch?v=X8ipUgXH6jw`.
+
+  When `id` is omitted or empty, the component renders nothing.
+
+  ```mdx
+  <YouTube id="X8ipUgXH6jw" />
+  ```
 </Property>
+
+---
+
+<Property name="allowFullScreen" type="boolean" optional>
+  Controls whether the iframe can expand to full screen. Maps to the `allowFullScreen` attribute on the underlying `<iframe>`.
+
+  - omitted or `true`: full screen allowed (default)
+  - `allowFullScreen={false}`: full-screen mode disabled
+
+  ```mdx
+  <YouTube id="X8ipUgXH6jw" allowFullScreen={false} />
+  ```
+</Property>
+
+---
+
+<Property name="allow" type="string" optional>
+  The `allow` attribute on the iframe, which declares browser features the embed may use.
+
+  Defaults to `accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture`. Most readers never need to change this.
+
+  ```mdx
+  <YouTube
+    id="X8ipUgXH6jw"
+    allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+  />
+  ```
+</Property>
+
+## Behavior
+
+| Condition | Result |
+| --- | --- |
+| `id` omitted or empty | Renders nothing |
+| `id` set | Renders an iframe at `https://www.youtube.com/embed/{id}` |
+| `allowFullScreen` omitted | Full-screen mode enabled |
+| `allow` omitted | Default feature policy applied |
+
+The iframe uses a 16:9 aspect ratio, fills the content width, and has rounded corners. The iframe `title` is set to **YouTube video**.
+
+## See also
+
+- [Vimeo](/components/vimeo): embed Vimeo videos by ID
+- [Video](/components/video): self-hosted or generic embedded video
+- [Components overview](/components): when to use embeds, callouts, and media components
