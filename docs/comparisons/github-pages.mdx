@@ -1,0 +1,55 @@
+---
+title: GitHub Pages
+description: Decide between docs.page as a docs platform and GitHub Pages as hosting infrastructure.
+---
+
+GitHub Pages is familiar: enable it on a repo, point at a branch or Actions workflow, and serve static files from `github.io`. docs.page also publishes from GitHub, but as a **documentation platform**, not just a static file host.
+
+## Overview
+
+GitHub Pages provides **hosting infrastructure**. You still choose and run a generator (Jekyll, Hugo, Docusaurus, or a custom Actions pipeline) to produce what Pages serves.
+
+docs.page reads `docs.json` and `docs/**/*.mdx` from a **public GitHub repository** and returns a complete documentation site on push (no Pages project, no workflow YAML, no artifact upload). Search, themes, branch previews, and [agent surfaces](/ai-agents/overview) are part of the platform, not plugins you wire up.
+
+See [Public GitHub hosting](/features/public-github-hosting) for the docs.page request model.
+
+## How it works
+
+### Setup: docs platform vs host plus generator
+
+Typical GitHub Pages setup: pick a generator, configure build in Actions or Jekyll, manage `_site` output, configure Pages settings, debug failed deploys.
+
+docs.page setup: add `docs.json` and MDX under `docs/`, push to a public repo, open your live URL. The **zero-config publish loop** is the product, built for teams who want documentation live without owning CI for docs.
+
+GitHub Pages wins when you want everything inside GitHub's ecosystem with a pipeline you already maintain, or when you serve non-docs static sites from the same repo.
+
+### URLs, branding, and docs features
+
+Default Pages URLs use `github.io` paths unless you configure a custom domain and maintain the site yourself. docs.page offers `docs.page/{owner}/{repo}`, [vanity subdomains](/features/vanity-subdomains), [custom domains](/features/custom-domains), and docs-specific routes (`/search.json`, `/llms.txt`, `/mcp`, [branch preview](/features/branch-preview) `~ref` URLs) without extra wiring.
+
+Choose docs.page when you want **branded product documentation** with search, navigation, and agent exports out of the box. Choose Pages when generic static hosting is enough and you accept assembling the rest.
+
+### Preview and contributor workflow
+
+Pages preview deploys usually mean another Actions workflow or third-party preview app. docs.page provides [local CLI preview](/features/local-preview), shareable ref URLs for branches and pull requests, and an optional [GitHub App](/features/github-app) that comments with live preview links on PRs, aligned with **open-source contribution** flows where reviewers read docs before merge.
+
+### Agent-ready from public Git
+
+Static HTML on Pages is for human browsers. docs.page adds [llms.txt](/ai-agents/llms-txt), [MCP](/ai-agents/mcp-server), and optional [Ask AI](/ai-agents/ask-ai) (**beta**) from the same public repository, so assistants discover and read docs without scraping HTML.
+
+That agent layer is a core reason teams choose docs.page over "Pages plus a theme."
+
+### Built for public, open documentation
+
+docs.page and public GitHub Pages both suit **public documentation**. docs.page goes further by optimizing the entire stack (rendering, search, previews, agent exports) for that model.
+
+GitHub Pages on paid plans can serve from private repositories; docs.page intentionally focuses on **public repos** where open-source and SDK documentation live beside code. That scope is a strength: one clear model, no auth layer to configure, maximum discoverability for readers and agents.
+
+Teams that need private or login-gated docs should use GitHub Pages (with appropriate plan features) or self-hosted tooling. Teams publishing public docs from GitHub get a faster path with docs.page.
+
+## Related
+
+- [Introduction](/): docs-as-code with no hosting setup
+- [GitHub App](/features/github-app): automatic PR preview comments
+- [Agent-ready docs](/ai-agents/overview): llms.txt, MCP, and Ask AI
+- [docs.page vs Docusaurus](/comparisons/docusaurus): a common generator behind Pages

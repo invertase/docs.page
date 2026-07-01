@@ -1,0 +1,178 @@
+---
+title: Card
+description: Build linked overview tiles and multi-column card grids for landing pages.
+---
+
+Use `<Card>` to present related content in a bordered panel. Add an optional `title`, `icon`, or `href` in the header, then put any page content (paragraphs, lists, or code blocks) in the card body.
+
+Wrap multiple cards in `<CardGroup>` to lay them out in a responsive grid. Set `cols` to control how many cards appear per row.
+
+```mdx
+<Card title="Installation">
+  Run the install command, then verify the CLI is available.
+</Card>
+```
+
+## Basic card
+
+A card with a `title` shows a header above the body content. Omit `title`, `icon`, and `href` to render body content only.
+
+<Card title="Installation">
+  Install the package with your preferred package manager:
+
+  ```bash
+  npm install @myorg/my-package
+  ```
+</Card>
+
+````mdx
+<Card title="Installation">
+  Install the package with your preferred package manager:
+
+  ```bash
+  npm install @myorg/my-package
+  ```
+</Card>
+````
+
+## With `href`
+
+Add `href` to show an external-link button in the card header. The button uses the same link component as other docs.page navigation; it does not make the entire card clickable.
+
+<Card title="Learn more" href="/components">
+  Browse the components overview for tabs, callouts, and accordions.
+</Card>
+
+````mdx
+<Card title="Learn more" href="/components">
+  Browse the components overview for tabs, callouts, and accordions.
+</Card>
+````
+
+## With `icon`
+
+Add `icon` to show a Font Awesome icon beside the title. Pass the icon slug without the `fa-` prefix, for example `gear` for a settings icon or `book` for documentation.
+
+<Card title="Documentation" icon="book">
+  Read the reference pages for properties, behavior, and examples.
+</Card>
+
+````mdx
+<Card title="Documentation" icon="book">
+  Read the reference pages for properties, behavior, and examples.
+</Card>
+````
+
+Combine `title`, `icon`, and `href` when you need a labeled card with a navigation action:
+
+<Card title="Components" icon="square" href="/components">
+  Jump to the components overview.
+</Card>
+
+````mdx
+<Card title="Components" icon="square" href="/components">
+  Jump to the components overview.
+</Card>
+````
+
+## Properties
+
+### `Card`
+
+<Property name="title" type="string" optional>
+  The text shown in the card header. Use short, scannable titles such as **Installation** or **API reference**.
+
+  The header renders when `title`, `icon`, or `href` is set.
+</Property>
+
+---
+
+<Property name="href" type="string" optional>
+  A link destination for the external-link button in the card header.
+
+  The button appears in the top-right of the header. The card body is not clickable; only the button navigates.
+</Property>
+
+---
+
+<Property name="icon" type="string" optional>
+  A Font Awesome icon slug displayed beside the title. Pass the slug without the `fa-` prefix, for example `gear` or `book`.
+
+  Brand icons use their brand slug (for example, `github`). See [Icon](/components/icon) for details.
+</Property>
+
+## Card groups
+
+Use `<CardGroup>` to arrange multiple cards in a grid. By default, cards flow into two equal columns.
+
+<CardGroup>
+  <Card title="Installation" icon="gear">
+    Install the package and verify the CLI.
+  </Card>
+  <Card title="Documentation" icon="book" href="/components">
+    Browse component reference pages.
+  </Card>
+</CardGroup>
+
+````mdx
+<CardGroup>
+  <Card title="Installation" icon="gear">
+    Install the package and verify the CLI.
+  </Card>
+  <Card title="Documentation" icon="book" href="/components">
+    Browse component reference pages.
+  </Card>
+</CardGroup>
+````
+
+Set `cols` to change the number of columns, for example three cards per row on wider layouts.
+
+<CardGroup cols={3}>
+  <Card title="Tabs" icon="folder" href="/components/tabs">
+    Switchable content panels.
+  </Card>
+  <Card title="Accordion" icon="chevron-down" href="/components/accordion">
+    Expandable sections.
+  </Card>
+  <Card title="Callouts" icon="message" href="/components/callouts">
+    Emphasized notes and warnings.
+  </Card>
+</CardGroup>
+
+````mdx
+<CardGroup cols={3}>
+  <Card title="Tabs" icon="folder" href="/components/tabs">
+    Switchable content panels.
+  </Card>
+  <Card title="Accordion" icon="chevron-down" href="/components/accordion">
+    Expandable sections.
+  </Card>
+  <Card title="Callouts" icon="message" href="/components/callouts">
+    Emphasized notes and warnings.
+  </Card>
+</CardGroup>
+````
+
+### `CardGroup`
+
+<Property name="cols" type="number" optional>
+  The number of columns in the card grid.
+
+  Defaults to `2`.
+</Property>
+
+## Behavior
+
+| Condition | Result |
+| --- | --- |
+| `title`, `icon`, and `href` all omitted on `<Card>` | Renders body content only (no header) |
+| `href` set | Shows an external-link button in the header; body is not clickable |
+| `icon` set | Renders a Font Awesome icon beside the title in the header |
+| `cols` omitted on `<CardGroup>` | Uses a two-column grid |
+| Any content as `<Card>` children | Rendered in the card body |
+
+## See also
+
+- [Components overview](/components): card grid used on the components landing page
+- [Icon](/components/icon): Font Awesome icon slugs for the `icon` property
+- [Callouts](/components/callouts): emphasized panels for notes and warnings inside cards

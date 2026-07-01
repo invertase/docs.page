@@ -1,0 +1,108 @@
+---
+title: Sidebar
+description: Understand how groups, nested pages, and locale keys combine into the left navigation tree.
+---
+
+When someone opens your docs site, the links in the left column come from the `sidebar` property in `docs.json`, not from the folder layout under `docs/`. You declare groups, page links, and optional nesting explicitly, and docs.page renders that tree in the sidebar.
+
+## Overview
+
+The sidebar is your site’s navigation model. Each top-level entry is a **group** with a `pages` array. Groups can carry an optional label (`group`), icon, landing link (`href`), and tab assignment (`tab`). Each page entry is a link with a `title` and `href`, or another nested group with its own `pages`.
+
+That structure drives three behaviors readers notice:
+
+- Which links appear in the left nav for the current page
+- Which nested sections expand to reveal the active page
+- Which translation tree loads when the URL includes a locale segment
+
+Field names, types, and defaults live in [docs.json](/reference/docs-json): this page explains the model, not every key.
+
+## How it works
+
+### Groups and pages
+
+The `sidebar` property is either a **flat array of groups** (single-locale sites) or a **record keyed by locale** (multi-locale sites). In both shapes, each group is an object with a `pages` array.
+
+A page item is a leaf link:
+
+```json
+{ "title": "Introduction", "href": "/" }
+```
+
+Groups without a `group` label still participate in the tree. They render as an unlabeled block of links. Groups with a `group` string render a section heading above their pages.
+
+See [Introduction](/) for how paths under `docs/` map to URL segments; sidebar `href` values should match those public paths.
+
+### Nested groups
+
+`pages` can contain groups as well as links. A nested group behaves like a collapsible section: optional `group` label, optional `href` landing page, and its own nested `pages`.
+
+```json
+{
+  "group": "Getting Started",
+  "icon": "rocket",
+  "pages": [
+    { "title": "Introduction", "href": "/" },
+    { "title": "Write", "href": "/authoring/write" },
+    { "title": "Organize", "href": "/authoring/organize" }
+  ]
+}
+```
+
+When the current page matches a nested group’s `href` or any link inside it, that section stays expanded. Nested groups can stack several levels deep using the same object shape.
+
+External URLs in `href` are supported and show an external-link indicator in the sidebar.
+
+### Flat array vs locale-keyed record
+
+**Flat array:** use when the site has one language. The entire navigation tree is the array:
+
+```json
+"sidebar": [
+  { "group": "Guide", "pages": [{ "title": "Welcome", "href": "/" }] }
+]
+```
+
+**Locale-keyed record:** use when each locale needs its own sidebar tree. Keys are locale codes; **`default`** holds the navigation for URLs without a locale prefix:
+
+```json
+"sidebar": {
+  "default": [
+    { "group": "Guide", "pages": [{ "title": "Welcome", "href": "/" }] }
+  ],
+  "fr": [
+    { "group": "Guide", "pages": [{ "title": "Bienvenue", "href": "/fr" }] }
+  ]
+}
+```
+
+docs.page derives the site’s locale list from every key in that record **except** `default`. When a reader’s URL starts with a recognized locale segment (for example `/fr/...`), the matching keyed array replaces `default` for sidebar rendering. Internal links in a localized tree can omit the locale prefix. docs.page resolves them against the active locale.
+
+See [Locales](/features/locales) for how locale segments are detected from the path and how the locale switcher uses the same list.
+
+### Tabs filter groups, not pages
+
+Top-level [Tabs](/features/tabs) partition the site into separate doc areas. Each group can set `tab` to a tab id so it only appears when that tab is active. Groups without a `tab` field appear on every tab.
+
+Tab filtering applies to top-level groups after locale resolution. It does not split individual page links inside a group.
+
+### What the sidebar does not control
+
+The sidebar defines navigation links and grouping. It does not replace [Search](/features/search), [Links](/features/links) anchor shortcuts in the sidebar footer, or [Navigation buttons](/features/previous-and-next-links) at the bottom of each page. Those read sidebar order but have their own configuration surfaces.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Locales" icon="language" href="/features/locales">
+    How locale keys in `sidebar` map to URL segments and the locale switcher.
+  </Card>
+  <Card title="Tabs" icon="folder" href="/features/tabs">
+    Split the site into top-level tabs, each scoped to its own sidebar groups.
+  </Card>
+  <Card title="Organize" icon="sitemap" href="/authoring/organize">
+    Structure your sidebar so readers can find content: workflow on the Documentation tab.
+  </Card>
+  <Card title="docs.json" icon="book" href="/reference/docs-json">
+    Field-level lookup for `sidebar`, groups, pages, and related config keys.
+  </Card>
+</CardGroup>

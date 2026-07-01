@@ -1,0 +1,105 @@
+---
+title: Public GitHub hosting
+description: Serve docs from a public GitHub repository on every push without any build or deploy step.
+---
+
+When someone opens `https://docs.page/acme/handbook`, the HTML they see is not a static export sitting on a CDN bucket. docs.page fetches your public GitHub repository, bundles the matching MDX page, and returns a rendered site from the files you committed.
+
+## Overview
+
+GitHub is the source of truth for a hosted docs.page site. Configuration lives in `docs.json` (or `docs.yaml`) at the repository root; page content lives under `docs/**/*.mdx`. docs.page does not clone your repo into a dashboard or run a separate deploy pipeline. It fetches those files from GitHub and renders them at request time.
+
+That model is **push-to-publish**: merge or push to your default branch and the live site reflects those commits. There is no build artifact to upload and no hosting project to configure beyond making the repository public and adding the required files.
+
+See [Introduction](/) for the file layout and how paths under `docs/` map to URL segments.
+
+## How it works
+
+### Production is your default branch
+
+URLs without a ref segment serve content from the repository's **default branch** (usually `main`, but whatever GitHub reports as the default for that repo).
+
+```
+https://docs.page/{owner}/{repo}
+https://docs.page/{owner}/{repo}/{page-path}
+```
+
+For example, `https://github.com/acme/handbook` with default branch `main` is served at `https://docs.page/acme/handbook`. A page at `docs/usage.mdx` is `https://docs.page/acme/handbook/usage`.
+
+docs.page resolves the default branch through the GitHub API on each bundle request. You do not configure a production branch name in `docs.json`. Renaming the default branch on GitHub updates what the canonical URL serves. There is no separate promote-to-production step.
+
+### What happens when someone visits a URL
+
+On each page request, docs.page:
+
+1. Parses the URL into owner, repository, optional ref, and page path
+2. Fetches `docs.json` (or `docs.yaml`) and the target `.mdx` file from GitHub at the resolved ref
+3. Validates configuration, bundles MDX, and returns the rendered page
+
+Responses are cached at the edge for a short period (on the order of one minute), so a push may take a moment to appear everywhere. There is no manual "publish" button. Visibility follows Git.
+
+### Public repositories only
+
+docs.page only hosts **public** GitHub repositories. If the repository is private, the platform returns a `403` error before any content is bundled or served.
+
+<Info>
+  Keep documentation in a public repository, or in a dedicated public docs repo linked from your project. docs.page cannot serve private repos, even with a GitHub token on your side.
+</Info>
+
+If you need access-controlled documentation, use a self-hosted static generator or a custom app with your own auth layer.
+
+### Branch, commit, and pull request previews
+
+To serve a branch, commit, or pull request before it merges, add a `~ref` segment after the repository name. Production URLs omit this segment entirely.
+
+```
+https://docs.page/{owner}/{repo}~{ref}
+https://docs.page/{owner}/{repo}~{ref}/{page-path}
+```
+
+See [Branch preview](/features/branch-preview) for ref URL patterns, when to use shareable previews, and how the GitHub App adds PR comments.
+
+For iterating on your machine before you push, use [Local preview](/features/local-preview) instead.
+
+### Page actions
+
+Every rendered doc page includes a **Copy page** control in the header: a primary button plus a dropdown menu. Readers and contributors use it without configuration in `docs.json`.
+
+| Menu item | What it does |
+| --- | --- |
+| **Copy page** | Copies the current page as rendered markdown to the clipboard |
+| **Edit page** | Opens the source `.mdx` file on GitHub in the web editor (default branch or current preview ref) |
+| **View markdown** | Opens the current page at `{path}.md` for raw source from GitHub in the browser |
+| **Install with MCP** | Opens the **Install MCP** dialog with endpoint URL and client config snippets |
+| **Open in Claude** | Opens Claude on the web with a prompt to read the current page URL |
+| **Connect to VSCode** | Deep link to register this site's MCP server in VS Code |
+| **Connect to Cursor** | Deep link to register this site's MCP server in Cursor |
+
+**Edit page** is disabled during [local preview](/features/local-preview). **Install with MCP**, **Connect to VSCode**, and **Connect to Cursor** require a public site with MCP enabled. When `mcp.enabled` is `false`, the MCP endpoint is unavailable but the menu items may still appear.
+
+Several shortcuts also appear in the **⌘K** command palette when the input is empty: **Ask AI** (when enabled), **Install MCP** (when MCP is enabled), and **GitHub**. See [Search](/features/search#command-palette-k).
+
+Contributors fixing typos without a local clone can use **Edit page** from any live or branch preview URL. See [Publish](/authoring/publish#edit-a-page-on-github). For agent setup from the menu, see [MCP server](/ai-agents/mcp-server#connect-from-the-live-site).
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/quickstart">
+    Scaffold files, push to a public repo, and open your live URL.
+  </Card>
+  <Card title="Introduction" icon="book-open" href="/">
+    Required files, assets, and how `docs/` paths become URLs.
+  </Card>
+  <Card title="Local preview" icon="eye" href="/features/local-preview">
+    Preview theme and layout on your machine before you push.
+  </Card>
+  <Card title="Branch preview" icon="code-branch" href="/features/branch-preview">
+    Share branch, commit, and pull request URLs with teammates.
+  </Card>
+  <Card title="Search" icon="magnifying-glass" href="/features/search">
+    Command palette shortcuts that overlap with the page action menu.
+  </Card>
+  <Card title="Agent-ready docs" icon="robot" href="/ai-agents/overview">
+    llms.txt, MCP, and Ask AI surfaces from the same Git source.
+  </Card>
+</CardGroup>
