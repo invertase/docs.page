@@ -243,7 +243,7 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
       // Api-style routes (mcp / llms.txt / sitemap.xml / robots.txt / search.json
       // / og) live in the App Router (`app/api/...`) and never reach this Pages
       // Router catch-all, so they are excluded by construction.
-      const { fetchConfigForRoute } = await import("@/server/config");
+      const { fetchConfigForRoute } = await import("@/server/config/fetch");
       const config = await fetchConfigForRoute({
         owner: route.owner,
         repository: route.repository,
