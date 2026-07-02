@@ -26,7 +26,7 @@ export function Hero() {
           size="lg"
           className="group rounded-full px-6 py-6 text-lg"
         >
-          <Link href="/get-started">
+          <Link href="https://use.docs.page">
             <span>Get started</span>
             <RiArrowRightSLine className="size-6 group-hover:translate-x-1 transition-transform" />
           </Link>
