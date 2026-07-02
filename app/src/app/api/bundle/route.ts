@@ -45,19 +45,6 @@ export async function GET(req: Request) {
       }),
     ]);
 
-    getPostHogClient()?.capture({
-      distinctId: `${input.data.owner}/${input.data.repository}`,
-      event: "docs:bundle_view",
-      properties: {
-        owner: input.data.owner,
-        repository: input.data.repository,
-        ref: input.data.ref ?? null,
-        path: input.data.path,
-        has_agent: hasAgent,
-        $process_person_profile: false,
-      },
-    });
-
     const response = Response.json(
       {
         code: "OK",

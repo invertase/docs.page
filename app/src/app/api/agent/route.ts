@@ -326,6 +326,8 @@ export async function POST(req: Request) {
       repository: session.repo,
       provider,
       message_count: messages.length,
+      is_first_message: messages.length === 1,
+      session_id: session.sid,
       $process_person_profile: false,
     },
   });
