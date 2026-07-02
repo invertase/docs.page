@@ -64,6 +64,41 @@ Leave a minimal file at the **old** path and set `redirect` in frontmatter to th
   Do not rely on query strings or hash anchors in `redirect` values. They are not part of the redirect contract.
 </Warning>
 
+## Redirect many URLs from docs.json
+
+A frontmatter `redirect` stub is ideal for a **one-off** move where you want to keep a file at the old path. When you restructure a whole section, or you delete pages and do not want to leave stub files behind, manage the moves centrally with the `redirects` map in `docs.json` instead.
+
+`redirects` is a map of **old path → new destination**. On a doc page request whose path matches a key, docs.page returns a **307 Temporary Redirect** to the destination. Because it runs when the requested page is not found, it also covers paths whose `.mdx` file was **deleted or moved**, so you can restructure without keeping a stub at every old URL.
+
+```json
+{
+  "$schema": "https://docs.page/schema.json",
+  "redirects": {
+    "/old-page": "/new-page",
+    "/moved": "/section/moved",
+    "/gone": "https://example.com/elsewhere"
+  }
+}
+```
+
+Destinations take the same three forms as a frontmatter `redirect`:
+
+| Value form | Example | Resolves to |
+| --- | --- | --- |
+| Root-relative path | `/section/moved` | The path on the same host and ref as the request (production, `~ref` preview, vanity subdomain, or custom domain) |
+| Relative path | `section/moved` | Anchored to the repo doc-root and ref, same as a root-relative path |
+| External URL | `https://example.com/elsewhere` | The URL verbatim |
+
+<Info>
+  Keys are matched tolerant of leading and trailing slashes, so `/old-page`, `old-page`, and `old-page/` all match the same request. Redirects are **temporary (307)** to match the per-page `redirect` behavior.
+</Info>
+
+<Warning>
+  Config `redirects` apply only to documentation page loads. They do **not** affect platform API routes (`mcp`, `llms.txt`, `sitemap.xml`, `robots.txt`, `search.json`, and generated `og` images), which are served on separate routes.
+</Warning>
+
+Reach for `redirects` when you have many URLs to preserve or want them managed in one place; reach for a frontmatter `redirect` stub for a single page you are keeping in the tree. See [docs.json → redirects](/reference/docs-json#redirects) for the field reference.
+
 ## Verify the redirect
 
 After you add or change redirect stubs:

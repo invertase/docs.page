@@ -21,7 +21,7 @@ Site configuration lives in `docs.json` or `docs.yaml` at the repository root. F
 | `header`, `tabs`, `sidebar`, `anchors` | [header](#header), [tabs](#tabs), [sidebar](#sidebar), [anchors](#anchors) |
 | `content`, `seo`, `variables` | [content](#content), [seo](#seo), [variables](#variables) |
 | `scripts`, `search`, `social`, `og` | [scripts](#scripts), [search](#search), [social](#social), [og](#og) |
-| `agent`, `mcp` | [agent](#agent), [mcp](#mcp) |
+| `agent`, `mcp`, `redirects` | [agent](#agent), [mcp](#mcp), [redirects](#redirects) |
 
 ## Schema-only fields
 
@@ -423,6 +423,22 @@ See [Ask AI](/features/ask-ai).
 </Property>
 
 See [MCP server](/features/mcp-server).
+
+## redirects
+
+<Property name="redirects" type="object">
+  Map of **old path → new destination** applied site-wide. When a documentation page request matches a key, docs.page returns a **307 Temporary Redirect** to the destination. Because it runs on the not-found path, it also covers URLs whose page was deleted or moved.
+
+  ```json
+  "redirects": {
+    "/old-page": "/new-page",
+    "/moved": "/section/moved",
+    "/gone": "https://example.com/elsewhere"
+  }
+  ```
+
+  Keys match tolerant of leading and trailing slashes. Each value is a root-relative path (resolved against the same host and ref as the request), a relative path (anchored to the repo doc-root and ref), or a full external `https://` URL (used verbatim). Does not apply to platform API routes (`mcp`, `llms.txt`, `sitemap.xml`, `robots.txt`, `search.json`, `og`). See [Redirects](/authoring/redirects#redirect-many-urls-from-docs-json).
+</Property>
 
 ## See also
 
