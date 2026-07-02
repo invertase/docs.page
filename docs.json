@@ -40,7 +40,7 @@
     "/custom-domains": "/features/custom-domains",
     "/vanity-domains": "/features/vanity-subdomains",
     "/github-bot": "/features/github-app",
-    "/assets": "/components/image",
+    "/assets": "/authoring/write",
     "/configuration": "/reference/docs-json",
     "/frontmatter": "/reference/page-frontmatter",
     "/cli": "/reference/cli",
@@ -51,7 +51,7 @@
     "/components/headings": "/components/heading",
     "/components/icons": "/components/icon",
     "/components/images": "/components/image",
-    "/contributing": "/"
+    "/contributing": "https://github.com/invertase/docs.page/blob/main/CONTRIBUTING.md"
   },
   "tabs": [
     {
