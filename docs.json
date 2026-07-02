@@ -322,6 +322,10 @@
           "href": "/components/image"
         },
         {
+          "title": "Mermaid",
+          "href": "/components/mermaid"
+        },
+        {
           "title": "Property",
           "href": "/components/property"
         },
