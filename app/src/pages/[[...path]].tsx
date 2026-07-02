@@ -32,6 +32,7 @@ import {
   acceptPrefersMarkdown,
   incomingHttpHeadersToWebHeaders,
 } from "@/lib/incoming-http-headers";
+import { getPostHogClient } from "@/lib/posthog";
 import type {
   DocPageProps,
   ErrorPageProps,
@@ -261,6 +262,17 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
       };
     }
 
+    getPostHogClient()?.capture({
+      distinctId: `${owner}/${repo}`,
+      event: "docs:page_fail",
+      properties: {
+        owner,
+        repository: repo,
+        error_message: error.message,
+        $process_person_profile: false,
+      },
+    });
+
     return {
       props: {
         kind: "error" as const,
@@ -303,7 +315,31 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
         csrfCookiePath,
       ),
     );
+
+    getPostHogClient()?.capture({
+      distinctId: `${route.owner}/${route.repository}`,
+      event: "agent:session_create",
+      properties: {
+        owner: route.owner,
+        repository: route.repository,
+        ref: route.ref ?? null,
+        $process_person_profile: false,
+      },
+    });
   }
+
+  getPostHogClient()?.capture({
+    distinctId: `${route.owner}/${route.repository}`,
+    event: "docs:page_view",
+    properties: {
+      owner: route.owner,
+      repository: route.repository,
+      ref: route.ref ?? null,
+      path: route.docPath ?? null,
+      has_agent: successResponse.hasAgent,
+      $process_person_profile: false,
+    },
+  });
 
   return {
     props: {
