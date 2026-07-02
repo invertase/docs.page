@@ -1,11 +1,17 @@
 ---
 title: Property
-description: Display the signature details of a property.
+description: Document API fields with name, type, and required badges in reference pages.
 ---
 
-Use the `<Property />` component to display the signature of a property, such as the name, type and description.
+Use `<Property>` to document a single field, parameter, or configuration key with a name, type badge, and optional **required** or **optional** labels. Put the description in the component body so you can use rich content (code blocks, lists, callouts, and nested components).
 
-The description can be provided as children to the component, allowing for rich formatting using Markdown syntax.
+Separate consecutive properties with a horizontal rule (`---`) so readers can scan long reference sections.
+
+```mdx
+<Property name="apiKey" type="string" required>
+  Your API key from the dashboard.
+</Property>
+```
 
 ## Example
 
@@ -23,20 +29,18 @@ The description can be provided as children to the component, allowing for rich 
 
   <Accordion title="Theme" defaultOpen>
     <Property name="color" type="string" required>
-      The theme colour of your brand.
+      The theme color of your brand.
     </Property>
 
     ---
 
     <Property name="font" type="string" optional>
-      The font family to use for your application. Defaults to `Comic Sans`.
+      The font family to use for your application. Defaults to `system-ui`.
     </Property>
   </Accordion>
 </Property>
 
-## Usage
-
-````jsx
+````mdx
 <Property name="theme" type="Theme" required>
   Defines the theming properties for your application.
 
@@ -51,44 +55,89 @@ The description can be provided as children to the component, allowing for rich 
 
   <Accordion title="Theme" defaultOpen>
     <Property name="color" type="string" required>
-      The theme colour of your brand.
+      The theme color of your brand.
     </Property>
 
     ---
 
     <Property name="font" type="string" optional>
-      The font family to use for your application. Defaults to `Comic Sans`.
+      The font family to use for your application. Defaults to `system-ui`.
     </Property>
   </Accordion>
 </Property>
 ````
 
-## Props
+## Property vs markdown tables
+
+Both formats suit reference pages. Choose based on how much detail each field needs.
+
+| Use `<Property>` when… | Use a markdown table when… |
+| --- | --- |
+| Descriptions need code, lists, or callouts | Every field fits in one short line |
+| Fields are nested inside an `<Accordion>` | You need a flat, at-a-glance summary |
+| Readers copy examples from the description | You are comparing columns (type, default, required) across many rows |
+| A field needs more than a sentence of context | The list is long and uniform with no nested structure |
+
+Component reference pages in this section use `<Property>` blocks for component properties. Use markdown tables for behavior matrices and when-to-use comparisons instead.
+
+## Properties
 
 <Property name="name" type="string" required>
-  The name of the property
+  The field name shown in monospace at the start of the block.
+
+  Without `name`, the component renders nothing.
 </Property>
 
 ---
 
 <Property name="type" type="string" optional>
-  The type of the property, such as `string`, `boolean` etc.
+  The type of the field, such as `string`, `boolean`, or a custom object name like `Theme`.
+
+  When set, the type appears as an outline badge next to the name. Omit `type` when the name alone is enough, for example when documenting `children`.
 </Property>
 
 ---
 
 <Property name="required" type="boolean" optional>
-  Whether to mark this property as required.
+  When present, shows a **required** badge next to the name.
+
+  Use `required` on its own (a boolean attribute) or `required={true}`. Do not set both `required` and `optional` on the same property unless you intend to show both badges.
 </Property>
 
 ---
 
 <Property name="optional" type="boolean" optional>
-  Whether to mark this property as optional.
+  When present, shows an **optional** badge next to the name.
+
+  Use for fields readers may omit. Pair with prose in the description for defaults or fallback behavior.
 </Property>
 
 ---
 
 <Property name="children" optional>
-  The children to render as the properties description.
+  Content rendered as the field description. Supports paragraphs, fenced code blocks, lists, callouts, and nested components such as `<Accordion>`.
+
+  Leave empty only when the name and badges are sufficient, which is rare for reference pages.
 </Property>
+
+## Nesting
+
+Wrap nested object fields in `<Accordion>` so the parent property stays scannable. Put child `<Property>` blocks inside the accordion panel and separate siblings with `---`, as in the [example](#example) above.
+
+For deeply nested APIs, repeat the pattern: a parent `<Property>` for the object, an accordion for its fields, and further accordions inside child descriptions when needed.
+
+## Behavior
+
+| Condition | Result |
+| --- | --- |
+| `name` omitted | Renders nothing |
+| `type` omitted | No type badge; name and description still render |
+| `required` omitted | No **required** badge |
+| `optional` omitted | No **optional** badge |
+| Both `required` and `optional` set | Both badges render |
+
+## See also
+
+- [Components overview](/components): when to use property blocks, tables, and accordions
+- [Accordion](/components/accordion): collapsible panels for nested fields
+- [Write](/authoring/write): structure for lookup pages like this one

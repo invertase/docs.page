@@ -1,0 +1,49 @@
+---
+title: Custom domain
+description: Request a hostname you own for your hosted docs repository and learn what to prepare before going live.
+---
+
+**Before you begin**
+
+- A docs.page site already live on a **public** GitHub repository; see [Public GitHub hosting](/features/public-github-hosting)
+- The hostname you want (for example `docs.example.com`) and admin access to its DNS
+- If a shorter URL on docs.page is enough, see [Vanity subdomains](/features/vanity-subdomains) — no request or DNS changes required
+
+Custom domain mappings are **one hostname, one repository**. You cannot point the same hostname at multiple docs repos.
+
+---
+
+<Warning>
+  Custom domain setup is handled by the docs.page team today. Self-serve CLI setup (`docs domain add`) is planned but not available yet.
+</Warning>
+
+## Request a custom domain
+
+Open a [GitHub issue on invertase/docs.page](https://github.com/invertase/docs.page/issues/new) and include:
+
+- Your GitHub repository (`owner/repo`)
+- The hostname you want (for example `docs.example.com`)
+- Whether you need apex (`example.com`) or subdomain (`docs.example.com`) routing
+
+The team configures the hostname mapping and replies with the DNS records to add at your provider. You do not configure custom domains in `docs.json`.
+
+## After your domain is active
+
+Once DNS propagates and the mapping is live:
+
+1. Open `https://{your-hostname}/` — same home page as `https://docs.page/{owner}/{repo}` with paths at `/`, not `/{owner}/{repo}`
+2. Confirm an inner page (for example `/installation`) stays on your hostname
+3. If you use [Branch preview](/features/branch-preview), ref URLs use your hostname: `https://docs.example.com/~feature-docs`
+
+For URL shapes, canonical links, redirects, and utility routes on a custom domain, see [Custom domains](/features/custom-domains).
+
+<Info>
+  [Local preview](/features/local-preview) does not simulate custom-domain URLs. Verify on production or a branch preview URL after your domain is configured.
+</Info>
+
+## Related
+
+- [Custom domains](/features/custom-domains): routing, canonical URLs, and request modes
+- [Vanity subdomains](/features/vanity-subdomains): shorter URLs without bringing your own domain
+- [Branch preview](/features/branch-preview): share ref URLs on your custom hostname
+- [Analytics](/customize/analytics): Plausible requires a resolved hostname (vanity subdomain or custom domain)

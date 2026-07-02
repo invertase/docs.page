@@ -1,0 +1,104 @@
+---
+title: Page frontmatter
+description: Set page title, SEO, redirects, and footer navigation for a single docs/ page.
+---
+
+Frontmatter overrides site defaults from `docs.json` for this page only. Unknown keys are ignored; docs.page does not validate page YAML against a schema. For writing guidance, see [Write](/authoring/write).
+
+```yaml
+---
+title: Install the CLI
+description: Install the docs.page CLI on macOS, Linux, or Windows.
+---
+```
+
+## title
+
+<Property name="title" type="string">
+  Page title for the browser tab, visible page hero (when enabled), search index, and Open Graph metadata.
+
+  Falls back to the site `name` from `docs.json` when omitted. With [`docs check --metadata`](/reference/cli), warns when `title` is missing on pages that use auto-generated social preview images.
+</Property>
+
+## description
+
+<Property name="description" type="string">
+  Short summary shown under the page title and used in metadata, search results, and social previews.
+
+  Falls back to the site `description` from `docs.json` when omitted. With [`docs check --metadata`](/reference/cli), warns when `description` is missing on pages that use auto-generated social preview images.
+</Property>
+
+## image
+
+<Property name="image" type="string">
+  Hero image path or URL rendered below the title block when `showPageImage` is enabled.
+
+  Overrides site-wide `socialPreview` for Open Graph on this page. Paths are resolved relative to the repository root, using the same rules as [Image](/components/image).
+</Property>
+
+## showPageTitle
+
+<Property name="showPageTitle" type="boolean">
+  When `false`, hide the rendered title and description hero for this page.
+
+  When omitted, inherits [`content.showPageTitle`](/reference/docs-json) from `docs.json`. Default site value: `true`.
+</Property>
+
+## showPageImage
+
+<Property name="showPageImage" type="boolean">
+  When `false`, hide the frontmatter `image` hero for this page.
+
+  When omitted, inherits [`content.showPageImage`](/reference/docs-json) from `docs.json`. Default site value: `true`.
+</Property>
+
+## noindex
+
+<Property name="noindex" type="boolean">
+  When `true`, add `noindex` to this page's metadata so search engines skip it.
+
+  Site-wide blocking uses [`seo.noindex`](/reference/docs-json) in `docs.json` instead. See [Search engine indexing](/features/search-engine-indexing).
+</Property>
+
+## redirect
+
+<Property name="redirect" type="string">
+  Root-relative path to send readers when they request this page's URL. docs.page responds with an HTTP redirect before rendering body content.
+
+  Keep a stub file at the old path. `docs check` validates that the target resolves to a real page. See [Redirects](/authoring/redirects).
+</Property>
+
+## previous
+
+<Property name="previous" type="string">
+  Root-relative path for the **Previous** footer link. Overrides sidebar-inferred navigation when [`content.automaticallyInferNextPrevious`](/reference/docs-json) is enabled.
+
+  External URLs are ignored. `docs check` validates internal targets.
+</Property>
+
+## previousTitle
+
+<Property name="previousTitle" type="string">
+  Custom label for the **Previous** footer link. When omitted, the title is taken from the matching sidebar entry.
+</Property>
+
+## next
+
+<Property name="next" type="string">
+  Root-relative path for the **Next** footer link. Overrides sidebar-inferred navigation when automatic inference is enabled.
+
+  External URLs are ignored. `docs check` validates internal targets.
+</Property>
+
+## nextTitle
+
+<Property name="nextTitle" type="string">
+  Custom label for the **Next** footer link. When omitted, the title is taken from the matching sidebar entry.
+</Property>
+
+## See also
+
+- [docs.json](/reference/docs-json): site-wide defaults that frontmatter can override
+- [CLI](/reference/cli): `docs check --metadata` for missing title and description
+- [Write](/authoring/write): page structure, links, and media
+- [Organize](/authoring/organize): sidebar order that drives default previous/next links

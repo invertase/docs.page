@@ -1,0 +1,70 @@
+---
+title: Quickstart
+description: Publish a live documentation site from a public GitHub repository in minutes.
+---
+
+**Before you begin**
+
+- A [GitHub](https://github.com) account
+- [Git](https://git-scm.com/downloads) installed locally
+- [Node.js](https://nodejs.org/) (to run the CLI via `npx`)
+
+## Steps
+
+<Steps>
+  <Step title="Scaffold your docs files">
+    Open a terminal at your project root (an empty folder or an existing repository) and run:
+
+    ```bash
+    npx @docs.page/cli init
+    ```
+
+    The CLI asks for your project name and whether to create starter pages. Accept the defaults unless you already have a `docs/` directory you want to keep. See [CLI](/features/cli) for install options and flags.
+
+    When init finishes, your project contains:
+
+    ```text
+    docs.json
+    docs/
+      index.mdx
+      next-steps.mdx
+    ```
+
+    - **`docs.json`**: site configuration (name, description, sidebar, and theme)
+    - **`docs/index.mdx`**: your home page (served at `/`)
+    - **`docs/next-steps.mdx`**: a second page (served at `/next-steps`)
+
+    Open `docs/index.mdx` and change the title or add a sentence so you can confirm your changes later on the live site.
+  </Step>
+  <Step title="Push to a public GitHub repository">
+    [docs.page](https://docs.page) only hosts **public** repositories. Commit and push from your project directory:
+
+    ```bash
+    git add docs.json docs/
+    git commit -m "Add docs.page site"
+    git push
+    ```
+
+    <Warning>
+      If the repository is private, [docs.page](https://docs.page) returns an error and does not serve your documentation. Make the repository public before opening your live URL.
+    </Warning>
+  </Step>
+  <Step title="Open your live site">
+    Your documentation is live the instant your push completes. Open your browser and navigate to:
+
+    ```text
+    https://docs.page/{owner}/{repo}
+    ```
+
+    For example, if your repository is `https://github.com/acme/my-docs`, your live site is `https://docs.page/acme/my-docs`.
+
+    Pushes to your default branch update this URL automatically with no build step. See [Public GitHub hosting](/features/public-github-hosting) for how production URLs work.
+  </Step>
+</Steps>
+
+## Next steps
+
+- [Write](/authoring/write): structure pages, add code examples, and use built-in components
+- [Organize](/authoring/organize): order sidebar groups, tabs, and page links in `docs.json`
+- [Preview](/authoring/preview): iterate on content locally before pushing; see [Local preview](/features/local-preview) for how the preview shell works
+- [Agent-ready docs](/ai-agents/overview): llms.txt, MCP, and optional Ask AI on your live site

@@ -1,0 +1,123 @@
+---
+title: Analytics
+description: Add analytics to docs.json so you can see which pages readers visit on your live site.
+---
+
+**Before you begin**
+
+- Theme and layout already set; see [Apply your branding](/customize/branding) if you have not configured `docs.json` yet
+- A **published** docs URL for verification (merge to your default branch, open a branch preview, or use a custom domain). Local `docs preview` does not load analytics scripts
+- For **Plausible** only: a [vanity subdomain](/features/vanity-subdomains) or [custom domain](/customize/custom-domain) mapped to your docs. Plausible requires a resolved hostname
+
+---
+
+## Add analytics to docs.json
+
+Add a top-level `scripts` object to `docs.json`. docs.page injects the matching tags on published pages only, not during local preview. For how injection works, GTM versus GA precedence, and preview suppression, see [Analytics](/features/analytics).
+
+| Provider | Use when |
+| --- | --- |
+| **Google Tag Manager** | You manage tags in GTM and want one container for GA and other scripts |
+| **Google Analytics (GA4)** | You want a direct GA4 integration without Tag Manager |
+| **Plausible** | You use Plausible and have a custom domain or vanity subdomain on your docs |
+
+When both `googleTagManager` and `googleAnalytics` are set, docs.page loads GTM only and skips direct GA injection. Route GA through your GTM container instead. Plausible loads only when the request resolves to a configured custom domain or vanity subdomain, not on the default `docs.page/{owner}/{repo}` path alone.
+
+<Steps>
+  <Step title="Pick one provider approach">
+    Choose a row from the table above and gather the container ID, measurement ID, or Plausible site for that provider.
+  </Step>
+  <Step title="Declare scripts in docs.json">
+    Add a `scripts` object at the top level of `docs.json`. Use one of the shapes below.
+
+    <Tabs>
+      <TabItem label="Google Tag Manager" value="gtm">
+        ```json
+        {
+          "scripts": {
+            "googleTagManager": "GTM-XXXXXXX"
+          }
+        }
+        ```
+
+        Replace `GTM-XXXXXXX` with your container ID from [Google Tag Manager](https://tagmanager.google.com/).
+      </TabItem>
+      <TabItem label="Google Analytics (GA4)" value="ga4">
+        ```json
+        {
+          "scripts": {
+            "googleAnalytics": "G-GXXXXXXXXXX"
+          }
+        }
+        ```
+
+        Replace `G-GXXXXXXXXXX` with your GA4 measurement ID. Omit `googleTagManager` when you want direct GA loading.
+      </TabItem>
+      <TabItem label="Plausible" value="plausible">
+        ```json
+        {
+          "scripts": {
+            "plausible": true
+          }
+        }
+        ```
+
+        Set `plausible` to `true` for Plausible's hosted script, or pass a string URL for self-hosted Plausible:
+
+        ```json
+        {
+          "scripts": {
+            "plausible": "https://plausible.example.com/js/script.js"
+          }
+        }
+        ```
+
+        Plausible needs a mapped domain; use a [vanity subdomain](/features/vanity-subdomains) or [request a custom domain](/customize/custom-domain) before you verify.
+      </TabItem>
+    </Tabs>
+
+    For field types, optional keys, and additional examples, see [docs.json: scripts](/reference/docs-json#scripts).
+  </Step>
+  <Step title="Publish so the live site picks up config">
+    Commit and push `docs.json`, then merge to your default branch or share a branch preview URL. See [Publish](/authoring/publish).
+
+    Analytics tags render on published pages (production, branch previews, and custom domains), not in local preview mode.
+  </Step>
+</Steps>
+
+<Warning>
+  Do not rely on `docs preview` to confirm analytics. Preview request mode suppresses all script injection so local editing does not send events to production dashboards.
+</Warning>
+
+## Verify
+
+Open a **live** docs URL (not the local preview shell) and confirm the provider script loads.
+
+1. **Open your published site:** production URL, branch preview (`https://docs.page/{owner}/{repo}~{ref}`), or custom domain.
+2. **Inspect the page in DevTools:** open **Network**, reload, and filter for:
+   - GTM: `gtm.js` from `googletagmanager.com`
+   - GA4 (direct): `gtag/js` when `googleAnalytics` is set and `googleTagManager` is absent
+   - Plausible: `script.js` from `plausible.io` or your self-hosted URL
+3. **Confirm events in the provider dashboard:** GTM Preview or Tag Assistant for Tag Manager; GA4 **Realtime** for direct GA; Plausible dashboard for page views on your mapped domain.
+
+<Info>
+  On the default `docs.page/{owner}/{repo}` path with no custom domain, GTM and GA still load when configured. Plausible stays inactive until a domain is resolved.
+</Info>
+
+## Troubleshooting
+
+| Symptom | Likely cause | Fix |
+| --- | --- | --- |
+| No analytics scripts in local preview | Expected (preview mode suppresses `scripts`) | Verify on a published or branch-preview URL |
+| GA4 script missing but GTM is configured | GTM takes precedence over direct GA | Add GA as a tag inside GTM, or remove `googleTagManager` to use direct GA |
+| Plausible script never loads | No custom domain or vanity subdomain on the request | Use a [vanity subdomain](/features/vanity-subdomains) or [request a custom domain](/customize/custom-domain), then open the site on that hostname |
+| Plausible loads but no page views | `data-domain` must match the hostname readers use | Confirm the domain in Plausible matches your docs domain exactly |
+| Scripts present but no dashboard data | Provider misconfiguration or ad blockers | Check container or measurement ID spelling; test in a clean browser profile |
+| Changes not reflected after push | Cached bundle or wrong branch | Confirm `docs.json` is on the branch docs.page serves; hard-reload the live page |
+
+## Related
+
+- [Analytics](/features/analytics): how docs.page injects scripts, GTM versus GA, and preview suppression
+- [docs.json: scripts](/reference/docs-json#scripts): full `scripts` field reference
+- [Vanity subdomains](/features/vanity-subdomains) or [Custom domain](/customize/custom-domain): resolved hostname for Plausible
+- [Local preview](/features/local-preview): why preview stays script-free

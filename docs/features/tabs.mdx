@@ -1,0 +1,90 @@
+---
+title: Tabs
+description: Split a large docs site into top-level sections so each tab shows only its own sidebar groups.
+---
+
+When a docs site grows past a single sidebar, readers need a way to switch between major areas (guides, feature catalog, component reference) without scrolling one combined navigation tree.
+
+## Overview
+
+**Site tabs** are primary navigation in the site header. You define them in the `tabs` array in `docs.json`. Each tab has an `id`, a display `title`, and an `href` that points to that section's landing path.
+
+The sidebar is still one configuration tree. You scope groups to a tab with the optional `tab` field on each sidebar group. While a tab is active, docs.page shows groups tagged for that tab, plus any groups with no `tab` value (shared across every tab).
+
+That is different from the **`<Tabs>` MDX component**, which creates switchable panels inside a page. Site tabs split the header and sidebar (tab labels in the header and matching sidebar groups), not inline content.
+
+See [Sidebar](/features/sidebar) for how groups and pages are structured inside each tab's sidebar.
+
+## How it works
+
+### Defining top-level tabs
+
+Add a `tabs` array at the top level of `docs.json`. Each entry needs a stable `id`, a reader-facing `title`, and an `href` for the section root:
+
+```json
+{
+  "tabs": [
+    { "id": "docs", "title": "Documentation", "href": "/" },
+    { "id": "features", "title": "Features", "href": "/features" },
+    { "id": "components", "title": "Components", "href": "/components" },
+    { "id": "reference", "title": "Reference", "href": "/reference" }
+  ]
+}
+```
+
+When `tabs` is non-empty, docs.page renders those labels in the header below the logo row. Clicking a tab navigates to its `href`. With no `tabs` array (or an empty one), that tab row is omitted and the full sidebar is always visible.
+
+For every field on `tabs` entries, including optional `locale`, see [docs.json](/reference/docs-json).
+
+### Per-tab sidebars
+
+Tag sidebar groups with the `tab` field set to a tab `id`:
+
+```json
+{
+  "sidebar": [
+    {
+      "group": "Getting Started",
+      "tab": "docs",
+      "pages": [{ "title": "Introduction", "href": "/" }]
+    },
+    {
+      "group": "Publish",
+      "tab": "features",
+      "pages": [{ "title": "Public GitHub hosting", "href": "/features/public-github-hosting" }]
+    },
+    {
+      "group": "Reference",
+      "tab": "reference",
+      "pages": [{ "title": "docs.json", "href": "/reference/docs-json" }]
+    }
+  ]
+}
+```
+
+While the **Features** tab is active, only groups where `tab` is `"features"` appear in the sidebar, along with any group that omits `tab`. Omit `tab` when a group should appear regardless of which header tab is selected, for example, a persistent link block or a cross-cutting section.
+
+You maintain one `sidebar` array (or one locale-keyed object when using [multi-locale navigation](/features/locales)). Tab scoping is a filter at render time, not a separate sidebar tree per tab.
+
+### Locale-specific tabs
+
+Each tab entry may include an optional `locale` field. On a locale-free URL, docs.page shows only tabs with no `locale` set. On a localized URL such as `/fr/installation`, only tabs whose `locale` matches the active locale appear.
+
+Use this when header sections differ by language, for example, a tab that only applies to the French navigation set. Most single-language sites leave `locale` off every tab.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Sidebar" icon="bars" href="/features/sidebar">
+    How nested groups, page links, and icons are defined in docs.json.
+  </Card>
+  <Card title="Organize" icon="sitemap" href="/authoring/organize">
+    Structure groups, tabs, and page links before you publish.
+  </Card>
+  <Card title="Locales" icon="language" href="/features/locales">
+    How locale keys in sidebar shape URLs and the language switcher.
+  </Card>
+  <Card title="Reference" icon="book" href="/reference/docs-json">
+    Field-level lookup for docs.json, CLI commands, and HTTP endpoints.
+  </Card>
+</CardGroup>

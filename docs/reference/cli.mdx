@@ -1,0 +1,248 @@
+---
+title: CLI
+description: "Run the right docs command with the right flags: init, preview, check, and agent setup."
+---
+
+## Global options
+
+These options apply before any subcommand.
+
+```bash
+docs [global options] <command> [command options]
+```
+
+<Property name="--api-url" type="url">
+  Base docs.page API URL for `agent` commands. When unset, the CLI uses the production API.
+
+  Environment variable: `DOCS_PAGE_API_BASE`
+</Property>
+
+<Property name="--help, -h" type="flag" optional>
+  Show help for the command.
+</Property>
+
+<Property name="--version, -v" type="flag" optional>
+  Print the CLI version.
+</Property>
+
+`init`, `preview`, and `check` do not call the docs.page API.
+
+---
+
+## `docs init`
+
+Initialize docs.page files in a project directory.
+
+```bash
+docs init [path] [flags]
+```
+
+<Property name="path" type="string" optional>
+  Project directory to initialize. Defaults to `.`.
+</Property>
+
+<Property name="--name" type="string" optional>
+  Project name written into `docs.json`. Inferred from `package.json`, `pubspec.yaml`, or the folder name when omitted in interactive mode.
+</Property>
+
+<Property name="--docs" type="flag" optional>
+  Create starter `docs/**/*.mdx` files. Default in non-interactive mode when neither `--docs` nor `--no-docs` is passed.
+</Property>
+
+<Property name="--no-docs" type="flag" optional>
+  Write `docs.json` only; skip starter page files.
+</Property>
+
+<Property name="--overwrite" type="flag" optional>
+  Replace existing files created by docs.page init.
+</Property>
+
+In an interactive terminal, the CLI prompts for missing values. In non-interactive mode (CI or piped stdin), pass `--name`, `--docs` or `--no-docs`, and `--overwrite` when replacing existing files; otherwise the command exits with a `Missing --<flag>` error.
+
+### Errors
+
+| Condition | Message |
+| --- | --- |
+| `docs.json` exists in non-interactive mode without `--overwrite` | `docs.json already exists. Re-run with --overwrite to replace it.` |
+| `docs/` conflicts in non-interactive mode | `docs/ already exists. … Re-run with --overwrite … or --no-docs …` |
+| Init templates missing from the package | `Unable to find docs.page init templates.` |
+| Required flag missing in non-interactive mode | `Missing --<flag>. Pass it as an option when running non-interactively.` |
+
+### Output
+
+On success, the CLI prints created file paths or `No docs.page files were changed.` when all targets already exist.
+
+---
+
+## `docs preview`
+
+Start a local preview server and open the docs.page preview UI.
+
+```bash
+docs preview [flags]
+```
+
+<Property name="--port" type="number" optional>
+  TCP port for the local WebSocket server. When omitted, the CLI binds an ephemeral port on `localhost` (OS-assigned).
+</Property>
+
+<Property name="--no-browser" type="flag" optional>
+  Do not open the preview URL automatically.
+</Property>
+
+Requires `docs.json` or `docs.yaml` and at least one `.mdx` file under `docs/`.
+
+### Errors
+
+| Condition | Message |
+| --- | --- |
+| Missing config file | `No docs.json or docs.yaml file was found in the current directory.` |
+| Missing `docs/` directory | `No docs/ directory was found in the current directory.` |
+| No page files | `No .mdx files were found in the docs/ directory.` |
+| Invalid `--port` value | `` `--port` must be a valid TCP port. `` |
+| Port bind failure | Node.js `EADDRINUSE` or related bind error |
+
+### Output
+
+On success, the CLI prints `Local preview server started.`, the WebSocket URL (`ws://localhost:<port>`), and a **Preview URL** shaped like `https://docs.page/preview?url=ws://localhost:<port>`. The server runs until you stop it with `Ctrl+C` (exit code `0`).
+
+---
+
+## `docs check`
+
+Check documentation for broken links and missing assets.
+
+```bash
+docs check [path] [flags]
+```
+
+<Property name="path" type="string" optional>
+  Project directory to check. Defaults to `.`.
+</Property>
+
+<Property name="--internal-links" type="off | warn | error" optional>
+  Check internal links and frontmatter `redirect`, `next`, and `previous` paths. Default: `error`.
+</Property>
+
+<Property name="--assets" type="off | warn | error" optional>
+  Check that referenced local image and asset files exist. Default: `error`.
+</Property>
+
+<Property name="--external-links" type="off | warn | error" optional>
+  Fetch external URLs and report failures. Default: `error`.
+</Property>
+
+<Property name="--render" type="off | warn | error" optional>
+  Validate that each page's MDX renders without errors. Default: `error`.
+</Property>
+
+<Property name="--metadata" type="off | warn | error" optional>
+  Warn when `title` or `description` is missing on pages that use auto-generated social preview images. Also checks site `name` and `description` in `docs.json`. Default: `error`.
+</Property>
+
+All five severity flags accept `off`, `warn`, or `error`. Default for each: `error`.
+
+### Exit codes
+
+| Code | Meaning |
+| --- | --- |
+| `0` | No `error`-level issues found. |
+| `1` | One or more `error`-level issues found. |
+
+### Errors
+
+| Condition | Message |
+| --- | --- |
+| Missing config | `No docs.json or docs.yaml file was found.` |
+| Invalid `docs.json` | `docs.json is not valid JSON: …` |
+| Invalid `docs.yaml` | `docs.yaml is not valid YAML: …` |
+| No page files | `No docs/**/*.mdx files were found.` |
+| Broken internal link | `Internal link points to a missing docs page.` (or frontmatter variant) |
+| Missing asset | `Referenced asset does not exist.` |
+| Unreachable external URL | `Unable to reach external link: …` or `External link returned &lt;status&gt; …` |
+
+---
+
+## `docs agent create`
+
+Create an in-docs chat agent for a GitHub repository.
+
+```bash
+docs agent create [flags]
+```
+
+<Property name="--repo" type="org/name" optional>
+  Target GitHub repository. Prompted when omitted in an interactive terminal.
+</Property>
+
+<Property name="--provider" type="string" optional>
+  LLM provider: `openai`, `anthropic`, `google`, or `xai`.
+</Property>
+
+<Property name="--apikey" type="string" optional>
+  Provider API key. Encrypted locally before upload. Prompted as a password when omitted in an interactive terminal.
+</Property>
+
+<Property name="--gh-auth" type="string" optional>
+  GitHub token instead of `gh auth token`.
+</Property>
+
+<Property name="--force" type="flag" optional>
+  Overwrite an existing agent configuration.
+</Property>
+
+### Success
+
+The CLI prints `Your documentation agent is ready to use.` and a JSON snippet with `agent.key` to add to `docs.json`.
+
+### Errors
+
+| Condition | Message |
+| --- | --- |
+| Missing `--repo` in non-interactive mode | `Missing --repo.` |
+| Invalid repository format | `` `--repo` must be in the form `org/name`. `` |
+| Invalid provider | `` `--provider` must be one of: xai, openai, anthropic, google. `` |
+| API key too short | `` `--apikey` must be longer than 1 character. `` |
+| `gh` not installed | `GitHub CLI (\`gh\`) is required when \`--gh-auth\` is not provided.` |
+| `gh` not authenticated | `Unable to read a GitHub auth token from \`gh\`. Run \`gh auth login\`, or pass \`--gh-auth\`.` |
+| API error response | `Server \`error\` string or Agent creation failed (&lt;status&gt; …).` |
+| Missing token in response | `Agent creation failed: response did not include a token.` |
+
+---
+
+## `docs agent delete`
+
+Delete the agent configuration for a repository.
+
+```bash
+docs agent delete [flags]
+```
+
+<Property name="--repo" type="org/name" optional>
+  Target GitHub repository. Prompted when omitted in an interactive terminal.
+</Property>
+
+<Property name="--gh-auth" type="string" optional>
+  GitHub token instead of `gh auth token`.
+</Property>
+
+### Success
+
+The CLI prints `Deleted agent for org/name.`
+
+### Errors
+
+| Condition | Message |
+| --- | --- |
+| Missing `--repo` in non-interactive mode | `Missing --repo.` |
+| Invalid repository format | `` `--repo` must be in the form `org/name`. `` |
+| GitHub auth failure | Same messages as `agent create` |
+| API error response | `Server \`error\` string or Agent deletion failed (&lt;status&gt; …).` |
+
+---
+
+## See also
+
+- [CLI](/features/cli): install, init, preview, check, and agent workflows
+- [Local preview](/features/local-preview): feature overview
+- [HTTP endpoints](/reference/http-endpoints): platform API routes
