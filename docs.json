@@ -28,6 +28,31 @@
     "showPageTitle": true,
     "showPageImage": true
   },
+  "redirects": {
+    "/getting-started": "/quickstart",
+    "/writing-content": "/authoring/write",
+    "/navigation": "/authoring/organize",
+    "/publishing": "/authoring/publish",
+    "/local-previewing": "/features/local-preview",
+    "/live-previews": "/features/branch-preview",
+    "/locales": "/authoring/locales",
+    "/search": "/features/search",
+    "/custom-domains": "/features/custom-domains",
+    "/vanity-domains": "/features/vanity-subdomains",
+    "/github-bot": "/features/github-app",
+    "/assets": "/components/image",
+    "/configuration": "/reference/docs-json",
+    "/frontmatter": "/reference/page-frontmatter",
+    "/cli": "/reference/cli",
+    "/cli/init": "/reference/cli",
+    "/cli/check": "/reference/cli",
+    "/cli/commands": "/reference/cli",
+    "/components/cards": "/components/card",
+    "/components/headings": "/components/heading",
+    "/components/icons": "/components/icon",
+    "/components/images": "/components/image",
+    "/contributing": "/"
+  },
   "tabs": [
     {
       "id": "docs",
