@@ -60,7 +60,7 @@ Platform analytics may include:
 | Product features | MCP access, agent panel sessions, GitHub App preview comments |
 | Abuse prevention | Rate-limit events (see Section 3.2) |
 
-For platform analytics, we do not send your IP address to PostHog. Where we need to distinguish requests (for example, to measure rate-limiting), your IP address is irreversibly hashed before it is used as an identifier, and PostHog’s IP-based geolocation is disabled — so PostHog does not receive your raw IP address or infer your location. Events are recorded without building a person profile. We do not use platform analytics to sell your data or for cross-site advertising.
+For platform analytics, we do not send your IP address to PostHog. Where we need to distinguish requests (for example, to measure rate-limiting), your IP address is hashed before it is used as an identifier, and PostHog’s IP-based geolocation is disabled — so PostHog does not receive your raw IP address or infer your location. Events are recorded without building a person profile. We do not use platform analytics to sell your data or for cross-site advertising.
 
 ### 3.2 Ask AI and agent features
 
