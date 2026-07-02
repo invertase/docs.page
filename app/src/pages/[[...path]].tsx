@@ -237,22 +237,16 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
     const error = parseDocsBundleApiError(errorResponse);
 
     if (isDocsBundleNotFoundResponse(errorResponse)) {
-      // A deleted `.mdx` surfaces here as a 404. The bundler throws before it
-      // parses the config, so fetch the config independently to honour any
-      // config-level `redirects` (e.g. an old URL pointing at its new home).
+      // A deleted `.mdx` surfaces here as a 404. The bundler already fetched the
+      // config blob in the same GraphQL query and parsed it onto the error
+      // payload, so honour any config-level `redirects` (e.g. an old URL pointing
+      // at its new home) without a second round-trip.
       // Api-style routes (mcp / llms.txt / sitemap.xml / robots.txt / search.json
       // / og) live in the App Router (`app/api/...`) and never reach this Pages
       // Router catch-all, so they are excluded by construction.
-      const { fetchConfigForRoute } = await import("@/server/config/fetch");
-      const config = await fetchConfigForRoute({
-        owner: route.owner,
-        repository: route.repository,
-        ref: route.ref,
-        path: route.docPath,
-      });
       const configRedirectDestination = await resolveConfigRedirectDestination(
         route,
-        config?.redirects,
+        error.config?.redirects,
       );
 
       if (configRedirectDestination) {

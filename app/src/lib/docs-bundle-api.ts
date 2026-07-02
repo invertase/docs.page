@@ -1,4 +1,5 @@
 import type { ResolvedDocsRoute } from "@/lib/docs-routing";
+import type { Config } from "@/server/config";
 import type { BundlerOutput } from "@/server/docs/bundle";
 
 /** JSON body shape for `code: "OK"` responses from `/api/bundle` (matches `getDocBundle`). */
@@ -22,6 +23,8 @@ export type DocsBundleApiErrorDetails = {
   message: string;
   source?: string;
   branding?: DocsBranding;
+  /** Parsed site config, present on 404 responses so the page can honour `redirects`. */
+  config?: Config;
 };
 
 export type DocsBundleApiErrorResponse = {
@@ -37,6 +40,7 @@ export function parseDocsBundleApiError(payload: DocsBundleApiErrorResponse): {
   message: string;
   source?: string;
   branding?: DocsBranding;
+  config?: Config;
 } {
   const error =
     typeof payload.error === "string"
@@ -50,6 +54,9 @@ export function parseDocsBundleApiError(payload: DocsBundleApiErrorResponse): {
       : {}),
     ...(typeof payload.error !== "string" && error.branding
       ? { branding: error.branding }
+      : {}),
+    ...(typeof payload.error !== "string" && error.config
+      ? { config: error.config }
       : {}),
   };
 }

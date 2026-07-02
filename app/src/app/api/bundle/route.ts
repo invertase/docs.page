@@ -65,6 +65,7 @@ export async function GET(req: Request) {
             message: error.message,
             ...(error.source ? { source: error.source } : {}),
             ...(error.branding ? { branding: error.branding } : {}),
+            ...(error.config ? { config: error.config } : {}),
           },
         } satisfies DocsBundleApiErrorResponse,
         { status: error.code },
