@@ -1,4 +1,5 @@
 import type { EmitterWebhookEvent } from "@octokit/webhooks";
+import { getPostHogClient } from "@/lib/posthog";
 import { hasDocsChanges } from "./docs-files";
 import { getOctokitForInstallation } from "./octokit";
 
@@ -70,5 +71,17 @@ export async function onPullRequestOpened(
     repo,
     issue_number: pull_number,
     body: comment,
+  });
+
+  getPostHogClient()?.capture({
+    distinctId: repository.full_name.toLowerCase(),
+    event: "github:preview_comment_create",
+    properties: {
+      owner: repository.owner.login,
+      repository: repository.name,
+      pr_number: pull_request.number,
+      has_custom_domain: Boolean(domain),
+      $process_person_profile: false,
+    },
   });
 }
