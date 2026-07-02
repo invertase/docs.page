@@ -1,4 +1,4 @@
-import { createHash, createHmac } from "node:crypto";
+import { createHash } from "node:crypto";
 import { PostHog } from "posthog-node";
 
 let _client: PostHog | null = null;
@@ -24,11 +24,8 @@ export function getPostHogClient(): PostHog | null {
   return _client;
 }
 
-// Irreversibly anonymize a client IP before using it as a PostHog distinct ID,
-// so PostHog never receives a raw IP. Uses an HMAC when a salt is configured.
+// Hash a client IP before using it as a PostHog distinct ID, so PostHog never
+// receives a raw IP address.
 export function anonymizeIp(ip: string): string {
-  const salt = process.env.POSTHOG_IP_HASH_SALT;
-  return salt
-    ? createHmac("sha256", salt).update(ip).digest("hex")
-    : createHash("sha256").update(ip).digest("hex");
+  return createHash("sha256").update(ip).digest("hex");
 }
