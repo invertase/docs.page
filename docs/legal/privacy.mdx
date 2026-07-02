@@ -1,0 +1,247 @@
+---
+title: Privacy Policy
+description: How Invertase collects, uses, and shares information when you use docs.page.
+noindex: true
+---
+
+**Last updated:** 30 June 2026
+
+**Operator:** Invertase ([invertase.io](https://invertase.io))
+
+This Privacy Policy explains how Invertase (“**we**”, “**us**”, “**our**”) collects, uses, and shares information when you use **docs.page** — the documentation hosting platform at [docs.page](https://docs.page), including the marketing site, hosted documentation sites, APIs, and related services (collectively, the “**Service**”).
+
+Please read this policy together with [Invertase’s privacy policy](https://invertase.io/legal/privacy-policy), which describes how Invertase handles personal information across its business more generally.
+
+---
+
+## 1. Scope
+
+This policy applies when you:
+
+- visit the docs.page marketing site (`docs.page`);
+- read documentation hosted on docs.page (for example `docs.page/{owner}/{repo}`, vanity subdomains such as `{owner}.docs.page`, or custom domains pointed at docs.page);
+- use platform features such as search, MCP, local preview, or the optional **Ask AI** agent panel on supported sites;
+- interact with the docs.page GitHub App (for example PR preview comments).
+
+It does **not** replace the privacy policies of documentation **publishers** (the people or organisations who own the GitHub repositories whose content is displayed). Those publishers may collect additional information through their own configuration of the Service — see [Section 6](#6-documentation-publishers-and-third-party-analytics).
+
+---
+
+## 2. Who is responsible for your data?
+
+docs.page is a hosting platform. Different parties may be responsible for different processing activities:
+
+| Activity | Typical role |
+| --- | --- |
+| Operating docs.page, platform analytics, abuse prevention, agent rate limiting, caching and delivery of public GitHub content | **Invertase** acts as a **data controller** |
+| Choosing what documentation to publish, configuring optional analytics scripts, enabling Ask AI with a provider API key | The **documentation publisher** (repository owner) typically acts as a **data controller** for their site-specific choices |
+| Ask AI message processing via a publisher-configured AI provider (for example OpenAI, Anthropic, Google) | The **AI provider** processes message content under the publisher’s configuration; Invertase processes messages to deliver the feature |
+
+If you have questions about a specific documentation site’s practices (including analytics they have enabled), contact that site’s publisher directly.
+
+---
+
+## 3. Information we collect
+
+We collect only what we need to operate, secure, and improve the Service.
+
+### 3.1 Usage and diagnostic data (platform analytics)
+
+To understand how the Service is used and to maintain reliability, we collect **server-side** usage events through [PostHog](https://posthog.com/) (EU data region). Analytics run on our servers — **we do not set analytics cookies in your browser** for this purpose.
+
+Events are tied to repository identifiers (for example `owner/repo`) and page paths, not to named user accounts. We configure PostHog so that **person profiles are not built** from this data.
+
+Platform analytics may include:
+
+| Event type | Examples of data captured |
+| --- | --- |
+| Documentation traffic | Page views (repository, page path, branch/ref where applicable) |
+| Reliability | Bundle loads, rendering errors |
+| Product features | MCP access, agent panel sessions, GitHub App preview comments |
+| Abuse prevention | Rate-limit events (see Section 3.2) |
+
+For platform analytics, we do not send your IP address to PostHog. Where we need to distinguish requests (for example, to measure rate-limiting), your IP address is hashed before it is used as an identifier, and PostHog’s IP-based geolocation is disabled — so PostHog does not receive your raw IP address or infer your location. Events are recorded without building a person profile. We do not use platform analytics to sell your data or for cross-site advertising.
+
+### 3.2 Ask AI and agent features
+
+On documentation sites where the publisher has enabled Ask AI:
+
+- We issue **session cookies** so the agent panel can function securely (session authentication and CSRF protection).
+- We store a **preference cookie** indicating whether you left the agent panel open or closed.
+- We apply **rate limits** using network identifiers (such as IP address) and per-repository limits to prevent abuse.
+- **Chat messages** you send are transmitted to the AI provider configured by the documentation publisher. Invertase does not use your chat content for advertising. Publishers choose their provider and credentials; refer to that provider’s privacy policy for how they process message content.
+
+Repository administrators who register an agent provide an encrypted API key; we store that credential so the Service can call the provider on behalf of the site. We do not publish those credentials.
+
+### 3.3 GitHub and public repository content
+
+docs.page serves documentation from **public GitHub repositories**. We fetch, cache, and render that content (including configuration in `docs.json`). We do not require visitors to sign in with GitHub to read documentation.
+
+If you install the **docs.page GitHub App**, GitHub sends webhook events (for example when a pull request is opened) so we can post preview links. That processing is governed by GitHub’s terms and privacy policy as well as this policy.
+
+### 3.4 Technical and security logs
+
+Like most online services, our infrastructure may temporarily process:
+
+- IP address and request headers;
+- timestamps and requested URLs;
+- error and performance data.
+
+We use this information to deliver the Service, troubleshoot failures, and protect against abuse.
+
+### 3.5 Interface preferences
+
+We may store **cookies** or similar technologies for essential interface behaviour — for example, keeping a sidebar open or closed. These are not used for advertising.
+
+### 3.6 Information we do not collect via the platform
+
+On the standard read-only documentation experience, we do **not** require you to create a docs.page account, and we do **not** intentionally collect your name or email address unless you contact us directly.
+
+---
+
+## 4. How we use information
+
+We use the information described above to:
+
+- host and deliver documentation from public GitHub repositories;
+- provide search, previews, MCP, and optional Ask AI features;
+- measure aggregated usage and improve the Service;
+- detect, prevent, and respond to abuse, rate limits, and security incidents;
+- post documentation preview links when the GitHub App is installed;
+- comply with legal obligations.
+
+We do **not** sell personal information.
+
+---
+
+## 5. Legal bases (EEA, UK, and Switzerland)
+
+Where the GDPR or similar laws apply, we rely on:
+
+| Processing | Legal basis |
+| --- | --- |
+| Hosting and delivering documentation you request | Legitimate interests (operating a free public documentation hosting platform, caching public content, and delivering web traffic safely at the user’s request) |
+| Platform analytics and product improvement | **Legitimate interests** (understanding use of a free hosted platform, keeping it reliable), balanced against your rights |
+| Security, rate limiting, and fraud prevention | **Legitimate interests** / **legal obligation** |
+| Ask AI session cookies | **Legitimate interests** / **performance of a service** (strictly necessary for the feature you use) |
+| Responding to privacy requests | **Legal obligation** / **legitimate interests** |
+
+You may object to processing based on legitimate interests as described in [Section 11](#11-your-rights).
+
+---
+
+## 6. Documentation publishers and third-party analytics
+
+Publishers can configure optional **third-party scripts** in their repository’s `docs.json` file — for example Google Tag Manager, Google Analytics, or Plausible — which may load in the visitor’s browser when viewing that publisher’s documentation (typically on [custom domains](https://use.docs.page/features/custom-domains)).
+
+When those scripts are present:
+
+- the **publisher** (not Invertase) chooses which tools run and for what purpose;
+- those tools may set cookies or collect identifiers in the browser under the publisher’s control;
+- you should read the publisher’s privacy notice for details.
+
+Invertase provides the hosting integration but does not control how publishers use optional analytics.
+
+**Local preview** and certain preview modes intentionally **do not** load publisher-configured analytics scripts.
+
+---
+
+## 7. Cookies and similar technologies
+
+| Cookie / storage | Purpose | Duration (approx.) |
+| --- | --- | --- |
+| `agent_session` | Secure Ask AI session | Session / short-lived (about 1 hour) |
+| `agent_session_csrf` | CSRF protection for Ask AI | Session / short-lived (about 1 hour) |
+| `dpa_open_{owner}_{repo}` | Remember agent panel open/closed state | Up to 1 year |
+| Sidebar state cookie | Remember sidebar expanded/collapsed | Up to 7 days |
+
+Platform analytics (PostHog) are **server-side only** and do not set cookies in your browser.
+
+You can control cookies through your browser settings. Disabling session cookies may prevent Ask AI from working.
+
+---
+
+## 8. How we share information
+
+We share information only as needed to operate the Service:
+
+| Recipient | Why |
+| --- | --- |
+| **PostHog** (EU region) | Platform usage measurement |
+| **GitHub** | Source control integration and GitHub App webhooks |
+| **AI providers** (when Ask AI is enabled) | Process chat messages per publisher configuration |
+| **Infrastructure providers** (hosting, CDN, DNS) | Run and deliver the Service |
+| **Professional advisers** | Legal, security, or compliance advice where required |
+| **Authorities** | When required by law or to protect rights and safety |
+
+We require subprocessors that handle personal data to provide appropriate safeguards.
+
+### Subprocessors (platform operation)
+
+The following categories of providers process data on our behalf. Specific vendors may change; we will update this policy when we make material changes.
+
+- **Hosting and deployment** — application runtime and databases
+- **Content delivery (CDN)** — caching and edge delivery
+- **Analytics** — PostHog (EU region: `eu.i.posthog.com`)
+- **Source control** — GitHub (public API and GitHub App)
+- **AI inference** — whichever provider a publisher configures for Ask AI (not used for all sites)
+
+docs.page is operated by **Invertase Limited**, registered at Banks Sheridan, Datum House, Electra Way, Crewe, Cheshire, England, CW1 6ZF.
+
+---
+
+## 9. International transfers
+
+Invertase is based in the United Kingdom. PostHog analytics for docs.page is configured to use PostHog’s **EU data region**. Other providers may process data in the United States or other countries. Where required, we implement appropriate safeguards approved under UK data protection law, such as the International Data Transfer Agreement (IDTA) or the UK Addendum to the European Commission’s Standard Contractual Clauses.
+
+---
+
+## 10. Data retention
+
+We keep information only as long as necessary:
+
+| Data type | Retention |
+| --- | --- |
+| Platform analytics events (PostHog) | Retained for 12 months, after which it is deleted or aggregated |
+| Ask AI chat messages | Routed to the AI provider configured by the publisher; not retained by Invertase beyond what is needed to handle the request |
+| Ask AI rate-limiting identifiers (hashed) | Short-lived; not retained beyond the applicable rate-limit window |
+| Ask AI session data | Short-lived; session cookies expire within about an hour |
+| Encrypted publisher API keys | Until the publisher removes the agent or deletes the repository configuration |
+| Security and infrastructure logs | Retained for up to 90 days |
+
+---
+
+## 11. Your rights
+
+Depending on where you live, you may have the right to:
+
+- **access** personal information we hold about you;
+- **correct** inaccurate information;
+- **delete** information or object to certain processing;
+- **restrict** or **port** your data;
+- **withdraw consent** where processing is consent-based;
+- **complain** to your local data protection authority.
+
+To exercise these rights, please email us directly at [products@invertase.io](mailto:products@invertase.io). To protect your privacy and security, do not use public channels (such as GitHub Discussions) to submit data protection or identity verification requests. We may need to verify your request. If your question relates to a specific documentation site’s optional analytics or content, we may direct you to that site’s publisher.
+
+---
+
+## 12. Children
+
+The Service is not directed at children under 13 (or the minimum age in your jurisdiction). We do not knowingly collect personal information from children.
+
+---
+
+## 13. Changes to this policy
+
+We may update this Privacy Policy from time to time. We will post the revised version in this repository and update the “Last updated” date. Material changes may also be noted on [docs.page](https://docs.page) or in project release notes.
+
+---
+
+## 14. Contact
+
+**Invertase Limited**  
+Banks Sheridan, Datum House, Electra Way, Crewe, Cheshire, England, CW1 6ZF  
+Web: [invertase.io](https://invertase.io)
+
+For privacy questions about docs.page, open a [GitHub Discussion](https://github.com/invertase/docs.page/discussions) or email [products@invertase.io](mailto:products@invertase.io).
