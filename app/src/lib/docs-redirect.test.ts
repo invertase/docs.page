@@ -10,7 +10,6 @@ import {
 // (see getPublicDocsSiteBase / getDocsEnvironment).
 beforeAll(() => {
   process.env.NODE_ENV = "production";
-  delete process.env.VERCEL;
 });
 
 function makeRoute(
