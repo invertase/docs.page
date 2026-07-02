@@ -11,7 +11,7 @@ redirect: /getting-started
 ---
 ```
 
-docs.page returns a **307 Temporary Redirect** to the destination before any page body renders. Redirects are **per page file**, not a central table in `docs.json` — one old URL, one stub.
+docs.page returns a **307 Temporary Redirect** to the destination before any page body renders. You can declare redirects two ways: a per-page `redirect` in frontmatter (above) for URLs whose file you keep, or a centralized `redirects` map in `docs.json` for old URLs whose files were removed. See [The centralized redirects map](#the-centralized-redirects-map).
 
 For step-by-step rename workflows, see [Redirects](/authoring/redirects). Field syntax and other frontmatter options live in [Page frontmatter](/reference/page-frontmatter).
 
@@ -37,6 +37,23 @@ redirect: https://example.com/docs/new-location
 
 The file body can be empty. Only `redirect` is required for the HTTP redirect. Other frontmatter fields are ignored at request time. Do not rely on query strings or hash anchors in `redirect` values. They are not part of the redirect contract.
 
+### The centralized redirects map
+
+A per-page stub covers one old URL each. When you **delete** a page and still want its old URL to forward somewhere, add an entry to the top-level `redirects` object in `docs.json` instead of leaving a file behind:
+
+```json title="docs.json"
+"redirects": {
+  "/old-guide": "/guides/getting-started",
+  "/legacy-api": "https://api.example.com/reference"
+}
+```
+
+Keys are old root-relative doc paths; values are the destinations. Keys and values are matched tolerant of leading and trailing slashes, and values follow the same internal/external rules as frontmatter `redirect`: root-relative paths resolve against the current routing mode and ref, while `http(s)://` and `//` URLs are returned unchanged. A match issues the same **307 Temporary Redirect**.
+
+The map is consulted **only on the 404 branch** — that is, only when no `.mdx` file exists at the requested path. If a file still lives at that path, docs.page renders it (or follows its own frontmatter `redirect`) and never looks at the config map. Use the map for old URLs whose files were removed; use a frontmatter stub when you keep a file at the old path.
+
+See [`redirects`](/reference/docs-json#redirects) in the docs.json reference.
+
 ### How internal paths resolve across routing modes
 
 Internal redirects stay on the same site **mode** as the request. docs.page picks a base URL from the active route, appends the current ref segment when present, then appends your path.
@@ -58,7 +75,7 @@ You do not hard-code `https://docs.page/owner/repo` in frontmatter for internal 
 
 | Topic | Behavior |
 | --- | --- |
-| Definition | Per-page `redirect` in frontmatter only; no wildcard or catch-all rules in `docs.json` |
+| Definition | Per-page `redirect` frontmatter, or a centralized `redirects` map in `docs.json`; no wildcard or pattern matching — keys are exact paths (slash-tolerant) |
 | HTTP status | Temporary redirect (307), not permanent (308) |
 | Deleted files | Removing the stub removes the URL. Keep the old file to preserve the path |
 | Validation | [`docs check`](/features/cli#check-documentation) validates redirect targets the same way it validates in-page links |

@@ -20,6 +20,7 @@ Site configuration lives in `docs.json` or `docs.yaml` at the repository root. F
 | `logo`, `favicon`, `banner`, `theme` | [logo](#logo), [favicon](#favicon), [banner](#banner), [theme](#theme) |
 | `header`, `tabs`, `sidebar`, `anchors` | [header](#header), [tabs](#tabs), [sidebar](#sidebar), [anchors](#anchors) |
 | `content`, `seo`, `variables` | [content](#content), [seo](#seo), [variables](#variables) |
+| `redirects` | [redirects](#redirects) |
 | `scripts`, `search`, `social`, `og` | [scripts](#scripts), [search](#search), [social](#social), [og](#og) |
 | `agent`, `mcp` | [agent](#agent), [mcp](#mcp) |
 
@@ -321,6 +322,24 @@ See [Links](/features/links).
   ```
 
   Only **string** leaf values substitute. Intermediate objects are traversed; non-string leaves leave the placeholder unchanged. Variables do not apply inside frontmatter. See [Global variables](/features/global-variables).
+</Property>
+
+## redirects
+
+<Property name="redirects" type="object">
+  Centralized `{ "from": "to" }` map for forwarding old URLs whose page files were removed. Keys are old root-relative doc paths; values are the destinations. Keys and values are matched tolerant of leading and trailing slashes.
+
+  ```json
+  "redirects": {
+    "/old-guide": "/guides/getting-started",
+    "installation/setup": "/getting-started",
+    "/legacy-api": "https://api.example.com/reference"
+  }
+  ```
+
+  Values may be internal root-relative paths (resolved against the current routing mode and ref, like frontmatter `redirect`) or external `http(s)://` / `//` URLs (returned unchanged). Each match issues a **307 Temporary Redirect**.
+
+  This map is consulted **only when no `.mdx` file exists at the requested path** (a deleted or moved page). When a file is still present, its own frontmatter `redirect` governs instead. See [Redirects](/features/redirects).
 </Property>
 
 ## scripts
