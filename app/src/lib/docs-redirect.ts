@@ -31,19 +31,17 @@ function getRelativeRedirectBase(
   return `${getPublicDocsSiteBase()}/${route.owner}/${route.repository}`;
 }
 
-export async function resolveFrontmatterRedirectDestination(
+/**
+ * Resolve a redirect target against the repo doc-root + ref (the same base the
+ * frontmatter `redirect` key uses). External URLs are returned verbatim;
+ * everything else is treated as repo-relative and anchored to the doc-root, so
+ * relative values like `bar/baz` resolve cleanly instead of relative to the
+ * incoming (possibly bad) path.
+ */
+async function buildRedirectDestination(
   route: ResolvedDocsRoute,
-  bundle: Pick<DocsBundlePayload, "frontmatter">,
+  redirectTo: string,
 ) {
-  const redirectTo =
-    typeof bundle.frontmatter.redirect === "string"
-      ? bundle.frontmatter.redirect.trim()
-      : "";
-
-  if (!redirectTo) {
-    return null;
-  }
-
   if (isExternalLink(redirectTo)) {
     return redirectTo;
   }
@@ -59,4 +57,65 @@ export async function resolveFrontmatterRedirectDestination(
   }
 
   return `${destination}${ensureLeadingSlash(redirectTo)}`;
+}
+
+export async function resolveFrontmatterRedirectDestination(
+  route: ResolvedDocsRoute,
+  bundle: Pick<DocsBundlePayload, "frontmatter">,
+) {
+  const redirectTo =
+    typeof bundle.frontmatter.redirect === "string"
+      ? bundle.frontmatter.redirect.trim()
+      : "";
+
+  if (!redirectTo) {
+    return null;
+  }
+
+  return buildRedirectDestination(route, redirectTo);
+}
+
+/** Strip leading/trailing slashes so `/foo`, `foo` and `foo/` all compare equal. */
+function normalizeRedirectKey(value: string): string {
+  return value.trim().replace(/^\/+/, "").replace(/\/+$/, "");
+}
+
+/**
+ * Resolve a config-level `redirects` map for the incoming doc path. Keys are
+ * matched tolerant of leading/trailing slashes; the matched value is resolved
+ * against the repo doc-root + ref (see {@link buildRedirectDestination}).
+ *
+ * Returns the destination URL, or `null` when there is no matching redirect.
+ * This is intended to run on the 404 / not-found branch (a deleted `.mdx`),
+ * where the bundle — and therefore the config — is not otherwise available.
+ */
+export async function resolveConfigRedirectDestination(
+  route: ResolvedDocsRoute,
+  redirects: Record<string, string> | undefined,
+) {
+  if (!redirects) {
+    return null;
+  }
+
+  const incomingKey = normalizeRedirectKey(route.docPath);
+
+  for (const [key, target] of Object.entries(redirects)) {
+    if (typeof target !== "string") {
+      continue;
+    }
+
+    if (normalizeRedirectKey(key) !== incomingKey) {
+      continue;
+    }
+
+    const redirectTo = target.trim();
+
+    if (!redirectTo) {
+      return null;
+    }
+
+    return buildRedirectDestination(route, redirectTo);
+  }
+
+  return null;
 }

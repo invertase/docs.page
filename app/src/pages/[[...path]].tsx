@@ -26,7 +26,10 @@ import {
   resolvePublicDocsPublishingContext,
 } from "@/lib/docs-canonical";
 import { getDeploymentOrigin } from "@/lib/docs-environment";
-import { resolveFrontmatterRedirectDestination } from "@/lib/docs-redirect";
+import {
+  resolveConfigRedirectDestination,
+  resolveFrontmatterRedirectDestination,
+} from "@/lib/docs-redirect";
 import { isRawDocRequestPath, resolveRawDocsRoute } from "@/lib/docs-routing";
 import {
   acceptPrefersMarkdown,
@@ -235,6 +238,27 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
     const error = parseDocsBundleApiError(errorResponse);
 
     if (isDocsBundleNotFoundResponse(errorResponse)) {
+      // A deleted `.mdx` surfaces here as a 404. The bundler already fetched the
+      // config blob in the same GraphQL query and parsed it onto the error
+      // payload, so honour any config-level `redirects` (e.g. an old URL pointing
+      // at its new home) without a second round-trip.
+      // Api-style routes (mcp / llms.txt / sitemap.xml / robots.txt / search.json
+      // / og) live in the App Router (`app/api/...`) and never reach this Pages
+      // Router catch-all, so they are excluded by construction.
+      const configRedirectDestination = await resolveConfigRedirectDestination(
+        route,
+        error.config?.redirects,
+      );
+
+      if (configRedirectDestination) {
+        return {
+          redirect: {
+            destination: configRedirectDestination,
+            permanent: false,
+          },
+        };
+      }
+
       res.statusCode = 404;
 
       return {

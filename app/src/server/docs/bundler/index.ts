@@ -77,43 +77,50 @@ export class Bundler {
     });
   }
 
-  private resolveBranding(
-    metadata: {
-      baseBranch: string;
-      config: {
-        configJson?: string;
-        configYaml?: string;
-      };
-    },
-    source: Source,
-  ): DocsBranding | undefined {
+  private parseConfigSafe(metadata: {
+    config: {
+      configJson?: string;
+      configYaml?: string;
+    };
+  }): Config | undefined {
     try {
-      const config = parseConfig({
+      return parseConfig({
         json: metadata.config.configJson,
         yaml: metadata.config.configYaml,
       });
-      const assetContext = {
-        source,
-        baseBranch: metadata.baseBranch,
-      };
-      const light = config.logo?.light
-        ? getAssetSrc(assetContext, config.logo.light)
-        : undefined;
-      const dark = config.logo?.dark
-        ? getAssetSrc(assetContext, config.logo.dark)
-        : undefined;
-
-      if (!config.name && !light && !dark) {
-        return undefined;
-      }
-
-      return {
-        ...(config.name ? { name: config.name } : {}),
-        ...(light || dark ? { logo: { light, dark } } : {}),
-      };
     } catch {
       return undefined;
     }
+  }
+
+  private resolveBranding(
+    config: Config | undefined,
+    baseBranch: string,
+    source: Source,
+  ): DocsBranding | undefined {
+    if (!config) {
+      return undefined;
+    }
+
+    const assetContext = {
+      source,
+      baseBranch,
+    };
+    const light = config.logo?.light
+      ? getAssetSrc(assetContext, config.logo.light)
+      : undefined;
+    const dark = config.logo?.dark
+      ? getAssetSrc(assetContext, config.logo.dark)
+      : undefined;
+
+    if (!config.name && !light && !dark) {
+      return undefined;
+    }
+
+    return {
+      ...(config.name ? { name: config.name } : {}),
+      ...(light || dark ? { logo: { light, dark } } : {}),
+    };
   }
 
   async build(): Promise<BundlerOutput> {
@@ -148,12 +155,23 @@ export class Bundler {
     }
 
     if (!metadata.md) {
+      // The GraphQL query already returned the config blob, so parse it here
+      // (once) and carry it on the error. The page's not-found branch reads it
+      // for config-level `redirects` — the mdx is gone but the config is not,
+      // and we avoid a second round-trip to re-fetch it.
+      const config = this.parseConfigSafe(metadata);
+
       throw new BundlerError({
         code: 404,
         name: ERROR_CODES.FILE_NOT_FOUND,
         message: `No file was found in the repository matching this path. Ensure a file exists at <code>/docs/${this.#path}.mdx</code> or <code>/docs/${this.#path}/index.mdx</code>.`,
         source: `https://github.com/${this.#source.owner}/${this.#source.repository}`,
-        branding: this.resolveBranding(metadata, this.#source),
+        branding: this.resolveBranding(
+          config,
+          metadata.baseBranch,
+          this.#source,
+        ),
+        config,
       });
     }
 
