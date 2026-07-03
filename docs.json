@@ -3,30 +3,66 @@
   "name": "docs.page",
   "description": "Ship documentation, like you ship code",
   "logo": {
-    "light": "https://static.invertase.io/assets/docs.page/docs-page-logo-v2.png"
+    "light": "https://static.invertase.io/assets/docs.page/docs-page-logo-v2.png",
+    "dark": "https://static.invertase.io/assets/docs.page/docs-page-logo-v2.png"
   },
   "favicon": "https://static.invertase.io/assets/docs.page/docs-page-logo-v2.png",
   "theme": {
+    "preset": "bcj0c6sa",
     "primary": "#E69135"
+  },
+  "social": {
+    "x": "invertaseio",
+    "github": "invertase/docs.page"
+  },
+  "agent": {
+    "key": "1a070e07-dd4f-4d56-b8f5-35537e58c0c0",
+    "questions": [
+      "How do I setup docs.page?",
+      "Is it free to use?",
+      "How do I customize the theme?",
+      "How is docs.page agent ready?"
+    ]
   },
   "content": {
     "showPageTitle": true,
     "showPageImage": true
   },
-  "agent": {
-    "key": "1a070e07-dd4f-4d56-b8f5-35537e58c0c0",
-    "questions": ["How do I setup docs.page?", "Is it free to use?"]
-  },
-  "social": {
-    "x": "invertaseio",
-    "github": "invertase/docs.page",
-    "discord": "invertase"
+  "redirects": {
+    "/getting-started": "/quickstart",
+    "/writing-content": "/authoring/write",
+    "/navigation": "/authoring/organize",
+    "/publishing": "/authoring/publish",
+    "/local-previewing": "/features/local-preview",
+    "/live-previews": "/features/branch-preview",
+    "/locales": "/authoring/locales",
+    "/search": "/features/search",
+    "/custom-domains": "/features/custom-domains",
+    "/vanity-domains": "/features/vanity-subdomains",
+    "/github-bot": "/features/github-app",
+    "/assets": "/authoring/write",
+    "/configuration": "/reference/docs-json",
+    "/frontmatter": "/reference/page-frontmatter",
+    "/cli": "/reference/cli",
+    "/cli/init": "/reference/cli",
+    "/cli/check": "/reference/cli",
+    "/cli/commands": "/reference/cli",
+    "/components/cards": "/components/card",
+    "/components/headings": "/components/heading",
+    "/components/icons": "/components/icon",
+    "/components/images": "/components/image",
+    "/contributing": "https://github.com/invertase/docs.page/blob/main/CONTRIBUTING.md"
   },
   "tabs": [
     {
-      "id": "root",
+      "id": "docs",
       "title": "Documentation",
       "href": "/"
+    },
+    {
+      "id": "features",
+      "title": "Features",
+      "href": "/features"
     },
     {
       "id": "components",
@@ -34,206 +70,400 @@
       "href": "/components"
     },
     {
-      "id": "cli",
-      "title": "CLI",
-      "href": "/cli"
+      "id": "reference",
+      "title": "Reference",
+      "href": "/reference"
     }
   ],
   "sidebar": [
     {
       "group": "Getting Started",
-      "tab": "root",
+      "icon": "rocket",
+      "tab": "docs",
       "pages": [
-        { "title": "Overview", "href": "/", "icon": "book" },
         {
-          "title": "Getting Started",
-          "href": "/getting-started",
-          "icon": "rocket"
-        },
-        { "title": "Configuration", "href": "/configuration", "icon": "gear" },
-        { "title": "Navigation", "href": "/navigation", "icon": "map" },
-        {
-          "title": "Writing Content",
-          "href": "/writing-content",
-          "icon": "pencil"
+          "title": "Introduction",
+          "href": "/"
         },
         {
-          "title": "Frontmatter",
-          "href": "/frontmatter",
-          "icon": "circle-info"
-        },
-        {
-          "title": "Local Previewing",
-          "href": "/local-previewing",
-          "icon": "eye"
-        },
-        {
-          "title": "Live Previews",
-          "href": "/live-previews",
-          "icon": "code-branch"
-        },
-        {
-          "title": "Publishing",
-          "href": "/publishing",
-          "icon": "globe"
+          "title": "Quickstart",
+          "href": "/quickstart"
         }
       ]
     },
     {
-      "group": "Components",
-      "tab": "components",
+      "group": "Authoring",
+      "icon": "pen-to-square",
+      "tab": "docs",
       "pages": [
         {
-          "title": "Getting Started",
-          "href": "/components"
+          "title": "Write",
+          "href": "/authoring/write"
         },
         {
-          "title": "Accordion",
-          "href": "/components/accordion",
-          "icon": "square-caret-down"
+          "title": "Organize",
+          "href": "/authoring/organize"
         },
         {
-          "title": "Callouts",
-          "href": "/components/callouts",
-          "icon": "bullhorn"
+          "title": "Preview",
+          "href": "/authoring/preview"
         },
         {
-          "title": "Cards",
-          "href": "/components/cards",
-          "icon": "square-full"
+          "title": "Publish",
+          "href": "/authoring/publish"
         },
         {
-          "title": "Code Blocks",
-          "href": "/components/code-blocks",
-          "icon": "code"
-        },
-        {
-          "title": "Code Group",
-          "href": "/components/code-group",
-          "icon": "laptop-code"
-        },
-        {
-          "title": "Mermaid",
-          "href": "/components/mermaid",
-          "icon": "diagram-project"
-        },
-        {
-          "title": "Headings",
-          "href": "/components/headings",
-          "icon": "heading"
-        },
-        {
-          "title": "Tweet",
-          "href": "/components/tweet",
-          "icon": "twitter"
-        },
-        {
-          "title": "Tabs",
-          "href": "/components/tabs",
-          "icon": "table-columns"
-        },
-        {
-          "title": "Icons",
-          "href": "/components/icons",
-          "icon": "icons"
-        },
-        {
-          "title": "Images",
-          "href": "/components/images",
-          "icon": "image"
-        },
-        {
-          "title": "Property",
-          "href": "/components/property",
-          "icon": "signature"
-        },
-        {
-          "title": "Steps",
-          "href": "/components/steps",
-          "icon": "list-ol"
-        },
-        {
-          "title": "YouTube",
-          "href": "/components/youtube",
-          "icon": "youtube"
-        },
-        {
-          "title": "Vimeo",
-          "href": "/components/vimeo",
-          "icon": "vimeo"
-        },
-        {
-          "title": "Video",
-          "href": "/components/video",
-          "icon": "video"
-        }
-      ]
-    },
-    {
-      "group": "Advanced",
-      "tab": "root",
-      "pages": [
-        {
-          "title": "Assets",
-          "href": "/assets",
-          "icon": "image"
-        },
-        {
-          "title": "Components",
-          "href": "/components",
-          "icon": "shapes"
-        },
-        {
-          "title": "Custom Domains",
-          "href": "/custom-domains",
-          "icon": "globe"
-        },
-        {
-          "title": "Search",
-          "href": "/search",
-          "icon": "magnifying-glass"
-        },
-
-        {
-          "title": "Locales",
-          "href": "/locales",
-          "icon": "language"
-        },
-        {
-          "title": "GitHub Bot",
-          "href": "/github-bot",
-          "icon": "github"
-        },
-        {
-          "title": "Command Line Interface",
-          "href": "/cli",
-          "icon": "terminal"
-        }
-      ]
-    },
-    {
-      "tab": "cli",
-      "group": "CLI",
-      "pages": [
-        { "title": "Overview", "href": "/cli" },
-        {
-          "group": "Commands",
-          "href": "/cli/commands",
+          "group": "Manage",
           "pages": [
-            { "title": "init", "href": "/cli/init" },
-            { "title": "check", "href": "/cli/check" }
+            {
+              "title": "Redirects",
+              "href": "/authoring/redirects"
+            },
+            {
+              "title": "Locales",
+              "href": "/authoring/locales"
+            }
           ]
         }
       ]
     },
     {
-      "tab": "root",
-      "group": "Misc.",
+      "group": "Customize",
+      "icon": "palette",
+      "tab": "docs",
       "pages": [
         {
-          "title": "Contributing",
-          "href": "/contributing",
-          "icon": "heart"
+          "title": "Branding",
+          "href": "/customize/branding"
+        },
+        {
+          "title": "Custom domain",
+          "href": "/customize/custom-domain"
+        },
+        {
+          "title": "SEO",
+          "href": "/customize/seo"
+        },
+        {
+          "title": "Analytics",
+          "href": "/customize/analytics"
+        }
+      ]
+    },
+    {
+      "group": "Features",
+      "icon": "wand-magic-sparkles",
+      "tab": "features",
+      "pages": [
+        {
+          "title": "Overview",
+          "href": "/features"
+        }
+      ]
+    },
+    {
+      "group": "Publish",
+      "tab": "features",
+      "pages": [
+        {
+          "title": "Public GitHub hosting",
+          "href": "/features/public-github-hosting"
+        },
+        {
+          "title": "Components",
+          "href": "/features/components"
+        },
+        {
+          "title": "Local preview",
+          "href": "/features/local-preview"
+        },
+        {
+          "title": "Branch preview",
+          "href": "/features/branch-preview"
+        },
+        {
+          "title": "CLI",
+          "href": "/features/cli"
+        }
+      ]
+    },
+    {
+      "group": "Organize",
+      "tab": "features",
+      "pages": [
+        {
+          "title": "Sidebar",
+          "href": "/features/sidebar"
+        },
+        {
+          "title": "Tabs",
+          "href": "/features/tabs"
+        },
+        {
+          "title": "Links",
+          "href": "/features/links"
+        },
+        {
+          "title": "Locales",
+          "href": "/features/locales"
+        },
+        {
+          "title": "Redirects",
+          "href": "/features/redirects"
+        },
+        {
+          "title": "Search",
+          "href": "/features/search"
+        }
+      ]
+    },
+    {
+      "group": "Customize",
+      "tab": "features",
+      "pages": [
+        {
+          "title": "Theme",
+          "href": "/features/theme"
+        },
+        {
+          "title": "Logo",
+          "href": "/features/logo"
+        },
+        {
+          "title": "Header",
+          "href": "/features/header"
+        },
+        {
+          "title": "Social links",
+          "href": "/features/social-links"
+        },
+        {
+          "title": "Vanity subdomains",
+          "href": "/features/vanity-subdomains"
+        },
+        {
+          "title": "Custom domains",
+          "href": "/features/custom-domains"
+        }
+      ]
+    },
+    {
+      "group": "Configure",
+      "tab": "features",
+      "pages": [
+        {
+          "title": "Global variables",
+          "href": "/features/global-variables"
+        },
+        {
+          "title": "Table of contents",
+          "href": "/features/table-of-contents"
+        },
+        {
+          "title": "Previous and next links",
+          "href": "/features/previous-and-next-links"
+        },
+        {
+          "title": "Search engine indexing",
+          "href": "/features/search-engine-indexing"
+        }
+      ]
+    },
+    {
+      "group": "AI",
+      "tab": "features",
+      "pages": [
+        {
+          "title": "llms.txt",
+          "href": "/features/llms-txt"
+        },
+        {
+          "title": "MCP server",
+          "href": "/features/mcp-server"
+        },
+        {
+          "title": "Agent skills",
+          "href": "/features/agent-skills"
+        },
+        {
+          "title": "Ask AI",
+          "href": "/features/ask-ai"
+        }
+      ]
+    },
+    {
+      "group": "Integrate",
+      "tab": "features",
+      "pages": [
+        {
+          "title": "Analytics",
+          "href": "/features/analytics"
+        },
+        {
+          "title": "GitHub App",
+          "href": "/features/github-app"
+        }
+      ]
+    },
+    {
+      "group": "Components",
+      "icon": "cubes",
+      "tab": "components",
+      "pages": [
+        {
+          "title": "Overview",
+          "href": "/components"
+        },
+        {
+          "title": "Accordion",
+          "href": "/components/accordion"
+        },
+        {
+          "title": "Callouts",
+          "href": "/components/callouts"
+        },
+        {
+          "title": "Card",
+          "href": "/components/card"
+        },
+        {
+          "title": "Code blocks",
+          "href": "/components/code-blocks"
+        },
+        {
+          "title": "Code group",
+          "href": "/components/code-group"
+        },
+        {
+          "title": "Heading",
+          "href": "/components/heading"
+        },
+        {
+          "title": "Icon",
+          "href": "/components/icon"
+        },
+        {
+          "title": "Image",
+          "href": "/components/image"
+        },
+        {
+          "title": "Mermaid",
+          "href": "/components/mermaid"
+        },
+        {
+          "title": "Property",
+          "href": "/components/property"
+        },
+        {
+          "title": "Steps",
+          "href": "/components/steps"
+        },
+        {
+          "title": "Tabs",
+          "href": "/components/tabs"
+        },
+        {
+          "title": "Tweet",
+          "href": "/components/tweet"
+        },
+        {
+          "title": "Video",
+          "href": "/components/video"
+        },
+        {
+          "title": "YouTube",
+          "href": "/components/youtube"
+        },
+        {
+          "title": "Vimeo",
+          "href": "/components/vimeo"
+        }
+      ]
+    },
+    {
+      "group": "Agents",
+      "icon": "robot",
+      "tab": "docs",
+      "pages": [
+        {
+          "title": "Overview",
+          "href": "/ai-agents/overview"
+        },
+        {
+          "title": "llms.txt",
+          "href": "/ai-agents/llms-txt"
+        },
+        {
+          "title": "MCP server",
+          "href": "/ai-agents/mcp-server"
+        },
+        {
+          "title": "Agent skills",
+          "href": "/ai-agents/agent-skills"
+        },
+        {
+          "title": "Ask AI",
+          "href": "/ai-agents/ask-ai"
+        }
+      ]
+    },
+    {
+      "group": "Comparisons",
+      "icon": "scale-balanced",
+      "tab": "docs",
+      "pages": [
+        {
+          "group": "Platforms",
+          "href": "/comparisons",
+          "pages": [
+            {
+              "title": "Mintlify",
+              "href": "/comparisons/mintlify"
+            },
+            {
+              "title": "Docusaurus",
+              "href": "/comparisons/docusaurus"
+            },
+            {
+              "title": "docsify",
+              "href": "/comparisons/docsify"
+            },
+            {
+              "title": "Jekyll",
+              "href": "/comparisons/jekyll"
+            },
+            {
+              "title": "GitHub Pages",
+              "href": "/comparisons/github-pages"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "group": "Reference",
+      "icon": "book",
+      "tab": "reference",
+      "pages": [
+        {
+          "title": "Overview",
+          "href": "/reference"
+        },
+        {
+          "title": "docs.json",
+          "href": "/reference/docs-json"
+        },
+        {
+          "title": "Page frontmatter",
+          "href": "/reference/page-frontmatter"
+        },
+        {
+          "title": "CLI",
+          "href": "/reference/cli"
+        },
+        {
+          "title": "HTTP endpoints",
+          "href": "/reference/http-endpoints"
         }
       ]
     }

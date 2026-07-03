@@ -132,6 +132,7 @@ export const V1ConfigSchema = z
         docsearch: v1.docsearch,
       },
       variables: v1.variables,
+      redirects: {},
       scripts: {
         googleTagManager: v1.googleTagManager,
         googleAnalytics: v1.googleAnalytics,

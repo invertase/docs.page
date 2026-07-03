@@ -1,5 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
+import { getPostHogClient } from "@/lib/posthog";
 import {
   AgentCredentialsDecryptionError,
   decryptAgentCredentialsJwe,
@@ -69,6 +70,18 @@ export async function POST(req: Request) {
       id,
       version: payload.version,
       encrypted: payload.encrypted,
+    });
+
+    getPostHogClient()?.capture({
+      distinctId: repo,
+      event: "agent:registration_create",
+      properties: {
+        owner: repoParts.owner,
+        repository: repoParts.repo,
+        provider,
+        is_update: Boolean(existingRecord),
+        $process_person_profile: false,
+      },
     });
 
     return Response.json({ id }, { status: 200 });

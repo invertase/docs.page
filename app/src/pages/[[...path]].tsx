@@ -26,12 +26,16 @@ import {
   resolvePublicDocsPublishingContext,
 } from "@/lib/docs-canonical";
 import { getDeploymentOrigin } from "@/lib/docs-environment";
-import { resolveFrontmatterRedirectDestination } from "@/lib/docs-redirect";
+import {
+  resolveConfigRedirectDestination,
+  resolveFrontmatterRedirectDestination,
+} from "@/lib/docs-redirect";
 import { isRawDocRequestPath, resolveRawDocsRoute } from "@/lib/docs-routing";
 import {
   acceptPrefersMarkdown,
   incomingHttpHeadersToWebHeaders,
 } from "@/lib/incoming-http-headers";
+import { getPostHogClient } from "@/lib/posthog";
 import type {
   DocPageProps,
   ErrorPageProps,
@@ -234,6 +238,27 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
     const error = parseDocsBundleApiError(errorResponse);
 
     if (isDocsBundleNotFoundResponse(errorResponse)) {
+      // A deleted `.mdx` surfaces here as a 404. The bundler already fetched the
+      // config blob in the same GraphQL query and parsed it onto the error
+      // payload, so honour any config-level `redirects` (e.g. an old URL pointing
+      // at its new home) without a second round-trip.
+      // Api-style routes (mcp / llms.txt / sitemap.xml / robots.txt / search.json
+      // / og) live in the App Router (`app/api/...`) and never reach this Pages
+      // Router catch-all, so they are excluded by construction.
+      const configRedirectDestination = await resolveConfigRedirectDestination(
+        route,
+        error.config?.redirects,
+      );
+
+      if (configRedirectDestination) {
+        return {
+          redirect: {
+            destination: configRedirectDestination,
+            permanent: false,
+          },
+        };
+      }
+
       res.statusCode = 404;
 
       return {
@@ -260,6 +285,17 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
         } satisfies NotFoundPageProps,
       };
     }
+
+    getPostHogClient()?.capture({
+      distinctId: `${owner}/${repo}`,
+      event: "docs:page_fail",
+      properties: {
+        owner,
+        repository: repo,
+        error_message: error.message,
+        $process_person_profile: false,
+      },
+    });
 
     return {
       props: {
@@ -303,7 +339,31 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
         csrfCookiePath,
       ),
     );
+
+    getPostHogClient()?.capture({
+      distinctId: `${route.owner}/${route.repository}`,
+      event: "agent:session_create",
+      properties: {
+        owner: route.owner,
+        repository: route.repository,
+        ref: route.ref ?? null,
+        $process_person_profile: false,
+      },
+    });
   }
+
+  getPostHogClient()?.capture({
+    distinctId: `${route.owner}/${route.repository}`,
+    event: "docs:page_view",
+    properties: {
+      owner: route.owner,
+      repository: route.repository,
+      ref: route.ref ?? null,
+      path: route.docPath ?? null,
+      has_agent: successResponse.hasAgent,
+      $process_person_profile: false,
+    },
+  });
 
   return {
     props: {

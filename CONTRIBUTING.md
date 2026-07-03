@@ -1,24 +1,62 @@
 # Contributing
 
-This repository uses [Bun](https://bun.sh/) for workspace and dependency management. To get started, run the following commands:
+Thank you for helping improve docs.page. This guide covers how to contribute to this repository.
+
+Using a coding agent? Jump to [Contributing with an agent](#contributing-with-an-agent).
+
+## Get involved
+
+- **[Discussions](https://github.com/invertase/docs.page/discussions)** — questions, ideas, roadmap, and general feedback. Start here when you're not sure.
+- **[Issues](https://github.com/invertase/docs.page/issues/new/choose)** — bugs and feature requests. Use the [issue templates](.github/ISSUE_TEMPLATE/); one problem per issue.
+- **[Pull requests](https://github.com/invertase/docs.page/compare)** — code, docs, or any change to the repo. Use the [PR template](.github/pull_request_template.md).
+
+## Development
 
 ```bash
+git clone https://github.com/invertase/docs.page.git
+cd docs.page
 bun install
+bun dev
 ```
 
-The repository is structured as follows:
+The site runs at [http://localhost:3000](http://localhost:3000).
 
-- `app`: The Next.js application running the docs.page website.
-- `packages/cli`: A CLI for running various commands and scripts for initialization, checking etc. Used locally and on CI environments.
+| Path | Purpose |
+| --- | --- |
+| `app/` | Next.js app — rendering, MCP, Ask AI, preview |
+| `packages/cli/` | `@docs.page/cli` — init, check, preview |
+| `packages/mdx-bundler/` | Shared markdown pipeline |
+| `docs/` | Product documentation (MDX) |
 
-## Running docs.page
+> **GitHub tokens:** Not required for most work. Set `GITHUB_PAT` in `app/.env.local` only if you need the app to fetch live GitHub content.
 
-Generally, you'll want to interface with the website and api. To run these concurrently, you can use the following command:
+Run `bun run check` before opening a PR. Update `docs/` when behavior is user-facing.
 
-```bash
-cd app && bun dev
+## Contributing with an agent
+
+Copy this into a new agent session, then describe your task:
+
+```
+You are contributing to docs.page (github.com/invertase/docs.page).
+
+Read before making changes:
+1. CONTRIBUTING.md — workflow (this file)
+2. AGENTS.md — repo layout, commands, and code conventions
+3. .github/pull_request_template.md — follow when opening a PR
+4. .github/ISSUE_TEMPLATE/ — use when filing a bug or feature request
+
+Task: [e.g. "fix #123", "add docs for preview command"]
+
+Deliver:
+- Focused diff; do not edit legacy folders (api/, website/, og/)
+- Run `bun run check` before finishing
+- Update docs/ if behavior is user-facing
+- Fill out the PR template; link related issues (Fixes #…)
+- Ideas or large features → suggest a Discussion first, not a drive-by PR
 ```
 
-This will start the website on `http://localhost:3000`. 
+Code-level detail lives in [AGENTS.md](AGENTS.md).
 
-> The API requires a `GITHUB_APP_ID` and `GITHUB_APP_PRIVATE_KEY` to be set in your environment. These are used to authenticate with the GitHub API. You can create a GitHub App in your GitHub account settings.
+## License
+
+By contributing, you agree your contributions are licensed under [Apache-2.0](LICENSE).

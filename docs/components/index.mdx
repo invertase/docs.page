@@ -1,38 +1,76 @@
 ---
 title: Components
-description: Enhance your documentation with components powered by MDX.
+description: Choose the right built-in component for layout, code, callouts, and media, or stick with plain Markdown when it is enough.
 ---
 
-Alongside regular Markdown, docs.page supports [MDX](https://mdxjs.com/), a format that allows you to use JSX components within your documentation.
+Add these components to any page file under `docs/`. Components are available globally with no imports required. Plain Markdown handles paragraphs, lists, and links; components add structure for tabs, callouts, code examples, and API reference fields.
 
-Components enable you to enhance your documentation, providing a more interactive and engaging experience for your readers over what is possible with standard Markdown.
+## Structure
 
-## Using Components
+<CardGroup cols={1}>
+  <Card title="Tabs" icon="folder" href="/components/tabs">
+    Switchable panels for related content.
+  </Card>
+  <Card title="Accordion" icon="chevron-down" href="/components/accordion">
+    Expandable sections for hidden detail.
+  </Card>
+  <Card title="Steps" icon="list-ol" href="/components/steps">
+    Numbered steps for tutorials and guides.
+  </Card>
+  <Card title="Card" icon="square" href="/components/card">
+    Linked tiles for overview pages.
+  </Card>
+  <Card title="Heading" icon="heading" href="/components/heading">
+    Anchor links on headings.
+  </Card>
+</CardGroup>
 
-To use components in your documentation, you can either use standard Markdown syntax, or the `<Component>` syntax. For example, the `<Info>` component can be used to display an informational message more visible to users:
+## Code
 
-<Info>This draws attention to useful page information.</Info>
+<CardGroup cols={1}>
+  <Card title="Code blocks" icon="code" href="/components/code-blocks">
+    Highlighted code with a copy button.
+  </Card>
+  <Card title="Code group" icon="code-branch" href="/components/code-group">
+    Tabbed code for multiple languages.
+  </Card>
+</CardGroup>
 
-```jsx
-<Info>This draws attention to useful page information.</Info>
-```
+## Reference
 
-Components also take "props", which are attributes that can be passed to the component to customize its behavior, for example:
+<CardGroup cols={1}>
+  <Card title="Callouts" icon="message" href="/components/callouts">
+    Styled alerts for emphasized content.
+  </Card>
+  <Card title="Property" icon="sliders" href="/components/property">
+    API fields with type and badge labels.
+  </Card>
+</CardGroup>
 
-```jsx
-<Tweet id="1513662173796605958" />
-```
+## Media
 
-## HTML Overrides
+<CardGroup cols={1}>
+  <Card title="Icon" icon="icons" href="/components/icon">
+    Font Awesome icons by slug.
+  </Card>
+  <Card title="Image" icon="image" href="/components/image">
+    Repo images with alt text and zoom.
+  </Card>
+  <Card title="Video" icon="video" href="/components/video">
+    HTML5 video from a URL.
+  </Card>
+  <Card title="YouTube" icon="youtube" href="/components/youtube">
+    YouTube embed by video ID.
+  </Card>
+  <Card title="Vimeo" icon="vimeo" href="/components/vimeo">
+    Vimeo embed by video ID.
+  </Card>
+  <Card title="Tweet" icon="x-twitter" href="/components/tweet">
+    Twitter/X embed by status ID.
+  </Card>
+</CardGroup>
 
-Typical markdown syntax supports both markdown tags and also HTML tags. In some scenarios, docs.page will override the HTML tags to render the component instead. For example image markup in markdown (e.g. `![alt text](image.png)`) will be overridden to render the `<Image>` component instead.
+## Related
 
-Please note that rendering HTML directly in your markdown will not be overridden, and will be rendered as standard HTML. For example an `<img>` tag will not be overridden to render the `<Image>` component.
-
-## Invalid Components
-
-If you attempt to use a component that does not exist, or has a required property which is missing, docs.page will render a red block with a message informing you to take action.
-For example:
-
-<ComponentWhichDoesNotExist />
-
+- [Write](/authoring/write)
+- [docs.json](/reference/docs-json)
