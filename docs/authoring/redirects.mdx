@@ -29,7 +29,7 @@ When you change a published URL, update three things: the file at the new path, 
 </Steps>
 
 <Info>
-  Keep the stub file at the old path even after the content lives elsewhere. Deleting the stub removes the old URL entirely.
+  Keep the stub file at the old path even after the content lives elsewhere. Deleting the stub removes the old URL entirely — unless you forward it from the `redirects` map in `docs.json` (see [Forward deleted pages in bulk](#forward-deleted-pages-in-bulk)).
 </Info>
 
 ## Add a redirect stub
@@ -63,6 +63,21 @@ Leave a minimal file at the **old** path and set `redirect` in frontmatter to th
 <Warning>
   Do not rely on query strings or hash anchors in `redirect` values. They are not part of the redirect contract.
 </Warning>
+
+## Forward deleted pages in bulk
+
+Stubs work when you keep a file at the old path. When you **delete** pages outright — or need to forward many old URLs at once — add a centralized `redirects` map to `docs.json` instead of leaving a file behind for each one:
+
+```json title="docs.json"
+"redirects": {
+  "/installation": "/getting-started",
+  "/old-api": "https://api.example.com/reference"
+}
+```
+
+Keys are the old root-relative paths; values are internal paths or external `https://` URLs. docs.page consults this map **only when no file exists at the requested path**, so it is the tool for URLs whose files were removed. Keep frontmatter stubs for the case where a file still lives at the old path.
+
+See [`redirects`](/reference/docs-json#redirects) and [Redirects → The centralized redirects map](/features/redirects#the-centralized-redirects-map).
 
 ## Verify the redirect
 
