@@ -3,64 +3,94 @@ title: Release notes — v2.0.0
 description: Unified Next.js platform, agent-ready docs, shared MDX pipeline, and CLI preview.
 ---
 
-# Release notes — v2.0.0
-
-**Release date:** 29-06-2026 (platform on `main` via [#488](https://github.com/invertase/docs.page/pull/488); `@docs.page/cli` [2.0.0](https://github.com/invertase/docs.page/releases/tag/cli-v2.0.0) on npm 2026-06-23)
+**Release date:** 03-07-2026 · `@docs.page/cli` [2.0.0](https://github.com/invertase/docs.page/releases/tag/cli-v2.0.0) on npm from 23-06-2026
 
 docs.page **2.0.0** replaces the 1.0.0 stack with a single Next.js application, shared markdown bundler, and agent-facing surfaces (MCP, `llms.txt`, Ask AI).
 
-**See also:** [CHANGELOG](../../CHANGELOG.md#200---2026-06-29) · [v1.0.0 release notes](./v1.0.0.mdx)
+**See also:** [CHANGELOG](../../CHANGELOG.md#200---03-07-2026) · [v1.0.0 release notes](./v1.0.0.mdx)
+
+---
+
+## Breaking Changes
+
+- Remove the 1.0.0 `website/` and `api/` packages — hosting, bundling, webhooks, and metadata routes live in `app/` ([#470](https://github.com/invertase/docs.page/pull/470))
+- Change CLI distribution to Bun-built `@docs.page/cli` 2.x ([#470](https://github.com/invertase/docs.page/pull/470))
+- Remove Redis-backed bundle cache in favour of surrogate cache control ([`0228337`](https://github.com/invertase/docs.page/commit/0228337))
 
 ---
 
 ## New Features
 
-### Built-in search
+### Agent-ready
 
-- Built-in FlexSearch `search.json` on every site — no third-party widget, API key, or `docs.json` search config; replaces optional Algolia DocSearch ([`76eaf1a`](https://github.com/invertase/docs.page/commit/76eaf1a))
-- ⌘K command palette with in-page lookup and title-only mode (`>` prefix) ([`964f566`](https://github.com/invertase/docs.page/commit/964f566), [`12148bc`](https://github.com/invertase/docs.page/commit/12148bc))
-
-### Documentation experience
-
-- **shadcn/ui theme presets** — named presets beyond v1 hex colour theming ([`0cb7003`](https://github.com/invertase/docs.page/commit/0cb7003), [`f7b97d7`](https://github.com/invertase/docs.page/commit/f7b97d7))
-- **Mermaid** diagrams in MDX ([`de3b9e3`](https://github.com/invertase/docs.page/commit/de3b9e3))
-- **Site banner** via `docs.json` ([`54479dd`](https://github.com/invertase/docs.page/commit/54479dd))
-- **`sitemap.xml`** and **`robots.txt`** per site ([`02fa436`](https://github.com/invertase/docs.page/commit/02fa436), [`65f5d45`](https://github.com/invertase/docs.page/commit/65f5d45))
-- Reworked documentation; v1 MDX components ported to the shared IR renderer ([`f938182`](https://github.com/invertase/docs.page/commit/f938182))
-
-### Agent-ready documentation
-
-- **Ask AI** — in-site assistant with configurable suggested questions ([`4cac172`](https://github.com/invertase/docs.page/commit/4cac172), [`8dc1819`](https://github.com/invertase/docs.page/commit/8dc1819))
-- **MCP** — HTTP endpoint per site with `read_doc_page` and `list_doc_files` tools; repository `skills/` exposed as resources; install dialog with Cursor and VS Code deeplinks ([`75c1ab2`](https://github.com/invertase/docs.page/commit/75c1ab2), [`d1728bf`](https://github.com/invertase/docs.page/commit/d1728bf)); disable via `mcp.enabled` ([`1ac2f95`](https://github.com/invertase/docs.page/commit/1ac2f95))
-- **`docs.json` `agent` block** — API key, placeholder, starter questions, and rate limits ([`9d711f4`](https://github.com/invertase/docs.page/commit/9d711f4), [`cf39bb3`](https://github.com/invertase/docs.page/commit/cf39bb3))
+- **Ask AI** — in-site assistant with configurable suggested questions; supports OpenAI, Anthropic, Google, and xAI providers via `docs agent create` ([#490](https://github.com/invertase/docs.page/pull/490), [`4cac172`](https://github.com/invertase/docs.page/commit/4cac172), [`8dc1819`](https://github.com/invertase/docs.page/commit/8dc1819))
+- **MCP** — HTTP endpoint per site with `read_doc_page` and `list_doc_files` tools; install dialog with Cursor, VS Code, Claude Code, and Antigravity deeplinks ([`75c1ab2`](https://github.com/invertase/docs.page/commit/75c1ab2), [`d1728bf`](https://github.com/invertase/docs.page/commit/d1728bf)); disable via `mcp.enabled: false` ([`1ac2f95`](https://github.com/invertase/docs.page/commit/1ac2f95))
+- **Agent skills** — `.agents/skills/**/SKILL.md` files in your repository exposed as MCP resources when MCP is enabled
+- **`llms.txt`** and **`llms-full.txt`** — machine-readable doc index and expanded MDX export ([`d88f7c4`](https://github.com/invertase/docs.page/commit/d88f7c4))
+- **`docs.json` `agent` block** — API key, placeholder, starter questions, and per-IP / per-repo rate limits ([`9d711f4`](https://github.com/invertase/docs.page/commit/9d711f4), [`cf39bb3`](https://github.com/invertase/docs.page/commit/cf39bb3))
 - **Agent page actions** — copy page as Markdown, open raw `.md` URL, Open in Claude, and MCP deeplinks ([`354770c`](https://github.com/invertase/docs.page/commit/354770c))
 
-### LLM discovery
+### Git publishing
 
-- **`llms.txt`** and **`llms-full.txt`** — machine-readable doc index and expanded export ([`d88f7c4`](https://github.com/invertase/docs.page/commit/d88f7c4))
+- Unified Next.js platform — hosting, bundling, webhooks, and metadata routes in a single `app/` deployable ([#470](https://github.com/invertase/docs.page/pull/470), [`a546632`](https://github.com/invertase/docs.page/commit/a546632))
+- Shared `packages/mdx-bundler` pipeline — hosted docs and CLI preview render through the same production bundler ([`be18d1d`](https://github.com/invertase/docs.page/commit/be18d1d), [#472](https://github.com/invertase/docs.page/pull/472))
+- Push-to-publish from public GitHub — no build pipelines, hosting configuration, or infrastructure maintenance
+- Maintain v1 `docs.json` compatibility — automatic migration for legacy theme strings and `noindex` ([`94fd1f8`](https://github.com/invertase/docs.page/commit/94fd1f8))
+- Improve GitHub file resolution via jsDelivr ([`16405d3`](https://github.com/invertase/docs.page/commit/16405d3))
+
+### Intelligent search
+
+- Built-in FlexSearch `search.json` on every site — no third-party widget, API key, or `docs.json` search config; replaces optional Algolia DocSearch ([`76eaf1a`](https://github.com/invertase/docs.page/commit/76eaf1a))
+- In-page FlexSearch with title-only mode (`>` prefix) ([`964f566`](https://github.com/invertase/docs.page/commit/964f566))
+- ⌘K command palette with in-page lookup, navigation tab shortcuts, **Ask AI**, and **Install MCP** entry points ([`964f566`](https://github.com/invertase/docs.page/commit/964f566), [`12148bc`](https://github.com/invertase/docs.page/commit/12148bc))
+
+### Markdown components
+
+- Built-in MDX components — tabs, steps, callouts, code blocks, code groups, cards, accordion, property lists, headings, images, icons, and embeds (YouTube, Vimeo, Tweet / `<X>`, video); no imports required ([#359](https://github.com/invertase/docs.page/pull/359), [`f938182`](https://github.com/invertase/docs.page/commit/f938182))
+- **Mermaid** diagrams in fenced code blocks ([`de3b9e3`](https://github.com/invertase/docs.page/commit/de3b9e3))
+- **GitHub alert syntax** — `> [!NOTE]`, `> [!WARNING]`, `> [!TIP]`, and `> [!CAUTION]` blockquotes render as Info, Warning, Success, and Error callouts ([#405](https://github.com/invertase/docs.page/issues/405))
+- Shared IR renderer — hosted sites and CLI `preview` use the same component map and bundler ([`be18d1d`](https://github.com/invertase/docs.page/commit/be18d1d), [#472](https://github.com/invertase/docs.page/pull/472))
+
+### Modern interface
+
+- **shadcn/ui theme presets** — named presets beyond v1 hex colour theming, with reworked documentation chrome ([`0cb7003`](https://github.com/invertase/docs.page/commit/0cb7003), [`f7b97d7`](https://github.com/invertase/docs.page/commit/f7b97d7))
+- **Announcement banner** — site-wide strip via `docs.json` `banner` (`message`, optional `href`, `backgroundColor`, `foregroundColor`) ([`54479dd`](https://github.com/invertase/docs.page/commit/54479dd))
+- **`sitemap.xml`** and **`robots.txt`** per site ([`02fa436`](https://github.com/invertase/docs.page/commit/02fa436), [`65f5d45`](https://github.com/invertase/docs.page/commit/65f5d45))
 
 ### CLI (`@docs.page/cli` 2.x)
 
 - **`preview`** — local live preview via the production bundler ([#472](https://github.com/invertase/docs.page/pull/472), [`5bcc76b`](https://github.com/invertase/docs.page/commit/5bcc76b))
 - **`agent create`** / **`agent delete`** — manage hosted agent credentials ([`6526298`](https://github.com/invertase/docs.page/commit/6526298))
 - **`check`** — extended with rendering validation ([`3faf391`](https://github.com/invertase/docs.page/commit/3faf391))
+- **`init`** — scaffolds `docs.json` with `$schema` for editor validation ([`de6ccff`](https://github.com/invertase/docs.page/commit/de6ccff))
 
 ---
 
 ## Bug Fixes
 
+- Fix global variable substitution inside MDX components and fenced code blocks ([#324](https://github.com/invertase/docs.page/issues/324), [#436](https://github.com/invertase/docs.page/issues/436))
+- Fix sidebar disappearing when `logo` is a plain string in `docs.json` ([#394](https://github.com/invertase/docs.page/issues/394))
+- Fix locale switcher replacing the locale segment in URLs (e.g. `/en/page` → `/fr/page`) ([#370](https://github.com/invertase/docs.page/issues/370))
+- Fix sidebar item selection under tabbed navigation ([#414](https://github.com/invertase/docs.page/issues/414))
+- Fix sidebar tab highlighting when using multiple navigation tabs ([#411](https://github.com/invertase/docs.page/issues/411))
+- Fix sidebar tabs not updating after in-site redirect navigation ([#462](https://github.com/invertase/docs.page/issues/462), [`978f318`](https://github.com/invertase/docs.page/commit/978f318))
+- Fix GFM tables inside `Steps` components ([#484](https://github.com/invertase/docs.page/issues/484))
+- Fix extra line breaks when copying a partial code block selection ([#487](https://github.com/invertase/docs.page/issues/487), [`0a2ba19`](https://github.com/invertase/docs.page/commit/0a2ba19))
 - Fix raw Markdown (`.md`) URL in the page action menu on custom domains and vanity subdomains ([`38bcb19`](https://github.com/invertase/docs.page/commit/38bcb19))
 - Fix Font Awesome icons rendering oversized in markdown headings ([`ba2808b`](https://github.com/invertase/docs.page/commit/ba2808b))
 - Fix images inside HTML tables using the shared markdown and image pipeline ([`aa8813c`](https://github.com/invertase/docs.page/commit/aa8813c))
 - Fix homepage marketing embed preview pointing at production docs instead of a stale branch preview ([`3bb8960`](https://github.com/invertase/docs.page/commit/3bb8960))
+- Hide page title when `showPageTitle` is disabled in frontmatter ([#428](https://github.com/invertase/docs.page/issues/428))
+- GitHub App posts PR preview comments only when documentation files change ([#287](https://github.com/invertase/docs.page/issues/287), [#491](https://github.com/invertase/docs.page/pull/491))
+- Stop duplicate GitHub PR preview comments ([#475](https://github.com/invertase/docs.page/issues/475), [`5340652`](https://github.com/invertase/docs.page/commit/5340652))
+- Allow code group titles to scroll horizontally without clipping ([`24f0318`](https://github.com/invertase/docs.page/commit/24f0318))
 - Regressions fixed during the v2 port (also present in late v1): hydration ([#419](https://github.com/invertase/docs.page/issues/419)), sidebar links ([#417](https://github.com/invertase/docs.page/pull/417), [#399](https://github.com/invertase/docs.page/issues/399)), `showPageImage` / frontmatter ([#420](https://github.com/invertase/docs.page/issues/420), [#396](https://github.com/invertase/docs.page/issues/396)), steps spacing ([`abf12a3`](https://github.com/invertase/docs.page/commit/abf12a3))
-- Fix CLI local preview rendering ([#472](https://github.com/invertase/docs.page/pull/472), [`5bcc76b`](https://github.com/invertase/docs.page/commit/5bcc76b), [`402d187`](https://github.com/invertase/docs.page/commit/402d187))
+- Fix CLI local preview rendering ([#472](https://github.com/invertase/docs.page/pull/472), [#429](https://github.com/invertase/docs.page/issues/429), [#433](https://github.com/invertase/docs.page/issues/433), [`5bcc76b`](https://github.com/invertase/docs.page/commit/5bcc76b), [`402d187`](https://github.com/invertase/docs.page/commit/402d187))
 - Improve markdown parsing for preview and production parity ([`202ab7e`](https://github.com/invertase/docs.page/commit/202ab7e))
 - Skip analytics scripts in local preview mode ([`c8d885f`](https://github.com/invertase/docs.page/commit/c8d885f))
 - Hide ref badge in local preview mode ([`e26ea34`](https://github.com/invertase/docs.page/commit/e26ea34))
 - Fix MCP endpoint URL and copy actions ([`5fc5e5e`](https://github.com/invertase/docs.page/commit/5fc5e5e))
 - Serve correct `search.json`, sitemap, `llms.txt`, and MCP URLs on custom domains ([`5593ebb`](https://github.com/invertase/docs.page/commit/5593ebb), [`25e3b7a`](https://github.com/invertase/docs.page/commit/25e3b7a))
-- Register GitHub webhook listener once per process ([`5340652`](https://github.com/invertase/docs.page/commit/5340652))
 
 ---
 
@@ -68,12 +98,14 @@ docs.page **2.0.0** replaces the 1.0.0 stack with a single Next.js application, 
 
 ### Documentation experience
 
+- **Config-driven redirects** — `redirect` frontmatter on a stub page returns HTTP 307 across canonical, vanity, custom-domain, and branch-preview URLs ([#503](https://github.com/invertase/docs.page/pull/503))
 - Rework Open Graph image generation ([`a6e43d6`](https://github.com/invertase/docs.page/commit/a6e43d6))
 - Add canonical URL metadata ([`c06728d`](https://github.com/invertase/docs.page/commit/c06728d))
 - Consolidate v1 Edit control into the page action menu
 - Improve agent chat UX ([`5572342`](https://github.com/invertase/docs.page/commit/5572342), [`c413ceb`](https://github.com/invertase/docs.page/commit/c413ceb))
 - Make headings clickable and improve card link affordance ([`f8692c1`](https://github.com/invertase/docs.page/commit/f8692c1), [`fb4a1f0`](https://github.com/invertase/docs.page/commit/fb4a1f0))
 - Align code fence and fenced block styling ([`ffb7a1a`](https://github.com/invertase/docs.page/commit/ffb7a1a))
+- Rewrite public product documentation ([#504](https://github.com/invertase/docs.page/pull/504))
 
 ### Other
 
@@ -81,11 +113,4 @@ docs.page **2.0.0** replaces the 1.0.0 stack with a single Next.js application, 
 - Footer UTM tags on outbound links ([`4ceae54`](https://github.com/invertase/docs.page/commit/4ceae54))
 - Streamdown-based markdown rendering ([`5a0863f`](https://github.com/invertase/docs.page/commit/5a0863f))
 - Tweet component `X` alias ([`c7cad53`](https://github.com/invertase/docs.page/commit/c7cad53))
-
-### Platform rewrite
-
-- Single Next.js `app/` replaces `website/` and `api/` ([#470](https://github.com/invertase/docs.page/pull/470), [`a546632`](https://github.com/invertase/docs.page/commit/a546632))
-- Shared `packages/mdx-bundler` IR pipeline for hosted docs and CLI preview parity ([`be18d1d`](https://github.com/invertase/docs.page/commit/be18d1d), [#472](https://github.com/invertase/docs.page/pull/472))
-- Maintain v1 `docs.json` compatibility — automatic migration for legacy theme strings and `noindex` ([`94fd1f8`](https://github.com/invertase/docs.page/commit/94fd1f8))
-- Improve GitHub file resolution via jsDelivr ([`16405d3`](https://github.com/invertase/docs.page/commit/16405d3))
 - Relocate GitHub webhook handling into `app/` ([`aa5a7aa`](https://github.com/invertase/docs.page/commit/aa5a7aa))

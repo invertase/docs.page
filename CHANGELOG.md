@@ -2,12 +2,12 @@
 
 Platform changes to docs.page. Release notes: [2.0.0](./docs/releases/v2.0.0.mdx) · [1.0.0](./docs/releases/v1.0.0.mdx).
 
-## [2.0.0] - 2026-06-23
+## [2.0.0] - 03-07-2026
 
 ### Removed
 
 - **Breaking:** remove standalone `website/` and `api/` deployables ([#470](https://github.com/invertase/docs.page/pull/470))
-- **Breaking:** remove Algolia DocSearch integration — use built-in FlexSearch `search.json` instead
+- Remove Algolia DocSearch integration — built-in FlexSearch `search.json` replaces optional third-party search ([`76eaf1a`](https://github.com/invertase/docs.page/commit/76eaf1a))
 - Remove Redis-backed bundle cache in favour of surrogate cache control ([`0228337`](https://github.com/invertase/docs.page/commit/0228337))
 
 ### Added
@@ -18,15 +18,20 @@ Platform changes to docs.page. Release notes: [2.0.0](./docs/releases/v2.0.0.mdx
 - Add page action menu: copy Markdown, view `.md`, Open in Claude, and MCP deeplinks ([`354770c`](https://github.com/invertase/docs.page/commit/354770c))
 - Add `llms.txt` and `llms-full.txt` endpoints ([`d88f7c4`](https://github.com/invertase/docs.page/commit/d88f7c4))
 - Add Ask AI agent panel and configurable agent questions in `docs.json` ([`4cac172`](https://github.com/invertase/docs.page/commit/4cac172), [`8dc1819`](https://github.com/invertase/docs.page/commit/8dc1819))
+- Add Ask AI backend providers for OpenAI, Anthropic, Google, and xAI ([#490](https://github.com/invertase/docs.page/pull/490))
 - Add command palette with tab navigation, Ask AI, and MCP shortcuts ([`964f566`](https://github.com/invertase/docs.page/commit/964f566), [`12148bc`](https://github.com/invertase/docs.page/commit/12148bc))
 - Add in-page FlexSearch with title-only mode ([`964f566`](https://github.com/invertase/docs.page/commit/964f566))
 - Add FlexSearch-backed `search.json` per repository ([`76eaf1a`](https://github.com/invertase/docs.page/commit/76eaf1a))
 - Add `sitemap.xml` and `robots.txt` routes per repository ([`02fa436`](https://github.com/invertase/docs.page/commit/02fa436), [`65f5d45`](https://github.com/invertase/docs.page/commit/65f5d45))
 - Add Mermaid diagram rendering in MDX ([`de3b9e3`](https://github.com/invertase/docs.page/commit/de3b9e3))
+- Add GitHub alert blockquote syntax for callouts ([#405](https://github.com/invertase/docs.page/issues/405))
 - Add optional site banner in `docs.json` ([`54479dd`](https://github.com/invertase/docs.page/commit/54479dd))
 - Add shadcn/ui preset themes and reworked documentation chrome ([`0cb7003`](https://github.com/invertase/docs.page/commit/0cb7003), [`f7b97d7`](https://github.com/invertase/docs.page/commit/f7b97d7))
 - Add CLI `preview` and `agent` commands sharing the production bundler ([#472](https://github.com/invertase/docs.page/pull/472), [#470](https://github.com/invertase/docs.page/pull/470))
 - Add configurable agent rate limiting ([`cf39bb3`](https://github.com/invertase/docs.page/commit/cf39bb3))
+- Add config-driven page redirects via frontmatter `redirect` ([#503](https://github.com/invertase/docs.page/pull/503))
+- Add Privacy Policy and Terms of Service pages ([#506](https://github.com/invertase/docs.page/pull/506))
+- Add server-side PostHog analytics for platform telemetry ([#492](https://github.com/invertase/docs.page/pull/492))
 
 ### Changed
 
@@ -39,10 +44,19 @@ Platform changes to docs.page. Release notes: [2.0.0](./docs/releases/v2.0.0.mdx
 - Relocate GitHub webhook handling into `app/` ([`aa5a7aa`](https://github.com/invertase/docs.page/commit/aa5a7aa))
 - Rework Open Graph image generation ([`a6e43d6`](https://github.com/invertase/docs.page/commit/a6e43d6))
 - Extend CLI `check` with rendering validation ([`3faf391`](https://github.com/invertase/docs.page/commit/3faf391))
+- Rewrite public product documentation ([#504](https://github.com/invertase/docs.page/pull/504))
+- Add Privacy and Terms links to site footers ([#510](https://github.com/invertase/docs.page/pull/510))
 
 ### Fixed
 
-- Register GitHub webhook listener once per process ([`5340652`](https://github.com/invertase/docs.page/commit/5340652))
+- Fix global variable substitution inside MDX components and fenced code blocks ([#324](https://github.com/invertase/docs.page/issues/324), [#436](https://github.com/invertase/docs.page/issues/436))
+- Fix sidebar disappearing when `logo` is a plain string in `docs.json` ([#394](https://github.com/invertase/docs.page/issues/394))
+- Fix locale switcher replacing the locale segment in URLs ([#370](https://github.com/invertase/docs.page/issues/370))
+- Fix sidebar item selection under tabbed navigation ([#414](https://github.com/invertase/docs.page/issues/414))
+- Fix sidebar tabs not updating after in-site redirect navigation ([#462](https://github.com/invertase/docs.page/issues/462), [`978f318`](https://github.com/invertase/docs.page/commit/978f318))
+- Fix GFM tables inside `Steps` components ([#484](https://github.com/invertase/docs.page/issues/484))
+- Fix extra line breaks when copying a partial code block selection ([#487](https://github.com/invertase/docs.page/issues/487), [`0a2ba19`](https://github.com/invertase/docs.page/commit/0a2ba19))
+- Register GitHub webhook listener once per process ([#475](https://github.com/invertase/docs.page/issues/475), [`5340652`](https://github.com/invertase/docs.page/commit/5340652))
 - Serve correct `search.json`, sitemap, and `llms.txt` URLs on custom domains ([`5593ebb`](https://github.com/invertase/docs.page/commit/5593ebb), [`25e3b7a`](https://github.com/invertase/docs.page/commit/25e3b7a))
 - Add canonical URLs and Open Graph metadata for documentation pages ([`c06728d`](https://github.com/invertase/docs.page/commit/c06728d))
 - Fix MCP endpoint URL and copy actions ([`5fc5e5e`](https://github.com/invertase/docs.page/commit/5fc5e5e))
@@ -50,18 +64,26 @@ Platform changes to docs.page. Release notes: [2.0.0](./docs/releases/v2.0.0.mdx
 - Fix client navigation hydration handling ([#419](https://github.com/invertase/docs.page/issues/419))
 - Prevent internal sidebar links from opening in a new tab ([#417](https://github.com/invertase/docs.page/pull/417))
 - Improve grouped sidebar collapse, text wrapping, and mobile menu behaviour ([#399](https://github.com/invertase/docs.page/issues/399), [`d21f8ad`](https://github.com/invertase/docs.page/commit/d21f8ad))
+- Fix sidebar tab highlighting with multiple navigation tabs ([#411](https://github.com/invertase/docs.page/issues/411))
+- Hide page title when `showPageTitle` is disabled ([#428](https://github.com/invertase/docs.page/issues/428))
+- Post GitHub App PR preview comments only when documentation files change ([#287](https://github.com/invertase/docs.page/issues/287), [#491](https://github.com/invertase/docs.page/pull/491))
 - Align code fence and fenced block styling ([`ffb7a1a`](https://github.com/invertase/docs.page/commit/ffb7a1a))
 - Make headings clickable and improve card link affordance ([`f8692c1`](https://github.com/invertase/docs.page/commit/f8692c1), [`fb4a1f0`](https://github.com/invertase/docs.page/commit/fb4a1f0))
 - Fix steps component spacing and nested children ([`abf12a3`](https://github.com/invertase/docs.page/commit/abf12a3), [`aa8bfbc`](https://github.com/invertase/docs.page/commit/aa8bfbc))
-- Fix CLI local preview rendering via shared production bundler ([#472](https://github.com/invertase/docs.page/pull/472), [`5bcc76b`](https://github.com/invertase/docs.page/commit/5bcc76b))
+- Fix CLI local preview rendering ([#472](https://github.com/invertase/docs.page/pull/472), [#429](https://github.com/invertase/docs.page/issues/429), [#433](https://github.com/invertase/docs.page/issues/433), [`5bcc76b`](https://github.com/invertase/docs.page/commit/5bcc76b))
 - Fix preview page WebSocket client and doc rendering ([`402d187`](https://github.com/invertase/docs.page/commit/402d187))
 - Skip analytics scripts in local preview mode ([`c8d885f`](https://github.com/invertase/docs.page/commit/c8d885f))
 - Hide ref badge in local preview mode ([`e26ea34`](https://github.com/invertase/docs.page/commit/e26ea34))
 - Improve markdown parsing for preview and production parity ([`202ab7e`](https://github.com/invertase/docs.page/commit/202ab7e))
+- Fix raw Markdown (`.md`) URL in the page action menu on custom domains and vanity subdomains ([`38bcb19`](https://github.com/invertase/docs.page/commit/38bcb19))
+- Fix Font Awesome icons rendering oversized in markdown headings ([`ba2808b`](https://github.com/invertase/docs.page/commit/ba2808b))
+- Fix images inside HTML tables using the shared markdown and image pipeline ([`aa8813c`](https://github.com/invertase/docs.page/commit/aa8813c))
+- Allow code group titles to scroll horizontally without clipping ([`24f0318`](https://github.com/invertase/docs.page/commit/24f0318))
+- Include `$schema` in CLI `init` scaffold output ([`de6ccff`](https://github.com/invertase/docs.page/commit/de6ccff))
 
 [2.0.0]: https://github.com/invertase/docs.page/releases/tag/cli-v2.0.0
 
-## [1.0.0] - 2024-08-29
+## [1.0.0] - 29-08-2024
 
 ### Added
 
@@ -80,7 +102,7 @@ Platform changes to docs.page. Release notes: [2.0.0](./docs/releases/v2.0.0.mdx
 - Expose `docs.json` JSON Schema at `/schema.json`
 - Bundle markdown through Express API with remark/rehype validation plugins ([`6126288`](https://github.com/invertase/docs.page/commit/6126288))
 - Support HTML comments and math in MDX ([#205](https://github.com/invertase/docs.page/pull/205))
-- Load custom domain routing from a remote domains list ([`46ec893`](https://github.com/invertase/docs.page/commit/46ec893))
+- Support platform-managed custom domain routing ([`46ec893`](https://github.com/invertase/docs.page/commit/46ec893))
 - Add middleware block list for unwanted request paths ([`ff9ecef`](https://github.com/invertase/docs.page/commit/ff9ecef))
 - Support sidebar group heading icons and external link icons ([`5d80271`](https://github.com/invertase/docs.page/commit/5d80271), [`ebc272c`](https://github.com/invertase/docs.page/commit/ebc272c))
 - Upgrade FontAwesome icons to 6.7.2 ([`304b62f`](https://github.com/invertase/docs.page/commit/304b62f))
