@@ -39,12 +39,12 @@ export function Homepage() {
         )}
       >
         <Background />
-        <div className="relative z-10 mx-auto w-full min-w-0 max-w-8xl px-4 font-mono">
+        <div className="relative z-10 mx-auto w-full min-w-0 max-w-8xl px-0 md:px-4 font-mono">
           <div
             className="absolute top-72 -right-72 bg-no-repeat size-[700px] bg-center bg-cover opacity-60 z-[-1]"
             style={{ backgroundImage: `url(${hexagon.src})` }}
           />
-          <div className="border-x">
+          <div className="md:border-x">
             <div
               className="absolute bottom-72 -left-72 bg-no-repeat size-[700px] bg-center bg-cover opacity-60 z-[-1]"
               style={{ backgroundImage: `url(${hexagon.src})` }}
