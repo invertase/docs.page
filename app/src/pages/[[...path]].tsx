@@ -354,6 +354,10 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
       path: route.docPath ?? null,
       has_agent: successResponse.hasAgent,
       client_type: classifyClient(userAgent),
+      // Raw UA lets PostHog's own bot/traffic classification engage on these
+      // server-side events (its SQL functions and $virt_* properties read
+      // $raw_user_agent), so our numbers reconcile with PostHog web analytics.
+      $raw_user_agent: userAgent,
       $process_person_profile: false,
     },
   });

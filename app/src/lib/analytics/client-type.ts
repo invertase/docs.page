@@ -47,6 +47,10 @@ export const CRAWLER_PATTERNS = [
   "Discordbot",
   "WhatsApp",
   "TelegramBot",
+  // Lighthouse ships a browser-like "Chrome-Lighthouse" UA, so it must be
+  // caught before the browser check or it counts as a human. PostHog classifies
+  // it as an seo_crawler.
+  "Lighthouse",
 ] as const;
 
 /** Generic bot fallback for crawlers not covered by an explicit pattern. */
@@ -65,6 +69,15 @@ export const AUTOMATION_PATTERNS = [
   "Go-http-client",
   "okhttp",
   "Java/",
+  // Headless / driven browsers. These carry a browser-like UA (e.g.
+  // "HeadlessChrome") and would otherwise be counted as humans. PostHog
+  // classifies them as automation (headless_browser).
+  "HeadlessChrome",
+  "PhantomJS",
+  "Puppeteer",
+  "Playwright",
+  "Selenium",
+  "Cypress",
 ] as const;
 
 /** Real browser signature: a Mozilla token plus a known engine/brand token. */
