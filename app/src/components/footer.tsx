@@ -72,7 +72,21 @@ export function Footer() {
           href={`https://invertase.io?${params.toString()}`}
           className="underline underline-offset-5 hover:text-foreground"
         >
-          invertase.io
+          Invertase
+        </a>
+        <span className="text-muted-foreground">&middot;</span>
+        <a
+          href="https://use.docs.page/legal/privacy"
+          className="underline underline-offset-5 hover:text-foreground"
+        >
+          Privacy
+        </a>
+        <span className="text-muted-foreground">&middot;</span>
+        <a
+          href="https://use.docs.page/legal/terms"
+          className="underline underline-offset-5 hover:text-foreground"
+        >
+          Terms
         </a>
       </div>
       <div className="flex-1 flex items-center justify-end gap-0.5">
