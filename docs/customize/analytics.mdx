@@ -100,6 +100,10 @@ Open a **live** docs URL (not the local preview shell) and confirm the provider 
    - Plausible: `script.js` from `plausible.io` or your self-hosted URL
 3. **Confirm events in the provider dashboard:** GTM Preview or Tag Assistant for Tag Manager; GA4 **Realtime** for direct GA; Plausible dashboard for page views on your mapped domain.
 
+<Warning>
+  For Google Analytics, set `title` in frontmatter on every page. GA reads `page_title` from the document `<title>`. Without a per-page title, every route shares your site `name` from `docs.json` (or `"Documentation"`) as the page title, even though URLs still differ. Body `#` headings do not set the document title. See [Per-page titles in Google Analytics](/features/analytics#per-page-titles-in-google-analytics).
+</Warning>
+
 <Info>
   On the default `docs.page/{owner}/{repo}` path with no custom domain, GTM and GA still load when configured. Plausible stays inactive until a domain is resolved.
 </Info>
@@ -110,6 +114,7 @@ Open a **live** docs URL (not the local preview shell) and confirm the provider 
 | --- | --- | --- |
 | No analytics scripts in local preview | Expected (preview mode suppresses `scripts`) | Verify on a published or branch-preview URL |
 | GA4 script missing but GTM is configured | GTM takes precedence over direct GA | Add GA as a tag inside GTM, or remove `googleTagManager` to use direct GA |
+| GA shows one page title for every route | Pages missing frontmatter `title` | Add `title` to each page's YAML frontmatter (body `#` headings do not count); see [Page frontmatter](/reference/page-frontmatter) |
 | Plausible script never loads | No custom domain or vanity subdomain on the request | Use a [vanity subdomain](/features/vanity-subdomains) or [request a custom domain](/customize/custom-domain), then open the site on that hostname |
 | Plausible loads but no page views | `data-domain` must match the hostname readers use | Confirm the domain in Plausible matches your docs domain exactly |
 | Scripts present but no dashboard data | Provider misconfiguration or ad blockers | Check container or measurement ID spelling; test in a clean browser profile |
