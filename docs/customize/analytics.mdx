@@ -100,9 +100,9 @@ Open a **live** docs URL (not the local preview shell) and confirm the provider 
    - Plausible: `script.js` from `plausible.io` or your self-hosted URL
 3. **Confirm events in the provider dashboard:** GTM Preview or Tag Assistant for Tag Manager; GA4 **Realtime** for direct GA; Plausible dashboard for page views on your mapped domain.
 
-<Warning>
+<Info>
   For Google Analytics, set `title` in frontmatter on every page. GA reads `page_title` from the document `<title>`. Without a per-page title, every route shares your site `name` from `docs.json` (or `"Documentation"`) as the page title, even though URLs still differ. Body `#` headings do not set the document title. See [Per-page titles in Google Analytics](/features/analytics#per-page-titles-in-google-analytics).
-</Warning>
+</Info>
 
 <Info>
   On the default `docs.page/{owner}/{repo}` path with no custom domain, GTM and GA still load when configured. Plausible stays inactive until a domain is resolved.
