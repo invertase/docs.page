@@ -2,6 +2,7 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp";
 import { WebStandardStreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/webStandardStreamableHttp";
 import * as z from "zod";
 import type { ResolvedDocsRoute } from "@/lib/docs-routing";
+import { getPostHogClient } from "@/lib/posthog";
 import type { Config } from "@/server/config";
 import { ConfigSchema } from "@/server/config/schema";
 import { BundlerError } from "@/server/docs/bundle";
@@ -118,6 +119,20 @@ export async function createMcpDescriptor(context: McpRepoContext) {
 
 async function createMcpServer(context: McpRepoContext) {
   const { route, docList } = context;
+  const posthog = getPostHogClient();
+  const captureToolCall = (tool: string) => {
+    posthog?.capture({
+      distinctId: `${route.owner}/${route.repository}`,
+      event: "mcp:tool_call",
+      properties: {
+        owner: route.owner,
+        repository: route.repository,
+        ref: route.ref ?? null,
+        tool,
+        $process_person_profile: false,
+      },
+    });
+  };
   const [metadata, skillList] = await Promise.all([
     Promise.resolve(getMcpServerMetadata(context)),
     getMcpSkillResources(route),
@@ -213,6 +228,7 @@ async function createMcpServer(context: McpRepoContext) {
       },
     } as unknown as never,
     (async (args: unknown) => {
+      captureToolCall("read_doc_page");
       const { path } = ReadDocToolSchema.parse(args);
 
       try {
@@ -260,6 +276,7 @@ async function createMcpServer(context: McpRepoContext) {
       inputSchema: {},
     } as unknown as never,
     (async (args: unknown) => {
+      captureToolCall("list_doc_files");
       ListDocFilesToolSchema.parse(args ?? {});
 
       return {

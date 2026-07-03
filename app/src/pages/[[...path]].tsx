@@ -339,17 +339,6 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
         csrfCookiePath,
       ),
     );
-
-    getPostHogClient()?.capture({
-      distinctId: `${route.owner}/${route.repository}`,
-      event: "agent:session_create",
-      properties: {
-        owner: route.owner,
-        repository: route.repository,
-        ref: route.ref ?? null,
-        $process_person_profile: false,
-      },
-    });
   }
 
   getPostHogClient()?.capture({
