@@ -11,7 +11,6 @@ import { Homepage } from "@/components/homepage";
 import { Preset } from "@/components/preset";
 import { DocPageContext } from "@/hooks/use-doc-page-context";
 import { getAgentPanelCookieName } from "@/lib/agent-panel-state";
-import { classifyClient } from "@/lib/analytics/client-type";
 import type {
   DocsBundleApiErrorResponse,
   DocsBundleApiResponse,
@@ -353,7 +352,6 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
       ref: route.ref ?? null,
       path: route.docPath ?? null,
       has_agent: successResponse.hasAgent,
-      client_type: classifyClient(userAgent),
       // Raw UA lets PostHog's own bot/traffic classification engage on these
       // server-side events (its SQL functions and $virt_* properties read
       // $raw_user_agent), so our numbers reconcile with PostHog web analytics.
