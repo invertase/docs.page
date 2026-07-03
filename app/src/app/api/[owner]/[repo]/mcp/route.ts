@@ -1,5 +1,4 @@
 import { resolveDocsRoute } from "@/lib/docs-routing";
-import { getPostHogClient } from "@/lib/posthog";
 import { BundlerError } from "@/server/docs/bundle";
 import { loadDocsConfigForResolvedSha } from "@/server/docs/source-dataset";
 import { listGitHubDocFiles } from "@/server/github/tree";
@@ -102,43 +101,6 @@ export async function POST(req: Request, context: RouteContext) {
 
     if (!context) {
       return Response.json({ error: "Not found." }, { status: 404 });
-    }
-
-    // Peek at the JSON-RPC body on a clone so the original request stream stays
-    // intact for handleMcpPost (which reads req.json() itself). Only actual
-    // `tools/call` requests count as MCP usage — protocol chatter such as
-    // `initialize`, `tools/list`, and `notifications/*` is ignored.
-    const parsedBody = await req
-      .clone()
-      .json()
-      .catch(() => undefined);
-    const rpcMessages = Array.isArray(parsedBody) ? parsedBody : [parsedBody];
-    const posthog = getPostHogClient();
-
-    if (posthog) {
-      for (const message of rpcMessages) {
-        if (
-          message &&
-          typeof message === "object" &&
-          message.method === "tools/call"
-        ) {
-          const toolName =
-            typeof message.params?.name === "string"
-              ? message.params.name
-              : null;
-          posthog.capture({
-            distinctId: `${route.owner}/${route.repository}`,
-            event: "mcp:tool_call",
-            properties: {
-              owner: route.owner,
-              repository: route.repository,
-              ref: route.ref ?? null,
-              tool: toolName,
-              $process_person_profile: false,
-            },
-          });
-        }
-      }
     }
 
     return handleMcpPost(req, context);
