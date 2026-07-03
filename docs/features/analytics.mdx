@@ -31,6 +31,24 @@ When `googleTagManager` is set, docs.page injects the GTM bootstrap script only.
 
 Set `googleAnalytics` alone when you want a direct GA4 integration without Tag Manager.
 
+### Per-page titles in Google Analytics
+
+Google Analytics reads `page_title` from the document `<title>` on each `page_view` event. docs.page sets that tag from each page's frontmatter `title`, then falls back to `name` in `docs.json`, then `"Documentation"`. When a page omits frontmatter `title`, every route shares the same `page_title` in GA even though `page_location` / `page_path` still differ by URL.
+
+A Markdown `#` heading in the page body does **not** set the document title. Only YAML frontmatter does.
+
+Give every `.md` or `.mdx` file its own `title` in YAML frontmatter:
+
+```yaml
+---
+title: Your Page Title
+---
+```
+
+This applies whether GA loads directly from `googleAnalytics` or through a GA tag in Google Tag Manager. docs.page only injects the GTM bootstrap script; you configure the GA tag in your container.
+
+See [Page frontmatter](/reference/page-frontmatter) and [Write: Frontmatter](/authoring/write#frontmatter).
+
 ### Plausible and site domains
 
 Plausible requires a `data-domain` attribute that matches the hostname readers use. docs.page loads the Plausible script only when the request resolves to a configured **custom domain** or **vanity subdomain**. On the default `docs.page/{owner}/{repo}` path with no mapped domain, Plausible config has no effect.
