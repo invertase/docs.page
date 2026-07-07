@@ -1,3 +1,5 @@
+import { ROOT_LLMS_TXT_CACHE_HEADERS, setDocsCacheHeaders } from "@/proxy";
+
 const LLMS_TXT = `# docs.page
 
 > docs.page hosts agent-ready documentation from any GitHub Markdown repository — with search, AI chat, an MCP server, and llms.txt — and no build step.
@@ -18,9 +20,11 @@ Every site hosted on docs.page exposes machine-readable endpoints at a predictab
 `;
 
 export function GET() {
-  return new Response(LLMS_TXT, {
+  const response = new Response(LLMS_TXT, {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
     },
   });
+  setDocsCacheHeaders(response.headers, ROOT_LLMS_TXT_CACHE_HEADERS);
+  return response;
 }
