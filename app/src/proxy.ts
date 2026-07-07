@@ -80,6 +80,16 @@ export const LLMS_FULL_TXT_CACHE_HEADERS = buildCdnCacheHeaders({
   staleWhileRevalidate: CDN_STALE_SECONDS,
   staleIfError: CDN_STALE_SECONDS,
 });
+/**
+ * Root product-level `llms.txt`: a hand-written static file that changes rarely,
+ * so it tolerates a day-long edge TTL and hourly browser revalidation.
+ */
+export const ROOT_LLMS_TXT_CACHE_HEADERS = buildCdnCacheHeaders({
+  edgeMaxAgeSeconds: SECONDS_PER_DAY,
+  staleWhileRevalidate: CDN_STALE_SECONDS,
+  staleIfError: CDN_STALE_SECONDS,
+  browserMaxAgeSeconds: 60 * 60,
+});
 export const SITEMAP_CACHE_HEADERS = buildCdnCacheHeaders({
   edgeMaxAgeSeconds: 3600,
   staleWhileRevalidate: CDN_STALE_SECONDS,
