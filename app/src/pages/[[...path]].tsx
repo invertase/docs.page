@@ -35,7 +35,7 @@ import {
   acceptPrefersMarkdown,
   incomingHttpHeadersToWebHeaders,
 } from "@/lib/incoming-http-headers";
-import { getPostHogClient } from "@/lib/posthog";
+import { getPostHogClient, readVisitorHeaders, visitorId } from "@/lib/posthog";
 import type {
   DocPageProps,
   ErrorPageProps,
@@ -341,8 +341,10 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
     );
   }
 
+  const { ip, userAgent } = readVisitorHeaders(requestHeaders);
+
   getPostHogClient()?.capture({
-    distinctId: `${route.owner}/${route.repository}`,
+    distinctId: visitorId(ip, userAgent, new Date()),
     event: "docs:page_view",
     properties: {
       owner: route.owner,
@@ -350,6 +352,10 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
       ref: route.ref ?? null,
       path: route.docPath ?? null,
       has_agent: successResponse.hasAgent,
+      // Raw UA lets PostHog's own bot/traffic classification engage on these
+      // server-side events (its SQL functions and $virt_* properties read
+      // $raw_user_agent), so our numbers reconcile with PostHog web analytics.
+      $raw_user_agent: userAgent,
       $process_person_profile: false,
     },
   });
