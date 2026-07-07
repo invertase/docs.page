@@ -15,6 +15,47 @@ const description =
   "Instantly serve markdown from any GitHub branch as modern, agent-ready docs, with AI chat, MCP, and llms.txt.";
 const image = "https://docs.page/_docs.page/social-image.png";
 
+// schema.org structured data describing docs.page as a SoftwareApplication
+// published by Invertase, alongside WebSite and Organization entities. This
+// gives search engines and LLMs a machine-readable entity to cite.
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://invertase.io/#organization",
+      name: "Invertase",
+      url: "https://invertase.io",
+      logo: "https://static.invertase.io/assets/invertase/invertase-rounded-avatar.png",
+      sameAs: ["https://github.com/invertase", "https://x.com/invertaseio"],
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://docs.page/#website",
+      name: "docs.page",
+      url: "https://docs.page",
+      description,
+      publisher: { "@id": "https://invertase.io/#organization" },
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://docs.page/#software",
+      name: "docs.page",
+      url: "https://docs.page",
+      image,
+      description,
+      applicationCategory: "DeveloperApplication",
+      operatingSystem: "Any",
+      isAccessibleForFree: true,
+      license: "https://www.apache.org/licenses/LICENSE-2.0",
+      codeRepository: "https://github.com/invertase/docs.page",
+      author: { "@id": "https://invertase.io/#organization" },
+      publisher: { "@id": "https://invertase.io/#organization" },
+      offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+    },
+  ],
+};
+
 export function Homepage() {
   return (
     <>
@@ -31,6 +72,11 @@ export function Homepage() {
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={image} />
         <meta name="twitter:site" content="@invertaseio" />
+
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
       </Head>
       <div
         className={cn(
