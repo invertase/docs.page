@@ -12,7 +12,7 @@ export const features = [
     ),
     description:
       "Let users' AI agents query your documentation. Built-in MCP servers alongside llms.txt files allow LLMs to ingest your product context instantly.",
-    video: "/_docs.page/agent-ready.mp4",
+    video: "/_docs.page/agent-ready.mp4?v=2",
     link: "/agent-access",
   },
   {
@@ -36,7 +36,7 @@ export const features = [
     ),
     description:
       "Index content automatically and provide an embedded AI chat. Locate information instantly without third-party tracking scripts or external setup.",
-    video: "/_docs.page/intelligent-search.mp4",
+    video: "/_docs.page/intelligent-search.mp4?v=2",
     link: "/intelligent-search",
   },
   {
