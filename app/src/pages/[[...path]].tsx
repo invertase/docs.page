@@ -71,6 +71,18 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
   const chunks = raw ? (Array.isArray(raw) ? raw : [raw]) : [];
 
   if (chunks.length === 0) {
+    const requestHeaders = incomingHttpHeadersToWebHeaders(req.headers);
+    const { ip, userAgent } = readVisitorHeaders(requestHeaders);
+
+    getPostHogClient()?.capture({
+      distinctId: visitorId(ip, userAgent, new Date()),
+      event: "homepage:page_view",
+      properties: {
+        $raw_user_agent: userAgent,
+        $process_person_profile: false,
+      },
+    });
+
     return {
       props: {
         kind: "home" as const,
