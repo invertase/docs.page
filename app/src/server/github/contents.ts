@@ -1,3 +1,4 @@
+import { GraphqlResponseError } from "@octokit/graphql";
 import { assertPublicRepositoryAccess } from "@/lib/docs-access";
 import { InvalidDocPathError, normalizeDocPath } from "@/lib/docs-paths";
 import { BundlerError, ERROR_CODES } from "@/server/docs/bundle";
@@ -274,6 +275,23 @@ export async function getGitHubContents(
       path: mdxIndex ? indexPath : absolutePath,
     };
   } catch (e) {
+    // Octokit throws a GraphqlResponseError when the repository is not found.
+    if (e instanceof GraphqlResponseError) {
+      if (
+        e.errors?.some(
+          (entry) =>
+            entry.type === "NOT_FOUND" && entry.path.join(".") === "repository",
+        )
+      ) {
+        await putNegativeRepositoryCache(
+          metadata.owner,
+          metadata.repository,
+        ).catch(() => undefined);
+
+        return;
+      }
+    }
+
     logGitHubApiError(e, "getGitHubContents");
     return;
   }
