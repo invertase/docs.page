@@ -1,4 +1,9 @@
+import {
+  hasNegativeRepositoryCache,
+  putNegativeRepositoryCache,
+} from "./cache";
 import { getGitHubGraphQLClient } from "./client";
+import { isGitHubRepositoryNotFoundGraphQLError } from "./errors";
 
 export type PullRequestMetadata = {
   owner: string;
@@ -34,6 +39,10 @@ export async function getPullRequestMetadata(
   repository: string,
   pullRequest: string,
 ): Promise<PullRequestMetadata | null> {
+  if (await hasNegativeRepositoryCache(owner, repository).catch(() => false)) {
+    return null;
+  }
+
   try {
     const response = await getGitHubGraphQLClient()<PullRequestQuery>({
       query: `
@@ -73,7 +82,13 @@ export async function getPullRequestMetadata(
       repository: metadata.repository.name,
       ref: metadata.ref.name,
     };
-  } catch {
+  } catch (error) {
+    if (isGitHubRepositoryNotFoundGraphQLError(error)) {
+      await putNegativeRepositoryCache(owner, repository).catch(
+        () => undefined,
+      );
+    }
+
     return null;
   }
 }

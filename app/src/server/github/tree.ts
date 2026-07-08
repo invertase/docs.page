@@ -4,7 +4,9 @@ import {
   GITHUB_CACHE_TTLS,
   getGitHubCache,
   githubCacheKey,
+  hasNegativeRepositoryCache,
   putGitHubCache,
+  putNegativeRepositoryCache,
   withGitHubCache,
 } from "./cache";
 import { getGitHubRestClient } from "./client";
@@ -84,27 +86,53 @@ export type GitHubSkillFileList = {
 };
 
 export async function getRepositoryMetadata(owner: string, repository: string) {
+  if (await hasNegativeRepositoryCache(owner, repository).catch(() => false)) {
+    throw createGitHubRepositoryNotFoundError(owner, repository);
+  }
+
   return withGitHubCache<GitHubRepositoryMetadata>(
     githubCacheKey("repo-meta", owner, repository),
     GITHUB_CACHE_TTLS.repositoryMetadata,
     async () => {
-      const response = await getGitHubRestClient().request(
-        "GET /repos/{owner}/{repo}",
-        {
-          owner,
-          repo: repository,
-        },
-      );
+      try {
+        const response = await getGitHubRestClient().request(
+          "GET /repos/{owner}/{repo}",
+          {
+            owner,
+            repo: repository,
+          },
+        );
 
-      return {
-        stars: response.data.stargazers_count,
-        forks: response.data.forks_count,
-        defaultBranch: response.data.default_branch,
-        isFork: response.data.fork,
-        isPrivate: response.data.private,
-      } satisfies GitHubRepositoryMetadata;
+        return {
+          stars: response.data.stargazers_count,
+          forks: response.data.forks_count,
+          defaultBranch: response.data.default_branch,
+          isFork: response.data.fork,
+          isPrivate: response.data.private,
+        } satisfies GitHubRepositoryMetadata;
+      } catch (error) {
+        if (isGitHubApiErrorStatus(error, [404])) {
+          await putNegativeRepositoryCache(owner, repository).catch(
+            () => undefined,
+          );
+          throw createGitHubRepositoryNotFoundError(owner, repository);
+        }
+
+        throw error;
+      }
     },
   );
+}
+
+function createGitHubRepositoryNotFoundError(
+  owner: string,
+  repository: string,
+) {
+  return new BundlerError({
+    code: 404,
+    name: ERROR_CODES.REPO_NOT_FOUND,
+    message: `The repository ${owner}/${repository} was not found.`,
+  });
 }
 
 const PINNED_COMMIT_REF_PATTERN = /^[a-fA-F0-9]{40}$/;

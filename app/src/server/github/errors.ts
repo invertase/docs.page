@@ -1,3 +1,5 @@
+import { GraphqlResponseError } from "@octokit/graphql";
+
 type GitHubApiErrorSummary = {
   status?: number;
   message?: string;
@@ -41,6 +43,17 @@ export function isGitHubApiErrorStatus(
 ) {
   const status = getGitHubApiErrorSummary(error).status;
   return typeof status === "number" && statuses.includes(status);
+}
+
+export function isGitHubRepositoryNotFoundGraphQLError(error: unknown) {
+  if (!(error instanceof GraphqlResponseError)) {
+    return false;
+  }
+
+  return (error.errors ?? []).some(
+    (entry) =>
+      entry.type === "NOT_FOUND" && entry.path.join(".") === "repository",
+  );
 }
 
 export function logGitHubApiError(error: unknown, context?: string) {
