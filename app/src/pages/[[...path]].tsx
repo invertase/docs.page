@@ -288,6 +288,20 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
         };
       }
 
+      console.warn({
+        name: error.name ?? "DOCS_NOT_FOUND",
+        code: errorResponse.code,
+        source: error.source,
+        message: error.message,
+        details: {
+          owner: route.owner,
+          repository: route.repository,
+          ref: route.ref,
+          path: route.docPath || "index",
+          reason: "user-visible-not-found",
+        },
+      });
+
       res.statusCode = 404;
 
       return {

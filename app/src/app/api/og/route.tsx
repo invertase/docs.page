@@ -1,5 +1,31 @@
 import { ImageResponse } from "next/og";
 
+async function resolveOgLogoUrl(logo: unknown): Promise<string | undefined> {
+  if (typeof logo !== "string" || !logo.trim()) {
+    return;
+  }
+
+  const logoUrl = logo.trim();
+
+  try {
+    const response = await fetch(logoUrl);
+
+    if (!response.ok) {
+      return;
+    }
+
+    const contentType = response.headers.get("content-type");
+
+    if (!contentType?.toLowerCase().startsWith("image/")) {
+      return;
+    }
+
+    return logoUrl;
+  } catch {
+    return;
+  }
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
 
@@ -23,14 +49,17 @@ export async function GET(request: Request) {
     });
   }
 
-  const [lexend300, lexend400] = await Promise.all(
-    [
-      "https://fonts.gstatic.com/s/lexend/v26/wlptgwvFAVdoq2_F94zlCfv0bz1WC2UW_LA.ttf",
-      "https://fonts.gstatic.com/s/lexend/v26/wlptgwvFAVdoq2_F94zlCfv0bz1WCzsW_LA.ttf",
-    ].map((url) => fetch(url).then((res) => res.arrayBuffer())),
-  );
-
   try {
+    const [lexend300, lexend400, logoSrc] = await Promise.all([
+      fetch(
+        "https://fonts.gstatic.com/s/lexend/v26/wlptgwvFAVdoq2_F94zlCfv0bz1WC2UW_LA.ttf",
+      ).then((res) => res.arrayBuffer()),
+      fetch(
+        "https://fonts.gstatic.com/s/lexend/v26/wlptgwvFAVdoq2_F94zlCfv0bz1WCzsW_LA.ttf",
+      ).then((res) => res.arrayBuffer()),
+      resolveOgLogoUrl(logo),
+    ]);
+
     return new ImageResponse(
       <div
         style={{
@@ -50,9 +79,9 @@ export async function GET(request: Request) {
           color: "#FFFFFF",
         }}
       >
-        {!!logo && (
+        {!!logoSrc && (
           <div style={{ display: "flex", gap: 20 }}>
-            <img src={logo} alt="Logo" style={{ height: 50 }} />
+            <img src={logoSrc} alt="Logo" style={{ height: 50 }} />
           </div>
         )}
         <div style={{ display: "flex", gap: 20, marginTop: 30 }}>
@@ -104,8 +133,12 @@ export async function GET(request: Request) {
         ],
       },
     );
-  } catch (e: unknown) {
-    console.log(e);
+  } catch (error) {
+    console.error({
+      context: "og-image",
+      message: "Failed to generate image.",
+      error: error instanceof Error ? error.message : String(error),
+    });
     return new Response("Failed to generate the image", {
       status: 500,
     });

@@ -15,6 +15,7 @@ import {
   getGitHubContents,
   resolveGitHubSource,
 } from "@/server/github/contents";
+import { isUnresolvedNumericRef } from "@/server/github/ref-validation";
 import { BundlerError, type DocsBranding } from "./error";
 
 export const ERROR_CODES = {
@@ -132,6 +133,19 @@ export class Bundler {
     });
   }
 
+  private createRefNotFoundError(source: Source): BundlerError {
+    return new BundlerError({
+      code: 404,
+      name: ERROR_CODES.REPO_NOT_FOUND,
+      message: `No matching branch, tag, pull request, or commit was found for ref ${source.ref}.`,
+      source: `https://github.com/${source.owner}/${source.repository}`,
+      details: {
+        ...this.getErrorDetails(source),
+        reason: "ref-not-found",
+      },
+    });
+  }
+
   private parseConfigSafe(metadata: {
     config: {
       configJson?: string;
@@ -181,6 +195,15 @@ export class Bundler {
   async build(): Promise<BundlerOutput> {
     this.#source = await this.getSource();
     this.#ref = this.#source.ref;
+
+    if (
+      this.#ref &&
+      isUnresolvedNumericRef(this.#ref, {
+        type: this.#source.type,
+      })
+    ) {
+      throw this.createRefNotFoundError(this.#source);
+    }
 
     if (
       await hasNegativeDocsConfigCache(

@@ -6,6 +6,8 @@ import rehypeSanitize from "rehype-sanitize";
 import remarkGfm from "remark-gfm";
 import { Heading, type HeadingTag } from "@/components/mdx/heading";
 import { Image } from "@/components/mdx/image";
+import { useDocPageContext } from "@/hooks/use-doc-page-context";
+import { getAssetSrc } from "@/lib/docs-assets";
 import { cn } from "@/lib/utils";
 import { Link } from "./doc-link";
 
@@ -33,13 +35,18 @@ function hastSubtreeHasTag(node: unknown, tagName: string): boolean {
   return false;
 }
 
-function compactTableImage(props: ComponentProps<"img">) {
-  const { width, height, className, alt, ...other } = props;
+function compactTableImage(
+  props: ComponentProps<"img">,
+  resolveSrc: (src: string) => string,
+) {
+  const { width, height, className, alt, src, ...other } = props;
+  const resolvedSrc = src ? resolveSrc(String(src)) : undefined;
 
   return (
     <img
       {...other}
       alt={alt ?? ""}
+      src={resolvedSrc}
       loading="lazy"
       className={cn("rounded-lg", className)}
       style={{
@@ -55,6 +62,7 @@ export function MarkdownLeaf({
   takeNextHeadingId,
   htmlLayout = false,
 }: MarkdownLeafProps) {
+  const { bundle } = useDocPageContext();
   const components: Components = {
     h1: (props) => renderHeading("h1", props, takeNextHeadingId),
     h2: (props) => renderHeading("h2", props, takeNextHeadingId),
@@ -183,7 +191,11 @@ export function MarkdownLeaf({
       <hr className={cn("my-8 border-border", className)} {...props} />
     ),
     img: ({ node: _node, ...props }) =>
-      htmlLayout ? compactTableImage(props) : <Image {...props} />,
+      htmlLayout ? (
+        compactTableImage(props, (src) => getAssetSrc(bundle, src))
+      ) : (
+        <Image {...props} />
+      ),
   };
 
   return (

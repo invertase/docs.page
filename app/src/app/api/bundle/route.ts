@@ -55,11 +55,15 @@ export async function GET(req: Request) {
     return response;
   } catch (error) {
     if (error instanceof BundlerError) {
-      logBundlerError(error);
+      if (error.code !== 404) {
+        logBundlerError(error);
+      }
+
       return Response.json(
         {
           code: error.code,
           error: {
+            name: error.name,
             message: error.message,
             ...(error.source ? { source: error.source } : {}),
             ...(error.branding ? { branding: error.branding } : {}),

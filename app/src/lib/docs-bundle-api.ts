@@ -20,6 +20,7 @@ export type DocsBundleApiSuccessResponse = {
 };
 
 export type DocsBundleApiErrorDetails = {
+  name?: string;
   message: string;
   source?: string;
   branding?: DocsBranding;
@@ -37,6 +38,7 @@ export type DocsBundleApiResponse =
   | DocsBundleApiErrorResponse;
 
 export function parseDocsBundleApiError(payload: DocsBundleApiErrorResponse): {
+  name?: string;
   message: string;
   source?: string;
   branding?: DocsBranding;
@@ -48,6 +50,9 @@ export function parseDocsBundleApiError(payload: DocsBundleApiErrorResponse): {
       : payload.error;
 
   return {
+    ...(typeof payload.error !== "string" && error.name
+      ? { name: error.name }
+      : {}),
     message: error.message,
     ...(typeof payload.error !== "string" && error.source
       ? { source: error.source }
