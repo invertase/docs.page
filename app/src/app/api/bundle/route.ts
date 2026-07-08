@@ -35,14 +35,12 @@ export async function GET(req: Request) {
   }
 
   try {
-    const [bundle, hasAgent] = await Promise.all([
-      getDocBundle(input.data),
-      isAgentEnabledForRepository({
-        owner: input.data.owner,
-        repository: input.data.repository,
-        ref: input.data.ref,
-      }),
-    ]);
+    const bundle = await getDocBundle(input.data);
+    const hasAgent = await isAgentEnabledForRepository({
+      owner: input.data.owner,
+      repository: input.data.repository,
+      ref: input.data.ref,
+    });
 
     const response = Response.json(
       {

@@ -69,6 +69,7 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
   const isDebug = query.debug !== undefined;
   const raw = params?.path;
   const chunks = raw ? (Array.isArray(raw) ? raw : [raw]) : [];
+  const requestUrl = new URL(req.url ?? "/", "http://docs.page");
 
   if (chunks.length === 0) {
     const requestHeaders = incomingHttpHeadersToWebHeaders(req.headers);
@@ -122,7 +123,6 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
 
   const [owner, repo, ...path] = chunks;
   const requestHeaders = incomingHttpHeadersToWebHeaders(req.headers);
-  const requestUrl = new URL(req.url ?? "/", "http://docs.page");
   const isRawRequest = isRawDocRequestPath(requestUrl.pathname);
 
   if (isRawRequest) {

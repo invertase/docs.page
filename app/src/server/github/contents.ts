@@ -286,7 +286,15 @@ export async function getGitHubContents(
       return;
     }
 
-    logGitHubApiError(e, "getGitHubContents");
+    logGitHubApiError(e, {
+      context: "getGitHubContents",
+      owner: metadata.owner,
+      repository: metadata.repository,
+      ref,
+      path: docPath,
+      absolutePath,
+      indexPath,
+    });
     return;
   }
 }

@@ -132,6 +132,11 @@ function createGitHubRepositoryNotFoundError(
     code: 404,
     name: ERROR_CODES.REPO_NOT_FOUND,
     message: `The repository ${owner}/${repository} was not found.`,
+    details: {
+      owner,
+      repository,
+      reason: "repository-not-found-or-inaccessible",
+    },
   });
 }
 
@@ -239,7 +244,12 @@ export async function resolveGitHubRefToSha(
       throw createGitHubRefNotFoundError(owner, repository, ref);
     }
 
-    logGitHubApiError(error, "resolveGitHubRefToSha");
+    logGitHubApiError(error, {
+      context: "resolveGitHubRefToSha",
+      owner,
+      repository,
+      ref,
+    });
     throw error;
   }
 }
@@ -295,6 +305,12 @@ function createGitHubRefNotFoundError(
     name: ERROR_CODES.REPO_NOT_FOUND,
     message: `No matching branch, tag, pull request, or commit was found for ref ${ref}.`,
     source: `https://github.com/${owner}/${repository}`,
+    details: {
+      owner,
+      repository,
+      ref,
+      reason: "ref-not-found",
+    },
   });
 }
 

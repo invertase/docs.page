@@ -60,6 +60,7 @@ export class Bundler {
   readonly #repository: string;
   readonly #path: string;
   readonly #components: Array<string>;
+  readonly #requestedRef: string | undefined;
   #ref: string | undefined;
   #source?: Source;
   #config?: Config;
@@ -69,6 +70,7 @@ export class Bundler {
     this.#owner = params.owner;
     this.#repository = params.repository;
     this.#path = params.path;
+    this.#requestedRef = params.ref;
     this.#ref = params.ref;
     this.#components = params.components || [];
   }
@@ -81,13 +83,52 @@ export class Bundler {
     });
   }
 
-  private createConfigNotFoundError(source: Source): BundlerError {
+  private getErrorDetails(source?: Source) {
+    const requested = {
+      owner: this.#owner,
+      repository: this.#repository,
+      ref: this.#requestedRef ?? null,
+      path: this.#path,
+    };
+
+    if (!source) {
+      return requested;
+    }
+
+    const sourceDiffers =
+      source.owner !== this.#owner ||
+      source.repository !== this.#repository ||
+      (source.ref ?? null) !== (this.#requestedRef ?? null);
+    const includeSource = source.type !== "branch" || sourceDiffers;
+
+    return {
+      ...requested,
+      ...(includeSource
+        ? {
+            sourceType: source.type,
+            sourceOwner: source.owner,
+            sourceRepository: source.repository,
+            sourceRef: source.ref ?? null,
+          }
+        : {}),
+    };
+  }
+
+  private createConfigNotFoundError(
+    source: Source,
+    reason: "negative-config-cache" | "missing-docs-config",
+  ): BundlerError {
     return new BundlerError({
       code: 404,
       name: ERROR_CODES.CONFIG_NOT_FOUND,
       message:
         "No configuration file was found in the repository. To get started, create a <code>docs.json</code> file at the root of your repository.",
       source: `https://github.com/${source.owner}/${source.repository}`,
+      details: {
+        ...this.getErrorDetails(source),
+        reason,
+        expectedConfigPaths: "docs.json, docs.yaml",
+      },
     });
   }
 
@@ -148,7 +189,10 @@ export class Bundler {
         this.#ref,
       ).catch(() => false)
     ) {
-      throw this.createConfigNotFoundError(this.#source);
+      throw this.createConfigNotFoundError(
+        this.#source,
+        "negative-config-cache",
+      );
     }
 
     const metadata = await getGitHubContents({
@@ -163,6 +207,10 @@ export class Bundler {
         code: 404,
         name: ERROR_CODES.REPO_NOT_FOUND,
         message: `The repository ${this.#source.owner}/${this.#source.repository} was not found.`,
+        details: {
+          ...this.getErrorDetails(this.#source),
+          reason: "repository-not-found-or-inaccessible",
+        },
       });
     }
 
@@ -175,7 +223,7 @@ export class Bundler {
         this.#ref,
       ).catch(() => undefined);
 
-      throw this.createConfigNotFoundError(this.#source);
+      throw this.createConfigNotFoundError(this.#source, "missing-docs-config");
     }
 
     if (!metadata.md) {
@@ -190,6 +238,11 @@ export class Bundler {
         name: ERROR_CODES.FILE_NOT_FOUND,
         message: `No file was found in the repository matching this path. Ensure a file exists at <code>/docs/${this.#path}.mdx</code> or <code>/docs/${this.#path}/index.mdx</code>.`,
         source: `https://github.com/${this.#source.owner}/${this.#source.repository}`,
+        details: {
+          ...this.getErrorDetails(this.#source),
+          resolvedContentPath: metadata.path,
+          reason: "docs-file-not-found",
+        },
         branding: this.resolveBranding(
           config,
           metadata.baseBranch,
@@ -246,6 +299,10 @@ export class Bundler {
         name: ERROR_CODES.BUNDLE_ERROR,
         message: `Something went wrong while preparing the file /${metadata.path}.mdx. Are you sure the markdown is valid?`,
         source: `https://github.com/${this.#source.owner}/${this.#source.repository}`,
+        details: {
+          ...this.getErrorDetails(this.#source),
+          resolvedContentPath: metadata.path,
+        },
       });
     }
   }

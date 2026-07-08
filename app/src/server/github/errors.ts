@@ -5,7 +5,14 @@ type GitHubApiErrorSummary = {
   message?: string;
   method?: string;
   url?: string;
+  graphqlErrors?: string[];
 };
+
+type GitHubApiErrorLogContext = Record<
+  string,
+  string | number | boolean | null | undefined
+>;
+type GitHubApiErrorLogInput = string | GitHubApiErrorLogContext;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null;
@@ -17,6 +24,17 @@ function readString(value: unknown): string | undefined {
 
 function readNumber(value: unknown): number | undefined {
   return typeof value === "number" ? value : undefined;
+}
+
+function summarizeGraphQLErrors(
+  error: GraphqlResponseError<unknown>,
+): string[] {
+  return (error.errors ?? []).map((entry) => {
+    const type = entry.type ? `${entry.type}: ` : "";
+    const path = Array.isArray(entry.path) ? ` (${entry.path.join(".")})` : "";
+
+    return `${type}${entry.message}${path}`;
+  });
 }
 
 export function getGitHubApiErrorSummary(
@@ -34,6 +52,9 @@ export function getGitHubApiErrorSummary(
     message: readString(error.message),
     method: readString(request?.method),
     url: readString(request?.url) ?? readString(response?.url),
+    ...(error instanceof GraphqlResponseError
+      ? { graphqlErrors: summarizeGraphQLErrors(error) }
+      : {}),
   };
 }
 
@@ -52,17 +73,54 @@ export function isGitHubRepositoryNotFoundGraphQLError(error: unknown) {
 
   return (error.errors ?? []).some(
     (entry) =>
-      entry.type === "NOT_FOUND" && entry.path.join(".") === "repository",
+      entry.type === "NOT_FOUND" &&
+      Array.isArray(entry.path) &&
+      entry.path.join(".") === "repository",
   );
 }
 
-export function logGitHubApiError(error: unknown, context?: string) {
+function normalizeLogContext(
+  context: GitHubApiErrorLogInput | undefined,
+): GitHubApiErrorLogContext {
+  return typeof context === "string" ? { context } : (context ?? {});
+}
+
+function hasGitHubApiErrorSummary(summary: GitHubApiErrorSummary): boolean {
+  return Boolean(
+    summary.status ||
+      summary.message ||
+      summary.method ||
+      summary.url ||
+      summary.graphqlErrors?.length,
+  );
+}
+
+function logGitHubErrorPayload(
+  context: GitHubApiErrorLogContext,
+  payload: GitHubApiErrorLogContext | GitHubApiErrorSummary,
+) {
+  console.error({
+    ...context,
+    ...payload,
+  });
+}
+
+export function logGitHubApiError(
+  error: unknown,
+  context?: GitHubApiErrorLogInput,
+) {
+  const logContext = normalizeLogContext(context);
   const summary = getGitHubApiErrorSummary(error);
 
-  if (summary.status || summary.message || summary.method || summary.url) {
-    console.error({
-      context,
-      ...summary,
+  if (hasGitHubApiErrorSummary(summary)) {
+    logGitHubErrorPayload(logContext, summary);
+    return;
+  }
+
+  if (error instanceof Error) {
+    logGitHubErrorPayload(logContext, {
+      name: error.name,
+      message: error.message,
     });
     return;
   }

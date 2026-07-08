@@ -18,6 +18,11 @@ export function assertPublicRepo(
     name: ERROR_CODES.PRIVATE_REPO_BLOCKED,
     message: `Private repositories cannot be hosted on docs.page. The repository <code>${owner}/${repository}</code> is private.`,
     source: `https://github.com/${owner}/${repository}`,
+    details: {
+      owner,
+      repository,
+      reason: "private-repository",
+    },
   });
 }
 

@@ -36,6 +36,13 @@ export async function getRawDocSource(
       name: ERROR_CODES.FILE_NOT_FOUND,
       message: `No file was found in the repository matching this path. Ensure a file exists at <code>/docs/${normalizedPath}.mdx</code>, <code>/docs/${normalizedPath}.md</code>, or their <code>index</code> variants.`,
       source: `https://github.com/${input.owner}/${input.repository}`,
+      details: {
+        owner: input.owner,
+        repository: input.repository,
+        ref: input.ref ?? null,
+        path: normalizedPath,
+        reason: "raw-doc-file-not-found",
+      },
     });
   }
 
