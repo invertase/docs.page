@@ -54,6 +54,17 @@ import {
   parseCookies,
 } from "@/server/agent/session";
 
+const RESERVED_FALLTHROUGH_SEGMENTS = new Set(["_next", "api", ".well-known"]);
+
+function isInternalFallthroughRequest(chunks: string[]) {
+  const firstSegment = chunks[0];
+
+  return (
+    firstSegment === "favicon.ico" ||
+    (firstSegment ? RESERVED_FALLTHROUGH_SEGMENTS.has(firstSegment) : false)
+  );
+}
+
 export const getServerSideProps = (async ({ params, req, res, query }) => {
   const isDebug = query.debug !== undefined;
   const raw = params?.path;
@@ -64,6 +75,12 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
       props: {
         kind: "home" as const,
       },
+    };
+  }
+
+  if (isInternalFallthroughRequest(chunks)) {
+    return {
+      notFound: true,
     };
   }
 

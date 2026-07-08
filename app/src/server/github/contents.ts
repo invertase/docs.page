@@ -1,6 +1,10 @@
 import { assertPublicRepositoryAccess } from "@/lib/docs-access";
 import { InvalidDocPathError, normalizeDocPath } from "@/lib/docs-paths";
 import { BundlerError, ERROR_CODES } from "@/server/docs/bundle";
+import {
+  hasNegativeRepositoryCache,
+  putNegativeRepositoryCache,
+} from "./cache";
 import { getGitHubGraphQLClient } from "./client";
 import { logGitHubApiError } from "./errors";
 import { resolvePinnedGitHubSource } from "./tree";
@@ -182,6 +186,14 @@ export async function getGitHubContents(
 
   const ref = metadata.ref || "HEAD";
 
+  if (
+    await hasNegativeRepositoryCache(metadata.owner, metadata.repository).catch(
+      () => false,
+    )
+  ) {
+    return;
+  }
+
   try {
     const response = await getGitHubGraphQLClient()<PageContentsQuery>({
       query: `
@@ -235,6 +247,10 @@ export async function getGitHubContents(
     // If the repo doesn't exist or is private / inaccessible from the PAT, GitHub returns `repository: null`.
     const repository = response.repository;
     if (repository == null) {
+      await putNegativeRepositoryCache(
+        metadata.owner,
+        metadata.repository,
+      ).catch(() => undefined);
       return;
     }
 

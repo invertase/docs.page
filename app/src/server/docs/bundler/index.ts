@@ -7,6 +7,10 @@ import { assertPublicRepo } from "@/lib/docs-access";
 import { getAssetSrc } from "@/lib/docs-assets";
 import { type Config, defaultConfig, parseConfig } from "@/server/config";
 import {
+  hasNegativeDocsConfigCache,
+  putNegativeDocsConfigCache,
+} from "@/server/github/cache";
+import {
   type GitHubSource,
   getGitHubContents,
   resolveGitHubSource,
@@ -77,6 +81,16 @@ export class Bundler {
     });
   }
 
+  private createConfigNotFoundError(source: Source): BundlerError {
+    return new BundlerError({
+      code: 404,
+      name: ERROR_CODES.CONFIG_NOT_FOUND,
+      message:
+        "No configuration file was found in the repository. To get started, create a <code>docs.json</code> file at the root of your repository.",
+      source: `https://github.com/${source.owner}/${source.repository}`,
+    });
+  }
+
   private parseConfigSafe(metadata: {
     config: {
       configJson?: string;
@@ -127,6 +141,16 @@ export class Bundler {
     this.#source = await this.getSource();
     this.#ref = this.#source.ref;
 
+    if (
+      await hasNegativeDocsConfigCache(
+        this.#source.owner,
+        this.#source.repository,
+        this.#ref,
+      ).catch(() => false)
+    ) {
+      throw this.createConfigNotFoundError(this.#source);
+    }
+
     const metadata = await getGitHubContents({
       owner: this.#source.owner,
       repository: this.#source.repository,
@@ -145,13 +169,13 @@ export class Bundler {
     assertPublicRepo(metadata, this.#source.owner, this.#source.repository);
 
     if (!metadata.config.configJson && !metadata.config.configYaml) {
-      throw new BundlerError({
-        code: 404,
-        name: ERROR_CODES.CONFIG_NOT_FOUND,
-        message:
-          "No configuration file was found in the repository. To get started, create a <code>docs.json</code> file at the root of your repository.",
-        source: `https://github.com/${this.#source.owner}/${this.#source.repository}`,
-      });
+      await putNegativeDocsConfigCache(
+        this.#source.owner,
+        this.#source.repository,
+        this.#ref,
+      ).catch(() => undefined);
+
+      throw this.createConfigNotFoundError(this.#source);
     }
 
     if (!metadata.md) {
