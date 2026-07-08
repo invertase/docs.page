@@ -72,10 +72,7 @@ export function DocsNotFoundPage({
   return (
     <>
       <Head>
-        <title>
-          {title}
-          {branding?.name ? ` | ${branding.name}` : " | docs.page"}
-        </title>
+        <title>{`${title}${branding?.name ? ` | ${branding.name}` : " | docs.page"}`}</title>
       </Head>
       <main className="flex min-h-svh flex-1 items-center justify-center px-6 py-16">
         <Empty className="max-w-lg border-none">
