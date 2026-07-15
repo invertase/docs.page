@@ -13,7 +13,7 @@ docs.page **2.0.0** replaces the 1.0.0 stack with a single Next.js application, 
 
 ## Breaking Changes
 
-- Remove the 1.0.0 `website/` and `api/` packages — hosting, bundling, webhooks, and metadata routes live in `app/` ([#470](https://github.com/invertase/docs.page/pull/470))
+- Remove the 1.0.0 `website/` and `api/` packages — hosting, bundling, webhooks, and metadata routes live in `app/` ([#488](https://github.com/invertase/docs.page/pull/488))
 - Change CLI distribution to Bun-built `@docs.page/cli` 2.x ([#470](https://github.com/invertase/docs.page/pull/470))
 - Remove Redis-backed bundle cache in favour of surrogate cache control ([`0228337`](https://github.com/invertase/docs.page/commit/0228337))
 
@@ -32,7 +32,7 @@ docs.page **2.0.0** replaces the 1.0.0 stack with a single Next.js application, 
 
 ### Git publishing
 
-- Unified Next.js platform — hosting, bundling, webhooks, and metadata routes in a single `app/` deployable ([#470](https://github.com/invertase/docs.page/pull/470), [`a546632`](https://github.com/invertase/docs.page/commit/a546632))
+- Unified Next.js platform — hosting, bundling, webhooks, and metadata routes in a single `app/` deployable ([#488](https://github.com/invertase/docs.page/pull/488), [`a546632`](https://github.com/invertase/docs.page/commit/a546632))
 - Shared `packages/mdx-bundler` pipeline — hosted docs and CLI preview render through the same production bundler ([`be18d1d`](https://github.com/invertase/docs.page/commit/be18d1d), [#472](https://github.com/invertase/docs.page/pull/472))
 - Push-to-publish from public GitHub — no build pipelines, hosting configuration, or infrastructure maintenance
 - Maintain v1 `docs.json` compatibility — automatic migration for legacy theme strings and `noindex` ([`94fd1f8`](https://github.com/invertase/docs.page/commit/94fd1f8))
@@ -46,7 +46,7 @@ docs.page **2.0.0** replaces the 1.0.0 stack with a single Next.js application, 
 
 ### Markdown components
 
-- Built-in MDX components — tabs, steps, callouts, code blocks, code groups, cards, accordion, property lists, headings, images, icons, and embeds (YouTube, Vimeo, Tweet / `<X>`, video); no imports required ([#359](https://github.com/invertase/docs.page/pull/359), [`f938182`](https://github.com/invertase/docs.page/commit/f938182))
+- Built-in MDX components — tabs, steps, callouts, code blocks, code groups, cards, accordion, property lists, headings, images, icons, and embeds (YouTube, Vimeo, Tweet / `<X>`, video); no imports required ([`f938182`](https://github.com/invertase/docs.page/commit/f938182))
 - **Mermaid** diagrams in fenced code blocks ([`de3b9e3`](https://github.com/invertase/docs.page/commit/de3b9e3))
 - **GitHub alert syntax** — `> [!NOTE]`, `> [!WARNING]`, `> [!TIP]`, and `> [!CAUTION]` blockquotes render as Info, Warning, Success, and Error callouts ([#405](https://github.com/invertase/docs.page/issues/405))
 - Shared IR renderer — hosted sites and CLI `preview` use the same component map and bundler ([`be18d1d`](https://github.com/invertase/docs.page/commit/be18d1d), [#472](https://github.com/invertase/docs.page/pull/472))

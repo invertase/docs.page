@@ -6,7 +6,7 @@ Platform changes to docs.page. Release notes: [2.0.0](./docs/releases/v2.0.0.mdx
 
 ### Removed
 
-- **Breaking:** remove standalone `website/` and `api/` deployables ([#470](https://github.com/invertase/docs.page/pull/470))
+- **Breaking:** remove standalone `website/` and `api/` deployables ([#488](https://github.com/invertase/docs.page/pull/488))
 - Remove Algolia DocSearch integration — built-in FlexSearch `search.json` replaces optional third-party search ([`76eaf1a`](https://github.com/invertase/docs.page/commit/76eaf1a))
 - Remove Redis-backed bundle cache in favour of surrogate cache control ([`0228337`](https://github.com/invertase/docs.page/commit/0228337))
 
