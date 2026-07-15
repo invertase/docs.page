@@ -80,7 +80,7 @@ Platform changes to docs.page. Release notes: [2.0.0](./docs/releases/v2.0.0.mdx
 
 [2.0.0]: https://github.com/invertase/docs.page/releases/tag/cli-v2.0.0
 
-## [1.0.0] - 29-08-2024
+## [1.0.0]
 
 ### Added
 
