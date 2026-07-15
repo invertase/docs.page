@@ -108,7 +108,7 @@ Platform changes to docs.page. Release notes: [2.0.0](./docs/releases/v2.0.0.mdx
 ### Changed
 
 - Rework platform UI and architecture in the 2024 refresh ([#359](https://github.com/invertase/docs.page/pull/359))
-- Split rendering (`website/`) and bundling (`api/`) into separate deployables ([`f862c15`](https://github.com/invertase/docs.page/commit/f862c15))
+- Rename `website-v3/` → `website/` (Astro), separate from the `api/` bundling service ([`f862c15`](https://github.com/invertase/docs.page/commit/f862c15))
 - Move Open Graph image generation into the main website application ([`a275ff9`](https://github.com/invertase/docs.page/commit/a275ff9))
 - Initialize Google Tag Manager and Google Analytics after page load ([`9a05df6`](https://github.com/invertase/docs.page/commit/9a05df6))
 - Improve error pages and API error handling ([#336](https://github.com/invertase/docs.page/pull/336))
