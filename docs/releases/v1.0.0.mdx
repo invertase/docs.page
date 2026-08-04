@@ -1,0 +1,97 @@
+---
+title: Release notes — v1.0.0
+description: Instant, zero-configuration docs from public GitHub — the docs-as-code platform for open-source developers.
+---
+
+# Release notes — v1.0.0
+
+**Ship documentation, like you ship code.**
+
+docs.page **1.0.0** is the docs-as-code platform for open-source developers: publish beautiful documentation instantly from markdown in a public GitHub repository, with zero configuration. Content is sourced directly from GitHub — no build pipelines, hosting setup, or website maintenance.
+
+**See also:** [CHANGELOG](../../CHANGELOG.md#100)
+
+---
+
+## New Features
+
+### Documentation hosting
+
+- Zero-config documentation sites from public GitHub repositories at `https://docs.page/{owner}/{repo}` ([#359](https://github.com/invertase/docs.page/pull/359))
+- Push-to-publish — docs.page serves the default branch automatically when you push to GitHub
+- `docs.json` configuration for name, description, logo, favicon, theme, header, content options, SEO, analytics scripts, and search
+- Sidebar navigation with nested groups, page icons, tab navigation, and anchor links above the sidebar
+- Global variables, per-page frontmatter, redirects, and previous/next page links ([#216](https://github.com/invertase/docs.page/pull/216))
+- Dark and light themes with Shiki syntax highlighting
+- Vanity URLs at `{owner}.docs.page/{repo}` when the subdomain matches your GitHub owner or username, with no extra configuration
+- Custom domains via platform-managed hostname mapping (request through docs.page — not configured in `docs.json`) ([#271](https://github.com/invertase/docs.page/pull/271))
+- Static assets alongside documentation in the repository
+- JSON Schema for `docs.json` at `/schema.json`
+
+### MDX components and content
+
+- Built-in components: tabs, steps, callouts, code blocks, code group, cards, accordion, property lists, and headings ([#359](https://github.com/invertase/docs.page/pull/359))
+- Icons (FontAwesome) and images with zoom
+- Embeds for Tweet, YouTube, Vimeo, and HTML5 video ([#180](https://github.com/invertase/docs.page/pull/180), [#194](https://github.com/invertase/docs.page/pull/194))
+- Custom components — extend MDX with your own React components
+- HTML comments and math support in MDX ([#205](https://github.com/invertase/docs.page/pull/205))
+
+### Previews and integrations
+
+- [docs.page GitHub App](https://github.com/apps/docs-page) — comments on new pull requests with a preview URL for the PR documentation
+- Live previews for branches, pull requests, and commits with hydration reload ([#340](https://github.com/invertase/docs.page/pull/340))
+- Optional Algolia DocSearch, configured in `docs.json`
+- Local preview at [docs.page/preview](https://docs.page/preview) using the browser File System API to read your local `docs.json` and `docs/` folder
+- Open Graph image generation for shared links ([`150d6da`](https://github.com/invertase/docs.page/commit/150d6da))
+
+### CLI (`@docs.page/cli` 1.x)
+
+- `init` — scaffold `docs.json` and starter documentation ([#359](https://github.com/invertase/docs.page/pull/359))
+- `check` — validate `docs.json` and internal links
+
+### Locales
+
+- Multi-language documentation via locale-keyed `sidebar` in `docs.json` — use ISO language codes (`en`, `fr`, etc.) instead of a flat sidebar array ([#359](https://github.com/invertase/docs.page/pull/359))
+- Automatic language switcher in the documentation UI when multiple locales are configured
+- Locale-prefixed URLs at `https://docs.page/{owner}/{repo}/{locale}/...`
+- Per-locale sidebar navigation; internal links resolve relative to the active locale
+- Optional `default` sidebar for the root page, or redirect to a default locale via frontmatter
+
+### Analytics
+
+- Google Tag Manager and Google Analytics via `docs.json` ([#211](https://github.com/invertase/docs.page/pull/211))
+- Plausible analytics support ([#233](https://github.com/invertase/docs.page/pull/233))
+
+---
+
+## Bug Fixes
+
+- Fix hydration state on client-side navigation ([#419](https://github.com/invertase/docs.page/issues/419))
+- Open internal sidebar links in the same tab ([#417](https://github.com/invertase/docs.page/pull/417))
+- Improve grouped sidebar collapse behaviour ([#399](https://github.com/invertase/docs.page/issues/399))
+- Respect `showPageImage` when rendering pages ([#420](https://github.com/invertase/docs.page/issues/420))
+- Treat frontmatter `false` as false ([#396](https://github.com/invertase/docs.page/issues/396))
+- Shiki CSS variables for code blocks ([#338](https://github.com/invertase/docs.page/pull/338))
+- Component navigation links ([#346](https://github.com/invertase/docs.page/pull/346))
+- Back button and error page handling ([#337](https://github.com/invertase/docs.page/pull/337))
+- Image zoom (RMIZ) stylesheet bundling ([#379](https://github.com/invertase/docs.page/issues/379))
+- Vanity domain redirect handling ([#363](https://github.com/invertase/docs.page/pull/363))
+- Redirect path and domain URL priority ([`390da36`](https://github.com/invertase/docs.page/commit/390da36))
+- Non-Latin URL encoding ([`17d9197`](https://github.com/invertase/docs.page/commit/17d9197))
+- Long sidebar title ellipsis ([`de11419`](https://github.com/invertase/docs.page/commit/de11419))
+- `init` command reliability in some environments (CLI 1.0.4)
+
+---
+
+## Improvements
+
+- 2024 UI refresh and platform rework ([#359](https://github.com/invertase/docs.page/pull/359))
+- Rename `website-v3/` → `website/` (Astro), separate from the `api/` bundling service ([`f862c15`](https://github.com/invertase/docs.page/commit/f862c15))
+- Express-based markdown bundling with remark/rehype validation ([`6126288`](https://github.com/invertase/docs.page/commit/6126288))
+- Move OG image generation into the website app ([`a275ff9`](https://github.com/invertase/docs.page/commit/a275ff9))
+- Defer GTM/GA initialization until after page load ([`9a05df6`](https://github.com/invertase/docs.page/commit/9a05df6))
+- Sidebar group heading icons and external link icons ([`5d80271`](https://github.com/invertase/docs.page/commit/5d80271))
+- FontAwesome 6.7.2 ([`304b62f`](https://github.com/invertase/docs.page/commit/304b62f))
+- Improved API and error page messaging ([#336](https://github.com/invertase/docs.page/pull/336))
+- Mobile header and layout polish ([`14ccd40`](https://github.com/invertase/docs.page/commit/14ccd40))
+- Middleware block list for unwanted paths ([`ff9ecef`](https://github.com/invertase/docs.page/commit/ff9ecef))
