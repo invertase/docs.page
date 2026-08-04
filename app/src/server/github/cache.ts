@@ -7,6 +7,8 @@ export const GITHUB_CACHE_TTLS = {
   negativeRef: 300,
   negativeRepository: 60,
   negativeDocsConfig: 60,
+  /** Short TTL: absorb scanner/spam repeats without stale-missing real docs for long. */
+  negativeDocsFile: 30,
 } as const;
 
 export function githubCacheKey(...parts: string[]) {
@@ -136,5 +138,68 @@ export async function putNegativeDocsConfigCache(
   await putNegativeGitHubCache(
     negativeDocsConfigCacheKey(owner, repository, ref),
     GITHUB_CACHE_TTLS.negativeDocsConfig,
+  );
+}
+
+export type NegativeDocsFileCacheEntry = {
+  status: "not-found";
+  /** Parsed site config when available so 404 redirects still work on cache hits. */
+  config?: unknown;
+  branding?: {
+    name?: string;
+    logo?: {
+      light?: string;
+      dark?: string;
+    };
+  };
+};
+
+export function negativeDocsFileCacheKey(
+  owner: string,
+  repository: string,
+  ref: string | null | undefined,
+  path: string,
+) {
+  return githubCacheKey(
+    "docs-file-not-found",
+    owner,
+    repository,
+    ref ?? "HEAD",
+    path,
+  );
+}
+
+export async function getNegativeDocsFileCache(
+  owner: string,
+  repository: string,
+  ref: string | null | undefined,
+  path: string,
+): Promise<NegativeDocsFileCacheEntry | undefined> {
+  const cached = await getGitHubCache<NegativeDocsFileCacheEntry>(
+    negativeDocsFileCacheKey(owner, repository, ref, path),
+  );
+
+  if (cached?.status !== "not-found") {
+    return;
+  }
+
+  return cached;
+}
+
+export async function putNegativeDocsFileCache(
+  owner: string,
+  repository: string,
+  ref: string | null | undefined,
+  path: string,
+  entry?: Omit<NegativeDocsFileCacheEntry, "status">,
+) {
+  await putGitHubCache<NegativeDocsFileCacheEntry>(
+    negativeDocsFileCacheKey(owner, repository, ref, path),
+    {
+      status: "not-found",
+      ...(entry?.config !== undefined ? { config: entry.config } : {}),
+      ...(entry?.branding ? { branding: entry.branding } : {}),
+    },
+    GITHUB_CACHE_TTLS.negativeDocsFile,
   );
 }

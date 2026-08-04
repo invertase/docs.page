@@ -11,15 +11,10 @@ import { Homepage } from "@/components/homepage";
 import { Preset } from "@/components/preset";
 import { DocPageContext } from "@/hooks/use-doc-page-context";
 import { getAgentPanelCookieName } from "@/lib/agent-panel-state";
-import type {
-  DocsBundleApiErrorResponse,
-  DocsBundleApiResponse,
-  DocsBundleApiSuccessResponse,
-} from "@/lib/docs-bundle-api";
 import {
   buildDocsBundleApiPath,
   isDocsBundleNotFoundResponse,
-  parseDocsBundleApiError,
+  loadDocsBundleFromApi,
 } from "@/lib/docs-bundle-api";
 import {
   resolveCanonicalUrl,
@@ -254,17 +249,35 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
   setDocsCacheHeaders(res, DOCS_HTML_CACHE_HEADERS);
 
   const bundleApiPath = buildDocsBundleApiPath(route);
-  const bundleResponse = await fetch(getDeploymentOrigin() + bundleApiPath, {
-    method: "GET",
-    headers: {
-      Accept: "application/json",
+  const bundleResult = await loadDocsBundleFromApi(
+    getDeploymentOrigin() + bundleApiPath,
+    {
+      owner: route.owner,
+      repository: route.repository,
+      ref: route.ref,
+      path: route.docPath || "index",
     },
-  });
-  const bundlePayload = (await bundleResponse.json()) as DocsBundleApiResponse;
+  );
 
-  if (!bundleResponse.ok || bundlePayload.code !== "OK") {
-    const errorResponse = bundlePayload as DocsBundleApiErrorResponse;
-    const error = parseDocsBundleApiError(errorResponse);
+  if (bundleResult.kind === "internal") {
+    res.statusCode =
+      bundleResult.status >= 400 && bundleResult.status <= 599
+        ? bundleResult.status
+        : 502;
+
+    return {
+      props: {
+        kind: "error" as const,
+        error: {
+          name: bundleResult.error.name,
+          message: bundleResult.error.message,
+        },
+      } satisfies ErrorPageProps,
+    };
+  }
+
+  if (bundleResult.kind === "error") {
+    const { payload: errorResponse, error } = bundleResult;
 
     if (isDocsBundleNotFoundResponse(errorResponse)) {
       // A deleted `.mdx` surfaces here as a 404. The bundler already fetched the
@@ -340,11 +353,16 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
       },
     });
 
+    res.statusCode =
+      bundleResult.status >= 400 && bundleResult.status <= 599
+        ? bundleResult.status
+        : 500;
+
     return {
       props: {
         kind: "error" as const,
         error: {
-          name: "BundleError",
+          name: error.name ?? "BundleError",
           message: error.message,
           ...(error.source ? { source: error.source } : {}),
         },
@@ -352,7 +370,7 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
     };
   }
 
-  const successResponse = bundlePayload as DocsBundleApiSuccessResponse;
+  const successResponse = bundleResult.payload;
 
   const redirectDestination = await resolveFrontmatterRedirectDestination(
     route,

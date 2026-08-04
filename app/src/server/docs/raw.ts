@@ -1,5 +1,9 @@
 import { z } from "zod";
 import { stripRawDocRequestSuffix } from "@/lib/docs-routing";
+import {
+  getNegativeDocsFileCache,
+  putNegativeDocsFileCache,
+} from "@/server/github/cache";
 import { getGitHubDocumentSource } from "../github/contents";
 import { BundlerError, ERROR_CODES } from "./bundle";
 
@@ -19,6 +23,29 @@ export async function getRawDocSource(
   const input = RawDocSchema.parse(args);
   const normalizedPath = stripRawDocRequestSuffix(input.path);
 
+  if (
+    await getNegativeDocsFileCache(
+      input.owner,
+      input.repository,
+      input.ref,
+      normalizedPath,
+    ).catch(() => undefined)
+  ) {
+    throw new BundlerError({
+      code: 404,
+      name: ERROR_CODES.FILE_NOT_FOUND,
+      message: `No file was found in the repository matching this path. Ensure a file exists at <code>/docs/${normalizedPath}.mdx</code>, <code>/docs/${normalizedPath}.md</code>, or their <code>index</code> variants.`,
+      source: `https://github.com/${input.owner}/${input.repository}`,
+      details: {
+        owner: input.owner,
+        repository: input.repository,
+        ref: input.ref ?? null,
+        path: normalizedPath,
+        reason: "negative-file-cache",
+      },
+    });
+  }
+
   const source = await getGitHubDocumentSource(
     {
       owner: input.owner,
@@ -31,6 +58,13 @@ export async function getRawDocSource(
   );
 
   if (!source) {
+    await putNegativeDocsFileCache(
+      input.owner,
+      input.repository,
+      input.ref,
+      normalizedPath,
+    ).catch(() => undefined);
+
     throw new BundlerError({
       code: 404,
       name: ERROR_CODES.FILE_NOT_FOUND,

@@ -464,6 +464,10 @@
         {
           "title": "HTTP endpoints",
           "href": "/reference/http-endpoints"
+        },
+        {
+          "title": "Caching",
+          "href": "/reference/caching"
         }
       ]
     }

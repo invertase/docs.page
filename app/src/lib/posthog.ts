@@ -19,7 +19,11 @@ export function getPostHogClient(): PostHog | null {
   _client = new PostHog(key, {
     host: "https://eu.i.posthog.com",
     disableGeoip: true,
-    enableExceptionAutocapture: true,
+    // Uncaught SSR/GSSP exceptions were previously autocaptured. Under a
+    // request storm that made flush() contend with the event loop and surface
+    // PostHogFetchNetworkError / AbortError noise — even when docs:page_fail
+    // already skipped 404s. Capture product events explicitly instead.
+    enableExceptionAutocapture: false,
   });
   return _client;
 }

@@ -1,0 +1,62 @@
+---
+title: Caching
+description: How docs.page remembers recently loaded content so sites stay fast, and what that means when you publish updates.
+---
+
+docs.page reads your documentation from GitHub and turns it into pages readers can open in a browser. Caching is how we avoid doing that work from scratch on every visit. In practice, that means faster loads for your readers and a short delay before some kinds of changes show up everywhere.
+
+## Why caching exists
+
+Without caching, every page view would ask GitHub for the same files again, then rebuild the page. That is slower and puts more load on GitHub.
+
+With caching, docs.page keeps short-lived copies of work it has already done. The next visitor can reuse that work instead of starting over.
+
+## What readers experience
+
+After someone opens a page, the next visits to the same content are usually quicker. Shared endpoints such as search data and machine-readable exports are also reused for a short time so the site stays responsive under traffic.
+
+The documentation **page itself** is always checked freshly when someone loads it in the browser. What gets reused behind the scenes is the prepared content that powers that page.
+
+## What happens when you publish
+
+docs.page does not run a separate deploy step. [Pushing to GitHub](/authoring/publish) is what updates your docs.
+
+| What you changed | What to expect |
+| --- | --- |
+| Updated an existing page on your default branch | Most readers see the new content within about a minute. |
+| Added a brand-new page | The page is available as soon as GitHub has the commit. Open it directly, or wait a moment if a link was tried before the file existed. |
+| Fixed a page that previously returned “not found” | If that missing path was requested recently, it can take up to about **30 seconds** before the page appears. Try again shortly after you push. |
+| Previewed a branch, tag, or pull request | Previews use the content for that ref. They are separate from your production default-branch site. |
+| Opened a URL pinned to a specific commit | That view stays tied to that commit. It will not pick up later commits on the branch. |
+
+If a change seems missing, wait a short moment, then hard-refresh the page. Confirm you are looking at the right branch or production URL.
+
+## Missing pages
+
+When someone requests a page that does not exist, docs.page briefly remembers that miss (about **30 seconds**). Repeat visits to the same missing path do not keep asking GitHub over and over.
+
+That protects the service when scrapers probe many junk URLs, and it is why a page you just added under a previously missing path can take a short moment to show up.
+
+Repository-level misses (for example an unknown repo or a missing `docs.json`) are also remembered briefly, usually for about a minute.
+
+## Preview and local development
+
+- **[Local preview](/features/local-preview)** reads files from your machine. It does not use the same shared caches as the public site.
+- **[Branch preview](/features/branch-preview)** URLs load that ref from GitHub. Treat them as a separate view from production when you check whether a change has landed.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Publish" icon="upload" href="/authoring/publish">
+    Push changes, share previews, and merge to production.
+  </Card>
+  <Card title="Public GitHub hosting" icon="github" href="/features/public-github-hosting">
+    How docs.page serves docs from your public repository.
+  </Card>
+  <Card title="Branch preview" icon="code-branch" href="/features/branch-preview">
+    Open any branch, tag, or pull request as a live site.
+  </Card>
+  <Card title="HTTP endpoints" icon="globe" href="/reference/http-endpoints">
+    Published URL patterns for search, sitemaps, and more.
+  </Card>
+</CardGroup>

@@ -7,8 +7,10 @@ import { assertPublicRepo } from "@/lib/docs-access";
 import { getAssetSrc } from "@/lib/docs-assets";
 import { type Config, defaultConfig, parseConfig } from "@/server/config";
 import {
+  getNegativeDocsFileCache,
   hasNegativeDocsConfigCache,
   putNegativeDocsConfigCache,
+  putNegativeDocsFileCache,
 } from "@/server/github/cache";
 import {
   type GitHubSource,
@@ -146,6 +148,35 @@ export class Bundler {
     });
   }
 
+  private createFileNotFoundError({
+    reason,
+    resolvedContentPath,
+    config,
+    branding,
+  }: {
+    reason: "docs-file-not-found" | "negative-file-cache";
+    resolvedContentPath?: string;
+    config?: Config;
+    branding?: DocsBranding;
+  }): BundlerError {
+    const source = this.#source;
+    return new BundlerError({
+      code: 404,
+      name: ERROR_CODES.FILE_NOT_FOUND,
+      message: `No file was found in the repository matching this path. Ensure a file exists at <code>/docs/${this.#path}.mdx</code> or <code>/docs/${this.#path}/index.mdx</code>.`,
+      source: source
+        ? `https://github.com/${source.owner}/${source.repository}`
+        : `https://github.com/${this.#owner}/${this.#repository}`,
+      details: {
+        ...this.getErrorDetails(source),
+        ...(resolvedContentPath ? { resolvedContentPath } : {}),
+        reason,
+      },
+      ...(branding ? { branding } : {}),
+      ...(config ? { config } : {}),
+    });
+  }
+
   private parseConfigSafe(metadata: {
     config: {
       configJson?: string;
@@ -218,6 +249,21 @@ export class Bundler {
       );
     }
 
+    const negativeFile = await getNegativeDocsFileCache(
+      this.#source.owner,
+      this.#source.repository,
+      this.#ref,
+      this.#path,
+    ).catch(() => undefined);
+
+    if (negativeFile) {
+      throw this.createFileNotFoundError({
+        reason: "negative-file-cache",
+        config: negativeFile.config as Config | undefined,
+        branding: negativeFile.branding,
+      });
+    }
+
     const metadata = await getGitHubContents({
       owner: this.#source.owner,
       repository: this.#source.repository,
@@ -255,23 +301,28 @@ export class Bundler {
       // for config-level `redirects` — the mdx is gone but the config is not,
       // and we avoid a second round-trip to re-fetch it.
       const config = this.parseConfigSafe(metadata);
-
-      throw new BundlerError({
-        code: 404,
-        name: ERROR_CODES.FILE_NOT_FOUND,
-        message: `No file was found in the repository matching this path. Ensure a file exists at <code>/docs/${this.#path}.mdx</code> or <code>/docs/${this.#path}/index.mdx</code>.`,
-        source: `https://github.com/${this.#source.owner}/${this.#source.repository}`,
-        details: {
-          ...this.getErrorDetails(this.#source),
-          resolvedContentPath: metadata.path,
-          reason: "docs-file-not-found",
-        },
-        branding: this.resolveBranding(
-          config,
-          metadata.baseBranch,
-          this.#source,
-        ),
+      const branding = this.resolveBranding(
         config,
+        metadata.baseBranch,
+        this.#source,
+      );
+
+      await putNegativeDocsFileCache(
+        this.#source.owner,
+        this.#source.repository,
+        this.#ref,
+        this.#path,
+        {
+          ...(config ? { config } : {}),
+          ...(branding ? { branding } : {}),
+        },
+      ).catch(() => undefined);
+
+      throw this.createFileNotFoundError({
+        reason: "docs-file-not-found",
+        resolvedContentPath: metadata.path,
+        config,
+        branding,
       });
     }
 
