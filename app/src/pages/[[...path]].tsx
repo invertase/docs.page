@@ -60,6 +60,24 @@ function isInternalFallthroughRequest(chunks: string[]) {
   );
 }
 
+// Capture UTM params present on the request URL as event properties (cookieless: event-level only).
+function utmProperties(url: URL): Record<string, string> {
+  const props: Record<string, string> = {};
+
+  for (const key of [
+    "utm_source",
+    "utm_medium",
+    "utm_campaign",
+    "utm_term",
+    "utm_content",
+  ]) {
+    const value = url.searchParams.get(key);
+    if (value) props[key] = value;
+  }
+
+  return props;
+}
+
 export const getServerSideProps = (async ({ params, req, res, query }) => {
   const isDebug = query.debug !== undefined;
   const raw = params?.path;
@@ -74,6 +92,7 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
       distinctId: visitorId(ip, userAgent, new Date()),
       event: "homepage:page_view",
       properties: {
+        ...utmProperties(requestUrl),
         $raw_user_agent: userAgent,
         $process_person_profile: false,
       },
@@ -408,6 +427,7 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
     distinctId: visitorId(ip, userAgent, new Date()),
     event: "docs:page_view",
     properties: {
+      ...utmProperties(requestUrl),
       owner: route.owner,
       repository: route.repository,
       ref: route.ref ?? null,
