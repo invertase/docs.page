@@ -17,7 +17,14 @@ const SECONDS_PER_DAY = 24 * 60 * 60;
 const CDN_STALE_SECONDS = 7 * SECONDS_PER_DAY;
 
 export type DocsCacheHeaders = {
+  /** Browser-facing Cache-Control. */
   cacheControl: string;
+  /**
+   * CDN-only policy (Cloudflare). Uses `max-age` for freshness — not `s-maxage` —
+   * so `stale-while-revalidate` can serve stale while revalidating (`UPDATING`).
+   * `s-maxage` implies `proxy-revalidate` and disables SWR at Cloudflare.
+   */
+  cdnCacheControl?: string;
 };
 
 const SEARCH_JSON_BROWSER_MAX_AGE_SECONDS = 5 * 60;
@@ -31,7 +38,12 @@ function buildBrowserCacheHeaders(): DocsCacheHeaders {
 
 /**
  * CDN cache policy for deterministic API/utility responses (`/api/bundle`, search.json, etc.).
- * Browsers use `max-age=0`; edge TTL + stale-* live in `s-maxage`.
+ *
+ * - `Cache-Control`: browser TTL (`max-age`, default 0)
+ * - `CDN-Cache-Control` / `Cloudflare-CDN-Cache-Control`: edge freshness + SWR/SIE
+ *
+ * Do not put `s-maxage` on either header when SWR is desired — Cloudflare treats
+ * `s-maxage` as `proxy-revalidate` and falls back to sync `EXPIRED` revalidation.
  */
 function buildCdnCacheHeaders(args: {
   edgeMaxAgeSeconds: number;
@@ -41,15 +53,16 @@ function buildCdnCacheHeaders(args: {
   browserMaxAgeSeconds?: number;
 }): DocsCacheHeaders {
   const browserMaxAge = args.browserMaxAgeSeconds ?? 0;
+  const cdnCacheControl = [
+    "public",
+    `max-age=${args.edgeMaxAgeSeconds}`,
+    `stale-while-revalidate=${args.staleWhileRevalidate}`,
+    `stale-if-error=${args.staleIfError}`,
+  ].join(", ");
 
   return {
-    cacheControl: [
-      "public",
-      `max-age=${browserMaxAge}`,
-      `s-maxage=${args.edgeMaxAgeSeconds}`,
-      `stale-while-revalidate=${args.staleWhileRevalidate}`,
-      `stale-if-error=${args.staleIfError}`,
-    ].join(", "),
+    cacheControl: ["public", `max-age=${browserMaxAge}`].join(", "),
+    cdnCacheControl,
   };
 }
 
@@ -123,7 +136,7 @@ export function getBundleJsonCacheHeaders(
   });
 }
 
-/** Apply Cache-Control for docs responses (browser-only or CDN-backed). */
+/** Apply Cache-Control (+ optional CDN-Cache-Control) for docs responses. */
 export function setDocsCacheHeaders(
   target:
     | { setHeader(name: string, value: string): void }
@@ -132,10 +145,18 @@ export function setDocsCacheHeaders(
 ): void {
   if ("setHeader" in target) {
     target.setHeader("Cache-Control", headers.cacheControl);
+    if (headers.cdnCacheControl) {
+      target.setHeader("CDN-Cache-Control", headers.cdnCacheControl);
+      target.setHeader("Cloudflare-CDN-Cache-Control", headers.cdnCacheControl);
+    }
     return;
   }
 
   target.set("Cache-Control", headers.cacheControl);
+  if (headers.cdnCacheControl) {
+    target.set("CDN-Cache-Control", headers.cdnCacheControl);
+    target.set("Cloudflare-CDN-Cache-Control", headers.cdnCacheControl);
+  }
 }
 
 function isMcpPath(pathname: string) {
