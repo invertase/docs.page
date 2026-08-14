@@ -103,6 +103,16 @@ export const ROOT_LLMS_TXT_CACHE_HEADERS = buildCdnCacheHeaders({
   staleIfError: CDN_STALE_SECONDS,
   browserMaxAgeSeconds: 60 * 60,
 });
+/**
+ * Root product-level `robots.txt`: hand-written static content, same policy
+ * as the root llms.txt (day-long edge TTL, hourly browser revalidation).
+ */
+export const ROOT_ROBOTS_TXT_CACHE_HEADERS = buildCdnCacheHeaders({
+  edgeMaxAgeSeconds: SECONDS_PER_DAY,
+  staleWhileRevalidate: CDN_STALE_SECONDS,
+  staleIfError: CDN_STALE_SECONDS,
+  browserMaxAgeSeconds: 60 * 60,
+});
 export const SITEMAP_CACHE_HEADERS = buildCdnCacheHeaders({
   edgeMaxAgeSeconds: 3600,
   staleWhileRevalidate: CDN_STALE_SECONDS,
