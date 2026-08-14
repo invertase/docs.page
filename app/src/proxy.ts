@@ -118,6 +118,16 @@ export const SITEMAP_CACHE_HEADERS = buildCdnCacheHeaders({
   staleWhileRevalidate: CDN_STALE_SECONDS,
   staleIfError: CDN_STALE_SECONDS,
 });
+/**
+ * Root product-level `sitemap.xml`: hand-written static content, same policy
+ * as the root llms.txt (day-long edge TTL, hourly browser revalidation).
+ */
+export const ROOT_SITEMAP_CACHE_HEADERS = buildCdnCacheHeaders({
+  edgeMaxAgeSeconds: SECONDS_PER_DAY,
+  staleWhileRevalidate: CDN_STALE_SECONDS,
+  staleIfError: CDN_STALE_SECONDS,
+  browserMaxAgeSeconds: 60 * 60,
+});
 export const ROBOTS_TXT_CACHE_HEADERS = buildCdnCacheHeaders({
   edgeMaxAgeSeconds: 3600,
   staleWhileRevalidate: CDN_STALE_SECONDS,
