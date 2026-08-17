@@ -103,6 +103,15 @@ export const ROOT_LLMS_TXT_CACHE_HEADERS = buildCdnCacheHeaders({
   staleIfError: CDN_STALE_SECONDS,
   browserMaxAgeSeconds: 60 * 60,
 });
+/**
+ * Tracking redirects (`/api/go/*`): never store, at the browser or the edge. A
+ * cached redirect is replayed without reaching the handler, which would silently
+ * stop the analytics event from firing.
+ */
+export const TRACKING_REDIRECT_CACHE_HEADERS: DocsCacheHeaders = {
+  cacheControl: "no-store",
+  cdnCacheControl: "no-store",
+};
 export const SITEMAP_CACHE_HEADERS = buildCdnCacheHeaders({
   edgeMaxAgeSeconds: 3600,
   staleWhileRevalidate: CDN_STALE_SECONDS,
