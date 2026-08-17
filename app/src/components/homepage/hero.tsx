@@ -26,8 +26,10 @@ export function Hero() {
           size="lg"
           className="group rounded-full px-6 py-6 text-lg"
         >
-          {/* prefetch off: the tracked redirect must not be requested on page view. */}
-          <Link href="/api/go/get-started" prefetch={false}>
+          {/* prefetch off: the tracked redirect must not be requested on page view.
+              nofollow: a hint to keep crawlers from following the CTA and
+              inflating clicks — best-effort, not a guarantee. */}
+          <Link href="/api/go/get-started" prefetch={false} rel="nofollow">
             <span>Get started</span>
             <RiArrowRightSLine className="size-6 group-hover:translate-x-1 transition-transform" />
           </Link>

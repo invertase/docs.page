@@ -37,13 +37,13 @@ type RouteContext = {
  * destination.
  */
 export async function GET(req: Request, context: RouteContext) {
-  const { cta } = await context.params;
+  const target = await resolveCta(context);
 
-  if (!isCtaSlug(cta)) {
+  if (!target) {
     return redirect(FALLBACK_DESTINATION);
   }
 
-  const destination = CTA_DESTINATIONS[cta];
+  const { cta, destination } = target;
   const requestUrl = new URL(req.url);
   const { ip, userAgent } = readVisitorHeaders(req.headers);
 
@@ -66,6 +66,28 @@ export async function GET(req: Request, context: RouteContext) {
   });
 
   return redirect(destination);
+}
+
+/**
+ * HEAD is answered explicitly so it never counts as a click.
+ *
+ * Without this export the App Router derives HEAD from GET, which would make
+ * link checkers, uptime monitors and Slack/Twitter/iMessage unfurls each record
+ * a `homepage:cta_click` no human ever performed. The response is byte-for-byte
+ * the GET response (same 302, same `Location`, same `no-store`) minus the
+ * capture, so previews and validators still resolve the destination correctly.
+ */
+export async function HEAD(_req: Request, context: RouteContext) {
+  const target = await resolveCta(context);
+  return redirect(target?.destination ?? FALLBACK_DESTINATION);
+}
+
+/** Resolve the route param to a known CTA, or `null` for an unknown slug. */
+async function resolveCta(
+  context: RouteContext,
+): Promise<{ cta: CtaSlug; destination: string } | null> {
+  const { cta } = await context.params;
+  return isCtaSlug(cta) ? { cta, destination: CTA_DESTINATIONS[cta] } : null;
 }
 
 /**
