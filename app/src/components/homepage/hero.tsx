@@ -26,7 +26,8 @@ export function Hero() {
           size="lg"
           className="group rounded-full px-6 py-6 text-lg"
         >
-          <Link href="/api/go/get-started">
+          {/* prefetch off: the tracked redirect must not be requested on page view. */}
+          <Link href="/api/go/get-started" prefetch={false}>
             <span>Get started</span>
             <RiArrowRightSLine className="size-6 group-hover:translate-x-1 transition-transform" />
           </Link>

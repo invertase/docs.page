@@ -18,7 +18,7 @@ export function Footer() {
             className="rounded-full px-4 py-5 group"
             asChild
           >
-            <Link href="/api/go/quickstart">
+            <Link href="/api/go/quickstart" prefetch={false}>
               Get started{" "}
               <RiArrowRightSLine className="size-5 group-hover:translate-x-1 transition-transform" />
             </Link>
