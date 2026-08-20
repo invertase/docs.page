@@ -20,7 +20,7 @@ export function Footer() {
           >
             {/* prefetch off + nofollow: see the hero CTA — the tracked redirect
                 must not be requested on page view or followed by crawlers. */}
-            <Link href="/api/go/quickstart" prefetch={false} rel="nofollow">
+            <Link href="/get-started" prefetch={false} rel="nofollow">
               Get started{" "}
               <RiArrowRightSLine className="size-5 group-hover:translate-x-1 transition-transform" />
             </Link>
