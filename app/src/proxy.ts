@@ -81,6 +81,17 @@ export const SEARCH_CACHE_HEADERS = buildCdnCacheHeaders({
   browserMaxAgeSeconds: SEARCH_JSON_BROWSER_MAX_AGE_SECONDS,
 });
 
+/**
+ * MCP descriptor GET (`/…/mcp`): stable JSON for a given owner/repo/ref.
+ * Edge-cacheable so agent polling does not stampede origin; POST tool calls are
+ * uncacheable by method and must not set these headers.
+ */
+export const MCP_CACHE_HEADERS = buildCdnCacheHeaders({
+  edgeMaxAgeSeconds: 300,
+  staleWhileRevalidate: CDN_STALE_SECONDS,
+  staleIfError: CDN_STALE_SECONDS,
+});
+
 /** Same edge policy as search; keep `max-age=0` for clients (llms.txt consumers often want a fresh aggregate). */
 export const LLMS_TXT_CACHE_HEADERS = buildCdnCacheHeaders({
   edgeMaxAgeSeconds: 300,
@@ -200,10 +211,6 @@ function shouldApplyDocsCache(
     return false;
   }
 
-  if (isMcpPath(request.nextUrl.pathname)) {
-    return false;
-  }
-
   if (request.headers.get("x-docs-page-custom-domain")) {
     return true;
   }
@@ -216,12 +223,12 @@ function shouldApplyDocsCache(
 }
 
 function getDocsCacheHeaders(pathname: string): DocsCacheHeaders | null {
-  if (isMcpPath(pathname)) {
-    return null;
-  }
-
   if (isRawDocRequestPath(pathname)) {
     return RAW_DOC_CACHE_HEADERS;
+  }
+
+  if (isMcpPath(pathname)) {
+    return MCP_CACHE_HEADERS;
   }
 
   if (isDocsSearchPath(pathname)) {
