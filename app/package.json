@@ -8,7 +8,7 @@
     "generate:source-files": "bun scripts/generate-source-files.ts",
     "dev": "next dev",
     "build": "next build",
-    "start": "node .next/standalone/server.js"
+    "start": "bun --bun .next/standalone/server.js"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.90",
