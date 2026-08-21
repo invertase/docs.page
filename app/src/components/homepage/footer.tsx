@@ -18,7 +18,9 @@ export function Footer() {
             className="rounded-full px-4 py-5 group"
             asChild
           >
-            <Link href="https://use.docs.page/quickstart">
+            {/* prefetch off + nofollow: see the hero CTA — the tracked redirect
+                must not be requested on page view or followed by crawlers. */}
+            <Link href="/get-started" prefetch={false} rel="nofollow">
               Get started{" "}
               <RiArrowRightSLine className="size-5 group-hover:translate-x-1 transition-transform" />
             </Link>

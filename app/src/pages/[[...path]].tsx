@@ -37,6 +37,7 @@ import type {
   NotFoundPageProps,
   PageProps,
 } from "@/lib/types";
+import { utmProperties } from "@/lib/utm";
 import {
   DOCS_HTML_CACHE_HEADERS,
   RAW_DOC_CACHE_HEADERS,
@@ -74,6 +75,7 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
       distinctId: visitorId(ip, userAgent, new Date()),
       event: "homepage:page_view",
       properties: {
+        ...utmProperties(requestUrl),
         $raw_user_agent: userAgent,
         $process_person_profile: false,
       },
@@ -408,6 +410,7 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
     distinctId: visitorId(ip, userAgent, new Date()),
     event: "docs:page_view",
     properties: {
+      ...utmProperties(requestUrl),
       owner: route.owner,
       repository: route.repository,
       ref: route.ref ?? null,

@@ -21,7 +21,7 @@ Site configuration lives in `docs.json` or `docs.yaml` at the repository root. F
 | `header`, `tabs`, `sidebar`, `anchors` | [header](#header), [tabs](#tabs), [sidebar](#sidebar), [anchors](#anchors) |
 | `content`, `seo`, `variables` | [content](#content), [seo](#seo), [variables](#variables) |
 | `redirects` | [redirects](#redirects) |
-| `scripts`, `search`, `social`, `og` | [scripts](#scripts), [search](#search), [social](#social), [og](#og) |
+| `scripts`, `social`, `og` | [scripts](#scripts), [social](#social), [og](#og) |
 | `agent`, `mcp` | [agent](#agent), [mcp](#mcp) |
 
 ## Schema-only fields
@@ -359,18 +359,6 @@ Analytics and tag-manager injection on **published** pages only, not during loca
 </Property>
 
 See [Analytics](/features/analytics).
-
-## search
-
-<Accordion title="search.docsearch">
-  Optional Algolia DocSearch credentials. Built-in on-site search does not require this block; see [Search](/features/search).
-
-  | Field | Type | Default |
-  | --- | --- | --- |
-  | `search.docsearch.appId` | string | `""` |
-  | `search.docsearch.apiKey` | string | `""` |
-  | `search.docsearch.indexName` | string | `""` |
-</Accordion>
 
 ## social
 
