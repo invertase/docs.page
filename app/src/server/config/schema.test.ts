@@ -34,3 +34,51 @@ describe("ConfigSchema redirects", () => {
     expect(config.redirects).toEqual({});
   });
 });
+
+describe("ConfigSchema scripts.googleSiteVerification", () => {
+  test("parses a verification token", () => {
+    const config = ConfigSchema.parse({
+      scripts: { googleSiteVerification: "aBcD1234exampleToken" },
+    });
+
+    expect(config.scripts.googleSiteVerification).toBe("aBcD1234exampleToken");
+  });
+
+  test("forgives an empty string (falls back to undefined)", () => {
+    const config = ConfigSchema.parse({
+      scripts: { googleSiteVerification: "" },
+    });
+
+    expect(config.scripts.googleSiteVerification).toBeUndefined();
+  });
+
+  test("forgives an invalid type (falls back to undefined)", () => {
+    expect(
+      ConfigSchema.parse({ scripts: { googleSiteVerification: 123 } }).scripts
+        .googleSiteVerification,
+    ).toBeUndefined();
+
+    expect(
+      ConfigSchema.parse({
+        scripts: { googleSiteVerification: { token: "abc" } },
+      }).scripts.googleSiteVerification,
+    ).toBeUndefined();
+  });
+
+  test("defaults to undefined when omitted", () => {
+    const config = ConfigSchema.parse({ scripts: {} });
+    expect(config.scripts.googleSiteVerification).toBeUndefined();
+  });
+
+  test("does not affect googleTagManager, which stays a plain string", () => {
+    const config = ConfigSchema.parse({
+      scripts: {
+        googleTagManager: "GTM-ABC123",
+        googleSiteVerification: "aBcD1234exampleToken",
+      },
+    });
+
+    expect(config.scripts.googleTagManager).toBe("GTM-ABC123");
+    expect(config.scripts.googleSiteVerification).toBe("aBcD1234exampleToken");
+  });
+});

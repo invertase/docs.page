@@ -354,6 +354,12 @@ Analytics and tag-manager injection on **published** pages only, not during loca
   GA4 measurement ID (for example `G-GXXXX`). Used only when `googleTagManager` is not set.
 </Property>
 
+<Property name="scripts.googleSiteVerification" type="string">
+  Google site verification token (the `content` value from the HTML tag Google Search Console gives you, not the whole tag). Rendered server-side into the page head as `<meta name="google-site-verification" content="..." />`.
+
+  Only rendered when the page is served from your repository's **default branch** — never on a [branch preview](/features/branch-preview), tag, commit or PR preview, and never in [local preview](/features/local-preview). Ownership of a URL cannot be claimed from a ref that anyone can open a pull request for. See [Verify ownership](/customize/seo#verify-ownership-with-google-search-console).
+</Property>
+
 <Property name="scripts.plausible" type="string | boolean">
   Plausible analytics. Set to `true` for the hosted Plausible script, or a string URL for self-hosted Plausible. Requires a mapped [custom domain](/features/custom-domains) or [vanity subdomain](/features/vanity-subdomains), and is inactive on the default `docs.page/{owner}/{repo}` path.
 </Property>

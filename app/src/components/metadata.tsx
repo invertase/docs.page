@@ -1,6 +1,7 @@
 import Head from "next/head";
 import { useDocPageContext } from "@/hooks/use-doc-page-context";
 import { getAssetSrc } from "@/lib/docs-assets";
+import { isDefaultBranchRoute } from "@/lib/docs-routing";
 import { toBase64 } from "@/lib/utils";
 
 export function Metadata() {
@@ -16,6 +17,16 @@ export function Metadata() {
 
   const noindex =
     bundle.frontmatter.noindex === true || bundle.config.seo?.noindex === true;
+
+  // Rendered server-side (unlike the `scripts` tags themselves) because
+  // Google's verifier reads the raw HTML and never runs JavaScript.
+  //
+  // Only honoured on the repository's default branch: a verification token
+  // proves ownership of the URL to Google, so it must not be assertable from
+  // an arbitrary ref that anyone can open a pull request for and preview.
+  const googleSiteVerification = isDefaultBranchRoute(route)
+    ? bundle.config.scripts?.googleSiteVerification
+    : undefined;
 
   let image = bundle.frontmatter.image
     ? String(bundle.frontmatter.image)
@@ -103,6 +114,13 @@ export function Metadata() {
       ) : null}
 
       {noindex ? <meta name="robots" content="noindex" /> : null}
+
+      {googleSiteVerification ? (
+        <meta
+          name="google-site-verification"
+          content={googleSiteVerification}
+        />
+      ) : null}
     </Head>
   );
 }
