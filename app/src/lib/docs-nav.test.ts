@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { resolveInternalDocHref } from "./docs-nav";
 import type { ResolvedDocsRoute } from "./docs-routing";
+import { isDefaultBranchRoute } from "./docs-routing";
 
 function createRoute(
   overrides: Partial<ResolvedDocsRoute> = {},
@@ -77,6 +78,39 @@ describe("resolveInternalDocHref", () => {
 
     expect(resolveInternalDocHref(route, "/writing-content")).toBe(
       "/invertase/docs.page~main/writing-content",
+    );
+  });
+});
+
+describe("isDefaultBranchRoute", () => {
+  test("is true for a canonical route with no ref", () => {
+    expect(isDefaultBranchRoute(createRoute())).toBe(true);
+  });
+
+  test("is true for vanity and custom domain routes with no ref", () => {
+    expect(isDefaultBranchRoute(createRoute({ requestMode: "vanity" }))).toBe(
+      true,
+    );
+    expect(
+      isDefaultBranchRoute(createRoute({ requestMode: "custom-domain" })),
+    ).toBe(true);
+  });
+
+  test("is false for any explicit ref (branch, tag, PR or commit)", () => {
+    for (const ref of [
+      "main",
+      "some-branch",
+      "v1.0.0",
+      "123",
+      "0".repeat(40),
+    ]) {
+      expect(isDefaultBranchRoute(createRoute({ ref }))).toBe(false);
+    }
+  });
+
+  test("is false in local preview, which also carries no ref", () => {
+    expect(isDefaultBranchRoute(createRoute({ requestMode: "preview" }))).toBe(
+      false,
     );
   });
 });

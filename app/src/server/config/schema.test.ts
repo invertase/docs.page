@@ -35,80 +35,50 @@ describe("ConfigSchema redirects", () => {
   });
 });
 
-describe("ConfigSchema scripts.googleTagManager", () => {
-  test("parses the bare string form unchanged", () => {
+describe("ConfigSchema scripts.googleSiteVerification", () => {
+  test("parses a verification token", () => {
     const config = ConfigSchema.parse({
-      scripts: { googleTagManager: "GTM-ABC123" },
+      scripts: { googleSiteVerification: "aBcD1234exampleToken" },
     });
 
-    expect(config.scripts.googleTagManager).toBe("GTM-ABC123");
+    expect(config.scripts.googleSiteVerification).toBe("aBcD1234exampleToken");
   });
 
-  test("parses the object form with an id and a verification token", () => {
+  test("forgives an empty string (falls back to undefined)", () => {
     const config = ConfigSchema.parse({
-      scripts: {
-        googleTagManager: {
-          id: "GTM-ABC123",
-          verification: "abc123verificationtoken",
-        },
-      },
+      scripts: { googleSiteVerification: "" },
     });
 
-    expect(config.scripts.googleTagManager).toEqual({
-      id: "GTM-ABC123",
-      verification: "abc123verificationtoken",
-    });
+    expect(config.scripts.googleSiteVerification).toBeUndefined();
   });
 
-  test("parses the object form with an id only", () => {
-    const config = ConfigSchema.parse({
-      scripts: { googleTagManager: { id: "GTM-ABC123" } },
-    });
-
-    expect(config.scripts.googleTagManager).toEqual({
-      id: "GTM-ABC123",
-      verification: undefined,
-    });
-  });
-
-  test("forgives an object without an id (falls back to undefined)", () => {
-    const config = ConfigSchema.parse({
-      scripts: { googleTagManager: { verification: "abc123" } },
-    });
-
-    expect(config.scripts.googleTagManager).toBeUndefined();
-  });
-
-  test("forgives invalid types (falls back to undefined)", () => {
+  test("forgives an invalid type (falls back to undefined)", () => {
     expect(
-      ConfigSchema.parse({ scripts: { googleTagManager: 123 } }).scripts
-        .googleTagManager,
+      ConfigSchema.parse({ scripts: { googleSiteVerification: 123 } }).scripts
+        .googleSiteVerification,
     ).toBeUndefined();
 
     expect(
-      ConfigSchema.parse({ scripts: { googleTagManager: "" } }).scripts
-        .googleTagManager,
+      ConfigSchema.parse({
+        scripts: { googleSiteVerification: { token: "abc" } },
+      }).scripts.googleSiteVerification,
     ).toBeUndefined();
-
-    expect(
-      ConfigSchema.parse({ scripts: { googleTagManager: { id: 123 } } }).scripts
-        .googleTagManager,
-    ).toBeUndefined();
-  });
-
-  test("forgives an invalid verification but keeps the id", () => {
-    const config = ConfigSchema.parse({
-      scripts: { googleTagManager: { id: "GTM-ABC123", verification: 123 } },
-    });
-
-    expect(config.scripts.googleTagManager).toEqual({
-      id: "GTM-ABC123",
-      verification: undefined,
-    });
   });
 
   test("defaults to undefined when omitted", () => {
     const config = ConfigSchema.parse({ scripts: {} });
-    expect(config.scripts.googleTagManager).toBeUndefined();
+    expect(config.scripts.googleSiteVerification).toBeUndefined();
+  });
+
+  test("does not affect googleTagManager, which stays a plain string", () => {
+    const config = ConfigSchema.parse({
+      scripts: {
+        googleTagManager: "GTM-ABC123",
+        googleSiteVerification: "aBcD1234exampleToken",
+      },
+    });
+
+    expect(config.scripts.googleTagManager).toBe("GTM-ABC123");
+    expect(config.scripts.googleSiteVerification).toBe("aBcD1234exampleToken");
   });
 });
