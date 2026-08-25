@@ -172,7 +172,6 @@
   "app/src/lib/docs-routing.ts",
   "app/src/lib/fonts.ts",
   "app/src/lib/incoming-http-headers.ts",
-  "app/src/lib/plausible.ts",
   "app/src/lib/posthog.test.ts",
   "app/src/lib/posthog.ts",
   "app/src/lib/request-client-ip.ts",
