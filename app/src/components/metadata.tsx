@@ -17,6 +17,15 @@ export function Metadata() {
   const noindex =
     bundle.frontmatter.noindex === true || bundle.config.seo?.noindex === true;
 
+  // A Google site verification token can only be provided via the object form
+  // of `scripts.googleTagManager`. It is rendered server-side (unlike the tag
+  // manager scripts themselves) because Google's verifier reads raw HTML.
+  const googleTagManager = bundle.config.scripts?.googleTagManager;
+  const googleSiteVerification =
+    typeof googleTagManager === "object"
+      ? googleTagManager.verification
+      : undefined;
+
   let image = bundle.frontmatter.image
     ? String(bundle.frontmatter.image)
     : bundle.config.socialPreview;
@@ -103,6 +112,13 @@ export function Metadata() {
       ) : null}
 
       {noindex ? <meta name="robots" content="noindex" /> : null}
+
+      {googleSiteVerification ? (
+        <meta
+          name="google-site-verification"
+          content={googleSiteVerification}
+        />
+      ) : null}
     </Head>
   );
 }

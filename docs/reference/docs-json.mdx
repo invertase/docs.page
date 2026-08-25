@@ -346,8 +346,26 @@ See [Links](/features/links).
 
 Analytics and tag-manager injection on **published** pages only, not during local preview.
 
-<Property name="scripts.googleTagManager" type="string">
-  Google Tag Manager container ID (for example `GTM-XXXX`). When set, direct Google Analytics injection is skipped even if `googleAnalytics` is also present.
+<Property name="scripts.googleTagManager" type="string | object">
+  Google Tag Manager container ID (for example `GTM-XXXX`), or an object carrying the container ID plus an optional Google site verification token. When set, direct Google Analytics injection is skipped even if `googleAnalytics` is also present.
+
+  ```json
+  "googleTagManager": "GTM-XXXX"
+  ```
+
+  ```json
+  "googleTagManager": {
+    "id": "GTM-XXXX",
+    "verification": "aBcD1234exampleToken"
+  }
+  ```
+
+  | Field | Type | Description |
+  | --- | --- | --- |
+  | `id` | string | **Required.** Container ID. Identical behavior to the string form |
+  | `verification` | string | Optional Google site verification token. Rendered server-side as `<meta name="google-site-verification" content="..." />` in the page head, including during local preview |
+
+  A string sets the container ID with no verification token. See [Verify ownership](/customize/seo#verify-ownership-with-google-search-console).
 </Property>
 
 <Property name="scripts.googleAnalytics" type="string">

@@ -2,7 +2,16 @@ import { z } from "zod";
 
 export default z
   .object({
-    googleTagManager: z.string().min(1).optional().catch(undefined),
+    googleTagManager: z
+      .union([
+        z.string().min(1),
+        z.object({
+          id: z.string().min(1),
+          verification: z.string().min(1).optional().catch(undefined),
+        }),
+      ])
+      .optional()
+      .catch(undefined),
     googleAnalytics: z.string().min(1).optional().catch(undefined),
     plausible: z
       .union([z.string().min(1), z.boolean()])

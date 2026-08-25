@@ -10,10 +10,18 @@ export function Scripts() {
     return null;
   }
 
+  // `googleTagManager` accepts either a bare container ID or an object which
+  // also carries a site verification token, so read the ID out of both shapes.
+  const googleTagManager = scripts?.googleTagManager;
+  const googleTagManagerId =
+    typeof googleTagManager === "string"
+      ? googleTagManager
+      : googleTagManager?.id;
+
   return (
     <>
       {/* Google Tag Manager */}
-      {!!scripts?.googleTagManager && (
+      {!!googleTagManagerId && (
         <>
           <Script
             id="gtm-script"
@@ -23,14 +31,14 @@ export function Scripts() {
                 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
                 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-                })(window,document,'script','dataLayer','${scripts.googleTagManager}');
+                })(window,document,'script','dataLayer','${googleTagManagerId}');
               `,
             }}
           />
           <noscript>
             <iframe
               title="Google Tag Manager"
-              src={`https://www.googletagmanager.com/ns.html?id=${scripts.googleTagManager}`}
+              src={`https://www.googletagmanager.com/ns.html?id=${googleTagManagerId}`}
               height="0"
               width="0"
               style={{ display: "none", visibility: "hidden" }}
@@ -40,7 +48,7 @@ export function Scripts() {
       )}
 
       {/* Google Analytics - Only load directly if not using GTM */}
-      {!!scripts?.googleAnalytics && !scripts?.googleTagManager && (
+      {!!scripts?.googleAnalytics && !googleTagManagerId && (
         <>
           <Script
             src={`https://www.googletagmanager.com/gtag/js?id=${scripts.googleAnalytics}`}

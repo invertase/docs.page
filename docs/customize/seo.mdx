@@ -154,6 +154,29 @@ Use indexing controls when the site or specific pages should stay out of search 
 4. View page source on a documentation page and check `<title>`, `<meta name="description">`, Open Graph tags, and `<meta name="robots">` when `noindex` applies.
 5. Optional: submit the sitemap URL in [Google Search Console](https://search.google.com/search-console) after you [request a custom domain](/customize/custom-domain) or confirm your production URL.
 
+### Verify ownership with Google Search Console
+
+Search Console asks you to prove ownership before it shows data or accepts a sitemap. Pick the **HTML tag** method, copy the token from the tag it gives you, and add it to `scripts.googleTagManager` in `docs.json`:
+
+```json
+{
+  "scripts": {
+    "googleTagManager": {
+      "id": "GTM-XXXXXXX",
+      "verification": "aBcD1234exampleToken"
+    }
+  }
+}
+```
+
+`id` is your Google Tag Manager container ID and keeps working exactly as before; `verification` is the token only. docs.page renders `<meta name="google-site-verification" content="..." />` into the page head on the server, so it is in the HTML on first response. Push the change to the branch docs.page serves, confirm the tag in **View source**, then press **Verify**.
+
+<Warning>
+  Do not add the verification tag through your GTM container. Google's verifier fetches the raw HTML and does not run JavaScript, so a tag that GTM injects at runtime is never seen and verification always fails. That is what the server-rendered `verification` field is for.
+</Warning>
+
+On the default `docs.page/{owner}/{repo}` path you share the domain with every other docs.page site, so you can only verify a **URL prefix** property for your own path (`https://docs.page/{owner}/{repo}`), never the `docs.page` domain. To verify a domain property, [request a custom domain](/customize/custom-domain) first.
+
 ## Troubleshooting
 
 | Symptom | Likely cause | Fix |
@@ -164,6 +187,7 @@ Use indexing controls when the site or specific pages should stay out of search 
 | Page still appears in Google after `noindex` | Crawlers have not re-crawled yet | Allow time for re-crawl; confirm the live page source includes `<meta name="robots" content="noindex" />` |
 | Page is in `sitemap.xml` but has `noindex` in frontmatter | Sitemap lists all repo pages; `noindex` is page-level only | Expected (crawlers should honor the meta tag); use site-wide `seo.noindex` to block everything |
 | `robots.txt` still lists a sitemap after enabling `seo.noindex` | Old response cached, or change not deployed | Confirm `seo.noindex: true` is on the deployed ref; hard-refresh or check the branch preview URL |
+| Google Search Console verification fails | Tag added inside GTM (never in the raw HTML), or wrong property type | Set `scripts.googleTagManager.verification` in `docs.json`; verify a URL prefix property on the default docs.page path |
 
 ## Related
 

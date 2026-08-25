@@ -114,6 +114,7 @@ Open a **live** docs URL (not the local preview shell) and confirm the provider 
 | --- | --- | --- |
 | No analytics scripts in local preview | Expected (preview mode suppresses `scripts`) | Verify on a published or branch-preview URL |
 | GA4 script missing but GTM is configured | GTM takes precedence over direct GA | Add GA as a tag inside GTM, or remove `googleTagManager` to use direct GA |
+| Google Search Console will not verify through GTM | Google's verifier reads raw HTML and never runs your container | Set `scripts.googleTagManager.verification` for a server-rendered tag; see [Verify ownership](/customize/seo#verify-ownership-with-google-search-console) |
 | GA shows one page title for every route | Pages missing frontmatter `title` | Add `title` to each page's YAML frontmatter (body `#` headings do not count); see [Page frontmatter](/reference/page-frontmatter) |
 | Plausible script never loads | No custom domain or vanity subdomain on the request | Use a [vanity subdomain](/features/vanity-subdomains) or [request a custom domain](/customize/custom-domain), then open the site on that hostname |
 | Plausible loads but no page views | `data-domain` must match the hostname readers use | Confirm the domain in Plausible matches your docs domain exactly |

@@ -34,3 +34,81 @@ describe("ConfigSchema redirects", () => {
     expect(config.redirects).toEqual({});
   });
 });
+
+describe("ConfigSchema scripts.googleTagManager", () => {
+  test("parses the bare string form unchanged", () => {
+    const config = ConfigSchema.parse({
+      scripts: { googleTagManager: "GTM-ABC123" },
+    });
+
+    expect(config.scripts.googleTagManager).toBe("GTM-ABC123");
+  });
+
+  test("parses the object form with an id and a verification token", () => {
+    const config = ConfigSchema.parse({
+      scripts: {
+        googleTagManager: {
+          id: "GTM-ABC123",
+          verification: "abc123verificationtoken",
+        },
+      },
+    });
+
+    expect(config.scripts.googleTagManager).toEqual({
+      id: "GTM-ABC123",
+      verification: "abc123verificationtoken",
+    });
+  });
+
+  test("parses the object form with an id only", () => {
+    const config = ConfigSchema.parse({
+      scripts: { googleTagManager: { id: "GTM-ABC123" } },
+    });
+
+    expect(config.scripts.googleTagManager).toEqual({
+      id: "GTM-ABC123",
+      verification: undefined,
+    });
+  });
+
+  test("forgives an object without an id (falls back to undefined)", () => {
+    const config = ConfigSchema.parse({
+      scripts: { googleTagManager: { verification: "abc123" } },
+    });
+
+    expect(config.scripts.googleTagManager).toBeUndefined();
+  });
+
+  test("forgives invalid types (falls back to undefined)", () => {
+    expect(
+      ConfigSchema.parse({ scripts: { googleTagManager: 123 } }).scripts
+        .googleTagManager,
+    ).toBeUndefined();
+
+    expect(
+      ConfigSchema.parse({ scripts: { googleTagManager: "" } }).scripts
+        .googleTagManager,
+    ).toBeUndefined();
+
+    expect(
+      ConfigSchema.parse({ scripts: { googleTagManager: { id: 123 } } }).scripts
+        .googleTagManager,
+    ).toBeUndefined();
+  });
+
+  test("forgives an invalid verification but keeps the id", () => {
+    const config = ConfigSchema.parse({
+      scripts: { googleTagManager: { id: "GTM-ABC123", verification: 123 } },
+    });
+
+    expect(config.scripts.googleTagManager).toEqual({
+      id: "GTM-ABC123",
+      verification: undefined,
+    });
+  });
+
+  test("defaults to undefined when omitted", () => {
+    const config = ConfigSchema.parse({ scripts: {} });
+    expect(config.scripts.googleTagManager).toBeUndefined();
+  });
+});
