@@ -36,9 +36,12 @@ const STROKE_WIDTH_PROPS = {
   vectorEffect: "non-scaling-stroke" as const,
 };
 
+const PAPER_EDGE = "var(--paper-edge, var(--color-border))";
+
 const STROKE_SOLID_PROPS = {
   ...STROKE_WIDTH_PROPS,
   className: "stroke-border",
+  stroke: PAPER_EDGE,
 };
 
 /** Feature cards: black tint + backdrop blur (matches landing-page-new-branding-v2). */
@@ -101,6 +104,7 @@ export function PaperCorner({
           borderGradient ? styles.homepageLineHGradientFold : "bg-border",
           className,
         )}
+        style={borderGradient ? undefined : { backgroundColor: PAPER_EDGE }}
       />
       <div
         aria-hidden

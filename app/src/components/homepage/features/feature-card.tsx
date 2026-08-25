@@ -1,6 +1,6 @@
 import { RiArrowRightSLine } from "@remixicon/react";
 import Link from "next/link";
-import type { PropsWithChildren } from "react";
+import type { CSSProperties, PropsWithChildren } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "../../ui/button";
 import {
@@ -14,12 +14,14 @@ type FeatureCardProps = PropsWithChildren<{
   title: React.ReactNode;
   description: string;
   link: string;
+  accent: string;
 }>;
 
 export function FeatureCard({
   title,
   description,
   link,
+  accent,
   children,
 }: FeatureCardProps) {
   return (
@@ -27,9 +29,16 @@ export function FeatureCard({
       className={cn(
         PAPER_SECTION_SHELL_CLASS,
         PAPER_SECTION_OVERLAP_CLASS,
-        "bg-black/60 pb-20 lg:pb-40",
+        "pb-20 lg:pb-40",
       )}
-      style={{ clipPath: paperCornerClipPath() }}
+      style={
+        {
+          clipPath: paperCornerClipPath(),
+          "--paper-edge": accent,
+          borderColor: accent,
+          backgroundColor: `color-mix(in srgb, ${accent} 12%, rgb(0 0 0 / 0.6))`,
+        } as CSSProperties
+      }
     >
       <PaperCorner />
       <div className="mx-auto flex flex-col max-w-8xl space-y-8">

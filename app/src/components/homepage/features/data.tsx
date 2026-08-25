@@ -14,6 +14,7 @@ export const features = [
       "Let users' AI agents query your documentation. Built-in MCP servers alongside llms.txt files allow LLMs to ingest your product context instantly.",
     video: "/_docs.page/agent-ready.mp4?v=2",
     link: "/agent-access",
+    accent: "var(--color-honey-400)",
   },
   {
     titleText: "Git Publishing",
@@ -26,6 +27,7 @@ export const features = [
       "Deploy updates directly from your public GitHub repository. Eliminate build pipelines, hosting configuration, or infrastructure maintenance.",
     image: gitPublishing,
     link: "/git-publishing",
+    accent: "var(--color-periwinkle-400)",
   },
   {
     titleText: "Intelligent Search",
@@ -38,6 +40,7 @@ export const features = [
       "Index content automatically and provide an embedded AI chat. Locate information instantly without third-party tracking scripts or external setup.",
     video: "/_docs.page/intelligent-search.mp4?v=2",
     link: "/intelligent-search",
+    accent: "#63D0BD",
   },
   {
     titleText: "Markdown Components",
@@ -50,6 +53,7 @@ export const features = [
       "Add interactive components to your docs with MDX for richer experiences than standard Markdown.",
     video: "/_docs.page/markdown-components.mp4",
     link: "/markdown-components?v=2",
+    accent: "#A68BF3",
   },
   {
     titleText: "Branches & versions",
@@ -62,6 +66,7 @@ export const features = [
       "Serve any Git branch, tag, or release as a distinct documentation site. Seamlessly organise versions and live staging previews on the fly.",
     image: branches,
     link: "/agent-ready",
+    accent: "#E99363",
   },
   {
     titleText: "Modern Interface",
@@ -74,5 +79,6 @@ export const features = [
       "Style your docs site using shadcn/ui design standards. Customize components easily to match your brand identity.",
     component: <ModernInterface />,
     link: "/modern-interface",
+    accent: "#E96767",
   },
 ];

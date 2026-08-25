@@ -24,6 +24,7 @@ export function Features() {
           title={feature.title}
           description={feature.description}
           link={feature.link}
+          accent={feature.accent}
         >
           <FeatureMedia>
             {feature.video ? (
