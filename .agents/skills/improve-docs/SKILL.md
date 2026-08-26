@@ -1,5 +1,5 @@
 ---
-name: evaluate-docs-page
+name: improve-docs
 description: Reviews one page in a docs.page project against technical writing standards and lists every evidence-backed issue on that page. Use when writing, editing, reviewing, or iterating on docs/*.mdx for a docs.page site.
 ---
 
