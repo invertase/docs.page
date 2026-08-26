@@ -17,10 +17,11 @@ function FeatureMedia({ children }: PropsWithChildren) {
 
 export function Features() {
   return (
-    <>
+    <div>
       {features.map((feature, i) => (
         <FeatureCard
           key={i}
+          index={i}
           title={feature.title}
           description={feature.description}
           link={feature.link}
@@ -43,6 +44,6 @@ export function Features() {
           </FeatureMedia>
         </FeatureCard>
       ))}
-    </>
+    </div>
   );
 }
