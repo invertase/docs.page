@@ -9,7 +9,7 @@ description: Understand how docs.page turns a public GitHub repository into agen
 
 ## Who it is for
 
-[docs.page](https://docs.page) is for teams who want professional, developer-focused documentation without the infrastructure tax. Docs live next to your code in the repository. Easy for humans and agents to author. Easy for humans and agents to consume.
+docs.page is for teams who want professional, developer-focused documentation without the infrastructure tax. Docs live next to your code in the repository. Easy for humans and agents to author. Easy for humans and agents to consume.
 
 It is a strong fit for:
 
@@ -19,11 +19,11 @@ It is a strong fit for:
 
 ## How hosting works
 
-[docs.page](https://docs.page) uses **Git publishing**: it fetches your repository content, caches rendered pages at the edge, and serves a complete documentation site from any branch, tag, or release. You do not run a local build or upload artifacts to a host. See [Public GitHub hosting](/features/public-github-hosting) for URL patterns, caching, and branch previews.
+docs.page uses **Git publishing**: it fetches your repository content, caches rendered pages at the edge, and serves a complete documentation site from any branch, tag, or release. You do not run a local build or upload artifacts to a host. See [Public GitHub hosting](/features/public-github-hosting) for URL patterns, caching, and branch previews.
 
 ### What goes in your repository
 
-Every [docs.page](https://docs.page) site needs two things in a **public** GitHub repository:
+Every docs.page site needs two things in a **public** GitHub repository:
 
 - **`docs.json`** at the repository root: site name, navigation, theme, and other configuration
 - **`docs/**/*.mdx`** or **`docs/**/*.md`**: your documentation pages as Markdown or MDX (with optional subdirectories)
@@ -43,14 +43,14 @@ For example, a repository at `https://github.com/acme/my-project` is available a
 Use **branches & versions** to serve a branch, tag, or release at a distinct URL, for example `https://docs.page/acme/my-project~v2`. See [Branch preview](/features/branch-preview).
 
 <Info>
-  [docs.page](https://docs.page) only hosts **public** repositories. Private
+  docs.page only hosts **public** repositories. Private
   repos are blocked before any content is served. Keep documentation in a public
   repo, or in a public docs-only repository linked from your project.
 </Info>
 
 ### What you do not need
 
-Because [docs.page](https://docs.page) handles rendering and hosting, you can skip the usual documentation infrastructure:
+Because docs.page handles rendering and hosting, you can skip the usual documentation infrastructure:
 
 - **No build pipelines:** no webpack, static site generator builds, or static export in CI
 - **No hosting configuration:** no storage buckets, CDNs, or DNS to set up per site
@@ -60,7 +60,7 @@ You still use Git for versioning, branches, and pull requests, the same workflow
 
 ## When docs.page fits
 
-[docs.page](https://docs.page) works well when most of your documentation is Markdown-based, you want instant publishing from GitHub, and your content can live in a public repository.
+docs.page works well when most of your documentation is Markdown-based, you want instant publishing from GitHub, and your content can live in a public repository.
 
 It is a strong default for open-source libraries, SDK docs sites, and product docs that teams are comfortable publishing publicly. If you need a heavily customized documentation experience (bespoke routing, proprietary auth gates, or a private-only docs site), a self-hosted static generator or custom app may be a better fit.
 
