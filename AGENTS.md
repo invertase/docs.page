@@ -17,7 +17,8 @@ packages/cli/           @docs.page/cli — init, check, preview
 packages/mdx-bundler/   Shared markdown → doc IR pipeline
 docs/                   Product documentation (MDX)
 docs.json               Site navigation for this repo's docs
-skills/                 Agent skills (SKILL.md per skill)
+.agents/skills/         Published MCP skills (SKILL.md per skill)
+skills/                 Repo-wide coding skills (SKILL.md per skill)
 ```
 
 
@@ -57,7 +58,10 @@ Do not commit secrets, `.env`, or generated artifacts (`.next/`, `dist/`).
 
 ## Skills
 
-Repo-wide skills live under [`skills/`](./skills/). Load a skill's `SKILL.md` when one exists for your task.
+Repo-wide coding skills live under [`skills/`](./skills/). Skills that docs.page
+exposes over MCP live under [`.agents/skills/`](./.agents/skills/). Load
+[`evaluate-docs-page`](./.agents/skills/evaluate-docs-page/SKILL.md) when writing,
+editing, or reviewing `docs/*.mdx`.
 
 ## Safety
 
