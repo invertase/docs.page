@@ -178,6 +178,7 @@
   "app/src/lib/incoming-http-headers.ts",
   "app/src/lib/posthog.test.ts",
   "app/src/lib/posthog.ts",
+  "app/src/lib/prompt-copy.ts",
   "app/src/lib/request-client-ip.ts",
   "app/src/lib/search-client.ts",
   "app/src/lib/types.ts",

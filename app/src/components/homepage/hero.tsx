@@ -7,7 +7,9 @@ import Link from "next/link";
 import { Fragment, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useCopy } from "@/hooks/use-copy";
+import { SNIPPET_PARAM, type SnippetId } from "@/lib/prompt-copy";
 import { cn } from "@/lib/utils";
+import { UTM_KEYS } from "@/lib/utm";
 
 export function Hero() {
   return (
@@ -65,10 +67,21 @@ function Eyebrow() {
   );
 }
 
+type HeroSnippet = {
+  readonly id: SnippetId;
+  readonly label: string;
+  readonly prefix: string | null;
+  readonly text: string;
+};
+
 /**
  * The two ways to start docs.page: run the CLI, or hand the setup prompt to a
  * coding agent. `prefix` is the shell prompt marker — the agent snippet is
  * prose to paste into an agent, not a command to run.
+ *
+ * The ids are typed against the shared union rather than inferred from here:
+ * the copy beacon puts one on the URL and the route validates against the same
+ * closed set, so a tab id neither side knows about will not compile.
  */
 const SNIPPETS = [
   {
@@ -83,14 +96,12 @@ const SNIPPETS = [
     prefix: null,
     text: "Read https://use.docs.page/quickstart.md and set up docs.page in this repository.",
   },
-] as const;
-
-type SnippetId = (typeof SNIPPETS)[number]["id"];
+] as const satisfies readonly HeroSnippet[];
 
 const PROMPT_COPY_ENDPOINT = "/api/track/prompt-copy";
 
 /**
- * Tell the server the agent prompt was copied.
+ * Tell the server which snippet was copied.
  *
  * A clipboard copy never reaches the server, and the homepage is cookieless
  * (no posthog-js), so a beacon the server turns into a capture is the only way
@@ -98,16 +109,37 @@ const PROMPT_COPY_ENDPOINT = "/api/track/prompt-copy";
  * and any failure — offline, blocked by an extension, sendBeacon missing — is
  * swallowed, because analytics must never break the copy the visitor asked for.
  */
-function trackPromptCopy() {
+function trackPromptCopy(snippet: SnippetId) {
   try {
-    if (navigator.sendBeacon?.(PROMPT_COPY_ENDPOINT)) return;
-    void fetch(PROMPT_COPY_ENDPOINT, {
+    const url = promptCopyUrl(snippet);
+    if (navigator.sendBeacon?.(url)) return;
+    void fetch(url, {
       method: "POST",
       keepalive: true,
     }).catch(() => {});
   } catch {
     // Best-effort only; the copy itself has already happened.
   }
+}
+
+/**
+ * Everything the beacon carries goes in the URL: `sendBeacon`, called with one
+ * argument, sends no body, and the fetch fallback deliberately matches it.
+ *
+ * That is the snippet id, plus whichever utm params the page itself was loaded
+ * with — the route reads utm off the request URL it is handed, so forwarding
+ * them here is what makes a copy attributable to a campaign at all.
+ */
+function promptCopyUrl(snippet: SnippetId) {
+  const params = new URLSearchParams({ [SNIPPET_PARAM]: snippet });
+  const pageParams = new URLSearchParams(window.location.search);
+
+  for (const key of UTM_KEYS) {
+    const value = pageParams.get(key);
+    if (value) params.set(key, value);
+  }
+
+  return `${PROMPT_COPY_ENDPOINT}?${params.toString()}`;
 }
 
 function Terminal() {
@@ -166,16 +198,17 @@ function Terminal() {
 }
 
 /** The snippet text and its copy button — one flex line inside the chip. */
-function Snippet({ snippet }: { snippet: (typeof SNIPPETS)[number] }) {
+function Snippet({ snippet }: { snippet: HeroSnippet }) {
   // useCopy takes the text as an argument, so the button copies whatever this
   // tab is showing with no extra plumbing.
   const { copied, copy } = useCopy(snippet.text);
 
   const handleCopy = () => {
     copy();
-    // Only the agent prompt is tracked: CLI copies already show up in the
-    // /get-started funnel, and one shared event would conflate the two.
-    if (snippet.id === "agent") trackPromptCopy();
+    // Both tabs are tracked, because a copy makes no request of its own and so
+    // is invisible otherwise — there is no funnel an untracked one shows up in.
+    // The snippet id on the beacon is what tells the two apart.
+    trackPromptCopy(snippet.id);
   };
 
   return (
