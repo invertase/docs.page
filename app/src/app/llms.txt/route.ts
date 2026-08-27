@@ -7,6 +7,7 @@ const LLMS_TXT = `# docs.page
 ## Documentation
 - [Documentation](https://use.docs.page): full product documentation
 - [Get started](https://use.docs.page/quickstart): quickstart guide
+- [Set up a site](https://use.docs.page/quickstart.md): setup instructions in Markdown, including the \`docs.json\` contract
 - [CLI](https://use.docs.page/reference/cli): local preview and project tooling
 - [GitHub](https://github.com/invertase/docs.page): source repository (Apache-2.0)
 
