@@ -24,16 +24,20 @@ export function Hero() {
         GitHub branch as modern, agent-ready docs, with AI chat, MCP, and
         llms.txt.
       </p>
-      {/* items-end, not items-stretch: the snippet column is taller than the
-          button now that it carries a label row, so the two are aligned on the
-          edge they share — the bottom of the button and the bottom of the chip.
-          The chip's own padding gives it the button's height, so the boxes read
-          as one row with the labels sitting above it.
+      {/* One stacked, centred group: the snippet — its labels and the chip —
+          on top, the primary action underneath, all three on the hero's axis.
+          A single column at every width, so there is no `sm:flex-row` to undo
+          the stack any more.
 
-          w-full below `sm` (where the row stacks) so the chip still spans the
-          hero column and shrinks its snippet instead of pushing past the
-          gutter; sm:w-auto puts the row back to content width. */}
-      <div className="flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row sm:items-end sm:gap-4">
+          gap-6 sits on the hero's own spacing scale and stays a step tighter
+          than the space-y-8 between sections from `sm` up, which keeps the
+          action reading as part of this group rather than as another section.
+
+          w-full below `sm` so the chip still spans the hero column and shrinks
+          its snippet instead of pushing past the gutter; sm:w-auto puts the
+          group back to content width. */}
+      <div className="flex w-full flex-col items-center gap-6 sm:w-auto">
+        <Terminal />
         <Button
           asChild
           size="lg"
@@ -47,7 +51,6 @@ export function Hero() {
             <RiArrowRightSLine className="size-6 group-hover:translate-x-1 transition-transform" />
           </Link>
         </Button>
-        <Terminal />
       </div>
     </div>
   );
@@ -147,13 +150,13 @@ function Terminal() {
   const active =
     SNIPPETS.find((snippet) => snippet.id === activeId) ?? SNIPPETS[0];
 
-  // A column of its own: the labels sit above the chip, and the chip alone
-  // lines up with the Get started button beside it. Full width below `sm`
-  // (where the CTA row stacks) and content width from `sm` up, as the chip
-  // was before; min-w-0 lets the column shrink in the `sm` row rather than
-  // widen it to fit the prompt.
+  // The labels and the chip are one column, centred at every width: they
+  // belong to each other, and the group they sit in is centred too. Full
+  // width below `sm` and content width from `sm` up, as the chip was before;
+  // min-w-0 lets the column shrink to the hero's width rather than widen to
+  // fit the prompt.
   return (
-    <div className="flex w-full min-w-0 flex-col items-center gap-2 sm:w-auto sm:items-start">
+    <div className="flex w-full min-w-0 flex-col items-center gap-2 sm:w-auto">
       <div
         role="group"
         aria-label="Setup method"
@@ -180,12 +183,11 @@ function Terminal() {
           </Fragment>
         ))}
       </div>
-      {/* The chip keeps its own `py-2.5` at every width — it used to be
-          `sm:py-0` and take its height from the stretched CTA row, which it
-          can no longer do now that the labels share its column. Around a
-          `size="icon-sm"` copy button that comes out at the height of the
-          Get started button beside it, which is what makes the two boxes read
-          as one row; if either size changes, this padding has to follow.
+      {/* `py-2.5` at every width: around a `size="icon-sm"` copy button it
+          gives the chip the same height as the Get started button now below
+          it. Nothing is aligned side by side any more, so this is no longer
+          load-bearing — but two boxes of one height stacked on one axis is
+          the point, so if either size changes, this padding should follow.
           min-w-0 plus the snippet's own scroll area is what keeps the long
           agent prompt inside the chip. */}
       <div className="group flex w-full min-w-0 items-center gap-2 rounded-xl border border-primary bg-periwinkle-950 px-3 py-2.5 sm:w-auto sm:px-4">
