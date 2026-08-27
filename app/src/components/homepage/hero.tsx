@@ -4,8 +4,10 @@ import {
   RiFileCopyLine,
 } from "@remixicon/react";
 import Link from "next/link";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useCopy } from "@/hooks/use-copy";
+import { cn } from "@/lib/utils";
 
 export function Hero() {
   return (
@@ -54,23 +56,121 @@ function Eyebrow() {
   );
 }
 
+/**
+ * The two ways to start docs.page: run the CLI, or hand the setup prompt to a
+ * coding agent. `prefix` is the shell prompt marker — the agent snippet is
+ * prose to paste into an agent, not a command to run.
+ */
+const SNIPPETS = [
+  {
+    id: "terminal",
+    label: "Terminal",
+    prefix: "$",
+    text: "npx @docs.page/cli init",
+  },
+  {
+    id: "agent",
+    label: "Agent",
+    prefix: null,
+    text: "Read https://use.docs.page/quickstart.md and set up docs.page in this repository.",
+  },
+] as const;
+
+type SnippetId = (typeof SNIPPETS)[number]["id"];
+
+const PROMPT_COPY_ENDPOINT = "/api/track/prompt-copy";
+
+/**
+ * Tell the server the agent prompt was copied.
+ *
+ * A clipboard copy never reaches the server, and the homepage is cookieless
+ * (no posthog-js), so a beacon the server turns into a capture is the only way
+ * to count one. Fire-and-forget in every sense: no body, no response handling,
+ * and any failure — offline, blocked by an extension, sendBeacon missing — is
+ * swallowed, because analytics must never break the copy the visitor asked for.
+ */
+function trackPromptCopy() {
+  try {
+    if (navigator.sendBeacon?.(PROMPT_COPY_ENDPOINT)) return;
+    void fetch(PROMPT_COPY_ENDPOINT, {
+      method: "POST",
+      keepalive: true,
+    }).catch(() => {});
+  } catch {
+    // Best-effort only; the copy itself has already happened.
+  }
+}
+
 function Terminal() {
-  const command = "npx @docs.page/cli init";
-  const { copied, copy } = useCopy(command);
+  const [activeId, setActiveId] = useState<SnippetId>("terminal");
+  const active =
+    SNIPPETS.find((snippet) => snippet.id === activeId) ?? SNIPPETS[0];
+
+  // min-w-0 plus wrapping is what keeps the long agent prompt inside the chip:
+  // it scrolls in its own container instead of stretching the CTA row. Below
+  // `sm` the tabs take a line of their own so the snippet keeps the full width;
+  // from `sm` up everything sits on one line, as before.
+  return (
+    <div className="group flex w-full min-w-0 flex-wrap items-center gap-2 rounded-xl border border-primary bg-periwinkle-950 px-3 py-2.5 sm:w-auto sm:flex-nowrap sm:px-4 sm:py-0">
+      <div
+        role="group"
+        aria-label="Setup method"
+        className="flex shrink-0 basis-full items-center gap-1 sm:basis-auto"
+      >
+        {SNIPPETS.map((snippet) => (
+          <Button
+            key={snippet.id}
+            variant={snippet.id === active.id ? "outline" : "ghost"}
+            size="xs"
+            aria-pressed={snippet.id === active.id}
+            onClick={() => setActiveId(snippet.id)}
+            className={cn(
+              "rounded-full font-light",
+              snippet.id === active.id &&
+                "border-primary bg-transparent text-primary hover:bg-primary/10 hover:text-primary dark:border-primary dark:bg-transparent dark:hover:bg-primary/10",
+            )}
+          >
+            {snippet.label}
+          </Button>
+        ))}
+      </div>
+      {/* Keyed by tab so the "copied" tick never carries over to the snippet
+          the visitor has not copied. */}
+      <Snippet key={active.id} snippet={active} />
+    </div>
+  );
+}
+
+/** The snippet text and its copy button — one flex line inside the chip. */
+function Snippet({ snippet }: { snippet: (typeof SNIPPETS)[number] }) {
+  // useCopy takes the text as an argument, so the button copies whatever this
+  // tab is showing with no extra plumbing.
+  const { copied, copy } = useCopy(snippet.text);
+
+  const handleCopy = () => {
+    copy();
+    // Only the agent prompt is tracked: CLI copies already show up in the
+    // /get-started funnel, and one shared event would conflate the two.
+    if (snippet.id === "agent") trackPromptCopy();
+  };
 
   return (
-    <div className="group flex w-full items-center gap-2 rounded-xl border border-primary bg-periwinkle-950 px-3 py-2.5 sm:w-auto sm:px-4 sm:py-0">
-      <div className="flex min-w-0 flex-1 items-center gap-2 overflow-x-auto opacity-75 transition-opacity group-hover:opacity-100 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        <span className="shrink-0 text-neutral-500">$</span>
-        <span className="text-sm text-neutral-200 sm:text-base">{command}</span>
+    <>
+      <div className="flex min-w-0 max-w-64 flex-1 items-center gap-2 overflow-x-auto opacity-75 transition-opacity group-hover:opacity-100 sm:max-w-72 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {snippet.prefix && (
+          <span className="shrink-0 text-neutral-500">{snippet.prefix}</span>
+        )}
+        <span className="whitespace-nowrap text-sm text-neutral-200 sm:text-base">
+          {snippet.text}
+        </span>
       </div>
-      <Button variant="ghost" size="icon-sm" onClick={copy}>
+      <Button variant="ghost" size="icon-sm" onClick={handleCopy}>
         {copied ? (
           <RiCheckLine className="text-green-500" />
         ) : (
           <RiFileCopyLine />
         )}
       </Button>
-    </div>
+    </>
   );
 }
