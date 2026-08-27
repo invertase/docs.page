@@ -4,7 +4,7 @@ import {
   RiFileCopyLine,
 } from "@remixicon/react";
 import Link from "next/link";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useCopy } from "@/hooks/use-copy";
 import { cn } from "@/lib/utils";
@@ -22,7 +22,16 @@ export function Hero() {
         GitHub branch as modern, agent-ready docs, with AI chat, MCP, and
         llms.txt.
       </p>
-      <div className="flex flex-col items-center gap-3 sm:flex-row sm:items-stretch sm:gap-4">
+      {/* items-end, not items-stretch: the snippet column is taller than the
+          button now that it carries a label row, so the two are aligned on the
+          edge they share — the bottom of the button and the bottom of the chip.
+          The chip's own padding gives it the button's height, so the boxes read
+          as one row with the labels sitting above it.
+
+          w-full below `sm` (where the row stacks) so the chip still spans the
+          hero column and shrinks its snippet instead of pushing past the
+          gutter; sm:w-auto puts the row back to content width. */}
+      <div className="flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row sm:items-end sm:gap-4">
         <Button
           asChild
           size="lg"
@@ -64,13 +73,13 @@ function Eyebrow() {
 const SNIPPETS = [
   {
     id: "terminal",
-    label: "Terminal",
+    label: "For humans",
     prefix: "$",
     text: "npx @docs.page/cli init",
   },
   {
     id: "agent",
-    label: "Agent",
+    label: "For agents",
     prefix: null,
     text: "Read https://use.docs.page/quickstart.md and set up docs.page in this repository.",
   },
@@ -106,37 +115,52 @@ function Terminal() {
   const active =
     SNIPPETS.find((snippet) => snippet.id === activeId) ?? SNIPPETS[0];
 
-  // min-w-0 plus wrapping is what keeps the long agent prompt inside the chip:
-  // it scrolls in its own container instead of stretching the CTA row. Below
-  // `sm` the tabs take a line of their own so the snippet keeps the full width;
-  // from `sm` up everything sits on one line, as before.
+  // A column of its own: the labels sit above the chip, and the chip alone
+  // lines up with the Get started button beside it. Full width below `sm`
+  // (where the CTA row stacks) and content width from `sm` up, as the chip
+  // was before; min-w-0 lets the column shrink in the `sm` row rather than
+  // widen it to fit the prompt.
   return (
-    <div className="group flex w-full min-w-0 flex-wrap items-center gap-2 rounded-xl border border-primary bg-periwinkle-950 px-3 py-2.5 sm:w-auto sm:flex-nowrap sm:px-4 sm:py-0">
+    <div className="flex w-full min-w-0 flex-col items-center gap-2 sm:w-auto sm:items-start">
       <div
         role="group"
         aria-label="Setup method"
-        className="flex shrink-0 basis-full items-center gap-1 sm:basis-auto"
+        className="flex items-center gap-3 text-sm"
       >
-        {SNIPPETS.map((snippet) => (
-          <Button
-            key={snippet.id}
-            variant={snippet.id === active.id ? "outline" : "ghost"}
-            size="xs"
-            aria-pressed={snippet.id === active.id}
-            onClick={() => setActiveId(snippet.id)}
-            className={cn(
-              "rounded-full font-light",
-              snippet.id === active.id &&
-                "border-primary bg-transparent text-primary hover:bg-primary/10 hover:text-primary dark:border-primary dark:bg-transparent dark:hover:bg-primary/10",
+        {SNIPPETS.map((snippet, index) => (
+          <Fragment key={snippet.id}>
+            {index > 0 && (
+              <span aria-hidden className="h-3.5 w-px shrink-0 bg-border" />
             )}
-          >
-            {snippet.label}
-          </Button>
+            <button
+              type="button"
+              aria-pressed={snippet.id === active.id}
+              onClick={() => setActiveId(snippet.id)}
+              className={cn(
+                "cursor-pointer transition-colors",
+                snippet.id === active.id
+                  ? "text-foreground"
+                  : "font-light text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {snippet.label}
+            </button>
+          </Fragment>
         ))}
       </div>
-      {/* Keyed by tab so the "copied" tick never carries over to the snippet
-          the visitor has not copied. */}
-      <Snippet key={active.id} snippet={active} />
+      {/* The chip keeps its own `py-2.5` at every width — it used to be
+          `sm:py-0` and take its height from the stretched CTA row, which it
+          can no longer do now that the labels share its column. Around a
+          `size="icon-sm"` copy button that comes out at the height of the
+          Get started button beside it, which is what makes the two boxes read
+          as one row; if either size changes, this padding has to follow.
+          min-w-0 plus the snippet's own scroll area is what keeps the long
+          agent prompt inside the chip. */}
+      <div className="group flex w-full min-w-0 items-center gap-2 rounded-xl border border-primary bg-periwinkle-950 px-3 py-2.5 sm:w-auto sm:px-4">
+        {/* Keyed by tab so the "copied" tick never carries over to the snippet
+            the visitor has not copied. */}
+        <Snippet key={active.id} snippet={active} />
+      </div>
     </div>
   );
 }
