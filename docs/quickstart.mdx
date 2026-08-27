@@ -3,6 +3,10 @@ title: Quickstart
 description: Publish a live documentation site from a public GitHub repository in minutes.
 ---
 
+<Info>
+  Working in a coding agent? Paste `Read https://use.docs.page/quickstart.md and set up docs.page in this repository.` and skip ahead — your agent will read this page and do the rest.
+</Info>
+
 **Before you begin**
 
 - A [GitHub](https://github.com) account
@@ -72,3 +76,34 @@ description: Publish a live documentation site from a public GitHub repository i
 - [Organize](/authoring/organize): order sidebar groups, tabs, and page links in `docs.json`
 - [Preview](/authoring/preview): iterate on content locally before pushing; see [Local preview](/features/local-preview) for how the preview shell works
 - [Agent-ready docs](/ai-agents/overview): llms.txt, MCP, and optional Ask AI on your live site
+
+## Notes for coding agents
+
+If you are an agent doing this setup, the whole contract is two things: a `docs.json` at the repository root, and one or more `.md` or `.mdx` files under `docs/`. Pushing those to the repository's default branch publishes the site. There is no build step and nothing to deploy.
+
+Work through it like this:
+
+1. Confirm the repository is public. docs.page cannot serve a private repository — if it is private, stop and tell the user.
+2. Create `docs.json` at the repository root.
+3. Write real pages. Read the repository's README and source layout first and draft content from them, rather than leaving the scaffolded placeholders in place.
+4. Ask the user before you commit or push.
+
+This is the minimum `docs.json` that works:
+
+```json
+{
+  "$schema": "https://docs.page/schema.json",
+  "name": "Project name",
+  "description": "One sentence describing the project.",
+  "sidebar": [
+    {
+      "group": "Getting Started",
+      "pages": [{ "title": "Introduction", "href": "/", "icon": "rocket" }]
+    }
+  ]
+}
+```
+
+Sidebar `href` values are page paths without the `docs/` prefix and without the file extension: `docs/index.mdx` is `/`, and `docs/guides/install.mdx` is `/guides/install`.
+
+Configuration is parsed leniently. A malformed field is replaced with its default rather than raising an error, so a site that renders is not proof that its configuration is correct. Check every key against the [`docs.json` reference](/reference/docs-json) — if a key is not there, it does not exist. Read the reference rather than relying on what you remember, since it changes more often than your training data.
