@@ -31,6 +31,7 @@ export type DotsUniforms = {
   enabled: number;
   honey: readonly [number, number, number, number];
   dense_cell: number;
+  page_cell: number;
   dot_radius: number;
   head_inner: number;
   head_outer: number;
@@ -233,7 +234,7 @@ export function presentScene(
 ): void {
   scene.effects.present.set({
     present: {
-      display: [0.92, 1.8, 0, scene.directionBase],
+      display: [1.12, 0, 0, scene.directionBase],
       honey: [honey[0], honey[1], honey[2], 1],
     },
     cascade_tex: scene.cascades[0],

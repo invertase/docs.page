@@ -1,10 +1,10 @@
 /**
  * Pointer-driven 404 dissolve on vgpu.
  *
- * Dots are circular honey HDR emitters (and occluders), lit with the same
- * JFA / SDF / radiance-cascade chain as agent-radiance-cascades. The Lexend
- * 404 is albedo: packed ~7px specks under the pointer space out onto the
- * page 22px lattice, then the fill heals.
+ * Dots are filled 1px honey circles (and occluders), lit with a slimmed
+ * JFA / SDF / radiance-cascade chain. The Lexend 404 stays solid honey fill:
+ * packed ~7px specks under the pointer space out onto the page 22px lattice,
+ * then the fill heals.
  */
 
 import type { Gpu, Surface } from "vgpu";
@@ -21,9 +21,9 @@ const DENSE_CELL_PX = 7;
 /** Locked brand honey from the Shaders room. */
 export const HONEY_RGB = [230 / 255, 145 / 255, 53 / 255] as const;
 
-const HEAD_INNER_PX = 6;
-const HEAD_OUTER_PX = 34;
-const TRAIL_LIFE_MS = 260;
+const HEAD_INNER_PX = 4;
+const HEAD_OUTER_PX = 18;
+const TRAIL_LIFE_MS = 320;
 const TRAIL_COUNT = 12;
 const TRAIL_RECORD_PX = 6;
 
@@ -146,23 +146,14 @@ export function createGlyphDissolve(
       const sample = trail[i];
       const age = Math.min(1, (now - sample.t) / TRAIL_LIFE_MS);
       const fade = Math.max(0, 1 - age);
-      const spread = age * age * (3 - 2 * age);
-      const t = spread * spread;
-      const denseX = snapTo(sample.x, DENSE_CELL_PX);
-      const denseY = snapTo(sample.y, DENSE_CELL_PX);
       const pageX = snapTo(sample.x, SPOT_GRID_CELL_PX);
       const pageY = snapTo(sample.y, SPOT_GRID_CELL_PX);
-      const x = denseX + (pageX - denseX) * t;
-      const y = denseY + (pageY - denseY) * t;
-      const key =
-        t > 0.55
-          ? `${Math.round(pageX / SPOT_GRID_CELL_PX)}:${Math.round(pageY / SPOT_GRID_CELL_PX)}`
-          : `${Math.round(denseX / DENSE_CELL_PX)}:${Math.round(denseY / DENSE_CELL_PX)}`;
+      const key = `${Math.round(pageX / SPOT_GRID_CELL_PX)}:${Math.round(pageY / SPOT_GRID_CELL_PX)}`;
       if (seen.has(key)) continue;
       seen.add(key);
       const slot = trailSlots[index]!;
-      slot[0] = x;
-      slot[1] = y;
+      slot[0] = pageX;
+      slot[1] = pageY;
       slot[2] = fade;
       index += 1;
     }
@@ -175,6 +166,7 @@ export function createGlyphDissolve(
     enabled: active,
     honey: [honey[0], honey[1], honey[2], 1],
     dense_cell: DENSE_CELL_PX,
+    page_cell: SPOT_GRID_CELL_PX,
     dot_radius: SPOT_GRID_DOT_RADIUS_PX,
     head_inner: HEAD_INNER_PX,
     head_outer: HEAD_OUTER_PX,

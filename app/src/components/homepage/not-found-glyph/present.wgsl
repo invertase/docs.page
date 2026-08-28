@@ -1,33 +1,7 @@
 import { rc_atlas_texel, rc_block_size, rc_ray_count } from "./rc-directions.wgsl";
 
-fn tonemap_aces(color: vec3f) -> vec3f {
-  let a = 2.51;
-  let b = 0.03;
-  let c = 2.43;
-  let d = 0.59;
-  let e = 0.14;
-  return clamp(
-    (color * (a * color + b)) / (color * (c * color + d) + e),
-    vec3f(0.0),
-    vec3f(1.0),
-  );
-}
-
-fn linear_to_srgb(color: vec3f) -> vec3f {
-  let low = color * 12.92;
-  let high =
-    1.055 * pow(max(color, vec3f(0.0)), vec3f(1.0 / 2.4)) - 0.055;
-  return select(high, low, color <= vec3f(0.0031308));
-}
-
-fn srgb_to_linear(color: vec3f) -> vec3f {
-  let low = color / 12.92;
-  let high = pow((color + 0.055) / 1.055, vec3f(2.4));
-  return select(high, low, color <= vec3f(0.04045));
-}
-
 struct Present {
-  /** x: exposure, y: glow, z: unused, w: direction block side. */
+  /** x: speck lift, y: unused, z: unused, w: direction block side. */
   display: vec4f,
   honey: vec4f,
 };
@@ -65,17 +39,18 @@ fn fs_main(@location(0) uv: vec2f) -> @location(0) vec4f {
   let pixel = uv * scene_size;
   let half_texel = 0.5 / scene_size;
   let scene_uv = clamp(uv, half_texel, vec2f(1.0) - half_texel);
+  let texel = vec2i(clamp(floor(pixel), vec2f(0.0), scene_size - 1.0));
 
   let glyph_a = textureSampleLevel(glyph_tex, glyph_samp, scene_uv, 0.0).a;
-  let emitter = textureSampleLevel(emitter_tex, glyph_samp, scene_uv, 0.0);
-  let dots_a = clamp(emitter.a, 0.0, 1.0);
+  let dots_a = clamp(textureLoad(emitter_tex, texel, 0).a, 0.0, 1.0);
   let body = glyph_a * (1.0 - dots_a);
-  let honey_srgb = present.honey.xyz;
-  let honey_lin = srgb_to_linear(honey_srgb);
+  let honey = present.honey.xyz;
+  let lift = present.display.x;
   let irradiance = resolve_cascade0(pixel);
-  let glow = irradiance * honey_lin * body * present.display.y;
-  let extra = linear_to_srgb(tonemap_aces((emitter.rgb + glow) * present.display.x));
-  let rgb = min(honey_srgb * body + extra, vec3f(1.0));
-  let alpha = max(body, dots_a);
-  return vec4f(rgb * alpha, alpha);
+  let energy = min(dot(max(irradiance, vec3f(0.0)), vec3f(0.333)) * 0.03, 0.06);
+  let halo = honey * energy * (1.0 - glyph_a);
+  let specks = honey * lift * dots_a;
+  let premul = honey * body + specks + halo;
+  let alpha = max(body, max(dots_a, energy * (1.0 - glyph_a)));
+  return vec4f(premul, alpha);
 }
