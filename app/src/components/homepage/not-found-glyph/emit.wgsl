@@ -1,5 +1,6 @@
-// 22px page-lattice specks under a wide pointer head. The 1px cores seed the
-// cascade; a short gaussian halo makes them read as glowing honey, not idle grid.
+// Tight pointer light on the page 22px lattice. Specks seed the cascade; a
+// short halo makes them read brighter than the idle grid. The 404 is drawn
+// solid in present — this pass never punches type.
 
 struct Dots {
   origin: vec2f,
@@ -53,11 +54,14 @@ fn fs_main(@location(0) uv: vec2f) -> @location(0) vec4f {
     dots.head_outer,
     dist_pointer,
   ));
+  let near = dots.enabled * (1.0 - smoothstep(0.0, dots.head_inner, dist_pointer));
+  let radius = dots.dot_radius + dots.speck_glow * 0.35 * near;
+  let glow = dots.speck_glow * (0.45 + 0.55 * head_gate);
 
   let page_speck = glowing_speck(
     length(world - page_center),
-    dots.dot_radius,
-    dots.speck_glow,
+    radius,
+    glow,
   ) * head_gate;
 
   var trail_mask = 0.0;
@@ -69,7 +73,7 @@ fn fs_main(@location(0) uv: vec2f) -> @location(0) vec4f {
       trail_sample.z * glowing_speck(
         length(world - trail_page),
         dots.dot_radius,
-        dots.speck_glow,
+        dots.speck_glow * 0.7,
       ),
     );
   }

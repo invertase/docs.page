@@ -225,20 +225,11 @@ export function presentScene(
   output: Output,
   glyph: GPUTexture,
   honey: readonly [number, number, number],
-  dots: DotsUniforms,
 ): void {
-  const dprX = scene.size[0] / Math.max(1, dots.css_size[0]);
-  const dprY = scene.size[1] / Math.max(1, dots.css_size[1]);
   scene.effects.present.set({
     present: {
-      display: [1.45, 1, dots.enabled, scene.directionBase],
+      display: [1.35, 0, 0, scene.directionBase],
       honey: [honey[0], honey[1], honey[2], 1],
-      orb: [
-        (dots.pointer[0] - dots.origin[0]) * dprX,
-        (dots.pointer[1] - dots.origin[1]) * dprY,
-        dots.head_inner * dprX,
-        dots.head_outer * dprX,
-      ],
     },
     cascade_tex: scene.cascades[0],
     emitter_tex: scene.emitter,

@@ -1,11 +1,9 @@
 import { rc_atlas_texel, rc_block_size, rc_ray_count } from "./rc-directions.wgsl";
 
 struct Present {
-  /** x: speck lift, y: orb gain, z: pointer enabled, w: direction block side. */
+  /** x: speck lift, y: unused, z: unused, w: direction block side. */
   display: vec4f,
   honey: vec4f,
-  /** xy: pointer in scene pixels, z: inner radius, w: outer radius. */
-  orb: vec4f,
 };
 
 @group(0) @binding(0) var<uniform> present: Present;
@@ -35,10 +33,6 @@ fn resolve_cascade0(pixel: vec2f) -> vec3f {
   return mix(top, bottom, blend.y);
 }
 
-fn soft_disc(dist: f32, radius: f32, blur: f32) -> f32 {
-  return 1.0 - smoothstep(max(radius - blur, 0.0), radius + blur * 0.2, dist);
-}
-
 @fragment
 fn fs_main(@location(0) uv: vec2f) -> @location(0) vec4f {
   let scene_size = vec2f(textureDimensions(emitter_tex));
@@ -51,28 +45,14 @@ fn fs_main(@location(0) uv: vec2f) -> @location(0) vec4f {
   let dots_a = clamp(textureLoad(emitter_tex, texel, 0).a, 0.0, 1.0);
   let honey = present.honey.xyz;
   let lift = present.display.x;
-  let orb_gain = present.display.y;
-  let enabled = present.display.z;
-  let inner = present.orb.z;
-  let outer = present.orb.w;
-  let dist = length(pixel - present.orb.xy);
-  let blur = max(outer - inner, 1.0);
-
-  // Figma: honey ellipses at 50% + 27% LINEAR_DODGE, ~103px blur, ~220–250px across.
-  let disc = soft_disc(dist, outer * 0.55, blur);
-  let bloom = exp(-0.5 * (dist * dist) / ((blur * 0.52) * (blur * 0.52)));
-  let glow_k = enabled * orb_gain * (0.50 * disc + 0.27 * bloom);
-
-  // Dark ellipse (~219px, ~53px blur): type fades where the orb is strong.
-  let dissolve = enabled * soft_disc(dist, outer * 0.88, blur * 0.53);
-  let body = glyph_a * (1.0 - dissolve);
+  let body = glyph_a;
+  let gap = 1.0 - body;
 
   let irradiance = resolve_cascade0(pixel);
-  let energy = min(dot(max(irradiance, vec3f(0.0)), vec3f(0.333)) * 0.9, 0.72);
-  let field = max(glow_k, energy);
-  let halo = honey * field * (1.0 - body);
-  let specks = honey * (lift + energy * 1.65) * dots_a;
+  let energy = min(dot(max(irradiance, vec3f(0.0)), vec3f(0.333)) * 0.45, 0.35);
+  let halo = honey * energy * gap;
+  let specks = honey * lift * dots_a * gap;
   let premul = honey * body + specks + halo;
-  let alpha = max(body, max(dots_a, field * (1.0 - body)));
+  let alpha = max(body, max(dots_a * gap, energy * gap));
   return vec4f(premul, alpha);
 }

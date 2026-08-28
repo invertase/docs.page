@@ -1,9 +1,9 @@
 /**
- * Pointer-driven 404 dissolve on vgpu.
+ * Pointer-driven honey light on vgpu.
  *
- * A ~240px honey orb follows the pointer. Filled Lexend Light fades into that
- * bloom; the page 22px lattice lights up as glowing specks. JFA / SDF /
- * radiance-cascades still light the specks. The fill heals behind a short trail.
+ * The filled Lexend 404 stays solid. A tight pointer head lights the page
+ * 22px lattice (and a short trail); cascades add a small honey glow around
+ * those specks. Type is never faded or punched.
  */
 
 import type { Gpu, Surface } from "vgpu";
@@ -20,9 +20,9 @@ const SPECK_GLOW_PX = 3.6;
 /** Locked brand honey from the Shaders room. */
 export const HONEY_RGB = [230 / 255, 145 / 255, 53 / 255] as const;
 
-/** Figma orb: ~220–250px across with a ~100px bloom. */
-const HEAD_INNER_PX = 24;
-const HEAD_OUTER_PX = 124;
+/** Tight spotlight, about the hole in the 0 — not a page-wide orb. */
+const HEAD_INNER_PX = 8;
+const HEAD_OUTER_PX = 36;
 const TRAIL_LIFE_MS = 280;
 const TRAIL_COUNT = 12;
 const TRAIL_RECORD_PX = 6;
@@ -94,8 +94,8 @@ export function createGlyphDissolve(
     honey = parseCssRgb(style.color);
     const width = Math.max(1, glyph.width);
     const height = Math.max(1, glyph.height);
-    const cssWidth = Math.max(1, canvas.clientWidth);
-    const cssHeight = Math.max(1, canvas.clientHeight);
+    const cssWidth = Math.max(1, textEl.clientWidth);
+    const cssHeight = Math.max(1, textEl.clientHeight);
     const dprX = width / cssWidth;
     const dprY = height / cssHeight;
 
@@ -187,7 +187,7 @@ export function createGlyphDissolve(
     packTrail(performance.now());
     const uniforms = dotsUniforms(canvas.getBoundingClientRect());
     sim.renderLighting(scene, uniforms);
-    sim.presentScene(scene, canvasSurface, glyph, honey, uniforms);
+    sim.presentScene(scene, canvasSurface, glyph, honey);
   };
 
   const tick = (ts: number) => {
