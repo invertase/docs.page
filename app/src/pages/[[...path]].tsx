@@ -94,27 +94,32 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
     };
   }
 
+  // Single-segment paths are not valid docs routes (`/owner/repo/...`).
+  // Return `notFound: true` so Pages Router renders `pages/404.tsx` instead of
+  // the catch-all swallowing the miss with a docs-branded empty state.
   if (chunks.length === 1) {
-    res.statusCode = 404;
+    if (isDebug) {
+      res.statusCode = 404;
+
+      return {
+        props: {
+          kind: "notFound" as const,
+          notFound: {
+            debug: {
+              pathChunks: chunks,
+              error: {
+                code: 404,
+                message:
+                  "Incomplete docs route. Expected /owner/repository/...",
+              },
+            },
+          },
+        } satisfies NotFoundPageProps,
+      };
+    }
 
     return {
-      props: {
-        kind: "notFound" as const,
-        notFound: {
-          ...(isDebug
-            ? {
-                debug: {
-                  pathChunks: chunks,
-                  error: {
-                    code: 404,
-                    message:
-                      "Incomplete docs route. Expected /owner/repository/...",
-                  },
-                },
-              }
-            : {}),
-        },
-      } satisfies NotFoundPageProps,
+      notFound: true,
     };
   }
 
