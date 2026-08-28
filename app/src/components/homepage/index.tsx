@@ -98,9 +98,10 @@ export function Homepage() {
             <Header />
             <Hero />
             <Preview />
-            <Features />
-            <Explore />
-            <Footer />
+            <Features>
+              <Explore />
+              <Footer />
+            </Features>
           </div>
         </div>
       </div>

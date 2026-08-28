@@ -17,35 +17,34 @@ function FeatureMedia({ children }: PropsWithChildren) {
   );
 }
 
-export function Features() {
-  const outerRef = useRef<HTMLDivElement>(null);
-  const innerRef = useRef<HTMLDivElement>(null);
+export function Features({ children }: PropsWithChildren) {
+  const spacerRef = useRef<HTMLDivElement>(null);
+  const stackRef = useRef<HTMLDivElement>(null);
   const lockY = useRef<number | null>(null);
+  const adjusting = useRef(false);
 
   useEffect(() => {
-    const outer = outerRef.current;
-    const inner = innerRef.current;
-    if (!outer || !inner) return;
+    const spacer = spacerRef.current;
+    const stack = stackRef.current;
+    if (!spacer || !stack) return;
 
     const cards = () => [
-      ...inner.querySelectorAll<HTMLElement>("[data-stack-card]"),
+      ...stack.querySelectorAll<HTMLElement>("[data-stack-card]"),
     ];
-
-    const pinInner = () => {
-      const rect = outer.getBoundingClientRect();
-      inner.style.position = "fixed";
-      inner.style.top = "0px";
-      inner.style.left = `${rect.left}px`;
-      inner.style.width = `${rect.width}px`;
-      inner.style.height = `${window.innerHeight}px`;
-      inner.style.zIndex = "10";
-    };
 
     const lock = () => {
       if (lockY.current != null) return;
-      lockY.current = window.scrollY;
-      outer.style.height = `${inner.offsetHeight}px`;
-      pinInner();
+      const last = cards().at(-1);
+      if (!last) return;
+
+      const gap =
+        last.getBoundingClientRect().top - stack.getBoundingClientRect().top;
+      const pileHeight = last.offsetHeight;
+
+      adjusting.current = true;
+      spacer.style.height = `${Math.max(0, gap)}px`;
+      stack.style.height = `${pileHeight}px`;
+      stack.style.position = "relative";
       for (const card of cards()) {
         card.style.position = "absolute";
         card.style.top = "0px";
@@ -53,19 +52,17 @@ export function Features() {
         card.style.right = "0px";
         card.style.marginTop = "0px";
       }
+      lockY.current = window.scrollY;
+      adjusting.current = false;
     };
 
     const unlock = () => {
       if (lockY.current == null) return;
+      adjusting.current = true;
       lockY.current = null;
-      outer.style.height = "";
-      inner.style.position = "";
-      inner.style.top = "";
-      inner.style.left = "";
-      inner.style.width = "";
-      inner.style.height = "";
-      inner.style.zIndex = "";
-      inner.style.transform = "";
+      spacer.style.height = "";
+      stack.style.height = "";
+      stack.style.position = "";
       for (const card of cards()) {
         card.style.position = "";
         card.style.top = "";
@@ -73,22 +70,18 @@ export function Features() {
         card.style.right = "";
         card.style.marginTop = "";
       }
+      adjusting.current = false;
     };
 
     const onScroll = () => {
+      if (adjusting.current) return;
       const last = cards().at(-1);
       if (!last) return;
       if (lockY.current == null) {
         if (last.getBoundingClientRect().top <= 1) lock();
         return;
       }
-      const progress = window.scrollY - lockY.current;
-      if (progress < 0) {
-        unlock();
-        return;
-      }
-      pinInner();
-      inner.style.transform = `translateY(${-progress}px)`;
+      if (window.scrollY < lockY.current) unlock();
     };
 
     window.addEventListener("scroll", onScroll, { passive: true });
@@ -102,8 +95,9 @@ export function Features() {
   }, []);
 
   return (
-    <div ref={outerRef}>
-      <div ref={innerRef}>
+    <div style={{ overflowAnchor: "none" }}>
+      <div ref={spacerRef} aria-hidden className="pointer-events-none" />
+      <div ref={stackRef}>
         {features.map((feature, i) => (
           <FeatureCard
             key={i}
@@ -135,6 +129,7 @@ export function Features() {
           </FeatureCard>
         ))}
       </div>
+      {children}
     </div>
   );
 }
