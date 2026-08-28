@@ -1,30 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { type PropsWithChildren, useLayoutEffect, useRef } from "react";
+import { type PropsWithChildren, useEffect, useRef } from "react";
 import { features } from "./data";
 import { FeatureCard } from "./feature-card";
-
-function stretchStack(container: HTMLElement) {
-  const cards = [
-    ...container.querySelectorAll<HTMLElement>("[data-stack-card]"),
-  ];
-  if (cards.length === 0) return;
-  const parentHeight = container.scrollHeight;
-  const metrics = cards.map((card) => {
-    const inner = card.firstElementChild as HTMLElement | null;
-    return {
-      card,
-      top: card.offsetTop,
-      visual: inner?.offsetHeight ?? card.offsetHeight,
-    };
-  });
-  for (const { card, top, visual } of metrics) {
-    const extra = Math.max(0, parentHeight - top - visual);
-    card.style.paddingBottom = extra ? `${extra}px` : "";
-    card.style.marginBottom = extra ? `-${extra}px` : "";
-  }
-}
 
 function FeatureMedia({ children }: PropsWithChildren) {
   return (
@@ -39,57 +18,123 @@ function FeatureMedia({ children }: PropsWithChildren) {
 }
 
 export function Features() {
-  const ref = useRef<HTMLDivElement>(null);
+  const outerRef = useRef<HTMLDivElement>(null);
+  const innerRef = useRef<HTMLDivElement>(null);
+  const lockY = useRef<number | null>(null);
 
-  useLayoutEffect(() => {
-    const container = ref.current;
-    if (!container) return;
+  useEffect(() => {
+    const outer = outerRef.current;
+    const inner = innerRef.current;
+    if (!outer || !inner) return;
 
-    const apply = () => stretchStack(container);
-    apply();
+    const cards = () => [
+      ...inner.querySelectorAll<HTMLElement>("[data-stack-card]"),
+    ];
 
-    const ro = new ResizeObserver(apply);
-    ro.observe(container);
-    for (const card of container.querySelectorAll("[data-stack-card]")) {
-      const inner = card.firstElementChild;
-      if (inner) ro.observe(inner);
-    }
-    window.addEventListener("resize", apply);
+    const pinInner = () => {
+      const rect = outer.getBoundingClientRect();
+      inner.style.position = "fixed";
+      inner.style.top = "0px";
+      inner.style.left = `${rect.left}px`;
+      inner.style.width = `${rect.width}px`;
+      inner.style.height = `${window.innerHeight}px`;
+      inner.style.zIndex = "10";
+    };
+
+    const lock = () => {
+      if (lockY.current != null) return;
+      lockY.current = window.scrollY;
+      outer.style.height = `${inner.offsetHeight}px`;
+      pinInner();
+      for (const card of cards()) {
+        card.style.position = "absolute";
+        card.style.top = "0px";
+        card.style.left = "0px";
+        card.style.right = "0px";
+        card.style.marginTop = "0px";
+      }
+    };
+
+    const unlock = () => {
+      if (lockY.current == null) return;
+      lockY.current = null;
+      outer.style.height = "";
+      inner.style.position = "";
+      inner.style.top = "";
+      inner.style.left = "";
+      inner.style.width = "";
+      inner.style.height = "";
+      inner.style.zIndex = "";
+      inner.style.transform = "";
+      for (const card of cards()) {
+        card.style.position = "";
+        card.style.top = "";
+        card.style.left = "";
+        card.style.right = "";
+        card.style.marginTop = "";
+      }
+    };
+
+    const onScroll = () => {
+      const last = cards().at(-1);
+      if (!last) return;
+      if (lockY.current == null) {
+        if (last.getBoundingClientRect().top <= 1) lock();
+        return;
+      }
+      const progress = window.scrollY - lockY.current;
+      if (progress < 0) {
+        unlock();
+        return;
+      }
+      pinInner();
+      inner.style.transform = `translateY(${-progress}px)`;
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    onScroll();
     return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", apply);
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      unlock();
     };
   }, []);
 
   return (
-    <div ref={ref} className="relative -mb-[100svh]">
-      {features.map((feature, i) => (
-        <FeatureCard
-          key={i}
-          index={i}
-          title={feature.title}
-          description={feature.description}
-          link={feature.link}
-        >
-          <FeatureMedia>
-            {feature.video ? (
-              <video
-                src={feature.video}
-                autoPlay
-                loop
-                muted
-                title={feature.titleText}
-                className="relative aspect-auto z-1 w-full rounded-lg object-cover border border-border/50 shadow-lg"
-              />
-            ) : null}
-            {feature.image ? (
-              <Image src={feature.image} alt={feature.titleText} className="" />
-            ) : null}
-            {feature.component ?? null}
-          </FeatureMedia>
-        </FeatureCard>
-      ))}
-      <div aria-hidden className="h-[100svh]" />
+    <div ref={outerRef}>
+      <div ref={innerRef}>
+        {features.map((feature, i) => (
+          <FeatureCard
+            key={i}
+            index={i}
+            title={feature.title}
+            description={feature.description}
+            link={feature.link}
+          >
+            <FeatureMedia>
+              {feature.video ? (
+                <video
+                  src={feature.video}
+                  autoPlay
+                  loop
+                  muted
+                  title={feature.titleText}
+                  className="relative aspect-auto z-1 w-full rounded-lg object-cover border border-border/50 shadow-lg"
+                />
+              ) : null}
+              {feature.image ? (
+                <Image
+                  src={feature.image}
+                  alt={feature.titleText}
+                  className=""
+                />
+              ) : null}
+              {feature.component ?? null}
+            </FeatureMedia>
+          </FeatureCard>
+        ))}
+      </div>
     </div>
   );
 }
