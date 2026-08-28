@@ -17,7 +17,7 @@ function FeatureMedia({ children }: PropsWithChildren) {
 
 export function Features() {
   return (
-    <div className="relative z-10 pb-[50svh] -mb-[50svh]">
+    <div className="relative z-10 -mb-[70svh]">
       {features.map((feature, i) => (
         <FeatureCard
           key={i}
@@ -44,6 +44,7 @@ export function Features() {
           </FeatureMedia>
         </FeatureCard>
       ))}
+      <div aria-hidden className="h-[70svh]" />
     </div>
   );
 }
