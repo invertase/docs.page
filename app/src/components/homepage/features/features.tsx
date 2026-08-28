@@ -34,24 +34,33 @@ export function Features({ children }: PropsWithChildren) {
 
     const lock = () => {
       if (lockY.current != null) return;
-      const last = cards().at(-1);
+      const list = cards();
+      const last = list.at(-1);
       if (!last) return;
 
-      const gap =
-        last.getBoundingClientRect().top - stack.getBoundingClientRect().top;
+      const targetTop = last.getBoundingClientRect().top;
       const pileHeight = last.offsetHeight;
+      const preserved = stack.offsetHeight - pileHeight;
+      const y = window.scrollY;
 
       adjusting.current = true;
-      spacer.style.height = `${Math.max(0, gap)}px`;
       stack.style.height = `${pileHeight}px`;
       stack.style.position = "relative";
-      for (const card of cards()) {
+      for (const card of list) {
         card.style.position = "absolute";
         card.style.top = "0px";
         card.style.left = "0px";
         card.style.right = "0px";
         card.style.marginTop = "0px";
       }
+      spacer.style.height = `${Math.max(0, preserved)}px`;
+
+      const stackedTop = list[0].getBoundingClientRect().top;
+      const delta = targetTop - stackedTop;
+      if (delta !== 0) {
+        spacer.style.height = `${Math.max(0, preserved + delta)}px`;
+      }
+      window.scrollTo(0, y);
       lockY.current = window.scrollY;
       adjusting.current = false;
     };
