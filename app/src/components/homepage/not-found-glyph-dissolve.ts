@@ -3,8 +3,9 @@
  *
  * vgpu (WebGPU) would need a WGSL loader and has no fallback in this Pages
  * app, so this uses a small WebGL fragment shader instead. Specks lock to the
- * landing 22px / 1px spot grid (homepage.module.css) so they read as lighting
- * the dots already on the page. The glyph body stays a smooth texture.
+ * landing 22px / 1px spot grid (homepage.module.css). Ink is lifted only in
+ * small discs around lattice cells that sit on the 404 stroke near the pointer
+ * — not a circular body fade. Those cells light honey; a short cell trail heals.
  */
 
 /** Matches `.homepage-spot-grid` in homepage.module.css */
@@ -14,14 +15,21 @@ export const SPOT_GRID_DOT_RADIUS_PX = 1;
 /** Locked brand honey from the Shaders room. */
 export const HONEY_RGB = [230 / 255, 145 / 255, 53 / 255] as const;
 
-/** Local bite around the pointer (CSS px) — not a 150px slice. */
-const FALLOFF_INNER_PX = 10;
-const FALLOFF_OUTER_PX = 52;
-/** Honey wake: 1px specks along the path; length from TRAIL_LIFE_MS. */
-const TRAIL_RADIUS_PX = 14;
+/**
+ * Activate lattice cells whose center is this close to the pointer (CSS px).
+ * This is not a body-fade radius — fill is only removed in tiny discs.
+ */
+const CELL_NEAR_INNER_PX = 8;
+const CELL_NEAR_OUTER_PX = 32;
+/** Disc that lifts ink around an activated cell. Not a 22px tile. */
+const PUNCH_INNER_PX = 2.2;
+const PUNCH_OUTER_PX = 6.5;
+/** Single-row wake: half a cell so neighbours stay off. */
+const TRAIL_RADIUS_PX = 11;
 const TRAIL_LIFE_MS = 240;
 const TRAIL_COUNT = 12;
-const TRAIL_SPACING_PX = 10;
+/** Keep about 5–6 lit cells (~110–130px), then they fade. */
+const TRAIL_CELLS = 6;
 
 const VERTEX_SRC = `
 attribute vec2 aPosition;
@@ -43,8 +51,10 @@ uniform vec4 uTrail[12];
 uniform float uGridCell;
 uniform float uDotRadius;
 uniform vec3 uHoney;
-uniform float uInnerRadius;
-uniform float uOuterRadius;
+uniform float uNearInner;
+uniform float uNearOuter;
+uniform float uPunchInner;
+uniform float uPunchOuter;
 uniform float uTrailRadius;
 
 void main() {
@@ -54,29 +64,31 @@ void main() {
   vec2 fragCss = vec2(gl_FragCoord.x, uResolution.y - gl_FragCoord.y) / uDpr;
   vec2 world = uOrigin + fragCss;
 
-  // Specks lock to the 22px / 1px spot grid. The glyph body does not.
+  // Same 22px / 1px lattice as the page spot grid.
   vec2 cellCenter = (floor(world / uGridCell) + 0.5) * uGridCell;
   float toDot = length(world - cellCenter);
   float core = 1.0 - smoothstep(uDotRadius * 0.3, uDotRadius, toDot);
   float halo = 1.0 - smoothstep(uDotRadius, uDotRadius + 0.65, toDot);
-  float speck = max(core, halo * 0.4);
+  float speck = max(core, halo * 0.45);
 
-  // Circular bite — solid fill outside ~50px. No hex front, no wide melt.
-  float head = uActive * (1.0 - smoothstep(uInnerRadius, uOuterRadius, length(world - uPointer)));
+  vec2 cellUv = (cellCenter - uOrigin) * uDpr / uResolution;
+  float onInk = step(0.15, texture2D(uGlyph, cellUv).a);
 
+  // Gate the *cell*, not the fragment — no circular body melt.
+  float near = uActive * (1.0 - smoothstep(uNearInner, uNearOuter, length(cellCenter - uPointer)));
   float trail = 0.0;
   for (int i = 0; i < 12; i++) {
     float str = uTrail[i].z;
     trail = max(
       trail,
-      str * (1.0 - smoothstep(0.0, uTrailRadius, length(world - uTrail[i].xy)))
+      str * (1.0 - smoothstep(0.0, uTrailRadius, length(cellCenter - uTrail[i].xy)))
     );
   }
+  float activate = onInk * max(near, trail);
 
-  // Head eats a small hole in the stroke. Trail only punches 1px grid
-  // specks so the wake reads as lit dots, then the fill returns.
-  float body = glyph * (1.0 - head) * (1.0 - speck * trail);
-  float dots = speck * max(head, trail);
+  float punch = activate * (1.0 - smoothstep(uPunchInner, uPunchOuter, toDot));
+  float body = glyph * (1.0 - punch);
+  float dots = speck * activate;
   float alpha = max(body, dots);
   gl_FragColor = vec4(uHoney * alpha, alpha);
 }
@@ -196,8 +208,10 @@ export function createGlyphDissolve(
   const uGridCell = gl.getUniformLocation(program, "uGridCell");
   const uDotRadius = gl.getUniformLocation(program, "uDotRadius");
   const uHoney = gl.getUniformLocation(program, "uHoney");
-  const uInnerRadius = gl.getUniformLocation(program, "uInnerRadius");
-  const uOuterRadius = gl.getUniformLocation(program, "uOuterRadius");
+  const uNearInner = gl.getUniformLocation(program, "uNearInner");
+  const uNearOuter = gl.getUniformLocation(program, "uNearOuter");
+  const uPunchInner = gl.getUniformLocation(program, "uPunchInner");
+  const uPunchOuter = gl.getUniformLocation(program, "uPunchOuter");
   const uTrailRadius = gl.getUniformLocation(program, "uTrailRadius");
 
   const glyphCanvas = document.createElement("canvas");
@@ -316,8 +330,10 @@ export function createGlyphDissolve(
     gl.uniform1f(uGridCell, SPOT_GRID_CELL_PX);
     gl.uniform1f(uDotRadius, SPOT_GRID_DOT_RADIUS_PX);
     gl.uniform3f(uHoney, honey[0], honey[1], honey[2]);
-    gl.uniform1f(uInnerRadius, FALLOFF_INNER_PX);
-    gl.uniform1f(uOuterRadius, FALLOFF_OUTER_PX);
+    gl.uniform1f(uNearInner, CELL_NEAR_INNER_PX);
+    gl.uniform1f(uNearOuter, CELL_NEAR_OUTER_PX);
+    gl.uniform1f(uPunchInner, PUNCH_INNER_PX);
+    gl.uniform1f(uPunchOuter, PUNCH_OUTER_PX);
     gl.uniform1f(uTrailRadius, TRAIL_RADIUS_PX);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
   };
@@ -332,21 +348,21 @@ export function createGlyphDissolve(
     raf = requestAnimationFrame(tick);
   };
 
+  const snapCell = (v: number) =>
+    (Math.floor(v / SPOT_GRID_CELL_PX) + 0.5) * SPOT_GRID_CELL_PX;
+
   const noteTrail = (clientX: number, clientY: number, over: boolean) => {
     if (!over) return;
     const t = performance.now();
+    const x = snapCell(clientX);
+    const y = snapCell(clientY);
     const head = trail[0];
-    if (
-      !head ||
-      Math.hypot(clientX - head.x, clientY - head.y) >= TRAIL_SPACING_PX
-    ) {
-      trail.unshift({ x: clientX, y: clientY, t });
+    if (!head || head.x !== x || head.y !== y) {
+      trail.unshift({ x, y, t });
     } else {
-      head.x = clientX;
-      head.y = clientY;
       head.t = t;
     }
-    if (trail.length > TRAIL_COUNT) trail.length = TRAIL_COUNT;
+    if (trail.length > TRAIL_CELLS) trail.length = TRAIL_CELLS;
   };
 
   const updatePointer = (clientX: number, clientY: number) => {
