@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { createGlyphDissolve } from "./not-found-glyph-dissolve";
 
 const GLYPH_CLASS =
-  "font-heading font-light text-primary text-[7.2rem] leading-none sm:text-[9.6rem] md:text-[12rem]";
+  "font-heading font-light text-primary text-[9.72rem] leading-none sm:text-[12.96rem] md:text-[16.2rem]";
 
 export function NotFoundGlyph() {
   const textRef = useRef<HTMLParagraphElement>(null);
