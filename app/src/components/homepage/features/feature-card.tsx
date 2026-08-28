@@ -27,8 +27,8 @@ export function FeatureCard({
   return (
     <div
       data-stack-card
-      className={cn(PAPER_SECTION_OVERLAP_CLASS, "sticky top-0")}
-      style={{ zIndex: index + 1 }}
+      className={cn(PAPER_SECTION_OVERLAP_CLASS, "sticky")}
+      style={{ top: `${index}rem`, zIndex: index + 1 }}
     >
       <div
         className={cn(PAPER_SECTION_SHELL_CLASS, "bg-black pb-20 lg:pb-40")}

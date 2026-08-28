@@ -38,8 +38,9 @@ export function Features({ children }: PropsWithChildren) {
       const last = list.at(-1);
       if (!last) return;
 
-      const targetTop = last.getBoundingClientRect().top;
-      const pileHeight = last.offsetHeight;
+      const stop = Number.parseFloat(getComputedStyle(last).top) || 0;
+      const targetTop = list[0].getBoundingClientRect().top;
+      const pileHeight = last.offsetHeight + stop;
       const preserved = stack.offsetHeight - pileHeight;
       const y = window.scrollY;
 
@@ -48,7 +49,6 @@ export function Features({ children }: PropsWithChildren) {
       stack.style.position = "relative";
       for (const card of list) {
         card.style.position = "absolute";
-        card.style.top = "0px";
         card.style.left = "0px";
         card.style.right = "0px";
         card.style.marginTop = "0px";
@@ -74,7 +74,6 @@ export function Features({ children }: PropsWithChildren) {
       stack.style.position = "";
       for (const card of cards()) {
         card.style.position = "";
-        card.style.top = "";
         card.style.left = "";
         card.style.right = "";
         card.style.marginTop = "";
@@ -87,7 +86,8 @@ export function Features({ children }: PropsWithChildren) {
       const last = cards().at(-1);
       if (!last) return;
       if (lockY.current == null) {
-        if (last.getBoundingClientRect().top <= 1) lock();
+        const stop = Number.parseFloat(getComputedStyle(last).top) || 0;
+        if (last.getBoundingClientRect().top <= stop + 1) lock();
         return;
       }
       if (window.scrollY < lockY.current) unlock();
