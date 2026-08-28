@@ -1,9 +1,9 @@
 /**
- * Pointer-driven honey light on vgpu.
+ * Pointer-driven honey light on vgpu, with a local UV shove on the 404.
  *
- * The filled Lexend 404 stays solid. A tight pointer head lights the page
- * 22px lattice (and a short trail); cascades add a small honey glow around
- * those specks. Type is never faded or punched.
+ * The filled Lexend 404 stays; under the tight pointer head the glyph UVs are
+ * offset so the stroke smears. The page 22px lattice lights honey in the gaps
+ * and is never displaced.
  */
 
 import type { Gpu, Surface } from "vgpu";
@@ -77,6 +77,8 @@ export function createGlyphDissolve(
   let targetActive = 0;
   let pointerX = 0;
   let pointerY = 0;
+  let motionX = 0;
+  let motionY = 0;
   let honey: readonly [number, number, number] = HONEY_RGB;
   const trail: { x: number; y: number; t: number }[] = [];
   const trailSlots: [number, number, number, number][] = Array.from(
@@ -187,7 +189,10 @@ export function createGlyphDissolve(
     packTrail(performance.now());
     const uniforms = dotsUniforms(canvas.getBoundingClientRect());
     sim.renderLighting(scene, uniforms);
-    sim.presentScene(scene, canvasSurface, glyph, honey);
+    sim.presentScene(scene, canvasSurface, glyph, honey, uniforms, [
+      motionX,
+      motionY,
+    ]);
   };
 
   const tick = (ts: number) => {
@@ -196,6 +201,8 @@ export function createGlyphDissolve(
     lastTs = ts;
     active += (targetActive - active) * (1 - Math.exp(-dt * 14));
     if (Math.abs(active) < 0.001 && targetActive === 0) active = 0;
+    motionX *= Math.exp(-dt * 10);
+    motionY *= Math.exp(-dt * 10);
     try {
       draw();
     } catch {
@@ -223,6 +230,17 @@ export function createGlyphDissolve(
   };
 
   const updatePointer = (clientX: number, clientY: number) => {
+    const dx = clientX - pointerX;
+    const dy = clientY - pointerY;
+    if (pointerX !== 0 || pointerY !== 0) {
+      motionX += (dx - motionX) * 0.4;
+      motionY += (dy - motionY) * 0.4;
+      const len = Math.hypot(motionX, motionY);
+      if (len > 18) {
+        motionX = (motionX / len) * 18;
+        motionY = (motionY / len) * 18;
+      }
+    }
     pointerX = clientX;
     pointerY = clientY;
     const rect = canvas.getBoundingClientRect();
