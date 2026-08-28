@@ -8,6 +8,7 @@ import {
 } from "@/components/docs-debug";
 import { DocsNotFoundPage } from "@/components/docs-not-found";
 import { Homepage } from "@/components/homepage";
+import { SiteNotFoundPage } from "@/components/homepage/not-found";
 import { Preset } from "@/components/preset";
 import { DocPageContext } from "@/hooks/use-doc-page-context";
 import { getAgentPanelCookieName } from "@/lib/agent-panel-state";
@@ -36,6 +37,7 @@ import type {
   ErrorPageProps,
   NotFoundPageProps,
   PageProps,
+  SiteNotFoundPageProps,
 } from "@/lib/types";
 import { utmProperties } from "@/lib/utm";
 import {
@@ -95,12 +97,13 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
   }
 
   // Single-segment paths are not valid docs routes (`/owner/repo/...`).
-  // Return `notFound: true` so Pages Router renders `pages/404.tsx` instead of
-  // the catch-all swallowing the miss with a docs-branded empty state.
+  // Do not return `{ notFound: true }`: with a mixed App + Pages tree, Next.js
+  // 16 serves the App Router builtin 404 instead of `pages/404.tsx`. Render
+  // the site 404 from this catch-all (same pattern as docs misses) and set 404.
   if (chunks.length === 1) {
-    if (isDebug) {
-      res.statusCode = 404;
+    res.statusCode = 404;
 
+    if (isDebug) {
       return {
         props: {
           kind: "notFound" as const,
@@ -119,7 +122,9 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
     }
 
     return {
-      notFound: true,
+      props: {
+        kind: "siteNotFound" as const,
+      } satisfies SiteNotFoundPageProps,
     };
   }
 
@@ -453,6 +458,10 @@ export default function RepoDocsCatchAllPage(
 
   if (props.kind === "home") {
     return <Homepage />;
+  }
+
+  if (props.kind === "siteNotFound") {
+    return <SiteNotFoundPage />;
   }
 
   if (props.kind === "notFound") {
