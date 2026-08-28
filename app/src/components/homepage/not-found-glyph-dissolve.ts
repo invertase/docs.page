@@ -3,9 +3,10 @@
  *
  * vgpu (WebGPU) would need a WGSL loader and has no fallback in this Pages
  * app, so this uses a small WebGL fragment shader instead. Specks lock to the
- * landing 22px / 1px spot grid (homepage.module.css). Ink is lifted only in
- * small discs around lattice cells that sit on the 404 stroke near the pointer
- * — not a circular body fade. Those cells light honey; a short cell trail heals.
+ * landing 22px / 1px spot grid (homepage.module.css). Activated ink cells
+ * drop their fill so neighbouring cells merge into a dotted stroke; the
+ * replacement is a hard 1px honey speck on that same lattice. A short cell
+ * trail heals. No circular body fade, no soft punched voids.
  */
 
 /** Matches `.homepage-spot-grid` in homepage.module.css */
@@ -17,18 +18,14 @@ export const HONEY_RGB = [230 / 255, 145 / 255, 53 / 255] as const;
 
 /**
  * Activate lattice cells whose center is this close to the pointer (CSS px).
- * This is not a body-fade radius — fill is only removed in tiny discs.
+ * Fill is replaced by 1px honey specks at those cells — not a body fade.
  */
-const CELL_NEAR_INNER_PX = 8;
-const CELL_NEAR_OUTER_PX = 32;
-/** Disc that lifts ink around an activated cell. Not a 22px tile. */
-const PUNCH_INNER_PX = 2.2;
-const PUNCH_OUTER_PX = 6.5;
-/** Single-row wake: half a cell so neighbours stay off. */
+const CELL_NEAR_INNER_PX = 10;
+const CELL_NEAR_OUTER_PX = 48;
+/** Single-row wake: half a cell so a neighbour column stays off. */
 const TRAIL_RADIUS_PX = 11;
 const TRAIL_LIFE_MS = 240;
 const TRAIL_COUNT = 12;
-/** Keep about 5–6 lit cells (~110–130px), then they fade. */
 const TRAIL_CELLS = 6;
 
 const VERTEX_SRC = `
@@ -53,8 +50,6 @@ uniform float uDotRadius;
 uniform vec3 uHoney;
 uniform float uNearInner;
 uniform float uNearOuter;
-uniform float uPunchInner;
-uniform float uPunchOuter;
 uniform float uTrailRadius;
 
 void main() {
@@ -64,17 +59,15 @@ void main() {
   vec2 fragCss = vec2(gl_FragCoord.x, uResolution.y - gl_FragCoord.y) / uDpr;
   vec2 world = uOrigin + fragCss;
 
-  // Same 22px / 1px lattice as the page spot grid.
   vec2 cellCenter = (floor(world / uGridCell) + 0.5) * uGridCell;
   float toDot = length(world - cellCenter);
-  float core = 1.0 - smoothstep(uDotRadius * 0.3, uDotRadius, toDot);
-  float halo = 1.0 - smoothstep(uDotRadius, uDotRadius + 0.65, toDot);
-  float speck = max(core, halo * 0.45);
+
+  // Hard 1px-radius speck, same size as the page spot grid.
+  float speck = 1.0 - step(uDotRadius, toDot);
 
   vec2 cellUv = (cellCenter - uOrigin) * uDpr / uResolution;
-  float onInk = step(0.15, texture2D(uGlyph, cellUv).a);
+  float onInk = step(0.12, texture2D(uGlyph, cellUv).a);
 
-  // Gate the *cell*, not the fragment — no circular body melt.
   float near = uActive * (1.0 - smoothstep(uNearInner, uNearOuter, length(cellCenter - uPointer)));
   float trail = 0.0;
   for (int i = 0; i < 12; i++) {
@@ -86,11 +79,13 @@ void main() {
   }
   float activate = onInk * max(near, trail);
 
-  // Full disc while the cell is live so a fading trail still reads as dots.
-  float live = smoothstep(0.04, 0.18, activate);
-  float punch = live * (1.0 - smoothstep(uPunchInner, uPunchOuter, toDot));
-  float body = glyph * (1.0 - punch);
-  float dots = speck * max(activate, live);
+  // Half-cell cover so neighbouring ink cells merge into a dotted stroke,
+  // not separate soft holes. Tight edge — no blurry punch.
+  float halfCell = uGridCell * 0.5;
+  float live = step(0.1, activate);
+  float cover = live * step(toDot, halfCell);
+  float body = glyph * (1.0 - cover);
+  float dots = speck * activate;
   float alpha = max(body, dots);
   gl_FragColor = vec4(uHoney * alpha, alpha);
 }
@@ -175,7 +170,7 @@ export function createGlyphDissolve(
 
   const gl = canvas.getContext("webgl", {
     alpha: true,
-    antialias: true,
+    antialias: false,
     premultipliedAlpha: true,
     preserveDrawingBuffer: false,
   });
@@ -212,8 +207,6 @@ export function createGlyphDissolve(
   const uHoney = gl.getUniformLocation(program, "uHoney");
   const uNearInner = gl.getUniformLocation(program, "uNearInner");
   const uNearOuter = gl.getUniformLocation(program, "uNearOuter");
-  const uPunchInner = gl.getUniformLocation(program, "uPunchInner");
-  const uPunchOuter = gl.getUniformLocation(program, "uPunchOuter");
   const uTrailRadius = gl.getUniformLocation(program, "uTrailRadius");
 
   const glyphCanvas = document.createElement("canvas");
@@ -334,8 +327,6 @@ export function createGlyphDissolve(
     gl.uniform3f(uHoney, honey[0], honey[1], honey[2]);
     gl.uniform1f(uNearInner, CELL_NEAR_INNER_PX);
     gl.uniform1f(uNearOuter, CELL_NEAR_OUTER_PX);
-    gl.uniform1f(uPunchInner, PUNCH_INNER_PX);
-    gl.uniform1f(uPunchOuter, PUNCH_OUTER_PX);
     gl.uniform1f(uTrailRadius, TRAIL_RADIUS_PX);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
   };
