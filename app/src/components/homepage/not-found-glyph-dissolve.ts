@@ -81,9 +81,11 @@ void main() {
 
   // Half-cell cover so neighbouring ink cells merge into a dotted stroke,
   // not separate soft holes. Tight edge — no blurry punch.
-  float halfCell = uGridCell * 0.5;
+  // Clear through a Lexend Light stem (~20px) so the stroke becomes dots,
+  // not scalloped holes in leftover fill. Neighbouring cells overlap.
+  float clearR = uGridCell * 0.75;
   float live = step(0.1, activate);
-  float cover = live * step(toDot, halfCell);
+  float cover = live * step(toDot, clearR);
   float body = glyph * (1.0 - cover);
   float dots = speck * activate;
   float alpha = max(body, dots);
