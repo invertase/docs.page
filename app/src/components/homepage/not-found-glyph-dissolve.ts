@@ -51,15 +51,21 @@ void main() {
 
   // Specks lock to the 22px / 1px spot grid. The glyph body does not.
   vec2 cellCenter = (floor(world / uGridCell) + 0.5) * uGridCell;
-  float speck = 1.0 - smoothstep(uDotRadius - 0.25, uDotRadius + 0.25, length(world - cellCenter));
+  float toDot = length(world - cellCenter);
+  float core = 1.0 - smoothstep(uDotRadius * 0.3, uDotRadius, toDot);
+  float halo = 1.0 - smoothstep(uDotRadius, uDotRadius + 0.65, toDot);
+  float speck = max(core, halo * 0.4);
 
   // Soft pointer-origin front, per fragment — not per 22px cell.
   vec2 delta = world - uPointer;
-  float front = mix(length(delta), hexDist(delta), 0.22);
+  float front = mix(length(delta), hexDist(delta), 0.18);
   float dissolve = uHover * (1.0 - smoothstep(uInnerRadius, uOuterRadius, front));
 
-  float body = glyph * (1.0 - dissolve);
-  float dots = speck * glyph;
+  // Keep the letter a solid smooth fill; drop it in a thin band so the
+  // mid-tones never become a copper wash of the whole glyph.
+  float body = glyph * (1.0 - smoothstep(0.08, 0.36, dissolve));
+  float speckGate = smoothstep(0.04, 0.22, dissolve);
+  float dots = speck * step(0.12, glyph) * speckGate;
   float alpha = max(body, dots);
   gl_FragColor = vec4(uHoney * alpha, alpha);
 }
@@ -206,8 +212,8 @@ export function createGlyphDissolve(
     const style = getComputedStyle(textEl);
     honey = parseCssRgb(style.color);
     const fontSize = Number.parseFloat(style.fontSize) || 96;
-    innerRadius = fontSize * 0.12;
-    outerRadius = fontSize * 1.05;
+    innerRadius = fontSize * 0.18;
+    outerRadius = fontSize * 0.52;
 
     glyphCanvas.width = Math.max(1, Math.round(cssWidth * dpr));
     glyphCanvas.height = Math.max(1, Math.round(cssHeight * dpr));
