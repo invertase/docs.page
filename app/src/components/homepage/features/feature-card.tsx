@@ -30,7 +30,7 @@ export function FeatureCard({
       style={{ top: `${index}rem`, zIndex: index + 1 }}
     >
       <div
-        className={cn(PAPER_SECTION_SHELL_CLASS, "bg-black/60 pb-20 lg:pb-40")}
+        className={cn(PAPER_SECTION_SHELL_CLASS, "bg-black pb-20 lg:pb-40")}
         style={{ clipPath: paperCornerClipPath() }}
       >
         <PaperCorner />

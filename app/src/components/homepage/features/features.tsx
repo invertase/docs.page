@@ -17,7 +17,7 @@ function FeatureMedia({ children }: PropsWithChildren) {
 
 export function Features() {
   return (
-    <div>
+    <div className="relative z-10 pb-[50svh] -mb-[50svh]">
       {features.map((feature, i) => (
         <FeatureCard
           key={i}
