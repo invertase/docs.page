@@ -61,10 +61,10 @@ void main() {
   float front = mix(length(delta), hexDist(delta), 0.18);
   float dissolve = uHover * (1.0 - smoothstep(uInnerRadius, uOuterRadius, front));
 
-  // Keep the letter a solid smooth fill; drop it in a thin band so the
-  // mid-tones never become a copper wash of the whole glyph.
-  float body = glyph * (1.0 - smoothstep(0.08, 0.36, dissolve));
-  float speckGate = smoothstep(0.04, 0.22, dissolve);
+  // Wide soft melt: body fades across most of the pointer front so the
+  // ink dissolves into specks instead of a tight cut.
+  float body = glyph * (1.0 - smoothstep(0.06, 0.90, dissolve));
+  float speckGate = smoothstep(0.04, 0.72, dissolve);
   float dots = speck * step(0.12, glyph) * speckGate;
   float alpha = max(body, dots);
   gl_FragColor = vec4(uHoney * alpha, alpha);
@@ -212,8 +212,8 @@ export function createGlyphDissolve(
     const style = getComputedStyle(textEl);
     honey = parseCssRgb(style.color);
     const fontSize = Number.parseFloat(style.fontSize) || 96;
-    innerRadius = fontSize * 0.18;
-    outerRadius = fontSize * 0.52;
+    innerRadius = fontSize * 0.1;
+    outerRadius = fontSize * 1.25;
 
     glyphCanvas.width = Math.max(1, Math.round(cssWidth * dpr));
     glyphCanvas.height = Math.max(1, Math.round(cssHeight * dpr));
