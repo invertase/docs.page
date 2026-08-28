@@ -86,9 +86,11 @@ void main() {
   }
   float activate = onInk * max(near, trail);
 
-  float punch = activate * (1.0 - smoothstep(uPunchInner, uPunchOuter, toDot));
+  // Full disc while the cell is live so a fading trail still reads as dots.
+  float live = smoothstep(0.04, 0.18, activate);
+  float punch = live * (1.0 - smoothstep(uPunchInner, uPunchOuter, toDot));
   float body = glyph * (1.0 - punch);
-  float dots = speck * activate;
+  float dots = speck * max(activate, live);
   float alpha = max(body, dots);
   gl_FragColor = vec4(uHoney * alpha, alpha);
 }
