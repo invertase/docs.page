@@ -1,7 +1,30 @@
+"use client";
+
 import Image from "next/image";
-import type { PropsWithChildren } from "react";
+import { type PropsWithChildren, useLayoutEffect, useRef } from "react";
 import { features } from "./data";
 import { FeatureCard } from "./feature-card";
+
+function stretchStack(container: HTMLElement) {
+  const cards = [
+    ...container.querySelectorAll<HTMLElement>("[data-stack-card]"),
+  ];
+  if (cards.length === 0) return;
+  const parentHeight = container.scrollHeight;
+  const metrics = cards.map((card) => {
+    const inner = card.firstElementChild as HTMLElement | null;
+    return {
+      card,
+      top: card.offsetTop,
+      visual: inner?.offsetHeight ?? card.offsetHeight,
+    };
+  });
+  for (const { card, top, visual } of metrics) {
+    const extra = Math.max(0, parentHeight - top - visual);
+    card.style.paddingBottom = extra ? `${extra}px` : "";
+    card.style.marginBottom = extra ? `-${extra}px` : "";
+  }
+}
 
 function FeatureMedia({ children }: PropsWithChildren) {
   return (
@@ -16,8 +39,30 @@ function FeatureMedia({ children }: PropsWithChildren) {
 }
 
 export function Features() {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const container = ref.current;
+    if (!container) return;
+
+    const apply = () => stretchStack(container);
+    apply();
+
+    const ro = new ResizeObserver(apply);
+    ro.observe(container);
+    for (const card of container.querySelectorAll("[data-stack-card]")) {
+      const inner = card.firstElementChild;
+      if (inner) ro.observe(inner);
+    }
+    window.addEventListener("resize", apply);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", apply);
+    };
+  }, []);
+
   return (
-    <div className="relative z-10 -mb-[70svh]">
+    <div ref={ref} className="relative -mb-[100svh]">
       {features.map((feature, i) => (
         <FeatureCard
           key={i}
@@ -44,7 +89,7 @@ export function Features() {
           </FeatureMedia>
         </FeatureCard>
       ))}
-      <div aria-hidden className="h-[70svh]" />
+      <div aria-hidden className="h-[100svh]" />
     </div>
   );
 }
