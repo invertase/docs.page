@@ -3,6 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Background } from "./background";
 import { Footer } from "./footer";
 import { Header } from "./header";
 import styles from "./homepage.module.css";
@@ -17,9 +18,10 @@ export function SiteNotFoundPage() {
       <div
         className={cn(
           styles.site,
-          "dark relative min-h-svh w-full bg-black text-foreground",
+          "dark relative min-h-svh w-full text-foreground",
         )}
       >
+        <Background />
         <div className="relative z-10 mx-auto flex min-h-svh w-full min-w-0 max-w-8xl flex-col px-0 font-mono md:px-4">
           <div className="flex min-h-svh flex-1 flex-col md:border-x">
             <Header />
@@ -44,7 +46,7 @@ export function SiteNotFoundPage() {
                 </Link>
               </Button>
             </main>
-            <Footer />
+            <Footer showCloser={false} />
           </div>
         </div>
       </div>
