@@ -5,7 +5,7 @@ struct Dots {
   origin: vec2f,
   css_size: vec2f,
   pointer: vec2f,
-  active: f32,
+  enabled: f32,
   _pad0: f32,
   honey: vec4f,
   dense_cell: f32,
@@ -48,7 +48,7 @@ fn fs_main(@location(0) uv: vec2f) -> @location(0) vec4f {
   let dense_center = (floor(world / dots.dense_cell) + 0.5) * dots.dense_cell;
   let dense_uv = (dense_center - dots.origin) / css_size;
   let dense_ink = step(0.12, sample_glyph(dense_uv));
-  let head_gate = dots.active * (1.0 - smoothstep(
+  let head_gate = dots.enabled * (1.0 - smoothstep(
     dots.head_inner,
     dots.head_outer,
     length(dense_center - dots.pointer),
@@ -57,8 +57,8 @@ fn fs_main(@location(0) uv: vec2f) -> @location(0) vec4f {
 
   var trail = 0.0;
   for (var i = 0; i < 12; i = i + 1) {
-    let sample = dots.trail[i];
-    trail = max(trail, sample.z * circle(length(world - sample.xy), dots.dot_radius));
+    let trail_sample = dots.trail[i];
+    trail = max(trail, trail_sample.z * circle(length(world - trail_sample.xy), dots.dot_radius));
   }
 
   let mask = max(head, trail);

@@ -172,7 +172,7 @@ export function createGlyphDissolve(
     origin: [rect.left, rect.top],
     css_size: [Math.max(1, rect.width), Math.max(1, rect.height)],
     pointer: [pointerX, pointerY],
-    active,
+    enabled: active,
     honey: [honey[0], honey[1], honey[2], 1],
     dense_cell: DENSE_CELL_PX,
     dot_radius: SPOT_GRID_DOT_RADIUS_PX,

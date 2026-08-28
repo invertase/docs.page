@@ -28,7 +28,7 @@ export type DotsUniforms = {
   origin: readonly [number, number];
   css_size: readonly [number, number];
   pointer: readonly [number, number];
-  active: number;
+  enabled: number;
   honey: readonly [number, number, number, number];
   dense_cell: number;
   dot_radius: number;
