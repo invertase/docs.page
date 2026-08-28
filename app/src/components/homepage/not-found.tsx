@@ -7,6 +7,7 @@ import { Background } from "./background";
 import { Footer } from "./footer";
 import { Header } from "./header";
 import styles from "./homepage.module.css";
+import { NotFoundGlyph } from "./not-found-glyph";
 
 export function SiteNotFoundPage() {
   return (
@@ -26,9 +27,7 @@ export function SiteNotFoundPage() {
           <div className="flex min-h-svh flex-1 flex-col md:border-x">
             <Header />
             <main className="flex flex-1 flex-col items-center justify-center px-6 py-16 text-center">
-              <p className="font-heading font-light text-primary text-8xl leading-none sm:text-9xl md:text-[10rem]">
-                404
-              </p>
+              <NotFoundGlyph />
               <h1 className="mt-6 font-heading font-light text-3xl sm:text-4xl md:text-5xl">
                 Page Not Found
               </h1>
