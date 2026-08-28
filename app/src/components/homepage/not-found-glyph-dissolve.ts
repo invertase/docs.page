@@ -3,8 +3,8 @@
  *
  * vgpu (WebGPU) would need a WGSL loader and has no fallback in this Pages
  * app, so this uses a small WebGL fragment shader instead. Specks lock to the
- * landing 22px / 1px spot grid (homepage.module.css); the dissolve front uses
- * a hexagonal metric for the honeycomb motif.
+ * landing 22px / 1px spot grid (homepage.module.css). The glyph body stays a
+ * smooth texture and fades per fragment — it is not snapped to those cells.
  */
 
 /** Matches `.homepage-spot-grid` in homepage.module.css */
@@ -22,7 +22,7 @@ void main() {
 `;
 
 const FRAGMENT_SRC = `
-precision mediump float;
+precision highp float;
 
 uniform sampler2D uGlyph;
 uniform vec2 uResolution;
@@ -36,11 +36,10 @@ uniform vec3 uHoney;
 uniform float uInnerRadius;
 uniform float uOuterRadius;
 
-// Pointy-top hex distance (apothem-scaled). 1.0 at the hex boundary of radius r.
-float hexNorm(vec2 p, float r) {
+// Pointy-top hex distance (unnormalized). Soft-mixed with circular length.
+float hexDist(vec2 p) {
   vec2 a = abs(p);
-  float d = max(a.x * 0.866025404 + a.y * 0.5, a.y);
-  return d / max(r, 0.0001);
+  return max(a.x * 0.866025404 + a.y * 0.5, a.y);
 }
 
 void main() {
@@ -50,18 +49,18 @@ void main() {
   vec2 fragCss = vec2(gl_FragCoord.x, uResolution.y - gl_FragCoord.y) / uDpr;
   vec2 world = uOrigin + fragCss;
 
-  vec2 cell = floor(world / uGridCell);
-  vec2 cellCenter = (cell + 0.5) * uGridCell;
-  float toDot = length(world - cellCenter);
-  float speck = 1.0 - smoothstep(uDotRadius - 0.35, uDotRadius + 0.35, toDot);
+  // Specks lock to the 22px / 1px spot grid. The glyph body does not.
+  vec2 cellCenter = (floor(world / uGridCell) + 0.5) * uGridCell;
+  float speck = 1.0 - smoothstep(uDotRadius - 0.25, uDotRadius + 0.25, length(world - cellCenter));
 
-  // Hexagonal dissolve originating at the pointer; evaluated at the cell
-  // center so whole 22px tiles snap to specks together (not random dust).
-  float cellHex = hexNorm(cellCenter - uPointer, uOuterRadius);
-  float inner = uInnerRadius / max(uOuterRadius, 0.0001);
-  float dissolve = uHover * (1.0 - smoothstep(inner, 1.0, cellHex));
+  // Soft pointer-origin front, per fragment — not per 22px cell.
+  vec2 delta = world - uPointer;
+  float front = mix(length(delta), hexDist(delta), 0.22);
+  float dissolve = uHover * (1.0 - smoothstep(uInnerRadius, uOuterRadius, front));
 
-  float alpha = mix(glyph, glyph * speck, dissolve);
+  float body = glyph * (1.0 - dissolve);
+  float dots = speck * glyph;
+  float alpha = max(body, dots);
   gl_FragColor = vec4(uHoney * alpha, alpha);
 }
 `;
@@ -145,7 +144,7 @@ export function createGlyphDissolve(
 
   const gl = canvas.getContext("webgl", {
     alpha: true,
-    antialias: false,
+    antialias: true,
     premultipliedAlpha: true,
     preserveDrawingBuffer: false,
   });
@@ -207,8 +206,8 @@ export function createGlyphDissolve(
     const style = getComputedStyle(textEl);
     honey = parseCssRgb(style.color);
     const fontSize = Number.parseFloat(style.fontSize) || 96;
-    innerRadius = fontSize * 0.22;
-    outerRadius = fontSize * 0.85;
+    innerRadius = fontSize * 0.12;
+    outerRadius = fontSize * 1.05;
 
     glyphCanvas.width = Math.max(1, Math.round(cssWidth * dpr));
     glyphCanvas.height = Math.max(1, Math.round(cssHeight * dpr));
