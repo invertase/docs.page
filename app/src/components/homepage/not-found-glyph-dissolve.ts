@@ -14,14 +14,14 @@ export const SPOT_GRID_DOT_RADIUS_PX = 1;
 /** Locked brand honey from the Shaders room. */
 export const HONEY_RGB = [230 / 255, 145 / 255, 53 / 255] as const;
 
-/** Soft local breakup around the pointer (CSS px). */
-const FALLOFF_INNER_PX = 20;
-const FALLOFF_OUTER_PX = 150;
-/** Width of the honey wake; length comes from TRAIL_LIFE_MS. */
-const TRAIL_RADIUS_PX = 36;
+/** Local bite around the pointer (CSS px) — not a 150px slice. */
+const FALLOFF_INNER_PX = 10;
+const FALLOFF_OUTER_PX = 52;
+/** Honey wake: 1px specks along the path; length from TRAIL_LIFE_MS. */
+const TRAIL_RADIUS_PX = 14;
 const TRAIL_LIFE_MS = 240;
 const TRAIL_COUNT = 12;
-const TRAIL_SPACING_PX = 8;
+const TRAIL_SPACING_PX = 10;
 
 const VERTEX_SRC = `
 attribute vec2 aPosition;
@@ -61,7 +61,7 @@ void main() {
   float halo = 1.0 - smoothstep(uDotRadius, uDotRadius + 0.65, toDot);
   float speck = max(core, halo * 0.4);
 
-  // Circular pointer light — no hex front, no cell-snapped gouge.
+  // Circular bite — solid fill outside ~50px. No hex front, no wide melt.
   float head = uActive * (1.0 - smoothstep(uInnerRadius, uOuterRadius, length(world - uPointer)));
 
   float trail = 0.0;
@@ -73,11 +73,10 @@ void main() {
     );
   }
 
-  // Stroke gives way locally around the pointer, then heals. The wake is
-  // the same grid specks staying lit a moment after the fill returns.
-  float body = glyph * (1.0 - smoothstep(0.08, 0.88, head));
-  float speckGate = max(smoothstep(0.03, 0.42, head), trail);
-  float dots = speck * step(0.12, glyph) * speckGate;
+  // Head eats a small hole in the stroke. Trail only punches 1px grid
+  // specks so the wake reads as lit dots, then the fill returns.
+  float body = glyph * (1.0 - head) * (1.0 - speck * trail);
+  float dots = speck * max(head, trail);
   float alpha = max(body, dots);
   gl_FragColor = vec4(uHoney * alpha, alpha);
 }
@@ -286,7 +285,7 @@ export function createGlyphDissolve(
       const fade = Math.max(0, 1 - age);
       trailData[i * 4] = sample.x;
       trailData[i * 4 + 1] = sample.y;
-      trailData[i * 4 + 2] = fade * fade;
+      trailData[i * 4 + 2] = fade;
     }
   };
 
