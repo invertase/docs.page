@@ -3,8 +3,8 @@
  *
  * vgpu (WebGPU) would need a WGSL loader and has no fallback in this Pages
  * app, so this uses a small WebGL fragment shader instead. Specks lock to the
- * landing 22px / 1px spot grid (homepage.module.css). The glyph body stays a
- * smooth texture and fades per fragment — it is not snapped to those cells.
+ * landing 22px / 1px spot grid (homepage.module.css) so they read as lighting
+ * the dots already on the page. The glyph body stays a smooth texture.
  */
 
 /** Matches `.homepage-spot-grid` in homepage.module.css */
@@ -13,6 +13,15 @@ export const SPOT_GRID_DOT_RADIUS_PX = 1;
 
 /** Locked brand honey from the Shaders room. */
 export const HONEY_RGB = [230 / 255, 145 / 255, 53 / 255] as const;
+
+/** Soft local breakup around the pointer (CSS px). */
+const FALLOFF_INNER_PX = 20;
+const FALLOFF_OUTER_PX = 150;
+/** Width of the honey wake; length comes from TRAIL_LIFE_MS. */
+const TRAIL_RADIUS_PX = 36;
+const TRAIL_LIFE_MS = 240;
+const TRAIL_COUNT = 12;
+const TRAIL_SPACING_PX = 8;
 
 const VERTEX_SRC = `
 attribute vec2 aPosition;
@@ -29,18 +38,14 @@ uniform vec2 uResolution;
 uniform float uDpr;
 uniform vec2 uOrigin;
 uniform vec2 uPointer;
-uniform float uHover;
+uniform float uActive;
+uniform vec4 uTrail[12];
 uniform float uGridCell;
 uniform float uDotRadius;
 uniform vec3 uHoney;
 uniform float uInnerRadius;
 uniform float uOuterRadius;
-
-// Pointy-top hex distance (unnormalized). Soft-mixed with circular length.
-float hexDist(vec2 p) {
-  vec2 a = abs(p);
-  return max(a.x * 0.866025404 + a.y * 0.5, a.y);
-}
+uniform float uTrailRadius;
 
 void main() {
   vec2 uv = vec2(gl_FragCoord.x / uResolution.x, 1.0 - gl_FragCoord.y / uResolution.y);
@@ -56,15 +61,22 @@ void main() {
   float halo = 1.0 - smoothstep(uDotRadius, uDotRadius + 0.65, toDot);
   float speck = max(core, halo * 0.4);
 
-  // Soft pointer-origin front, per fragment — not per 22px cell.
-  vec2 delta = world - uPointer;
-  float front = mix(length(delta), hexDist(delta), 0.18);
-  float dissolve = uHover * (1.0 - smoothstep(uInnerRadius, uOuterRadius, front));
+  // Circular pointer light — no hex front, no cell-snapped gouge.
+  float head = uActive * (1.0 - smoothstep(uInnerRadius, uOuterRadius, length(world - uPointer)));
 
-  // Wide soft melt: body fades across most of the pointer front so the
-  // ink dissolves into specks instead of a tight cut.
-  float body = glyph * (1.0 - smoothstep(0.06, 0.90, dissolve));
-  float speckGate = smoothstep(0.04, 0.72, dissolve);
+  float trail = 0.0;
+  for (int i = 0; i < 12; i++) {
+    float str = uTrail[i].z;
+    trail = max(
+      trail,
+      str * (1.0 - smoothstep(0.0, uTrailRadius, length(world - uTrail[i].xy)))
+    );
+  }
+
+  // Stroke gives way locally around the pointer, then heals. The wake is
+  // the same grid specks staying lit a moment after the fill returns.
+  float body = glyph * (1.0 - smoothstep(0.08, 0.88, head));
+  float speckGate = max(smoothstep(0.03, 0.42, head), trail);
   float dots = speck * step(0.12, glyph) * speckGate;
   float alpha = max(body, dots);
   gl_FragColor = vec4(uHoney * alpha, alpha);
@@ -178,12 +190,16 @@ export function createGlyphDissolve(
   const uDpr = gl.getUniformLocation(program, "uDpr");
   const uOrigin = gl.getUniformLocation(program, "uOrigin");
   const uPointer = gl.getUniformLocation(program, "uPointer");
-  const uHover = gl.getUniformLocation(program, "uHover");
+  const uActive = gl.getUniformLocation(program, "uActive");
+  const uTrail =
+    gl.getUniformLocation(program, "uTrail[0]") ??
+    gl.getUniformLocation(program, "uTrail");
   const uGridCell = gl.getUniformLocation(program, "uGridCell");
   const uDotRadius = gl.getUniformLocation(program, "uDotRadius");
   const uHoney = gl.getUniformLocation(program, "uHoney");
   const uInnerRadius = gl.getUniformLocation(program, "uInnerRadius");
   const uOuterRadius = gl.getUniformLocation(program, "uOuterRadius");
+  const uTrailRadius = gl.getUniformLocation(program, "uTrailRadius");
 
   const glyphCanvas = document.createElement("canvas");
   const glyphCtx = glyphCanvas.getContext("2d");
@@ -196,24 +212,21 @@ export function createGlyphDissolve(
 
   let disposed = false;
   let raf = 0;
-  let hover = 0;
-  let targetHover = 0;
+  let active = 0;
+  let targetActive = 0;
   let pointerX = 0;
   let pointerY = 0;
   let cssWidth = 0;
   let cssHeight = 0;
   let dpr = 1;
   let honey = HONEY_RGB;
-  let innerRadius = 36;
-  let outerRadius = 120;
   let lastTs = performance.now();
+  const trail: { x: number; y: number; t: number }[] = [];
+  const trailData = new Float32Array(TRAIL_COUNT * 4);
 
   const paintGlyph = () => {
     const style = getComputedStyle(textEl);
     honey = parseCssRgb(style.color);
-    const fontSize = Number.parseFloat(style.fontSize) || 96;
-    innerRadius = fontSize * 0.1;
-    outerRadius = fontSize * 1.25;
 
     glyphCanvas.width = Math.max(1, Math.round(cssWidth * dpr));
     glyphCanvas.height = Math.max(1, Math.round(cssHeight * dpr));
@@ -260,9 +273,28 @@ export function createGlyphDissolve(
     paintGlyph();
   };
 
+  const packTrail = (now: number) => {
+    trailData.fill(0);
+    const cutoff = now - TRAIL_LIFE_MS;
+    while (trail.length > 0 && trail[trail.length - 1].t < cutoff) {
+      trail.pop();
+    }
+    const count = Math.min(TRAIL_COUNT, trail.length);
+    for (let i = 0; i < count; i++) {
+      const sample = trail[i];
+      const age = (now - sample.t) / TRAIL_LIFE_MS;
+      const fade = Math.max(0, 1 - age);
+      trailData[i * 4] = sample.x;
+      trailData[i * 4 + 1] = sample.y;
+      trailData[i * 4 + 2] = fade * fade;
+    }
+  };
+
   const draw = () => {
     if (disposed || gl.isContextLost()) return;
 
+    const now = performance.now();
+    packTrail(now);
     const rect = canvas.getBoundingClientRect();
     gl.viewport(0, 0, canvas.width, canvas.height);
     gl.clearColor(0, 0, 0, 0);
@@ -280,12 +312,14 @@ export function createGlyphDissolve(
     gl.uniform1f(uDpr, dpr);
     gl.uniform2f(uOrigin, rect.left, rect.top);
     gl.uniform2f(uPointer, pointerX, pointerY);
-    gl.uniform1f(uHover, hover);
+    gl.uniform1f(uActive, active);
+    if (uTrail) gl.uniform4fv(uTrail, trailData);
     gl.uniform1f(uGridCell, SPOT_GRID_CELL_PX);
     gl.uniform1f(uDotRadius, SPOT_GRID_DOT_RADIUS_PX);
     gl.uniform3f(uHoney, honey[0], honey[1], honey[2]);
-    gl.uniform1f(uInnerRadius, innerRadius);
-    gl.uniform1f(uOuterRadius, outerRadius);
+    gl.uniform1f(uInnerRadius, FALLOFF_INNER_PX);
+    gl.uniform1f(uOuterRadius, FALLOFF_OUTER_PX);
+    gl.uniform1f(uTrailRadius, TRAIL_RADIUS_PX);
     gl.drawArrays(gl.TRIANGLES, 0, 6);
   };
 
@@ -293,10 +327,27 @@ export function createGlyphDissolve(
     if (disposed) return;
     const dt = Math.min(0.05, Math.max(0, (ts - lastTs) / 1000));
     lastTs = ts;
-    hover += (targetHover - hover) * (1 - Math.exp(-dt * 12));
-    if (Math.abs(hover) < 0.001 && targetHover === 0) hover = 0;
+    active += (targetActive - active) * (1 - Math.exp(-dt * 14));
+    if (Math.abs(active) < 0.001 && targetActive === 0) active = 0;
     draw();
     raf = requestAnimationFrame(tick);
+  };
+
+  const noteTrail = (clientX: number, clientY: number, over: boolean) => {
+    if (!over) return;
+    const t = performance.now();
+    const head = trail[0];
+    if (
+      !head ||
+      Math.hypot(clientX - head.x, clientY - head.y) >= TRAIL_SPACING_PX
+    ) {
+      trail.unshift({ x: clientX, y: clientY, t });
+    } else {
+      head.x = clientX;
+      head.y = clientY;
+      head.t = t;
+    }
+    if (trail.length > TRAIL_COUNT) trail.length = TRAIL_COUNT;
   };
 
   const updatePointer = (clientX: number, clientY: number) => {
@@ -308,7 +359,8 @@ export function createGlyphDissolve(
       clientX <= rect.right &&
       clientY >= rect.top &&
       clientY <= rect.bottom;
-    targetHover = over ? 1 : 0;
+    targetActive = over ? 1 : 0;
+    noteTrail(clientX, clientY, over);
   };
 
   const onPointerMove = (event: PointerEvent) => {
@@ -324,7 +376,7 @@ export function createGlyphDissolve(
       updatePointer(event.clientX, event.clientY);
       return;
     }
-    targetHover = 0;
+    targetActive = 0;
   };
 
   const onContextLost = (event: Event) => {
