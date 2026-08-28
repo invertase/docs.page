@@ -20,8 +20,13 @@ export function NotFoundGlyph() {
     const handle = createGlyphDissolve(canvas, text);
     if (!handle) return;
 
-    setEnhanced(true);
+    let cancelled = false;
+    void handle.ready.then((ok) => {
+      if (!cancelled && ok) setEnhanced(true);
+    });
+
     return () => {
+      cancelled = true;
       handle.dispose();
       setEnhanced(false);
     };
