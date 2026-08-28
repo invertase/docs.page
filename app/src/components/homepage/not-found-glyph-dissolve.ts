@@ -1,10 +1,9 @@
 /**
  * Pointer-driven 404 dissolve on vgpu.
  *
- * Dots are filled 1px honey circles (and occluders), lit with a slimmed
- * JFA / SDF / radiance-cascade chain. The Lexend 404 stays solid honey fill:
- * packed ~7px specks under the pointer space out onto the page 22px lattice,
- * then the fill heals.
+ * A ~240px honey orb follows the pointer. Filled Lexend Light fades into that
+ * bloom; the page 22px lattice lights up as glowing specks. JFA / SDF /
+ * radiance-cascades still light the specks. The fill heals behind a short trail.
  */
 
 import type { Gpu, Surface } from "vgpu";
@@ -15,15 +14,16 @@ import type { DotsUniforms, GlyphScene } from "./not-found-glyph/simulation";
 export const SPOT_GRID_CELL_PX = 22;
 export const SPOT_GRID_DOT_RADIUS_PX = 1;
 
-/** Packed cluster under the pointer (CSS px). Trail spreads to 22px. */
-const DENSE_CELL_PX = 7;
+/** Soft halo around each 1px lattice speck (CSS px). */
+const SPECK_GLOW_PX = 3.6;
 
 /** Locked brand honey from the Shaders room. */
 export const HONEY_RGB = [230 / 255, 145 / 255, 53 / 255] as const;
 
-const HEAD_INNER_PX = 4;
-const HEAD_OUTER_PX = 18;
-const TRAIL_LIFE_MS = 320;
+/** Figma orb: ~220–250px across with a ~100px bloom. */
+const HEAD_INNER_PX = 24;
+const HEAD_OUTER_PX = 124;
+const TRAIL_LIFE_MS = 280;
 const TRAIL_COUNT = 12;
 const TRAIL_RECORD_PX = 6;
 
@@ -94,8 +94,8 @@ export function createGlyphDissolve(
     honey = parseCssRgb(style.color);
     const width = Math.max(1, glyph.width);
     const height = Math.max(1, glyph.height);
-    const cssWidth = Math.max(1, textEl.clientWidth);
-    const cssHeight = Math.max(1, textEl.clientHeight);
+    const cssWidth = Math.max(1, canvas.clientWidth);
+    const cssHeight = Math.max(1, canvas.clientHeight);
     const dprX = width / cssWidth;
     const dprY = height / cssHeight;
 
@@ -165,7 +165,7 @@ export function createGlyphDissolve(
     pointer: [pointerX, pointerY],
     enabled: active,
     honey: [honey[0], honey[1], honey[2], 1],
-    dense_cell: DENSE_CELL_PX,
+    speck_glow: SPECK_GLOW_PX,
     page_cell: SPOT_GRID_CELL_PX,
     dot_radius: SPOT_GRID_DOT_RADIUS_PX,
     head_inner: HEAD_INNER_PX,
@@ -186,8 +186,8 @@ export function createGlyphDissolve(
     }
     packTrail(performance.now());
     const uniforms = dotsUniforms(canvas.getBoundingClientRect());
-    sim.renderLighting(scene, uniforms, glyph);
-    sim.presentScene(scene, canvasSurface, glyph, honey);
+    sim.renderLighting(scene, uniforms);
+    sim.presentScene(scene, canvasSurface, glyph, honey, uniforms);
   };
 
   const tick = (ts: number) => {

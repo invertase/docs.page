@@ -1,5 +1,5 @@
-// Pointer-activated lattice: filled 1px honey circles. Packed tight under the
-// cursor, then the same specks sit on the page 22px grid along the wake.
+// 22px page-lattice specks under a wide pointer head. The 1px cores seed the
+// cascade; a short gaussian halo makes them read as glowing honey, not idle grid.
 
 struct Dots {
   origin: vec2f,
@@ -8,7 +8,7 @@ struct Dots {
   enabled: f32,
   _pad0: f32,
   honey: vec4f,
-  dense_cell: f32,
+  speck_glow: f32,
   page_cell: f32,
   dot_radius: f32,
   head_inner: f32,
@@ -19,8 +19,6 @@ struct Dots {
 };
 
 @group(0) @binding(0) var<uniform> dots: Dots;
-@group(0) @binding(1) var glyph: texture_2d<f32>;
-@group(0) @binding(2) var glyph_samp: sampler;
 
 fn srgb_to_linear(color: vec3f) -> vec3f {
   let low = color / 12.92;
@@ -32,19 +30,15 @@ fn filled_circle(dist: f32, radius: f32) -> f32 {
   return 1.0 - smoothstep(radius - 0.4, radius + 0.4, dist);
 }
 
-fn snap_center(world: vec2f, cell: f32) -> vec2f {
-  return (floor(world / cell) + 0.5) * cell;
+fn glowing_speck(dist: f32, radius: f32, glow: f32) -> f32 {
+  let core = filled_circle(dist, radius);
+  let sigma = max(glow, 0.35);
+  let halo = exp(-0.5 * (dist * dist) / (sigma * sigma)) * 0.55;
+  return min(1.0, max(core, halo));
 }
 
-fn sample_glyph(uv: vec2f) -> f32 {
-  let size = vec2f(textureDimensions(glyph));
-  let half_texel = 0.5 / size;
-  return textureSampleLevel(
-    glyph,
-    glyph_samp,
-    clamp(uv, half_texel, vec2f(1.0) - half_texel),
-    0.0,
-  ).a;
+fn snap_center(world: vec2f, cell: f32) -> vec2f {
+  return (floor(world / cell) + 0.5) * cell;
 }
 
 @fragment
@@ -53,29 +47,18 @@ fn fs_main(@location(0) uv: vec2f) -> @location(0) vec4f {
   let world = dots.origin + uv * css_size;
   let dist_pointer = length(world - dots.pointer);
 
-  let dense_center = snap_center(world, dots.dense_cell);
   let page_center = snap_center(world, dots.page_cell);
-  let dense_uv = (dense_center - dots.origin) / css_size;
-  let page_uv = (page_center - dots.origin) / css_size;
-  let dense_ink = step(0.12, sample_glyph(dense_uv));
-  let page_ink = step(0.12, sample_glyph(page_uv));
-
   let head_gate = dots.enabled * (1.0 - smoothstep(
     dots.head_inner,
     dots.head_outer,
     dist_pointer,
   ));
-  let to_page = smoothstep(dots.head_inner, dots.head_outer, dist_pointer);
 
-  let dense_speck = filled_circle(
-    length(world - dense_center),
-    dots.dot_radius,
-  ) * dense_ink * head_gate * (1.0 - to_page);
-
-  let page_speck = filled_circle(
+  let page_speck = glowing_speck(
     length(world - page_center),
     dots.dot_radius,
-  ) * page_ink * head_gate * to_page;
+    dots.speck_glow,
+  ) * head_gate;
 
   var trail_mask = 0.0;
   for (var i = 0; i < 12; i = i + 1) {
@@ -83,11 +66,15 @@ fn fs_main(@location(0) uv: vec2f) -> @location(0) vec4f {
     let trail_page = snap_center(trail_sample.xy, dots.page_cell);
     trail_mask = max(
       trail_mask,
-      trail_sample.z * filled_circle(length(world - trail_page), dots.dot_radius),
+      trail_sample.z * glowing_speck(
+        length(world - trail_page),
+        dots.dot_radius,
+        dots.speck_glow,
+      ),
     );
   }
 
-  let coverage = max(dense_speck, max(page_speck, trail_mask));
+  let coverage = max(page_speck, trail_mask);
   let honey = srgb_to_linear(dots.honey.xyz);
   return vec4f(honey * coverage, coverage);
 }

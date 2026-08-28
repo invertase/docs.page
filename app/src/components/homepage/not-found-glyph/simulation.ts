@@ -30,7 +30,7 @@ export type DotsUniforms = {
   pointer: readonly [number, number];
   enabled: number;
   honey: readonly [number, number, number, number];
-  dense_cell: number;
+  speck_glow: number;
   page_cell: number;
   dot_radius: number;
   head_inner: number;
@@ -158,14 +158,12 @@ function destroyTargets(targets: readonly Target[]): void {
   if (firstError) throw firstError;
 }
 
-function buildChain(scene: GlyphScene, dots: DotsUniforms, glyph: GPUTexture) {
+function buildChain(scene: GlyphScene, dots: DotsUniforms) {
   const { effects } = scene;
   const passes: { readonly target: Target; readonly effect: Effect }[] = [];
 
   effects.emit.set({
     dots,
-    glyph,
-    glyph_samp: scene.sampler,
   });
   passes.push({ target: scene.emitter, effect: effects.emit });
 
@@ -210,12 +208,8 @@ function buildChain(scene: GlyphScene, dots: DotsUniforms, glyph: GPUTexture) {
   return passes;
 }
 
-export function renderLighting(
-  scene: GlyphScene,
-  dots: DotsUniforms,
-  glyph: GPUTexture,
-): void {
-  const passes = buildChain(scene, dots, glyph);
+export function renderLighting(scene: GlyphScene, dots: DotsUniforms): void {
+  const passes = buildChain(scene, dots);
   frame(scene.gpu, (currentFrame) => {
     for (const pass of passes) {
       currentFrame.pass(
@@ -231,11 +225,20 @@ export function presentScene(
   output: Output,
   glyph: GPUTexture,
   honey: readonly [number, number, number],
+  dots: DotsUniforms,
 ): void {
+  const dprX = scene.size[0] / Math.max(1, dots.css_size[0]);
+  const dprY = scene.size[1] / Math.max(1, dots.css_size[1]);
   scene.effects.present.set({
     present: {
-      display: [1.12, 0, 0, scene.directionBase],
+      display: [1.45, 1, dots.enabled, scene.directionBase],
       honey: [honey[0], honey[1], honey[2], 1],
+      orb: [
+        (dots.pointer[0] - dots.origin[0]) * dprX,
+        (dots.pointer[1] - dots.origin[1]) * dprY,
+        dots.head_inner * dprX,
+        dots.head_outer * dprX,
+      ],
     },
     cascade_tex: scene.cascades[0],
     emitter_tex: scene.emitter,

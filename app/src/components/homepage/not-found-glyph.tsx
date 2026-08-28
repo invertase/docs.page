@@ -40,7 +40,7 @@ export function NotFoundGlyph() {
       <canvas
         ref={canvasRef}
         className={cn(
-          "pointer-events-none absolute inset-0 h-full w-full",
+          "pointer-events-none absolute -inset-16",
           !enhanced && "invisible",
         )}
         aria-hidden
