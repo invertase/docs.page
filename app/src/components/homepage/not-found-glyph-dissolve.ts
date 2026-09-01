@@ -49,6 +49,10 @@ function hasWebGpu(): boolean {
   return typeof navigator !== "undefined" && Boolean(navigator.gpu);
 }
 
+function log404Failure(reason: string, error?: unknown) {
+  console.warn(`[docs.page 404] ${reason}`, error ?? "");
+}
+
 export function createGlyphDissolve(
   canvas: HTMLCanvasElement,
   textEl: HTMLElement,
@@ -194,7 +198,8 @@ export function createGlyphDissolve(
     if (disposed) return;
     try {
       draw();
-    } catch {
+    } catch (error) {
+      log404Failure("present loop threw; keeping black type", error);
       dispose();
       return;
     }
@@ -310,6 +315,9 @@ export function createGlyphDissolve(
     }
     await firstRebuild;
     if (disposed || !scenePrepared) {
+      if (!disposed) {
+        log404Failure("scene prepare failed; keeping black type");
+      }
       dispose();
       return false;
     }
@@ -326,13 +334,15 @@ export function createGlyphDissolve(
     });
     try {
       draw();
-    } catch {
+    } catch (error) {
+      log404Failure("first present threw; keeping black type", error);
       dispose();
       return false;
     }
     raf = requestAnimationFrame(tick);
     return true;
-  })().catch(() => {
+  })().catch((error) => {
+    log404Failure("WebGPU init failed; keeping black type", error);
     dispose();
     return false;
   });

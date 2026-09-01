@@ -18,11 +18,23 @@ export function NotFoundGlyph() {
     if (!canvas || !text) return;
 
     const handle = createGlyphDissolve(canvas, text);
-    if (!handle) return;
+    if (!handle) {
+      console.warn(
+        "[docs.page 404] WebGPU unavailable or reduced motion; keeping black type",
+      );
+      return;
+    }
 
     let cancelled = false;
     void handle.ready.then((ok) => {
-      if (!cancelled && ok) setEnhanced(true);
+      if (cancelled) return;
+      if (!ok) {
+        console.warn(
+          "[docs.page 404] WebGPU present failed; keeping black type",
+        );
+        return;
+      }
+      setEnhanced(true);
     });
 
     return () => {
@@ -41,9 +53,12 @@ export function NotFoundGlyph() {
       >
         404
       </p>
-      {!enhanced && (
-        <p className={cn(GLYPH_CLASS, "absolute inset-0 text-primary")}>404</p>
-      )}
+      <p
+        className={cn(GLYPH_CLASS, "absolute inset-0 text-black")}
+        aria-hidden={enhanced}
+      >
+        404
+      </p>
       <canvas
         ref={canvasRef}
         className={cn(
