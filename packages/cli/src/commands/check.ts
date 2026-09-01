@@ -16,6 +16,7 @@ import { unified } from "unified";
 import {
   type DocsConfigSource,
   hasNonLatin1,
+  isRecord,
   loadDocsConfig,
   parseConfigObject,
   resolveHeaderDepth,
@@ -32,6 +33,7 @@ const EXTERNAL_LINK_CONCURRENCY = 8;
 // than because the target is missing. These are reported as warnings so a bot
 // gate never fails CI, while 404s, 5xxs, DNS failures and timeouts stay errors.
 const BOT_GATE_STATUSES = new Set([401, 403, 405, 429]);
+const CONFIG_IGNORE_HOSTS_PATH = "check.ignoreExternalHosts";
 const RENDER_CONCURRENCY = 4;
 
 type Severity = (typeof SEVERITIES)[number];
@@ -43,15 +45,21 @@ type CheckOptions = {
   assets: Severity;
   render: Severity;
   metadata: Severity;
+  ignoreExternalHosts?: string;
 };
 
-type CheckIssue = {
-  severity: ReportableSeverity;
+type CheckEntry = {
   file?: string;
   line?: number;
   message: string;
   target?: string;
 };
+
+type CheckIssue = CheckEntry & {
+  severity: ReportableSeverity;
+};
+
+type CheckSkip = CheckEntry;
 
 export type ExternalLinkFailure = {
   // "unverified" means the host refused the automated request, so the link was
@@ -114,6 +122,10 @@ export function registerCheckCommand(program: Command) {
     )
     .addOption(
       createSeverityOption("--metadata <level>", "Check page metadata"),
+    )
+    .option(
+      "--ignore-external-hosts <hosts>",
+      `Comma-separated hosts to skip when checking external links. Unioned with "${CONFIG_IGNORE_HOSTS_PATH}" from docs.json`,
     )
     .action(async (inputPath: string, options: CheckOptions) => {
       const exitCode = await runCheck(path.resolve(inputPath), options);
@@ -214,20 +226,40 @@ async function runCheck(rootDir: string, options: CheckOptions) {
     options.externalLinks === "off" ? undefined : options.externalLinks;
 
   if (externalSeverity) {
+    // The flag and the docs.json field are unioned so CI does not have to
+    // repeat what the repository already declares.
+    const ignoredHosts = parseIgnoredHosts(
+      readConfigIgnoredHosts(parsedConfig),
+      options.ignoreExternalHosts,
+    );
+    const checkable: { reference: Reference; url: string }[] = [];
+
+    for (const reference of externalReferences) {
+      const target = classifyTarget(reference.target);
+
+      if (target.kind !== "external") {
+        continue;
+      }
+
+      // Ignored hosts are dropped before any network request is made.
+      if (isIgnoredHost(target.url, ignoredHosts)) {
+        reporter.skip({
+          file: reference.file,
+          line: reference.line,
+          message: "External link host is in the ignore list.",
+          target: reference.target,
+        });
+        continue;
+      }
+
+      checkable.push({ reference, url: target.url });
+    }
+
     await runLimited(
-      externalReferences,
+      checkable,
       EXTERNAL_LINK_CONCURRENCY,
-      async (reference) => {
-        const target = classifyTarget(reference.target);
-
-        if (target.kind !== "external") {
-          return;
-        }
-
-        const failure = await getCachedExternalCheck(
-          externalCheckCache,
-          target.url,
-        );
+      async ({ reference, url }) => {
+        const failure = await getCachedExternalCheck(externalCheckCache, url);
 
         if (failure) {
           reporter.report({
@@ -766,6 +798,122 @@ function classifyTarget(rawTarget: string): Target {
 }
 
 /**
+ * Read the ignore list out of a parsed docs.json / docs.yaml object. The value
+ * is deliberately untyped here: the hosted app tolerates unknown keys, and
+ * `parseIgnoredHosts` discards anything that is not a usable host.
+ */
+function readConfigIgnoredHosts(config: Record<string, unknown>): unknown {
+  const check = isRecord(config.check) ? config.check : undefined;
+
+  return check?.ignoreExternalHosts;
+}
+
+/**
+ * Normalise one ignore-list entry to a bare lowercase hostname.
+ *
+ * Tolerates what people actually paste: a full URL, a `host:port`, a `*.`
+ * or `.` prefix, a trailing dot, and surrounding whitespace. Returns
+ * `undefined` for anything that is not a usable host.
+ */
+export function normalizeIgnoredHost(entry: unknown): string | undefined {
+  if (typeof entry !== "string") {
+    return undefined;
+  }
+
+  const trimmed = stripHostPrefix(entry.trim().toLowerCase());
+
+  if (!trimmed) {
+    return undefined;
+  }
+
+  // Parsing through URL keeps this honest about ports, credentials, paths and
+  // IPv6 literals instead of hand-rolling a host grammar.
+  const candidate = trimmed.includes("://") ? trimmed : `https://${trimmed}`;
+  let hostname: string;
+
+  try {
+    hostname = new URL(candidate).hostname.toLowerCase();
+  } catch {
+    return undefined;
+  }
+
+  return normalizeHostname(hostname) || undefined;
+}
+
+/**
+ * Build the ignore list from any number of sources. Each source may be a
+ * comma-separated string, an array of entries, or absent; the result is the
+ * de-duplicated union, so the CLI flag and docs.json add to each other rather
+ * than replacing one another.
+ */
+export function parseIgnoredHosts(...sources: unknown[]): string[] {
+  const hosts = new Set<string>();
+
+  for (const source of sources) {
+    for (const entry of splitIgnoreEntries(source)) {
+      const host = normalizeIgnoredHost(entry);
+
+      if (host) {
+        hosts.add(host);
+      }
+    }
+  }
+
+  return [...hosts];
+}
+
+/**
+ * Match a URL against the ignore list on hostname only. An entry covers the
+ * host itself and its subdomains, so `npmjs.org` also covers `www.npmjs.org`
+ * but never `evil-npmjs.org.attacker.net`.
+ */
+export function isIgnoredHost(url: string, ignoredHosts: readonly string[]) {
+  if (ignoredHosts.length === 0) {
+    return false;
+  }
+
+  let hostname: string;
+
+  try {
+    hostname = new URL(url).hostname.toLowerCase();
+  } catch {
+    return false;
+  }
+
+  const host = normalizeHostname(hostname);
+
+  if (!host) {
+    return false;
+  }
+
+  return ignoredHosts.some(
+    (entry) => host === entry || host.endsWith(`.${entry}`),
+  );
+}
+
+function splitIgnoreEntries(source: unknown): string[] {
+  if (typeof source === "string") {
+    return source.split(",");
+  }
+
+  if (Array.isArray(source)) {
+    return source.flatMap(splitIgnoreEntries);
+  }
+
+  return [];
+}
+
+function stripHostPrefix(value: string) {
+  return value.startsWith("*.") ? value.slice(2) : value;
+}
+
+function normalizeHostname(hostname: string) {
+  // A leading dot is a common way to write "and its subdomains"; a trailing
+  // dot is the fully qualified form of the same name.
+  return stripHostPrefix(hostname).replace(/^\.+/, "").replace(/\.+$/, "");
+}
+
+/**
  * A bot gate proves nothing about the link, so it is only ever reported as a
  * warning and never fails CI. An explicit `--external-links warn` is never
  * upgraded, and `--external-links off` skips the request entirely.
@@ -1006,11 +1154,16 @@ function getNodeLine(node: MarkdownNode) {
 
 function createReporter() {
   const issues: CheckIssue[] = [];
+  const skipped: CheckSkip[] = [];
 
   return {
     report(issue: CheckIssue) {
       issues.push(issue);
       console.log(formatIssue(issue));
+    },
+    skip(skip: CheckSkip) {
+      skipped.push(skip);
+      console.log(formatSkip(skip));
     },
     hasErrors() {
       return issues.some((issue) => issue.severity === "error");
@@ -1022,6 +1175,13 @@ function createReporter() {
       const warnings = issues.filter(
         (issue) => issue.severity === "warn",
       ).length;
+      if (skipped.length > 0) {
+        console.log(
+          chalk.dim(
+            `${skipped.length} check${skipped.length === 1 ? "" : "s"} skipped.`,
+          ),
+        );
+      }
 
       if (errors === 0 && warnings === 0) {
         console.log(chalk.green("No documentation issues found."));
@@ -1037,15 +1197,24 @@ function createReporter() {
   };
 }
 
+function formatSkip(skip: CheckSkip) {
+  return formatLine(chalk.dim("skip"), skip);
+}
+
 function formatIssue(issue: CheckIssue) {
   const label =
     issue.severity === "error" ? chalk.red("error") : chalk.yellow("warn");
-  const location = issue.file
-    ? `${issue.file}${issue.line ? `:${issue.line}` : ""}`
-    : "project";
-  const target = issue.target ? ` ${chalk.dim(issue.target)}` : "";
 
-  return `${label} ${chalk.dim(location)} ${issue.message}${target}`;
+  return formatLine(label, issue);
+}
+
+function formatLine(label: string, entry: CheckEntry) {
+  const location = entry.file
+    ? `${entry.file}${entry.line ? `:${entry.line}` : ""}`
+    : "project";
+  const target = entry.target ? ` ${chalk.dim(entry.target)}` : "";
+
+  return `${label} ${chalk.dim(location)} ${entry.message}${target}`;
 }
 
 async function runLimited<T>(

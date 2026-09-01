@@ -249,6 +249,27 @@ Run `docs check` after preview looks right and before you push. The command read
 
     Each category accepts `off`, `warn`, or `error`. All three default to `error`.
   </Step>
+  <Step title="Skip hosts that block automated requests">
+    Some hosts answer a link checker with a bot gate instead of the page. Those responses are always reported as warnings, never errors, so they cannot fail CI on their own.
+
+    To drop a host from external checking entirely, list it:
+
+    ```bash
+    npx @docs.page/cli check --ignore-external-hosts npmjs.org,stackoverflow.com
+    ```
+
+    Declare the same hosts in `docs.json` so CI does not have to repeat the flag:
+
+    ```json
+    {
+      "check": {
+        "ignoreExternalHosts": ["npmjs.org", "stackoverflow.com"]
+      }
+    }
+    ```
+
+    The flag and the config value are unioned. Entries match on hostname and cover subdomains, so `npmjs.org` also covers `www.npmjs.org`. Skipped links appear as `skip` in the output and in the summary count.
+  </Step>
   <Step title="Check a subdirectory or monorepo package">
     ```bash
     npx @docs.page/cli check ./packages/docs
@@ -270,7 +291,8 @@ A clean run ends with no `error`-level output and exit code `0`. Re-run after ea
 
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |
-| External link failures in CI | Target blocks automated requests or is temporarily down | Set `--external-links warn` or `off` for that pipeline |
+| External link failures in CI | Target is temporarily down | Set `--external-links warn` or `off` for that pipeline |
+| Repeated warnings from one host | Host blocks automated requests | Add it to `--ignore-external-hosts` or `check.ignoreExternalHosts` |
 | False positive on internal link | Path typo or file not yet committed | Fix the path or add the missing file under `docs/` |
 | Check passes locally but fails in CI | CI checks a different directory | Pass the correct `[path]` argument or set the job working directory |
 
