@@ -2,9 +2,10 @@
  * Pointer-lit honey LEDs along the live Lexend 404 outline.
  *
  * Lighting structure from vgpu triangle-led-front (rev 90b65bf4…): LED buffer,
- * geometry quads, led-emitters draw, pointer brush (active + isMouse),
- * brightnessMin hover ×4, black occluder. The occluder is the rasterized 404
- * via JFA/SDF, not a three-vertex triangle. Type is never dissolved.
+ * geometry quads, led-emitters draw, lines rest motion (updateLines),
+ * pointer brush (active + isMouse), brightnessMin hover ×4, black occluder.
+ * The occluder is the rasterized 404 via JFA/SDF, not a three-vertex triangle.
+ * Type is never dissolved.
  */
 
 import type { Gpu, Surface } from "vgpu";
