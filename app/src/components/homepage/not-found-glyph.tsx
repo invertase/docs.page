@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { createGlyphDissolve } from "./not-found-glyph-dissolve";
+import { createGlyphDissolve, GLOW_PAD_CSS } from "./not-found-glyph-dissolve";
 
 const GLYPH_CLASS =
   "font-heading font-light text-primary text-[9.72rem] leading-none sm:text-[12.96rem] md:text-[16.2rem]";
@@ -39,10 +39,13 @@ export function NotFoundGlyph() {
       </p>
       <canvas
         ref={canvasRef}
-        className={cn(
-          "pointer-events-none absolute inset-0 h-full w-full",
-          !enhanced && "invisible",
-        )}
+        className={cn("pointer-events-none absolute", !enhanced && "invisible")}
+        style={{
+          top: -GLOW_PAD_CSS,
+          right: -GLOW_PAD_CSS,
+          bottom: -GLOW_PAD_CSS,
+          left: -GLOW_PAD_CSS,
+        }}
         aria-hidden
       />
     </div>

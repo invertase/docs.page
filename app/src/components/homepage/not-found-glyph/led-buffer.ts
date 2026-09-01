@@ -1,6 +1,6 @@
 /**
- * LED state + pointer brush glow, adapted from vgpu triangle-led-front
- * led-buffer.ts (rev 90b65bf4…). No RGB edge tints, no line bands, no GUI.
+ * LED state + pointer brush glow from vgpu triangle-led-front led-buffer.ts
+ * (rev 90b65bf4…). No line bands, RGB edge tints, or GUI.
  */
 
 import type { GlyphLedLayout, LedSeat } from "./outline";
@@ -10,10 +10,16 @@ export const LED_FLOATS = 8;
 const COLOR_OFFSET = 4;
 const MAX_FRAME_DELTA = 0.1;
 
+export const LED_SDF_CROP_EXPANSION_PX = 2;
+export const LED_EMITTER_MESH_EXPANSION_PX = 1;
+export const BRIGHTNESS_MIN_HOVER_MULTIPLIER = 4;
+export const BRIGHTNESS_MIN_HOVER_SMOOTHING = 0.2;
+
 export type BrushState = {
   x: number;
   y: number;
   active: boolean;
+  inside: boolean;
   isMouse: boolean;
   glowEnabled: boolean;
   glowRadius: number;
@@ -27,6 +33,7 @@ export type BrushState = {
 export type SceneTunables = {
   ledIntensity: number;
   brightnessMin: number;
+  brightnessMinDark: number;
   brightnessMax: number;
 };
 
@@ -44,6 +51,7 @@ export const DEFAULT_BRUSH = {
 export const TUNABLE_DEFAULTS: SceneTunables = {
   ledIntensity: 1,
   brightnessMin: 0.09,
+  brightnessMinDark: 0.05,
   brightnessMax: 1,
 };
 
@@ -104,6 +112,7 @@ export function computeLeds(
   time: number,
   tunables: SceneTunables,
   brush: BrushState,
+  honey: readonly [number, number, number],
 ) {
   const frameDelta =
     leds.lastFrameTime === undefined
@@ -112,16 +121,24 @@ export function computeLeds(
   leds.lastFrameTime = time;
 
   const base = clamp01(tunables.brightnessMin);
+  const [hr, hg, hb] = honey;
   for (let i = 0; i < leds.count; i++) {
-    leds.data[i * LED_FLOATS + 2] = base;
+    const slot = i * LED_FLOATS;
+    leds.data[slot + 2] = base;
+    leds.data[slot + COLOR_OFFSET] = hr;
+    leds.data[slot + COLOR_OFFSET + 1] = hg;
+    leds.data[slot + COLOR_OFFSET + 2] = hb;
+  }
+  for (let i = leds.count; i < MAX_LEDS; i++) {
+    leds.data[i * LED_FLOATS + 2] = 0;
   }
 
   const glowStrength = brush.glowStrength;
   const glowRadius = brush.glowRadius;
   const glowOn =
-    brush.active &&
-    brush.isMouse &&
-    brush.glowEnabled &&
+    brush.active === true &&
+    brush.isMouse === true &&
+    brush.glowEnabled === true &&
     glowStrength > 0 &&
     glowRadius > 0;
 
@@ -130,7 +147,7 @@ export function computeLeds(
     const alpha = smoothing > 0 ? 1 - Math.exp(-frameDelta / smoothing) : 1;
     const px = brush.x;
     const py = brush.y;
-    const facingOn = brush.glowFacingEnabled;
+    const facingOn = brush.glowFacingEnabled === true;
     const facingCosFull = Math.cos((brush.glowFacingFullDeg * Math.PI) / 180);
     const facingCosZero = Math.cos((brush.glowFacingZeroDeg * Math.PI) / 180);
     const facingDenom = facingCosFull - facingCosZero;

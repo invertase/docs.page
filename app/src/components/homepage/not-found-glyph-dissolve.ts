@@ -2,8 +2,9 @@
  * Pointer-lit honey LEDs along the live Lexend 404 outline.
  *
  * Lighting structure from vgpu triangle-led-front (rev 90b65bf4…): LED buffer,
- * emitter pass, pointer brush glow. The occluder is the rasterized 404 via
- * JFA/SDF, not a three-vertex triangle. Type is never dissolved or displaced.
+ * geometry quads, led-emitters draw, pointer brush (active + isMouse),
+ * brightnessMin hover ×4, black occluder. The occluder is the rasterized 404
+ * via JFA/SDF, not a three-vertex triangle. Type is never dissolved.
  */
 
 import type { Gpu, Surface } from "vgpu";
@@ -12,11 +13,15 @@ import { layoutGlyphLeds } from "./not-found-glyph/outline";
 import type * as Simulation from "./not-found-glyph/simulation";
 import type { GlyphScene } from "./not-found-glyph/simulation";
 
-/** Locked brand honey from the Shaders room. */
+/** Locked brand honey #E69135 from the Shaders room. */
 export const HONEY_RGB = [230 / 255, 145 / 255, 53 / 255] as const;
+
+/** Canvas pad so the official 165 CSS-px glow can wrap the silhouette. */
+export const GLOW_PAD_CSS = DEFAULT_BRUSH.glowRadius;
 
 /** COPY_DST | TEXTURE_BINDING | RENDER_ATTACHMENT */
 const GLYPH_USAGE = 0x02 | 0x04 | 0x10;
+const ALPHA_CUTOFF = 128;
 
 export type GlyphDissolveHandle = {
   readonly ready: Promise<boolean>;
@@ -29,6 +34,18 @@ function parseCssRgb(color: string): readonly [number, number, number] {
     return [Number(rgb[1]) / 255, Number(rgb[2]) / 255, Number(rgb[3]) / 255];
   }
   return HONEY_RGB;
+}
+
+function srgbToLinear(channel: number): number {
+  return channel <= 0.04045
+    ? channel / 12.92
+    : ((channel + 0.055) / 1.055) ** 2.4;
+}
+
+function toLinearHoney(
+  rgb: readonly [number, number, number],
+): readonly [number, number, number] {
+  return [srgbToLinear(rgb[0]), srgbToLinear(rgb[1]), srgbToLinear(rgb[2])];
 }
 
 function prefersReducedMotion(): boolean {
@@ -56,10 +73,16 @@ export function createGlyphDissolve(
   let unsubscribeResize: (() => void) | undefined;
   let observer: ResizeObserver | undefined;
   let raf = 0;
-  let pointerX = 0;
-  let pointerY = 0;
-  let pointerOver = false;
-  let honey: readonly [number, number, number] = HONEY_RGB;
+  let pointerX = -1000;
+  let pointerY = -1000;
+  let pointerActive = false;
+  let pointerInside = false;
+  let pointerIsMouse = false;
+  let sawMouse = false;
+  let honey: readonly [number, number, number] = toLinearHoney(HONEY_RGB);
+  let glyphPixels: Uint8ClampedArray | undefined;
+  let glyphWidth = 0;
+  let glyphHeight = 0;
 
   const glyphCanvas = document.createElement("canvas");
   const glyphCtx = glyphCanvas.getContext("2d", { willReadFrequently: true });
@@ -68,11 +91,11 @@ export function createGlyphDissolve(
   const paintGlyph = () => {
     if (!gpu || !glyph || disposed || !sim || !scene) return;
     const style = getComputedStyle(textEl);
-    honey = parseCssRgb(style.color);
+    honey = toLinearHoney(parseCssRgb(style.color));
     const width = Math.max(1, glyph.width);
     const height = Math.max(1, glyph.height);
-    const cssWidth = Math.max(1, textEl.clientWidth);
-    const cssHeight = Math.max(1, textEl.clientHeight);
+    const cssWidth = Math.max(1, canvas.clientWidth);
+    const cssHeight = Math.max(1, canvas.clientHeight);
     const dprX = width / cssWidth;
     const dprY = height / cssHeight;
 
@@ -94,6 +117,9 @@ export function createGlyphDissolve(
     );
 
     const pixels = glyphCtx.getImageData(0, 0, width, height).data;
+    glyphPixels = pixels;
+    glyphWidth = width;
+    glyphHeight = height;
     sim.updateLedLayout(scene, layoutGlyphLeds(pixels, width, height));
   };
 
@@ -109,16 +135,38 @@ export function createGlyphDissolve(
     });
   };
 
+  const glyphContains = (clientX: number, clientY: number, rect: DOMRect) => {
+    if (!glyphPixels || glyphWidth <= 0 || glyphHeight <= 0) return false;
+    const x = ((clientX - rect.left) * glyphWidth) / Math.max(1, rect.width);
+    const y = ((clientY - rect.top) * glyphHeight) / Math.max(1, rect.height);
+    if (x < 0 || y < 0 || x >= glyphWidth || y >= glyphHeight) return false;
+    const ix = Math.min(glyphWidth - 1, Math.max(0, Math.floor(x)));
+    const iy = Math.min(glyphHeight - 1, Math.max(0, Math.floor(y)));
+    return (glyphPixels[(iy * glyphWidth + ix) * 4 + 3] ?? 0) >= ALPHA_CUTOFF;
+  };
+
   const brushState = (rect: DOMRect): BrushState => {
     const dprX = (scene?.size[0] ?? rect.width) / Math.max(1, rect.width);
     const dprY = (scene?.size[1] ?? rect.height) / Math.max(1, rect.height);
+    if (!pointerActive) {
+      return {
+        ...DEFAULT_BRUSH,
+        x: -1000,
+        y: -1000,
+        glowRadius: DEFAULT_BRUSH.glowRadius * dprX,
+        active: false,
+        inside: false,
+        isMouse: false,
+      };
+    }
     return {
       ...DEFAULT_BRUSH,
       x: (pointerX - rect.left) * dprX,
       y: (pointerY - rect.top) * dprY,
       glowRadius: DEFAULT_BRUSH.glowRadius * dprX,
-      active: pointerOver,
-      isMouse: true,
+      active: true,
+      inside: pointerInside,
+      isMouse: pointerIsMouse,
     };
   };
 
@@ -134,8 +182,9 @@ export function createGlyphDissolve(
       return;
     }
     const now = performance.now() / 1000;
-    sim.tickLeds(scene, now, brushState(canvas.getBoundingClientRect()));
-    sim.renderLighting(scene, glyph, honey);
+    const rect = canvas.getBoundingClientRect();
+    sim.tickLeds(scene, now, brushState(rect), honey);
+    sim.renderLighting(scene, glyph);
     sim.presentScene(scene, canvasSurface, glyph, honey);
   };
 
@@ -150,29 +199,33 @@ export function createGlyphDissolve(
     raf = requestAnimationFrame(tick);
   };
 
-  const updatePointer = (clientX: number, clientY: number) => {
-    pointerX = clientX;
-    pointerY = clientY;
-    const rect = canvas.getBoundingClientRect();
-    pointerOver =
-      clientX >= rect.left &&
-      clientX <= rect.right &&
-      clientY >= rect.top &&
-      clientY <= rect.bottom;
+  const updatePointer = (event: PointerEvent) => {
+    const isMouse = event.pointerType === "mouse";
+    if (isMouse) sawMouse = true;
+    pointerX = event.clientX;
+    pointerY = event.clientY;
+    pointerIsMouse = isMouse;
+    pointerActive = isMouse ? sawMouse : event.buttons > 0;
+    pointerInside = glyphContains(
+      event.clientX,
+      event.clientY,
+      canvas.getBoundingClientRect(),
+    );
   };
 
   const onPointerMove = (event: PointerEvent) => {
-    updatePointer(event.clientX, event.clientY);
+    updatePointer(event);
   };
   const onPointerDown = (event: PointerEvent) => {
-    updatePointer(event.clientX, event.clientY);
+    updatePointer(event);
   };
   const onPointerUp = (event: PointerEvent) => {
     if (event.pointerType === "mouse") {
-      updatePointer(event.clientX, event.clientY);
+      updatePointer(event);
       return;
     }
-    pointerOver = false;
+    pointerActive = false;
+    pointerInside = false;
   };
 
   const rebuildScene = async (width: number, height: number) => {

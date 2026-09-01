@@ -11,7 +11,6 @@ import {
   target,
 } from "vgpu";
 
-import emitWgsl from "./emit.wgsl";
 import jfaInitWgsl from "./jfa-init.wgsl";
 import jfaPassWgsl from "./jfa-pass.wgsl";
 import {
@@ -19,8 +18,11 @@ import {
   buildLedGeometry,
   computeLeds,
   type LedGeometryState,
+  type SceneTunables,
   TUNABLE_DEFAULTS,
 } from "./led-buffer";
+import { createLedFrameState } from "./led-frame-state";
+import { createLightSources } from "./light-sources";
 import { type GlyphLedLayout, MAX_LEDS } from "./outline";
 import presentWgsl from "./present.wgsl";
 import radianceCascadeWgsl from "./radiance-cascade.wgsl";
@@ -34,7 +36,6 @@ const SEED_FORMAT: GPUTextureFormat = "rgba32float";
 const RC_INTERVAL0 = 2;
 const DIRECTION_BASE = 2;
 const LED_BYTES = MAX_LEDS * 8 * 4;
-const LED_CLIP_PX = 2;
 
 export function createScene(gpu: Gpu, requestedSize: Vec2) {
   const width = Math.max(1, Math.floor(requestedSize[0]));
@@ -70,7 +71,6 @@ export function createScene(gpu: Gpu, requestedSize: Vec2) {
   };
 
   try {
-    const emitter = own(target(gpu, { size, format: HDR_FORMAT }));
     const jfa: [Target, Target] = [
       own(target(gpu, { size, format: SEED_FORMAT })),
       own(target(gpu, { size, format: SEED_FORMAT })),
@@ -81,6 +81,7 @@ export function createScene(gpu: Gpu, requestedSize: Vec2) {
       own(target(gpu, { size: atlas, format: HDR_FORMAT })),
     ];
     const ledStorage = storage(gpu, LED_BYTES);
+    const lights = createLightSources(gpu, size, ledStorage);
     return {
       gpu,
       size,
@@ -88,14 +89,16 @@ export function createScene(gpu: Gpu, requestedSize: Vec2) {
       directionBase: DIRECTION_BASE,
       cascadeCount,
       jumps,
-      emitter,
+      emitter: lights.texture,
       jfa,
       sdf,
       cascades,
       ledStorage,
+      lights,
       leds: undefined as LedGeometryState | undefined,
+      tunables: { ...TUNABLE_DEFAULTS } as SceneTunables,
+      frameState: createLedFrameState(),
       effects: {
-        emit: effect(gpu, emitWgsl, { label: "404-led-emit" }),
         jfaInit: effect(gpu, jfaInitWgsl, { label: "404-jfa-init" }),
         jfaSteps: jumps.map(() =>
           effect(gpu, jfaPassWgsl, { label: "404-jfa-step" }),
@@ -130,7 +133,7 @@ export async function prepareScene(
   outputFormat: GPUTextureFormat,
 ): Promise<void> {
   await Promise.all([
-    scene.effects.emit.compile({ colors: [HDR_FORMAT] }),
+    scene.lights.ready,
     scene.effects.jfaInit.compile({ colors: [SEED_FORMAT] }),
     ...scene.effects.jfaSteps.map((shader) =>
       shader.compile({ colors: [SEED_FORMAT] }),
@@ -145,11 +148,16 @@ export async function prepareScene(
 
 export function destroyScene(scene: GlyphScene): void {
   try {
+    scene.lights.destroy();
+  } catch {
+    // Best-effort emitter teardown.
+  }
+  try {
     (scene.ledStorage as StorageBuffer & { destroy?: () => void }).destroy?.();
   } catch {
     // Best-effort LED buffer teardown.
   }
-  destroyTargets([scene.emitter, ...scene.jfa, scene.sdf, ...scene.cascades]);
+  destroyTargets([...scene.jfa, scene.sdf, ...scene.cascades]);
 }
 
 function destroyTargets(targets: readonly Target[]): void {
@@ -170,23 +178,28 @@ export function updateLedLayout(
 ): void {
   scene.leds = buildLedGeometry(layout, scene.leds);
   scene.ledStorage.write(scene.leds.data.buffer as ArrayBuffer);
+  scene.lights.updateMesh(layout);
 }
 
 export function tickLeds(
   scene: GlyphScene,
   time: number,
   brush: BrushState,
+  honey: readonly [number, number, number],
 ): void {
   if (!scene.leds) return;
-  computeLeds(scene.leds, time, TUNABLE_DEFAULTS, brush);
-  scene.ledStorage.write(scene.leds.data.buffer as ArrayBuffer);
+  const { tunables } = scene.frameState.resolveFrame({
+    time,
+    brush,
+    updateLedsFor(ctx) {
+      computeLeds(scene.leds!, ctx.time, ctx.tunables, ctx.brush, honey);
+      scene.ledStorage.write(scene.leds!.data.buffer as ArrayBuffer);
+    },
+  });
+  scene.tunables = tunables;
 }
 
-function buildChain(
-  scene: GlyphScene,
-  glyph: GPUTexture,
-  honey: readonly [number, number, number],
-) {
+function buildSdfPasses(scene: GlyphScene, glyph: GPUTexture) {
   const { effects } = scene;
   const passes: { readonly target: Target; readonly effect: Effect }[] = [];
 
@@ -204,35 +217,15 @@ function buildChain(
 
   effects.sdfFinalize.set({ seeds: seedRead });
   passes.push({ target: scene.sdf, effect: effects.sdfFinalize });
+  return passes;
+}
 
-  const leds = scene.leds;
-  effects.emit.set({
-    cfg: {
-      resolution: [scene.size[0], scene.size[1]],
-      tunables: [
-        TUNABLE_DEFAULTS.ledIntensity,
-        TUNABLE_DEFAULTS.brightnessMin,
-        TUNABLE_DEFAULTS.brightnessMax,
-        LED_CLIP_PX,
-      ],
-      honey: [honey[0], honey[1], honey[2], 1],
-      shape: [
-        leds?.tangentHalfLength ?? 4,
-        leds?.normalHalfThickness ?? 3,
-        leds?.count ?? 0,
-        0,
-      ],
-    },
-    leds: scene.ledStorage,
-    sdf_tex: scene.sdf,
-    sdf_samp: scene.sampler,
-  });
-  passes.push({ target: scene.emitter, effect: effects.emit });
-
+function buildCascadePasses(scene: GlyphScene) {
+  const passes: { readonly target: Target; readonly effect: Effect }[] = [];
   let atlasWrite = scene.cascades[0];
   let atlasRead = scene.cascades[1];
   for (let cascade = scene.cascadeCount - 1; cascade >= 0; cascade--) {
-    const shader = effects.cascade[cascade]!;
+    const shader = scene.effects.cascade[cascade]!;
     shader.set({
       rc: {
         state: [
@@ -255,14 +248,25 @@ function buildChain(
   return passes;
 }
 
-export function renderLighting(
-  scene: GlyphScene,
-  glyph: GPUTexture,
-  honey: readonly [number, number, number],
-): void {
-  const passes = buildChain(scene, glyph, honey);
+export function renderLighting(scene: GlyphScene, glyph: GPUTexture): void {
+  const sdfPasses = buildSdfPasses(scene, glyph);
+  const cascadePasses = buildCascadePasses(scene);
+
   frame(scene.gpu, (currentFrame) => {
-    for (const pass of passes) {
+    for (const pass of sdfPasses) {
+      currentFrame.pass(
+        { target: pass.target, clear: [0, 0, 0, 0] },
+        (encoder) => encoder.draw(pass.effect),
+      );
+    }
+    scene.lights.encode({
+      frame: currentFrame,
+      tunables: scene.tunables,
+      sdf: scene.sdf,
+      sdfSampler: scene.sampler,
+      ledStorage: scene.ledStorage,
+    });
+    for (const pass of cascadePasses) {
       currentFrame.pass(
         { target: pass.target, clear: [0, 0, 0, 0] },
         (encoder) => encoder.draw(pass.effect),
@@ -279,7 +283,7 @@ export function presentScene(
 ): void {
   scene.effects.present.set({
     present: {
-      display: [1.2, 0, 0, scene.directionBase],
+      display: [1, 0, 0, scene.directionBase],
       honey: [honey[0], honey[1], honey[2], 1],
     },
     cascade_tex: scene.cascades[0],
