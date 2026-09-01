@@ -3,8 +3,10 @@ import {
   effect,
   frame,
   type Gpu,
+  type StorageBuffer,
   type Surface,
   sampler,
+  storage,
   type Target,
   target,
 } from "vgpu";
@@ -12,6 +14,14 @@ import {
 import emitWgsl from "./emit.wgsl";
 import jfaInitWgsl from "./jfa-init.wgsl";
 import jfaPassWgsl from "./jfa-pass.wgsl";
+import {
+  type BrushState,
+  buildLedGeometry,
+  computeLeds,
+  type LedGeometryState,
+  TUNABLE_DEFAULTS,
+} from "./led-buffer";
+import { type GlyphLedLayout, MAX_LEDS } from "./outline";
 import presentWgsl from "./present.wgsl";
 import radianceCascadeWgsl from "./radiance-cascade.wgsl";
 import sdfFinalizeWgsl from "./sdf-finalize.wgsl";
@@ -23,20 +33,8 @@ const HDR_FORMAT: GPUTextureFormat = "rgba16float";
 const SEED_FORMAT: GPUTextureFormat = "rgba32float";
 const RC_INTERVAL0 = 2;
 const DIRECTION_BASE = 2;
-
-export type DotsUniforms = {
-  origin: readonly [number, number];
-  css_size: readonly [number, number];
-  pointer: readonly [number, number];
-  enabled: number;
-  honey: readonly [number, number, number, number];
-  speck_glow: number;
-  page_cell: number;
-  dot_radius: number;
-  head_inner: number;
-  head_outer: number;
-  trail: readonly (readonly [number, number, number, number])[];
-};
+const LED_BYTES = MAX_LEDS * 8 * 4;
+const LED_CLIP_PX = 2;
 
 export function createScene(gpu: Gpu, requestedSize: Vec2) {
   const width = Math.max(1, Math.floor(requestedSize[0]));
@@ -82,6 +80,7 @@ export function createScene(gpu: Gpu, requestedSize: Vec2) {
       own(target(gpu, { size: atlas, format: HDR_FORMAT })),
       own(target(gpu, { size: atlas, format: HDR_FORMAT })),
     ];
+    const ledStorage = storage(gpu, LED_BYTES);
     return {
       gpu,
       size,
@@ -93,8 +92,10 @@ export function createScene(gpu: Gpu, requestedSize: Vec2) {
       jfa,
       sdf,
       cascades,
+      ledStorage,
+      leds: undefined as LedGeometryState | undefined,
       effects: {
-        emit: effect(gpu, emitWgsl, { label: "404-emit" }),
+        emit: effect(gpu, emitWgsl, { label: "404-led-emit" }),
         jfaInit: effect(gpu, jfaInitWgsl, { label: "404-jfa-init" }),
         jfaSteps: jumps.map(() =>
           effect(gpu, jfaPassWgsl, { label: "404-jfa-step" }),
@@ -143,6 +144,11 @@ export async function prepareScene(
 }
 
 export function destroyScene(scene: GlyphScene): void {
+  try {
+    (scene.ledStorage as StorageBuffer & { destroy?: () => void }).destroy?.();
+  } catch {
+    // Best-effort LED buffer teardown.
+  }
   destroyTargets([scene.emitter, ...scene.jfa, scene.sdf, ...scene.cascades]);
 }
 
@@ -158,16 +164,33 @@ function destroyTargets(targets: readonly Target[]): void {
   if (firstError) throw firstError;
 }
 
-function buildChain(scene: GlyphScene, dots: DotsUniforms) {
+export function updateLedLayout(
+  scene: GlyphScene,
+  layout: GlyphLedLayout,
+): void {
+  scene.leds = buildLedGeometry(layout, scene.leds);
+  scene.ledStorage.write(scene.leds.data.buffer as ArrayBuffer);
+}
+
+export function tickLeds(
+  scene: GlyphScene,
+  time: number,
+  brush: BrushState,
+): void {
+  if (!scene.leds) return;
+  computeLeds(scene.leds, time, TUNABLE_DEFAULTS, brush);
+  scene.ledStorage.write(scene.leds.data.buffer as ArrayBuffer);
+}
+
+function buildChain(
+  scene: GlyphScene,
+  glyph: GPUTexture,
+  honey: readonly [number, number, number],
+) {
   const { effects } = scene;
   const passes: { readonly target: Target; readonly effect: Effect }[] = [];
 
-  effects.emit.set({
-    dots,
-  });
-  passes.push({ target: scene.emitter, effect: effects.emit });
-
-  effects.jfaInit.set({ emitter: scene.emitter });
+  effects.jfaInit.set({ glyph });
   passes.push({ target: scene.jfa[0], effect: effects.jfaInit });
   let seedRead = scene.jfa[0];
   let seedWrite = scene.jfa[1];
@@ -181,6 +204,30 @@ function buildChain(scene: GlyphScene, dots: DotsUniforms) {
 
   effects.sdfFinalize.set({ seeds: seedRead });
   passes.push({ target: scene.sdf, effect: effects.sdfFinalize });
+
+  const leds = scene.leds;
+  effects.emit.set({
+    cfg: {
+      resolution: [scene.size[0], scene.size[1]],
+      tunables: [
+        TUNABLE_DEFAULTS.ledIntensity,
+        TUNABLE_DEFAULTS.brightnessMin,
+        TUNABLE_DEFAULTS.brightnessMax,
+        LED_CLIP_PX,
+      ],
+      honey: [honey[0], honey[1], honey[2], 1],
+      shape: [
+        leds?.tangentHalfLength ?? 4,
+        leds?.normalHalfThickness ?? 3,
+        leds?.count ?? 0,
+        0,
+      ],
+    },
+    leds: scene.ledStorage,
+    sdf_tex: scene.sdf,
+    sdf_samp: scene.sampler,
+  });
+  passes.push({ target: scene.emitter, effect: effects.emit });
 
   let atlasWrite = scene.cascades[0];
   let atlasRead = scene.cascades[1];
@@ -208,8 +255,12 @@ function buildChain(scene: GlyphScene, dots: DotsUniforms) {
   return passes;
 }
 
-export function renderLighting(scene: GlyphScene, dots: DotsUniforms): void {
-  const passes = buildChain(scene, dots);
+export function renderLighting(
+  scene: GlyphScene,
+  glyph: GPUTexture,
+  honey: readonly [number, number, number],
+): void {
+  const passes = buildChain(scene, glyph, honey);
   frame(scene.gpu, (currentFrame) => {
     for (const pass of passes) {
       currentFrame.pass(
@@ -225,22 +276,11 @@ export function presentScene(
   output: Output,
   glyph: GPUTexture,
   honey: readonly [number, number, number],
-  dots: DotsUniforms,
-  motion: readonly [number, number],
 ): void {
-  const dprX = scene.size[0] / Math.max(1, dots.css_size[0]);
-  const dprY = scene.size[1] / Math.max(1, dots.css_size[1]);
   scene.effects.present.set({
     present: {
-      display: [1.35, 10 * dprX, dots.enabled, scene.directionBase],
+      display: [1.2, 0, 0, scene.directionBase],
       honey: [honey[0], honey[1], honey[2], 1],
-      warp: [
-        (dots.pointer[0] - dots.origin[0]) * dprX,
-        (dots.pointer[1] - dots.origin[1]) * dprY,
-        dots.head_inner * dprX,
-        dots.head_outer * dprX,
-      ],
-      smear: [motion[0] * dprX, motion[1] * dprY, 0, 0],
     },
     cascade_tex: scene.cascades[0],
     emitter_tex: scene.emitter,

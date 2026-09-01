@@ -1,31 +1,19 @@
 /**
- * Pointer-driven honey light on vgpu, with a local UV shove on the 404.
+ * Pointer-lit honey LEDs along the live Lexend 404 outline.
  *
- * The filled Lexend 404 stays; under the tight pointer head the glyph UVs are
- * offset so the stroke smears. The page 22px lattice lights honey in the gaps
- * and is never displaced.
+ * Lighting structure from vgpu triangle-led-front (rev 90b65bf4…): LED buffer,
+ * emitter pass, pointer brush glow. The occluder is the rasterized 404 via
+ * JFA/SDF, not a three-vertex triangle. Type is never dissolved or displaced.
  */
 
 import type { Gpu, Surface } from "vgpu";
+import { type BrushState, DEFAULT_BRUSH } from "./not-found-glyph/led-buffer";
+import { layoutGlyphLeds } from "./not-found-glyph/outline";
 import type * as Simulation from "./not-found-glyph/simulation";
-import type { DotsUniforms, GlyphScene } from "./not-found-glyph/simulation";
-
-/** Matches `.homepage-spot-grid` in homepage.module.css */
-export const SPOT_GRID_CELL_PX = 22;
-export const SPOT_GRID_DOT_RADIUS_PX = 1;
-
-/** Soft halo around each 1px lattice speck (CSS px). */
-const SPECK_GLOW_PX = 3.6;
+import type { GlyphScene } from "./not-found-glyph/simulation";
 
 /** Locked brand honey from the Shaders room. */
 export const HONEY_RGB = [230 / 255, 145 / 255, 53 / 255] as const;
-
-/** Tight spotlight, about the hole in the 0 — not a page-wide orb. */
-const HEAD_INNER_PX = 8;
-const HEAD_OUTER_PX = 36;
-const TRAIL_LIFE_MS = 280;
-const TRAIL_COUNT = 12;
-const TRAIL_RECORD_PX = 6;
 
 /** COPY_DST | TEXTURE_BINDING | RENDER_ATTACHMENT */
 const GLYPH_USAGE = 0x02 | 0x04 | 0x10;
@@ -51,10 +39,6 @@ function hasWebGpu(): boolean {
   return typeof navigator !== "undefined" && Boolean(navigator.gpu);
 }
 
-function snapTo(value: number, cell: number): number {
-  return (Math.floor(value / cell) + 0.5) * cell;
-}
-
 export function createGlyphDissolve(
   canvas: HTMLCanvasElement,
   textEl: HTMLElement,
@@ -72,26 +56,17 @@ export function createGlyphDissolve(
   let unsubscribeResize: (() => void) | undefined;
   let observer: ResizeObserver | undefined;
   let raf = 0;
-  let lastTs = performance.now();
-  let active = 0;
-  let targetActive = 0;
   let pointerX = 0;
   let pointerY = 0;
-  let motionX = 0;
-  let motionY = 0;
+  let pointerOver = false;
   let honey: readonly [number, number, number] = HONEY_RGB;
-  const trail: { x: number; y: number; t: number }[] = [];
-  const trailSlots: [number, number, number, number][] = Array.from(
-    { length: TRAIL_COUNT },
-    () => [0, 0, 0, 0],
-  );
 
   const glyphCanvas = document.createElement("canvas");
-  const glyphCtx = glyphCanvas.getContext("2d");
+  const glyphCtx = glyphCanvas.getContext("2d", { willReadFrequently: true });
   if (!glyphCtx) return null;
 
   const paintGlyph = () => {
-    if (!gpu || !glyph || disposed) return;
+    if (!gpu || !glyph || disposed || !sim || !scene) return;
     const style = getComputedStyle(textEl);
     honey = parseCssRgb(style.color);
     const width = Math.max(1, glyph.width);
@@ -117,6 +92,9 @@ export function createGlyphDissolve(
       { texture: glyph },
       [width, height],
     );
+
+    const pixels = glyphCtx.getImageData(0, 0, width, height).data;
+    sim.updateLedLayout(scene, layoutGlyphLeds(pixels, width, height));
   };
 
   const allocGlyph = (width: number, height: number) => {
@@ -131,49 +109,18 @@ export function createGlyphDissolve(
     });
   };
 
-  const packTrail = (now: number) => {
-    const cutoff = now - TRAIL_LIFE_MS;
-    while (trail.length > 0 && trail[trail.length - 1].t < cutoff) {
-      trail.pop();
-    }
-    for (const slot of trailSlots) {
-      slot[0] = 0;
-      slot[1] = 0;
-      slot[2] = 0;
-      slot[3] = 0;
-    }
-    const seen = new Set<string>();
-    let index = 0;
-    for (let i = 0; i < trail.length && index < TRAIL_COUNT; i++) {
-      const sample = trail[i];
-      const age = Math.min(1, (now - sample.t) / TRAIL_LIFE_MS);
-      const fade = Math.max(0, 1 - age);
-      const pageX = snapTo(sample.x, SPOT_GRID_CELL_PX);
-      const pageY = snapTo(sample.y, SPOT_GRID_CELL_PX);
-      const key = `${Math.round(pageX / SPOT_GRID_CELL_PX)}:${Math.round(pageY / SPOT_GRID_CELL_PX)}`;
-      if (seen.has(key)) continue;
-      seen.add(key);
-      const slot = trailSlots[index]!;
-      slot[0] = pageX;
-      slot[1] = pageY;
-      slot[2] = fade;
-      index += 1;
-    }
+  const brushState = (rect: DOMRect): BrushState => {
+    const dprX = (scene?.size[0] ?? rect.width) / Math.max(1, rect.width);
+    const dprY = (scene?.size[1] ?? rect.height) / Math.max(1, rect.height);
+    return {
+      ...DEFAULT_BRUSH,
+      x: (pointerX - rect.left) * dprX,
+      y: (pointerY - rect.top) * dprY,
+      glowRadius: DEFAULT_BRUSH.glowRadius * dprX,
+      active: pointerOver,
+      isMouse: true,
+    };
   };
-
-  const dotsUniforms = (rect: DOMRect): DotsUniforms => ({
-    origin: [rect.left, rect.top],
-    css_size: [Math.max(1, rect.width), Math.max(1, rect.height)],
-    pointer: [pointerX, pointerY],
-    enabled: active,
-    honey: [honey[0], honey[1], honey[2], 1],
-    speck_glow: SPECK_GLOW_PX,
-    page_cell: SPOT_GRID_CELL_PX,
-    dot_radius: SPOT_GRID_DOT_RADIUS_PX,
-    head_inner: HEAD_INNER_PX,
-    head_outer: HEAD_OUTER_PX,
-    trail: trailSlots,
-  });
 
   const draw = () => {
     if (
@@ -186,23 +133,14 @@ export function createGlyphDissolve(
     ) {
       return;
     }
-    packTrail(performance.now());
-    const uniforms = dotsUniforms(canvas.getBoundingClientRect());
-    sim.renderLighting(scene, uniforms);
-    sim.presentScene(scene, canvasSurface, glyph, honey, uniforms, [
-      motionX,
-      motionY,
-    ]);
+    const now = performance.now() / 1000;
+    sim.tickLeds(scene, now, brushState(canvas.getBoundingClientRect()));
+    sim.renderLighting(scene, glyph, honey);
+    sim.presentScene(scene, canvasSurface, glyph, honey);
   };
 
-  const tick = (ts: number) => {
+  const tick = () => {
     if (disposed) return;
-    const dt = Math.min(0.05, Math.max(0, (ts - lastTs) / 1000));
-    lastTs = ts;
-    active += (targetActive - active) * (1 - Math.exp(-dt * 14));
-    if (Math.abs(active) < 0.001 && targetActive === 0) active = 0;
-    motionX *= Math.exp(-dt * 10);
-    motionY *= Math.exp(-dt * 10);
     try {
       draw();
     } catch {
@@ -212,45 +150,15 @@ export function createGlyphDissolve(
     raf = requestAnimationFrame(tick);
   };
 
-  const noteTrail = (clientX: number, clientY: number, over: boolean) => {
-    if (!over) return;
-    const t = performance.now();
-    const head = trail[0];
-    if (
-      !head ||
-      Math.hypot(clientX - head.x, clientY - head.y) >= TRAIL_RECORD_PX
-    ) {
-      trail.unshift({ x: clientX, y: clientY, t });
-    } else {
-      head.x = clientX;
-      head.y = clientY;
-      head.t = t;
-    }
-    if (trail.length > TRAIL_COUNT) trail.length = TRAIL_COUNT;
-  };
-
   const updatePointer = (clientX: number, clientY: number) => {
-    const dx = clientX - pointerX;
-    const dy = clientY - pointerY;
-    if (pointerX !== 0 || pointerY !== 0) {
-      motionX += (dx - motionX) * 0.4;
-      motionY += (dy - motionY) * 0.4;
-      const len = Math.hypot(motionX, motionY);
-      if (len > 18) {
-        motionX = (motionX / len) * 18;
-        motionY = (motionY / len) * 18;
-      }
-    }
     pointerX = clientX;
     pointerY = clientY;
     const rect = canvas.getBoundingClientRect();
-    const over =
+    pointerOver =
       clientX >= rect.left &&
       clientX <= rect.right &&
       clientY >= rect.top &&
       clientY <= rect.bottom;
-    targetActive = over ? 1 : 0;
-    noteTrail(clientX, clientY, over);
   };
 
   const onPointerMove = (event: PointerEvent) => {
@@ -264,7 +172,7 @@ export function createGlyphDissolve(
       updatePointer(event.clientX, event.clientY);
       return;
     }
-    targetActive = 0;
+    pointerOver = false;
   };
 
   const rebuildScene = async (width: number, height: number) => {
@@ -357,7 +265,6 @@ export function createGlyphDissolve(
     void document.fonts?.ready?.then(() => {
       if (!disposed) paintGlyph();
     });
-    lastTs = performance.now();
     try {
       draw();
     } catch {
