@@ -8,8 +8,7 @@
       "!**/dist",
       "!**/.next",
       "!**/*.css",
-      "!**/app/public",
-      "!**/*.wgsl"
+      "!**/app/public"
     ]
   },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },

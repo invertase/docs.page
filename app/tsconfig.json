@@ -24,7 +24,6 @@
   },
   "include": [
     "next-env.d.ts",
-    "src/wgsl-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     "src/**/*.json",
