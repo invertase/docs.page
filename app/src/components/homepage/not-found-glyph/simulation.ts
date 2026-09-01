@@ -36,6 +36,8 @@ const SEED_FORMAT: GPUTextureFormat = "rgba32float";
 const RC_INTERVAL0 = 2;
 const DIRECTION_BASE = 2;
 const LED_BYTES = MAX_LEDS * 8 * 4;
+/** triangle-led-front scene-renderer.ts DIRECT_TRIANGLE_INTENSITY_SCALE */
+const DIRECT_TRIANGLE_INTENSITY_SCALE = 50;
 
 export function createScene(gpu: Gpu, requestedSize: Vec2) {
   const width = Math.max(1, Math.floor(requestedSize[0]));
@@ -283,13 +285,14 @@ export function presentScene(
 ): void {
   scene.effects.present.set({
     present: {
-      display: [1, 0, 0, scene.directionBase],
+      display: [DIRECT_TRIANGLE_INTENSITY_SCALE, 0, 0, scene.directionBase],
       honey: [honey[0], honey[1], honey[2], 1],
     },
     cascade_tex: scene.cascades[0],
     emitter_tex: scene.emitter,
     glyph_tex: glyph,
     glyph_samp: scene.sampler,
+    sdf_tex: scene.sdf,
   });
   frame(scene.gpu, (currentFrame) => {
     currentFrame.pass({ target: output, clear: [0, 0, 0, 0] }, (encoder) =>

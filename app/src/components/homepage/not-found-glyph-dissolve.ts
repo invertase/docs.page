@@ -29,14 +29,6 @@ export type GlyphDissolveHandle = {
   dispose: () => void;
 };
 
-function parseCssRgb(color: string): readonly [number, number, number] {
-  const rgb = color.match(/rgba?\(\s*([\d.]+)[,\s/]+([\d.]+)[,\s/]+([\d.]+)/);
-  if (rgb) {
-    return [Number(rgb[1]) / 255, Number(rgb[2]) / 255, Number(rgb[3]) / 255];
-  }
-  return HONEY_RGB;
-}
-
 function srgbToLinear(channel: number): number {
   return channel <= 0.04045
     ? channel / 12.92
@@ -92,11 +84,20 @@ export function createGlyphDissolve(
   const paintGlyph = () => {
     if (!gpu || !glyph || disposed || !sim || !scene) return;
     const style = getComputedStyle(textEl);
-    honey = toLinearHoney(parseCssRgb(style.color));
+    // Measure node is text-transparent; lighting stays locked honey #E69135.
+    honey = toLinearHoney(HONEY_RGB);
     const width = Math.max(1, glyph.width);
     const height = Math.max(1, glyph.height);
-    const cssWidth = Math.max(1, canvas.clientWidth);
-    const cssHeight = Math.max(1, canvas.clientHeight);
+    const cssWidth = Math.max(
+      1,
+      canvas.clientWidth,
+      textEl.clientWidth + GLOW_PAD_CSS * 2,
+    );
+    const cssHeight = Math.max(
+      1,
+      canvas.clientHeight,
+      textEl.clientHeight + GLOW_PAD_CSS * 2,
+    );
     const dprX = width / cssWidth;
     const dprY = height / cssHeight;
 
@@ -303,6 +304,10 @@ export function createGlyphDissolve(
       firstRebuild ??= run;
       void run;
     });
+    if (!firstRebuild) {
+      const size = canvasSurface.size;
+      firstRebuild = rebuildScene(size[0], size[1]);
+    }
     await firstRebuild;
     if (disposed || !scenePrepared) {
       dispose();

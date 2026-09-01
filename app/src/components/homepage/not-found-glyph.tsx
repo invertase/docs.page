@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { createGlyphDissolve, GLOW_PAD_CSS } from "./not-found-glyph-dissolve";
 
 const GLYPH_CLASS =
-  "font-heading font-light text-primary text-[9.72rem] leading-none sm:text-[12.96rem] md:text-[16.2rem]";
+  "font-heading font-light text-[9.72rem] leading-none sm:text-[12.96rem] md:text-[16.2rem]";
 
 export function NotFoundGlyph() {
   const textRef = useRef<HTMLParagraphElement>(null);
@@ -34,12 +34,22 @@ export function NotFoundGlyph() {
 
   return (
     <div className="relative inline-block select-none">
-      <p ref={textRef} className={cn(GLYPH_CLASS, enhanced && "opacity-0")}>
+      <p
+        ref={textRef}
+        className={cn(GLYPH_CLASS, "text-transparent")}
+        aria-hidden
+      >
         404
       </p>
+      {!enhanced && (
+        <p className={cn(GLYPH_CLASS, "absolute inset-0 text-primary")}>404</p>
+      )}
       <canvas
         ref={canvasRef}
-        className={cn("pointer-events-none absolute", !enhanced && "invisible")}
+        className={cn(
+          "pointer-events-none absolute z-10",
+          !enhanced && "invisible",
+        )}
         style={{
           top: -GLOW_PAD_CSS,
           right: -GLOW_PAD_CSS,
