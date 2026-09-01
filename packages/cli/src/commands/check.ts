@@ -28,6 +28,10 @@ const SEVERITIES = ["off", "warn", "error"] as const;
 const FRONTMATTER_LINK_FIELDS = ["redirect", "next", "previous"] as const;
 const EXTERNAL_LINK_TIMEOUT_MS = 10_000;
 const EXTERNAL_LINK_CONCURRENCY = 8;
+// Statuses a host returns when it refuses to serve an automated client rather
+// than because the target is missing. These are reported as warnings so a bot
+// gate never fails CI, while 404s, 5xxs, DNS failures and timeouts stay errors.
+const BOT_GATE_STATUSES = new Set([401, 403, 405, 429]);
 const RENDER_CONCURRENCY = 4;
 
 type Severity = (typeof SEVERITIES)[number];
@@ -47,6 +51,13 @@ type CheckIssue = {
   line?: number;
   message: string;
   target?: string;
+};
+
+export type ExternalLinkFailure = {
+  // "unverified" means the host refused the automated request, so the link was
+  // never actually checked; "broken" means the target did not resolve.
+  kind: "unverified" | "broken";
+  message: string;
 };
 
 type ReferenceKind = "link" | "image" | "frontmatter";
@@ -136,7 +147,10 @@ async function runCheck(rootDir: string, options: CheckOptions) {
 
   const maps = buildDocsMaps(mdxFiles);
   const externalReferences: Reference[] = [];
-  const externalCheckCache = new Map<string, Promise<string | undefined>>();
+  const externalCheckCache = new Map<
+    string,
+    Promise<ExternalLinkFailure | undefined>
+  >();
 
   reportProjectMetadataIssues({
     config: parsedConfig,
@@ -210,17 +224,17 @@ async function runCheck(rootDir: string, options: CheckOptions) {
           return;
         }
 
-        const result = await getCachedExternalCheck(
+        const failure = await getCachedExternalCheck(
           externalCheckCache,
           target.url,
         );
 
-        if (result) {
+        if (failure) {
           reporter.report({
-            severity: externalSeverity,
+            severity: resolveExternalIssueSeverity(failure, externalSeverity),
             file: reference.file,
             line: reference.line,
-            message: result,
+            message: failure.message,
             target: reference.target,
           });
         }
@@ -751,8 +765,20 @@ function classifyTarget(rawTarget: string): Target {
   };
 }
 
+/**
+ * A bot gate proves nothing about the link, so it is only ever reported as a
+ * warning and never fails CI. An explicit `--external-links warn` is never
+ * upgraded, and `--external-links off` skips the request entirely.
+ */
+export function resolveExternalIssueSeverity(
+  failure: ExternalLinkFailure,
+  severity: ReportableSeverity,
+): ReportableSeverity {
+  return failure.kind === "unverified" ? "warn" : severity;
+}
+
 async function getCachedExternalCheck(
-  cache: Map<string, Promise<string | undefined>>,
+  cache: Map<string, Promise<ExternalLinkFailure | undefined>>,
   url: string,
 ) {
   let check = cache.get(url);
@@ -765,7 +791,13 @@ async function getCachedExternalCheck(
   return check;
 }
 
-async function checkExternalUrl(url: string) {
+/**
+ * Resolve an external URL, returning `undefined` when it is reachable and a
+ * classified failure otherwise. Exported for tests.
+ */
+export async function checkExternalUrl(
+  url: string,
+): Promise<ExternalLinkFailure | undefined> {
   const headResult = await requestExternalUrl(url, "HEAD");
 
   if (headResult.ok) {
@@ -778,9 +810,27 @@ async function checkExternalUrl(url: string) {
     return undefined;
   }
 
-  return (
-    getResult.message || headResult.message || "External link did not resolve."
-  );
+  // GET is the authoritative attempt because many hosts do not implement HEAD;
+  // the HEAD response is only consulted when GET produced no response at all.
+  const response = getResult.status === undefined ? headResult : getResult;
+
+  if (response.status !== undefined && BOT_GATE_STATUSES.has(response.status)) {
+    return {
+      kind: "unverified",
+      message: `External link host rejected an automated request (${formatStatus(
+        response.status,
+        response.statusText,
+      )}); the link was not verified.`,
+    };
+  }
+
+  return {
+    kind: "broken",
+    message:
+      getResult.message ||
+      headResult.message ||
+      "External link did not resolve.",
+  };
 }
 
 async function requestExternalUrl(url: string, method: "GET" | "HEAD") {
@@ -805,6 +855,8 @@ async function requestExternalUrl(url: string, method: "GET" | "HEAD") {
 
     return {
       ok,
+      status: response.status,
+      statusText: response.statusText,
       message: ok
         ? undefined
         : `External link returned ${response.status} ${response.statusText}.`,
@@ -812,11 +864,17 @@ async function requestExternalUrl(url: string, method: "GET" | "HEAD") {
   } catch (error) {
     return {
       ok: false,
+      status: undefined,
+      statusText: undefined,
       message: `Unable to reach external link: ${getErrorMessage(error)}`,
     };
   } finally {
     clearTimeout(timeout);
   }
+}
+
+function formatStatus(status: number, statusText: string | undefined) {
+  return statusText ? `${status} ${statusText}` : `${status}`;
 }
 
 function getInternalLinkMessage(reference: Reference) {
