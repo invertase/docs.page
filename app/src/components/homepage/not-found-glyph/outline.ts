@@ -40,7 +40,9 @@ export function layoutGlyphLeds(
   height: number,
 ): GlyphLedLayout {
   const loops = traceAlphaContours(pixels, width, height);
-  const spacing = LED_SPACING_PX;
+  // triangle-led-front uses LEDS_PER_EDGE=24 on three sides; 404 uses a
+  // coarser pitch along the live outline so the ring stays cheap.
+  const spacing = Math.max(LED_SPACING_PX, Math.round(336 / LEDS_PER_EDGE));
   const radius = Math.max(2, height * LED_RADIUS_TO_HEIGHT);
   const shape: LedShape = {
     normalHalfThickness: radius * LED_NORMAL_HALF_TO_RADIUS,

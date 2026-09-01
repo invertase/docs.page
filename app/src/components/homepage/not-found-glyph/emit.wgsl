@@ -1,6 +1,7 @@
 // Honey LED emitters along the 404 outline.
 // Structure from triangle-led-front shaders/led-emitters.wgsl (rev 90b65bf4…):
-// LED storage + intensity mix. Clip uses the glyph SDF instead of triangle_sdf.
+// LED storage + intensity mix. Official LEDS_PER_EDGE=24; 404 seats along
+// traced contours instead. Clip uses the glyph SDF instead of triangle_sdf.
 
 struct Config {
   resolution: vec2f,
