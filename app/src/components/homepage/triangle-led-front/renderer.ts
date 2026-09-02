@@ -166,7 +166,6 @@ function cssSizeOf(canvas: HTMLCanvasElement, dpr: Surface['dpr']) {
 
 function installCanvasInput(canvas: HTMLCanvasElement) {
   let currentBrush = brushState(DEFAULT_BRUSH);
-  let deployActive = false;
   let activePointer: number | undefined;
   const previousTouchAction = canvas.style.touchAction;
   canvas.style.touchAction = 'none';
@@ -198,7 +197,7 @@ function installCanvasInput(canvas: HTMLCanvasElement) {
   const move = (event: PointerEvent) => { update(event); };
   const up = (event: PointerEvent) => {
     if (!event.isPrimary || (activePointer !== undefined && event.pointerId !== activePointer)) return;
-    if (update(event)) deployActive = !deployActive;
+    update(event);
     if (canvas.hasPointerCapture?.(event.pointerId)) canvas.releasePointerCapture(event.pointerId);
     activePointer = undefined;
   };
@@ -216,7 +215,7 @@ function installCanvasInput(canvas: HTMLCanvasElement) {
   canvas.addEventListener('pointerleave', pointerLeave);
   return {
     brush: () => currentBrush,
-    rgbDeployActive: () => deployActive,
+    rgbDeployActive: () => activePointer !== undefined,
     dispose() {
       canvas.removeEventListener('pointerdown', down);
       canvas.removeEventListener('pointermove', move);

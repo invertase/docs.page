@@ -22,12 +22,9 @@ const CLICK_SPEED_BOOST_PEAK = 10;
 const INACTIVE_EDGE_BRIGHTNESS_FACTOR = 0.125;
 // docs.page honey #E69135 (sRGB 230,145,53) → IEC 61966-2-1 linear.
 const HONEY_LINEAR = { r: 0.791298, g: 0.283149, b: 0.035601 };
-const EDGE_RED = { r: 0.896269, g: 0.027321, b: 0.051269 };
-const EDGE_GREEN = { r: 0, g: 0.40724, b: 0.048172 };
-const EDGE_BLUE = { r: 0, g: 0.278894, b: 1 };
-const LUMA_R = 0.2126;
-const LUMA_G = 0.7152;
-const LUMA_B = 0.0722;
+// docs.page periwinkle #5368BD (sRGB 83,104,189) → linear, then scaled so
+// luma matches honey (0.373) at the same ledIntensity.
+const PERIWINKLE_LINEAR = { r: 0.209497, g: 0.33527, b: 1.232469 };
 
 const LINE_CENTERS_START = [
   6,
@@ -287,7 +284,7 @@ export function computeLeds(
 
   const deployFactor = clamp01(hoverDeploy?.factor ?? 0);
   if (deployFactor > 0) {
-    updateDeployingRgb(leds, leds.deployingState, hoverDeploy?.tint);
+    updateDeployingRgb(leds, leds.deployingState);
     lerpLedState(leds.data, leds.data, leds.deployingState, deployFactor);
   }
 
@@ -430,59 +427,17 @@ function updateEdge(
 function updateDeployingRgb(
   leds: LedGeometryState,
   target: Float32Array,
-  tint: HoverDeployAnimationState['tint'] | undefined,
 ) {
   target.set(leds.data);
   for (let i = 0; i < LED_COUNT; i++) {
-    const color = edgeTintColor(leds, i, tint);
-    writeLedColor(target, i, color.r, color.g, color.b);
+    writeLedColor(
+      target,
+      i,
+      PERIWINKLE_LINEAR.r,
+      PERIWINKLE_LINEAR.g,
+      PERIWINKLE_LINEAR.b,
+    );
   }
-}
-
-function edgeTintColor(
-  leds: LedGeometryState,
-  i: number,
-  tint: HoverDeployAnimationState['tint'] | undefined,
-) {
-  const amount = clamp01(tint?.amount ?? 1);
-  const radius = Math.max(tint?.radius ?? 1, 1);
-  const power = Math.max(tint?.power ?? 1, 0.001);
-  const red = tint?.edgeRedLinear ?? EDGE_RED;
-  const green = tint?.edgeGreenLinear ?? EDGE_GREEN;
-  const blue = tint?.edgeBlueLinear ?? EDGE_BLUE;
-  const base = i * LED_FLOATS;
-  const x = leds.data[base] ?? 0;
-  const y = leds.data[base + 1] ?? 0;
-  const [redCenter, greenCenter, blueCenter] = leds.deployEdgeCenters;
-  const invOverlap = 1 / Math.max(tint?.edgeOverlap ?? 1, 0.01);
-  const wr =
-    edgeWeight(x, y, redCenter.x, redCenter.y, radius, power) ** invOverlap;
-  const wg =
-    edgeWeight(x, y, greenCenter.x, greenCenter.y, radius, power) ** invOverlap;
-  const wb =
-    edgeWeight(x, y, blueCenter.x, blueCenter.y, radius, power) ** invOverlap;
-  const sum = Math.max(wr + wg + wb, 0.0001);
-  const r = (red.r * wr + green.r * wg + blue.r * wb) / sum;
-  const g = (red.g * wr + green.g * wg + blue.g * wb) / sum;
-  const b = (red.b * wr + green.b * wg + blue.b * wb) / sum;
-  const luminance = LUMA_R * r + LUMA_G * g + LUMA_B * b;
-  const scale = luminance <= 1e-4 ? 1 : 1 / luminance;
-  return {
-    r: mix(1, r * scale, amount),
-    g: mix(1, g * scale, amount),
-    b: mix(1, b * scale, amount),
-  };
-}
-
-function edgeWeight(
-  x: number,
-  y: number,
-  cx: number,
-  cy: number,
-  radius: number,
-  power: number,
-) {
-  return (1 / (1 + Math.hypot(x - cx, y - cy) / radius)) ** power;
 }
 
 function midpoint(a: Point, b: Point) {
