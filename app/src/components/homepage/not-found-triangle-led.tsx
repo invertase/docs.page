@@ -25,19 +25,26 @@ export function NotFoundTriangleLed() {
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
+    let cancelled = false;
     const renderer = createRenderer({
       canvas,
       rgbDeployActive: () => heldRef.current,
     });
     void renderer.ready
-      .then(() => setReady(true))
+      .then(() => {
+        if (!cancelled) setReady(true);
+      })
       .catch((error: unknown) => {
+        if (cancelled) return;
         console.error(
           "[docs.page 404] triangle-led-front failed to start",
           error,
         );
       });
-    return () => renderer.dispose();
+    return () => {
+      cancelled = true;
+      renderer.dispose();
+    };
   }, []);
 
   return (
