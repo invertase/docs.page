@@ -1,4 +1,5 @@
 import { RiArrowRightSLine } from "@remixicon/react";
+import dynamic from "next/dynamic";
 import Head from "next/head";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,14 @@ import { Background } from "./background";
 import { Footer } from "./footer";
 import { Header } from "./header";
 import styles from "./homepage.module.css";
+
+const NotFoundTriangleLed = dynamic(
+  () =>
+    import("./not-found-triangle-led").then((mod) => ({
+      default: mod.NotFoundTriangleLed,
+    })),
+  { ssr: false },
+);
 
 export function SiteNotFoundPage() {
   return (
@@ -26,9 +35,7 @@ export function SiteNotFoundPage() {
           <div className="flex min-h-svh flex-1 flex-col md:border-x">
             <Header />
             <main className="flex flex-1 flex-col items-center justify-center px-6 py-16 text-center">
-              <p className="font-heading font-light text-primary text-[9.72rem] leading-none sm:text-[12.96rem] md:text-[16.2rem]">
-                404
-              </p>
+              <NotFoundTriangleLed />
               <h1 className="mt-6 font-heading font-light text-3xl sm:text-4xl md:text-5xl">
                 Page Not Found
               </h1>
