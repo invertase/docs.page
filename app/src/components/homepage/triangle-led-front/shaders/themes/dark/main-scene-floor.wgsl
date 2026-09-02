@@ -1,9 +1,9 @@
 // Dark theme floor material: builds the scene from radiance, direct LED emitters, and floor
 // noise, then tonemaps + applies display contrast inline so it renders straight to the canvas
 // (no separate composite pass in dark mode).
-import { col3v, oklab_to_rgb, tonemap, value_remap_clamp } from "../../color-utils.wgsl";
+import { tonemap, value_remap_clamp } from "../../color-utils.wgsl";
 import { sdf_triangle_vertices } from "../../geometry.wgsl";
-import { near_falloff, far_falloff } from "../../floor-falloff.wgsl";
+import { near_falloff } from "../../floor-falloff.wgsl";
 
 struct Config { screen: vec4f, light_sources: vec4f, triangle: vec4f, radiance_fit: vec4f, sim_transform: vec4f };
 @group(0) @binding(0) var<uniform> cfg: Config;
@@ -62,14 +62,8 @@ fn hash12b(p: vec2f) -> f32 {
 }
 
 fn bg(p: vec2f) -> vec3f {
-  let floor_noise = sample_floor_noise(p);
-  // Lower the grain intensity at DPR 1 (where its tiling repeat is a visible pattern); full at DPR>1.
-  let grain_intensity = select(1.0, DARK_FLOOR_GRAIN_DPR1_SCALE, cfg.screen.w < 1.5);
-  let floor_brightness =
-    mix(1.0, 0.5, floor_noise * grain_intensity);
-  // Return the floor base in RGB (gray). The oklab perceptual lift now happens only where an
-  // LED color actually blends in (surface > 0, see fs_main), so floor pixels skip rgb<->oklab.
-  return vec3f(floor_brightness);
+  // No filled floor plate — glow is radiance * near coverage, not a grey rectangle.
+  return vec3f(0.0);
 }
 
 const LUMA = vec3f(0.2126, 0.7152, 0.0722);
@@ -242,8 +236,6 @@ const OCCLUDER_INTERIOR_MARGIN: f32 = 4.0;
 
 @fragment fn fs_main(in: VSOut) -> @location(0) vec4f {
   let pixel_screen = in.pos.xy;
-  let uv = pixel_screen / cfg.screen.xy;
-  let pixel = uv * cfg.screen.xy - cfg.screen.xy * 0.5;
   let tri = triangle_corners();
   let triangle_sdf = sdf_triangle_vertices(pixel_screen, tri.top, tri.left, tri.right);
   // The SDF screen-space gradient is a derivative: it must run in uniform control flow, so compute
@@ -270,24 +262,11 @@ const OCCLUDER_INTERIOR_MARGIN: f32 = 4.0;
     4.02,
     max(max(light_sources.r, light_sources.g), light_sources.b),
   );
-  // Floor base in RGB; blend toward the LED color (in cbrt-LMS space) only where an LED is
-  // present (surface > 0). Floor pixels skip both rgb_to_oklab calls + the oklab_to_rgb round-trip.
-  let floor_rgb = bg(pixel);
-  var base_rgb = floor_rgb;
-  if (surface > 0.0) {
-    base_rgb = oklab_to_rgb(mix(col3v(floor_rgb), col3v(light_sources.rgb), surface));
-  }
-
-  // Two glow layers, brightest first. See the *_falloff helpers. Screen-blend
-  // the in-range [0,1] parts (preserves the tuned look), then add any over-1
-  // overflow additively. A plain screen blend on HDR layers is non-monotonic:
-  // once two layers exceed 1, their (1 - x) terms both go negative, the product
-  // flips positive, and brightness_factor collapses through 0 to negative — which
-  // tonemaps to black. Splitting off the overflow keeps it monotonic so high
-  // intensities keep getting brighter and the tonemap saturates them to white.
+  // Near-edge glow only. far_falloff(power 0.05) stayed > 0.02 across the canvas and,
+  // with grey bg() + contrast lift, painted the residual rectangular plate.
   let fade_inner = 0.0;
   let near_light = dot(radiance, LUMA);
-  let near = near_falloff(
+  let near = saturate(near_falloff(
     triangle_sdf,
     near_light,
     fade_inner,
@@ -295,43 +274,21 @@ const OCCLUDER_INTERIOR_MARGIN: f32 = 4.0;
     vec4f(0.046, 1.2, 2.74, 5.0),
     4.0,
     1.0,
-  );
-  let far = far_falloff(
-    near_light,
-    vec4f(0.65, 2.0, 0.0, 8.85),
-    0.05,
-    1.0,
-  );
-  let screen_blend =
-    1.0 - (1.0 - min(near, 1.0)) * (1.0 - min(far, 1.0));
-  let overflow =
-    max(near - 1.0, 0.0) + max(far - 1.0, 0.0);
-  let brightness_factor = screen_blend + overflow;
-  // Empty floor (no glow, no LED, no occluder) stays transparent so the page grid shows.
-  if (occluder < 1e-3 && surface <= 0.0 && brightness_factor <= 0.02) {
+  ));
+  if (occluder < 1e-3 && surface <= 0.0 && near <= 0.02) {
     return vec4f(0.0);
   }
 
   var colour = compose_floor(
-    base_rgb,
+    vec3f(1.0),
     radiance,
     light_sources,
     surface,
-    brightness_factor,
+    near,
   );
-
-  // Final output (no composite pass): fixed Lottes tonemap and display contrast.
   var final_colour = tonemap(colour * 0.25);
-  final_colour = (final_colour - vec3f(0.5)) * 1.05 + vec3f(0.5);
-
-  // Foreground triangle occluder, drawn analytically from the same SDF instead of as a separate
-  // hard-edged geometry pass. occluder_edge (the SDF gradient length, hoisted above into uniform
-  // control flow) gives the screen-space edge width, so the silhouette is anti-aliased to ~1px and stays aligned
-  // with the edge light line above.
   final_colour = mix(final_colour, vec3f(0.0), occluder);
 
-  // No screen-edge fade: that multiply-to-black painted the opaque plate. Coverage is the
-  // occluder, LED surface, or glow so empty pixels stay premultiplied-transparent.
-  let coverage = max(occluder, max(surface, saturate(brightness_factor)));
-  return vec4f(final_colour, coverage);
+  let coverage = max(occluder, max(surface, near));
+  return vec4f(final_colour * coverage, coverage);
 }

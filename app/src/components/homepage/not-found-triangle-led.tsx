@@ -33,7 +33,7 @@ export function NotFoundTriangleLed() {
   }, []);
 
   return (
-    <div className="relative mx-auto flex h-[min(50svh,32rem)] w-full max-w-[45rem] items-center justify-center [&_.lil-gui]:hidden">
+    <div className="relative mx-auto flex h-[min(50svh,32rem)] w-full max-w-[45rem] items-center justify-center">
       <div
         className={cn(
           "pointer-events-none absolute inset-0 z-0 flex items-center justify-center",

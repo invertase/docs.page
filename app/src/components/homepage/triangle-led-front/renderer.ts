@@ -112,7 +112,6 @@ export function createRenderer(options: RendererOptions) {
     nextScene.setHero(heroStateForActiveClick(mode));
     await nextScene.prewarm();
     if (disposed) { nextScene.destroy(); return; }
-    ({ gui, refresh: refreshGui } = buildGui(options.canvas.parentElement, guiState, setControls));
     input = installCanvasInput(options.canvas);
     observer = typeof ResizeObserver === 'undefined' ? undefined : new ResizeObserver(measure);
     observer?.observe(options.canvas);
