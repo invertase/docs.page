@@ -5,7 +5,7 @@ export interface RenderSize {
 
 export const LEDS_PER_EDGE = 24;
 export const HEX_SIDES = 6;
-export const TRIANGLE_HEIGHT_RATIO = (180 / 630) * 0.8;
+export const TRIANGLE_HEIGHT_RATIO = (180 / 630) * 0.8 * 1.6;
 export const HERO_CANVAS_MAX_CSS = 720;
 const MIN_SIM_HEIGHT = 360;
 const LED_RADIUS_TO_TRIANGLE_HEIGHT = 0.0236;
