@@ -78,7 +78,9 @@ export const DEFAULT_BRUSH: BrushSettings = {
 };
 
 export const TUNABLE_DEFAULTS = {
-  ledIntensity: 1,
+  // Honey linear luma is ~0.373 vs white 1. Scale so the rest rim matches
+  // the signed-off white glow energy on all three edges.
+  ledIntensity: 2.68,
   brightnessMin: 0.09,
   brightnessMinDark: 0.05,
   brightnessMax: 1,
