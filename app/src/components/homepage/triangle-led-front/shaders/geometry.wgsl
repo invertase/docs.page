@@ -27,49 +27,62 @@ export fn sdf_hex_pointy_rounded(
   return sdf_hex_pointy(p, center, inner) - radius;
 }
 
-// Lexend Light '4' in unit space (height 1, y-down, origin at bbox center).
+// Outer silhouette of Lexend Light '4' (unit height, y-down). Used for rim LEDs / rays.
+const FOUR_SILHOUETTE_N: u32 = 11u;
+
 fn four_unit_point(i: u32) -> vec2f {
-  var pts = array<vec2f, 12>(
+  var pts = array<vec2f, 11>(
     vec2f(0.1029, 0.5),
-    vec2f(0.1029, -0.3671),
-    vec2f(0.1343, -0.3571),
-    vec2f(-0.28, 0.1486),
-    vec2f(-0.2914, 0.1229),
-    vec2f(0.3857, 0.1229),
-    vec2f(0.3857, 0.2286),
-    vec2f(-0.3329, 0.2286),
-    vec2f(-0.3857, 0.1229),
-    vec2f(0.1243, -0.5),
-    vec2f(0.2114, -0.5),
     vec2f(0.2114, 0.5),
+    vec2f(0.2114, 0.2286),
+    vec2f(0.3857, 0.2286),
+    vec2f(0.3857, 0.1229),
+    vec2f(0.2114, 0.1229),
+    vec2f(0.2114, -0.5),
+    vec2f(0.1243, -0.5),
+    vec2f(-0.3857, 0.1229),
+    vec2f(-0.3329, 0.2286),
+    vec2f(0.1029, 0.2286),
   );
   return pts[i];
 }
 
+fn sdf_box(p: vec2f, center: vec2f, half: vec2f) -> f32 {
+  let d = abs(p - center) - half;
+  return length(max(d, vec2f(0.0))) + min(max(d.x, d.y), 0.0);
+}
+
+fn sdf_oriented_box(p: vec2f, a: vec2f, b: vec2f, th: f32) -> f32 {
+  let ba = b - a;
+  let l = max(length(ba), 1e-8);
+  let dir = ba / l;
+  let q = p - (a + b) * 0.5;
+  let r = vec2f(dir.x * q.x + dir.y * q.y, -dir.y * q.x + dir.x * q.y);
+  let d = abs(r) - vec2f(l * 0.5, th);
+  return length(max(d, vec2f(0.0))) + min(max(d.x, d.y), 0.0);
+}
+
+// Stem ∪ bar ∪ diagonal — solid black at the join (not a holey polyline).
 export fn sdf_four(p: vec2f, center: vec2f, height: f32) -> f32 {
   let h = max(height, 1e-4);
   let q = (p - center) / h;
-  var d = dot(q - four_unit_point(0u), q - four_unit_point(0u));
-  var s = 1.0;
-  for (var i = 0u; i < 12u; i = i + 1u) {
-    let a = four_unit_point(i);
-    let b = four_unit_point((i + 1u) % 12u);
-    let e = b - a;
-    let w = q - a;
-    let btm = w - e * clamp(dot(w, e) / max(dot(e, e), 1e-8), 0.0, 1.0);
-    d = min(d, dot(btm, btm));
-    let c0 = q.y >= a.y;
-    let c1 = q.y < b.y;
-    let c2 = e.x * w.y > e.y * w.x;
-    if ((c0 && c1 && c2) || (!c0 && !c1 && !c2)) {
-      s = -s;
-    }
-  }
-  return s * sqrt(d) * h;
+  let stem = sdf_box(q, vec2f(0.15715, 0.0), vec2f(0.05425, 0.5));
+  let bar = sdf_box(q, vec2f(0.0264, 0.17575), vec2f(0.3593, 0.05285));
+  let diag = sdf_oriented_box(
+    q,
+    vec2f(0.16785, -0.5),
+    vec2f(-0.3593, 0.1757),
+    0.05425,
+  );
+  return min(stem, min(bar, diag)) * h;
 }
 
 export fn four_world_point(i: u32, center: vec2f, height: f32) -> vec2f {
-  return center + four_unit_point(i) * height;
+  return center + four_unit_point(i % FOUR_SILHOUETTE_N) * height;
+}
+
+export fn four_silhouette_n() -> u32 {
+  return FOUR_SILHOUETTE_N;
 }
 
 export fn sdf_triangle_vertices(p: vec2f, a: vec2f, b: vec2f, c: vec2f) -> f32 {

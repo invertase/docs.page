@@ -1,29 +1,44 @@
 import { LEDS_PER_EDGE, HEX_SIDES } from './settings';
 
-/** Lexend Light '4' outline in unit space: height 1, y-down, origin at bbox center. */
-export const FOUR_UNIT_POINTS: readonly (readonly [number, number])[] = [
+/**
+ * Outer silhouette of Lexend Light '4' (unit height, y-down, bbox center).
+ * Simple concave polygon — no self-intersection at the bar/stem join.
+ */
+export const FOUR_SILHOUETTE: readonly (readonly [number, number])[] = [
   [0.1029, 0.5],
-  [0.1029, -0.3671],
-  [0.1343, -0.3571],
-  [-0.28, 0.1486],
-  [-0.2914, 0.1229],
-  [0.3857, 0.1229],
-  [0.3857, 0.2286],
-  [-0.3329, 0.2286],
-  [-0.3857, 0.1229],
-  [0.1243, -0.5],
-  [0.2114, -0.5],
   [0.2114, 0.5],
+  [0.2114, 0.2286],
+  [0.3857, 0.2286],
+  [0.3857, 0.1229],
+  [0.2114, 0.1229],
+  [0.2114, -0.5],
+  [0.1243, -0.5],
+  [-0.3857, 0.1229],
+  [-0.3329, 0.2286],
+  [0.1029, 0.2286],
 ];
 
+export const FOUR_SILHOUETTE_N = FOUR_SILHOUETTE.length;
 export const FOUR_UNIT_HALF_WIDTH = 0.3857;
-export const FOUR_LED_COUNT = 96;
+/** Hex perimeter is 3H with 144 LEDs → pitch H/48. */
+export const HEX_LED_PITCH_TO_HEIGHT = 3 / (LEDS_PER_EDGE * HEX_SIDES);
+export const FOUR_LED_COUNT = Math.round(
+  silhouettePerimeter(FOUR_SILHOUETTE) / HEX_LED_PITCH_TO_HEIGHT,
+);
 export const HEX_LED_COUNT = LEDS_PER_EDGE * HEX_SIDES;
 export const TOTAL_LED_COUNT = HEX_LED_COUNT + FOUR_LED_COUNT * 2;
 export const FOUR_HEX_GAP_TO_HEIGHT = 0.05;
 export const LED_RADIUS_TO_HEIGHT = 0.0236;
 export const LED_NORMAL_HALF_TO_RADIUS = 2;
 export const LED_TANGENT_GAP_PX = 1;
+
+const STEM_CENTER = { x: 0.15715, y: 0 };
+const STEM_HALF = { x: 0.05425, y: 0.5 };
+const BAR_CENTER = { x: 0.0264, y: 0.17575 };
+const BAR_HALF = { x: 0.3593, y: 0.05285 };
+const DIAG_A = { x: 0.16785, y: -0.5 };
+const DIAG_B = { x: -0.3593, y: 0.1757 };
+const DIAG_THICK = 0.05425;
 
 export interface FourTransform {
   center: { x: number; y: number };
@@ -70,6 +85,7 @@ export function fourWorldPoint(
   };
 }
 
+/** Stem ∪ bar ∪ diagonal — solid at overlaps (closes the join hole). */
 export function sdfFour(
   point: { x: number; y: number },
   transform: FourTransform,
@@ -78,11 +94,11 @@ export function sdfFour(
     x: (point.x - transform.center.x) / transform.height,
     y: (point.y - transform.center.y) / transform.height,
   };
-  return sdfPolygon12(p, FOUR_UNIT_POINTS) * transform.height;
+  return sdfFourUnit(p) * transform.height;
 }
 
 export function fourLedLayout(transform: FourTransform): FourLayout {
-  const pts = FOUR_UNIT_POINTS.map((unit) => fourWorldPoint(unit, transform));
+  const pts = FOUR_SILHOUETTE.map((unit) => fourWorldPoint(unit, transform));
   const edgeLens: number[] = [];
   let peri = 0;
   for (let i = 0; i < pts.length; i++) {
@@ -115,42 +131,55 @@ export function fourLedLayout(transform: FourTransform): FourLayout {
       acc += len;
     }
   }
-  const spacing = peri / Math.max(1, count);
+  const pitch = transform.height * HEX_LED_PITCH_TO_HEIGHT;
   const radius = transform.height * LED_RADIUS_TO_HEIGHT;
   const normalHalfThickness = radius * LED_NORMAL_HALF_TO_RADIUS;
-  const tangentHalfLength = Math.max(0, spacing * 0.5 - LED_TANGENT_GAP_PX * 0.5);
+  const tangentHalfLength = Math.max(0, pitch * 0.5 - LED_TANGENT_GAP_PX * 0.5);
   return { transform, positions, tangentHalfLength, normalHalfThickness };
 }
 
-function sdfPolygon12(
-  p: { x: number; y: number },
-  pts: readonly (readonly [number, number])[],
-) {
-  let d = dist2(p, pts[0]);
-  let s = 1;
+function silhouettePerimeter(pts: readonly (readonly [number, number])[]) {
+  let peri = 0;
   for (let i = 0; i < pts.length; i++) {
-    const i0 = pts[i];
-    const i1 = pts[(i + 1) % pts.length];
-    const ex = i1[0] - i0[0];
-    const ey = i1[1] - i0[1];
-    const wx = p.x - i0[0];
-    const wy = p.y - i0[1];
-    const el2 = ex * ex + ey * ey;
-    const t = el2 > 0 ? Math.min(1, Math.max(0, (wx * ex + wy * ey) / el2)) : 0;
-    const bx = wx - ex * t;
-    const by = wy - ey * t;
-    d = Math.min(d, bx * bx + by * by);
-    const c0 = p.y >= i0[1];
-    const c1 = p.y < i1[1];
-    const c2 = ex * wy > ey * wx;
-    if ((c0 && c1 && c2) || (!c0 && !c1 && !c2)) s = -s;
+    const a = pts[i];
+    const b = pts[(i + 1) % pts.length];
+    peri += Math.hypot(b[0] - a[0], b[1] - a[1]);
   }
-  return s * Math.sqrt(d);
+  return peri;
 }
 
-function dist2(p: { x: number; y: number }, q: readonly [number, number]) {
-  const dx = p.x - q[0];
-  const dy = p.y - q[1];
-  return dx * dx + dy * dy;
+function sdfFourUnit(p: { x: number; y: number }) {
+  return Math.min(
+    sdfBox(p, STEM_CENTER, STEM_HALF),
+    sdfBox(p, BAR_CENTER, BAR_HALF),
+    sdfOrientedBox(p, DIAG_A, DIAG_B, DIAG_THICK),
+  );
 }
 
+function sdfBox(
+  p: { x: number; y: number },
+  center: { x: number; y: number },
+  half: { x: number; y: number },
+) {
+  const dx = Math.abs(p.x - center.x) - half.x;
+  const dy = Math.abs(p.y - center.y) - half.y;
+  return Math.hypot(Math.max(dx, 0), Math.max(dy, 0)) + Math.min(Math.max(dx, dy), 0);
+}
+
+function sdfOrientedBox(
+  p: { x: number; y: number },
+  a: { x: number; y: number },
+  b: { x: number; y: number },
+  th: number,
+) {
+  const bax = b.x - a.x;
+  const bay = b.y - a.y;
+  const len = Math.hypot(bax, bay);
+  const dx = bax / Math.max(len, 1e-8);
+  const dy = bay / Math.max(len, 1e-8);
+  const qx = p.x - (a.x + b.x) * 0.5;
+  const qy = p.y - (a.y + b.y) * 0.5;
+  const rx = Math.abs(dx * qx + dy * qy) - len * 0.5;
+  const ry = Math.abs(-dy * qx + dx * qy) - th;
+  return Math.hypot(Math.max(rx, 0), Math.max(ry, 0)) + Math.min(Math.max(rx, ry), 0);
+}

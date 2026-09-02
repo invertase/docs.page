@@ -1,4 +1,4 @@
-import { four_world_point, sdf_four } from "./geometry.wgsl";
+import { four_silhouette_n, four_world_point, sdf_four } from "./geometry.wgsl";
 
 struct Config {
   hex_center_r: vec4f,
@@ -159,7 +159,7 @@ fn four_angular_interval(p: vec2f, four: vec4f) -> Interval {
   let center_angle = atan2(four.y - p.y, four.x - p.x);
   var min_rel = 4.0;
   var max_rel = -4.0;
-  for (var i = 0u; i < 12u; i = i + 1u) {
+  for (var i = 0u; i < four_silhouette_n(); i = i + 1u) {
     let v = four_world_point(i, four.xy, four.z);
     let rel = wrap_pi(atan2(v.y - p.y, v.x - p.x) - center_angle);
     min_rel = min(min_rel, rel);
@@ -248,9 +248,9 @@ fn ray_arc_t(origin: vec2f, dir: vec2f, arc: OutlineArc) -> f32 {
 
 fn ray_four_t(origin: vec2f, dir: vec2f, center: vec2f, height: f32) -> f32 {
   var best = 1e30;
-  for (var i = 0u; i < 12u; i = i + 1u) {
+  for (var i = 0u; i < four_silhouette_n(); i = i + 1u) {
     let a = four_world_point(i, center, height);
-    let b = four_world_point((i + 1u) % 12u, center, height);
+    let b = four_world_point((i + 1u) % four_silhouette_n(), center, height);
     let ti = ray_segment_t(dir, precompute_edge(origin, a, b));
     if (ti >= 0.0) { best = min(best, ti); }
   }
