@@ -67,6 +67,8 @@ fn bg(p: vec2f) -> vec3f {
 }
 
 const LUMA = vec3f(0.2126, 0.7152, 0.0722);
+// docs.page honey #E69135 (sRGB 230,145,53) → IEC 61966-2-1 linear.
+const HONEY_LINEAR = vec3f(0.791298, 0.283149, 0.035601);
 
 struct TriangleCorners { top: vec2f, left: vec2f, right: vec2f };
 
@@ -298,6 +300,8 @@ const OCCLUDER_INTERIOR_MARGIN: f32 = 4.0;
     brightness_factor,
   );
   var final_colour = tonemap(colour * 0.25);
+  let glow_luma = max(dot(final_colour, LUMA), 0.0);
+  final_colour = HONEY_LINEAR * (glow_luma / max(dot(HONEY_LINEAR, LUMA), 1e-4));
   final_colour = mix(final_colour, vec3f(0.0), occluder);
 
   let coverage = max(occluder, max(surface, saturate(brightness_factor)));

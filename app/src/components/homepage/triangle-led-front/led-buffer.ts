@@ -17,6 +17,8 @@ const COLOR_OFFSET = 4;
 const MAX_FRAME_DELTA = 0.1;
 const CLICK_SPEED_BOOST_PEAK = 10;
 const INACTIVE_EDGE_BRIGHTNESS_FACTOR = 0.125;
+// docs.page honey #E69135 (sRGB 230,145,53) → IEC 61966-2-1 linear.
+const HONEY_LINEAR = { r: 0.791298, g: 0.283149, b: 0.035601 };
 const EDGE_RED = { r: 0.896269, g: 0.027321, b: 0.051269 };
 const EDGE_GREEN = { r: 0, g: 0.40724, b: 0.048172 };
 const EDGE_BLUE = { r: 0, g: 0.278894, b: 1 };
@@ -99,9 +101,9 @@ export function buildLedGeometry(
     data[base + 1] = y;
     data[base + 2] = 0;
     data[base + 3] = angle;
-    data[base + COLOR_OFFSET] = 1;
-    data[base + COLOR_OFFSET + 1] = 1;
-    data[base + COLOR_OFFSET + 2] = 1;
+    data[base + COLOR_OFFSET] = HONEY_LINEAR.r;
+    data[base + COLOR_OFFSET + 1] = HONEY_LINEAR.g;
+    data[base + COLOR_OFFSET + 2] = HONEY_LINEAR.b;
     data[base + COLOR_OFFSET + 3] = 0;
     const rx = x - layout.center.x;
     const ry = y - layout.center.y;
@@ -379,7 +381,7 @@ function updateLines(
       }
       coverage = Math.max(coverage, profile * (fadeByBand[k] ?? 0));
     }
-    writeLed(target, i, clamp01(coverage), 1, 1, 1);
+    writeLed(target, i, clamp01(coverage), HONEY_LINEAR.r, HONEY_LINEAR.g, HONEY_LINEAR.b);
   }
 }
 
@@ -394,7 +396,14 @@ function updateEdge(
   const base = clamp01(baseBrightness);
   const highlight = clamp01(highlightBrightness);
   for (let i = 0; i < LED_COUNT; i++) {
-    writeLed(target, i, i >= start && i < end ? highlight : base, 1, 1, 1);
+    writeLed(
+      target,
+      i,
+      i >= start && i < end ? highlight : base,
+      HONEY_LINEAR.r,
+      HONEY_LINEAR.g,
+      HONEY_LINEAR.b,
+    );
   }
 }
 
