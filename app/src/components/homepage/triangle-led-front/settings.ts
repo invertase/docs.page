@@ -5,7 +5,7 @@ export interface RenderSize {
 
 export const LEDS_PER_EDGE = 24;
 export const HEX_SIDES = 6;
-export const TRIANGLE_HEIGHT_RATIO = (180 / 630) * 0.8 * 1.6 * 1.5;
+export const TRIANGLE_HEIGHT_RATIO = (180 / 630) * 0.8 * 1.6 * 1.5 * 1.5;
 /** Corner fillet as a fraction of hex circumradius. 0.25 is visible without blobbing. */
 export const HEX_FILLET_RATIO = 0.25;
 const SQRT3 = Math.sqrt(3);

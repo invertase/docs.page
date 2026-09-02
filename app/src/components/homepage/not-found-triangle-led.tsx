@@ -1,52 +1,46 @@
-import { useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
+import { useEffect, useRef } from "react";
 import { createRenderer } from "./triangle-led-front/renderer";
 
-const GLYPH_CLASS =
-  "font-heading font-light text-primary text-[9.72rem] leading-none sm:text-[12.96rem] md:text-[16.2rem]";
+const FOUR_CLASS =
+  "pointer-events-none select-none font-heading font-light leading-none text-primary text-[length:calc(var(--slot)*0.78)]";
 
 /**
- * Official vgpu Triangle LED Hero (`triangle-led-front`, rev
- * 90b65bf4144a6c18e275982fb1669336e3f9a1154ecbaac6174011f0c0ffeff1)
- * mounted in the site 404 slot. Honey type stays visible until
- * `createRenderer().ready` resolves.
+ * Official vgpu LED hero in the site 404 slot. The hex is the 0;
+ * Lexend Light 4s sit on either side so the wordmark reads 404.
  */
 export function NotFoundTriangleLed() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const renderer = createRenderer({ canvas });
-    void renderer.ready
-      .then(() => {
-        setReady(true);
-      })
-      .catch((error: unknown) => {
-        console.error(
-          "[docs.page 404] triangle-led-front failed to start",
-          error,
-        );
-      });
+    void renderer.ready.catch((error: unknown) => {
+      console.error(
+        "[docs.page 404] triangle-led-front failed to start",
+        error,
+      );
+    });
     return () => renderer.dispose();
   }, []);
 
   return (
-    <div className="relative mx-auto flex h-[min(50svh,32rem)] w-full max-w-[45rem] items-center justify-center">
-      <div
-        className={cn(
-          "pointer-events-none absolute inset-0 z-0 flex items-center justify-center",
-          ready && "invisible",
-        )}
-      >
-        <p className={GLYPH_CLASS}>404</p>
-      </div>
+    <div
+      role="img"
+      aria-label="404"
+      className="mx-auto flex w-full max-w-7xl items-center justify-center gap-1 [--slot:min(32rem,50svh,calc((100%-0.5rem)/2.1))] sm:gap-2"
+    >
+      <span aria-hidden="true" className={FOUR_CLASS}>
+        4
+      </span>
       <canvas
         ref={canvasRef}
-        className="relative z-10 block h-full w-full touch-none"
+        className="relative block size-[length:var(--slot)] shrink-0 touch-none"
         data-vgpu="triangle-led-front createRenderer LEDS_PER_EDGE DIRECT_TRIANGLE_INTENSITY_SCALE"
       />
+      <span aria-hidden="true" className={FOUR_CLASS}>
+        4
+      </span>
     </div>
   );
 }
