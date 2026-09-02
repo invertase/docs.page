@@ -1,18 +1,34 @@
-import { type CSSProperties, useEffect, useRef } from "react";
+import { type CSSProperties, useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
 import { createRenderer } from "./triangle-led-front/renderer";
 
 /** 0.8× the /hex-fours fours (`min(32rem, 50svh)`). Canvas stays at hex-fours box so the hex scales only via TRIANGLE_HEIGHT_RATIO. */
 const SLOT = "min(25.6rem, 40svh)";
 const CANVAS = "min(32rem, 50svh)";
 const FOUR_FONT_SIZE = "calc(var(--slot) * 0.82)";
+const HONEY = "#E69135";
+const PERIWINKLE = "#5368BD";
+
+const honeyGlow = [
+  `0 0 0.08em ${HONEY}`,
+  `0 0 0.22em color-mix(in srgb, ${HONEY} 70%, transparent)`,
+  `0 0 0.55em color-mix(in srgb, ${HONEY} 40%, transparent)`,
+].join(", ");
+
+const periwinkleGlow = [
+  `0 0 0.08em ${PERIWINKLE}`,
+  `0 0 0.22em color-mix(in srgb, ${PERIWINKLE} 70%, transparent)`,
+  `0 0 0.55em color-mix(in srgb, ${PERIWINKLE} 40%, transparent)`,
+].join(", ");
+
 const SLOT_STYLE = {
   "--slot": SLOT,
   "--canvas": CANVAS,
+  "--four-honey-glow": honeyGlow,
 } as CSSProperties;
-const FOUR_STYLE = { fontSize: FOUR_FONT_SIZE } satisfies CSSProperties;
 
 const FOUR_CLASS =
-  "pointer-events-none select-none font-heading font-light leading-none text-primary";
+  "pointer-events-none select-none font-heading font-light leading-none text-primary transition-[color,text-shadow] duration-150";
 
 /**
  * Official vgpu LED hero in the site 404 slot. The hex is the 0;
@@ -20,11 +36,21 @@ const FOUR_CLASS =
  */
 export function NotFoundTriangleLed() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const heldRef = useRef(false);
+  const [held, setHeld] = useState(false);
+
+  const setLockupHeld = (next: boolean) => {
+    heldRef.current = next;
+    setHeld(next);
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const renderer = createRenderer({ canvas });
+    const renderer = createRenderer({
+      canvas,
+      rgbDeployActive: () => heldRef.current,
+    });
     void renderer.ready.catch((error: unknown) => {
       console.error(
         "[docs.page 404] triangle-led-front failed to start",
@@ -34,25 +60,61 @@ export function NotFoundTriangleLed() {
     return () => renderer.dispose();
   }, []);
 
+  const fourStyle = {
+    fontSize: FOUR_FONT_SIZE,
+    ...(held ? { color: PERIWINKLE, textShadow: periwinkleGlow } : undefined),
+  } satisfies CSSProperties;
+
   return (
     <div
       role="img"
       aria-label="404"
-      className="mx-auto flex w-fit items-center justify-center gap-0 sm:gap-1"
+      className="group/lockup mx-auto flex w-fit cursor-pointer items-center justify-center gap-0 touch-none sm:gap-1"
       style={SLOT_STYLE}
+      onPointerDown={(event) => {
+        if (!event.isPrimary) return;
+        setLockupHeld(true);
+        if (event.target !== canvasRef.current) {
+          event.currentTarget.setPointerCapture(event.pointerId);
+        }
+      }}
+      onPointerUp={(event) => {
+        if (!event.isPrimary) return;
+        setLockupHeld(false);
+        if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+          event.currentTarget.releasePointerCapture(event.pointerId);
+        }
+      }}
+      onPointerCancel={(event) => {
+        setLockupHeld(false);
+        if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+          event.currentTarget.releasePointerCapture(event.pointerId);
+        }
+      }}
     >
-      <span aria-hidden="true" className={FOUR_CLASS} style={FOUR_STYLE}>
-        4
-      </span>
+      <LockupFour held={held} style={fourStyle} />
       <canvas
         ref={canvasRef}
         className="block shrink-0 touch-none -mx-[calc(var(--canvas)*0.18)]"
         style={{ width: "var(--canvas)", height: "var(--canvas)" }}
         data-vgpu="triangle-led-front createRenderer LEDS_PER_EDGE DIRECT_TRIANGLE_INTENSITY_SCALE"
       />
-      <span aria-hidden="true" className={FOUR_CLASS} style={FOUR_STYLE}>
-        4
-      </span>
+      <LockupFour held={held} style={fourStyle} />
     </div>
+  );
+}
+
+function LockupFour({ held, style }: { held: boolean; style: CSSProperties }) {
+  return (
+    <span
+      aria-hidden="true"
+      className={cn(
+        FOUR_CLASS,
+        !held && "group-hover/lockup:[text-shadow:var(--four-honey-glow)]",
+      )}
+      style={style}
+    >
+      4
+    </span>
   );
 }
