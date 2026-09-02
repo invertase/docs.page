@@ -1,47 +1,26 @@
 import { type CSSProperties, useEffect, useRef, useState } from "react";
 import { createRenderer } from "./triangle-led-front/renderer";
 
-/** 0.8× the /hex-fours fours (`min(32rem, 50svh)`). Canvas stays at hex-fours box so the hex scales only via TRIANGLE_HEIGHT_RATIO. */
-const SLOT = "min(25.6rem, 40svh)";
-const CANVAS = "min(32rem, 50svh)";
-const FOUR_FONT_SIZE = "calc(var(--slot) * 0.82)";
-const HONEY = "#E69135";
-const PERIWINKLE = "#5368BD";
-
-const honeyGlow = [
-  "0 0 0.28em rgba(230, 145, 53, 0.4)",
-  "0 0 0.7em rgba(230, 145, 53, 0.32)",
-  "0 0 1.35em rgba(230, 145, 53, 0.16)",
-].join(", ");
-
-const periwinkleGlow = [
-  "0 0 0.28em rgba(83, 104, 189, 0.4)",
-  "0 0 0.7em rgba(83, 104, 189, 0.32)",
-  "0 0 1.35em rgba(83, 104, 189, 0.16)",
-].join(", ");
-
+/** Hex box from /hex-fours; width fits Lexend 4 rims without clipping. */
+const CANVAS_H = "min(32rem, 50svh, calc(92vw / 1.8125))";
+const CANVAS_W = "min(58rem, 92vw, calc(min(32rem, 50svh) * 1.8125))";
+const FOUR_FONT_SIZE = "calc(var(--canvas-h) * 0.94)";
 const SLOT_STYLE = {
-  "--slot": SLOT,
-  "--canvas": CANVAS,
+  "--canvas-h": CANVAS_H,
+  "--canvas-w": CANVAS_W,
 } as CSSProperties;
 
 const FOUR_CLASS =
-  "pointer-events-none select-none font-heading font-light leading-none text-primary transition-[color,text-shadow] duration-[600ms] ease";
+  "pointer-events-none absolute top-1/2 -translate-x-1/2 -translate-y-1/2 select-none font-heading font-light leading-none text-primary";
 
 /**
  * Official vgpu LED hero in the site 404 slot. The hex is the 0;
- * Lexend Light 4s sit on either side so the wordmark reads 404.
+ * Lexend Light 4 rims sit on either side so the wordmark reads 404.
  */
 export function NotFoundTriangleLed() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const heldRef = useRef(false);
-  const [held, setHeld] = useState(false);
-  const [hovered, setHovered] = useState(false);
-
-  const setLockupHeld = (next: boolean) => {
-    heldRef.current = next;
-    setHeld(next);
-  };
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -50,66 +29,64 @@ export function NotFoundTriangleLed() {
       canvas,
       rgbDeployActive: () => heldRef.current,
     });
-    void renderer.ready.catch((error: unknown) => {
-      console.error(
-        "[docs.page 404] triangle-led-front failed to start",
-        error,
-      );
-    });
+    void renderer.ready
+      .then(() => setReady(true))
+      .catch((error: unknown) => {
+        console.error(
+          "[docs.page 404] triangle-led-front failed to start",
+          error,
+        );
+      });
     return () => renderer.dispose();
   }, []);
-
-  const fourStyle = {
-    fontSize: FOUR_FONT_SIZE,
-    color: held ? PERIWINKLE : HONEY,
-    textShadow: held ? periwinkleGlow : hovered ? honeyGlow : "none",
-  } satisfies CSSProperties;
 
   return (
     <div
       role="img"
       aria-label="404"
-      className="mx-auto flex w-fit cursor-pointer items-center justify-center gap-0 touch-none sm:gap-1"
+      className="relative mx-auto w-fit touch-none"
       style={SLOT_STYLE}
-      onPointerEnter={() => setHovered(true)}
-      onPointerLeave={() => setHovered(false)}
       onPointerDown={(event) => {
         if (!event.isPrimary) return;
-        setLockupHeld(true);
+        heldRef.current = true;
         if (event.target !== canvasRef.current) {
           event.currentTarget.setPointerCapture(event.pointerId);
         }
       }}
       onPointerUp={(event) => {
         if (!event.isPrimary) return;
-        setLockupHeld(false);
+        heldRef.current = false;
         if (event.currentTarget.hasPointerCapture(event.pointerId)) {
           event.currentTarget.releasePointerCapture(event.pointerId);
         }
       }}
       onPointerCancel={(event) => {
-        setLockupHeld(false);
+        heldRef.current = false;
         if (event.currentTarget.hasPointerCapture(event.pointerId)) {
           event.currentTarget.releasePointerCapture(event.pointerId);
         }
       }}
     >
-      <LockupFour style={fourStyle} />
       <canvas
         ref={canvasRef}
-        className="block shrink-0 touch-none -mx-[calc(var(--canvas)*0.18)]"
-        style={{ width: "var(--canvas)", height: "var(--canvas)" }}
+        className="block touch-none"
+        style={{ width: "var(--canvas-w)", height: "var(--canvas-h)" }}
         data-vgpu="triangle-led-front createRenderer LEDS_PER_EDGE DIRECT_TRIANGLE_INTENSITY_SCALE"
       />
-      <LockupFour style={fourStyle} />
+      <span
+        aria-hidden="true"
+        className={`${FOUR_CLASS} left-[18.2%] ${ready ? "invisible" : ""}`}
+        style={{ fontSize: FOUR_FONT_SIZE }}
+      >
+        4
+      </span>
+      <span
+        aria-hidden="true"
+        className={`${FOUR_CLASS} left-[81.8%] ${ready ? "invisible" : ""}`}
+        style={{ fontSize: FOUR_FONT_SIZE }}
+      >
+        4
+      </span>
     </div>
-  );
-}
-
-function LockupFour({ style }: { style: CSSProperties }) {
-  return (
-    <span aria-hidden="true" className={FOUR_CLASS} style={style}>
-      4
-    </span>
   );
 }

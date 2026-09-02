@@ -1,6 +1,7 @@
 import GUI from 'lil-gui';
 import { clock, frameLoop, surface, type Gpu, type Surface } from 'vgpu';
 import { createHeroRenderer, type HeroRenderer } from './scene-renderer';
+import { fourTransform, sdfFour } from './four-shape';
 import { DEFAULT_BRUSH, canonicalHexGeometry, sdfHexPointyRounded, type RenderSize } from './settings';
 import { brushState, heroStateForActiveClick, simulationBrushState } from './sim-sizing';
 import { DEFAULT_TRIANGLE_LED_CONTROLS, isTriangleLedMode, type TriangleLedControls, type TriangleLedMode } from './types';
@@ -187,7 +188,7 @@ function installCanvasInput(canvas: HTMLCanvasElement) {
       x,
       y,
       active: true,
-      inside: isPointInsideHex({ x, y }, { width, height }),
+      inside: isPointInsideLockup({ x, y }, { width, height }),
       isMouse: event.pointerType === 'mouse',
     }, height);
     return true;
@@ -233,10 +234,15 @@ function installCanvasInput(canvas: HTMLCanvasElement) {
   };
 }
 
-function isPointInsideHex(
+function isPointInsideLockup(
   point: { x: number; y: number },
   size: { width: number; height: number },
 ) {
-  const { center, circumradius, fillet } = canonicalHexGeometry(size);
-  return sdfHexPointyRounded(point, center, circumradius, fillet) <= 0;
+  const hex = canonicalHexGeometry(size);
+  if (sdfHexPointyRounded(point, hex.center, hex.circumradius, hex.fillet) <= 0) {
+    return true;
+  }
+  const left = fourTransform(hex.center, hex.height, hex.inradius, -1);
+  const right = fourTransform(hex.center, hex.height, hex.inradius, 1);
+  return sdfFour(point, left) <= 0 || sdfFour(point, right) <= 0;
 }
