@@ -9,16 +9,15 @@ const HONEY = "#E69135";
 const PERIWINKLE = "#5368BD";
 
 const honeyGlow = [
-  `0 0 0.06em ${HONEY}`,
-  `0 0 0.18em ${HONEY}`,
-  `0 0 0.4em color-mix(in srgb, ${HONEY} 85%, white)`,
-  `0 0 0.85em color-mix(in srgb, ${HONEY} 55%, transparent)`,
+  "0 0 0.28em rgba(230, 145, 53, 0.4)",
+  "0 0 0.7em rgba(230, 145, 53, 0.32)",
+  "0 0 1.35em rgba(230, 145, 53, 0.16)",
 ].join(", ");
 
 const periwinkleGlow = [
-  `0 0 0.08em ${PERIWINKLE}`,
-  `0 0 0.22em color-mix(in srgb, ${PERIWINKLE} 70%, transparent)`,
-  `0 0 0.55em color-mix(in srgb, ${PERIWINKLE} 40%, transparent)`,
+  "0 0 0.28em rgba(83, 104, 189, 0.4)",
+  "0 0 0.7em rgba(83, 104, 189, 0.32)",
+  "0 0 1.35em rgba(83, 104, 189, 0.16)",
 ].join(", ");
 
 const SLOT_STYLE = {
@@ -27,7 +26,7 @@ const SLOT_STYLE = {
 } as CSSProperties;
 
 const FOUR_CLASS =
-  "pointer-events-none select-none font-heading font-light leading-none text-primary transition-[color,text-shadow] duration-150";
+  "pointer-events-none select-none font-heading font-light leading-none text-primary transition-[color,text-shadow] duration-[600ms] ease";
 
 /**
  * Official vgpu LED hero in the site 404 slot. The hex is the 0;
@@ -62,11 +61,8 @@ export function NotFoundTriangleLed() {
 
   const fourStyle = {
     fontSize: FOUR_FONT_SIZE,
-    ...(held
-      ? { color: PERIWINKLE, textShadow: periwinkleGlow }
-      : hovered
-        ? { textShadow: honeyGlow }
-        : undefined),
+    color: held ? PERIWINKLE : HONEY,
+    textShadow: held ? periwinkleGlow : hovered ? honeyGlow : "none",
   } satisfies CSSProperties;
 
   return (
