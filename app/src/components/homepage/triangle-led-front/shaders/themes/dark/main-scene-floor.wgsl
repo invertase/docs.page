@@ -2,7 +2,7 @@
 // noise, then tonemaps + applies display contrast inline so it renders straight to the canvas
 // (no separate composite pass in dark mode).
 import { tonemap, value_remap_clamp } from "../../color-utils.wgsl";
-import { sdf_hex_pointy } from "../../geometry.wgsl";
+import { sdf_hex_pointy_rounded } from "../../geometry.wgsl";
 import { far_falloff, near_falloff } from "../../floor-falloff.wgsl";
 
 struct Config { screen: vec4f, light_sources: vec4f, triangle: vec4f, radiance_fit: vec4f, sim_transform: vec4f };
@@ -69,7 +69,7 @@ fn bg(p: vec2f) -> vec3f {
 const LUMA = vec3f(0.2126, 0.7152, 0.0722);
 
 fn hex_sdf(p: vec2f) -> f32 {
-  return sdf_hex_pointy(p, cfg.triangle.xy, cfg.triangle.z);
+  return sdf_hex_pointy_rounded(p, cfg.triangle.xy, cfg.triangle.z, cfg.triangle.w);
 }
 
 // Reads the LED emitter texture in simulation space, blanking samples that

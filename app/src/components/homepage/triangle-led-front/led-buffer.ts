@@ -4,6 +4,7 @@ import {
   LEDS_PER_EDGE,
   NOISE_ROTATION_START_SECONDS,
   hexEdgeLedLayout,
+  sdfHexPointyRounded,
   type BrushState,
   type HeroStateMode,
   type HeroStateSettings,
@@ -63,6 +64,9 @@ export interface LedGeometryState {
   triangleHeight: number;
   deployEdgeCenters: readonly [Point, Point, Point];
   hexVertices: readonly [Point, Point, Point, Point, Point, Point];
+  hexCenter: Point;
+  hexCircumradius: number;
+  hexFillet: number;
   lastMode: HeroStateMode | undefined;
   lastEdgeIndex: number | undefined;
   transitionStart: number;
@@ -142,6 +146,9 @@ export function buildLedGeometry(
       midpoint(layout.geometry.vertices[4], layout.geometry.vertices[5]),
     ],
     hexVertices: layout.geometry.vertices,
+    hexCenter: layout.center,
+    hexCircumradius: layout.geometry.circumradius,
+    hexFillet: layout.geometry.fillet,
     lastMode: previous?.lastMode,
     lastEdgeIndex: previous?.lastEdgeIndex,
     transitionStart: 0,
@@ -231,7 +238,12 @@ export function computeLeds(
       brush.inside !== true
     ) {
       const enter = (brush.linesFadeDistance ?? 0) * leds.triangleHeight;
-      const distance = hexSdf2D(brush.x, brush.y, leds.hexVertices);
+      const distance = sdfHexPointyRounded(
+        { x: brush.x, y: brush.y },
+        leds.hexCenter,
+        leds.hexCircumradius,
+        leds.hexFillet,
+      );
       if (!leds.hoverActive && distance < enter) leds.hoverActive = true;
       else if (leds.hoverActive && distance > enter * HOVER_HYSTERESIS)
         leds.hoverActive = false;
@@ -471,35 +483,6 @@ function edgeWeight(
   power: number,
 ) {
   return (1 / (1 + Math.hypot(x - cx, y - cy) / radius)) ** power;
-}
-
-function hexSdf2D(
-  px: number,
-  py: number,
-  vertices: readonly Point[],
-) {
-  let minDistSq = Number.POSITIVE_INFINITY;
-  let allPos = true;
-  let allNeg = true;
-  const count = vertices.length;
-  for (let i = 0; i < count; i++) {
-    const a = vertices[i];
-    const b = vertices[(i + 1) % count];
-    if (!a || !b) continue;
-    const ex = b.x - a.x;
-    const ey = b.y - a.y;
-    const vx = px - a.x;
-    const vy = py - a.y;
-    const t = clamp01((vx * ex + vy * ey) / (ex * ex + ey * ey || 1));
-    const dx = vx - ex * t;
-    const dy = vy - ey * t;
-    minDistSq = Math.min(minDistSq, dx * dx + dy * dy);
-    const side = ex * vy - ey * vx;
-    if (side < 0) allPos = false;
-    if (side > 0) allNeg = false;
-  }
-  const distance = Math.sqrt(minDistSq);
-  return allPos || allNeg ? -distance : distance;
 }
 
 function midpoint(a: Point, b: Point) {

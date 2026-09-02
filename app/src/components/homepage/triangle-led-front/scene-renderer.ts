@@ -236,7 +236,7 @@ function directTriangleRaycastUniformData(simulationSize: RenderSize) {
   const pxStepScale =
     Math.min(simulationSize.height, HERO_CANVAS_MAX_CSS) / HERO_CANVAS_MAX_CSS;
   return {
-    hex_center_r: [hex.center.x, hex.center.y, hex.circumradius, 0],
+    hex_center_r: [hex.center.x, hex.center.y, hex.circumradius, hex.fillet],
     hex_target: [size.width, size.height, 0, 0],
     size_steps: [
       simulationSize.width,
@@ -282,7 +282,7 @@ function floorUniformData(parts: RendererParts) {
       hex.centerX,
       hex.centerY,
       hex.circumradius,
-      hex.inradius,
+      hex.fillet,
     ],
     radiance_fit: [
       transform.originX,
@@ -323,7 +323,7 @@ function presentationHexParams(
     centerX: transform.originX + geometry.center.x * transform.scale,
     centerY: transform.originY + geometry.center.y * transform.scale,
     circumradius: geometry.circumradius * transform.scale,
-    inradius: geometry.inradius * transform.scale,
+    fillet: geometry.fillet * transform.scale,
   };
 }
 

@@ -33,6 +33,7 @@ const EPSILON: f32 = 1e-5;
 
 fn hex_center() -> vec2f { return cfg.hex_center_r.xy; }
 fn hex_radius() -> f32 { return cfg.hex_center_r.z; }
+fn hex_fillet() -> f32 { return max(cfg.hex_center_r.w, 0.0); }
 
 fn hex_vertices(center: vec2f, R: f32) -> array<vec2f, 6> {
   var verts: array<vec2f, 6>;
@@ -43,6 +44,21 @@ fn hex_vertices(center: vec2f, R: f32) -> array<vec2f, 6> {
   return verts;
 }
 
+fn sdf_hex_pointy(p: vec2f, center: vec2f, circumradius: f32) -> f32 {
+  let r = circumradius * 0.8660254037844386;
+  let k = vec3f(-0.8660254037844386, 0.5, 0.5773502691896258);
+  var q = abs((p - center).yx);
+  q = q - 2.0 * min(dot(k.xy, q), 0.0) * k.xy;
+  q = q - vec2f(clamp(q.x, -k.z * r, k.z * r), r);
+  return length(q) * sign(q.y);
+}
+
+fn sdf_hex_rounded(p: vec2f) -> f32 {
+  let fillet = hex_fillet();
+  let inner = max(hex_radius() - fillet * 1.1547005383792517, 1e-4);
+  return sdf_hex_pointy(p, hex_center(), inner) - fillet;
+}
+
 fn cross2(a: vec2f, b: vec2f) -> f32 {
   return a.x * b.y - a.y * b.x;
 }
@@ -51,42 +67,59 @@ fn wrap_pi(angle: f32) -> f32 {
   return atan2(sin(angle), cos(angle));
 }
 
-fn point_in_hex(p: vec2f, verts: array<vec2f, 6>) -> bool {
-  var pos = 0u;
-  var neg = 0u;
+fn unit2(v: vec2f) -> vec2f {
+  let len = length(v);
+  if (len <= EPSILON) { return vec2f(0.0); }
+  return v / len;
+}
+
+struct OutlineSeg { a: vec2f, b: vec2f };
+struct OutlineArc { center: vec2f, radius: f32, a0: f32, sweep: f32 };
+
+fn rounded_outline(verts: array<vec2f, 6>) -> array<OutlineSeg, 6> {
+  var segs: array<OutlineSeg, 6>;
+  let fillet = hex_fillet();
+  let trim = fillet * 0.5773502691896258;
   for (var i = 0u; i < 6u; i = i + 1u) {
-    let a = verts[i];
-    let b = verts[(i + 1u) % 6u];
-    let side = cross2(b - a, p - a);
-    if (side >= -EPSILON) { pos = pos + 1u; }
-    if (side <= EPSILON) { neg = neg + 1u; }
+    let v0 = verts[i];
+    let v1 = verts[(i + 1u) % 6u];
+    let edge = unit2(v1 - v0);
+    segs[i] = OutlineSeg(v0 + edge * trim, v1 - edge * trim);
   }
-  return pos == 6u || neg == 6u;
+  return segs;
 }
 
-fn segment_distance(p: vec2f, a: vec2f, b: vec2f) -> f32 {
-  let e = b - a;
-  let v = p - a;
-  let h = clamp(dot(v, e) / max(dot(e, e), EPSILON), 0.0, 1.0);
-  return length(v - e * h);
-}
-
-fn hex_edge_distance(p: vec2f, verts: array<vec2f, 6>) -> f32 {
-  var d = 1e30;
+fn rounded_arcs(verts: array<vec2f, 6>, segs: array<OutlineSeg, 6>) -> array<OutlineArc, 6> {
+  var arcs: array<OutlineArc, 6>;
+  let center = hex_center();
+  let R = max(hex_radius(), 1e-4);
+  let fillet = hex_fillet();
+  let inset = fillet * 1.1547005383792517;
   for (var i = 0u; i < 6u; i = i + 1u) {
-    d = min(d, segment_distance(p, verts[i], verts[(i + 1u) % 6u]));
+    let v1 = verts[(i + 1u) % 6u];
+    let p1 = segs[i].b;
+    let p_out = segs[(i + 1u) % 6u].a;
+    let arc_center = center + (v1 - center) * ((R - inset) / R);
+    let a0 = atan2(p1.y - arc_center.y, p1.x - arc_center.x);
+    let sweep = wrap_pi(atan2(p_out.y - arc_center.y, p_out.x - arc_center.x) - a0);
+    arcs[i] = OutlineArc(arc_center, fillet, a0, sweep);
   }
-  return d;
+  return arcs;
 }
 
-fn angular_interval(p: vec2f, verts: array<vec2f, 6>, center: vec2f) -> Interval {
+fn angular_interval(
+  p: vec2f,
+  segs: array<OutlineSeg, 6>,
+  arcs: array<OutlineArc, 6>,
+  center: vec2f,
+) -> Interval {
   if (hex_radius() <= EPSILON) {
     return Interval(0.0, 0.0, false);
   }
-  if (point_in_hex(p, verts)) {
+  if (sdf_hex_rounded(p) <= 0.0) {
     return Interval(0.0, 0.0, false);
   }
-  if (hex_edge_distance(p, verts) <= cfg.size_steps.w) {
+  if (abs(sdf_hex_rounded(p)) <= cfg.size_steps.w) {
     return Interval(0.0, 0.0, false);
   }
 
@@ -94,9 +127,16 @@ fn angular_interval(p: vec2f, verts: array<vec2f, 6>, center: vec2f) -> Interval
   var min_rel = 4.0;
   var max_rel = -4.0;
   for (var i = 0u; i < 6u; i = i + 1u) {
-    let rel = wrap_pi(atan2(verts[i].y - p.y, verts[i].x - p.x) - center_angle);
-    min_rel = min(min_rel, rel);
-    max_rel = max(max_rel, rel);
+    let a = segs[i].a;
+    let b = segs[i].b;
+    min_rel = min(min_rel, wrap_pi(atan2(a.y - p.y, a.x - p.x) - center_angle));
+    max_rel = max(max_rel, wrap_pi(atan2(a.y - p.y, a.x - p.x) - center_angle));
+    min_rel = min(min_rel, wrap_pi(atan2(b.y - p.y, b.x - p.x) - center_angle));
+    max_rel = max(max_rel, wrap_pi(atan2(b.y - p.y, b.x - p.x) - center_angle));
+    let mid = arcs[i].a0 + arcs[i].sweep * 0.5;
+    let c = arcs[i].center + arcs[i].radius * vec2f(cos(mid), sin(mid));
+    min_rel = min(min_rel, wrap_pi(atan2(c.y - p.y, c.x - p.x) - center_angle));
+    max_rel = max(max_rel, wrap_pi(atan2(c.y - p.y, c.x - p.x) - center_angle));
   }
   let length = max_rel - min_rel;
   if (!(length > EPSILON) || length >= PI) {
@@ -151,11 +191,46 @@ fn ray_segment_t(dir: vec2f, pre: EdgePrecomp) -> f32 {
 // into the triangle's arc, so the nearest ray<->edge intersection is the first lit edge it
 // can reach (nearest => the near edge occludes the far edges for free). One sample of the
 // LED color there replaces the SDF sphere-march — no SDF / .w channel needed at all.
-fn trace_light_source(origin: vec2f, dir: vec2f, pres: array<EdgePrecomp, 6>) -> TraceHit {
+fn angle_on_arc(p: vec2f, arc: OutlineArc) -> bool {
+  let rel = wrap_pi(atan2(p.y - arc.center.y, p.x - arc.center.x) - arc.a0);
+  if (arc.sweep >= 0.0) {
+    return rel >= -EPSILON && rel <= arc.sweep + EPSILON;
+  }
+  return rel <= EPSILON && rel >= arc.sweep - EPSILON;
+}
+
+fn ray_arc_t(origin: vec2f, dir: vec2f, arc: OutlineArc) -> f32 {
+  if (arc.radius <= EPSILON) { return -1.0; }
+  let oc = origin - arc.center;
+  let b = dot(dir, oc);
+  let disc = b * b - dot(oc, oc) + arc.radius * arc.radius;
+  if (disc < 0.0) { return -1.0; }
+  let s = sqrt(disc);
+  var best = 1e30;
+  let t0 = -b - s;
+  let t1 = -b + s;
+  if (t0 >= cfg.size_steps.z && angle_on_arc(origin + dir * t0, arc)) {
+    best = min(best, t0);
+  }
+  if (t1 >= cfg.size_steps.z && angle_on_arc(origin + dir * t1, arc)) {
+    best = min(best, t1);
+  }
+  if (best > 1e29) { return -1.0; }
+  return best;
+}
+
+fn trace_light_source(
+  origin: vec2f,
+  dir: vec2f,
+  pres: array<EdgePrecomp, 6>,
+  arcs: array<OutlineArc, 6>,
+) -> TraceHit {
   var t = 1e30;
   for (var i = 0u; i < 6u; i = i + 1u) {
     let ti = ray_segment_t(dir, pres[i]);
     if (ti >= 0.0) { t = min(t, ti); }
+    let ta = ray_arc_t(origin, dir, arcs[i]);
+    if (ta >= 0.0) { t = min(t, ta); }
   }
   if (t > 1e29) { return TraceHit(vec3f(0.0), 0.0, false); }
 
@@ -172,7 +247,9 @@ fn trace_light_source(origin: vec2f, dir: vec2f, pres: array<EdgePrecomp, 6>) ->
   let pixel_sim = in.pos.xy / target_scale;
   let center = hex_center();
   let verts = hex_vertices(center, hex_radius());
-  let interval = angular_interval(pixel_sim, verts, center);
+  let segs = rounded_outline(verts);
+  let arcs = rounded_arcs(verts, segs);
+  let interval = angular_interval(pixel_sim, segs, arcs, center);
   if (!interval.valid) {
     return vec4f(0.0, 0.0, 0.0, 1.0);
   }
@@ -194,11 +271,11 @@ fn trace_light_source(origin: vec2f, dir: vec2f, pres: array<EdgePrecomp, 6>) ->
   // Hoist the per-edge ray/segment invariants out of the ray loop (origin + edges are fixed).
   var pres: array<EdgePrecomp, 6>;
   for (var e = 0u; e < 6u; e = e + 1u) {
-    pres[e] = precompute_edge(pixel_sim, verts[e], verts[(e + 1u) % 6u]);
+    pres[e] = precompute_edge(pixel_sim, segs[e].a, segs[e].b);
   }
   var sum = vec3f(0.0);
   for (var i = 0u; i < MAX_RAYS; i = i + 1u) {
-    let hit = trace_light_source(pixel_sim, dir, pres);
+    let hit = trace_light_source(pixel_sim, dir, pres, arcs);
     if (hit.hit) {
       // Geometric spreading on distance NORMALIZED to the scene size (target_info.y =
       // ref_height / sim_height) so the radiance is resolution-independent — raw sim-px

@@ -30,13 +30,32 @@ struct VSOut {
 
 fn sdf_hex_pointy(p: vec2f, center: vec2f, circumradius: f32) -> f32 {
   let r = circumradius * 0.8660254037844386;
-  let q = abs(p - center);
-  return max(q.y * 0.8660254037844386 + q.x * 0.5, q.x) - r;
+  let k = vec3f(-0.8660254037844386, 0.5, 0.5773502691896258);
+  var q = abs((p - center).yx);
+  q = q - 2.0 * min(dot(k.xy, q), 0.0) * k.xy;
+  q = q - vec2f(clamp(q.x, -k.z * r, k.z * r), r);
+  return length(q) * sign(q.y);
+}
+
+fn sdf_hex_pointy_rounded(
+  p: vec2f,
+  center: vec2f,
+  circumradius: f32,
+  fillet: f32,
+) -> f32 {
+  let radius = max(fillet, 0.0);
+  let inner = max(circumradius - radius * 1.1547005383792517, 1e-4);
+  return sdf_hex_pointy(p, center, inner) - radius;
 }
 
 @fragment fn fs_main(in: VSOut) -> @location(0) vec4f {
   let pixel = in.pos.xy;
-  let hex_dist = sdf_hex_pointy(pixel, cfg.triangle.xy, cfg.triangle.z);
+  let hex_dist = sdf_hex_pointy_rounded(
+    pixel,
+    cfg.triangle.xy,
+    cfg.triangle.z,
+    cfg.triangle.w,
+  );
   // Positive expansion reveals emitter pixels outside the canonical hex.
   if (hex_dist - cfg.led_clip.x > 0.0) {
     discard;

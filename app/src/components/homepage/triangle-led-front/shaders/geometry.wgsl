@@ -5,11 +5,26 @@ fn sdf_segment(p: vec2f, a: vec2f, b: vec2f) -> f32 {
   return length(pa - ba * h);
 }
 
-// Pointy-top regular hex. `circumradius` is center → vertex; inradius = R * √3/2.
+// Exact pointy-top hex (IQ flat-top, x/y swapped). `circumradius` is center → vertex.
 export fn sdf_hex_pointy(p: vec2f, center: vec2f, circumradius: f32) -> f32 {
   let r = circumradius * 0.8660254037844386;
-  let q = abs(p - center);
-  return max(q.y * 0.8660254037844386 + q.x * 0.5, q.x) - r;
+  let k = vec3f(-0.8660254037844386, 0.5, 0.5773502691896258);
+  var q = abs((p - center).yx);
+  q = q - 2.0 * min(dot(k.xy, q), 0.0) * k.xy;
+  q = q - vec2f(clamp(q.x, -k.z * r, k.z * r), r);
+  return length(q) * sign(q.y);
+}
+
+// Fillet corners while keeping the six flats. `fillet` is world-space radius.
+export fn sdf_hex_pointy_rounded(
+  p: vec2f,
+  center: vec2f,
+  circumradius: f32,
+  fillet: f32,
+) -> f32 {
+  let radius = max(fillet, 0.0);
+  let inner = max(circumradius - radius * 1.1547005383792517, 1e-4);
+  return sdf_hex_pointy(p, center, inner) - radius;
 }
 
 export fn sdf_triangle_vertices(p: vec2f, a: vec2f, b: vec2f, c: vec2f) -> f32 {

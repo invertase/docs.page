@@ -2,7 +2,6 @@ import type { Bundle, Frame, FramePass, Gpu, Target } from 'vgpu';
 
 import ledEmittersWgsl from './shaders/led-emitters.wgsl';
 import {
-  HEX_SIDES,
   LEDS_PER_EDGE,
   LED_EMITTER_MESH_EXPANSION_PX,
   LED_SDF_CROP_EXPANSION_PX,
@@ -112,7 +111,7 @@ function lightSourcesUniform(
       hex.center.x,
       hex.center.y,
       hex.circumradius,
-      hex.inradius,
+      hex.fillet,
     ],
     led_clip: [LED_SDF_CROP_EXPANSION_PX, 0, 0, 0],
   };
@@ -186,121 +185,10 @@ function ledEmitterVertexData(
     );
   }
 
-  const hexVertices = layout.geometry.vertices;
-  for (let edge = 0; edge < HEX_SIDES; edge++) {
-    const prevEdge = (edge + HEX_SIDES - 1) % HEX_SIDES;
-    const incomingLed = prevEdge * LEDS_PER_EDGE + LEDS_PER_EDGE - 1;
-    const outgoingLed = edge * LEDS_PER_EDGE;
-    const incoming = layout.positions[incomingLed];
-    const outgoing = layout.positions[outgoingLed];
-    const corner = hexVertices[edge];
-    if (!incoming || !outgoing || !corner) continue;
-
-    const incomingBasis = edgeBasis(incoming.angle ?? 0);
-    const outgoingBasis = edgeBasis(outgoing.angle ?? 0);
-    const incomingEnd = {
-      x: incoming.x + incomingBasis.dir.x * paddedHalfLength,
-      y: incoming.y + incomingBasis.dir.y * paddedHalfLength,
-    };
-    const outgoingStart = {
-      x: outgoing.x - outgoingBasis.dir.x * paddedHalfLength,
-      y: outgoing.y - outgoingBasis.dir.y * paddedHalfLength,
-    };
-    const inwardBisector = normalize({
-      x: incomingEnd.x + outgoingStart.x - corner.x * 2,
-      y: incomingEnd.y + outgoingStart.y - corner.y * 2,
-    });
-    const seam = {
-      x:
-        corner.x +
-        inwardBisector.x * (layout.ledShape.cornerTrim + paddedHalfLength),
-      y:
-        corner.y +
-        inwardBisector.y * (layout.ledShape.cornerTrim + paddedHalfLength),
-    };
-    const incomingBoundary = fartherPoint(
-      offsetPoint(incomingEnd, incomingBasis.normal, -paddedHalfThickness),
-      offsetPoint(incomingEnd, incomingBasis.normal, paddedHalfThickness),
-      outgoingStart,
-    );
-    const outgoingBoundary = fartherPoint(
-      offsetPoint(outgoingStart, outgoingBasis.normal, -paddedHalfThickness),
-      offsetPoint(outgoingStart, outgoingBasis.normal, paddedHalfThickness),
-      incomingEnd,
-    );
-
-    const outerMiter =
-      lineIntersection(
-        incomingBoundary,
-        incomingBasis.dir,
-        outgoingBoundary,
-        outgoingBasis.dir,
-      ) ?? corner;
-
-    pushVertex(incomingLed, outerMiter.x, outerMiter.y);
-    pushVertex(
-      incomingLed,
-      incomingBoundary.x,
-      incomingBoundary.y,
-    );
-    pushVertex(incomingLed, seam.x, seam.y);
-
-    pushVertex(outgoingLed, outerMiter.x, outerMiter.y);
-    pushVertex(outgoingLed, seam.x, seam.y);
-    pushVertex(
-      outgoingLed,
-      outgoingBoundary.x,
-      outgoingBoundary.y,
-    );
-  }
-
   return new Float32Array(values);
 }
 
 function edgeBasis(angle: number) {
   const dir = { x: Math.cos(angle), y: Math.sin(angle) };
   return { dir, normal: { x: -dir.y, y: dir.x } };
-}
-
-function normalize(v: { x: number; y: number }) {
-  const length = Math.hypot(v.x, v.y);
-  if (length <= 0) return { x: 0, y: 0 };
-  return { x: v.x / length, y: v.y / length };
-}
-
-function offsetPoint(
-  point: { x: number; y: number },
-  normal: { x: number; y: number },
-  n: number,
-) {
-  return { x: point.x + normal.x * n, y: point.y + normal.y * n, n };
-}
-
-function fartherPoint<T extends { x: number; y: number }>(
-  a: T,
-  b: T,
-  from: { x: number; y: number },
-): T {
-  return distanceSquared(a, from) >= distanceSquared(b, from) ? a : b;
-}
-
-function distanceSquared(
-  a: { x: number; y: number },
-  b: { x: number; y: number },
-) {
-  const dx = a.x - b.x;
-  const dy = a.y - b.y;
-  return dx * dx + dy * dy;
-}
-
-function lineIntersection(
-  p: { x: number; y: number },
-  pd: { x: number; y: number },
-  q: { x: number; y: number },
-  qd: { x: number; y: number },
-): { x: number; y: number } | undefined {
-  const denom = pd.x * qd.y - pd.y * qd.x;
-  if (Math.abs(denom) < 1e-6) return undefined;
-  const s = ((q.x - p.x) * qd.y - (q.y - p.y) * qd.x) / denom;
-  return { x: p.x + pd.x * s, y: p.y + pd.y * s };
 }
