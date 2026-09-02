@@ -3,7 +3,7 @@
 // (no separate composite pass in dark mode).
 import { tonemap, value_remap_clamp } from "../../color-utils.wgsl";
 import { sdf_triangle_vertices } from "../../geometry.wgsl";
-import { near_falloff } from "../../floor-falloff.wgsl";
+import { far_falloff, near_falloff } from "../../floor-falloff.wgsl";
 
 struct Config { screen: vec4f, light_sources: vec4f, triangle: vec4f, radiance_fit: vec4f, sim_transform: vec4f };
 @group(0) @binding(0) var<uniform> cfg: Config;
@@ -262,11 +262,11 @@ const OCCLUDER_INTERIOR_MARGIN: f32 = 4.0;
     4.02,
     max(max(light_sources.r, light_sources.g), light_sources.b),
   );
-  // Near-edge glow only. far_falloff(power 0.05) stayed > 0.02 across the canvas and,
-  // with grey bg() + contrast lift, painted the residual rectangular plate.
+  // Official near + far screen-blend. Power 0.05 flattened tiny radiance into a
+  // full-canvas film; 0.4 keeps the soft aura and lets the tail reach alpha 0.
   let fade_inner = 0.0;
   let near_light = dot(radiance, LUMA);
-  let near = saturate(near_falloff(
+  let near = near_falloff(
     triangle_sdf,
     near_light,
     fade_inner,
@@ -274,8 +274,19 @@ const OCCLUDER_INTERIOR_MARGIN: f32 = 4.0;
     vec4f(0.046, 1.2, 2.74, 5.0),
     4.0,
     1.0,
-  ));
-  if (occluder < 1e-3 && surface <= 0.0 && near <= 0.02) {
+  );
+  let far = far_falloff(
+    near_light,
+    vec4f(0.65, 2.0, 0.0, 8.85),
+    0.4,
+    1.0,
+  );
+  let screen_blend =
+    1.0 - (1.0 - min(near, 1.0)) * (1.0 - min(far, 1.0));
+  let overflow =
+    max(near - 1.0, 0.0) + max(far - 1.0, 0.0);
+  let brightness_factor = screen_blend + overflow;
+  if (occluder < 1e-3 && surface <= 0.0 && brightness_factor <= 0.02) {
     return vec4f(0.0);
   }
 
@@ -284,11 +295,11 @@ const OCCLUDER_INTERIOR_MARGIN: f32 = 4.0;
     radiance,
     light_sources,
     surface,
-    near,
+    brightness_factor,
   );
   var final_colour = tonemap(colour * 0.25);
   final_colour = mix(final_colour, vec3f(0.0), occluder);
 
-  let coverage = max(occluder, max(surface, near));
+  let coverage = max(occluder, max(surface, saturate(brightness_factor)));
   return vec4f(final_colour * coverage, coverage);
 }
