@@ -1,7 +1,7 @@
 import GUI from 'lil-gui';
 import { clock, frameLoop, surface, type Gpu, type Surface } from 'vgpu';
 import { createHeroRenderer, type HeroRenderer } from './scene-renderer';
-import { DEFAULT_BRUSH, canonicalTriangleGeometry, type RenderSize } from './settings';
+import { DEFAULT_BRUSH, HEX_SIDES, canonicalHexGeometry, type RenderSize } from './settings';
 import { brushState, heroStateForActiveClick, simulationBrushState } from './sim-sizing';
 import { DEFAULT_TRIANGLE_LED_CONTROLS, isTriangleLedMode, type TriangleLedControls, type TriangleLedMode } from './types';
 
@@ -184,7 +184,7 @@ function installCanvasInput(canvas: HTMLCanvasElement) {
       x,
       y,
       active: true,
-      inside: isPointInsideTriangle({ x, y }, { width, height }),
+      inside: isPointInsideHex({ x, y }, { width, height }),
       isMouse: event.pointerType === 'mouse',
     }, height);
     return true;
@@ -230,15 +230,21 @@ function installCanvasInput(canvas: HTMLCanvasElement) {
   };
 }
 
-function isPointInsideTriangle(
+function isPointInsideHex(
   point: { x: number; y: number },
   size: { width: number; height: number },
 ) {
-  const { top, left, right } = canonicalTriangleGeometry(size);
-  const side = (a: typeof top, b: typeof top) =>
-    (b.x - a.x) * (point.y - a.y) - (b.y - a.y) * (point.x - a.x);
-  const a = side(top, left);
-  const b = side(left, right);
-  const c = side(right, top);
-  return (a <= 0 && b <= 0 && c <= 0) || (a >= 0 && b >= 0 && c >= 0);
+  const { vertices } = canonicalHexGeometry(size);
+  let positive = 0;
+  let negative = 0;
+  for (let i = 0; i < HEX_SIDES; i++) {
+    const a = vertices[i];
+    const b = vertices[(i + 1) % HEX_SIDES];
+    if (!a || !b) continue;
+    const side =
+      (b.x - a.x) * (point.y - a.y) - (b.y - a.y) * (point.x - a.x);
+    if (side >= 0) positive += 1;
+    if (side <= 0) negative += 1;
+  }
+  return positive === HEX_SIDES || negative === HEX_SIDES;
 }

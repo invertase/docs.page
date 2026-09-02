@@ -2,7 +2,7 @@
 // noise, then tonemaps + applies display contrast inline so it renders straight to the canvas
 // (no separate composite pass in dark mode).
 import { tonemap, value_remap_clamp } from "../../color-utils.wgsl";
-import { sdf_triangle_vertices } from "../../geometry.wgsl";
+import { sdf_hex_pointy } from "../../geometry.wgsl";
 import { far_falloff, near_falloff } from "../../floor-falloff.wgsl";
 
 struct Config { screen: vec4f, light_sources: vec4f, triangle: vec4f, radiance_fit: vec4f, sim_transform: vec4f };
@@ -68,13 +68,8 @@ fn bg(p: vec2f) -> vec3f {
 
 const LUMA = vec3f(0.2126, 0.7152, 0.0722);
 
-struct TriangleCorners { top: vec2f, left: vec2f, right: vec2f };
-
-fn triangle_corners() -> TriangleCorners {
-  let top = vec2f(cfg.triangle.x, cfg.triangle.y - cfg.triangle.z);
-  let left = vec2f(cfg.triangle.x - cfg.triangle.w, cfg.triangle.y + cfg.triangle.z * 0.5);
-  let right = vec2f(cfg.triangle.x + cfg.triangle.w, cfg.triangle.y + cfg.triangle.z * 0.5);
-  return TriangleCorners(top, left, right);
+fn hex_sdf(p: vec2f) -> f32 {
+  return sdf_hex_pointy(p, cfg.triangle.xy, cfg.triangle.z);
 }
 
 // Reads the LED emitter texture in simulation space, blanking samples that
@@ -233,8 +228,7 @@ const OCCLUDER_INTERIOR_MARGIN: f32 = 4.0;
 
 @fragment fn fs_main(in: VSOut) -> @location(0) vec4f {
   let pixel_screen = in.pos.xy;
-  let tri = triangle_corners();
-  let triangle_sdf = sdf_triangle_vertices(pixel_screen, tri.top, tri.left, tri.right);
+  let triangle_sdf = hex_sdf(pixel_screen);
   // The SDF screen-space gradient is a derivative: it must run in uniform control flow, so compute
   // the occluder edge width here (before the per-pixel early-out below) and reuse it for the
   // silhouette later. length(dpdx, dpdy) is the true gradient magnitude; fwidth's Manhattan sum

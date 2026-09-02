@@ -28,35 +28,17 @@ struct VSOut {
   return out;
 }
 
-fn signed_triangle_area(a: vec2f, b: vec2f, p: vec2f) -> f32 {
-  let edge = b - a;
-  return edge.x * (p.y - a.y) - edge.y * (p.x - a.x);
-}
-fn inside_triangle(p: vec2f, a: vec2f, b: vec2f, c: vec2f) -> bool {
-  let side0 = signed_triangle_area(a, b, p);
-  let side1 = signed_triangle_area(b, c, p);
-  let side2 = signed_triangle_area(c, a, p);
-  return (side0 <= 0.0 && side1 <= 0.0 && side2 <= 0.0) || (side0 >= 0.0 && side1 >= 0.0 && side2 >= 0.0);
-}
-fn segment_distance(p: vec2f, a: vec2f, b: vec2f) -> f32 {
-  let pa = p - a;
-  let ba = b - a;
-  let h = clamp(dot(pa, ba) / dot(ba, ba), 0.0, 1.0);
-  return length(pa - ba * h);
-}
-fn triangle_sdf(p: vec2f, a: vec2f, b: vec2f, c: vec2f) -> f32 {
-  let edge_dist = min(segment_distance(p, a, b), min(segment_distance(p, b, c), segment_distance(p, c, a)));
-  return select(edge_dist, -edge_dist, inside_triangle(p, a, b, c));
+fn sdf_hex_pointy(p: vec2f, center: vec2f, circumradius: f32) -> f32 {
+  let r = circumradius * 0.8660254037844386;
+  let q = abs(p - center);
+  return max(q.y * 0.8660254037844386 + q.x * 0.5, q.x) - r;
 }
 
 @fragment fn fs_main(in: VSOut) -> @location(0) vec4f {
   let pixel = in.pos.xy;
-  let top = vec2f(cfg.triangle.x, cfg.triangle.y - cfg.triangle.z);
-  let left = vec2f(cfg.triangle.x - cfg.triangle.w, cfg.triangle.y + cfg.triangle.z * 0.5);
-  let right = vec2f(cfg.triangle.x + cfg.triangle.w, cfg.triangle.y + cfg.triangle.z * 0.5);
-  let tri_dist = triangle_sdf(pixel, top, left, right);
-  // Positive expansion reveals emitter pixels outside the canonical triangle.
-  if (tri_dist - cfg.led_clip.x > 0.0) {
+  let hex_dist = sdf_hex_pointy(pixel, cfg.triangle.xy, cfg.triangle.z);
+  // Positive expansion reveals emitter pixels outside the canonical hex.
+  if (hex_dist - cfg.led_clip.x > 0.0) {
     discard;
   }
 

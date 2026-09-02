@@ -4,6 +4,7 @@ export interface RenderSize {
 }
 
 export const LEDS_PER_EDGE = 24;
+export const HEX_SIDES = 6;
 export const TRIANGLE_HEIGHT_RATIO = (180 / 630) * 0.8;
 export const HERO_CANVAS_MAX_CSS = 720;
 const MIN_SIM_HEIGHT = 360;
@@ -126,29 +127,37 @@ interface LedPosition {
   angle?: number;
 }
 
-export interface TriangleGeometry {
+export type HexVertex = LedPosition;
+export type HexVertices = readonly [
+  HexVertex,
+  HexVertex,
+  HexVertex,
+  HexVertex,
+  HexVertex,
+  HexVertex,
+];
+
+export interface HexGeometry {
   center: LedPosition;
-  top: LedPosition;
-  left: LedPosition;
-  right: LedPosition;
+  vertices: HexVertices;
   height: number;
   circumradius: number;
   inradius: number;
   sideLength: number;
 }
 
-interface TriangleLedShape {
+interface HexLedShape {
   normalHalfThickness: number;
   tangentHalfLength: number;
   cornerTrim: number;
   centerSpacing: number;
 }
 
-export interface TriangleLayout {
+export interface HexLayout {
   center: LedPosition;
   positions: LedPosition[];
-  geometry: TriangleGeometry;
-  ledShape: TriangleLedShape;
+  geometry: HexGeometry;
+  ledShape: HexLedShape;
 }
 
 let heroSceneScale = 1;
@@ -167,22 +176,34 @@ export function resolveHeroSceneScale(
   return baseZoom * Math.min(1, 560 / cssHeight);
 }
 
-export function canonicalTriangleGeometry(size: RenderSize): TriangleGeometry {
+function hexVertexAt(center: LedPosition, circumradius: number, i: number): HexVertex {
+  const angle = -Math.PI / 2 + i * (Math.PI / 3);
+  return {
+    x: center.x + circumradius * Math.cos(angle),
+    y: center.y + circumradius * Math.sin(angle),
+  };
+}
+
+function hexVertices(center: LedPosition, circumradius: number): HexVertices {
+  return [
+    hexVertexAt(center, circumradius, 0),
+    hexVertexAt(center, circumradius, 1),
+    hexVertexAt(center, circumradius, 2),
+    hexVertexAt(center, circumradius, 3),
+    hexVertexAt(center, circumradius, 4),
+    hexVertexAt(center, circumradius, 5),
+  ];
+}
+
+export function canonicalHexGeometry(size: RenderSize): HexGeometry {
   const height = size.height * TRIANGLE_HEIGHT_RATIO * heroSceneScale;
-  const circumradius = (height * 2) / 3;
-  const inradius = height / 3;
-  const sideLength = (height * 2) / Math.sqrt(3);
-  const cx = size.width * 0.5;
-  const cy = size.height * 0.5;
-  const center = { x: cx, y: cy };
-  const top = { x: cx, y: cy - circumradius };
-  const left = { x: cx - sideLength * 0.5, y: cy + inradius };
-  const right = { x: cx + sideLength * 0.5, y: cy + inradius };
+  const circumradius = height * 0.5;
+  const inradius = circumradius * (Math.sqrt(3) / 2);
+  const sideLength = circumradius;
+  const center = { x: size.width * 0.5, y: size.height * 0.5 };
   return {
     center,
-    top,
-    left,
-    right,
+    vertices: hexVertices(center, circumradius),
     height,
     circumradius,
     inradius,
@@ -190,31 +211,28 @@ export function canonicalTriangleGeometry(size: RenderSize): TriangleGeometry {
   };
 }
 
-function triangleLedRadius(size: RenderSize) {
-  return canonicalTriangleGeometry(size).height * LED_RADIUS_TO_TRIANGLE_HEIGHT;
+function hexLedRadius(size: RenderSize) {
+  return canonicalHexGeometry(size).height * LED_RADIUS_TO_TRIANGLE_HEIGHT;
 }
 
-function triangleLedNormalHalfThickness(size: RenderSize) {
-  return triangleLedRadius(size) * LED_NORMAL_HALF_THICKNESS_TO_RADIUS;
+function hexLedNormalHalfThickness(size: RenderSize) {
+  return hexLedRadius(size) * LED_NORMAL_HALF_THICKNESS_TO_RADIUS;
 }
 
-function triangleLedCornerTrim(size: RenderSize) {
+function hexLedCornerTrim(size: RenderSize) {
   const rawTrim =
-    triangleLedNormalHalfThickness(size) * Math.sqrt(3) +
+    hexLedNormalHalfThickness(size) / Math.sqrt(3) +
     LED_CORNER_TRIM_EPSILON_PX;
-  const sideLength = canonicalTriangleGeometry(size).sideLength;
+  const sideLength = canonicalHexGeometry(size).sideLength;
   return Math.min(rawTrim, sideLength * 0.45);
 }
 
-function triangleLedShapeDimensions(
-  size: RenderSize,
-  perEdge: number,
-): TriangleLedShape {
-  const geometry = canonicalTriangleGeometry(size);
-  const cornerTrim = triangleLedCornerTrim(size);
+function hexLedShapeDimensions(size: RenderSize, perEdge: number): HexLedShape {
+  const geometry = canonicalHexGeometry(size);
+  const cornerTrim = hexLedCornerTrim(size);
   const trimmedSideLength = Math.max(0, geometry.sideLength - cornerTrim * 2);
   const centerSpacing = trimmedSideLength / Math.max(1, perEdge);
-  const normalHalfThickness = triangleLedNormalHalfThickness(size);
+  const normalHalfThickness = hexLedNormalHalfThickness(size);
   const tangentHalfLength = Math.max(
     0,
     centerSpacing * 0.5 - LED_TANGENT_GAP_PX * 0.5,
@@ -227,10 +245,7 @@ function triangleLedShapeDimensions(
   };
 }
 
-function scaleTriangleGeometry(
-  geometry: TriangleGeometry,
-  scale: number,
-): TriangleGeometry {
+function scaleHexGeometry(geometry: HexGeometry, scale: number): HexGeometry {
   const center = geometry.center;
   const toward = (point: LedPosition) => ({
     x: center.x + (point.x - center.x) * scale,
@@ -238,9 +253,14 @@ function scaleTriangleGeometry(
   });
   return {
     center,
-    top: toward(geometry.top),
-    left: toward(geometry.left),
-    right: toward(geometry.right),
+    vertices: [
+      toward(geometry.vertices[0]),
+      toward(geometry.vertices[1]),
+      toward(geometry.vertices[2]),
+      toward(geometry.vertices[3]),
+      toward(geometry.vertices[4]),
+      toward(geometry.vertices[5]),
+    ],
     height: geometry.height * scale,
     circumradius: geometry.circumradius * scale,
     inradius: geometry.inradius * scale,
@@ -248,7 +268,7 @@ function scaleTriangleGeometry(
   };
 }
 
-function ledMeshScale(base: TriangleGeometry) {
+function ledMeshScale(base: HexGeometry) {
   const refHeight = HERO_CANVAS_MAX_CSS * TRIANGLE_HEIGHT_RATIO;
   const inset =
     (LED_MESH_INSET_PX * Math.min(base.height, refHeight)) / refHeight;
@@ -256,27 +276,21 @@ function ledMeshScale(base: TriangleGeometry) {
 }
 
 export function ledMeshGeometry(size: RenderSize) {
-  const base = canonicalTriangleGeometry(size);
-  return scaleTriangleGeometry(base, ledMeshScale(base));
+  const base = canonicalHexGeometry(size);
+  return scaleHexGeometry(base, ledMeshScale(base));
 }
 
-export function triangleEdgeLedLayout(
-  size: RenderSize,
-  perEdge: number,
-): TriangleLayout {
-  const base = canonicalTriangleGeometry(size);
+export function hexEdgeLedLayout(size: RenderSize, perEdge: number): HexLayout {
+  const base = canonicalHexGeometry(size);
   const meshScale = ledMeshScale(base);
-  const geometry = scaleTriangleGeometry(base, meshScale);
-  const { top, left, right, center } = geometry;
-  const edges = [
-    [top, left],
-    [left, right],
-    [right, top],
-  ] as const;
+  const geometry = scaleHexGeometry(base, meshScale);
+  const { vertices, center } = geometry;
   const ledSize = { width: size.width, height: size.height * meshScale };
-  const ledShape = triangleLedShapeDimensions(ledSize, perEdge);
+  const ledShape = hexLedShapeDimensions(ledSize, perEdge);
   const positions: LedPosition[] = [];
-  for (const [a, b] of edges) {
+  for (let e = 0; e < HEX_SIDES; e++) {
+    const a = vertices[e];
+    const b = vertices[(e + 1) % HEX_SIDES];
     const dx = b.x - a.x;
     const dy = b.y - a.y;
     const edgeLength = Math.hypot(dx, dy);

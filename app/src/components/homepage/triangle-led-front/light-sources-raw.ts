@@ -2,11 +2,12 @@ import type { Bundle, Frame, FramePass, Gpu, Target } from 'vgpu';
 
 import ledEmittersWgsl from './shaders/led-emitters.wgsl';
 import {
+  HEX_SIDES,
   LEDS_PER_EDGE,
   LED_EMITTER_MESH_EXPANSION_PX,
   LED_SDF_CROP_EXPANSION_PX,
-  canonicalTriangleGeometry,
-  triangleEdgeLedLayout,
+  canonicalHexGeometry,
+  hexEdgeLedLayout,
   type RenderSize,
   type SceneTunables as LightTunables,
 } from './settings';
@@ -27,7 +28,7 @@ export interface LightSourcesRaw {
 interface CreateLightSourcesRawOptions {
   size: readonly [number, number];
   ledStorage: unknown;
-  triangle?: ReturnType<typeof canonicalTriangleGeometry>;
+  hex?: ReturnType<typeof canonicalHexGeometry>;
 }
 
 export function createLightSourcesRaw(
@@ -35,7 +36,7 @@ export function createLightSourcesRaw(
   opts: CreateLightSourcesRawOptions,
 ): LightSourcesRaw {
   const simSize: RenderSize = { width: opts.size[0], height: opts.size[1] };
-  const triangle = opts.triangle ?? canonicalTriangleGeometry(simSize);
+  const hex = opts.hex ?? canonicalHexGeometry(simSize);
 
   const colorTarget = target(gpu, {
     size: [simSize.width, simSize.height],
@@ -79,7 +80,7 @@ export function createLightSourcesRaw(
       const uniformData = lightSourcesUniform(
         simSize,
         tunables,
-        triangle,
+        hex,
       );
       ledEmittersDraw.set({ cfg: uniformData });
       frame.pass(
@@ -97,7 +98,7 @@ export function createLightSourcesRaw(
 function lightSourcesUniform(
   size: RenderSize,
   tunables: LightTunables,
-  triangle: ReturnType<typeof canonicalTriangleGeometry>,
+  hex: ReturnType<typeof canonicalHexGeometry>,
 ) {
   return {
     resolution: [size.width, size.height],
@@ -108,10 +109,10 @@ function lightSourcesUniform(
       0,
     ],
     triangle: [
-      triangle.center.x,
-      triangle.center.y,
-      triangle.circumradius,
-      triangle.sideLength * 0.5,
+      hex.center.x,
+      hex.center.y,
+      hex.circumradius,
+      hex.inradius,
     ],
     led_clip: [LED_SDF_CROP_EXPANSION_PX, 0, 0, 0],
   };
@@ -130,7 +131,7 @@ function ledEmitterVertexData(
   size: RenderSize,
   pad: number,
 ): Float32Array {
-  const layout = triangleEdgeLedLayout(size, LEDS_PER_EDGE);
+  const layout = hexEdgeLedLayout(size, LEDS_PER_EDGE);
   const { tangentHalfLength, normalHalfThickness } = layout.ledShape;
   const paddedHalfLength = tangentHalfLength + pad;
   const paddedHalfThickness = normalHalfThickness + pad;
@@ -185,18 +186,14 @@ function ledEmitterVertexData(
     );
   }
 
-  const triangleVertices = [
-    layout.geometry.top,
-    layout.geometry.left,
-    layout.geometry.right,
-  ] as const;
-  for (let edge = 0; edge < 3; edge++) {
-    const prevEdge = (edge + 2) % 3;
+  const hexVertices = layout.geometry.vertices;
+  for (let edge = 0; edge < HEX_SIDES; edge++) {
+    const prevEdge = (edge + HEX_SIDES - 1) % HEX_SIDES;
     const incomingLed = prevEdge * LEDS_PER_EDGE + LEDS_PER_EDGE - 1;
     const outgoingLed = edge * LEDS_PER_EDGE;
     const incoming = layout.positions[incomingLed];
     const outgoing = layout.positions[outgoingLed];
-    const corner = triangleVertices[edge];
+    const corner = hexVertices[edge];
     if (!incoming || !outgoing || !corner) continue;
 
     const incomingBasis = edgeBasis(incoming.angle ?? 0);

@@ -3,7 +3,9 @@ import { bundle, draw, frame, storage, target } from 'vgpu';
 
 import {
   HERO_CANVAS_MAX_CSS,
-  canonicalTriangleGeometry,
+  HEX_SIDES,
+  LEDS_PER_EDGE,
+  canonicalHexGeometry,
   ledMeshGeometry,
   resolveHeroSceneScale,
   setHeroSceneScale,
@@ -185,7 +187,7 @@ export function createHeroRenderer(
     const presentationSize = normalizedSize(css.width * css.dpr, css.height * css.dpr);
     const pixelRatio = normalizedPixelRatio(sizing.pixelRatio);
     const leds = buildLedGeometry(simulationSize, previous);
-    const ledStorage = storage(gpu, 72 * 8 * 4) as DestroyableStorage;
+    const ledStorage = storage(gpu, LEDS_PER_EDGE * HEX_SIDES * 8 * 4) as DestroyableStorage;
     ledStorage.write(leds.data.buffer as ArrayBuffer);
     const raycastSize = directTriangleTargetSize(simulationSize);
     const raycastTarget = target(gpu, {
@@ -196,7 +198,7 @@ export function createHeroRenderer(
     const lightSources = createLightSourcesRaw(gpu, {
       size: [simulationSize.width, simulationSize.height],
       ledStorage,
-      triangle: canonicalTriangleGeometry(simulationSize),
+      hex: canonicalHexGeometry(simulationSize),
     });
     raycastDraw.set({
       cfg: directTriangleRaycastUniformData(simulationSize),
@@ -230,12 +232,12 @@ export function createHeroRenderer(
 
 function directTriangleRaycastUniformData(simulationSize: RenderSize) {
   const size = directTriangleTargetSize(simulationSize);
-  const triangle = ledMeshGeometry(simulationSize);
+  const hex = ledMeshGeometry(simulationSize);
   const pxStepScale =
     Math.min(simulationSize.height, HERO_CANVAS_MAX_CSS) / HERO_CANVAS_MAX_CSS;
   return {
-    tri_a_b: [triangle.top.x, triangle.top.y, triangle.left.x, triangle.left.y],
-    tri_c_target: [triangle.right.x, triangle.right.y, size.width, size.height],
+    hex_center_r: [hex.center.x, hex.center.y, hex.circumradius, 0],
+    hex_target: [size.width, size.height, 0, 0],
     size_steps: [
       simulationSize.width,
       simulationSize.height,
@@ -267,7 +269,7 @@ function directTriangleTargetSize(size: RenderSize) {
 function floorUniformData(parts: RendererParts) {
   const { simulationSize, presentationSize, pixelRatio } = parts;
   const transform = presentationSimulationTransform(simulationSize, presentationSize);
-  const triangle = presentationTriangleParams(simulationSize, transform);
+  const hex = presentationHexParams(simulationSize, transform);
   const referencePresentationHeight =
     HERO_CANVAS_MAX_CSS * Math.max(pixelRatio, 1e-4);
   const radianceJitterNorm =
@@ -277,10 +279,10 @@ function floorUniformData(parts: RendererParts) {
     screen: [presentationSize.width, presentationSize.height, 0, pixelRatio],
     light_sources: [simulationSize.width, simulationSize.height, 0, 0],
     triangle: [
-      triangle.centerX,
-      triangle.centerY,
-      triangle.circumradiusY,
-      triangle.halfSideX,
+      hex.centerX,
+      hex.centerY,
+      hex.circumradius,
+      hex.inradius,
     ],
     radiance_fit: [
       transform.originX,
@@ -312,16 +314,16 @@ function presentationSimulationTransform(
   };
 }
 
-function presentationTriangleParams(
+function presentationHexParams(
   simulationSize: RenderSize,
   transform: ReturnType<typeof presentationSimulationTransform>,
 ) {
-  const geometry = canonicalTriangleGeometry(simulationSize);
+  const geometry = canonicalHexGeometry(simulationSize);
   return {
     centerX: transform.originX + geometry.center.x * transform.scale,
     centerY: transform.originY + geometry.center.y * transform.scale,
-    circumradiusY: geometry.circumradius * transform.scale,
-    halfSideX: geometry.sideLength * 0.5 * transform.scale,
+    circumradius: geometry.circumradius * transform.scale,
+    inradius: geometry.inradius * transform.scale,
   };
 }
 

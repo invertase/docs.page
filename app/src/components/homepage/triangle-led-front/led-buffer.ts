@@ -1,8 +1,9 @@
 import {
+  HEX_SIDES,
   HERO_STATE_MODES,
   LEDS_PER_EDGE,
   NOISE_ROTATION_START_SECONDS,
-  triangleEdgeLedLayout,
+  hexEdgeLedLayout,
   type BrushState,
   type HeroStateMode,
   type HeroStateSettings,
@@ -12,7 +13,8 @@ import {
 } from './settings';
 
 const LED_FLOATS = 8;
-const LED_COUNT = LEDS_PER_EDGE * 3;
+const LED_COUNT = LEDS_PER_EDGE * HEX_SIDES;
+const PERIMETER_SCALE = HEX_SIDES / 3;
 const COLOR_OFFSET = 4;
 const MAX_FRAME_DELTA = 0.1;
 const CLICK_SPEED_BOOST_PEAK = 10;
@@ -26,10 +28,18 @@ const LUMA_R = 0.2126;
 const LUMA_G = 0.7152;
 const LUMA_B = 0.0722;
 
-const LINE_CENTERS_START = [6, 6, 6] as const;
-const LINE_VELOCITIES = [-3.302, -2.355, -1.636] as const;
-const LINE_SIZE_MIN = LEDS_PER_EDGE;
-const LINE_SIZE_MAX = LEDS_PER_EDGE * 1.7;
+const LINE_CENTERS_START = [
+  6,
+  6 + LEDS_PER_EDGE * 2,
+  6 + LEDS_PER_EDGE * 4,
+] as const;
+const LINE_VELOCITIES = [
+  -3.302 * PERIMETER_SCALE,
+  -2.355 * PERIMETER_SCALE,
+  -1.636 * PERIMETER_SCALE,
+] as const;
+const LINE_SIZE_MIN = LEDS_PER_EDGE * PERIMETER_SCALE;
+const LINE_SIZE_MAX = LEDS_PER_EDGE * 1.7 * PERIMETER_SCALE;
 const LINE_SIZE_MID = (LINE_SIZE_MIN + LINE_SIZE_MAX) / 2;
 const LINE_SIZE_AMP = (LINE_SIZE_MAX - LINE_SIZE_MIN) / 2;
 const LINE_SIZE_FREQ = [0.41, 0.31, 0.23] as const;
@@ -52,7 +62,7 @@ export interface LedGeometryState {
   normals: Float32Array;
   triangleHeight: number;
   deployEdgeCenters: readonly [Point, Point, Point];
-  triangleVertices: readonly [Point, Point, Point];
+  hexVertices: readonly [Point, Point, Point, Point, Point, Point];
   lastMode: HeroStateMode | undefined;
   lastEdgeIndex: number | undefined;
   transitionStart: number;
@@ -86,7 +96,7 @@ export function buildLedGeometry(
   size: RenderSize,
   previous?: LedGeometryState,
 ): LedGeometryState {
-  const layout = triangleEdgeLedLayout(size, LEDS_PER_EDGE);
+  const layout = hexEdgeLedLayout(size, LEDS_PER_EDGE);
   const data = new Float32Array(layout.positions.length * LED_FLOATS);
   const currentState = new Float32Array(data.length);
   const targetState = new Float32Array(data.length);
@@ -127,15 +137,11 @@ export function buildLedGeometry(
     normals,
     triangleHeight: layout.geometry.height,
     deployEdgeCenters: [
-      midpoint(layout.geometry.top, layout.geometry.left),
-      midpoint(layout.geometry.left, layout.geometry.right),
-      midpoint(layout.geometry.right, layout.geometry.top),
+      midpoint(layout.geometry.vertices[0], layout.geometry.vertices[1]),
+      midpoint(layout.geometry.vertices[2], layout.geometry.vertices[3]),
+      midpoint(layout.geometry.vertices[4], layout.geometry.vertices[5]),
     ],
-    triangleVertices: [
-      { x: layout.geometry.top.x, y: layout.geometry.top.y },
-      { x: layout.geometry.left.x, y: layout.geometry.left.y },
-      { x: layout.geometry.right.x, y: layout.geometry.right.y },
-    ],
+    hexVertices: layout.geometry.vertices,
     lastMode: previous?.lastMode,
     lastEdgeIndex: previous?.lastEdgeIndex,
     transitionStart: 0,
@@ -146,7 +152,10 @@ export function buildLedGeometry(
     lineCenters: previous?.lineCenters ?? Float32Array.from(LINE_CENTERS_START),
     lineVelocities:
       previous?.lineVelocities ?? Float32Array.from(LINE_VELOCITIES),
-    glowState: previous?.glowState ?? new Float32Array(LED_COUNT),
+    glowState:
+      previous?.glowState?.length === LED_COUNT
+        ? previous.glowState
+        : new Float32Array(LED_COUNT),
     glowDecaying: previous?.glowDecaying ?? false,
     hoverTransition: previous?.hoverTransition ?? 0,
     hoverActive: previous?.hoverActive ?? false,
@@ -222,8 +231,7 @@ export function computeLeds(
       brush.inside !== true
     ) {
       const enter = (brush.linesFadeDistance ?? 0) * leds.triangleHeight;
-      const v = leds.triangleVertices;
-      const distance = triangleSdf2D(brush.x, brush.y, v[0], v[1], v[2]);
+      const distance = hexSdf2D(brush.x, brush.y, leds.hexVertices);
       if (!leds.hoverActive && distance < enter) leds.hoverActive = true;
       else if (leds.hoverActive && distance > enter * HOVER_HYSTERESIS)
         leds.hoverActive = false;
@@ -465,52 +473,33 @@ function edgeWeight(
   return (1 / (1 + Math.hypot(x - cx, y - cy) / radius)) ** power;
 }
 
-function triangleSdf2D(
+function hexSdf2D(
   px: number,
   py: number,
-  a: Point,
-  b: Point,
-  c: Point,
+  vertices: readonly Point[],
 ) {
-  const e0x = b.x - a.x;
-  const e0y = b.y - a.y;
-  const e1x = c.x - b.x;
-  const e1y = c.y - b.y;
-  const e2x = a.x - c.x;
-  const e2y = a.y - c.y;
-  const v0x = px - a.x;
-  const v0y = py - a.y;
-  const v1x = px - b.x;
-  const v1y = py - b.y;
-  const v2x = px - c.x;
-  const v2y = py - c.y;
-  const t0 = clamp01(
-    (v0x * e0x + v0y * e0y) / (e0x * e0x + e0y * e0y || 1),
-  );
-  const t1 = clamp01(
-    (v1x * e1x + v1y * e1y) / (e1x * e1x + e1y * e1y || 1),
-  );
-  const t2 = clamp01(
-    (v2x * e2x + v2y * e2y) / (e2x * e2x + e2y * e2y || 1),
-  );
-  const p0x = v0x - e0x * t0;
-  const p0y = v0y - e0y * t0;
-  const p1x = v1x - e1x * t1;
-  const p1y = v1y - e1y * t1;
-  const p2x = v2x - e2x * t2;
-  const p2y = v2y - e2y * t2;
-  const sign = Math.sign(e0x * e2y - e0y * e2x);
-  const distanceSquared = Math.min(
-    p0x * p0x + p0y * p0y,
-    p1x * p1x + p1y * p1y,
-    p2x * p2x + p2y * p2y,
-  );
-  const side = Math.min(
-    sign * (v0x * e0y - v0y * e0x),
-    sign * (v1x * e1y - v1y * e1x),
-    sign * (v2x * e2y - v2y * e2x),
-  );
-  return -Math.sqrt(distanceSquared) * Math.sign(side);
+  let minDistSq = Number.POSITIVE_INFINITY;
+  let allPos = true;
+  let allNeg = true;
+  const count = vertices.length;
+  for (let i = 0; i < count; i++) {
+    const a = vertices[i];
+    const b = vertices[(i + 1) % count];
+    if (!a || !b) continue;
+    const ex = b.x - a.x;
+    const ey = b.y - a.y;
+    const vx = px - a.x;
+    const vy = py - a.y;
+    const t = clamp01((vx * ex + vy * ey) / (ex * ex + ey * ey || 1));
+    const dx = vx - ex * t;
+    const dy = vy - ey * t;
+    minDistSq = Math.min(minDistSq, dx * dx + dy * dy);
+    const side = ex * vy - ey * vx;
+    if (side < 0) allPos = false;
+    if (side > 0) allNeg = false;
+  }
+  const distance = Math.sqrt(minDistSq);
+  return allPos || allNeg ? -distance : distance;
 }
 
 function midpoint(a: Point, b: Point) {
@@ -567,7 +556,7 @@ function wrapIndex(value: number) {
 
 function sanitizeEdgeIndex(value: number) {
   if (!Number.isFinite(value)) return 0;
-  return Math.max(0, Math.min(2, Math.round(value)));
+  return Math.max(0, Math.min(HEX_SIDES - 1, Math.round(value)));
 }
 
 function easeInQuad(t: number) {

@@ -1,6 +1,6 @@
 struct Config {
-  tri_a_b: vec4f,
-  tri_c_target: vec4f,
+  hex_center_r: vec4f,
+  hex_target: vec4f,
   size_steps: vec4f,
   params: vec4f,
   target_info: vec4f,
@@ -31,9 +31,17 @@ const EPSILON: f32 = 1e-5;
   return out;
 }
 
-fn tri_a() -> vec2f { return cfg.tri_a_b.xy; }
-fn tri_b() -> vec2f { return cfg.tri_a_b.zw; }
-fn tri_c() -> vec2f { return cfg.tri_c_target.xy; }
+fn hex_center() -> vec2f { return cfg.hex_center_r.xy; }
+fn hex_radius() -> f32 { return cfg.hex_center_r.z; }
+
+fn hex_vertices(center: vec2f, R: f32) -> array<vec2f, 6> {
+  var verts: array<vec2f, 6>;
+  for (var i = 0u; i < 6u; i = i + 1u) {
+    let a = -1.5707963267948966 + f32(i) * 1.0471975511965976;
+    verts[i] = center + R * vec2f(cos(a), sin(a));
+  }
+  return verts;
+}
 
 fn cross2(a: vec2f, b: vec2f) -> f32 {
   return a.x * b.y - a.y * b.x;
@@ -43,20 +51,17 @@ fn wrap_pi(angle: f32) -> f32 {
   return atan2(sin(angle), cos(angle));
 }
 
-fn triangle_signed_area(a: vec2f, b: vec2f, c: vec2f) -> f32 {
-  return cross2(b - a, c - a);
-}
-
-fn point_in_triangle(p: vec2f, a: vec2f, b: vec2f, c: vec2f) -> bool {
-  let area = triangle_signed_area(a, b, c);
-  if (abs(area) <= EPSILON) {
-    return false;
+fn point_in_hex(p: vec2f, verts: array<vec2f, 6>) -> bool {
+  var pos = 0u;
+  var neg = 0u;
+  for (var i = 0u; i < 6u; i = i + 1u) {
+    let a = verts[i];
+    let b = verts[(i + 1u) % 6u];
+    let side = cross2(b - a, p - a);
+    if (side >= -EPSILON) { pos = pos + 1u; }
+    if (side <= EPSILON) { neg = neg + 1u; }
   }
-  let inv_area = 1.0 / area;
-  let u = cross2(b - p, c - p) * inv_area;
-  let v = cross2(c - p, a - p) * inv_area;
-  let w = 1.0 - u - v;
-  return u >= -EPSILON && v >= -EPSILON && w >= -EPSILON;
+  return pos == 6u || neg == 6u;
 }
 
 fn segment_distance(p: vec2f, a: vec2f, b: vec2f) -> f32 {
@@ -66,31 +71,33 @@ fn segment_distance(p: vec2f, a: vec2f, b: vec2f) -> f32 {
   return length(v - e * h);
 }
 
-fn triangle_edge_distance(p: vec2f, a: vec2f, b: vec2f, c: vec2f) -> f32 {
-  return min(
-    segment_distance(p, a, b),
-    min(segment_distance(p, b, c), segment_distance(p, c, a)),
-  );
+fn hex_edge_distance(p: vec2f, verts: array<vec2f, 6>) -> f32 {
+  var d = 1e30;
+  for (var i = 0u; i < 6u; i = i + 1u) {
+    d = min(d, segment_distance(p, verts[i], verts[(i + 1u) % 6u]));
+  }
+  return d;
 }
 
-fn angular_interval(p: vec2f, a: vec2f, b: vec2f, c: vec2f) -> Interval {
-  if (abs(triangle_signed_area(a, b, c)) <= EPSILON) {
+fn angular_interval(p: vec2f, verts: array<vec2f, 6>, center: vec2f) -> Interval {
+  if (hex_radius() <= EPSILON) {
     return Interval(0.0, 0.0, false);
   }
-  if (point_in_triangle(p, a, b, c)) {
+  if (point_in_hex(p, verts)) {
     return Interval(0.0, 0.0, false);
   }
-  if (triangle_edge_distance(p, a, b, c) <= cfg.size_steps.w) {
+  if (hex_edge_distance(p, verts) <= cfg.size_steps.w) {
     return Interval(0.0, 0.0, false);
   }
 
-  let center = (a + b + c) / 3.0;
   let center_angle = atan2(center.y - p.y, center.x - p.x);
-  let ra = wrap_pi(atan2(a.y - p.y, a.x - p.x) - center_angle);
-  let rb = wrap_pi(atan2(b.y - p.y, b.x - p.x) - center_angle);
-  let rc = wrap_pi(atan2(c.y - p.y, c.x - p.x) - center_angle);
-  let min_rel = min(ra, min(rb, rc));
-  let max_rel = max(ra, max(rb, rc));
+  var min_rel = 4.0;
+  var max_rel = -4.0;
+  for (var i = 0u; i < 6u; i = i + 1u) {
+    let rel = wrap_pi(atan2(verts[i].y - p.y, verts[i].x - p.x) - center_angle);
+    min_rel = min(min_rel, rel);
+    max_rel = max(max_rel, rel);
+  }
   let length = max_rel - min_rel;
   if (!(length > EPSILON) || length >= PI) {
     return Interval(0.0, 0.0, false);
@@ -144,14 +151,12 @@ fn ray_segment_t(dir: vec2f, pre: EdgePrecomp) -> f32 {
 // into the triangle's arc, so the nearest ray<->edge intersection is the first lit edge it
 // can reach (nearest => the near edge occludes the far edges for free). One sample of the
 // LED color there replaces the SDF sphere-march — no SDF / .w channel needed at all.
-fn trace_light_source(origin: vec2f, dir: vec2f, pre_ab: EdgePrecomp, pre_bc: EdgePrecomp, pre_ca: EdgePrecomp) -> TraceHit {
+fn trace_light_source(origin: vec2f, dir: vec2f, pres: array<EdgePrecomp, 6>) -> TraceHit {
   var t = 1e30;
-  let t0 = ray_segment_t(dir, pre_ab);
-  let t1 = ray_segment_t(dir, pre_bc);
-  let t2 = ray_segment_t(dir, pre_ca);
-  if (t0 >= 0.0) { t = min(t, t0); }
-  if (t1 >= 0.0) { t = min(t, t1); }
-  if (t2 >= 0.0) { t = min(t, t2); }
+  for (var i = 0u; i < 6u; i = i + 1u) {
+    let ti = ray_segment_t(dir, pres[i]);
+    if (ti >= 0.0) { t = min(t, ti); }
+  }
   if (t > 1e29) { return TraceHit(vec3f(0.0), 0.0, false); }
 
   let source = load_light_source(origin + dir * t);
@@ -165,10 +170,9 @@ fn trace_light_source(origin: vec2f, dir: vec2f, pre_ab: EdgePrecomp, pre_bc: Ed
 @fragment fn fs_main(in: VSOut) -> @location(0) vec4f {
   let target_scale = max(cfg.target_info.x, 1e-4);
   let pixel_sim = in.pos.xy / target_scale;
-  let a = tri_a();
-  let b = tri_b();
-  let c = tri_c();
-  let interval = angular_interval(pixel_sim, a, b, c);
+  let center = hex_center();
+  let verts = hex_vertices(center, hex_radius());
+  let interval = angular_interval(pixel_sim, verts, center);
   if (!interval.valid) {
     return vec4f(0.0, 0.0, 0.0, 1.0);
   }
@@ -188,12 +192,13 @@ fn trace_light_source(origin: vec2f, dir: vec2f, pre_ab: EdgePrecomp, pre_bc: Ed
   let step_s = sin(step_angle);
   var dir = vec2f(cos(start_angle), sin(start_angle));
   // Hoist the per-edge ray/segment invariants out of the ray loop (origin + edges are fixed).
-  let pre_ab = precompute_edge(pixel_sim, a, b);
-  let pre_bc = precompute_edge(pixel_sim, b, c);
-  let pre_ca = precompute_edge(pixel_sim, c, a);
+  var pres: array<EdgePrecomp, 6>;
+  for (var e = 0u; e < 6u; e = e + 1u) {
+    pres[e] = precompute_edge(pixel_sim, verts[e], verts[(e + 1u) % 6u]);
+  }
   var sum = vec3f(0.0);
   for (var i = 0u; i < MAX_RAYS; i = i + 1u) {
-    let hit = trace_light_source(pixel_sim, dir, pre_ab, pre_bc, pre_ca);
+    let hit = trace_light_source(pixel_sim, dir, pres);
     if (hit.hit) {
       // Geometric spreading on distance NORMALIZED to the scene size (target_info.y =
       // ref_height / sim_height) so the radiance is resolution-independent — raw sim-px
