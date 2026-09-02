@@ -45,6 +45,7 @@ export function NotFoundTriangleLed() {
       <canvas
         ref={canvasRef}
         className="relative z-10 block h-full w-full touch-none"
+        data-vgpu="triangle-led-front createRenderer LEDS_PER_EDGE DIRECT_TRIANGLE_INTENSITY_SCALE"
       />
     </div>
   );

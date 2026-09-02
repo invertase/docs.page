@@ -101,7 +101,11 @@ export function createRenderer(options: RendererOptions) {
     const nextGpu = await init();
     if (disposed) { nextGpu.dispose(); return; }
     gpu = nextGpu;
-    canvasSurface = surface(gpu, options.canvas, { dpr: [1, 2] });
+    canvasSurface = surface(gpu, options.canvas, {
+      dpr: [1, 2],
+      alphaMode: 'premultiplied',
+      clearColor: [0, 0, 0, 0],
+    });
     const nextScene = createHeroRenderer(gpu, { theme: 'dark', css: cssSizeOf(options.canvas, canvasSurface.dpr) });
     scene = nextScene;
     nextScene.setOutputTarget(canvasSurface);

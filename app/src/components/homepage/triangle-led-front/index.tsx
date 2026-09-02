@@ -15,7 +15,7 @@ export function Example() {
   }, []);
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-black">
+    <div className="relative h-full w-full overflow-hidden">
       <canvas ref={canvasRef} className="block h-full w-full touch-none" />
     </div>
   );

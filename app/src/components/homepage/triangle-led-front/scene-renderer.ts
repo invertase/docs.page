@@ -122,7 +122,7 @@ export function createHeroRenderer(
       );
       const floorBundle = current.floorBundle ?? recordFloorBundle(current, outputTarget);
       currentFrame.pass(
-        { target: outputTarget, clear: [0, 0, 0, 1] },
+        { target: outputTarget, clear: [0, 0, 0, 0] },
         (pass: FramePass) => pass.bundles(floorBundle),
       );
     },

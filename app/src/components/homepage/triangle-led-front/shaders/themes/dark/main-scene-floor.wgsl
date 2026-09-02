@@ -251,6 +251,7 @@ const OCCLUDER_INTERIOR_MARGIN: f32 = 4.0;
   // silhouette later. length(dpdx, dpdy) is the true gradient magnitude; fwidth's Manhattan sum
   // |dpdx|+|dpdy| overestimates it by up to sqrt(2) on diagonal edges, over-blurring them.
   let occluder_edge = max(length(vec2f(dpdx(triangle_sdf), dpdy(triangle_sdf))), 1e-4);
+  let occluder = clamp(0.5 - triangle_sdf / occluder_edge, 0.0, 1.0);
   // Early-out to the exact interior value when the occluder is on and we are not in radiance-debug.
   // Uniform-gated, so wavefronts deep inside the triangle skip the body coherently.
   if (triangle_sdf < -OCCLUDER_INTERIOR_MARGIN) {
@@ -306,6 +307,10 @@ const OCCLUDER_INTERIOR_MARGIN: f32 = 4.0;
   let overflow =
     max(near - 1.0, 0.0) + max(far - 1.0, 0.0);
   let brightness_factor = screen_blend + overflow;
+  // Empty floor (no glow, no LED, no occluder) stays transparent so the page grid shows.
+  if (occluder < 1e-3 && surface <= 0.0 && brightness_factor <= 0.02) {
+    return vec4f(0.0);
+  }
 
   var colour = compose_floor(
     base_rgb,
@@ -323,14 +328,10 @@ const OCCLUDER_INTERIOR_MARGIN: f32 = 4.0;
   // hard-edged geometry pass. occluder_edge (the SDF gradient length, hoisted above into uniform
   // control flow) gives the screen-space edge width, so the silhouette is anti-aliased to ~1px and stays aligned
   // with the edge light line above.
-  let occluder = clamp(0.5 - triangle_sdf / occluder_edge, 0.0, 1.0);
   final_colour = mix(final_colour, vec3f(0.0), occluder);
 
-  // Screen-edge fade as a plain multiply by the edge envelope: scales the colour uniformly
-  // toward black at the screen edges, so it keeps its hue (a scalar multiply preserves the
-  // channel ratios). No per-channel min (which equalized channels → gray) and no luminance
-  // division (unstable at low values).
-  final_colour = final_colour * edge_fade(pixel_screen);
-
-  return vec4f(final_colour, 1.0);
+  // No screen-edge fade: that multiply-to-black painted the opaque plate. Coverage is the
+  // occluder, LED surface, or glow so empty pixels stay premultiplied-transparent.
+  let coverage = max(occluder, max(surface, saturate(brightness_factor)));
+  return vec4f(final_colour, coverage);
 }
