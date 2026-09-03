@@ -2,10 +2,6 @@ import type { Bundle, Frame, FramePass, Gpu, Target } from 'vgpu';
 
 import ledEmittersWgsl from './shaders/led-emitters.wgsl';
 import {
-  fourLedLayout,
-  fourTransform,
-} from './four-shape';
-import {
   LEDS_PER_EDGE,
   LED_EMITTER_MESH_EXPANSION_PX,
   LED_SDF_CROP_EXPANSION_PX,
@@ -103,8 +99,6 @@ function lightSourcesUniform(
   tunables: LightTunables,
   hex: ReturnType<typeof canonicalHexGeometry>,
 ) {
-  const left = fourTransform(hex.center, hex.height, hex.inradius, -1);
-  const right = fourTransform(hex.center, hex.height, hex.inradius, 1);
   return {
     resolution: [size.width, size.height],
     tunables: [
@@ -120,8 +114,6 @@ function lightSourcesUniform(
       hex.fillet,
     ],
     led_clip: [LED_SDF_CROP_EXPANSION_PX, 0, 0, 0],
-    four_left: [left.center.x, left.center.y, left.height, 0],
-    four_right: [right.center.x, right.center.y, right.height, 0],
   };
 }
 
@@ -131,8 +123,6 @@ function initialLightSourcesUniform() {
     tunables: [0, 0, 0, 0],
     triangle: [0, 0, 0, 0],
     led_clip: [0, 0, 0, 0],
-    four_left: [0, 0, 0, 0],
-    four_right: [0, 0, 0, 0],
   };
 }
 
@@ -141,13 +131,6 @@ function ledEmitterVertexData(
   pad: number,
 ): Float32Array {
   const layout = hexEdgeLedLayout(size, LEDS_PER_EDGE);
-  const leftFour = fourLedLayout(
-    fourTransform(layout.center, layout.geometry.height, layout.geometry.inradius, -1),
-  );
-  const rightFour = fourLedLayout(
-    fourTransform(layout.center, layout.geometry.height, layout.geometry.inradius, 1),
-  );
-  const spots = [...layout.positions, ...leftFour.positions, ...rightFour.positions];
   const { tangentHalfLength, normalHalfThickness } = layout.ledShape;
   const paddedHalfLength = tangentHalfLength + pad;
   const paddedHalfThickness = normalHalfThickness + pad;
@@ -188,7 +171,7 @@ function ledEmitterVertexData(
     }
   };
 
-  for (const [ledIndex, led] of spots.entries()) {
+  for (const [ledIndex, led] of layout.positions.entries()) {
     const basis = edgeBasis(led.angle ?? 0);
     pushQuad(
       ledIndex,

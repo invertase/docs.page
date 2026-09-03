@@ -1,13 +1,9 @@
-import { four_silhouette_n, four_world_point, sdf_four } from "./geometry.wgsl";
-
 struct Config {
   hex_center_r: vec4f,
   hex_target: vec4f,
   size_steps: vec4f,
   params: vec4f,
   target_info: vec4f,
-  four_left: vec4f,
-  four_right: vec4f,
 };
 
 @group(0) @binding(0) var<uniform> cfg: Config;
@@ -149,29 +145,6 @@ fn angular_interval(
   return Interval(wrap_pi(center_angle + min_rel), length, true);
 }
 
-fn four_angular_interval(p: vec2f, four: vec4f) -> Interval {
-  if (four.z <= EPSILON) {
-    return Interval(0.0, 0.0, false);
-  }
-  if (sdf_four(p, four.xy, four.z) <= 0.0) {
-    return Interval(0.0, 0.0, false);
-  }
-  let center_angle = atan2(four.y - p.y, four.x - p.x);
-  var min_rel = 4.0;
-  var max_rel = -4.0;
-  for (var i = 0u; i < four_silhouette_n(); i = i + 1u) {
-    let v = four_world_point(i, four.xy, four.z);
-    let rel = wrap_pi(atan2(v.y - p.y, v.x - p.x) - center_angle);
-    min_rel = min(min_rel, rel);
-    max_rel = max(max_rel, rel);
-  }
-  let length = max_rel - min_rel;
-  if (!(length > EPSILON) || length >= PI) {
-    return Interval(0.0, 0.0, false);
-  }
-  return Interval(wrap_pi(center_angle + min_rel), length, true);
-}
-
 // Interleaved gradient noise (Jimenez) → [0,1] with blue-noise-like spectrum: spatially
 // high-frequency, so the per-pixel ray jitter it drives reads as fine grain (not white-noise
 // clumps) and is removed far better by the half-res→full cubic upsample + the floor dither.
@@ -246,18 +219,6 @@ fn ray_arc_t(origin: vec2f, dir: vec2f, arc: OutlineArc) -> f32 {
   return best;
 }
 
-fn ray_four_t(origin: vec2f, dir: vec2f, center: vec2f, height: f32) -> f32 {
-  var best = 1e30;
-  for (var i = 0u; i < four_silhouette_n(); i = i + 1u) {
-    let a = four_world_point(i, center, height);
-    let b = four_world_point((i + 1u) % four_silhouette_n(), center, height);
-    let ti = ray_segment_t(dir, precompute_edge(origin, a, b));
-    if (ti >= 0.0) { best = min(best, ti); }
-  }
-  if (best > 1e29) { return -1.0; }
-  return best;
-}
-
 fn trace_light_source(
   origin: vec2f,
   dir: vec2f,
@@ -271,10 +232,6 @@ fn trace_light_source(
     let ta = ray_arc_t(origin, dir, arcs[i]);
     if (ta >= 0.0) { t = min(t, ta); }
   }
-  let tl = ray_four_t(origin, dir, cfg.four_left.xy, cfg.four_left.z);
-  if (tl >= 0.0) { t = min(t, tl); }
-  let tr = ray_four_t(origin, dir, cfg.four_right.xy, cfg.four_right.z);
-  if (tr >= 0.0) { t = min(t, tr); }
   if (t > 1e29) { return TraceHit(vec3f(0.0), 0.0, false); }
 
   let source = load_light_source(origin + dir * t);
@@ -288,23 +245,11 @@ fn trace_light_source(
 @fragment fn fs_main(in: VSOut) -> @location(0) vec4f {
   let target_scale = max(cfg.target_info.x, 1e-4);
   let pixel_sim = in.pos.xy / target_scale;
-  if (
-    sdf_four(pixel_sim, cfg.four_left.xy, cfg.four_left.z) <= 0.0 ||
-    sdf_four(pixel_sim, cfg.four_right.xy, cfg.four_right.z) <= 0.0
-  ) {
-    return vec4f(0.0, 0.0, 0.0, 1.0);
-  }
   let center = hex_center();
   let verts = hex_vertices(center, hex_radius());
   let segs = rounded_outline(verts);
   let arcs = rounded_arcs(verts, segs);
-  var interval = angular_interval(pixel_sim, segs, arcs, center);
-  if (!interval.valid) {
-    interval = four_angular_interval(pixel_sim, cfg.four_left);
-  }
-  if (!interval.valid) {
-    interval = four_angular_interval(pixel_sim, cfg.four_right);
-  }
+  let interval = angular_interval(pixel_sim, segs, arcs, center);
   if (!interval.valid) {
     return vec4f(0.0, 0.0, 0.0, 1.0);
   }

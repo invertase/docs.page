@@ -1,9 +1,10 @@
 import type { Bundle, Frame, FramePass, Gpu, StorageBuffer, Target } from 'vgpu';
 import { bundle, draw, frame, storage, target } from 'vgpu';
 
-import { TOTAL_LED_COUNT, fourTransform } from './four-shape';
 import {
   HERO_CANVAS_MAX_CSS,
+  HEX_SIDES,
+  LEDS_PER_EDGE,
   canonicalHexGeometry,
   ledMeshGeometry,
   resolveHeroSceneScale,
@@ -186,7 +187,7 @@ export function createHeroRenderer(
     const presentationSize = normalizedSize(css.width * css.dpr, css.height * css.dpr);
     const pixelRatio = normalizedPixelRatio(sizing.pixelRatio);
     const leds = buildLedGeometry(simulationSize, previous);
-    const ledStorage = storage(gpu, TOTAL_LED_COUNT * 8 * 4) as DestroyableStorage;
+    const ledStorage = storage(gpu, LEDS_PER_EDGE * HEX_SIDES * 8 * 4) as DestroyableStorage;
     ledStorage.write(leds.data.buffer as ArrayBuffer);
     const raycastSize = directTriangleTargetSize(simulationSize);
     const raycastTarget = target(gpu, {
@@ -232,9 +233,6 @@ export function createHeroRenderer(
 function directTriangleRaycastUniformData(simulationSize: RenderSize) {
   const size = directTriangleTargetSize(simulationSize);
   const hex = ledMeshGeometry(simulationSize);
-  const base = canonicalHexGeometry(simulationSize);
-  const left = fourTransform(base.center, base.height, base.inradius, -1);
-  const right = fourTransform(base.center, base.height, base.inradius, 1);
   const pxStepScale =
     Math.min(simulationSize.height, HERO_CANVAS_MAX_CSS) / HERO_CANVAS_MAX_CSS;
   return {
@@ -258,8 +256,6 @@ function directTriangleRaycastUniformData(simulationSize: RenderSize) {
       0,
       0,
     ],
-    four_left: [left.center.x, left.center.y, left.height, 0],
-    four_right: [right.center.x, right.center.y, right.height, 0],
   };
 }
 
@@ -300,8 +296,6 @@ function floorUniformData(parts: RendererParts) {
       transform.scale,
       radianceJitterNorm,
     ],
-    four_left: presentationFourParams(simulationSize, transform, -1),
-    four_right: presentationFourParams(simulationSize, transform, 1),
   };
 }
 
@@ -331,21 +325,6 @@ function presentationHexParams(
     circumradius: geometry.circumradius * transform.scale,
     fillet: geometry.fillet * transform.scale,
   };
-}
-
-function presentationFourParams(
-  simulationSize: RenderSize,
-  transform: ReturnType<typeof presentationSimulationTransform>,
-  side: -1 | 1,
-) {
-  const hex = canonicalHexGeometry(simulationSize);
-  const four = fourTransform(hex.center, hex.height, hex.inradius, side);
-  return [
-    transform.originX + four.center.x * transform.scale,
-    transform.originY + four.center.y * transform.scale,
-    four.height * transform.scale,
-    0,
-  ];
 }
 
 function normalizedSize(width: number, height: number): RenderSize {

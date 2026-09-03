@@ -1,7 +1,6 @@
 import GUI from 'lil-gui';
 import { clock, frameLoop, surface, type Gpu, type Surface } from 'vgpu';
 import { createHeroRenderer, type HeroRenderer } from './scene-renderer';
-import { fourTransform, sdfFour } from './four-shape';
 import { DEFAULT_BRUSH, canonicalHexGeometry, sdfHexPointyRounded, type RenderSize } from './settings';
 import { brushState, heroStateForActiveClick, simulationBrushState } from './sim-sizing';
 import { DEFAULT_TRIANGLE_LED_CONTROLS, isTriangleLedMode, type TriangleLedControls, type TriangleLedMode } from './types';
@@ -9,8 +8,6 @@ import { DEFAULT_TRIANGLE_LED_CONTROLS, isTriangleLedMode, type TriangleLedContr
 interface RendererOptions {
   readonly canvas: HTMLCanvasElement;
   readonly initialControls?: Readonly<TriangleLedControls>;
-  /** Extra hold signal so the 404 lockup 4s can drive hex periwinkle. */
-  readonly rgbDeployActive?: () => boolean;
 }
 
 export function createRenderer(options: RendererOptions) {
@@ -124,9 +121,7 @@ export function createRenderer(options: RendererOptions) {
     loop = frameLoop(gpu, (currentFrame) => {
       if (disposed || !scene || !input || !gpu) return;
       scene.setBrush(input.brush());
-      scene.setRgbDeployActive(
-        input.rgbDeployActive() || options.rgbDeployActive?.() === true,
-      );
+      scene.setRgbDeployActive(input.rgbDeployActive());
       scene.renderFrame(currentFrame, { time: time.time, dt: time.deltaTime });
     });
   };
@@ -188,7 +183,7 @@ function installCanvasInput(canvas: HTMLCanvasElement) {
       x,
       y,
       active: true,
-      inside: isPointInsideLockup({ x, y }, { width, height }),
+      inside: isPointInsideHex({ x, y }, { width, height }),
       isMouse: event.pointerType === 'mouse',
     }, height);
     return true;
@@ -234,15 +229,10 @@ function installCanvasInput(canvas: HTMLCanvasElement) {
   };
 }
 
-function isPointInsideLockup(
+function isPointInsideHex(
   point: { x: number; y: number },
   size: { width: number; height: number },
 ) {
-  const hex = canonicalHexGeometry(size);
-  if (sdfHexPointyRounded(point, hex.center, hex.circumradius, hex.fillet) <= 0) {
-    return true;
-  }
-  const left = fourTransform(hex.center, hex.height, hex.inradius, -1);
-  const right = fourTransform(hex.center, hex.height, hex.inradius, 1);
-  return sdfFour(point, left) <= 0 || sdfFour(point, right) <= 0;
+  const { center, circumradius, fillet } = canonicalHexGeometry(size);
+  return sdfHexPointyRounded(point, center, circumradius, fillet) <= 0;
 }

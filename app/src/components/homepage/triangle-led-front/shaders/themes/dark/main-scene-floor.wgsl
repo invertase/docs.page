@@ -2,10 +2,10 @@
 // noise, then tonemaps + applies display contrast inline so it renders straight to the canvas
 // (no separate composite pass in dark mode).
 import { tonemap, value_remap_clamp } from "../../color-utils.wgsl";
-import { sdf_four, sdf_hex_pointy_rounded } from "../../geometry.wgsl";
+import { sdf_hex_pointy_rounded } from "../../geometry.wgsl";
 import { far_falloff, near_falloff } from "../../floor-falloff.wgsl";
 
-struct Config { screen: vec4f, light_sources: vec4f, triangle: vec4f, radiance_fit: vec4f, sim_transform: vec4f, four_left: vec4f, four_right: vec4f };
+struct Config { screen: vec4f, light_sources: vec4f, triangle: vec4f, radiance_fit: vec4f, sim_transform: vec4f };
 @group(0) @binding(0) var<uniform> cfg: Config;
 @group(0) @binding(1) var radiance_tex: texture_2d<f32>;
 @group(0) @binding(2) var light_sources_tex: texture_2d<f32>;
@@ -70,16 +70,6 @@ const LUMA = vec3f(0.2126, 0.7152, 0.0722);
 
 fn hex_sdf(p: vec2f) -> f32 {
   return sdf_hex_pointy_rounded(p, cfg.triangle.xy, cfg.triangle.z, cfg.triangle.w);
-}
-
-fn lockup_sdf(p: vec2f) -> f32 {
-  return min(
-    hex_sdf(p),
-    min(
-      sdf_four(p, cfg.four_left.xy, cfg.four_left.z),
-      sdf_four(p, cfg.four_right.xy, cfg.four_right.z),
-    ),
-  );
 }
 
 // Reads the LED emitter texture in simulation space, blanking samples that
@@ -238,7 +228,7 @@ const OCCLUDER_INTERIOR_MARGIN: f32 = 4.0;
 
 @fragment fn fs_main(in: VSOut) -> @location(0) vec4f {
   let pixel_screen = in.pos.xy;
-  let triangle_sdf = lockup_sdf(pixel_screen);
+  let triangle_sdf = hex_sdf(pixel_screen);
   // The SDF screen-space gradient is a derivative: it must run in uniform control flow, so compute
   // the occluder edge width here (before the per-pixel early-out below) and reuse it for the
   // silhouette later. length(dpdx, dpdy) is the true gradient magnitude; fwidth's Manhattan sum

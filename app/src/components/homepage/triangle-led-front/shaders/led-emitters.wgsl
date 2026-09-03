@@ -1,12 +1,8 @@
-import { sdf_four } from "./geometry.wgsl";
-
 struct Config {
   resolution: vec2f,
   tunables: vec4f,
   triangle: vec4f,
   led_clip: vec4f,
-  four_left: vec4f,
-  four_right: vec4f,
 };
 struct Led {
   pos_brightness: vec4f,
@@ -60,12 +56,8 @@ fn sdf_hex_pointy_rounded(
     cfg.triangle.z,
     cfg.triangle.w,
   );
-  let four_dist = min(
-    sdf_four(pixel, cfg.four_left.xy, cfg.four_left.z),
-    sdf_four(pixel, cfg.four_right.xy, cfg.four_right.z),
-  );
-  // Positive expansion reveals emitter pixels outside the occluder rims.
-  if (min(hex_dist, four_dist) - cfg.led_clip.x > 0.0) {
+  // Positive expansion reveals emitter pixels outside the canonical hex.
+  if (hex_dist - cfg.led_clip.x > 0.0) {
     discard;
   }
 

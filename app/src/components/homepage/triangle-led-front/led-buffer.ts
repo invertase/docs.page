@@ -1,12 +1,4 @@
 import {
-  FOUR_LED_COUNT,
-  HEX_LED_COUNT,
-  TOTAL_LED_COUNT,
-  fourLedLayout,
-  fourTransform,
-  sdfFour,
-} from './four-shape';
-import {
   HEX_SIDES,
   HERO_STATE_MODES,
   LEDS_PER_EDGE,
@@ -22,12 +14,7 @@ import {
 } from './settings';
 
 const LED_FLOATS = 8;
-const LED_COUNT = TOTAL_LED_COUNT;
-const RINGS = [
-  { start: 0, count: HEX_LED_COUNT },
-  { start: HEX_LED_COUNT, count: FOUR_LED_COUNT },
-  { start: HEX_LED_COUNT + FOUR_LED_COUNT, count: FOUR_LED_COUNT },
-] as const;
+const LED_COUNT = LEDS_PER_EDGE * HEX_SIDES;
 const PERIMETER_SCALE = HEX_SIDES / 3;
 const COLOR_OFFSET = 4;
 const MAX_FRAME_DELTA = 0.1;
@@ -77,8 +64,6 @@ export interface LedGeometryState {
   hexCenter: Point;
   hexCircumradius: number;
   hexFillet: number;
-  fourLeft: { center: Point; height: number };
-  fourRight: { center: Point; height: number };
   lastMode: HeroStateMode | undefined;
   lastEdgeIndex: number | undefined;
   transitionStart: number;
@@ -113,23 +98,12 @@ export function buildLedGeometry(
   previous?: LedGeometryState,
 ): LedGeometryState {
   const layout = hexEdgeLedLayout(size, LEDS_PER_EDGE);
-  const leftFour = fourLedLayout(
-    fourTransform(layout.center, layout.geometry.height, layout.geometry.inradius, -1),
-  );
-  const rightFour = fourLedLayout(
-    fourTransform(layout.center, layout.geometry.height, layout.geometry.inradius, 1),
-  );
-  const spots = [
-    ...layout.positions.map((p) => ({ ...p, origin: layout.center })),
-    ...leftFour.positions.map((p) => ({ ...p, origin: leftFour.transform.center })),
-    ...rightFour.positions.map((p) => ({ ...p, origin: rightFour.transform.center })),
-  ];
-  const data = new Float32Array(spots.length * LED_FLOATS);
+  const data = new Float32Array(layout.positions.length * LED_FLOATS);
   const currentState = new Float32Array(data.length);
   const targetState = new Float32Array(data.length);
   const deployingState = new Float32Array(data.length);
-  const normals = new Float32Array(spots.length * 2);
-  for (const [i, p] of spots.entries()) {
+  const normals = new Float32Array(layout.positions.length * 2);
+  for (const [i, p] of layout.positions.entries()) {
     const base = i * LED_FLOATS;
     const x = p.x;
     const y = p.y;
@@ -142,8 +116,8 @@ export function buildLedGeometry(
     data[base + COLOR_OFFSET + 1] = HONEY_LINEAR.g;
     data[base + COLOR_OFFSET + 2] = HONEY_LINEAR.b;
     data[base + COLOR_OFFSET + 3] = 0;
-    const rx = x - p.origin.x;
-    const ry = y - p.origin.y;
+    const rx = x - layout.center.x;
+    const ry = y - layout.center.y;
     let nx = -Math.sin(angle);
     let ny = Math.cos(angle);
     if (nx * rx + ny * ry < 0) {
@@ -172,8 +146,6 @@ export function buildLedGeometry(
     hexCenter: layout.center,
     hexCircumradius: layout.geometry.circumradius,
     hexFillet: layout.geometry.fillet,
-    fourLeft: leftFour.transform,
-    fourRight: rightFour.transform,
     lastMode: previous?.lastMode,
     lastEdgeIndex: previous?.lastEdgeIndex,
     transitionStart: 0,
@@ -181,13 +153,9 @@ export function buildLedGeometry(
     transitionActive: false,
     animationClock: previous?.animationClock ?? 0,
     lastFrameTime: previous?.lastFrameTime,
-    lineCenters: previous?.lineCenters?.length === 9
-      ? previous.lineCenters
-      : ringLineCenters(),
+    lineCenters: previous?.lineCenters ?? Float32Array.from(LINE_CENTERS_START),
     lineVelocities:
-      previous?.lineVelocities?.length === 9
-        ? previous.lineVelocities
-        : ringLineVelocities(),
+      previous?.lineVelocities ?? Float32Array.from(LINE_VELOCITIES),
     glowState:
       previous?.glowState?.length === LED_COUNT
         ? previous.glowState
@@ -241,7 +209,7 @@ export function computeLeds(
     leds.lastEdgeIndex = edgeIndex;
   }
   if (modeEntry && settings.mode === HERO_STATE_MODES.lines) {
-    leds.lineCenters.set(ringLineCenters());
+    leds.lineCenters.set(LINE_CENTERS_START);
   }
 
   if (settings.mode === HERO_STATE_MODES.edge) {
@@ -267,9 +235,11 @@ export function computeLeds(
       brush.inside !== true
     ) {
       const enter = (brush.linesFadeDistance ?? 0) * leds.triangleHeight;
-      const distance = lockupSdf(
+      const distance = sdfHexPointyRounded(
         { x: brush.x, y: brush.y },
-        leds,
+        leds.hexCenter,
+        leds.hexCircumradius,
+        leds.hexFillet,
       );
       if (!leds.hoverActive && distance < enter) leds.hoverActive = true;
       else if (leds.hoverActive && distance > enter * HOVER_HYSTERESIS)
@@ -383,42 +353,24 @@ function updateLines(
   animTime: number,
   boostedDelta: number,
 ) {
-  const fadeTime = animTime - NOISE_ROTATION_START_SECONDS;
-  for (const [ring, spec] of RINGS.entries()) {
-    updateRingLines(leds, target, ring, spec.start, spec.count, fadeTime, boostedDelta);
+  for (let k = 0; k < 3; k++) {
+    leds.lineCenters[k] = wrapIndex(
+      (leds.lineCenters[k] ?? 0) +
+        (leds.lineVelocities[k] ?? 0) * boostedDelta,
+    );
   }
-}
-
-function updateRingLines(
-  leds: LedGeometryState,
-  target: Float32Array,
-  ring: number,
-  start: number,
-  count: number,
-  fadeTime: number,
-  boostedDelta: number,
-) {
-  const scale = count / HEX_LED_COUNT;
+  const fadeTime = animTime - NOISE_ROTATION_START_SECONDS;
   const halfByBand: number[] = [];
   const plateauByBand: number[] = [];
   const fadeByBand: number[] = [];
-  const phaseOff = ring * 1.7;
   for (let k = 0; k < 3; k++) {
-    const slot = ring * 3 + k;
-    leds.lineCenters[slot] = wrapCount(
-      (leds.lineCenters[slot] ?? 0) +
-        (leds.lineVelocities[slot] ?? 0) * boostedDelta,
-      count,
-    );
     const size =
-      (LINE_SIZE_MID +
-        LINE_SIZE_AMP *
-          Math.sin(
-            fadeTime * (LINE_SIZE_FREQ[k] ?? 0) +
-              (LINE_SIZE_PHASE[k] ?? 0) +
-              phaseOff,
-          )) *
-      scale;
+      LINE_SIZE_MID +
+      LINE_SIZE_AMP *
+        Math.sin(
+          fadeTime * (LINE_SIZE_FREQ[k] ?? 0) +
+            (LINE_SIZE_PHASE[k] ?? 0),
+        );
     const half = Math.max(1, size * 0.5);
     halfByBand[k] = half;
     plateauByBand[k] = half * 0.5;
@@ -427,15 +379,14 @@ function updateRingLines(
       0.5 *
         Math.sin(
           fadeTime * (LINE_FADE_FREQ[k] ?? 0) +
-            (LINE_FADE_PHASE[k] ?? 0) +
-            phaseOff,
+            (LINE_FADE_PHASE[k] ?? 0),
         );
   }
-  for (let i = 0; i < count; i++) {
+  for (let i = 0; i < LED_COUNT; i++) {
     let coverage = 0;
     for (let k = 0; k < 3; k++) {
       const distance = Math.abs(
-        signedWrappedDistance(i, leds.lineCenters[ring * 3 + k] ?? 0, count),
+        signedWrappedDistance(i, leds.lineCenters[k] ?? 0, LED_COUNT),
       );
       const half = halfByBand[k] ?? 1;
       const plateau = plateauByBand[k] ?? 0;
@@ -447,14 +398,7 @@ function updateRingLines(
       }
       coverage = Math.max(coverage, profile * (fadeByBand[k] ?? 0));
     }
-    writeLed(
-      target,
-      start + i,
-      clamp01(coverage),
-      HONEY_LINEAR.r,
-      HONEY_LINEAR.g,
-      HONEY_LINEAR.b,
-    );
+    writeLed(target, i, clamp01(coverage), HONEY_LINEAR.r, HONEY_LINEAR.g, HONEY_LINEAR.b);
   }
 }
 
@@ -544,43 +488,8 @@ function signedWrappedDistance(a: number, b: number, period: number) {
   return ((((a - b) % period) + period + period / 2) % period) - period / 2;
 }
 
-function wrapCount(value: number, count: number) {
-  return ((value % count) + count) % count;
-}
-
-function ringLineCenters() {
-  const out = new Float32Array(9);
-  for (const [ring, spec] of RINGS.entries()) {
-    const scale = spec.count / HEX_LED_COUNT;
-    for (let k = 0; k < 3; k++) {
-      out[ring * 3 + k] = (LINE_CENTERS_START[k] ?? 0) * scale;
-    }
-  }
-  return out;
-}
-
-function ringLineVelocities() {
-  const out = new Float32Array(9);
-  for (const [ring, spec] of RINGS.entries()) {
-    const scale = spec.count / HEX_LED_COUNT;
-    for (let k = 0; k < 3; k++) {
-      out[ring * 3 + k] = (LINE_VELOCITIES[k] ?? 0) * scale;
-    }
-  }
-  return out;
-}
-
-function lockupSdf(point: Point, leds: LedGeometryState) {
-  return Math.min(
-    sdfHexPointyRounded(
-      point,
-      leds.hexCenter,
-      leds.hexCircumradius,
-      leds.hexFillet,
-    ),
-    sdfFour(point, leds.fourLeft),
-    sdfFour(point, leds.fourRight),
-  );
+function wrapIndex(value: number) {
+  return ((value % LED_COUNT) + LED_COUNT) % LED_COUNT;
 }
 
 function sanitizeEdgeIndex(value: number) {
