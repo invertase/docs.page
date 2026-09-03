@@ -8,6 +8,8 @@ import { DEFAULT_TRIANGLE_LED_CONTROLS, isTriangleLedMode, type TriangleLedContr
 interface RendererOptions {
   readonly canvas: HTMLCanvasElement;
   readonly initialControls?: Readonly<TriangleLedControls>;
+  /** Extra hold signal so the 404 lockup 4s can drive hex periwinkle. */
+  readonly rgbDeployActive?: () => boolean;
 }
 
 export function createRenderer(options: RendererOptions) {
@@ -121,7 +123,9 @@ export function createRenderer(options: RendererOptions) {
     loop = frameLoop(gpu, (currentFrame) => {
       if (disposed || !scene || !input || !gpu) return;
       scene.setBrush(input.brush());
-      scene.setRgbDeployActive(input.rgbDeployActive());
+      scene.setRgbDeployActive(
+        input.rgbDeployActive() || options.rgbDeployActive?.() === true,
+      );
       scene.renderFrame(currentFrame, { time: time.time, dt: time.deltaTime });
     });
   };
