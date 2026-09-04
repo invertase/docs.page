@@ -1,13 +1,13 @@
 ---
 title: Quickstart
-description: Publish a live documentation site from a public GitHub repository in minutes.
+description: Publish a live documentation site from a public GitHub repository.
 ---
 
 **Before you begin**
 
 - A [GitHub](https://github.com) account
 - [Git](https://git-scm.com/downloads) installed locally
-- [Node.js](https://nodejs.org/) (to run the CLI via `npx`)
+- [Node.js](https://nodejs.org/) installed locally (to run the CLI with `npx`)
 
 ## Steps
 
@@ -23,9 +23,9 @@ description: Publish a live documentation site from a public GitHub repository i
       **Windows (PowerShell):** use `npx '@docs.page/cli' init` — PowerShell requires quotes around the package name.
     </Info>
 
-    The CLI asks for your project name and whether to create starter pages. Accept the defaults unless you already have a `docs/` directory you want to keep. See [CLI](/features/cli) for install options and flags.
+    The CLI asks for your project name and whether to create starter pages. If you already have a `docs/` directory you want to keep, decline starter pages. Otherwise, accept the defaults. See [CLI](/features/cli) for install options and flags.
 
-    When init finishes, your project contains:
+    When `init` finishes, your project contains:
 
     ```text
     docs.json
@@ -37,7 +37,8 @@ description: Publish a live documentation site from a public GitHub repository i
     - **`docs.json`**: site configuration (name, description, sidebar, and theme)
     - **`docs/index.mdx`**: your home page (served at `/`)
     - **`docs/next-steps.mdx`**: a second page (served at `/next-steps`)
-
+  </Step>
+  <Step title="Edit a starter page">
     Open `docs/index.mdx` and change the title or add a sentence so you can confirm your changes later on the live site.
   </Step>
   <Step title="Push to a public GitHub repository">
@@ -54,11 +55,13 @@ description: Publish a live documentation site from a public GitHub repository i
     </Warning>
   </Step>
   <Step title="Open your live site">
-    Your documentation is live the instant your push completes. Open your browser and navigate to:
+    Open this URL in your browser:
 
     ```text
     https://docs.page/{owner}/{repo}
     ```
+
+    After the push completes, your documentation is available at this URL.
 
     For example, if your repository is `https://github.com/acme/my-docs`, your live site is `https://docs.page/acme/my-docs`.
 
