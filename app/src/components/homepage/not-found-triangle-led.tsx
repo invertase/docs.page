@@ -70,7 +70,7 @@ export function NotFoundTriangleLed() {
     <div
       role="img"
       aria-label="404"
-      className="relative isolate mx-auto flex w-fit cursor-pointer items-center justify-center gap-0 touch-none sm:gap-1"
+      className="relative isolate mx-auto mt-4 flex w-fit cursor-pointer items-center justify-center gap-0 touch-none sm:gap-1"
       style={SLOT_STYLE}
       onPointerEnter={() => setHovered(true)}
       onPointerLeave={() => setHovered(false)}
