@@ -10,12 +10,14 @@ import { utmProperties } from "@/lib/utm";
  * client pings the server. The hero's copy button beacons this route, we
  * capture `homepage:prompt_copy`, and nothing comes back.
  *
- * POST-only on purpose. The request carries no body, and the one
- * user-controlled value it does read — the snippet id on the URL — is checked
- * against a closed set and dropped if it is not in it, so no caller-chosen
- * string can reach PostHog and the route cannot be turned into an open data
- * sink. Requiring POST keeps link checkers, unfurl bots and crawlers — which
- * only ever send GET/HEAD — from recording copies no human performed.
+ * POST-only on purpose. The request carries no body: the snippet id on the URL
+ * is checked against a closed set and dropped if it is not in it, so no
+ * caller-chosen value can become that property. The forwarded utm params are a
+ * closed set of keys, but their values are passed through unfiltered and
+ * uncapped — exactly as `homepage:cta_click` already does, so this route adds a
+ * consumer of that existing behaviour rather than new exposure. Requiring POST
+ * keeps link checkers, unfurl bots and crawlers — which only ever send
+ * GET/HEAD — from recording copies no human performed.
  */
 export function POST(req: Request) {
   const requestUrl = new URL(req.url);
