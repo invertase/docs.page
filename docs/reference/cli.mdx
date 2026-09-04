@@ -132,6 +132,14 @@ docs check [path] [flags]
   Fetch external URLs and report failures. Default: `error`.
 </Property>
 
+<Property name="--ignore-external-hosts" type="string" optional>
+  Comma-separated hosts to skip when checking external links. Skipped links are listed as `skip` and counted in the summary; no request is made for them.
+
+  Entries match on hostname only and cover subdomains, so `npmjs.org` also covers `www.npmjs.org` but never `evil-npmjs.org.attacker.net`. A pasted URL, a `host:port`, a `*.` or `.` prefix, and a trailing dot are all accepted; empty entries are dropped.
+
+  Unioned with `check.ignoreExternalHosts` in `docs.json`. Neither replaces the other.
+</Property>
+
 <Property name="--render" type="off | warn | error" optional>
   Validate that each page's MDX renders without errors. Default: `error`.
 </Property>
@@ -141,6 +149,24 @@ docs check [path] [flags]
 </Property>
 
 All five severity flags accept `off`, `warn`, or `error`. Default for each: `error`.
+
+### Ignore external hosts from `docs.json`
+
+Declare hosts once in `docs.json` so CI does not repeat the flag:
+
+```json
+{
+  "check": {
+    "ignoreExternalHosts": ["npmjs.org", "stackoverflow.com"]
+  }
+}
+```
+
+Values from `docs.json` and `--ignore-external-hosts` are unioned. `--external-links off` still skips external checking entirely.
+
+### Bot gates
+
+Hosts that answer `401`, `403`, `405`, or `429` are refusing an automated request rather than reporting a missing page. Those responses are always reported as warnings, so they never fail CI, and the message says the link was not verified. Missing pages (`404`), server errors, DNS failures, and timeouts remain at the configured `--external-links` severity.
 
 ### Exit codes
 
@@ -160,6 +186,8 @@ All five severity flags accept `off`, `warn`, or `error`. Default for each: `err
 | Broken internal link | `Internal link points to a missing docs page.` (or frontmatter variant) |
 | Missing asset | `Referenced asset does not exist.` |
 | Unreachable external URL | `Unable to reach external link: …` or `External link returned &lt;status&gt; …` |
+| Host refused an automated request (warning) | `External link host rejected an automated request (&lt;status&gt;); the link was not verified.` |
+| Host in the ignore list (skipped) | `External link host is in the ignore list.` |
 
 ---
 
