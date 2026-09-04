@@ -25,8 +25,9 @@ const SLOT_STYLE = {
   "--canvas": CANVAS,
 } as CSSProperties;
 
+/** Stack above the hex canvas so its transparent box cannot darken the glyphs. */
 const FOUR_CLASS =
-  "pointer-events-none select-none font-heading font-light leading-none text-primary transition-[color,text-shadow] duration-[600ms] ease";
+  "relative z-10 pointer-events-none select-none font-heading font-light leading-none text-primary transition-[color,text-shadow] duration-[600ms] ease";
 
 /**
  * Official vgpu LED hero in the site 404 slot. The hex is the 0;
@@ -69,7 +70,7 @@ export function NotFoundTriangleLed() {
     <div
       role="img"
       aria-label="404"
-      className="mx-auto flex w-fit cursor-pointer items-center justify-center gap-0 touch-none sm:gap-1"
+      className="relative isolate mx-auto flex w-fit cursor-pointer items-center justify-center gap-0 touch-none sm:gap-1"
       style={SLOT_STYLE}
       onPointerEnter={() => setHovered(true)}
       onPointerLeave={() => setHovered(false)}
@@ -97,7 +98,7 @@ export function NotFoundTriangleLed() {
       <LockupFour style={fourStyle} />
       <canvas
         ref={canvasRef}
-        className="block shrink-0 touch-none -mx-[calc(var(--canvas)*0.18)]"
+        className="relative z-0 block shrink-0 touch-none -mx-[calc(var(--canvas)*0.18)]"
         style={{ width: "var(--canvas)", height: "var(--canvas)" }}
         data-vgpu="triangle-led-front createRenderer LEDS_PER_EDGE DIRECT_TRIANGLE_INTENSITY_SCALE"
       />
