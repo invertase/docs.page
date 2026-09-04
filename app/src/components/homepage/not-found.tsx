@@ -36,7 +36,7 @@ export function SiteNotFoundPage() {
             <Header />
             <main className="flex flex-1 flex-col items-center justify-start px-6 pt-8 pb-16 text-center">
               <NotFoundTriangleLed />
-              <h1 className="mt-8 font-heading font-light text-4xl sm:text-5xl md:text-6xl">
+              <h1 className="mt-0 font-heading font-light text-4xl sm:text-5xl md:text-6xl">
                 Page Not Found
               </h1>
               <p className="mt-4 max-w-md text-sm font-light leading-relaxed text-neutral-400 sm:text-base">
