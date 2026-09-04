@@ -5,25 +5,25 @@ description: Understand how docs.page turns a public GitHub repository into agen
 
 ## Overview
 
-[docs.page](https://docs.page) is a **docs-as-code platform with no hosting setup**: documentation for **humans + agents**, served from any public GitHub branch. Push updates and the live site refreshes instantly. It is free and open-source.
+[docs.page](https://docs.page) is a **docs-as-code platform with no hosting setup**: documentation for humans and agents, served from any public GitHub branch. After you push updates, the live site updates. It is free and open-source.
 
 ## Who it is for
 
-[docs.page](https://docs.page) is for teams who want professional, developer-focused documentation without the infrastructure tax. Docs live next to your code in the repository. Easy for humans and agents to author. Easy for humans and agents to consume.
+docs.page is for teams who want professional, developer-focused documentation without running documentation infrastructure. Docs live next to your code in the repository. Humans and agents can author it. Humans and agents can consume it.
 
 It is a strong fit for:
 
-- **Open-source maintainers and SDK authors** who want docs that stay in sync with source code, without static site generation, deploy pipelines, or hosting to maintain.
-- **Product and content teams** who want [Mintlify](/comparisons/mintlify)-level polish without paying for a SaaS docs platform.
-- **AI-forward integrators** who need documentation optimized for human reading and LLM ingestion from day one.
+- **Open-source maintainers and software development kit (SDK) authors** who want docs that stay in sync with source code, without static site generation, deploy pipelines, or hosting to maintain.
+- **Product and content teams** who want documentation polish comparable to [Mintlify](/comparisons/mintlify).
+- **Teams integrating AI tools** who need documentation that people and language models can both use.
 
 ## How hosting works
 
-[docs.page](https://docs.page) uses **Git publishing**: it fetches your repository content, caches rendered pages at the edge, and serves a complete documentation site from any branch, tag, or release. You do not run a local build or upload artifacts to a host. See [Public GitHub hosting](/features/public-github-hosting) for URL patterns, caching, and branch previews.
+docs.page uses **Git publishing**: it fetches your repository content, caches rendered pages at the edge, and serves a complete documentation site from any branch, tag, or release. You do not run a local build or upload artifacts to a host. See [Public GitHub hosting](/features/public-github-hosting) for URL patterns, caching, and branch previews.
 
 ### What goes in your repository
 
-Every [docs.page](https://docs.page) site needs two things in a **public** GitHub repository:
+Every docs.page site needs two things in a **public** GitHub repository:
 
 - **`docs.json`** at the repository root: site name, navigation, theme, and other configuration
 - **`docs/**/*.mdx`** or **`docs/**/*.md`**: your documentation pages as Markdown or MDX (with optional subdirectories)
@@ -40,29 +40,29 @@ https://docs.page/{owner}/{repo}
 
 For example, a repository at `https://github.com/acme/my-project` is available at `https://docs.page/acme/my-project`. Individual pages follow the path of their file under `docs/`; `docs/usage.md` or `docs/usage.mdx` becomes `/usage`.
 
-Use **branches & versions** to serve a branch, tag, or release at a distinct URL, for example `https://docs.page/acme/my-project~v2`. See [Branch preview](/features/branch-preview).
+Use **branches and versions** to serve a branch, tag, or release at a distinct URL, for example `https://docs.page/acme/my-project~v2`. See [Branch preview](/features/branch-preview).
 
 <Info>
-  [docs.page](https://docs.page) only hosts **public** repositories. Private
-  repos are blocked before any content is served. Keep documentation in a public
-  repo, or in a public docs-only repository linked from your project.
+  docs.page only hosts **public** repositories. Private
+  repositories are blocked before any content is served. Keep documentation in a public
+  repository, or in a public docs-only repository linked from your project.
 </Info>
 
 ### What you do not need
 
-Because [docs.page](https://docs.page) handles rendering and hosting, you can skip the usual documentation infrastructure:
+Because docs.page handles rendering and hosting, you can skip the usual documentation infrastructure:
 
 - **No build pipelines:** no webpack, static site generator builds, or static export in CI
-- **No hosting configuration:** no storage buckets, CDNs, or DNS to set up per site
+- **No hosting configuration:** no storage buckets, content delivery networks (CDNs), or DNS to set up per site
 - **No docs dashboard:** configuration is a file in Git, not a web UI
 
 You still use Git for versioning, branches, and pull requests, the same workflow you already use for code.
 
-## When [docs.page](https://docs.page) fits
+## When docs.page fits
 
-[docs.page](https://docs.page) works well when most of your documentation is Markdown-based, you want instant publishing from GitHub, and your content can live in a public repository.
+docs.page works well when most of your documentation is Markdown-based, you want publishing from GitHub without a build step, and your content can live in a public repository.
 
-It is a strong default for open-source libraries, SDK docs sites, and product docs that teams are comfortable publishing publicly. If you need a heavily customized documentation experience (bespoke routing, proprietary auth gates, or a private-only docs site), a self-hosted static generator or custom app may be a better fit.
+It is a strong default for open-source libraries, SDK docs sites, and product docs that teams are comfortable publishing publicly. If you need bespoke routing, proprietary auth gates, or a private-only docs site, a self-hosted static generator or custom app may be a better fit.
 
 For side-by-side comparisons with Docusaurus, Mintlify, GitHub Pages, and similar tools, see [Comparisons](/comparisons).
 
@@ -71,7 +71,7 @@ For side-by-side comparisons with Docusaurus, Mintlify, GitHub Pages, and simila
 <CardGroup cols={2}>
   <Card title="Quickstart" icon="rocket" href="/quickstart">
     Scaffold a site, push to GitHub, and open your live
-    [docs.page](https://docs.page) URL.
+    docs.page URL.
   </Card>
   <Card
     title="Write"
@@ -86,8 +86,8 @@ For side-by-side comparisons with Docusaurus, Mintlify, GitHub Pages, and simila
     icon="robot"
     href="/ai-agents/overview"
   >
-    Bring your docs into the agentic age with MCP servers, llms.txt, and AI
-    chat.
+    Connect Model Context Protocol (MCP) servers, llms.txt, and AI
+    chat to your docs.
   </Card>
   <Card
     title="docs.json"
