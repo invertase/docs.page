@@ -1,8 +1,15 @@
 import { type CSSProperties, useEffect, useRef, useState } from "react";
-import { cn } from "@/lib/utils";
-import styles from "./homepage.module.css";
 import { createRenderer } from "./triangle-led-front/renderer";
 
+/**
+ * Fluid cap: rem / svh / vw. Floor: keep lockup width ≥ “Page Not Found”
+ * (`--not-found-title` from SiteNotFoundPage; ≈7.72em wide in Lexend Light).
+ * Lockup width ≈ 1.83×slot when canvas is 1.25×slot → slot floor ≈ 4.21×title.
+ */
+const SLOT =
+  "max(calc(var(--not-found-title, 2.25rem) * 4.21), min(25.6rem, 40svh, 28vw))";
+const CANVAS =
+  "max(calc(var(--not-found-title, 2.25rem) * 5.2625), min(32rem, 50svh, 35vw))";
 const FOUR_FONT_SIZE = "calc(var(--slot) * 0.82)";
 const HONEY = "#E69135";
 const PERIWINKLE = "#5368BD";
@@ -18,6 +25,11 @@ const periwinkleGlow = [
   "0 0 0.7em rgba(83, 104, 189, 0.32)",
   "0 0 1.35em rgba(83, 104, 189, 0.16)",
 ].join(", ");
+
+const SLOT_STYLE = {
+  "--slot": SLOT,
+  "--canvas": CANVAS,
+} as CSSProperties;
 
 /** Stack above the hex canvas so its transparent box cannot darken the glyphs. */
 const FOUR_CLASS =
@@ -64,10 +76,8 @@ export function NotFoundTriangleLed() {
     <div
       role="img"
       aria-label="404"
-      className={cn(
-        styles.lockup,
-        "relative isolate mx-auto flex w-fit cursor-pointer items-center justify-center gap-0 touch-none sm:gap-1",
-      )}
+      className="relative isolate mx-auto flex w-fit cursor-pointer items-center justify-center gap-0 touch-none sm:gap-1"
+      style={SLOT_STYLE}
       onPointerEnter={() => setHovered(true)}
       onPointerLeave={() => setHovered(false)}
       onPointerDown={(event) => {
