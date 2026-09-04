@@ -4,8 +4,12 @@ import {
   RiFileCopyLine,
 } from "@remixicon/react";
 import Link from "next/link";
+import { Fragment, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useCopy } from "@/hooks/use-copy";
+import { SNIPPET_PARAM, type SnippetId } from "@/lib/prompt-copy";
+import { cn } from "@/lib/utils";
+import { UTM_KEYS } from "@/lib/utm";
 
 export function Hero() {
   return (
@@ -20,7 +24,20 @@ export function Hero() {
         GitHub branch as modern, agent-ready docs, with AI chat, MCP, and
         llms.txt.
       </p>
-      <div className="flex flex-col items-center gap-3 sm:flex-row sm:items-stretch sm:gap-4">
+      {/* One stacked, centred group: the snippet — its labels and the chip —
+          on top, the primary action underneath, all three on the hero's axis.
+          A single column at every width, so there is no `sm:flex-row` to undo
+          the stack any more.
+
+          gap-6 sits on the hero's own spacing scale and stays a step tighter
+          than the space-y-8 between sections from `sm` up, which keeps the
+          action reading as part of this group rather than as another section.
+
+          w-full below `sm` so the chip still spans the hero column and shrinks
+          its snippet instead of pushing past the gutter; sm:w-auto puts the
+          group back to content width. */}
+      <div className="flex w-full flex-col items-center gap-6 sm:w-auto">
+        <Terminal />
         <Button
           asChild
           size="lg"
@@ -34,7 +51,6 @@ export function Hero() {
             <RiArrowRightSLine className="size-6 group-hover:translate-x-1 transition-transform" />
           </Link>
         </Button>
-        <Terminal />
       </div>
     </div>
   );
@@ -54,23 +70,166 @@ function Eyebrow() {
   );
 }
 
+type HeroSnippet = {
+  readonly id: SnippetId;
+  readonly label: string;
+  readonly prefix: string | null;
+  readonly text: string;
+};
+
+/**
+ * The two ways to start docs.page: run the CLI, or hand the setup prompt to a
+ * coding agent. `prefix` is the shell prompt marker — the agent snippet is
+ * prose to paste into an agent, not a command to run.
+ *
+ * The ids are typed against the shared union rather than inferred from here:
+ * the copy beacon puts one on the URL and the route validates against the same
+ * closed set, so a tab id neither side knows about will not compile.
+ */
+const SNIPPETS = [
+  {
+    id: "terminal",
+    label: "For humans",
+    prefix: "$",
+    text: "npx @docs.page/cli init",
+  },
+  {
+    id: "agent",
+    label: "For agents",
+    prefix: null,
+    text: "Read https://use.docs.page/quickstart.md and set up docs.page in this repository.",
+  },
+] as const satisfies readonly HeroSnippet[];
+
+const PROMPT_COPY_ENDPOINT = "/api/track/prompt-copy";
+
+/**
+ * Tell the server which snippet was copied.
+ *
+ * A clipboard copy never reaches the server, and the homepage is cookieless
+ * (no posthog-js), so a beacon the server turns into a capture is the only way
+ * to count one. Fire-and-forget in every sense: no body, no response handling,
+ * and any failure — offline, blocked by an extension, sendBeacon missing — is
+ * swallowed, because analytics must never break the copy the visitor asked for.
+ */
+function trackPromptCopy(snippet: SnippetId) {
+  try {
+    const url = promptCopyUrl(snippet);
+    if (navigator.sendBeacon?.(url)) return;
+    void fetch(url, {
+      method: "POST",
+      keepalive: true,
+    }).catch(() => {});
+  } catch {
+    // Best-effort only; the copy itself has already happened.
+  }
+}
+
+/**
+ * Everything the beacon carries goes in the URL: `sendBeacon`, called with one
+ * argument, sends no body, and the fetch fallback deliberately matches it.
+ *
+ * That is the snippet id, plus whichever utm params the page itself was loaded
+ * with — the route reads utm off the request URL it is handed, so forwarding
+ * them here is what makes a copy attributable to a campaign at all.
+ */
+function promptCopyUrl(snippet: SnippetId) {
+  const params = new URLSearchParams({ [SNIPPET_PARAM]: snippet });
+  const pageParams = new URLSearchParams(window.location.search);
+
+  for (const key of UTM_KEYS) {
+    const value = pageParams.get(key);
+    if (value) params.set(key, value);
+  }
+
+  return `${PROMPT_COPY_ENDPOINT}?${params.toString()}`;
+}
+
 function Terminal() {
-  const command = "npx @docs.page/cli init";
-  const { copied, copy } = useCopy(command);
+  const [activeId, setActiveId] = useState<SnippetId>("terminal");
+  const active =
+    SNIPPETS.find((snippet) => snippet.id === activeId) ?? SNIPPETS[0];
+
+  // The labels and the chip are one column, centred at every width: they
+  // belong to each other, and the group they sit in is centred too. Full
+  // width below `sm` and content width from `sm` up, as the chip was before;
+  // min-w-0 lets the column shrink to the hero's width rather than widen to
+  // fit the prompt.
+  return (
+    <div className="flex w-full min-w-0 flex-col items-center gap-2 sm:w-auto">
+      <div
+        role="group"
+        aria-label="Setup method"
+        className="flex items-center gap-3 text-sm"
+      >
+        {SNIPPETS.map((snippet, index) => (
+          <Fragment key={snippet.id}>
+            {index > 0 && (
+              <span aria-hidden className="h-3.5 w-px shrink-0 bg-border" />
+            )}
+            <button
+              type="button"
+              aria-pressed={snippet.id === active.id}
+              onClick={() => setActiveId(snippet.id)}
+              className={cn(
+                "cursor-pointer transition-colors",
+                snippet.id === active.id
+                  ? "text-foreground"
+                  : "font-light text-muted-foreground hover:text-foreground",
+              )}
+            >
+              {snippet.label}
+            </button>
+          </Fragment>
+        ))}
+      </div>
+      {/* `py-2.5` at every width: around a `size="icon-sm"` copy button it
+          gives the chip the same height as the Get started button now below
+          it. Nothing is aligned side by side any more, so this is no longer
+          load-bearing — but two boxes of one height stacked on one axis is
+          the point, so if either size changes, this padding should follow.
+          min-w-0 plus the snippet's own scroll area is what keeps the long
+          agent prompt inside the chip. */}
+      <div className="group flex w-full min-w-0 items-center gap-2 rounded-xl border border-primary bg-periwinkle-950 px-3 py-2.5 sm:w-auto sm:px-4">
+        {/* Keyed by tab so the "copied" tick never carries over to the snippet
+            the visitor has not copied. */}
+        <Snippet key={active.id} snippet={active} />
+      </div>
+    </div>
+  );
+}
+
+/** The snippet text and its copy button — one flex line inside the chip. */
+function Snippet({ snippet }: { snippet: HeroSnippet }) {
+  // useCopy takes the text as an argument, so the button copies whatever this
+  // tab is showing with no extra plumbing.
+  const { copied, copy } = useCopy(snippet.text);
+
+  const handleCopy = () => {
+    copy();
+    // Both tabs are tracked, because a copy makes no request of its own and so
+    // is invisible otherwise — there is no funnel an untracked one shows up in.
+    // The snippet id on the beacon is what tells the two apart.
+    trackPromptCopy(snippet.id);
+  };
 
   return (
-    <div className="group flex w-full items-center gap-2 rounded-xl border border-primary bg-periwinkle-950 px-3 py-2.5 sm:w-auto sm:px-4 sm:py-0">
-      <div className="flex min-w-0 flex-1 items-center gap-2 overflow-x-auto opacity-75 transition-opacity group-hover:opacity-100 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        <span className="shrink-0 text-neutral-500">$</span>
-        <span className="text-sm text-neutral-200 sm:text-base">{command}</span>
+    <>
+      <div className="flex min-w-0 max-w-64 flex-1 items-center gap-2 overflow-x-auto opacity-75 transition-opacity group-hover:opacity-100 sm:max-w-72 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {snippet.prefix && (
+          <span className="shrink-0 text-neutral-500">{snippet.prefix}</span>
+        )}
+        <span className="whitespace-nowrap text-sm text-neutral-200 sm:text-base">
+          {snippet.text}
+        </span>
       </div>
-      <Button variant="ghost" size="icon-sm" onClick={copy}>
+      <Button variant="ghost" size="icon-sm" onClick={handleCopy}>
         {copied ? (
           <RiCheckLine className="text-green-500" />
         ) : (
           <RiFileCopyLine />
         )}
       </Button>
-    </div>
+    </>
   );
 }
