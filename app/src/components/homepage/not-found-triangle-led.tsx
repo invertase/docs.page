@@ -1,9 +1,8 @@
 import { type CSSProperties, useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
+import styles from "./homepage.module.css";
 import { createRenderer } from "./triangle-led-front/renderer";
 
-/** 0.8× the /hex-fours fours (`min(32rem, 50svh)`). Canvas stays at hex-fours box so the hex scales only via TRIANGLE_HEIGHT_RATIO. */
-const SLOT = "min(25.6rem, 40svh)";
-const CANVAS = "min(32rem, 50svh)";
 const FOUR_FONT_SIZE = "calc(var(--slot) * 0.82)";
 const HONEY = "#E69135";
 const PERIWINKLE = "#5368BD";
@@ -19,11 +18,6 @@ const periwinkleGlow = [
   "0 0 0.7em rgba(83, 104, 189, 0.32)",
   "0 0 1.35em rgba(83, 104, 189, 0.16)",
 ].join(", ");
-
-const SLOT_STYLE = {
-  "--slot": SLOT,
-  "--canvas": CANVAS,
-} as CSSProperties;
 
 /** Stack above the hex canvas so its transparent box cannot darken the glyphs. */
 const FOUR_CLASS =
@@ -70,8 +64,10 @@ export function NotFoundTriangleLed() {
     <div
       role="img"
       aria-label="404"
-      className="relative isolate mx-auto flex w-fit cursor-pointer items-center justify-center gap-0 touch-none sm:gap-1"
-      style={SLOT_STYLE}
+      className={cn(
+        styles.lockup,
+        "relative isolate mx-auto flex w-fit cursor-pointer items-center justify-center gap-0 touch-none sm:gap-1",
+      )}
       onPointerEnter={() => setHovered(true)}
       onPointerLeave={() => setHovered(false)}
       onPointerDown={(event) => {
