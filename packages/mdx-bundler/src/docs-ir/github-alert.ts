@@ -91,9 +91,11 @@ function buildAlertBodyNodes(
   alertType: string,
 ): MdastNode[] {
   const [first, ...rest] = blockquoteChildren;
-  const strippedParagraph = first
-    ? stripAlertMarkerFromParagraph(first, alertType)
-    : null;
+  if (!first) {
+    return [];
+  }
+
+  const strippedParagraph = stripAlertMarkerFromParagraph(first, alertType);
   const body: MdastNode[] = [];
 
   if (strippedParagraph && paragraphHasContent(strippedParagraph)) {

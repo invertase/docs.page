@@ -5,6 +5,11 @@ import { load as parseYaml } from "js-yaml";
 
 import { isNodeError } from "./errors";
 
+// The docs.json / docs.yaml path the check command reads its external-link
+// ignore list from. Named here so the CLI help text and the accessor below
+// cannot drift apart.
+export const CONFIG_IGNORE_HOSTS_PATH = "check.ignoreExternalHosts";
+
 export type DocsConfigSource = {
   json: string | null;
   yaml: string | null;
@@ -56,6 +61,19 @@ export function resolveHeaderDepth(config: DocsConfigSource): number {
   return typeof headerDepth === "number" && Number.isInteger(headerDepth)
     ? headerDepth
     : 3;
+}
+
+/**
+ * Read the ignore list out of a parsed docs.json / docs.yaml object. The value
+ * is deliberately untyped here: the hosted app tolerates unknown keys, and
+ * `parseIgnoredHosts` discards anything that is not a usable host.
+ */
+export function readConfigIgnoredHosts(
+  config: Record<string, unknown>,
+): unknown {
+  const check = isRecord(config.check) ? config.check : undefined;
+
+  return check?.ignoreExternalHosts;
 }
 
 export function usesAutoOgImage(
