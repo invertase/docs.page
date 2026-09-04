@@ -17,33 +17,6 @@ Prompt your agent:
 Read https://use.docs.page/quickstart.md and set up docs.page in this repository.
 ```
 
-docs.page publishes from the default branch. You need `docs.json` at the repository root and one or more `.md` or `.mdx` files under `docs/`. There is no build step.
-
-1. Confirm the repository is public. If it is private, stop and tell the user.
-2. Create `docs.json` at the repository root.
-3. Write pages from the repository README and source. Do not leave the scaffolded placeholders.
-4. Ask the user before you commit or push.
-
-This `docs.json` file is enough to publish:
-
-```json
-{
-  "$schema": "https://docs.page/schema.json",
-  "name": "Project name",
-  "description": "One sentence describing the project.",
-  "sidebar": [
-    {
-      "group": "Getting Started",
-      "pages": [{ "title": "Introduction", "href": "/", "icon": "rocket" }]
-    }
-  ]
-}
-```
-
-Sidebar `href` values omit the `docs/` prefix and the file extension. `docs/index.mdx` is `/`. `docs/guides/install.mdx` is `/guides/install`.
-
-Unknown or malformed keys fall back to defaults, so a site that renders can still have a wrong config. Check every key against the [`docs.json` reference](/reference/docs-json).
-
 ## For humans
 
 <Steps>
