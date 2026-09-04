@@ -20,9 +20,11 @@ const periwinkleGlow = [
   "0 0 1.35em rgba(83, 104, 189, 0.16)",
 ].join(", ");
 
+/** `--four` matches the Lexend 4s so the square canvas can collapse its letterbox. */
 const SLOT_STYLE = {
   "--slot": SLOT,
   "--canvas": CANVAS,
+  "--four": FOUR_FONT_SIZE,
 } as CSSProperties;
 
 /** Stack above the hex canvas so its transparent box cannot darken the glyphs. */
@@ -70,7 +72,7 @@ export function NotFoundTriangleLed() {
     <div
       role="img"
       aria-label="404"
-      className="relative isolate mx-auto mt-4 flex w-fit cursor-pointer items-center justify-center gap-0 touch-none sm:gap-1"
+      className="relative isolate mx-auto flex w-fit cursor-pointer items-center justify-center gap-0 touch-none sm:gap-1"
       style={SLOT_STYLE}
       onPointerEnter={() => setHovered(true)}
       onPointerLeave={() => setHovered(false)}
@@ -98,7 +100,7 @@ export function NotFoundTriangleLed() {
       <LockupFour style={fourStyle} />
       <canvas
         ref={canvasRef}
-        className="relative z-0 block shrink-0 touch-none -mx-[calc(var(--canvas)*0.18)]"
+        className="relative z-0 -my-[calc((var(--canvas)-var(--four))/2)] block shrink-0 touch-none -mx-[calc(var(--canvas)*0.18)]"
         style={{ width: "var(--canvas)", height: "var(--canvas)" }}
         data-vgpu="triangle-led-front createRenderer LEDS_PER_EDGE DIRECT_TRIANGLE_INTENSITY_SCALE"
       />
