@@ -60,7 +60,22 @@ export function Homepage() {
   return (
     <>
       <Head>
-        <link rel="icon" href="/_docs.page/logo-icon.svg" />
+        <link
+          rel="icon"
+          href="/_docs.page/logo-icon.svg"
+          type="image/svg+xml"
+        />
+        <link
+          rel="icon"
+          href="/_docs.page/logo-icon-512.png"
+          type="image/png"
+          sizes="512x512"
+        />
+        <link
+          rel="apple-touch-icon"
+          href="/_docs.page/logo-icon-512.png"
+          sizes="512x512"
+        />
         <link rel="canonical" href="https://docs.page/" />
         <title>{title}</title>
         <meta name="description" content={description} />
@@ -100,9 +115,10 @@ export function Homepage() {
             <Header />
             <Hero />
             <Preview />
-            <Features />
-            <Explore />
-            <Footer />
+            <Features>
+              <Explore />
+              <Footer />
+            </Features>
           </div>
         </div>
       </div>

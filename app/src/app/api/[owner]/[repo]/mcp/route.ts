@@ -1,4 +1,5 @@
 import { resolveDocsRoute } from "@/lib/docs-routing";
+import { MCP_CACHE_HEADERS, setDocsCacheHeaders } from "@/proxy";
 import { BundlerError } from "@/server/docs/bundle";
 import { loadDocsConfigForResolvedSha } from "@/server/docs/source-dataset";
 import { listGitHubDocFiles } from "@/server/github/tree";
@@ -79,7 +80,9 @@ export async function GET(req: Request, context: RouteContext) {
     }
 
     const descriptor = await createMcpDescriptor(context);
-    return Response.json(descriptor, { status: 200 });
+    const response = Response.json(descriptor, { status: 200 });
+    setDocsCacheHeaders(response.headers, MCP_CACHE_HEADERS);
+    return response;
   } catch (error) {
     if (error instanceof BundlerError) {
       return privateRepoResponse(error);

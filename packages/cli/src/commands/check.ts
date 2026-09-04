@@ -14,20 +14,27 @@ import remarkParse from "remark-parse";
 import { unified } from "unified";
 
 import {
+  CONFIG_IGNORE_HOSTS_PATH,
   type DocsConfigSource,
   hasNonLatin1,
   loadDocsConfig,
   parseConfigObject,
+  readConfigIgnoredHosts,
   resolveHeaderDepth,
   resolveVariables,
   usesAutoOgImage,
 } from "../lib/docs-config";
 import { isNodeError } from "../lib/errors";
+import { isIgnoredHost, parseIgnoredHosts } from "../lib/ignored-hosts";
 
 const SEVERITIES = ["off", "warn", "error"] as const;
 const FRONTMATTER_LINK_FIELDS = ["redirect", "next", "previous"] as const;
 const EXTERNAL_LINK_TIMEOUT_MS = 10_000;
 const EXTERNAL_LINK_CONCURRENCY = 8;
+// Statuses a host returns when it refuses to serve an automated client rather
+// than because the target is missing. These are reported as warnings so a bot
+// gate never fails CI, while 404s, 5xxs, DNS failures and timeouts stay errors.
+const BOT_GATE_STATUSES = new Set([401, 403, 405, 429]);
 const RENDER_CONCURRENCY = 4;
 
 type Severity = (typeof SEVERITIES)[number];
@@ -39,14 +46,27 @@ type CheckOptions = {
   assets: Severity;
   render: Severity;
   metadata: Severity;
+  ignoreExternalHosts?: string;
 };
 
-type CheckIssue = {
-  severity: ReportableSeverity;
+type CheckEntry = {
   file?: string;
   line?: number;
   message: string;
   target?: string;
+};
+
+type CheckIssue = CheckEntry & {
+  severity: ReportableSeverity;
+};
+
+type CheckSkip = CheckEntry;
+
+export type ExternalLinkFailure = {
+  // "unverified" means the host refused the automated request, so the link was
+  // never actually checked; "broken" means the target did not resolve.
+  kind: "unverified" | "broken";
+  message: string;
 };
 
 type ReferenceKind = "link" | "image" | "frontmatter";
@@ -104,6 +124,10 @@ export function registerCheckCommand(program: Command) {
     .addOption(
       createSeverityOption("--metadata <level>", "Check page metadata"),
     )
+    .option(
+      "--ignore-external-hosts <hosts>",
+      `Comma-separated hosts to skip when checking external links. Unioned with "${CONFIG_IGNORE_HOSTS_PATH}" from docs.json`,
+    )
     .action(async (inputPath: string, options: CheckOptions) => {
       const exitCode = await runCheck(path.resolve(inputPath), options);
 
@@ -136,7 +160,10 @@ async function runCheck(rootDir: string, options: CheckOptions) {
 
   const maps = buildDocsMaps(mdxFiles);
   const externalReferences: Reference[] = [];
-  const externalCheckCache = new Map<string, Promise<string | undefined>>();
+  const externalCheckCache = new Map<
+    string,
+    Promise<ExternalLinkFailure | undefined>
+  >();
 
   reportProjectMetadataIssues({
     config: parsedConfig,
@@ -200,27 +227,47 @@ async function runCheck(rootDir: string, options: CheckOptions) {
     options.externalLinks === "off" ? undefined : options.externalLinks;
 
   if (externalSeverity) {
+    // The flag and the docs.json field are unioned so CI does not have to
+    // repeat what the repository already declares.
+    const ignoredHosts = parseIgnoredHosts(
+      readConfigIgnoredHosts(parsedConfig),
+      options.ignoreExternalHosts,
+    );
+    const checkable: { reference: Reference; url: string }[] = [];
+
+    for (const reference of externalReferences) {
+      const target = classifyTarget(reference.target);
+
+      if (target.kind !== "external") {
+        continue;
+      }
+
+      // Ignored hosts are dropped before any network request is made.
+      if (isIgnoredHost(target.url, ignoredHosts)) {
+        reporter.skip({
+          file: reference.file,
+          line: reference.line,
+          message: "External link host is in the ignore list.",
+          target: reference.target,
+        });
+        continue;
+      }
+
+      checkable.push({ reference, url: target.url });
+    }
+
     await runLimited(
-      externalReferences,
+      checkable,
       EXTERNAL_LINK_CONCURRENCY,
-      async (reference) => {
-        const target = classifyTarget(reference.target);
+      async ({ reference, url }) => {
+        const failure = await getCachedExternalCheck(externalCheckCache, url);
 
-        if (target.kind !== "external") {
-          return;
-        }
-
-        const result = await getCachedExternalCheck(
-          externalCheckCache,
-          target.url,
-        );
-
-        if (result) {
+        if (failure) {
           reporter.report({
-            severity: externalSeverity,
+            severity: resolveExternalIssueSeverity(failure, externalSeverity),
             file: reference.file,
             line: reference.line,
-            message: result,
+            message: failure.message,
             target: reference.target,
           });
         }
@@ -751,8 +798,20 @@ function classifyTarget(rawTarget: string): Target {
   };
 }
 
+/**
+ * A bot gate proves nothing about the link, so it is only ever reported as a
+ * warning and never fails CI. An explicit `--external-links warn` is never
+ * upgraded, and `--external-links off` skips the request entirely.
+ */
+export function resolveExternalIssueSeverity(
+  failure: ExternalLinkFailure,
+  severity: ReportableSeverity,
+): ReportableSeverity {
+  return failure.kind === "unverified" ? "warn" : severity;
+}
+
 async function getCachedExternalCheck(
-  cache: Map<string, Promise<string | undefined>>,
+  cache: Map<string, Promise<ExternalLinkFailure | undefined>>,
   url: string,
 ) {
   let check = cache.get(url);
@@ -765,7 +824,13 @@ async function getCachedExternalCheck(
   return check;
 }
 
-async function checkExternalUrl(url: string) {
+/**
+ * Resolve an external URL, returning `undefined` when it is reachable and a
+ * classified failure otherwise. Exported for tests.
+ */
+export async function checkExternalUrl(
+  url: string,
+): Promise<ExternalLinkFailure | undefined> {
   const headResult = await requestExternalUrl(url, "HEAD");
 
   if (headResult.ok) {
@@ -778,9 +843,27 @@ async function checkExternalUrl(url: string) {
     return undefined;
   }
 
-  return (
-    getResult.message || headResult.message || "External link did not resolve."
-  );
+  // GET is the authoritative attempt because many hosts do not implement HEAD;
+  // the HEAD response is only consulted when GET produced no response at all.
+  const response = getResult.status === undefined ? headResult : getResult;
+
+  if (response.status !== undefined && BOT_GATE_STATUSES.has(response.status)) {
+    return {
+      kind: "unverified",
+      message: `External link host rejected an automated request (${formatStatus(
+        response.status,
+        response.statusText,
+      )}); the link was not verified.`,
+    };
+  }
+
+  return {
+    kind: "broken",
+    message:
+      getResult.message ||
+      headResult.message ||
+      "External link did not resolve.",
+  };
 }
 
 async function requestExternalUrl(url: string, method: "GET" | "HEAD") {
@@ -805,6 +888,8 @@ async function requestExternalUrl(url: string, method: "GET" | "HEAD") {
 
     return {
       ok,
+      status: response.status,
+      statusText: response.statusText,
       message: ok
         ? undefined
         : `External link returned ${response.status} ${response.statusText}.`,
@@ -812,11 +897,17 @@ async function requestExternalUrl(url: string, method: "GET" | "HEAD") {
   } catch (error) {
     return {
       ok: false,
+      status: undefined,
+      statusText: undefined,
       message: `Unable to reach external link: ${getErrorMessage(error)}`,
     };
   } finally {
     clearTimeout(timeout);
   }
+}
+
+function formatStatus(status: number, statusText: string | undefined) {
+  return statusText ? `${status} ${statusText}` : `${status}`;
 }
 
 function getInternalLinkMessage(reference: Reference) {
@@ -948,11 +1039,16 @@ function getNodeLine(node: MarkdownNode) {
 
 function createReporter() {
   const issues: CheckIssue[] = [];
+  const skipped: CheckSkip[] = [];
 
   return {
     report(issue: CheckIssue) {
       issues.push(issue);
       console.log(formatIssue(issue));
+    },
+    skip(skip: CheckSkip) {
+      skipped.push(skip);
+      console.log(formatSkip(skip));
     },
     hasErrors() {
       return issues.some((issue) => issue.severity === "error");
@@ -964,6 +1060,13 @@ function createReporter() {
       const warnings = issues.filter(
         (issue) => issue.severity === "warn",
       ).length;
+      if (skipped.length > 0) {
+        console.log(
+          chalk.dim(
+            `${skipped.length} check${skipped.length === 1 ? "" : "s"} skipped.`,
+          ),
+        );
+      }
 
       if (errors === 0 && warnings === 0) {
         console.log(chalk.green("No documentation issues found."));
@@ -979,15 +1082,24 @@ function createReporter() {
   };
 }
 
+function formatSkip(skip: CheckSkip) {
+  return formatLine(chalk.dim("skip"), skip);
+}
+
 function formatIssue(issue: CheckIssue) {
   const label =
     issue.severity === "error" ? chalk.red("error") : chalk.yellow("warn");
-  const location = issue.file
-    ? `${issue.file}${issue.line ? `:${issue.line}` : ""}`
-    : "project";
-  const target = issue.target ? ` ${chalk.dim(issue.target)}` : "";
 
-  return `${label} ${chalk.dim(location)} ${issue.message}${target}`;
+  return formatLine(label, issue);
+}
+
+function formatLine(label: string, entry: CheckEntry) {
+  const location = entry.file
+    ? `${entry.file}${entry.line ? `:${entry.line}` : ""}`
+    : "project";
+  const target = entry.target ? ` ${chalk.dim(entry.target)}` : "";
+
+  return `${label} ${chalk.dim(location)} ${entry.message}${target}`;
 }
 
 async function runLimited<T>(

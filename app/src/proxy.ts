@@ -1,6 +1,5 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
-import { getDocsEnvironment } from "@/lib/docs-environment";
 import {
   getVanityOwnerFromHost,
   isDocsLlmsFullTxtPath,
@@ -10,7 +9,6 @@ import {
   isPinnedCommitRef,
   isRawDocRequestPath,
 } from "@/lib/docs-routing";
-import { resolvePlausibleOwnerRepo, trackPageRequest } from "@/lib/plausible";
 
 const SECONDS_PER_DAY = 24 * 60 * 60;
 /** CDN edge: allow stale serve + async revalidate / error fallback for up to 7 days after freshness TTL. */
@@ -79,6 +77,17 @@ export const SEARCH_CACHE_HEADERS = buildCdnCacheHeaders({
   staleWhileRevalidate: CDN_STALE_SECONDS,
   staleIfError: CDN_STALE_SECONDS,
   browserMaxAgeSeconds: SEARCH_JSON_BROWSER_MAX_AGE_SECONDS,
+});
+
+/**
+ * MCP descriptor GET (`/…/mcp`): stable JSON for a given owner/repo/ref.
+ * Edge-cacheable so agent polling does not stampede origin; POST tool calls are
+ * uncacheable by method and must not set these headers.
+ */
+export const MCP_CACHE_HEADERS = buildCdnCacheHeaders({
+  edgeMaxAgeSeconds: 300,
+  staleWhileRevalidate: CDN_STALE_SECONDS,
+  staleIfError: CDN_STALE_SECONDS,
 });
 
 /** Same edge policy as search; keep `max-age=0` for clients (llms.txt consumers often want a fresh aggregate). */
@@ -231,10 +240,6 @@ function shouldApplyDocsCache(
     return false;
   }
 
-  if (isMcpPath(request.nextUrl.pathname)) {
-    return false;
-  }
-
   if (request.headers.get("x-docs-page-custom-domain")) {
     return true;
   }
@@ -247,12 +252,12 @@ function shouldApplyDocsCache(
 }
 
 function getDocsCacheHeaders(pathname: string): DocsCacheHeaders | null {
-  if (isMcpPath(pathname)) {
-    return null;
-  }
-
   if (isRawDocRequestPath(pathname)) {
     return RAW_DOC_CACHE_HEADERS;
+  }
+
+  if (isMcpPath(pathname)) {
+    return MCP_CACHE_HEADERS;
   }
 
   if (isDocsSearchPath(pathname)) {
@@ -295,35 +300,8 @@ function withDocsCache(
   return response;
 }
 
-function maybeTrackPageRequest(
-  request: NextRequest,
-  vanityOwner: string | null,
-) {
-  if (getDocsEnvironment() !== "production") {
-    return;
-  }
-
-  if (isBypassPath(request.nextUrl.pathname)) {
-    return;
-  }
-
-  const resolved = resolvePlausibleOwnerRepo(request.nextUrl.pathname, {
-    vanityOwner,
-    vanityDomain: Boolean(
-      vanityOwner || request.headers.get("x-docs-page-vanity-domain"),
-    ),
-  });
-
-  if (!resolved) {
-    return;
-  }
-
-  void trackPageRequest(request, resolved.owner, resolved.repository);
-}
-
 export function proxy(request: NextRequest) {
   const vanityOwner = getVanityOwnerFromHost(request.nextUrl.hostname);
-  maybeTrackPageRequest(request, vanityOwner);
   const cacheHeaders = shouldApplyDocsCache(request, vanityOwner)
     ? getDocsCacheHeaders(request.nextUrl.pathname)
     : null;

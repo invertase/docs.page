@@ -188,3 +188,19 @@ export function getVanityOwnerFromHost(hostname: string): string | null {
 export function isPinnedCommitRef(ref: string | null | undefined): boolean {
   return typeof ref === "string" && /^[a-fA-F0-9]{40}$/.test(ref);
 }
+
+/**
+ * True when the request is serving the repository's default branch, i.e. no
+ * `~ref` segment was given (branch, tag, PR or commit) and this is not a local
+ * CLI preview.
+ *
+ * Mirrors how the agent features are gated (`isAgentEnabledForRepository`
+ * bails out as soon as a `ref` is present): anything a repository owner is
+ * trusted to assert about the site must not be assertable from an arbitrary
+ * ref, because anyone can open a pull request and preview their own branch.
+ */
+export function isDefaultBranchRoute(
+  route: Pick<ResolvedDocsRoute, "ref" | "requestMode">,
+): boolean {
+  return route.requestMode !== "preview" && !route.ref;
+}
