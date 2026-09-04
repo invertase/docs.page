@@ -19,6 +19,14 @@
 
 ## Quick start
 
+Prompt your agent:
+
+```txt
+Read https://use.docs.page/quickstart.md and set up docs.page in this repository.
+```
+
+Or set it up yourself:
+
 ```bash
 npx @docs.page/cli init
 ```
