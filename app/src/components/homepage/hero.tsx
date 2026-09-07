@@ -13,25 +13,29 @@ import { UTM_KEYS } from "@/lib/utm";
 
 export function Hero() {
   return (
-    <div className="mx-auto flex w-full max-w-xl flex-col items-center justify-center space-y-6 px-2 pt-12 pb-32 sm:space-y-8 sm:px-0 sm:pt-16 sm:pb-44">
-      <Eyebrow />
-      <h1 className="flex flex-col items-center justify-center text-center font-heading text-4xl sm:text-5xl md:text-6xl">
-        <span className="font-extralight">Docs for</span>
-        <span>humans + agents</span>
-      </h1>
-      <p className="max-w-sm text-center text-sm font-light leading-relaxed text-neutral-400 sm:max-w-none sm:text-base">
-        Instantly <span className="text-primary">serve markdown</span> from any
-        GitHub branch as modern, agent-ready docs, with AI chat, MCP, and
-        llms.txt.
-      </p>
+    <div className="mx-auto flex w-full max-w-xl flex-col items-center justify-center gap-6 px-2 pt-12 pb-32 sm:px-0 sm:pt-16 sm:pb-44">
+      {/* Title block keeps the hero section rhythm (space-y-6 / sm:space-y-8).
+          The two CTA-adjacent gaps — subtext → tabs, and chip → Get started —
+          share `gap-6` so they stay equal at every width. */}
+      <div className="flex flex-col items-center space-y-6 sm:space-y-8">
+        <Eyebrow />
+        <h1 className="flex flex-col items-center justify-center text-center font-heading text-4xl sm:text-5xl md:text-6xl">
+          <span className="font-extralight">Docs for</span>
+          <span>humans + agents</span>
+        </h1>
+        <p className="max-w-sm text-center text-sm font-light leading-relaxed text-neutral-400 sm:max-w-none sm:text-base">
+          Instantly <span className="text-primary">serve markdown</span> from any
+          GitHub branch as modern, agent-ready docs, with AI chat, MCP, and
+          llms.txt.
+        </p>
+      </div>
       {/* One stacked, centred group: the snippet — its labels and the chip —
           on top, the primary action underneath, all three on the hero's axis.
           A single column at every width, so there is no `sm:flex-row` to undo
           the stack any more.
 
-          gap-6 sits on the hero's own spacing scale and stays a step tighter
-          than the space-y-8 between sections from `sm` up, which keeps the
-          action reading as part of this group rather than as another section.
+          gap-6 matches the hero stack's gap above this group, so the space
+          under the subtext and the space above Get started stay the same.
 
           w-full below `sm` so the chip still spans the hero column and shrinks
           its snippet instead of pushing past the gutter; sm:w-auto puts the
