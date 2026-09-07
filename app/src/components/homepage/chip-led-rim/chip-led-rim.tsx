@@ -3,9 +3,8 @@ import { createRenderer } from "../chip-led-front/renderer";
 import { CHIP_BLOOM_CSS, setChipFrame } from "../chip-led-front/settings";
 
 /**
- * Official vgpu LED rim around the homepage copy chip — same honey crawl +
- * periwinkle deploy as the 404 hex (`triangle-led-front` on PR #542), with a
- * rounded-rect occluder instead of a pointy hex.
+ * Official vgpu LED rim around the homepage copy chip — #542 triangle-led-front
+ * with the occluder/emitter path swapped from hex to the chip’s rounded-xl.
  */
 export function ChipLedRim({ active }: { active: boolean }) {
   const hostRef = useRef<HTMLDivElement>(null);

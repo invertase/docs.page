@@ -73,20 +73,20 @@ fn hex_sdf(p: vec2f) -> f32 {
     p,
     cfg.triangle.xy,
     cfg.light_sources.zw,
-    cfg.screen.z,
+    cfg.triangle.w,
   );
 }
 
 // Reads the LED emitter texture in simulation space, blanking samples that
 // fall outside the simulation rect.
 fn sample_light_sources(pixel_screen: vec2f) -> vec4f {
-  // Emitter buffer is presentation-sized (CSS × DPR), 1:1 with the canvas.
-  let px = clamp(vec2i(floor(pixel_screen)), vec2i(0), vec2i(cfg.light_sources.xy) - vec2i(1));
-  let inside =
-    pixel_screen.x >= 0.0 && pixel_screen.x < cfg.light_sources.x &&
-    pixel_screen.y >= 0.0 && pixel_screen.y < cfg.light_sources.y;
+  let sim_px = (pixel_screen - cfg.sim_transform.xy) / cfg.sim_transform.z;
+  let px = clamp(vec2i(floor(sim_px)), vec2i(0), vec2i(cfg.light_sources.xy) - vec2i(1));
+  let inside_sim =
+    sim_px.x >= 0.0 && sim_px.x < cfg.light_sources.x &&
+    sim_px.y >= 0.0 && sim_px.y < cfg.light_sources.y;
   var light_sources = textureLoad(light_sources_tex, px, 0);
-  if (!inside) {
+  if (!inside_sim) {
     light_sources = vec4f(0.0, 0.0, 0.0, 1.0);
   }
   return light_sources;
@@ -255,8 +255,8 @@ const OCCLUDER_INTERIOR_MARGIN: f32 = 4.0;
   // rgb's triangle clip — was the black band), and it keeps the discrete LEDs. The
   // geometric occluder (drawn below) hides the inside, so only the edge strip shows.
   let surface = smoothstep(
-    0.8,
-    3.6,
+    4.0,
+    4.02,
     max(max(light_sources.r, light_sources.g), light_sources.b),
   );
   // Official near + far screen-blend. Power 0.05 flattened tiny radiance into a
@@ -296,6 +296,6 @@ const OCCLUDER_INTERIOR_MARGIN: f32 = 4.0;
   );
   let final_colour = tonemap(colour * 0.25);
 
-  let coverage = max(occluder, max(surface, saturate(brightness_factor)));
+  let coverage = max(surface, saturate(brightness_factor));
   return vec4f(final_colour * coverage, coverage);
 }

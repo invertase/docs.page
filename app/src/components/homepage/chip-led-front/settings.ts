@@ -3,27 +3,20 @@ export interface RenderSize {
   height: number;
 }
 
-/**
- * Perimeter samples per “edge” of the 6-segment walk.
- * 72 (was 24) keeps capsules overlapping on the long sides; fillet arcs get
- * extra weight in `sampleRoundedRect` so corners don’t bead.
- */
-export const LEDS_PER_EDGE = 72;
+export const LEDS_PER_EDGE = 24;
 export const HEX_SIDES = 6;
 export const LED_COUNT = LEDS_PER_EDGE * HEX_SIDES;
-/** CSS pad so the 404-style radiance bloom can sit outside the chip box. */
+/** CSS pad so hex-style bloom can sit outside the chip box. */
 export const CHIP_BLOOM_CSS = 22;
-export const TRIANGLE_HEIGHT_RATIO = 1;
+export const TRIANGLE_HEIGHT_RATIO = (180 / 630) * 0.8 * 1.6 * 1.5 * 1.5 * 0.8;
 export const HERO_CANVAS_MAX_CSS = 720;
+const MIN_SIM_HEIGHT = 360;
 const LED_RADIUS_TO_TRIANGLE_HEIGHT = 0.0236;
 const LED_NORMAL_HALF_THICKNESS_TO_RADIUS = 2;
-/** Overlap neighboring capsules so the rim reads as a stroke, not beads. */
-const LED_TANGENT_GAP_PX = 0;
-/** Extra samples on quarter-circles vs a uniform perimeter walk. */
-const CORNER_ARC_WEIGHT = 2.25;
+const LED_TANGENT_GAP_PX = 1;
 
-export const LED_SDF_CROP_EXPANSION_PX = 3;
-export const LED_EMITTER_MESH_EXPANSION_PX = 2.5;
+export const LED_SDF_CROP_EXPANSION_PX = 2;
+export const LED_EMITTER_MESH_EXPANSION_PX = 1;
 export const NOISE_ROTATION_START_SECONDS = 10;
 export const BRIGHTNESS_MIN_HOVER_MULTIPLIER = 4;
 export const BRIGHTNESS_MIN_HOVER_SMOOTHING = 0.2;
@@ -125,13 +118,8 @@ export const HOVER_RGB_TINT_DEFAULTS: HoverRgbTintSettings = {
   edgeOverlap: 1,
 };
 
-/**
- * Chip sim space is CSS pixels. The 404 hex floors a tall canvas to 360px
- * so the crawl has room; this rim is ~80px tall and that upscale fought DPR
- * (uniforms in sim px, canvas in device px → 1× stretch on retina).
- */
-export function simulationFloorFactor(_cssHeight: number) {
-  return 1;
+export function simulationFloorFactor(cssHeight: number) {
+  return Math.max(1, MIN_SIM_HEIGHT / Math.max(1, cssHeight));
 }
 
 interface LedPosition {
@@ -193,6 +181,7 @@ const defaultChipFrame: ChipFrame = {
 };
 
 let chipFrame: ChipFrame = { ...defaultChipFrame };
+let lastChipRect = { halfWidth: 1, halfHeight: 1 };
 
 export function setChipFrame(next: Partial<ChipFrame>) {
   chipFrame = {
@@ -202,14 +191,12 @@ export function setChipFrame(next: Partial<ChipFrame>) {
 }
 
 export function setHeroSceneScale(_scale: number) {
-  // Chip geometry is the measured rounded-rect; do not inherit the hex zoom.
+  // Chip outline is measured from the rounded-xl box — do not inherit hex zoom.
 }
 
 export function resolveHeroSceneScale(baseZoom: number) {
   return baseZoom;
 }
-
-let lastChipRect = { halfWidth: 1, halfHeight: 1 };
 
 export function canonicalHexGeometry(size: RenderSize): HexGeometry {
   const scaleX = size.width / Math.max(1, chipFrame.canvasWidth);
@@ -221,11 +208,10 @@ export function canonicalHexGeometry(size: RenderSize): HexGeometry {
   const halfH = Math.max(1, size.height * 0.5 - padY);
   const center = { x: size.width * 0.5, y: size.height * 0.5 };
   const height = halfH * 2;
-  // Same CSS-space near-bloom as the 404 hex (~9px): hex used circumradius≈200
-  // at factor 1. Scale that into sim pixels for this canvas.
-  const circumradius = 200 * scaleY;
+  // Same bloom scale the hex uses on a canvas of this sim height (#542).
+  const circumradius = size.height * TRIANGLE_HEIGHT_RATIO * 0.5;
   lastChipRect = { halfWidth: halfW, halfHeight: halfH };
-  const corners: HexVertices = [
+  const vertices: HexVertices = [
     { x: center.x - halfW + fillet, y: center.y - halfH },
     { x: center.x + halfW - fillet, y: center.y - halfH },
     { x: center.x + halfW, y: center.y - halfH + fillet },
@@ -235,7 +221,7 @@ export function canonicalHexGeometry(size: RenderSize): HexGeometry {
   ];
   return {
     center,
-    vertices: corners,
+    vertices,
     height,
     circumradius,
     inradius: halfH,
@@ -395,31 +381,27 @@ function sampleRoundedRect(
       len: arc,
     },
   ];
-  const weightOf = (segment: (typeof segments)[number]) =>
-    segment.kind === "arc" ? segment.len * CORNER_ARC_WEIGHT : segment.len;
-  const weightTotal = segments.reduce(
-    (sum, segment) => sum + weightOf(segment),
-    0,
-  );
+  const perimeter = segments.reduce((sum, segment) => sum + segment.len, 0);
   const sites: LedPosition[] = [];
-  if (weightTotal <= 0 || count <= 0) return sites;
+  if (perimeter <= 0 || count <= 0) return sites;
   for (let i = 0; i < count; i++) {
-    let remaining = ((i + 0.5) / count) * weightTotal;
+    let remaining = ((i + 0.5) / count) * perimeter;
     for (const segment of segments) {
-      const weight = weightOf(segment);
-      if (remaining > weight && segment !== segments[segments.length - 1]) {
-        remaining -= weight;
+      if (
+        remaining > segment.len &&
+        segment !== segments[segments.length - 1]
+      ) {
+        remaining -= segment.len;
         continue;
       }
-      const along = weight > 0 ? (remaining / weight) * segment.len : 0;
       if (segment.kind === "line") {
         sites.push({
-          x: segment.x0 + segment.dx * along,
-          y: segment.y0 + segment.dy * along,
+          x: segment.x0 + segment.dx * remaining,
+          y: segment.y0 + segment.dy * remaining,
           angle: Math.atan2(segment.dy, segment.dx),
         });
       } else {
-        const t = segment.len > 0 ? along / segment.len : 0;
+        const t = segment.len > 0 ? remaining / segment.len : 0;
         const angle = segment.a0 + segment.sweep * t;
         sites.push({
           x: segment.cx + Math.cos(angle) * segment.r,

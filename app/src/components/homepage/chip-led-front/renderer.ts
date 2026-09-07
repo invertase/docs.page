@@ -5,7 +5,7 @@ import { brushState } from "./sim-sizing";
 
 interface RendererOptions {
   readonly canvas: HTMLCanvasElement;
-  /** Copy hold / copied tick — same periwinkle deploy as the 404 hex hold. */
+  /** Same hold signal the 404 hex uses (`rgbDeployActive` → deploy lerp). */
   readonly rgbDeployActive?: () => boolean;
 }
 
@@ -91,7 +91,7 @@ export function createRenderer(options: RendererOptions) {
     }
     gpu = nextGpu;
     canvasSurface = surface(gpu, options.canvas, {
-      dpr: [1, 3],
+      dpr: [1, 2],
       alphaMode: "premultiplied",
       clearColor: [0, 0, 0, 0],
     });

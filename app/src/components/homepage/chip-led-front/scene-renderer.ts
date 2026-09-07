@@ -213,17 +213,14 @@ export function createHeroRenderer(
       css.width * css.dpr,
       css.height * css.dpr,
     );
-    const pixelRatio = normalizedPixelRatio(
-      presentationSize.width / Math.max(1, simulationSize.width) ||
-        sizing.pixelRatio,
-    );
+    const pixelRatio = normalizedPixelRatio(sizing.pixelRatio);
     const leds = buildLedGeometry(simulationSize, previous);
     const ledStorage = storage(
       gpu,
       LEDS_PER_EDGE * HEX_SIDES * 8 * 4,
     ) as DestroyableStorage;
     ledStorage.write(leds.data.buffer as ArrayBuffer);
-    const raycastSize = directTriangleTargetSize(simulationSize, pixelRatio);
+    const raycastSize = directTriangleTargetSize(simulationSize);
     const raycastTarget = target(gpu, {
       size: [raycastSize.width, raycastSize.height],
       format: "rgba16float",
@@ -231,13 +228,11 @@ export function createHeroRenderer(
     });
     const lightSources = createLightSourcesRaw(gpu, {
       size: [simulationSize.width, simulationSize.height],
-      bufferSize: [presentationSize.width, presentationSize.height],
-      dpr: pixelRatio,
       ledStorage,
       hex: canonicalHexGeometry(simulationSize),
     });
     raycastDraw.set({
-      cfg: directTriangleRaycastUniformData(simulationSize, pixelRatio),
+      cfg: directTriangleRaycastUniformData(simulationSize),
       light_sources_tex: lightSources.texture,
     });
     const raycastBundle = bundle(
@@ -267,11 +262,8 @@ export function createHeroRenderer(
   }
 }
 
-function directTriangleRaycastUniformData(
-  simulationSize: RenderSize,
-  dpr: number,
-) {
-  const size = directTriangleTargetSize(simulationSize, dpr);
+function directTriangleRaycastUniformData(simulationSize: RenderSize) {
+  const size = directTriangleTargetSize(simulationSize);
   const hex = ledMeshGeometry(simulationSize);
   const pxStepScale =
     Math.min(simulationSize.height, HERO_CANVAS_MAX_CSS) / HERO_CANVAS_MAX_CSS;
@@ -294,21 +286,15 @@ function directTriangleRaycastUniformData(
       DIRECT_TRIANGLE_TARGET_SCALE,
       HERO_CANVAS_MAX_CSS / Math.max(simulationSize.height, 1),
       hex.fillet,
-      dpr,
+      0,
     ],
   };
 }
 
-function directTriangleTargetSize(size: RenderSize, dpr: number) {
+function directTriangleTargetSize(size: RenderSize) {
   return {
-    width: Math.max(
-      1,
-      Math.ceil(size.width * dpr * DIRECT_TRIANGLE_TARGET_SCALE),
-    ),
-    height: Math.max(
-      1,
-      Math.ceil(size.height * dpr * DIRECT_TRIANGLE_TARGET_SCALE),
-    ),
+    width: Math.max(1, Math.ceil(size.width * DIRECT_TRIANGLE_TARGET_SCALE)),
+    height: Math.max(1, Math.ceil(size.height * DIRECT_TRIANGLE_TARGET_SCALE)),
   };
 }
 
@@ -325,15 +311,10 @@ function floorUniformData(parts: RendererParts) {
     Math.min(presentationSize.height, referencePresentationHeight) /
     referencePresentationHeight;
   return {
-    screen: [
-      presentationSize.width,
-      presentationSize.height,
-      hex.fillet,
-      pixelRatio,
-    ],
+    screen: [presentationSize.width, presentationSize.height, 0, pixelRatio],
     light_sources: [
-      presentationSize.width,
-      presentationSize.height,
+      simulationSize.width,
+      simulationSize.height,
       hex.halfWidth,
       hex.halfHeight,
     ],
