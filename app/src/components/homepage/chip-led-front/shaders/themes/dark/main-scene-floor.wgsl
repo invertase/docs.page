@@ -230,6 +230,11 @@ fn edge_fade(pixel_screen: vec2f) -> f32 {
 // fade can only darken further), so the whole floor body there — incl. the 16-tap radiance
 // fetch — is wasted. This margin keeps the ~1px anti-aliased silhouette on the full path.
 const OCCLUDER_INTERIOR_MARGIN: f32 = 4.0;
+// Chip-only bloom (hex #542: 0.046 / 1.2 / 0.65 / 0.4).
+const CHIP_NEAR_RADIUS_SCALE: f32 = 0.18;
+const CHIP_NEAR_INTENSITY: f32 = 1.38;
+const CHIP_FAR_INTENSITY: f32 = 0.80;
+const CHIP_FAR_POWER: f32 = 0.32;
 
 @fragment fn fs_main(in: VSOut) -> @location(0) vec4f {
   let pixel_screen = in.pos.xy;
@@ -265,8 +270,8 @@ const OCCLUDER_INTERIOR_MARGIN: f32 = 4.0;
     max(max(light_sources.r, light_sources.g), light_sources.b),
   );
   surface *= clip_occluder;
-  // Official near + far screen-blend. Power 0.05 flattened tiny radiance into a
-  // full-canvas film; 0.4 keeps the soft aura and lets the tail reach alpha 0.
+  // Chip-local bloom nudge (not the 404 hex): a bit more radius + intensity.
+  // Hex #542 stays 0.046 / 1.2 near and 0.65 / 0.4 far.
   let fade_inner = 0.0;
   let near_light = dot(radiance, LUMA);
   let near = near_falloff(
@@ -274,14 +279,14 @@ const OCCLUDER_INTERIOR_MARGIN: f32 = 4.0;
     near_light,
     fade_inner,
     cfg.triangle.z,
-    vec4f(0.046, 1.2, 2.74, 5.0),
+    vec4f(CHIP_NEAR_RADIUS_SCALE, CHIP_NEAR_INTENSITY, 2.74, 5.0),
     4.0,
     1.0,
   );
   let far = far_falloff(
     near_light,
-    vec4f(0.65, 2.0, 0.0, 8.85),
-    0.4,
+    vec4f(CHIP_FAR_INTENSITY, 2.0, 0.0, 8.85),
+    CHIP_FAR_POWER,
     1.0,
   );
   let screen_blend =
