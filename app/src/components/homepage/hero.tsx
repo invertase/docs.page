@@ -4,7 +4,7 @@ import {
   RiFileCopyLine,
 } from "@remixicon/react";
 import Link from "next/link";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useState } from "react";
 import { ChipLedRim } from "@/components/homepage/chip-led-rim/chip-led-rim";
 import { Button } from "@/components/ui/button";
 import { useCopy } from "@/hooks/use-copy";
@@ -152,7 +152,6 @@ function promptCopyUrl(snippet: SnippetId) {
 
 function Terminal() {
   const [activeId, setActiveId] = useState<SnippetId>("terminal");
-  const [rimActive, setRimActive] = useState(false);
   const active =
     SNIPPETS.find((snippet) => snippet.id === activeId) ?? SNIPPETS[0];
 
@@ -189,49 +188,23 @@ function Terminal() {
           </Fragment>
         ))}
       </div>
-      {/* `py-2.5` at every width: around a `size="icon-sm"` copy button it
-          gives the chip the same height as the Get started button now below
-          it. Nothing is aligned side by side any more, so this is no longer
-          load-bearing — but two boxes of one height stacked on one axis is
-          the point, so if either size changes, this padding should follow.
-          min-w-0 plus the snippet's own scroll area is what keeps the long
-          agent prompt inside the chip. */}
-      <div className="group relative flex w-full min-w-0 items-center gap-2 rounded-xl border border-transparent bg-periwinkle-950 px-3 py-2.5 sm:w-auto sm:px-4">
-        {/* Honey LED rim (periwinkle while copy is held / copied). Replaces the
-            flat `border-primary` so the chip matches the 404 hex idle crawl. */}
-        <ChipLedRim active={rimActive} />
-        {/* Keyed by tab so the "copied" tick never carries over to the snippet
-            the visitor has not copied. */}
-        <Snippet
-          key={active.id}
-          snippet={active}
-          onRimActiveChange={setRimActive}
-        />
-      </div>
+      {/* Keyed by tab so the copied tick and periwinkle rim never carry over
+          to a snippet the visitor has not copied. Chip keeps the `py-2.5`
+          that matches Get started's height; min-w-0 plus the snippet scroll
+          area keep the long agent prompt inside the box. */}
+      <Chip key={active.id} snippet={active} />
     </div>
   );
 }
 
-/** The snippet text and its copy button — one flex line inside the chip. */
-function Snippet({
-  snippet,
-  onRimActiveChange,
-}: {
-  snippet: HeroSnippet;
-  onRimActiveChange: (active: boolean) => void;
-}) {
-  // useCopy takes the text as an argument, so the button copies whatever this
-  // tab is showing with no extra plumbing.
+/**
+ * The chip owns both the LED rim and `useCopy` so periwinkle tracks the 2s
+ * copied tick in the same render — no parent callback / effect cleanup that
+ * can drop the rim back to honey between pointerup and click.
+ */
+function Chip({ snippet }: { snippet: HeroSnippet }) {
   const { copied, copy } = useCopy(snippet.text);
   const [held, setHeld] = useState(false);
-
-  // Periwinkle while the copy control is down (404 hex hold) or while the 2s
-  // copied tick is showing. Tab-switch remounts this component and the cleanup
-  // drops the rim back to honey so a leftover tick cannot tint the next snippet.
-  useEffect(() => {
-    onRimActiveChange(held || copied);
-    return () => onRimActiveChange(false);
-  }, [held, copied, onRimActiveChange]);
 
   const handleCopy = () => {
     copy();
@@ -242,7 +215,10 @@ function Snippet({
   };
 
   return (
-    <>
+    <div className="group relative flex w-full min-w-0 items-center gap-2 rounded-xl border border-transparent bg-periwinkle-950 px-3 py-2.5 sm:w-auto sm:px-4">
+      {/* Honey LED rim; periwinkle while copy is held or the copied tick shows.
+          Replaces the flat `border-primary` so the chip matches the 404 hex. */}
+      <ChipLedRim active={held || copied} />
       <div className="relative z-10 flex min-w-0 max-w-64 flex-1 items-center gap-2 overflow-x-auto opacity-75 transition-opacity group-hover:opacity-100 sm:max-w-72 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {snippet.prefix && (
           <span className="shrink-0 text-neutral-500">{snippet.prefix}</span>
@@ -270,6 +246,6 @@ function Snippet({
           <RiFileCopyLine />
         )}
       </Button>
-    </>
+    </div>
   );
 }

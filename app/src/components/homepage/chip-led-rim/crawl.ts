@@ -280,8 +280,8 @@ function fillBandBrightness(
       }
       coverage = Math.max(coverage, profile * (fadeByBand[k] ?? 0));
     }
-    brightness[i] =
-      BRIGHTNESS_MIN + (BRIGHTNESS_MAX - BRIGHTNESS_MIN) * clamp01(coverage);
+    const floor = BRIGHTNESS_MIN + state.deploy * 0.42;
+    brightness[i] = floor + (BRIGHTNESS_MAX - floor) * clamp01(coverage);
   }
 }
 

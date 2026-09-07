@@ -100,8 +100,8 @@ export function ChipLedRim({ active }: { active: boolean }) {
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
       // Dim always-on stroke so the chip still reads as a rim between bands.
-      ctx.strokeStyle = srgbCss(color, 0.28 + crawl.deploy * 0.12);
-      ctx.lineWidth = 1.15;
+      ctx.strokeStyle = srgbCss(color, 0.32 + crawl.deploy * 0.38);
+      ctx.lineWidth = 1.35;
       ctx.beginPath();
       ctx.roundRect(BLOOM_PX, BLOOM_PX, boxW, boxH, cornerRadius);
       ctx.stroke();
@@ -115,12 +115,12 @@ export function ChipLedRim({ active }: { active: boolean }) {
 
         // Soft bloom, then a short capsule so the strip reads as LEDs, not a
         // flat conic gradient.
-        ctx.fillStyle = srgbCss(color, 0.18 + level * 0.32);
+        ctx.fillStyle = srgbCss(color, 0.2 + level * 0.38);
         ctx.beginPath();
-        ctx.ellipse(site.x, site.y, 7.2, 3.4, site.angle, 0, Math.PI * 2);
+        ctx.ellipse(site.x, site.y, 7.6, 3.6, site.angle, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.fillStyle = srgbCss(color, 0.22 + level * 0.78);
+        ctx.fillStyle = srgbCss(color, 0.28 + level * 0.72);
         drawCapsule(ctx, site.x, site.y, site.angle, 2.35, 0.95);
       }
       ctx.globalCompositeOperation = "source-over";
