@@ -14,7 +14,7 @@ import { UTM_KEYS } from "@/lib/utm";
 
 export function Hero() {
   return (
-    <div className="mx-auto flex w-full max-w-xl flex-col items-center justify-center gap-8 px-2 pt-12 pb-32 sm:px-0 sm:pt-16 sm:pb-44">
+    <div className="mx-auto flex w-full max-w-xl flex-col items-center justify-center gap-8 overflow-visible px-2 pt-12 pb-32 sm:px-0 sm:pt-16 sm:pb-44">
       {/* Title block keeps the hero section rhythm (space-y-6 / sm:space-y-8).
           The two CTA-adjacent gaps — subtext → tabs, and chip → Get started —
           share `gap-8` so they stay equal at every width. */}
@@ -41,7 +41,7 @@ export function Hero() {
           w-full below `sm` so the chip still spans the hero column and shrinks
           its snippet instead of pushing past the gutter; sm:w-auto puts the
           group back to content width. */}
-      <div className="flex w-full flex-col items-center gap-8 sm:w-auto">
+      <div className="flex w-full flex-col items-center gap-8 overflow-visible sm:w-auto">
         <Terminal />
         <Button
           asChild
@@ -161,7 +161,7 @@ function Terminal() {
   // min-w-0 lets the column shrink to the hero's width rather than widen to
   // fit the prompt.
   return (
-    <div className="flex w-full min-w-0 flex-col items-center gap-2 sm:w-auto">
+    <div className="flex w-full min-w-0 flex-col items-center gap-2 overflow-visible sm:w-auto">
       <div
         role="group"
         aria-label="Setup method"
@@ -227,7 +227,7 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
 
   return (
     <div
-      className="group relative flex w-full min-w-0 items-center gap-2 rounded-xl border border-transparent bg-periwinkle-950 px-3 py-2.5 sm:w-auto sm:px-4"
+      className="group relative flex w-full min-w-0 overflow-visible items-center gap-2 rounded-xl border border-transparent bg-periwinkle-950 px-3 py-2.5 sm:w-auto sm:px-4"
       data-chip-rim={rimActive ? "periwinkle" : "honey"}
     >
       {/* Honey LED rim; periwinkle while copy is held or the copied tick shows.

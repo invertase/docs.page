@@ -207,34 +207,31 @@ fn compose_floor(
   return colour;
 }
 
-// On the mobile layout the canvas is a SQUARE (≈1:1) rather than the desktop 3:2 rect, and the
-// top/bottom fade band reads as too small there — so widen it by this factor on mobile. Mobile is
-// detected from the canvas aspect (width < ~1.25 × height ⇒ the square mobile box), so no extra
-// uniform is needed. Tune this for the mobile fade size.
-const DARK_EDGE_FADE_MOBILE_BOOST: f32 = 2.0;
-
-// VERTICAL-ONLY screen-edge envelope: 1 across the interior, easing to 0 only near the TOP and
-// BOTTOM edges — never left/right (the glow should never fade on the X axis). A square-root curve
-// lifts gently from black before arriving at full intensity. The band is 20% of canvas height,
-// widened on the square mobile canvas by DARK_EDGE_FADE_MOBILE_BOOST.
-fn edge_fade(pixel_screen: vec2f) -> f32 {
-  let mobile_boost =
-    select(1.0, DARK_EDGE_FADE_MOBILE_BOOST, cfg.screen.x < cfg.screen.y * 1.25);
-  let w = max(0.2 * mobile_boost * cfg.screen.y, 1.0);
-  let d = min(pixel_screen.y, cfg.screen.y - pixel_screen.y);
-  let t = clamp(d / w, 0.0, 1.0);
-  return sqrt(t);
+// Fade bloom to 0 in the outer half of the canvas pad so the presentation
+// buffer never shows a hard rectangle (the solid line where the mask stopped).
+// Chip is centered; pad is screen/2 − chip half-extents. Fade stays inside the
+// pad so the LED rim at the chip edge is untouched.
+fn buffer_edge_fade(pixel_screen: vec2f) -> f32 {
+  let pad_x = max(cfg.screen.x * 0.5 - cfg.light_sources.z, 1.0);
+  let pad_y = max(cfg.screen.y * 0.5 - cfg.light_sources.w, 1.0);
+  let fade_x = pad_x * 0.55;
+  let fade_y = pad_y * 0.55;
+  let dx = min(pixel_screen.x, cfg.screen.x - pixel_screen.x);
+  let dy = min(pixel_screen.y, cfg.screen.y - pixel_screen.y);
+  return smoothstep(0.0, fade_x, dx) * smoothstep(0.0, fade_y, dy);
 }
 
 // Pixels deep inside the occluder triangle are painted pure black by the occluder (and the edge
 // fade can only darken further), so the whole floor body there — incl. the 16-tap radiance
 // fetch — is wasted. This margin keeps the ~1px anti-aliased silhouette on the full path.
 const OCCLUDER_INTERIOR_MARGIN: f32 = 4.0;
-// Chip-only bloom (hex #542: 0.046 / 1.2 / 0.65 / 0.4). ~2× the 38f51b6 nudge.
-const CHIP_NEAR_RADIUS_SCALE: f32 = 0.40;
-const CHIP_NEAR_INTENSITY: f32 = 2.8;
-const CHIP_FAR_INTENSITY: f32 = 1.7;
-const CHIP_FAR_POWER: f32 = 0.20;
+// Chip-only bloom. Hex #542: 0.046 / 1.2 / 0.65 / 0.4.
+// Halfway between the 38f51b6 nudge (0.18 / 1.38 / 0.80 / 0.32) and the
+// 25633a7 push (0.40 / 2.8 / 1.7 / 0.20) — softer honey, not a white-hot box.
+const CHIP_NEAR_RADIUS_SCALE: f32 = 0.30;
+const CHIP_NEAR_INTENSITY: f32 = 2.15;
+const CHIP_FAR_INTENSITY: f32 = 1.28;
+const CHIP_FAR_POWER: f32 = 0.26;
 
 @fragment fn fs_main(in: VSOut) -> @location(0) vec4f {
   let pixel_screen = in.pos.xy;
@@ -270,8 +267,7 @@ const CHIP_FAR_POWER: f32 = 0.20;
     max(max(light_sources.r, light_sources.g), light_sources.b),
   );
   surface *= clip_occluder;
-  // Chip-local bloom nudge (not the 404 hex): a bit more radius + intensity.
-  // Hex #542 stays 0.046 / 1.2 near and 0.65 / 0.4 far.
+  // Chip-local bloom (not the 404 hex). Hex #542 stays 0.046 / 1.2 near and 0.65 / 0.4 far.
   let fade_inner = 0.0;
   let near_light = dot(radiance, LUMA);
   let near = near_falloff(
@@ -309,7 +305,9 @@ const CHIP_FAR_POWER: f32 = 0.20;
 
   // Hex: `mix(final, black, occluder)` + `coverage = max(occluder, surface, bloom)`.
   // Same occluder AA, transparent instead of black so chip UI shows through.
+  // `buffer_edge_fade` kills the hard rect where the canvas pad used to clip.
   let coverage =
-    max(surface, saturate(brightness_factor)) * (1.0 - occluder);
+    max(surface, saturate(brightness_factor)) * (1.0 - occluder) *
+    buffer_edge_fade(pixel_screen);
   return vec4f(final_colour * coverage, coverage);
 }

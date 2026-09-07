@@ -7,7 +7,7 @@ export const LEDS_PER_EDGE = 24;
 export const HEX_SIDES = 6;
 export const LED_COUNT = LEDS_PER_EDGE * HEX_SIDES;
 /** CSS pad so hex-style bloom can sit outside the chip box. */
-export const CHIP_BLOOM_CSS = 64;
+export const CHIP_BLOOM_CSS = 56;
 export const TRIANGLE_HEIGHT_RATIO = (180 / 630) * 0.8 * 1.6 * 1.5 * 1.5 * 0.8;
 export const HERO_CANVAS_MAX_CSS = 720;
 const MIN_SIM_HEIGHT = 360;

@@ -3,6 +3,37 @@ import { createRenderer } from "../chip-led-front/renderer";
 import { CHIP_BLOOM_CSS, setChipFrame } from "../chip-led-front/settings";
 
 /**
+ * Keep the WebGPU canvas inside the viewport so `_app`'s `overflow-x-clip`
+ * cannot hard-cut the bloom. The floor shader still fades the outer half of
+ * this pad so the buffer edge itself is never a visible rectangle.
+ */
+function bloomPad(rect: DOMRect) {
+  const inset = 2;
+  const availableX = Math.min(
+    Math.floor(rect.left - inset),
+    Math.floor(window.innerWidth - rect.right - inset),
+  );
+  const availableY = Math.min(
+    Math.floor(rect.top - inset),
+    Math.floor(window.innerHeight - rect.bottom - inset),
+  );
+  return {
+    x: Math.max(4, Math.min(CHIP_BLOOM_CSS, availableX)),
+    y: Math.max(4, Math.min(CHIP_BLOOM_CSS, availableY)),
+  };
+}
+
+function applyCanvasPad(
+  canvas: HTMLCanvasElement,
+  pad: { x: number; y: number },
+) {
+  canvas.style.left = `${-pad.x}px`;
+  canvas.style.top = `${-pad.y}px`;
+  canvas.style.width = `calc(100% + ${pad.x * 2}px)`;
+  canvas.style.height = `calc(100% + ${pad.y * 2}px)`;
+}
+
+/**
  * Official vgpu LED rim around the homepage copy chip — #542 triangle-led-front
  * with the occluder/emitter path swapped from hex to the chip’s rounded-xl.
  */
@@ -24,12 +55,14 @@ export function ChipLedRim({ active }: { active: boolean }) {
       const radius = Number.parseFloat(
         getComputedStyle(parent).borderTopLeftRadius,
       );
+      const pad = bloomPad(rect);
+      applyCanvasPad(canvas, pad);
       setChipFrame({
-        canvasWidth: Math.max(1, rect.width + CHIP_BLOOM_CSS * 2),
-        canvasHeight: Math.max(1, rect.height + CHIP_BLOOM_CSS * 2),
+        canvasWidth: Math.max(1, rect.width + pad.x * 2),
+        canvasHeight: Math.max(1, rect.height + pad.y * 2),
         radius: Number.isFinite(radius) ? radius : 12,
-        padX: CHIP_BLOOM_CSS,
-        padY: CHIP_BLOOM_CSS,
+        padX: pad.x,
+        padY: pad.y,
       });
     };
 
@@ -43,15 +76,18 @@ export function ChipLedRim({ active }: { active: boolean }) {
       setFallback(true);
     });
 
-    const observer = new ResizeObserver(() => {
+    const onResize = () => {
       syncFrame();
       const box = canvas.getBoundingClientRect();
       renderer.resize({ width: box.width, height: box.height });
-    });
+    };
+    const observer = new ResizeObserver(onResize);
     observer.observe(host);
+    window.addEventListener("resize", onResize);
 
     return () => {
       observer.disconnect();
+      window.removeEventListener("resize", onResize);
       renderer.dispose();
     };
   }, []);
