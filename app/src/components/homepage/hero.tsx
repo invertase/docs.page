@@ -4,7 +4,8 @@ import {
   RiFileCopyLine,
 } from "@remixicon/react";
 import Link from "next/link";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
+import { ChipLedRim } from "@/components/homepage/chip-led-rim/chip-led-rim";
 import { Button } from "@/components/ui/button";
 import { useCopy } from "@/hooks/use-copy";
 import { SNIPPET_PARAM, type SnippetId } from "@/lib/prompt-copy";
@@ -151,6 +152,7 @@ function promptCopyUrl(snippet: SnippetId) {
 
 function Terminal() {
   const [activeId, setActiveId] = useState<SnippetId>("terminal");
+  const [rimActive, setRimActive] = useState(false);
   const active =
     SNIPPETS.find((snippet) => snippet.id === activeId) ?? SNIPPETS[0];
 
@@ -194,20 +196,42 @@ function Terminal() {
           the point, so if either size changes, this padding should follow.
           min-w-0 plus the snippet's own scroll area is what keeps the long
           agent prompt inside the chip. */}
-      <div className="group flex w-full min-w-0 items-center gap-2 rounded-xl border border-primary bg-periwinkle-950 px-3 py-2.5 sm:w-auto sm:px-4">
+      <div className="group relative flex w-full min-w-0 items-center gap-2 rounded-xl border border-transparent bg-periwinkle-950 px-3 py-2.5 sm:w-auto sm:px-4">
+        {/* Honey LED rim (periwinkle while copy is held / copied). Replaces the
+            flat `border-primary` so the chip matches the 404 hex idle crawl. */}
+        <ChipLedRim active={rimActive} />
         {/* Keyed by tab so the "copied" tick never carries over to the snippet
             the visitor has not copied. */}
-        <Snippet key={active.id} snippet={active} />
+        <Snippet
+          key={active.id}
+          snippet={active}
+          onRimActiveChange={setRimActive}
+        />
       </div>
     </div>
   );
 }
 
 /** The snippet text and its copy button — one flex line inside the chip. */
-function Snippet({ snippet }: { snippet: HeroSnippet }) {
+function Snippet({
+  snippet,
+  onRimActiveChange,
+}: {
+  snippet: HeroSnippet;
+  onRimActiveChange: (active: boolean) => void;
+}) {
   // useCopy takes the text as an argument, so the button copies whatever this
   // tab is showing with no extra plumbing.
   const { copied, copy } = useCopy(snippet.text);
+  const [held, setHeld] = useState(false);
+
+  // Periwinkle while the copy control is down (404 hex hold) or while the 2s
+  // copied tick is showing. Tab-switch remounts this component and the cleanup
+  // drops the rim back to honey so a leftover tick cannot tint the next snippet.
+  useEffect(() => {
+    onRimActiveChange(held || copied);
+    return () => onRimActiveChange(false);
+  }, [held, copied, onRimActiveChange]);
 
   const handleCopy = () => {
     copy();
@@ -219,7 +243,7 @@ function Snippet({ snippet }: { snippet: HeroSnippet }) {
 
   return (
     <>
-      <div className="flex min-w-0 max-w-64 flex-1 items-center gap-2 overflow-x-auto opacity-75 transition-opacity group-hover:opacity-100 sm:max-w-72 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="relative z-10 flex min-w-0 max-w-64 flex-1 items-center gap-2 overflow-x-auto opacity-75 transition-opacity group-hover:opacity-100 sm:max-w-72 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {snippet.prefix && (
           <span className="shrink-0 text-neutral-500">{snippet.prefix}</span>
         )}
@@ -227,7 +251,19 @@ function Snippet({ snippet }: { snippet: HeroSnippet }) {
           {snippet.text}
         </span>
       </div>
-      <Button variant="ghost" size="icon-sm" onClick={handleCopy}>
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        className="relative z-10"
+        onClick={handleCopy}
+        onPointerDown={(event) => {
+          if (!event.isPrimary) return;
+          setHeld(true);
+        }}
+        onPointerUp={() => setHeld(false)}
+        onPointerCancel={() => setHeld(false)}
+        onPointerLeave={() => setHeld(false)}
+      >
         {copied ? (
           <RiCheckLine className="text-green-500" />
         ) : (
