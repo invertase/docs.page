@@ -254,11 +254,17 @@ const OCCLUDER_INTERIOR_MARGIN: f32 = 4.0;
   // disagree with the rgb the way the .w mask did (that mismatch — .w extending past the
   // rgb's triangle clip — was the black band), and it keeps the discrete LEDs. The
   // geometric occluder (drawn below) hides the inside, so only the edge strip shows.
-  let surface = smoothstep(
+  // Same hex silhouette AA (`0.5 - sdf / |∇sdf|`) at the emitter clip so the
+  // outer honey edge is the rounded-rect SDF at device resolution — not the
+  // nearest-neighbour sim-buffer discard that stair-steps on chip fillets.
+  let clip = cfg.screen.z;
+  let clip_occluder = clamp(0.5 - (triangle_sdf - clip) / occluder_edge, 0.0, 1.0);
+  var surface = smoothstep(
     4.0,
     4.02,
     max(max(light_sources.r, light_sources.g), light_sources.b),
   );
+  surface *= clip_occluder;
   // Official near + far screen-blend. Power 0.05 flattened tiny radiance into a
   // full-canvas film; 0.4 keeps the soft aura and lets the tail reach alpha 0.
   let fade_inner = 0.0;
@@ -296,6 +302,9 @@ const OCCLUDER_INTERIOR_MARGIN: f32 = 4.0;
   );
   let final_colour = tonemap(colour * 0.25);
 
-  let coverage = max(surface, saturate(brightness_factor));
+  // Hex: `mix(final, black, occluder)` + `coverage = max(occluder, surface, bloom)`.
+  // Same occluder AA, transparent instead of black so chip UI shows through.
+  let coverage =
+    max(surface, saturate(brightness_factor)) * (1.0 - occluder);
   return vec4f(final_colour * coverage, coverage);
 }

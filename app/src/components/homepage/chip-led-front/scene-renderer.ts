@@ -23,6 +23,7 @@ import {
   HERO_CANVAS_MAX_CSS,
   HEX_SIDES,
   type HeroStateSettings,
+  LED_SDF_CROP_EXPANSION_PX,
   LEDS_PER_EDGE,
   ledMeshGeometry,
   type RenderSize,
@@ -311,7 +312,12 @@ function floorUniformData(parts: RendererParts) {
     Math.min(presentationSize.height, referencePresentationHeight) /
     referencePresentationHeight;
   return {
-    screen: [presentationSize.width, presentationSize.height, 0, pixelRatio],
+    screen: [
+      presentationSize.width,
+      presentationSize.height,
+      LED_SDF_CROP_EXPANSION_PX * transform.scale,
+      pixelRatio,
+    ],
     light_sources: [
       simulationSize.width,
       simulationSize.height,

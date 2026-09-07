@@ -14,6 +14,7 @@ const MIN_SIM_HEIGHT = 360;
 const LED_RADIUS_TO_TRIANGLE_HEIGHT = 0.0236;
 const LED_NORMAL_HALF_THICKNESS_TO_RADIUS = 2;
 const LED_TANGENT_GAP_PX = 1;
+const LED_MESH_INSET_PX = 5;
 
 export const LED_SDF_CROP_EXPANSION_PX = 2;
 export const LED_EMITTER_MESH_EXPANSION_PX = 1;
@@ -270,26 +271,53 @@ function hexLedNormalHalfThickness(size: RenderSize) {
   return hexLedRadius(size) * LED_NORMAL_HALF_THICKNESS_TO_RADIUS;
 }
 
-export function ledMeshGeometry(size: RenderSize) {
-  return canonicalHexGeometry(size);
+function ledMeshInsetPx(geometry: HexGeometry) {
+  const refHeight = HERO_CANVAS_MAX_CSS * TRIANGLE_HEIGHT_RATIO;
+  return (LED_MESH_INSET_PX * Math.min(geometry.height, refHeight)) / refHeight;
 }
 
+/** Parallel-offset the chip rect the way #542 scales the hex in by `LED_MESH_INSET_PX`. */
+function insetChipGeometry(geometry: HexGeometry): HexGeometry {
+  const inset = ledMeshInsetPx(geometry);
+  const halfW = Math.max(1, geometry.halfWidth - inset);
+  const halfH = Math.max(1, geometry.halfHeight - inset);
+  const fillet = Math.max(0, Math.min(geometry.fillet - inset, halfW, halfH));
+  const { center } = geometry;
+  return {
+    ...geometry,
+    halfWidth: halfW,
+    halfHeight: halfH,
+    fillet,
+    inradius: halfH,
+    sideLength: halfW * 2,
+    height: halfH * 2,
+    vertices: [
+      { x: center.x - halfW + fillet, y: center.y - halfH },
+      { x: center.x + halfW - fillet, y: center.y - halfH },
+      { x: center.x + halfW, y: center.y - halfH + fillet },
+      { x: center.x + halfW, y: center.y + halfH - fillet },
+      { x: center.x + halfW - fillet, y: center.y + halfH },
+      { x: center.x - halfW + fillet, y: center.y + halfH },
+    ],
+  };
+}
+
+export function ledMeshGeometry(size: RenderSize) {
+  return insetChipGeometry(canonicalHexGeometry(size));
+}
+
+/**
+ * Same per-edge walk as #542 `hexEdgeLedLayout`: each side is a straight plus
+ * the trailing circular fillet, then `perEdge`-equivalent samples along that
+ * sector. 4 rect sides × 90° arcs instead of 6 hex sides × 60° arcs.
+ */
 export function hexEdgeLedLayout(size: RenderSize, perEdge: number): HexLayout {
-  const geometry = canonicalHexGeometry(size);
-  const count = Math.max(1, perEdge * HEX_SIDES);
-  const positions = sampleRoundedRect(
-    geometry.center.x - geometry.halfWidth,
-    geometry.center.y - geometry.halfHeight,
-    geometry.halfWidth * 2,
-    geometry.halfHeight * 2,
-    geometry.fillet,
-    count,
-  );
-  const perimeter =
-    2 *
-      (geometry.halfWidth * 2 + geometry.halfHeight * 2 - 4 * geometry.fillet) +
-    2 * Math.PI * geometry.fillet;
-  const centerSpacing = perimeter / count;
+  const geometry = insetChipGeometry(canonicalHexGeometry(size));
+  const perSide = Math.max(1, Math.round((perEdge * HEX_SIDES) / 4));
+  const positions = hexStyleRoundedRectLeds(geometry, perSide);
+  const straight = Math.max(0, geometry.sideLength - geometry.fillet * 2);
+  const sector = straight + geometry.fillet * (Math.PI / 2);
+  const centerSpacing = sector / perSide;
   const ledShape = {
     normalHalfThickness: hexLedNormalHalfThickness(size),
     tangentHalfLength: Math.max(
@@ -302,115 +330,65 @@ export function hexEdgeLedLayout(size: RenderSize, perEdge: number): HexLayout {
   return { center: geometry.center, positions, geometry, ledShape };
 }
 
-function sampleRoundedRect(
-  x: number,
-  y: number,
-  width: number,
-  height: number,
-  radius: number,
-  count: number,
+function hexStyleRoundedRectLeds(
+  geometry: HexGeometry,
+  perSide: number,
 ): LedPosition[] {
-  const r = Math.max(0, Math.min(radius, width / 2, height / 2));
-  const straightW = Math.max(0, width - 2 * r);
-  const straightH = Math.max(0, height - 2 * r);
-  const arc = r * (Math.PI / 2);
-  const segments: Array<
-    | {
-        kind: "line";
-        x0: number;
-        y0: number;
-        dx: number;
-        dy: number;
-        len: number;
-      }
-    | {
-        kind: "arc";
-        cx: number;
-        cy: number;
-        a0: number;
-        sweep: number;
-        r: number;
-        len: number;
-      }
-  > = [
-    { kind: "line", x0: x + r, y0: y, dx: 1, dy: 0, len: straightW },
-    {
-      kind: "arc",
-      cx: x + width - r,
-      cy: y + r,
-      a0: -Math.PI / 2,
-      sweep: Math.PI / 2,
-      r,
-      len: arc,
-    },
-    { kind: "line", x0: x + width, y0: y + r, dx: 0, dy: 1, len: straightH },
-    {
-      kind: "arc",
-      cx: x + width - r,
-      cy: y + height - r,
-      a0: 0,
-      sweep: Math.PI / 2,
-      r,
-      len: arc,
-    },
-    {
-      kind: "line",
-      x0: x + width - r,
-      y0: y + height,
-      dx: -1,
-      dy: 0,
-      len: straightW,
-    },
-    {
-      kind: "arc",
-      cx: x + r,
-      cy: y + height - r,
-      a0: Math.PI / 2,
-      sweep: Math.PI / 2,
-      r,
-      len: arc,
-    },
-    { kind: "line", x0: x, y0: y + height - r, dx: 0, dy: -1, len: straightH },
-    {
-      kind: "arc",
-      cx: x + r,
-      cy: y + r,
-      a0: Math.PI,
-      sweep: Math.PI / 2,
-      r,
-      len: arc,
-    },
+  const { center, halfWidth: hw, halfHeight: hh, fillet } = geometry;
+  const verts = [
+    { x: center.x - hw, y: center.y - hh },
+    { x: center.x + hw, y: center.y - hh },
+    { x: center.x + hw, y: center.y + hh },
+    { x: center.x - hw, y: center.y + hh },
   ];
-  const perimeter = segments.reduce((sum, segment) => sum + segment.len, 0);
-  const sites: LedPosition[] = [];
-  if (perimeter <= 0 || count <= 0) return sites;
-  for (let i = 0; i < count; i++) {
-    let remaining = ((i + 0.5) / count) * perimeter;
-    for (const segment of segments) {
-      if (
-        remaining > segment.len &&
-        segment !== segments[segments.length - 1]
-      ) {
-        remaining -= segment.len;
-        continue;
-      }
-      if (segment.kind === "line") {
-        sites.push({
-          x: segment.x0 + segment.dx * remaining,
-          y: segment.y0 + segment.dy * remaining,
-          angle: Math.atan2(segment.dy, segment.dx),
+  const positions: LedPosition[] = [];
+  const trim = fillet;
+  for (let e = 0; e < 4; e++) {
+    const v0 = verts[e];
+    const v1 = verts[(e + 1) % 4];
+    const v2 = verts[(e + 2) % 4];
+    if (!v0 || !v1 || !v2) continue;
+    const edge = unit2(v1.x - v0.x, v1.y - v0.y);
+    const edgeNext = unit2(v2.x - v1.x, v2.y - v1.y);
+    const p0 = { x: v0.x + edge.x * trim, y: v0.y + edge.y * trim };
+    const p1 = { x: v1.x - edge.x * trim, y: v1.y - edge.y * trim };
+    const pOut = { x: v1.x + edgeNext.x * trim, y: v1.y + edgeNext.y * trim };
+    const straightLen = Math.hypot(p1.x - p0.x, p1.y - p0.y);
+    const arcLen = fillet * (Math.PI / 2);
+    const sectorLen = straightLen + arcLen;
+    const sx = v1.x >= center.x ? 1 : -1;
+    const sy = v1.y >= center.y ? 1 : -1;
+    const arcCenter = {
+      x: center.x + sx * (hw - fillet),
+      y: center.y + sy * (hh - fillet),
+    };
+    const a0 = Math.atan2(p1.y - arcCenter.y, p1.x - arcCenter.x);
+    let sweep = Math.atan2(pOut.y - arcCenter.y, pOut.x - arcCenter.x) - a0;
+    sweep = Math.atan2(Math.sin(sweep), Math.cos(sweep));
+    for (let i = 0; i < perSide; i++) {
+      const s = ((i + 0.5) / perSide) * sectorLen;
+      if (fillet <= 1e-6 || s <= straightLen) {
+        const t = straightLen > 0 ? Math.min(s, straightLen) / straightLen : 0;
+        positions.push({
+          x: p0.x + (p1.x - p0.x) * t,
+          y: p0.y + (p1.y - p0.y) * t,
+          angle: Math.atan2(edge.y, edge.x),
         });
       } else {
-        const t = segment.len > 0 ? remaining / segment.len : 0;
-        const angle = segment.a0 + segment.sweep * t;
-        sites.push({
-          x: segment.cx + Math.cos(angle) * segment.r,
-          y: segment.cy + Math.sin(angle) * segment.r,
-          angle: angle + Math.PI / 2,
+        const a = a0 + sweep * ((s - straightLen) / Math.max(arcLen, 1e-6));
+        positions.push({
+          x: arcCenter.x + fillet * Math.cos(a),
+          y: arcCenter.y + fillet * Math.sin(a),
+          angle: Math.atan2(sweep * Math.cos(a), sweep * -Math.sin(a)),
         });
       }
-      break;
     }
   }
-  return sites;
+  return positions;
+}
+
+function unit2(x: number, y: number) {
+  const length = Math.hypot(x, y);
+  if (length <= 0) return { x: 0, y: 0 };
+  return { x: x / length, y: y / length };
 }
