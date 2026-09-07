@@ -230,11 +230,11 @@ fn edge_fade(pixel_screen: vec2f) -> f32 {
 // fade can only darken further), so the whole floor body there — incl. the 16-tap radiance
 // fetch — is wasted. This margin keeps the ~1px anti-aliased silhouette on the full path.
 const OCCLUDER_INTERIOR_MARGIN: f32 = 4.0;
-// Chip-only bloom (hex #542: 0.046 / 1.2 / 0.65 / 0.4).
-const CHIP_NEAR_RADIUS_SCALE: f32 = 0.18;
-const CHIP_NEAR_INTENSITY: f32 = 1.38;
-const CHIP_FAR_INTENSITY: f32 = 0.80;
-const CHIP_FAR_POWER: f32 = 0.32;
+// Chip-only bloom (hex #542: 0.046 / 1.2 / 0.65 / 0.4). ~2× the 38f51b6 nudge.
+const CHIP_NEAR_RADIUS_SCALE: f32 = 0.40;
+const CHIP_NEAR_INTENSITY: f32 = 2.8;
+const CHIP_FAR_INTENSITY: f32 = 1.7;
+const CHIP_FAR_POWER: f32 = 0.20;
 
 @fragment fn fs_main(in: VSOut) -> @location(0) vec4f {
   let pixel_screen = in.pos.xy;
