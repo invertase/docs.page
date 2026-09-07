@@ -21,7 +21,11 @@ export interface LightSourcesRaw {
 }
 
 interface CreateLightSourcesRawOptions {
+  /** CSS layout size — LED positions and uniforms stay in CSS pixels. */
   size: readonly [number, number];
+  /** Canvas backing store (CSS × DPR), same pixels as the surface. */
+  bufferSize: readonly [number, number];
+  dpr: number;
   ledStorage: unknown;
   hex?: ReturnType<typeof canonicalHexGeometry>;
 }
@@ -30,17 +34,23 @@ export function createLightSourcesRaw(
   gpu: Gpu,
   opts: CreateLightSourcesRawOptions,
 ): LightSourcesRaw {
-  const simSize: RenderSize = { width: opts.size[0], height: opts.size[1] };
-  const hex = opts.hex ?? canonicalHexGeometry(simSize);
+  const cssSize: RenderSize = { width: opts.size[0], height: opts.size[1] };
+  const bufferWidth = Math.max(1, Math.floor(opts.bufferSize[0]));
+  const bufferHeight = Math.max(1, Math.floor(opts.bufferSize[1]));
+  const dpr = Math.max(
+    0.001,
+    bufferWidth / Math.max(1, cssSize.width) || opts.dpr,
+  );
+  const hex = opts.hex ?? canonicalHexGeometry(cssSize);
 
   const colorTarget = target(gpu, {
-    size: [simSize.width, simSize.height],
+    size: [bufferWidth, bufferHeight],
     format: LIGHT_SOURCES_FORMAT,
     label: "triangle-led-front-light-sources",
   });
 
   const ledVertices = ledEmitterVertexData(
-    simSize,
+    cssSize,
     LED_EMITTER_MESH_EXPANSION_PX,
   );
   const ledGeometry = geometry(gpu, {
@@ -76,7 +86,7 @@ export function createLightSourcesRaw(
     texture: colorTarget,
     ready,
     encode({ frame, tunables }) {
-      const uniformData = lightSourcesUniform(simSize, tunables, hex);
+      const uniformData = lightSourcesUniform(cssSize, dpr, tunables, hex);
       ledEmittersDraw.set({ cfg: uniformData });
       frame.pass(
         { target: colorTarget, clear: [0, 0, 0, 1000] },
@@ -92,11 +102,13 @@ export function createLightSourcesRaw(
 
 function lightSourcesUniform(
   size: RenderSize,
+  dpr: number,
   tunables: LightTunables,
   hex: ReturnType<typeof canonicalHexGeometry>,
 ) {
+  const layout = hexEdgeLedLayout(size, LEDS_PER_EDGE);
   return {
-    resolution: [size.width, size.height],
+    resolution: [size.width, size.height, dpr, 0],
     tunables: [
       tunables.ledIntensity,
       tunables.brightnessMin,
@@ -104,13 +116,18 @@ function lightSourcesUniform(
       0,
     ],
     triangle: [hex.center.x, hex.center.y, hex.halfWidth, hex.halfHeight],
-    led_clip: [LED_SDF_CROP_EXPANSION_PX, hex.fillet, 0, 0],
+    led_clip: [
+      LED_SDF_CROP_EXPANSION_PX,
+      hex.fillet,
+      layout.ledShape.tangentHalfLength,
+      layout.ledShape.normalHalfThickness,
+    ],
   };
 }
 
 function initialLightSourcesUniform() {
   return {
-    resolution: [0, 0],
+    resolution: [0, 0, 1, 0],
     tunables: [0, 0, 0, 0],
     triangle: [0, 0, 0, 0],
     led_clip: [0, 0, 0, 0],

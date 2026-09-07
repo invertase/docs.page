@@ -147,7 +147,9 @@ fn ign(p: vec2f) -> f32 {
   return fract(52.9829189 * fract(dot(p, vec2f(0.06711056, 0.00583715))));
 }
 
-fn load_light_source(sample_pos: vec2f) -> vec4f {
+fn load_light_source(sample_pos_css: vec2f) -> vec4f {
+  let dpr = max(cfg.target_info.w, 1.0);
+  let sample_pos = sample_pos_css * dpr;
   let dims = textureDimensions(light_sources_tex);
   let inside =
     sample_pos.x >= 0.0 && sample_pos.x < f32(dims.x) &&
@@ -239,7 +241,9 @@ fn trace_light_source(
 
 @fragment fn fs_main(in: VSOut) -> @location(0) vec4f {
   let target_scale = max(cfg.target_info.x, 1e-4);
-  let pixel_sim = in.pos.xy / target_scale;
+  let dpr = max(cfg.target_info.w, 1.0);
+  // Raycast target is 0.5 × presentation (CSS × DPR). Layout stays CSS.
+  let pixel_sim = in.pos.xy / (target_scale * dpr);
   let center = hex_center();
   let verts = rect_vertices();
   let segs = rounded_outline(verts);

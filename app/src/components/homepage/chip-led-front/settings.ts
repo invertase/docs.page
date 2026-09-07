@@ -3,20 +3,27 @@ export interface RenderSize {
   height: number;
 }
 
-export const LEDS_PER_EDGE = 24;
+/**
+ * Perimeter samples per “edge” of the 6-segment walk.
+ * 72 (was 24) keeps capsules overlapping on the long sides; fillet arcs get
+ * extra weight in `sampleRoundedRect` so corners don’t bead.
+ */
+export const LEDS_PER_EDGE = 72;
 export const HEX_SIDES = 6;
 export const LED_COUNT = LEDS_PER_EDGE * HEX_SIDES;
 /** CSS pad so the 404-style radiance bloom can sit outside the chip box. */
 export const CHIP_BLOOM_CSS = 22;
 export const TRIANGLE_HEIGHT_RATIO = 1;
 export const HERO_CANVAS_MAX_CSS = 720;
-const MIN_SIM_HEIGHT = 360;
 const LED_RADIUS_TO_TRIANGLE_HEIGHT = 0.0236;
 const LED_NORMAL_HALF_THICKNESS_TO_RADIUS = 2;
-const LED_TANGENT_GAP_PX = 1;
+/** Overlap neighboring capsules so the rim reads as a stroke, not beads. */
+const LED_TANGENT_GAP_PX = 0;
+/** Extra samples on quarter-circles vs a uniform perimeter walk. */
+const CORNER_ARC_WEIGHT = 2.25;
 
-export const LED_SDF_CROP_EXPANSION_PX = 2;
-export const LED_EMITTER_MESH_EXPANSION_PX = 1;
+export const LED_SDF_CROP_EXPANSION_PX = 3;
+export const LED_EMITTER_MESH_EXPANSION_PX = 2.5;
 export const NOISE_ROTATION_START_SECONDS = 10;
 export const BRIGHTNESS_MIN_HOVER_MULTIPLIER = 4;
 export const BRIGHTNESS_MIN_HOVER_SMOOTHING = 0.2;
@@ -118,8 +125,13 @@ export const HOVER_RGB_TINT_DEFAULTS: HoverRgbTintSettings = {
   edgeOverlap: 1,
 };
 
-export function simulationFloorFactor(cssHeight: number) {
-  return Math.max(1, MIN_SIM_HEIGHT / Math.max(1, cssHeight));
+/**
+ * Chip sim space is CSS pixels. The 404 hex floors a tall canvas to 360px
+ * so the crawl has room; this rim is ~80px tall and that upscale fought DPR
+ * (uniforms in sim px, canvas in device px → 1× stretch on retina).
+ */
+export function simulationFloorFactor(_cssHeight: number) {
+  return 1;
 }
 
 interface LedPosition {
@@ -383,27 +395,31 @@ function sampleRoundedRect(
       len: arc,
     },
   ];
-  const perimeter = segments.reduce((sum, segment) => sum + segment.len, 0);
+  const weightOf = (segment: (typeof segments)[number]) =>
+    segment.kind === "arc" ? segment.len * CORNER_ARC_WEIGHT : segment.len;
+  const weightTotal = segments.reduce(
+    (sum, segment) => sum + weightOf(segment),
+    0,
+  );
   const sites: LedPosition[] = [];
-  if (perimeter <= 0 || count <= 0) return sites;
+  if (weightTotal <= 0 || count <= 0) return sites;
   for (let i = 0; i < count; i++) {
-    let remaining = ((i + 0.5) / count) * perimeter;
+    let remaining = ((i + 0.5) / count) * weightTotal;
     for (const segment of segments) {
-      if (
-        remaining > segment.len &&
-        segment !== segments[segments.length - 1]
-      ) {
-        remaining -= segment.len;
+      const weight = weightOf(segment);
+      if (remaining > weight && segment !== segments[segments.length - 1]) {
+        remaining -= weight;
         continue;
       }
+      const along = weight > 0 ? (remaining / weight) * segment.len : 0;
       if (segment.kind === "line") {
         sites.push({
-          x: segment.x0 + segment.dx * remaining,
-          y: segment.y0 + segment.dy * remaining,
+          x: segment.x0 + segment.dx * along,
+          y: segment.y0 + segment.dy * along,
           angle: Math.atan2(segment.dy, segment.dx),
         });
       } else {
-        const t = segment.len > 0 ? remaining / segment.len : 0;
+        const t = segment.len > 0 ? along / segment.len : 0;
         const angle = segment.a0 + segment.sweep * t;
         sites.push({
           x: segment.cx + Math.cos(angle) * segment.r,

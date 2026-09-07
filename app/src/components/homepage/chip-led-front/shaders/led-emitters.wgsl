@@ -1,7 +1,9 @@
 struct Config {
-  resolution: vec2f,
+  // xy = CSS resolution (layout / uniforms). z = devicePixelRatio. w unused.
+  resolution: vec4f,
   tunables: vec4f,
   triangle: vec4f,
+  // x = outer crop (CSS px), y = fillet, z = capsule half-length, w = capsule radius.
   led_clip: vec4f,
 };
 struct Led {
@@ -22,7 +24,7 @@ struct VSOut {
 
 @vertex fn vs_main(in: VSIn) -> VSOut {
   var out: VSOut;
-  let clip = (in.position / cfg.resolution) * vec2f(2.0, -2.0) + vec2f(-1.0, 1.0);
+  let clip = (in.position / cfg.resolution.xy) * vec2f(2.0, -2.0) + vec2f(-1.0, 1.0);
   out.pos = vec4f(clip, 0.0, 1.0);
   out.led_index = in.led_index;
   return out;
@@ -39,25 +41,50 @@ fn sdf_rounded_box(
   return length(max(q, vec2f(0.0))) + min(max(q.x, q.y), 0.0) - radius;
 }
 
+fn sd_oriented_capsule(p: vec2f, center: vec2f, half_len: f32, radius: f32, angle: f32) -> f32 {
+  let c = cos(angle);
+  let s = sin(angle);
+  let dlt = p - center;
+  let local = vec2f(c * dlt.x + s * dlt.y, -s * dlt.x + c * dlt.y);
+  let qx = local.x - clamp(local.x, -half_len, half_len);
+  return length(vec2f(qx, local.y)) - radius;
+}
+
 @fragment fn fs_main(in: VSOut) -> @location(0) vec4f {
-  let pixel = in.pos.xy;
+  let dpr = max(cfg.resolution.z, 1.0);
+  // Framebuffer is CSS × DPR; SDF / LED layout stay in CSS pixels.
+  let pixel = in.pos.xy / dpr;
   let hex_dist = sdf_rounded_box(
     pixel,
     cfg.triangle.xy,
     cfg.triangle.zw,
     cfg.led_clip.y,
   );
-  // Positive expansion reveals emitter pixels outside the chip rect.
-  if (hex_dist - cfg.led_clip.x > 0.0) {
+  // ~1 device pixel of AA in CSS space so the hard rim isn't a staircase.
+  let aa = max(0.45, 1.0 / dpr);
+  let outer = cfg.led_clip.x;
+  let box_alpha = 1.0 - smoothstep(outer - aa, outer + aa, hex_dist);
+  if (box_alpha <= 0.001) {
     discard;
   }
 
   let raw_index = u32(max(round(in.led_index), 0.0));
   let i = min(raw_index, arrayLength(&leds) - 1u);
-  let n01 = clamp(leds[i].pos_brightness.z, 0.0, 1.0);
+  let led = leds[i];
+  let n01 = clamp(led.pos_brightness.z, 0.0, 1.0);
   let intensity = mix(cfg.tunables.y, cfg.tunables.z, n01);
-  let emit = leds[i].color.rgb * cfg.tunables.x * intensity;
-  // Alpha (the LED SDF) is masked off by the pipeline writeMask (0x7 = RGB only) — the fullscreen
-  // prepass owns the SDF — so the led_dist that used to go here is never written. Skip computing it.
+  var emit = led.color.rgb * cfg.tunables.x * intensity;
+  let half_len = max(cfg.led_clip.z, 0.0);
+  let radius = max(cfg.led_clip.w, 0.35);
+  let cap = sd_oriented_capsule(
+    pixel,
+    led.pos_brightness.xy,
+    half_len,
+    radius,
+    led.pos_brightness.w,
+  );
+  let cap_alpha = 1.0 - smoothstep(-aa, aa, cap);
+  // writeMask is RGB-only — fade the colour, not alpha.
+  emit *= box_alpha * max(cap_alpha, 0.0);
   return vec4f(emit, 0.0);
 }

@@ -91,7 +91,7 @@ export function createRenderer(options: RendererOptions) {
     }
     gpu = nextGpu;
     canvasSurface = surface(gpu, options.canvas, {
-      dpr: [1, 2],
+      dpr: [1, 3],
       alphaMode: "premultiplied",
       clearColor: [0, 0, 0, 0],
     });
