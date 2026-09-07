@@ -24,8 +24,8 @@ export function Hero() {
           <span>humans + agents</span>
         </h1>
         <p className="max-w-sm text-center text-sm font-light leading-relaxed text-neutral-400 sm:max-w-none sm:text-base">
-          Instantly <span className="text-primary">serve markdown</span> from any
-          GitHub branch as modern, agent-ready docs, with AI chat, MCP, and
+          Instantly <span className="text-primary">serve markdown</span> from
+          any GitHub branch as modern, agent-ready docs, with AI chat, MCP, and
           llms.txt.
         </p>
       </div>
