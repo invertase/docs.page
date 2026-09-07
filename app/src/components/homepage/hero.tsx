@@ -13,10 +13,10 @@ import { UTM_KEYS } from "@/lib/utm";
 
 export function Hero() {
   return (
-    <div className="mx-auto flex w-full max-w-xl flex-col items-center justify-center gap-6 px-2 pt-12 pb-32 sm:px-0 sm:pt-16 sm:pb-44">
+    <div className="mx-auto flex w-full max-w-xl flex-col items-center justify-center gap-8 px-2 pt-12 pb-32 sm:px-0 sm:pt-16 sm:pb-44">
       {/* Title block keeps the hero section rhythm (space-y-6 / sm:space-y-8).
           The two CTA-adjacent gaps — subtext → tabs, and chip → Get started —
-          share `gap-6` so they stay equal at every width. */}
+          share `gap-8` so they stay equal at every width. */}
       <div className="flex flex-col items-center space-y-6 sm:space-y-8">
         <Eyebrow />
         <h1 className="flex flex-col items-center justify-center text-center font-heading text-4xl sm:text-5xl md:text-6xl">
@@ -34,13 +34,13 @@ export function Hero() {
           A single column at every width, so there is no `sm:flex-row` to undo
           the stack any more.
 
-          gap-6 matches the hero stack's gap above this group, so the space
+          gap-8 matches the hero stack's gap above this group, so the space
           under the subtext and the space above Get started stay the same.
 
           w-full below `sm` so the chip still spans the hero column and shrinks
           its snippet instead of pushing past the gutter; sm:w-auto puts the
           group back to content width. */}
-      <div className="flex w-full flex-col items-center gap-6 sm:w-auto">
+      <div className="flex w-full flex-col items-center gap-8 sm:w-auto">
         <Terminal />
         <Button
           asChild
