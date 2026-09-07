@@ -164,10 +164,11 @@ export function stepCrawl(
   deployTarget: number,
   reduceMotion: boolean,
 ): { brightness: Float32Array; color: Srgb; deploy: number } {
-  const firstFrame = state.lastFrameTime === undefined;
+  const lastFrameTime = state.lastFrameTime;
+  const firstFrame = lastFrameTime === undefined;
   const frameDelta = firstFrame
     ? 0
-    : Math.max(0, Math.min(time - state.lastFrameTime, MAX_FRAME_DELTA));
+    : Math.max(0, Math.min(time - lastFrameTime, MAX_FRAME_DELTA));
   state.lastFrameTime = time;
 
   state.deploy = smoothExp(
