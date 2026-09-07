@@ -26,9 +26,11 @@ const periwinkleGlow = [
   "0 0 1.35em rgba(83, 104, 189, 0.16)",
 ].join(", ");
 
+/** `--four` is the Lexend 4 height so the square canvas letterbox can collapse. */
 const SLOT_STYLE = {
   "--slot": SLOT,
   "--canvas": CANVAS,
+  "--four": FOUR_FONT_SIZE,
 } as CSSProperties;
 
 /** Stack above the hex canvas so its transparent box cannot darken the glyphs. */
@@ -104,7 +106,7 @@ export function NotFoundTriangleLed() {
       <LockupFour style={fourStyle} />
       <canvas
         ref={canvasRef}
-        className="relative z-0 block shrink-0 touch-none -mx-[calc(var(--canvas)*0.18)]"
+        className="relative z-0 -my-[calc((var(--canvas)-var(--four))/2)] block shrink-0 touch-none -mx-[calc(var(--canvas)*0.18)]"
         style={{ width: "var(--canvas)", height: "var(--canvas)" }}
         data-vgpu="triangle-led-front createRenderer LEDS_PER_EDGE DIRECT_TRIANGLE_INTENSITY_SCALE"
       />

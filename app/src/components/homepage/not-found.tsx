@@ -34,7 +34,7 @@ export function SiteNotFoundPage() {
         <div className="relative z-10 mx-auto flex min-h-svh w-full min-w-0 max-w-8xl flex-col px-0 font-mono md:px-4">
           <div className="flex min-h-svh flex-1 flex-col md:border-x">
             <Header />
-            <main className="flex flex-1 flex-col items-center justify-start px-6 pt-8 pb-16 text-center [--not-found-title:2.25rem] sm:[--not-found-title:3rem] md:[--not-found-title:3.75rem]">
+            <main className="flex flex-1 flex-col items-center justify-start overflow-hidden px-6 pt-8 pb-16 text-center [--not-found-title:2.25rem] sm:[--not-found-title:3rem] md:[--not-found-title:3.75rem]">
               <NotFoundTriangleLed />
               <h1 className="mt-0 font-heading font-light text-[length:var(--not-found-title)]">
                 Page Not Found
