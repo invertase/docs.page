@@ -4,7 +4,7 @@ import {
   RiFileCopyLine,
 } from "@remixicon/react";
 import Link from "next/link";
-import { Fragment, useState } from "react";
+import { Fragment, useRef, useState } from "react";
 import { ChipLedRim } from "@/components/homepage/chip-led-rim/chip-led-rim";
 import { Button } from "@/components/ui/button";
 import { useCopy } from "@/hooks/use-copy";
@@ -205,8 +205,17 @@ function Terminal() {
 function Chip({ snippet }: { snippet: HeroSnippet }) {
   const { copied, copy } = useCopy(snippet.text);
   const [held, setHeld] = useState(false);
+  // Pointerdown copies so the 2s tick starts on press (404 hold analogue, and
+  // pointer-only automation that never synthesizes `click`). Click still
+  // covers keyboard activation. The latch keeps the beacon to one fire.
+  const copyLatch = useRef(false);
 
   const handleCopy = () => {
+    if (copyLatch.current) return;
+    copyLatch.current = true;
+    window.setTimeout(() => {
+      copyLatch.current = false;
+    }, 400);
     copy();
     // Both tabs are tracked, because a copy makes no request of its own and so
     // is invisible otherwise — there is no funnel an untracked one shows up in.
@@ -214,11 +223,16 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
     trackPromptCopy(snippet.id);
   };
 
+  const rimActive = held || copied;
+
   return (
-    <div className="group relative flex w-full min-w-0 items-center gap-2 rounded-xl border border-transparent bg-periwinkle-950 px-3 py-2.5 sm:w-auto sm:px-4">
+    <div
+      className="group relative flex w-full min-w-0 items-center gap-2 rounded-xl border border-transparent bg-periwinkle-950 px-3 py-2.5 sm:w-auto sm:px-4"
+      data-chip-rim={rimActive ? "periwinkle" : "honey"}
+    >
       {/* Honey LED rim; periwinkle while copy is held or the copied tick shows.
           Replaces the flat `border-primary` so the chip matches the 404 hex. */}
-      <ChipLedRim active={held || copied} />
+      <ChipLedRim active={rimActive} />
       <div className="relative z-10 flex min-w-0 max-w-64 flex-1 items-center gap-2 overflow-x-auto opacity-75 transition-opacity group-hover:opacity-100 sm:max-w-72 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {snippet.prefix && (
           <span className="shrink-0 text-neutral-500">{snippet.prefix}</span>
@@ -235,6 +249,7 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
         onPointerDown={(event) => {
           if (!event.isPrimary) return;
           setHeld(true);
+          handleCopy();
         }}
         onPointerUp={() => setHeld(false)}
         onPointerCancel={() => setHeld(false)}
