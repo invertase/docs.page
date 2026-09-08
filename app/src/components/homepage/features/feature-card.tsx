@@ -18,6 +18,8 @@ type FeatureCardProps = PropsWithChildren<{
   index: number;
   /** Shared feature-stage backdrop behind the right-panel visual. */
   stage?: boolean;
+  /** Defined left copy panel (periwinkle fill + left border). */
+  copyPanel?: boolean;
 }>;
 
 export function FeatureCard({
@@ -26,6 +28,7 @@ export function FeatureCard({
   link,
   index,
   stage,
+  copyPanel,
   children,
 }: FeatureCardProps) {
   return (
@@ -42,7 +45,14 @@ export function FeatureCard({
         <div className="mx-auto flex flex-col max-w-8xl space-y-8">
           <div className="px-6 pt-8 lg:pl-26 lg:pr-0"></div>
           <div className="mt-8 lg:mt-0 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,2.5fr)_minmax(0,3.5fr)] lg:gap-0">
-            <div className="flex flex-col gap-4 px-6 space-y-6 lg:mt-12 lg:px-20">
+            <div
+              className={cn(
+                "flex flex-col gap-4 space-y-6 px-6 lg:px-20",
+                copyPanel
+                  ? "h-full justify-center border-l border-periwinkle-500 bg-periwinkle-500/10 py-8 lg:py-12"
+                  : "lg:mt-12",
+              )}
+            >
               <h4 className="text-2xl font-extralight font-heading text-neutral-300 lg:text-3xl">
                 {title}
               </h4>
