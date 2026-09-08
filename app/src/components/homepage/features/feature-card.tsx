@@ -59,15 +59,13 @@ export function FeatureCard({
         className={cn(
           PAPER_SECTION_SHELL_CLASS,
           "bg-black",
-          stage
-            ? "grid grid-cols-1 lg:grid-cols-[minmax(0,2.5fr)_minmax(0,3.5fr)]"
-            : "pb-20 lg:pb-40",
+          !stage && "pb-20 lg:pb-40",
         )}
         style={{ clipPath: paperCornerClipPath() }}
       >
         <PaperCorner />
         {stage ? (
-          <>
+          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,2.5fr)_minmax(0,3.5fr)]">
             <div className="flex flex-col gap-4 space-y-6 px-6 pt-8 pb-16 lg:px-20 lg:pt-28 lg:pb-40">
               {copy}
             </div>
@@ -78,7 +76,7 @@ export function FeatureCard({
                 </div>
               </FeatureStage>
             </div>
-          </>
+          </div>
         ) : (
           <div className="mx-auto flex flex-col max-w-8xl space-y-8">
             <div className="px-6 pt-8 lg:pl-26 lg:pr-0"></div>
