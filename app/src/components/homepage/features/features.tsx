@@ -5,13 +5,18 @@ import { type PropsWithChildren, useEffect, useRef } from "react";
 import { features } from "./data";
 import { FeatureCard } from "./feature-card";
 
-function FeatureMedia({ children }: PropsWithChildren) {
+function FeatureMedia({
+  children,
+  glow = true,
+}: PropsWithChildren<{ glow?: boolean }>) {
   return (
     <div className="relative w-full">
-      <div
-        className="pointer-events-none absolute left-1/2 top-1/2 -z-10 aspect-5/3 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-full bg-periwinkle-400/25 blur-3xl"
-        aria-hidden
-      />
+      {glow ? (
+        <div
+          className="pointer-events-none absolute left-1/2 top-1/2 -z-10 aspect-5/3 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-full bg-periwinkle-400/25 blur-3xl"
+          aria-hidden
+        />
+      ) : null}
       {children}
     </div>
   );
@@ -114,8 +119,9 @@ export function Features({ children }: PropsWithChildren) {
             title={feature.title}
             description={feature.description}
             link={feature.link}
+            dotField={feature.titleText === "Agent-ready"}
           >
-            <FeatureMedia>
+            <FeatureMedia glow={feature.titleText !== "Agent-ready"}>
               {feature.video ? (
                 <video
                   src={feature.video}

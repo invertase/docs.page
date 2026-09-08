@@ -9,12 +9,15 @@ import {
   PaperCorner,
   paperCornerClipPath,
 } from "../paper-corner";
+import { FeatureDotField } from "./feature-dot-field";
 
 type FeatureCardProps = PropsWithChildren<{
   title: React.ReactNode;
   description: string;
   link: string;
   index: number;
+  /** Unkey-style periwinkle lattice + honey trail behind the visual. */
+  dotField?: boolean;
 }>;
 
 export function FeatureCard({
@@ -22,6 +25,7 @@ export function FeatureCard({
   description,
   link,
   index,
+  dotField,
   children,
 }: FeatureCardProps) {
   return (
@@ -56,8 +60,19 @@ export function FeatureCard({
                 </Button>
               </div>
             </div>
-            <div className="relative flex items-center justify-center px-6 pb-8 lg:pr-20 lg:px-0 lg:pb-0">
-              {children}
+            <div
+              className={cn(
+                "relative flex items-center justify-center px-6 pb-8 lg:pr-20 lg:px-0 lg:pb-0",
+                dotField &&
+                  "overflow-hidden px-8 pb-10 lg:px-12 lg:py-12 lg:pr-24",
+              )}
+            >
+              {dotField ? <FeatureDotField /> : null}
+              {dotField ? (
+                <div className="relative z-1 w-full">{children}</div>
+              ) : (
+                children
+              )}
             </div>
           </div>
         </div>

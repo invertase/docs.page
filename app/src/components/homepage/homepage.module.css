@@ -72,7 +72,7 @@
       circle,
       color-mix(
         in srgb,
-        var(--homepage-dot-color, white) 35%,
+        var(--homepage-dot-color, white) var(--homepage-dot-mix, 35%),
         transparent
       ) var(--homepage-dot-r),
       transparent var(--homepage-dot-r)
