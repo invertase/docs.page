@@ -110,7 +110,7 @@ const HUMANS_SNIPPET =
   SNIPPETS.find((snippet) => snippet.id === "terminal") ?? SNIPPETS[0];
 
 const SNIPPET_LINE =
-  "flex items-center gap-2 whitespace-nowrap leading-6 text-sm sm:text-base";
+  "flex w-max items-center gap-2 whitespace-nowrap leading-6 text-sm sm:text-base";
 
 const PROMPT_COPY_ENDPOINT = "/api/track/prompt-copy";
 
@@ -260,7 +260,7 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
         <div
           ref={snippetRef}
           className={cn(
-            "min-w-0 flex-1 overflow-x-clip opacity-75 transition-opacity group-hover:opacity-100",
+            "min-w-0 flex-1 overflow-x-auto overscroll-x-contain touch-pan-x opacity-75 transition-opacity group-hover:opacity-100 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
             overflowing &&
               "[mask-image:linear-gradient(to_right,black_0%,black_calc(100%-1.25rem),transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,black_0%,black_calc(100%-1.25rem),transparent_100%)]",
           )}
