@@ -56,7 +56,7 @@ const jsonLd = {
   ],
 };
 
-export function Homepage() {
+export function Homepage({ utmQuery }: { utmQuery: string }) {
   return (
     <>
       <Head>
@@ -111,11 +111,11 @@ export function Homepage() {
               style={{ backgroundImage: `url(${hexagon.src})` }}
             />
             <Header />
-            <Hero />
+            <Hero utmQuery={utmQuery} />
             <Preview />
             <Features>
               <Explore />
-              <Footer />
+              <Footer utmQuery={utmQuery} />
             </Features>
           </div>
         </div>
