@@ -1,0 +1,3 @@
+# Live page logs are local. Keep the schema specimen.
+*.json
+!example.json
