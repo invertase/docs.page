@@ -6,7 +6,7 @@ Finish every Scan on the whole page. Classify each instance: violation, skip, or
 
 - **Scan:** acronyms (2–5 capital letters)
 - **Finding if:** unexplained on first mention
-- **Skip if:** the expansion already appears on the page; established API or format names (*PDF*, *HTTP*)
+- **Skip if:** the expansion already appears on the page; established API, protocol, format, or interface names (*PDF*, *HTTP*, *CLI*, *URL*)
 
 ### anthropomorphism
 
