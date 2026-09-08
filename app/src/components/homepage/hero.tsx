@@ -113,22 +113,12 @@ const SNIPPET_LINE =
   "flex w-max items-center gap-2 whitespace-nowrap leading-6 text-sm sm:text-base";
 
 /**
- * Per-glyph delay so a tab swap stays in the ~500ms cadence.
- * Short humans land slower (readable); long agents hit the floor so they
- * finish in the same ballpark instead of crawling.
+ * Same per-glyph pace on both tabs — the humans rate from
+ * `clamp(round(520 / n), 6, 28)` when n is the humans command (23).
+ * Agents is longer, so it takes longer; we do not speed it up.
  */
-const TYPE_TARGET_MS = 520;
-const TYPE_MIN_MS = 6;
-const TYPE_MAX_MS = 28;
+const TYPE_GLYPH_MS = 23;
 const TYPE_CLEAR_MS = 70;
-
-function typeCharIntervalMs(length: number) {
-  const n = Math.max(length, 1);
-  return Math.min(
-    TYPE_MAX_MS,
-    Math.max(TYPE_MIN_MS, Math.round(TYPE_TARGET_MS / n)),
-  );
-}
 
 const PROMPT_COPY_ENDPOINT = "/api/track/prompt-copy";
 
@@ -274,7 +264,6 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
     setTypedPrefix(null);
     setTypedText("");
 
-    const stepMs = typeCharIntervalMs(snippet.text.length);
     let i = 0;
     let tick: number | undefined;
     const start = window.setTimeout(() => {
@@ -289,7 +278,7 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
           setTyping(false);
           setFillDimmed(false);
         }
-      }, stepMs);
+      }, TYPE_GLYPH_MS);
     }, TYPE_CLEAR_MS);
 
     return () => {
