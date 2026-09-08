@@ -1,0 +1,1299 @@
+{
+  "skill_name": "check-docs",
+  "kind": "worker",
+  "prompt": "You are check-docs worker `{check}`.\nRead the page and skills/check-docs/checks/{check}.md.\nDo not edit. Do not read other checks. Do not write the log.\nFinish every Scan on the whole page. Classify each instance: violation, skip, or clean.\nReturn JSON only with check, scans, and findings.",
+  "evals": [
+    {
+      "id": "person-and-voice.we-lets-i.hit",
+      "check": "person-and-voice",
+      "scan": "we-lets-i",
+      "expect": "hit",
+      "evidence_contains": "Let's add",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nLet's add a repository.\n"
+    },
+    {
+      "id": "person-and-voice.we-lets-i.skip",
+      "check": "person-and-voice",
+      "scan": "we-lets-i",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nSupport hours: we reply within one business day.\n"
+    },
+    {
+      "id": "person-and-voice.mixed-person.hit",
+      "check": "person-and-voice",
+      "scan": "mixed-person",
+      "expect": "hit",
+      "evidence_contains": "your own",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nTeams who host docs can connect a repo.\n\nUse your own GitHub token in that same paragraph? Teams who host docs use your own token.\n"
+    },
+    {
+      "id": "person-and-voice.mixed-person.skip",
+      "check": "person-and-voice",
+      "scan": "mixed-person",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\ndocs.page serves the markdown you push.\n"
+    },
+    {
+      "id": "person-and-voice.active-voice.hit",
+      "check": "person-and-voice",
+      "scan": "active-voice",
+      "expect": "hit",
+      "evidence_contains": "is sent",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nAn acknowledgment is sent after you save.\n"
+    },
+    {
+      "id": "person-and-voice.active-voice.skip",
+      "check": "person-and-voice",
+      "scan": "active-voice",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nThe file is saved.\n"
+    },
+    {
+      "id": "person-and-voice.who-you-is.hit",
+      "check": "person-and-voice",
+      "scan": "who-you-is",
+      "expect": "hit",
+      "evidence_contains": "Click",
+      "page": "---\ntitle: Get started\ndescription: Introduction to the product.\n---\n\nClick **Connect** to continue.\n"
+    },
+    {
+      "id": "person-and-voice.who-you-is.skip",
+      "check": "person-and-voice",
+      "scan": "who-you-is",
+      "expect": "skip",
+      "page": "---\ntitle: Architecture\ndescription: How docs.page serves a GitHub repository.\n---\n\ndocs.page maps a GitHub tree to a site.\n"
+    },
+    {
+      "id": "procedures.unnumbered-sequence.hit",
+      "check": "procedures",
+      "scan": "unnumbered-sequence",
+      "expect": "hit",
+      "evidence_contains": "Install the CLI",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nInstall the CLI.\n\nCreate a `docs.json` file.\n\nPush the branch.\n"
+    },
+    {
+      "id": "procedures.unnumbered-sequence.skip",
+      "check": "procedures",
+      "scan": "unnumbered-sequence",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n<Steps>\n<Step title=\"Install\">Run the CLI.</Step>\n<Step title=\"Preview\">Open the URL.</Step>\n</Steps>\n"
+    },
+    {
+      "id": "procedures.lettered-substeps.hit",
+      "check": "procedures",
+      "scan": "lettered-substeps",
+      "expect": "hit",
+      "evidence_contains": "a.",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n1. Open settings.\n   a. Choose a theme.\n   b. Save.\n"
+    },
+    {
+      "id": "procedures.procedure-intro.hit",
+      "check": "procedures",
+      "scan": "procedure-intro",
+      "expect": "hit",
+      "evidence_contains": "To customize the buttons:",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nTo customize the buttons:\n\n1. Open **Settings**.\n2. Choose a theme.\n"
+    },
+    {
+      "id": "procedures.procedure-intro.skip",
+      "check": "procedures",
+      "scan": "procedure-intro",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nCustomize the buttons:\n\n1. Open **Settings**.\n2. Choose a theme.\n"
+    },
+    {
+      "id": "procedures.one-action.hit",
+      "check": "procedures",
+      "scan": "one-action",
+      "expect": "hit",
+      "evidence_contains": "Install the CLI and open",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n1. Install the CLI and open the preview URL.\n"
+    },
+    {
+      "id": "procedures.one-action.skip",
+      "check": "procedures",
+      "scan": "one-action",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n1. Choose **File > New**.\n"
+    },
+    {
+      "id": "procedures.one-step-list.hit",
+      "check": "procedures",
+      "scan": "one-step-list",
+      "expect": "hit",
+      "evidence_contains": "Click **Save**",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n1. Click **Save**.\n"
+    },
+    {
+      "id": "procedures.one-step-list.skip",
+      "check": "procedures",
+      "scan": "one-step-list",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nClick **Save**.\n"
+    },
+    {
+      "id": "procedures.optional-label.hit",
+      "check": "procedures",
+      "scan": "optional-label",
+      "expect": "hit",
+      "evidence_contains": "(Optional)",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n1. Install the CLI.\n2. (Optional) Pin the version.\n"
+    },
+    {
+      "id": "procedures.optional-label.skip",
+      "check": "procedures",
+      "scan": "optional-label",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n1. Install the CLI.\n2. Optional: Pin the version.\n"
+    },
+    {
+      "id": "procedures.parallel-verbs.hit",
+      "check": "procedures",
+      "scan": "parallel-verbs",
+      "expect": "hit",
+      "evidence_contains": "Configuring",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n1. Install the CLI.\n2. Configuring the preview.\n"
+    },
+    {
+      "id": "procedures.parallel-verbs.skip",
+      "check": "procedures",
+      "scan": "parallel-verbs",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n1. Install the CLI.\n"
+    },
+    {
+      "id": "procedures.step-order.hit",
+      "check": "procedures",
+      "scan": "step-order",
+      "expect": "hit",
+      "evidence_contains": "In the dashboard, click",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n1. In the dashboard, click **New**.\n"
+    },
+    {
+      "id": "procedures.step-order.skip",
+      "check": "procedures",
+      "scan": "step-order",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n1. Click **New**.\n"
+    },
+    {
+      "id": "headings.frontmatter.hit",
+      "check": "headings",
+      "scan": "frontmatter",
+      "expect": "hit",
+      "evidence_contains": "description",
+      "page": "---\ntitle: Preview locally\n---\n\nBody copy here.\n"
+    },
+    {
+      "id": "headings.frontmatter.skip",
+      "check": "headings",
+      "scan": "frontmatter",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nBody copy here.\n"
+    },
+    {
+      "id": "headings.hash-title.hit",
+      "check": "headings",
+      "scan": "hash-title",
+      "expect": "hit",
+      "evidence_contains": "# Preview locally",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n# Preview locally\n\nBody copy.\n"
+    },
+    {
+      "id": "headings.hash-title.skip",
+      "check": "headings",
+      "scan": "hash-title",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n## Install the CLI\n\nBody copy.\n"
+    },
+    {
+      "id": "headings.links-in-headings.hit",
+      "check": "headings",
+      "scan": "links-in-headings",
+      "expect": "hit",
+      "evidence_contains": "[CLI](/cli)",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n## See the [CLI](/cli)\n\nBody copy.\n"
+    },
+    {
+      "id": "headings.heading-levels.hit",
+      "check": "headings",
+      "scan": "heading-levels",
+      "expect": "hit",
+      "evidence_contains": "#### Nested too far",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n## Install\n\n#### Nested too far\n\nBody.\n"
+    },
+    {
+      "id": "headings.heading-levels.skip",
+      "check": "headings",
+      "scan": "heading-levels",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n## Install\n\n### Flags\n\nBody.\n"
+    },
+    {
+      "id": "headings.sentence-case.hit",
+      "check": "headings",
+      "scan": "sentence-case",
+      "expect": "hit",
+      "evidence_contains": "Install The CLI",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n## Install The CLI\n\nBody copy.\n"
+    },
+    {
+      "id": "headings.sentence-case.skip",
+      "check": "headings",
+      "scan": "sentence-case",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n## Install the CLI\n\nBody copy.\n"
+    },
+    {
+      "id": "headings.task-ing.hit",
+      "check": "headings",
+      "scan": "task-ing",
+      "expect": "hit",
+      "evidence_contains": "Creating a preview",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n## Creating a preview\n\nBody copy.\n"
+    },
+    {
+      "id": "headings.task-ing.skip",
+      "check": "headings",
+      "scan": "task-ing",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n## Create a preview\n\nBody copy.\n"
+    },
+    {
+      "id": "headings.code-in-heading.hit",
+      "check": "headings",
+      "scan": "code-in-heading",
+      "expect": "hit",
+      "evidence_contains": "`docs.json`",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n## `docs.json`\n\nBody copy.\n"
+    },
+    {
+      "id": "headings.code-in-heading.skip",
+      "check": "headings",
+      "scan": "code-in-heading",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n## The `docs.json` file\n\nBody copy.\n"
+    },
+    {
+      "id": "headings.optional-heading.hit",
+      "check": "headings",
+      "scan": "optional-heading",
+      "expect": "hit",
+      "evidence_contains": "(optional)",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n## Pin the version (optional)\n\nBody.\n"
+    },
+    {
+      "id": "headings.optional-heading.skip",
+      "check": "headings",
+      "scan": "optional-heading",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n## Optional: Pin the version\n\nBody.\n"
+    },
+    {
+      "id": "headings.following-sections.hit",
+      "check": "headings",
+      "scan": "following-sections",
+      "expect": "hit",
+      "evidence_contains": "The following sections",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nThe following sections explain install and preview.\n\n## Install\n\n## Preview\n"
+    },
+    {
+      "id": "headings.following-sections.skip",
+      "check": "headings",
+      "scan": "following-sections",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n## Install\n\nThis section covers flags only.\n"
+    },
+    {
+      "id": "headings.markdown-over-heading-tag.hit",
+      "check": "headings",
+      "scan": "markdown-over-heading-tag",
+      "expect": "hit",
+      "evidence_contains": "<Heading",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n<Heading as=\"h2\">Install the CLI</Heading>\n\nBody.\n"
+    },
+    {
+      "id": "headings.markdown-over-heading-tag.skip",
+      "check": "headings",
+      "scan": "markdown-over-heading-tag",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n<Accordion title=\"Flags\">\n<Heading as=\"h3\">Hidden</Heading>\n</Accordion>\n"
+    },
+    {
+      "id": "inline-formatting.code-font.hit",
+      "check": "inline-formatting",
+      "scan": "code-font",
+      "expect": "hit",
+      "evidence_contains": "docs.json",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nOpen docs.json in your editor.\n"
+    },
+    {
+      "id": "inline-formatting.code-font.skip",
+      "check": "inline-formatting",
+      "scan": "code-font",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nOpen the `docs.json` file in your editor.\n"
+    },
+    {
+      "id": "inline-formatting.ui-bold.hit",
+      "check": "inline-formatting",
+      "scan": "ui-bold",
+      "expect": "hit",
+      "evidence_contains": "Save",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nClick Save to continue.\n"
+    },
+    {
+      "id": "inline-formatting.ui-bold.skip",
+      "check": "inline-formatting",
+      "scan": "ui-bold",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nClick **Save** to continue.\n"
+    },
+    {
+      "id": "inline-formatting.ui-and-code.hit",
+      "check": "inline-formatting",
+      "scan": "ui-and-code",
+      "expect": "hit",
+      "evidence_contains": "debug",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nSet **debug** to true.\n"
+    },
+    {
+      "id": "inline-formatting.ui-and-code.skip",
+      "check": "inline-formatting",
+      "scan": "ui-and-code",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nSet **`debug`** to true.\n"
+    },
+    {
+      "id": "inline-formatting.sequential-menus.hit",
+      "check": "inline-formatting",
+      "scan": "sequential-menus",
+      "expect": "hit",
+      "evidence_contains": "File then New",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nOpen File then New.\n"
+    },
+    {
+      "id": "inline-formatting.sequential-menus.skip",
+      "check": "inline-formatting",
+      "scan": "sequential-menus",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nChoose **File > New**.\n"
+    },
+    {
+      "id": "inline-formatting.list-of-one.hit",
+      "check": "inline-formatting",
+      "scan": "list-of-one",
+      "expect": "hit",
+      "evidence_contains": "Only one item",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n- Only one item\n"
+    },
+    {
+      "id": "inline-formatting.list-of-one.skip",
+      "check": "inline-formatting",
+      "scan": "list-of-one",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nClick **Save**.\n"
+    },
+    {
+      "id": "inline-formatting.list-parallel.hit",
+      "check": "inline-formatting",
+      "scan": "list-parallel",
+      "expect": "hit",
+      "evidence_contains": "preview URL",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n- Installing the CLI.\n- preview URL\n"
+    },
+    {
+      "id": "inline-formatting.list-parallel.skip",
+      "check": "inline-formatting",
+      "scan": "list-parallel",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n- Install the CLI.\n- Open the preview URL.\n"
+    },
+    {
+      "id": "links.link-text.hit",
+      "check": "links",
+      "scan": "link-text",
+      "expect": "hit",
+      "evidence_contains": "click here",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nPlease [click here](https://example.com/docs).\n"
+    },
+    {
+      "id": "links.link-text.skip",
+      "check": "links",
+      "scan": "link-text",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nSee the [quickstart](https://example.com/docs).\n"
+    },
+    {
+      "id": "links.duplicate-destination.hit",
+      "check": "links",
+      "scan": "duplicate-destination",
+      "expect": "hit",
+      "evidence_contains": "https://example.com/docs",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nSee the [quickstart](https://example.com/docs).\n\nAlso open the [guide](https://example.com/docs).\n"
+    },
+    {
+      "id": "links.duplicate-destination.skip",
+      "check": "links",
+      "scan": "duplicate-destination",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nSee the [quickstart](https://example.com/docs).\n"
+    },
+    {
+      "id": "links.in-site-url.hit",
+      "check": "links",
+      "scan": "in-site-url",
+      "expect": "hit",
+      "evidence_contains": "https://docs.page/invertase/docs.page/components",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nRead [Components](https://docs.page/invertase/docs.page/components).\n"
+    },
+    {
+      "id": "links.in-site-url.skip",
+      "check": "links",
+      "scan": "in-site-url",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nThe product site is [docs.page](https://docs.page).\n"
+    },
+    {
+      "id": "links.hyphenated-compound.hit",
+      "check": "links",
+      "scan": "hyphenated-compound",
+      "expect": "hit",
+      "evidence_contains": "[pre](/pre)-release",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nUse the [pre](/pre)-release channel.\n"
+    },
+    {
+      "id": "links.punctuation-outside.hit",
+      "check": "links",
+      "scan": "punctuation-outside",
+      "expect": "hit",
+      "evidence_contains": "the quickstart.",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nSee [the quickstart.](https://example.com/docs)\n"
+    },
+    {
+      "id": "links.punctuation-outside.skip",
+      "check": "links",
+      "scan": "punctuation-outside",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nSee [the quickstart](https://example.com/docs).\n"
+    },
+    {
+      "id": "links.see-cross-ref.hit",
+      "check": "links",
+      "scan": "see-cross-ref",
+      "expect": "hit",
+      "evidence_contains": "on [this page]",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nSee the quickstart on [this page](/quickstart).\n"
+    },
+    {
+      "id": "links.see-cross-ref.skip",
+      "check": "links",
+      "scan": "see-cross-ref",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nFor more information, see [the quickstart](/quickstart).\n"
+    },
+    {
+      "id": "tone.idioms-slang.hit",
+      "check": "tone",
+      "scan": "idioms-slang",
+      "expect": "hit",
+      "evidence_contains": "infrastructure tax",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\ndocs.page ships without the infrastructure tax.\n"
+    },
+    {
+      "id": "tone.idioms-slang.skip",
+      "check": "tone",
+      "scan": "idioms-slang",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\ndocs.page serves markdown from GitHub.\n"
+    },
+    {
+      "id": "tone.padding.hit",
+      "check": "tone",
+      "scan": "padding",
+      "expect": "hit",
+      "evidence_contains": "Please note",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nPlease note that the CLI watches the branch.\n"
+    },
+    {
+      "id": "tone.pre-announcement.hit",
+      "check": "tone",
+      "scan": "pre-announcement",
+      "expect": "hit",
+      "evidence_contains": "coming soon",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nThe new preview is coming soon.\n"
+    },
+    {
+      "id": "tone.pre-announcement.skip",
+      "check": "tone",
+      "scan": "pre-announcement",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nVersion 2.1 (2026-09-01) adds a new preview flag.\n"
+    },
+    {
+      "id": "tone.repeated-opener.hit",
+      "check": "tone",
+      "scan": "repeated-opener",
+      "expect": "hit",
+      "evidence_contains": "You can",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nYou can install the CLI. You can preview locally. You can push a branch.\n"
+    },
+    {
+      "id": "tone.repeated-opener.skip",
+      "check": "tone",
+      "scan": "repeated-opener",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n1. Install the CLI.\n2. Preview locally.\n3. Push a branch.\n"
+    },
+    {
+      "id": "general-principles.unverifiable-claims.hit",
+      "check": "general-principles",
+      "scan": "unverifiable-claims",
+      "expect": "hit",
+      "evidence_contains": "instantly",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nThe live site refreshes instantly.\n"
+    },
+    {
+      "id": "general-principles.unverifiable-claims.skip",
+      "check": "general-principles",
+      "scan": "unverifiable-claims",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nThe API never returns a body on `204`.\n"
+    },
+    {
+      "id": "general-principles.should.hit",
+      "check": "general-principles",
+      "scan": "should",
+      "expect": "hit",
+      "evidence_contains": "should",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nThe value should be true.\n"
+    },
+    {
+      "id": "general-principles.should.skip",
+      "check": "general-principles",
+      "scan": "should",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nThe RFC says \"implementations should retry.\"\n"
+    },
+    {
+      "id": "general-principles.jargon.hit",
+      "check": "general-principles",
+      "scan": "jargon",
+      "expect": "hit",
+      "evidence_contains": "Shift left",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nShift left on your docs pipeline.\n"
+    },
+    {
+      "id": "general-principles.jargon.skip",
+      "check": "general-principles",
+      "scan": "jargon",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nShift left (find issues earlier in the workflow) on your docs pipeline.\n"
+    },
+    {
+      "id": "general-principles.inclusive.hit",
+      "check": "general-principles",
+      "scan": "inclusive",
+      "expect": "hit",
+      "evidence_contains": "sanity-check",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nRun a sanity-check on the config.\n"
+    },
+    {
+      "id": "general-principles.inclusive.skip",
+      "check": "general-principles",
+      "scan": "inclusive",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nThe API returns `dummy` (`placeholder value`).\n"
+    },
+    {
+      "id": "general-principles.third-party.hit",
+      "check": "general-principles",
+      "scan": "third-party",
+      "expect": "hit",
+      "evidence_contains": "not terrible",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nUnlike that other docs host, we are not terrible.\n"
+    },
+    {
+      "id": "general-principles.third-party.skip",
+      "check": "general-principles",
+      "scan": "third-party",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nGitHub serves the git objects; docs.page renders the markdown.\n"
+    },
+    {
+      "id": "language.acronyms.hit",
+      "check": "language",
+      "scan": "acronyms",
+      "expect": "hit",
+      "evidence_contains": "RBAC",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nEnable RBAC before you invite users.\n"
+    },
+    {
+      "id": "language.acronyms.skip",
+      "check": "language",
+      "scan": "acronyms",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nInstall the CLI, then preview.\n"
+    },
+    {
+      "id": "language.anthropomorphism.hit",
+      "check": "language",
+      "scan": "anthropomorphism",
+      "expect": "hit",
+      "evidence_contains": "wants",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nThe CLI wants a token.\n"
+    },
+    {
+      "id": "language.anthropomorphism.skip",
+      "check": "language",
+      "scan": "anthropomorphism",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nThe CLI prompts you for a token.\n"
+    },
+    {
+      "id": "language.articles.hit",
+      "check": "language",
+      "scan": "articles",
+      "expect": "hit",
+      "evidence_contains": "Create VM",
+      "page": "---\ntitle: Create VM\ndescription: How to create a virtual machine.\n---\n\n\n"
+    },
+    {
+      "id": "language.articles.skip",
+      "check": "language",
+      "scan": "articles",
+      "expect": "skip",
+      "page": "---\ntitle: Create a VM\ndescription: How to create a virtual machine.\n---\n\n\n"
+    },
+    {
+      "id": "language.present-tense.hit",
+      "check": "language",
+      "scan": "present-tense",
+      "expect": "hit",
+      "evidence_contains": "will send",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nThe server will send an acknowledgment.\n"
+    },
+    {
+      "id": "language.present-tense.skip",
+      "check": "language",
+      "scan": "present-tense",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nAfter you click **Save**, the server will show a URL.\n"
+    },
+    {
+      "id": "language.pronouns.hit",
+      "check": "language",
+      "scan": "pronouns",
+      "expect": "hit",
+      "evidence_contains": "This is required",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nDo this. This is required.\n"
+    },
+    {
+      "id": "language.pronouns.skip",
+      "check": "language",
+      "scan": "pronouns",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nSave the file. This file is required.\n"
+    },
+    {
+      "id": "language.code-possessive.hit",
+      "check": "language",
+      "scan": "code-possessive",
+      "expect": "hit",
+      "evidence_contains": "`settings.h`'s",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nEdit `settings.h`'s timeout.\n"
+    },
+    {
+      "id": "language.code-possessive.skip",
+      "check": "language",
+      "scan": "code-possessive",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nEdit the `settings.h` file timeout.\n"
+    },
+    {
+      "id": "language.invented-contractions.hit",
+      "check": "language",
+      "scan": "invented-contractions",
+      "expect": "hit",
+      "evidence_contains": "mightn't've",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nYou mightn't've saved.\n"
+    },
+    {
+      "id": "language.invented-contractions.skip",
+      "check": "language",
+      "scan": "invented-contractions",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nYou don't have to save.\n"
+    },
+    {
+      "id": "language.reference-voice.hit",
+      "check": "language",
+      "scan": "reference-voice",
+      "expect": "hit",
+      "evidence_contains": "Create a task id",
+      "page": "---\ntitle: API reference\ndescription: Task properties.\n---\n\n<Property name=\"id\" type=\"string\">Create a task id.</Property>\n"
+    },
+    {
+      "id": "language.reference-voice.skip",
+      "check": "language",
+      "scan": "reference-voice",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nCreate a task in the dashboard.\n"
+    },
+    {
+      "id": "sentence-structure.condition-first.hit",
+      "check": "sentence-structure",
+      "scan": "condition-first",
+      "expect": "hit",
+      "evidence_contains": "Click **Delete** if",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nClick **Delete** if you want to delete.\n"
+    },
+    {
+      "id": "sentence-structure.condition-first.skip",
+      "check": "sentence-structure",
+      "scan": "condition-first",
+      "expect": "skip",
+      "page": "---\ntitle: Architecture\ndescription: How docs.page serves a GitHub repository.\n---\n\ndocs.page maps a GitHub tree to a site.\n"
+    },
+    {
+      "id": "sentence-structure.svo.hit",
+      "check": "sentence-structure",
+      "scan": "svo",
+      "expect": "hit",
+      "evidence_contains": "After the GitHub App",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nAfter the GitHub App has been installed on the organization that owns the repository, an acknowledgment is available.\n"
+    },
+    {
+      "id": "sentence-structure.svo.skip",
+      "check": "sentence-structure",
+      "scan": "svo",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nThe server sends an acknowledgment.\n"
+    },
+    {
+      "id": "punctuation.list-colon.hit",
+      "check": "punctuation",
+      "scan": "list-colon",
+      "expect": "hit",
+      "evidence_contains": "Themes:",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nThemes:\n\n- Light\n- Dark\n"
+    },
+    {
+      "id": "punctuation.list-colon.skip",
+      "check": "punctuation",
+      "scan": "list-colon",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nThe CLI supports two themes:\n\n- Light\n- Dark\n"
+    },
+    {
+      "id": "punctuation.serial-comma.hit",
+      "check": "punctuation",
+      "scan": "serial-comma",
+      "expect": "hit",
+      "evidence_contains": "red, green and blue",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nThe preview flow is red, green and blue.\n"
+    },
+    {
+      "id": "punctuation.serial-comma.skip",
+      "check": "punctuation",
+      "scan": "serial-comma",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nThe preview flow is red and blue.\n"
+    },
+    {
+      "id": "punctuation.fake-em-dash.hit",
+      "check": "punctuation",
+      "scan": "fake-em-dash",
+      "expect": "hit",
+      "evidence_contains": "-- like this --",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nUse a long aside -- like this -- between clauses.\n"
+    },
+    {
+      "id": "punctuation.fake-em-dash.skip",
+      "check": "punctuation",
+      "scan": "fake-em-dash",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nPass `--watch` to the CLI.\n"
+    },
+    {
+      "id": "punctuation.commas.hit",
+      "check": "punctuation",
+      "scan": "commas",
+      "expect": "hit",
+      "evidence_contains": "If you already pushed",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nIf you already pushed a branch click **Preview**.\n"
+    },
+    {
+      "id": "punctuation.commas.skip",
+      "check": "punctuation",
+      "scan": "commas",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nIf you already pushed a branch, click **Preview**.\n"
+    },
+    {
+      "id": "punctuation.ellipsis.hit",
+      "check": "punctuation",
+      "scan": "ellipsis",
+      "expect": "hit",
+      "evidence_contains": "prints\u2026",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nThe CLI prints\u2026\n"
+    },
+    {
+      "id": "punctuation.ellipsis.skip",
+      "check": "punctuation",
+      "scan": "ellipsis",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nThe sample omits extra fields.\n"
+    },
+    {
+      "id": "punctuation.slashes.hit",
+      "check": "punctuation",
+      "scan": "slashes",
+      "expect": "hit",
+      "evidence_contains": "and/or",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nUse npm and/or bun.\n"
+    },
+    {
+      "id": "punctuation.slashes.skip",
+      "check": "punctuation",
+      "scan": "slashes",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nSet `Content-Type` to `application/json`.\n"
+    },
+    {
+      "id": "text-formatting.bold.hit",
+      "check": "text-formatting",
+      "scan": "bold",
+      "expect": "hit",
+      "evidence_contains": "**docs-as-code platform**",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\ndocs.page is a **docs-as-code platform**.\n"
+    },
+    {
+      "id": "text-formatting.bold.skip",
+      "check": "text-formatting",
+      "scan": "bold",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nClick **Save**.\n"
+    },
+    {
+      "id": "text-formatting.italics.hit",
+      "check": "text-formatting",
+      "scan": "italics",
+      "expect": "hit",
+      "evidence_contains": "*must*",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nYou *must* click save. You *really* should. You *cannot* skip it.\n"
+    },
+    {
+      "id": "text-formatting.italics.skip",
+      "check": "text-formatting",
+      "scan": "italics",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nA *repository* is a GitHub project.\n"
+    },
+    {
+      "id": "text-formatting.ampersand.hit",
+      "check": "text-formatting",
+      "scan": "ampersand",
+      "expect": "hit",
+      "evidence_contains": "& Bun",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nInstall Node & Bun.\n"
+    },
+    {
+      "id": "text-formatting.ampersand.skip",
+      "check": "text-formatting",
+      "scan": "ampersand",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nClick **Save & exit**.\n"
+    },
+    {
+      "id": "text-formatting.all-caps-prose.hit",
+      "check": "text-formatting",
+      "scan": "all-caps-prose",
+      "expect": "hit",
+      "evidence_contains": "DO NOT",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nDO NOT skip this step.\n"
+    },
+    {
+      "id": "text-formatting.all-caps-prose.skip",
+      "check": "text-formatting",
+      "scan": "all-caps-prose",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nSet `PROJECT_ID` in the sample.\n"
+    },
+    {
+      "id": "formatting.callout-type.hit",
+      "check": "formatting",
+      "scan": "callout-type",
+      "expect": "hit",
+      "evidence_contains": "<Info>",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n<Info>\nYou must set a token or the CLI exits.\n</Info>\n"
+    },
+    {
+      "id": "formatting.callout-type.skip",
+      "check": "formatting",
+      "scan": "callout-type",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n<Info>\nThe preview watches the branch you already pushed.\n</Info>\n"
+    },
+    {
+      "id": "formatting.stacked-callouts.hit",
+      "check": "formatting",
+      "scan": "stacked-callouts",
+      "expect": "hit",
+      "evidence_contains": "<Warning>",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n<Info>First note.</Info>\n\n<Warning>Second note.</Warning>\n"
+    },
+    {
+      "id": "formatting.stacked-callouts.skip",
+      "check": "formatting",
+      "scan": "stacked-callouts",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n<Info>The preview watches the branch.</Info>\n"
+    },
+    {
+      "id": "formatting.dates-times.hit",
+      "check": "formatting",
+      "scan": "dates-times",
+      "expect": "hit",
+      "evidence_contains": "08/26/26",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nShip by 08/26/26.\n"
+    },
+    {
+      "id": "formatting.dates-times.skip",
+      "check": "formatting",
+      "scan": "dates-times",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nShip by 2026-08-26.\n"
+    },
+    {
+      "id": "formatting.numbers-units.hit",
+      "check": "formatting",
+      "scan": "numbers-units",
+      "expect": "hit",
+      "evidence_contains": "10GB",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nWait 5 minutes. The cache is 10GB.\n"
+    },
+    {
+      "id": "formatting.numbers-units.skip",
+      "check": "formatting",
+      "scan": "numbers-units",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nWait five minutes. The cache is 10 GB.\n"
+    },
+    {
+      "id": "formatting.tables.hit",
+      "check": "formatting",
+      "scan": "tables",
+      "expect": "hit",
+      "evidence_contains": "| Flag | Meaning |",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n| Flag | Meaning |\n| --- | --- |\n| `--watch` | Reload |\n"
+    },
+    {
+      "id": "formatting.tables.skip",
+      "check": "formatting",
+      "scan": "tables",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nThe CLI flags are:\n\n| Flag | Meaning |\n| --- | --- |\n| `--watch` | Reload |\n"
+    },
+    {
+      "id": "formatting.figures.hit",
+      "check": "formatting",
+      "scan": "figures",
+      "expect": "hit",
+      "evidence_contains": "https://cdn.example.com/shot.png",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n![terminal](https://cdn.example.com/shot.png)\n"
+    },
+    {
+      "id": "formatting.figures.skip",
+      "check": "formatting",
+      "scan": "figures",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n![Docs.page logo](/assets/logo.svg)\n"
+    },
+    {
+      "id": "formatting.footnotes-math-video.hit",
+      "check": "formatting",
+      "scan": "footnotes-math-video",
+      "expect": "hit",
+      "evidence_contains": "[^1]",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nSee the note.[^1]\n\n[^1]: Hidden.\n"
+    },
+    {
+      "id": "formatting.footnotes-math-video.skip",
+      "check": "formatting",
+      "scan": "footnotes-math-video",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n<YouTube id=\"abc\" />\n"
+    },
+    {
+      "id": "computer-interfaces.language-tag.hit",
+      "check": "computer-interfaces",
+      "scan": "language-tag",
+      "expect": "hit",
+      "evidence_contains": "npx docs.page",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n```\nnpx docs.page\n```\n"
+    },
+    {
+      "id": "computer-interfaces.language-tag.skip",
+      "check": "computer-interfaces",
+      "scan": "language-tag",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n```bash\nnpx docs.page\n```\n"
+    },
+    {
+      "id": "computer-interfaces.fence-intro.hit",
+      "check": "computer-interfaces",
+      "scan": "fence-intro",
+      "expect": "hit",
+      "evidence_contains": "npx docs.page",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n```bash\nnpx docs.page\n```\n"
+    },
+    {
+      "id": "computer-interfaces.fence-intro.skip",
+      "check": "computer-interfaces",
+      "scan": "fence-intro",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nRun the docs.page CLI.\n\n```bash\nnpx docs.page\n```\n"
+    },
+    {
+      "id": "computer-interfaces.placeholders.hit",
+      "check": "computer-interfaces",
+      "scan": "placeholders",
+      "expect": "hit",
+      "evidence_contains": "foo",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n```bash\ncurl https://foo.example/xxx\n```\n"
+    },
+    {
+      "id": "computer-interfaces.placeholders.skip",
+      "check": "computer-interfaces",
+      "scan": "placeholders",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nClone `{owner}/{repo}` and set `EMAIL_ADDRESS`.\n"
+    },
+    {
+      "id": "computer-interfaces.run-the-following.hit",
+      "check": "computer-interfaces",
+      "scan": "run-the-following",
+      "expect": "hit",
+      "evidence_contains": "Run the following command",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nRun the following command.\n\n```bash\nnpx docs.page\n```\n"
+    },
+    {
+      "id": "computer-interfaces.run-the-following.skip",
+      "check": "computer-interfaces",
+      "scan": "run-the-following",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nStart a local preview.\n\n```bash\nnpx docs.page\n```\n"
+    },
+    {
+      "id": "computer-interfaces.omit-in-fence.hit",
+      "check": "computer-interfaces",
+      "scan": "omit-in-fence",
+      "expect": "hit",
+      "evidence_contains": "...",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n```js\nexport default {\n  name: 'acme',\n  ...\n}\n```\n"
+    },
+    {
+      "id": "computer-interfaces.omit-in-fence.skip",
+      "check": "computer-interfaces",
+      "scan": "omit-in-fence",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n```js\nexport default { name: 'acme' }\n```\n"
+    },
+    {
+      "id": "computer-interfaces.click-enter-select.hit",
+      "check": "computer-interfaces",
+      "scan": "click-enter-select",
+      "expect": "hit",
+      "evidence_contains": "Click the **Name** field",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nClick the **Name** field.\n"
+    },
+    {
+      "id": "computer-interfaces.click-enter-select.skip",
+      "check": "computer-interfaces",
+      "scan": "click-enter-select",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nClick **Save**.\n"
+    },
+    {
+      "id": "names.product-spelling.hit",
+      "check": "names",
+      "scan": "product-spelling",
+      "expect": "hit",
+      "evidence_contains": "DocsPage",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nDocsPage serves markdown.\n"
+    },
+    {
+      "id": "names.product-spelling.skip",
+      "check": "names",
+      "scan": "product-spelling",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\ndocs.page serves markdown.\n"
+    },
+    {
+      "id": "names.filenames.hit",
+      "check": "names",
+      "scan": "filenames",
+      "expect": "hit",
+      "evidence_contains": "`docs.json`",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nEdit `docs.json`.\n"
+    },
+    {
+      "id": "names.filenames.skip",
+      "check": "names",
+      "scan": "filenames",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nEdit the `docs.json` file.\n"
+    },
+    {
+      "id": "names.example-hosts.hit",
+      "check": "names",
+      "scan": "example-hosts",
+      "expect": "hit",
+      "evidence_contains": "ada@gmail.com",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nEmail ada@gmail.com for access.\n"
+    },
+    {
+      "id": "names.example-hosts.skip",
+      "check": "names",
+      "scan": "example-hosts",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nSet `EMAIL_ADDRESS` in the sample.\n"
+    },
+    {
+      "id": "word-list.padding-words.hit",
+      "check": "word-list",
+      "scan": "padding-words",
+      "expect": "hit",
+      "evidence_contains": "utilize",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nPlease utilize the CLI.\n"
+    },
+    {
+      "id": "word-list.padding-words.skip",
+      "check": "word-list",
+      "scan": "padding-words",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nUse the CLI.\n"
+    },
+    {
+      "id": "word-list.position-and-time.hit",
+      "check": "word-list",
+      "scan": "position-and-time",
+      "expect": "hit",
+      "evidence_contains": "Once you push",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nOnce you push, the site updates.\n"
+    },
+    {
+      "id": "word-list.position-and-time.skip",
+      "check": "word-list",
+      "scan": "position-and-time",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nFor more information, see [the CLI](/cli).\n"
+    },
+    {
+      "id": "word-list.slang.hit",
+      "check": "word-list",
+      "scan": "slang",
+      "expect": "hit",
+      "evidence_contains": "tl;dr",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\ntl;dr: push a branch.\n"
+    },
+    {
+      "id": "word-list.slang.skip",
+      "check": "word-list",
+      "scan": "slang",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nThe UI label is `tl;dr`.\n"
+    },
+    {
+      "id": "accessibility-and-global.alt.hit",
+      "check": "accessibility-and-global",
+      "scan": "alt",
+      "expect": "hit",
+      "evidence_contains": "screenshot",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n![screenshot](/assets/shot.png)\n"
+    },
+    {
+      "id": "accessibility-and-global.alt.skip",
+      "check": "accessibility-and-global",
+      "scan": "alt",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n<Icon name=\"github\" />\n"
+    },
+    {
+      "id": "accessibility-and-global.position-words.hit",
+      "check": "accessibility-and-global",
+      "scan": "position-words",
+      "expect": "hit",
+      "evidence_contains": "below",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nThe table below lists flags.\n"
+    },
+    {
+      "id": "accessibility-and-global.position-words.skip",
+      "check": "accessibility-and-global",
+      "scan": "position-words",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nClick **Left** in the sidebar.\n"
+    },
+    {
+      "id": "accessibility-and-global.sentence-length.hit",
+      "check": "accessibility-and-global",
+      "scan": "sentence-length",
+      "expect": "hit",
+      "evidence_contains": "After you have installed",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nAfter you have installed the GitHub App on the organization that owns the repository you want to publish and you have confirmed the webhook arrived you can open the preview URL in a browser window.\n"
+    },
+    {
+      "id": "accessibility-and-global.sentence-length.skip",
+      "check": "accessibility-and-global",
+      "scan": "sentence-length",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nOpen the preview URL.\n"
+    },
+    {
+      "id": "accessibility-and-global.uncommon-words.hit",
+      "check": "accessibility-and-global",
+      "scan": "uncommon-words",
+      "expect": "hit",
+      "evidence_contains": "bespoke",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nUse a bespoke token.\n"
+    },
+    {
+      "id": "accessibility-and-global.uncommon-words.skip",
+      "check": "accessibility-and-global",
+      "scan": "uncommon-words",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nUse a token.\n"
+    },
+    {
+      "id": "accessibility-and-global.walls-of-text.hit",
+      "check": "accessibility-and-global",
+      "scan": "walls-of-text",
+      "expect": "hit",
+      "evidence_contains": "Five paragraphs",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nOne.\n\nTwo.\n\nThree.\n\nFour.\n\nFive paragraphs with no heading.\n"
+    },
+    {
+      "id": "accessibility-and-global.walls-of-text.skip",
+      "check": "accessibility-and-global",
+      "scan": "walls-of-text",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\n<Accordion title=\"Flags\">\nOne.\n\nTwo.\n\nThree.\n\nFour.\n\nFive.\n</Accordion>\n"
+    },
+    {
+      "id": "accessibility-and-global.global.hit",
+      "check": "accessibility-and-global",
+      "scan": "global",
+      "expect": "hit",
+      "evidence_contains": "Christmas",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nShip before Christmas.\n"
+    },
+    {
+      "id": "accessibility-and-global.global.skip",
+      "check": "accessibility-and-global",
+      "scan": "global",
+      "expect": "skip",
+      "page": "---\ntitle: Preview locally\ndescription: Run a local preview of your docs.\n---\n\nReleased 2026-12-25.\n"
+    }
+  ]
+}
