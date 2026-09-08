@@ -276,7 +276,7 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
 
     const stepMs = typeCharIntervalMs(snippet.text.length);
     let i = 0;
-    let tick: ReturnType<typeof setInterval> | undefined;
+    let tick: number | undefined;
     const start = window.setTimeout(() => {
       if (typeGen.current !== gen) return;
       if (snippet.prefix) setTypedPrefix(snippet.prefix);
