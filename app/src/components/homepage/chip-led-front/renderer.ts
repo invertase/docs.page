@@ -5,7 +5,7 @@ import { brushState } from "./sim-sizing";
 
 interface RendererOptions {
   readonly canvas: HTMLCanvasElement;
-  /** Same hold signal the 404 hex uses (`rgbDeployActive` → deploy lerp). */
+  /** Tab colour: true = periwinkle (agents), false = honey (humans). */
   readonly rgbDeployActive?: () => boolean;
 }
 

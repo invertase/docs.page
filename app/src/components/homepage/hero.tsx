@@ -206,7 +206,6 @@ function Terminal() {
  */
 function Chip({ snippet }: { snippet: HeroSnippet }) {
   const { copied, copy } = useCopy(snippet.text);
-  const [held, setHeld] = useState(false);
   const scrollRefs = useRef<Partial<Record<SnippetId, HTMLDivElement | null>>>(
     {},
   );
@@ -215,7 +214,6 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
   const tabCycle = useRef(0);
 
   useLayoutEffect(() => {
-    setHeld(false);
     const node = scrollRefs.current[snippet.id];
     if (!node) return;
     node.scrollLeft = 0;
@@ -263,15 +261,14 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
     trackPromptCopy(snippet.id);
   };
 
-  const rimActive = held || copied;
+  const rimActive = snippet.id === "agent";
 
   return (
     <div
       className="group relative mx-auto inline-flex w-max max-w-full overflow-visible items-center justify-start gap-2 rounded-xl border border-transparent bg-periwinkle-950 px-3 py-2.5 sm:px-4"
       data-chip-rim={rimActive ? "periwinkle" : "honey"}
     >
-      {/* Honey LED rim; periwinkle while copy is held or the copied tick shows.
-          Replaces the flat `border-primary` so the chip matches the 404 hex. */}
+      {/* Honey on For humans, periwinkle on For agents. Copy tick is UI-only. */}
       <ChipLedRim active={rimActive} />
       {/* Interior fill dip only — behind the snippet, inside the pill, so the
           page and LED rim stay put. 150ms up / 150ms down with the tab swap. */}
@@ -333,12 +330,8 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
           onClick={handleCopy}
           onPointerDown={(event) => {
             if (!event.isPrimary) return;
-            setHeld(true);
             handleCopy();
           }}
-          onPointerUp={() => setHeld(false)}
-          onPointerCancel={() => setHeld(false)}
-          onPointerLeave={() => setHeld(false)}
         >
           {copied ? (
             <RiCheckLine className="text-green-500" />

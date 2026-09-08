@@ -43,6 +43,7 @@ function applyCanvasPad(
 /**
  * Official vgpu LED rim around the homepage copy chip — #542 triangle-led-front
  * with the occluder/emitter path swapped from hex to the chip’s rounded-xl.
+ * `active` is the agents tab (periwinkle); humans is honey.
  */
 export function ChipLedRim({ active }: { active: boolean }) {
   const hostRef = useRef<HTMLDivElement>(null);
