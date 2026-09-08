@@ -4,7 +4,7 @@ import {
   RiFileCopyLine,
 } from "@remixicon/react";
 import Link from "next/link";
-import { Fragment, useRef, useState } from "react";
+import { Fragment, useLayoutEffect, useRef, useState } from "react";
 import { ChipLedRim } from "@/components/homepage/chip-led-rim/chip-led-rim";
 import { Button } from "@/components/ui/button";
 import { useCopy } from "@/hooks/use-copy";
@@ -106,6 +106,12 @@ const SNIPPETS = [
   },
 ] as const satisfies readonly HeroSnippet[];
 
+const HUMANS_SNIPPET =
+  SNIPPETS.find((snippet) => snippet.id === "terminal") ?? SNIPPETS[0];
+
+const SNIPPET_LINE =
+  "flex items-center gap-2 whitespace-nowrap leading-6 text-sm sm:text-base";
+
 const PROMPT_COPY_ENDPOINT = "/api/track/prompt-copy";
 
 /**
@@ -187,10 +193,8 @@ function Terminal() {
         ))}
       </div>
       {/* Keyed by tab so the copied tick and periwinkle rim never carry over
-          to a snippet the visitor has not copied. Chip keeps the `py-2.5`
-          that matches Get started's height. Width is max-content of the
-          command + icon + padding (`w-max`); `max-w-full` scrolls the
-          snippet on a narrow viewport instead of growing the pill. */}
+          to a snippet the visitor has not copied. Width is always the humans
+          command hug; the agents prompt fades inside that box. */}
       <Chip key={active.id} snippet={active} />
     </div>
   );
@@ -204,6 +208,20 @@ function Terminal() {
 function Chip({ snippet }: { snippet: HeroSnippet }) {
   const { copied, copy } = useCopy(snippet.text);
   const [held, setHeld] = useState(false);
+  const snippetRef = useRef<HTMLDivElement>(null);
+  const [overflowing, setOverflowing] = useState(false);
+
+  useLayoutEffect(() => {
+    const node = snippetRef.current;
+    if (!node) return;
+    const update = () => {
+      setOverflowing(node.scrollWidth - node.clientWidth > 1);
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
   // Pointerdown copies so the 2s tick starts on press (404 hold analogue, and
   // pointer-only automation that never synthesizes `click`). Click still
   // covers keyboard activation. The latch keeps the beacon to one fire.
@@ -232,34 +250,69 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
       {/* Honey LED rim; periwinkle while copy is held or the copied tick shows.
           Replaces the flat `border-primary` so the chip matches the 404 hex. */}
       <ChipLedRim active={rimActive} />
-      <div className="relative z-10 flex min-w-0 items-center gap-2 overflow-x-auto opacity-75 transition-opacity group-hover:opacity-100 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {snippet.prefix && (
-          <span className="shrink-0 text-neutral-500">{snippet.prefix}</span>
-        )}
-        <span className="whitespace-nowrap text-sm text-neutral-200 sm:text-base">
-          {snippet.text}
-        </span>
+      {/* Invisible humans command + icon spacer. This is the only in-flow
+          content, so both tabs hug this width and never grow with the page. */}
+      <div className="invisible flex items-center gap-2" aria-hidden>
+        <SnippetLine snippet={HUMANS_SNIPPET} />
+        <span className="size-7 shrink-0" />
       </div>
-      <Button
-        variant="ghost"
-        size="icon-sm"
-        className="relative z-10 shrink-0"
-        onClick={handleCopy}
-        onPointerDown={(event) => {
-          if (!event.isPrimary) return;
-          setHeld(true);
-          handleCopy();
-        }}
-        onPointerUp={() => setHeld(false)}
-        onPointerCancel={() => setHeld(false)}
-        onPointerLeave={() => setHeld(false)}
-      >
-        {copied ? (
-          <RiCheckLine className="text-green-500" />
-        ) : (
-          <RiFileCopyLine />
-        )}
-      </Button>
+      <div className="absolute inset-0 z-10 flex items-center gap-2 px-3 py-2.5 sm:px-4">
+        <div
+          ref={snippetRef}
+          className={cn(
+            "min-w-0 flex-1 overflow-x-clip opacity-75 transition-opacity group-hover:opacity-100",
+            overflowing &&
+              "[mask-image:linear-gradient(to_right,black_0%,black_calc(100%-1.25rem),transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,black_0%,black_calc(100%-1.25rem),transparent_100%)]",
+          )}
+        >
+          <SnippetLine
+            snippet={snippet}
+            prefixClassName="text-neutral-500"
+            textClassName="text-neutral-200"
+          />
+        </div>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          className="shrink-0"
+          onClick={handleCopy}
+          onPointerDown={(event) => {
+            if (!event.isPrimary) return;
+            setHeld(true);
+            handleCopy();
+          }}
+          onPointerUp={() => setHeld(false)}
+          onPointerCancel={() => setHeld(false)}
+          onPointerLeave={() => setHeld(false)}
+        >
+          {copied ? (
+            <RiCheckLine className="text-green-500" />
+          ) : (
+            <RiFileCopyLine />
+          )}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function SnippetLine({
+  snippet,
+  prefixClassName,
+  textClassName,
+}: {
+  snippet: HeroSnippet;
+  prefixClassName?: string;
+  textClassName?: string;
+}) {
+  return (
+    <div className={SNIPPET_LINE}>
+      {snippet.prefix ? (
+        <span className={cn("shrink-0", prefixClassName)}>
+          {snippet.prefix}
+        </span>
+      ) : null}
+      <span className={textClassName}>{snippet.text}</span>
     </div>
   );
 }
