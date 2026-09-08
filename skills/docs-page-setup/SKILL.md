@@ -1,84 +1,54 @@
 ---
 name: docs-page-setup
-description: Sets up a docs.page documentation site in a repository — scaffold docs.json and docs/, push to a public GitHub repo, and verify the live site renders. Use when adding docs.page to a project for the first time.
+description: Sets up a docs.page documentation site in a repository — scaffold docs.json and docs/, push to a public GitHub repo, and verify the live site renders. Use when adding docs.page to a project for the first time, or when asked to add documentation hosting, a docs site, or docs.page to a repo.
 ---
 
 # Set up docs.page in a repository
 
-Source of truth: [Quickstart](https://use.docs.page/quickstart). Follow the steps below in order; do not add steps of your own.
+Read <https://use.docs.page/quickstart.md> and follow it — the canonical walkthrough, served as raw markdown. Do not restate or pre-empt its steps. This file covers only what that page cannot: running the setup with no terminal to type into.
 
-## Before you begin
+## Scaffold non-interactively
 
-- A GitHub account
-- Git installed locally
-- Node.js, to run the CLI via `npx`
-
-## 1. Scaffold the docs files
-
-Run this at the project root (an empty folder or an existing repository):
+`init` prompts only when stdin and stdout are both TTYs. Headless it never prompts — it silently takes defaults, including naming the site after the current directory. Pass every value explicitly:
 
 ```bash
-npx @docs.page/cli init
+npx @docs.page/cli init --name "<Project Name>" --docs
 ```
+
+- `--name` — written to `docs.json`. Omit it and the site is named after the folder.
+- `--docs` / `--no-docs` — create or skip the starter pages. `--no-docs` writes `docs.json` alone.
+- `--overwrite` — mandatory, not optional, when `docs.json` or `docs/` already exist. Without it `init` exits 1.
 
 On Windows PowerShell, quote the package name: `npx '@docs.page/cli' init`.
 
-The CLI asks for a project name and whether to create starter pages. Accept the defaults unless a `docs/` directory already exists that must be kept. See [CLI](https://use.docs.page/features/cli) for install options and flags.
+## Edit docs.json
 
-When `init` finishes, the project contains:
+Do not write `docs.json` keys from memory, and do not validate the file against `https://docs.page/schema.json`. That schema marks 17 top-level fields `required` even though all 17 have defaults, and requires neither `name` nor `description` — so a correct minimal config is reported invalid. Look up keys, types, and defaults in <https://use.docs.page/reference/docs-json.md>.
 
-```text
-docs.json
-docs/
-  index.mdx
-  next-steps.mdx
-```
-
-- `docs.json` — site configuration (name, description, sidebar, and theme)
-- `docs/index.mdx` — the home page, served at `/`
-- `docs/next-steps.mdx` — a second page, served at `/next-steps`
-
-Open `docs/index.mdx` and change the title or add a sentence, so there is something identifiable to confirm on the live site.
-
-## 2. Push to a public GitHub repository
-
-docs.page only hosts **public** repositories. From the project directory:
+## Verify before pushing
 
 ```bash
-git add docs.json docs/
-git commit -m "Add docs.page site"
-git push
+npx @docs.page/cli check --external-links off
 ```
 
-If the repository is private, docs.page returns an error and does not serve the documentation. Make the repository public before opening the live URL.
+Expect `No documentation issues found.` and exit 0. This still checks internal links, assets, MDX rendering, and metadata — the deterministic, network-free signal. Keep external links off: the starter pages `init` scaffolds ship three dead `use.docs.page` URLs, so a default `docs check` exits 1 on an untouched scaffold.
 
-## 3. Open the live site
+Leave external-link checking to CI. `External link returned 404` is actionable, but DNS failures, refused connections, and timeouts all print the same inconclusive `Unable to reach external link: fetch failed`.
 
-The site is live the instant the push completes:
+## Done means the live site renders
 
-```text
-https://docs.page/{owner}/{repo}
-```
+Setup is finished not when the files are written, but when all three hold:
 
-For the repository `https://github.com/acme/my-docs`, the live site is `https://docs.page/acme/my-docs`. Pushes to the default branch update this URL automatically, with no build step. See [Public GitHub hosting](https://use.docs.page/features/public-github-hosting) for how production URLs work.
+1. `docs.json` and `docs/` are committed and pushed to the repository's **default** branch.
+2. The repository is **public**.
+3. `https://docs.page/{owner}/{repo}` loads and shows the edit you made.
 
-## Editing docs.json
+## Failures
 
-Do not write `docs.json` keys from memory, and do not validate the file against `https://docs.page/schema.json`. That schema currently marks 17 top-level fields as `required` even though every one of them has a default, and it does not require `name` or `description` — so a correct minimal config is reported as invalid. Look up keys, types, and defaults in [docs.json reference](https://use.docs.page/reference/docs-json) instead.
-
-## Done means the site renders
-
-Setup is not finished when the files are written. It is finished when:
-
-1. `docs.json`, `docs/index.mdx`, and `docs/next-steps.mdx` are committed and pushed.
-2. The repository is public.
-3. `https://docs.page/{owner}/{repo}` loads and shows the change made to `docs/index.mdx` in step 1.
-
-If the URL errors, re-check that the repository is public and that the push landed on the default branch.
-
-## Next steps
-
-- [Write](https://use.docs.page/authoring/write) — structure pages, add code examples, use built-in components
-- [Organize](https://use.docs.page/authoring/organize) — order sidebar groups, tabs, and page links in `docs.json`
-- [Preview](https://use.docs.page/authoring/preview) — iterate on content locally before pushing
-- [Agent-ready docs](https://use.docs.page/ai-agents/overview) — llms.txt, MCP, and optional Ask AI
+| Message | Cause | Fix |
+| --- | --- | --- |
+| `docs/ already exists. Re-run with --overwrite to write starter docs files, or --no-docs to skip them.` | A `docs/` directory is already present | Re-run with `--overwrite` to add starter pages, or `--no-docs` to keep only your own |
+| `docs.json already exists. Re-run with --overwrite to replace it.` | Config already present | Re-run with `--overwrite`, or leave it and edit the existing file |
+| `Private repositories cannot be hosted on docs.page. The repository <owner>/<repo> is private.` | docs.page serves public repositories only | Make the repository public |
+| `No configuration file was found in the repository. To get started, create a docs.json file at the root of your repository.` | `docs.json` is in a subdirectory | Move it to the repository root; a nested path is never read |
+| Same message, with `docs.json` correctly at the root | The push landed on a non-default branch | Merge into the default branch, or view that branch at `https://docs.page/{owner}/{repo}~{branch}` |
