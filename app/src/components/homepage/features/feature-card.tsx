@@ -11,6 +11,15 @@ import {
 } from "../paper-corner";
 import { FeatureDotField } from "./feature-dot-field";
 
+/**
+ * Equal inset around staged media — same token on all four sides.
+ * Pair with the 1900×1080 aspect box so the visual fills the inner rectangle
+ * (no leftover column letterbox, no clip against the card).
+ */
+const STAGE_MEDIA_INSET_CLASS = "p-8 lg:p-12";
+/** Agent-ready capture is 1900×1080; keep the inner box matching so contain === cover. */
+const STAGE_MEDIA_ASPECT_CLASS = "aspect-[1900/1080]";
+
 type FeatureCardProps = PropsWithChildren<{
   title: React.ReactNode;
   description: string;
@@ -70,15 +79,30 @@ export function FeatureCard({
               <FeatureDotField />
             </div>
             <div className="relative grid min-h-0 grid-cols-1 lg:grid-cols-[minmax(0,2.5fr)_minmax(0,3.5fr)]">
-              <div className="flex flex-col justify-center gap-4 space-y-6 px-8 py-16 lg:px-12 lg:pl-32 lg:py-28">
+              {/*
+                L/R copy inset is unchanged. On desktop the copy is out of flow so
+                its py cannot stretch the row — height comes from media + equal inset.
+              */}
+              <div className="flex flex-col justify-center gap-4 space-y-6 px-8 py-16 lg:absolute lg:inset-y-0 lg:left-0 lg:z-1 lg:w-[calc(100%*2.5/6)] lg:px-12 lg:pl-32 lg:py-0">
                 {copy}
               </div>
-              <div className="relative flex min-h-0 items-center justify-center overflow-hidden border-l border-periwinkle-500 bg-periwinkle-500/10 lg:border-0 lg:bg-transparent">
+              <div className="relative min-h-0 overflow-hidden border-l border-periwinkle-500 bg-periwinkle-500/10 lg:col-start-2 lg:border-0 lg:bg-transparent">
                 <div className="lg:hidden">
                   <FeatureDotField />
                 </div>
-                <div className="relative z-1 flex size-full min-h-0 items-center justify-center p-8 lg:p-12 [&_img]:max-h-full [&_video]:max-h-full [&_video]:object-contain">
-                  {children}
+                <div
+                  className={cn("relative z-1 w-full", STAGE_MEDIA_INSET_CLASS)}
+                >
+                  <div
+                    className={cn(
+                      "relative w-full min-w-0",
+                      STAGE_MEDIA_ASPECT_CLASS,
+                      "[&_img]:absolute [&_img]:inset-0 [&_img]:size-full [&_img]:object-contain",
+                      "[&_video]:absolute [&_video]:inset-0 [&_video]:size-full [&_video]:object-contain",
+                    )}
+                  >
+                    {children}
+                  </div>
                 </div>
               </div>
             </div>
