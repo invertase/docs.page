@@ -9,7 +9,7 @@ import {
   PaperCorner,
   paperCornerClipPath,
 } from "../paper-corner";
-import { FeatureStage } from "./feature-dot-field";
+import { FeatureDotField } from "./feature-dot-field";
 
 type FeatureCardProps = PropsWithChildren<{
   title: React.ReactNode;
@@ -66,20 +66,20 @@ export function FeatureCard({
         <PaperCorner />
         {stage ? (
           <>
-            <div
-              aria-hidden
-              className="pointer-events-none absolute inset-y-0 right-0 hidden border-l border-periwinkle-500 bg-periwinkle-500/10 lg:block lg:left-[calc(100%*2.5/6)]"
-            />
+            <div className="pointer-events-none absolute inset-y-0 right-0 hidden overflow-hidden border-l border-periwinkle-500 bg-periwinkle-500/10 lg:block lg:left-[calc(100%*2.5/6)]">
+              <FeatureDotField />
+            </div>
             <div className="relative grid grid-cols-1 lg:grid-cols-[minmax(0,2.5fr)_minmax(0,3.5fr)]">
               <div className="flex flex-col gap-4 space-y-6 px-6 pt-8 pb-16 lg:px-20 lg:pt-28 lg:pb-40">
                 {copy}
               </div>
               <div className="relative flex items-center justify-center overflow-hidden border-l border-periwinkle-500 bg-periwinkle-500/10 lg:border-0 lg:bg-transparent">
-                <FeatureStage>
-                  <div className="px-6 py-8 lg:px-12 lg:py-12 lg:pr-20">
-                    {children}
-                  </div>
-                </FeatureStage>
+                <div className="lg:hidden">
+                  <FeatureDotField />
+                </div>
+                <div className="relative z-1 w-full px-6 py-8 lg:px-12 lg:py-12 lg:pr-20">
+                  {children}
+                </div>
               </div>
             </div>
           </>
