@@ -1,9 +1,9 @@
 {
-  "skill_name": "check-docs",
+  "skill_name": "review-doc",
   "evals": [
     {
       "id": 1,
-      "prompt": "use check-docs on page.mdx",
+      "prompt": "use review-doc on page.mdx",
       "expected_output": "A results table after the run, with planted writing issues called out as failing checks and no edits to the page.",
       "files": ["evals/files/planted-mechanical.mdx"],
       "assertions": [
@@ -19,7 +19,7 @@
     },
     {
       "id": 2,
-      "prompt": "use check-docs on page.mdx",
+      "prompt": "use review-doc on page.mdx",
       "expected_output": "A results table that does not treat docs.page idioms as violations and does not convert equivalent MDX forms.",
       "files": ["evals/files/skip-idioms.mdx"],
       "assertions": [
@@ -36,7 +36,7 @@
     },
     {
       "id": 3,
-      "prompt": "use check-docs on page.mdx and auto fix findings",
+      "prompt": "use review-doc on page.mdx and auto fix findings",
       "expected_output": "Results printed, then planted issues fixed on the page, with the Info callout left unchanged.",
       "files": ["evals/files/fix-all.mdx"],
       "assertions": [
@@ -50,7 +50,7 @@
     },
     {
       "id": 4,
-      "prompt": "use check-docs on page.mdx",
+      "prompt": "use review-doc on page.mdx",
       "expected_output": "One grouped finding for the overlapping click-here sentence, with conflicts named, and no edits.",
       "files": ["evals/files/conflicts.mdx"],
       "assertions": [
@@ -62,7 +62,7 @@
     },
     {
       "id": 5,
-      "prompt": "use check-docs on page.mdx then mute check tone and print the next run",
+      "prompt": "use review-doc on page.mdx then mute check tone and print the next run",
       "expected_output": "First run flags the idiom; after mute check tone, tone is muted and that instance does not come back as failing.",
       "files": ["evals/files/mute-check.mdx"],
       "assertions": [
@@ -74,7 +74,7 @@
     },
     {
       "id": 6,
-      "prompt": "use check-docs on page.mdx then review each: accept the links finding and reject the punctuation finding",
+      "prompt": "use review-doc on page.mdx then review each: accept the links finding and reject the punctuation finding",
       "expected_output": "click here is fixed; the missing serial comma remains; Info is not involved.",
       "files": ["evals/files/review-each.mdx"],
       "assertions": [

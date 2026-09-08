@@ -1,7 +1,7 @@
 {
-  "skill_name": "check-docs",
+  "skill_name": "review-doc",
   "kind": "worker",
-  "prompt": "You are check-docs worker `{check}`.\nRead the page and skills/check-docs/checks/{check}.md.\nDo not edit. Do not read other checks. Do not write the log.\nFinish every Scan on the whole page. Classify each instance: violation, skip, or clean.\nReturn JSON only with check, scans, and findings.",
+  "prompt": "You are review-doc worker `{check}`.\nRead the page and skills/review-doc/checks/{check}.md.\nDo not edit. Do not read other checks. Do not write the log.\nFinish every Scan on the whole page. Classify each instance: violation, skip, or clean.\nReturn JSON only with check, scans, and findings.",
   "evals": [
     {
       "id": "person-and-voice.we-lets-i.hit",

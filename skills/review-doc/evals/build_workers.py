@@ -641,11 +641,11 @@ def scan_ids_from_checks() -> dict[str, list[str]]:
 
 def main() -> None:
     data = {
-        "skill_name": "check-docs",
+        "skill_name": "review-doc",
         "kind": "worker",
         "prompt": (
-            "You are check-docs worker `{check}`.\n"
-            "Read the page and skills/check-docs/checks/{check}.md.\n"
+            "You are review-doc worker `{check}`.\n"
+            "Read the page and skills/review-doc/checks/{check}.md.\n"
             "Do not edit. Do not read other checks. Do not write the log.\n"
             "Finish every Scan on the whole page. Classify each instance: violation, skip, or clean.\n"
             "Return JSON only with check, scans, and findings."

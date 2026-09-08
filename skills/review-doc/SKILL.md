@@ -1,9 +1,9 @@
 ---
-name: check-docs
-description: Reviews a docs.page page against writing checks (failing, passing, muted) and loops until failing is 0. Use when the publisher names check-docs or asks to audit docs/*.mdx.
+name: review-doc
+description: Reviews a docs.page page against writing checks (failing, passing, muted) and loops until failing is 0. Use when the publisher names review-doc or review doc, or asks to review writing on a docs/*.mdx page. Not the docs check CLI (links, assets, render).
 ---
 
-# check-docs
+# review-doc
 
 The parent orchestrates. It does not scan unless the host cannot spawn subagents — then it runs one worker at a time. Each check in **Checks** is one worker.
 
@@ -50,7 +50,7 @@ Spawn **one subagent per check** in **Checks**, all in one parallel batch. On la
 Each worker prompt (`<skill>` is this skill directory):
 
 ```text
-You are check-docs worker `<id>`.
+You are review-doc worker `<id>`.
 Read the page <path> and <skill>/checks/<id>.md.
 Do not edit. Do not read other checks. Do not write the log.
 Obey Gotchas (no invented steps/audience/IA, no MDX conversion, no worse page, converted HTML is not a finding).
@@ -111,7 +111,7 @@ When `conflicts` is non-empty: `` `inline-formatting-1` (conflicts: `tone`) ``.
 
 ## Log
 
-Write `logs/<page-slug>.json` in loop step 2, before the print. Create `{ "skill": "check-docs", "page": "docs/index.mdx", "runs": [] }` if needed. Append a run matching the field shape in [logs/example.json](logs/example.json). `sourceRoot` and `projectRoot` are `.`. Do not edit completed runs. The only in-place update is `decision` / `feedback` while still `null`.
+Write `logs/<page-slug>.json` in loop step 2, before the print. Create `{ "skill": "review-doc", "page": "docs/index.mdx", "runs": [] }` if needed. Append a run matching the field shape in [logs/example.json](logs/example.json). `sourceRoot` and `projectRoot` are `.`. Do not edit completed runs. The only in-place update is `decision` / `feedback` while still `null`.
 
 Every live run must include `summary` and a `checks` array with every id in **Checks**. `findings` are the violation list (`id` is `<check>-n`; `check` is the check id; `conflicts` is an array of other check ids, `[]` when none). The example shows field shape, not a full check list.
 

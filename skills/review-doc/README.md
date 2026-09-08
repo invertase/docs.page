@@ -1,23 +1,23 @@
-# check-docs
+# review-doc
 
-A writing review for one docs.page page. Name a file under `docs/`, get results for 16 checks, then auto-fix or accept and reject each violation.
+A writing review for one docs.page page. Name a file under `docs/`, get results for 16 checks, then auto-fix or accept and reject each violation. This is not the `docs check` CLI command (broken links, assets, render).
 
 Paths are relative to the project root (`docs.json` lives there).
 
 ## Review one page
 
 ```text
-use check-docs on docs/features/components.mdx
+use review-doc on docs/features/components.mdx
 ```
 
 Apply every unmuted violation in the same request:
 
 ```text
-use check-docs on docs/index.mdx and auto fix findings
+use review-doc on docs/index.mdx and auto fix findings
 ```
 
 ```text
-use check-docs on docs/index.mdx
+use review-doc on docs/index.mdx
 fix all
 ```
 
@@ -26,11 +26,11 @@ fix all
 Reviews are one page at a time. When a page is clean (or you stop), start a new review on the next file:
 
 ```text
-use check-docs on docs/quickstart.mdx
+use review-doc on docs/quickstart.mdx
 ```
 
 ```text
-use check-docs on docs/authoring/write.mdx
+use review-doc on docs/authoring/write.mdx
 ```
 
 There is no folder-wide or glob run. Name each page you want reviewed.
