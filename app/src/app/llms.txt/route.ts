@@ -12,11 +12,11 @@ const LLMS_TXT = `# docs.page
 
 ## Agent surfaces
 Every site hosted on docs.page exposes machine-readable endpoints at a predictable per-repository pattern, where \`{owner}/{repo}\` is the backing GitHub repository:
-- \`https://docs.page/{owner}/{repo}/llms.txt\`: LLM-oriented index of the site's pages
-- \`https://docs.page/{owner}/{repo}/llms-full.txt\`: full concatenated Markdown of the site
-- \`https://docs.page/{owner}/{repo}/mcp\`: Model Context Protocol server (tools: read_doc_page, list_doc_files)
-- \`https://docs.page/{owner}/{repo}/search.json\`: search index
-- Append \`.md\` or \`.mdx\` to any documentation page URL to fetch its raw Markdown source
+- \`https://docs.page/{owner}/{repo}/llms.txt\`: LLM-oriented index of the site's pages — example: https://docs.page/invertase/docs.page/llms.txt
+- \`https://docs.page/{owner}/{repo}/llms-full.txt\`: full concatenated Markdown of the site — example: https://docs.page/invertase/docs.page/llms-full.txt
+- \`https://docs.page/{owner}/{repo}/mcp\`: Model Context Protocol server (tools: read_doc_page, list_doc_files) — example: https://docs.page/invertase/docs.page/mcp
+- \`https://docs.page/{owner}/{repo}/search.json\`: search index — example: https://docs.page/invertase/docs.page/search.json
+- Append \`.md\` or \`.mdx\` to any documentation page URL to fetch its raw Markdown source — example: https://docs.page/invertase/docs.page/quickstart.md
 `;
 
 export function GET() {
