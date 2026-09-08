@@ -211,6 +211,8 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
     {},
   );
   const [overflowing, setOverflowing] = useState(false);
+  const [fillDimmed, setFillDimmed] = useState(false);
+  const tabCycle = useRef(0);
 
   useLayoutEffect(() => {
     setHeld(false);
@@ -224,6 +226,24 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
     const observer = new ResizeObserver(update);
     observer.observe(node);
     return () => observer.disconnect();
+  }, [snippet.id]);
+
+  useLayoutEffect(() => {
+    void snippet.id;
+    if (tabCycle.current === 0) {
+      tabCycle.current = 1;
+      return;
+    }
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+    // Peak at 150ms so the 150ms ease-in/out dip matches the 300ms swap.
+    setFillDimmed(true);
+    const rest = window.setTimeout(() => setFillDimmed(false), 150);
+    return () => {
+      window.clearTimeout(rest);
+      setFillDimmed(false);
+    };
   }, [snippet.id]);
   // Pointerdown copies so the 2s tick starts on press (404 hold analogue, and
   // pointer-only automation that never synthesizes `click`). Click still
@@ -253,6 +273,16 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
       {/* Honey LED rim; periwinkle while copy is held or the copied tick shows.
           Replaces the flat `border-primary` so the chip matches the 404 hex. */}
       <ChipLedRim active={rimActive} />
+      {/* Interior fill dip only — behind the snippet, inside the pill, so the
+          page and LED rim stay put. 150ms up / 150ms down with the tab swap. */}
+      <div
+        aria-hidden
+        className={cn(
+          "pointer-events-none absolute inset-0 z-[1] rounded-[inherit] bg-black/25 motion-reduce:hidden",
+          "transition-opacity duration-150 ease-in-out",
+          fillDimmed ? "opacity-100" : "opacity-0",
+        )}
+      />
       {/* Invisible humans command + icon spacer. This is the only in-flow
           content, so both tabs hug this width and never grow with the page. */}
       <div className="invisible flex items-center gap-2" aria-hidden>
