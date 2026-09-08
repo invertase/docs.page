@@ -11,13 +11,13 @@ Fetch each linked page and follow it. This file is only the agent delta.
 
 ## First install
 
-Follow <https://use.docs.page/quickstart.md>. For non-interactive `init`, use flags from <https://use.docs.page/reference/cli.md#docs-init> instead of prompts; ask for `--name` if it isn't obvious, and do not `--overwrite` unless they confirm.
-
-`init` only writes files locally. Commit, then ask before pushing — only as a structured confirmation prompt if the host supports one. Otherwise ask the same question in chat and wait. Push to the default branch only if they approve. Do not offer a preview branch.
+Follow <https://use.docs.page/quickstart.md>. For non-interactive `init`, use flags from <https://use.docs.page/reference/cli.md#docs-init> instead of prompts; ask for `--name` if it isn't obvious, and do not `--overwrite` unless they confirm. `init` only writes files locally. Commit, then ask before pushing — only as a structured confirmation prompt if the host supports one. Otherwise ask the same question in chat and wait. Push to the default branch only if they approve. Do not offer a preview branch.
 
 Prompt: `Pushing to the default branch of this public repo publishes your docs immediately at https://docs.page/{owner}/{repo}. Push now?`
 
-After the push, wait until the default branch serves `docs.json` (retry if docs.page says the config is missing). Then open `https://docs.page/{owner}/{repo}` in the host IDE or default browser if the environment can open a URL. Paste it only if it cannot.
+If they decline `--overwrite` and only `docs/` exists, re-run with `--no-docs`: it writes `docs.json` alone and leaves their pages untouched. If `docs.json` itself exists, there is no way through — `init` fails with `docs.json already exists. Re-run with --overwrite to replace it.` and writes nothing.
+
+If they decline there, or there is no push, stop. Do not wait for `docs.json` or open the live URL. After a push, wait until the default branch serves `docs.json` (retry if docs.page says the config is missing). Then open `https://docs.page/{owner}/{repo}` in the host IDE or default browser if the environment can open a URL. Paste it only if it cannot.
 
 First install ends there.
 
