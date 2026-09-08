@@ -1,6 +1,11 @@
 "use client";
 
-import { type CSSProperties, useEffect, useRef } from "react";
+import {
+  type CSSProperties,
+  type PropsWithChildren,
+  useEffect,
+  useRef,
+} from "react";
 import { cn } from "@/lib/utils";
 import styles from "../homepage.module.css";
 
@@ -73,12 +78,20 @@ function drawDot(
   ctx.fill();
 }
 
+export type FeatureDotFieldProps = {
+  /** Extra classes on the absolute-fill wrapper. */
+  className?: string;
+};
+
 /**
- * Periwinkle lattice (reuses `homepage-spot-grid-card`) plus a short honey
- * trail that walks the grid horizontally and vertically. Frozen when the
- * user prefers reduced motion.
+ * Shared feature-stage backdrop: periwinkle lattice (reuses
+ * `homepage-spot-grid-card`) plus a short honey trail that walks the grid
+ * horizontally and vertically. Frozen when the user prefers reduced motion.
+ *
+ * Positioned `absolute inset-0` — drop behind any feature visual. Prefer
+ * {@link FeatureStage} when you also need the stacking wrapper.
  */
-export function FeatureDotField({ className }: { className?: string }) {
+export function FeatureDotField({ className }: FeatureDotFieldProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -205,5 +218,23 @@ export function FeatureDotField({ className }: { className?: string }) {
       />
       <canvas ref={canvasRef} className="absolute inset-0" />
     </div>
+  );
+}
+
+export type FeatureStageProps = PropsWithChildren<{
+  className?: string;
+}>;
+
+/**
+ * Right-panel feature stage: lattice + honey trail behind a floating visual.
+ * Parent must be `position: relative`. Later feature-visual PRs wrap their
+ * media in this — do not fork the trail.
+ */
+export function FeatureStage({ children, className }: FeatureStageProps) {
+  return (
+    <>
+      <FeatureDotField className={className} />
+      <div className="relative z-1 w-full">{children}</div>
+    </>
   );
 }

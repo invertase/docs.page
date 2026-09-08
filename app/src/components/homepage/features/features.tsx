@@ -119,9 +119,9 @@ export function Features({ children }: PropsWithChildren) {
             title={feature.title}
             description={feature.description}
             link={feature.link}
-            dotField={feature.titleText === "Agent-ready"}
+            stage={feature.stage}
           >
-            <FeatureMedia glow={feature.titleText !== "Agent-ready"}>
+            <FeatureMedia glow={!feature.stage}>
               {feature.video ? (
                 <video
                   src={feature.video}

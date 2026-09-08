@@ -9,15 +9,15 @@ import {
   PaperCorner,
   paperCornerClipPath,
 } from "../paper-corner";
-import { FeatureDotField } from "./feature-dot-field";
+import { FeatureStage } from "./feature-dot-field";
 
 type FeatureCardProps = PropsWithChildren<{
   title: React.ReactNode;
   description: string;
   link: string;
   index: number;
-  /** Unkey-style periwinkle lattice + honey trail behind the visual. */
-  dotField?: boolean;
+  /** Shared feature-stage backdrop behind the right-panel visual. */
+  stage?: boolean;
 }>;
 
 export function FeatureCard({
@@ -25,7 +25,7 @@ export function FeatureCard({
   description,
   link,
   index,
-  dotField,
+  stage,
   children,
 }: FeatureCardProps) {
   return (
@@ -63,16 +63,11 @@ export function FeatureCard({
             <div
               className={cn(
                 "relative flex items-center justify-center px-6 pb-8 lg:pr-20 lg:px-0 lg:pb-0",
-                dotField &&
+                stage &&
                   "overflow-hidden px-8 pb-10 lg:px-12 lg:py-12 lg:pr-24",
               )}
             >
-              {dotField ? <FeatureDotField /> : null}
-              {dotField ? (
-                <div className="relative z-1 w-full">{children}</div>
-              ) : (
-                children
-              )}
+              {stage ? <FeatureStage>{children}</FeatureStage> : children}
             </div>
           </div>
         </div>
