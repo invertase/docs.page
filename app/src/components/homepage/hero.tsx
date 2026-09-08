@@ -38,10 +38,10 @@ export function Hero() {
           gap-8 matches the hero stack's gap above this group, so the space
           under the subtext and the space above Get started stay the same.
 
-          The group is full-width below `sm` only so it stays centred in the
-          hero column; the chip is a fixed `w-[22rem]` (natural humans-tab
-          command width) and does not grow with the column. */}
-      <div className="flex w-full flex-col items-center gap-8 overflow-visible sm:w-auto">
+          The chip hugs its command (`inline-flex w-max`); this group is
+          `w-auto` so a full-column stretch size never becomes the chip’s
+          available width. */}
+      <div className="mx-auto flex w-auto max-w-full flex-col items-center gap-8 overflow-visible">
         <Terminal />
         <Button
           asChild
@@ -155,12 +155,11 @@ function Terminal() {
   const active =
     SNIPPETS.find((snippet) => snippet.id === activeId) ?? SNIPPETS[0];
 
-  // The labels and the chip are one column, centred at every width: they
-  // belong to each other, and the group they sit in is centred too.
-  // The chip is a fixed 22rem — same on mobile and desktop — so a full-width
-  // parent cannot stretch the command away from the copy icon.
+  // The labels and the chip are one column, centred at every width.
+  // `w-auto` — not `w-full` — so the chip’s max-content hug is not computed
+  // against the hero column (that is what made `w-fit` grow with the page).
   return (
-    <div className="flex w-auto max-w-full min-w-0 flex-col items-center gap-2 overflow-visible">
+    <div className="flex w-auto max-w-full flex-col items-center gap-2 overflow-visible">
       <div
         role="group"
         aria-label="Setup method"
@@ -189,9 +188,9 @@ function Terminal() {
       </div>
       {/* Keyed by tab so the copied tick and periwinkle rim never carry over
           to a snippet the visitor has not copied. Chip keeps the `py-2.5`
-          that matches Get started's height. Width is a fixed 22rem (humans
-          command + icon + padding); `max-w-full` lets the long agent prompt
-          scroll inside on a narrow viewport instead of widening the pill. */}
+          that matches Get started's height. Width is max-content of the
+          command + icon + padding (`w-max`); `max-w-full` scrolls the
+          snippet on a narrow viewport instead of growing the pill. */}
       <Chip key={active.id} snippet={active} />
     </div>
   );
@@ -227,7 +226,7 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
 
   return (
     <div
-      className="group relative mx-auto flex w-[22rem] max-w-full min-w-0 overflow-visible items-center justify-start gap-2 rounded-xl border border-transparent bg-periwinkle-950 px-3 py-2.5 sm:px-4"
+      className="group relative mx-auto inline-flex w-max max-w-full overflow-visible items-center justify-start gap-2 rounded-xl border border-transparent bg-periwinkle-950 px-3 py-2.5 sm:px-4"
       data-chip-rim={rimActive ? "periwinkle" : "honey"}
     >
       {/* Honey LED rim; periwinkle while copy is held or the copied tick shows.

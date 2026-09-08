@@ -25,12 +25,19 @@ function bloomPad(rect: DOMRect) {
 
 function applyCanvasPad(
   canvas: HTMLCanvasElement,
+  host: HTMLElement,
   pad: { x: number; y: number },
 ) {
+  const { width, height } = host.getBoundingClientRect();
+  // Pixel sizes — never `width: 100%`. A percentage here is cyclic with a
+  // hug-sized parent and resolves against the hero column, which is what
+  // made `w-fit` stretch the pill to the page width.
+  canvas.style.position = "absolute";
+  canvas.style.maxWidth = "none";
   canvas.style.left = `${-pad.x}px`;
   canvas.style.top = `${-pad.y}px`;
-  canvas.style.width = `calc(100% + ${pad.x * 2}px)`;
-  canvas.style.height = `calc(100% + ${pad.y * 2}px)`;
+  canvas.style.width = `${width + pad.x * 2}px`;
+  canvas.style.height = `${height + pad.y * 2}px`;
 }
 
 /**
@@ -56,7 +63,7 @@ export function ChipLedRim({ active }: { active: boolean }) {
         getComputedStyle(parent).borderTopLeftRadius,
       );
       const pad = bloomPad(rect);
-      applyCanvasPad(canvas, pad);
+      applyCanvasPad(canvas, host, pad);
       setChipFrame({
         canvasWidth: Math.max(1, rect.width + pad.x * 2),
         canvasHeight: Math.max(1, rect.height + pad.y * 2),
@@ -95,18 +102,16 @@ export function ChipLedRim({ active }: { active: boolean }) {
   return (
     <div
       ref={hostRef}
-      className="pointer-events-none absolute inset-0 overflow-visible rounded-[inherit]"
+      className="pointer-events-none absolute inset-0 w-auto overflow-visible rounded-[inherit]"
       aria-hidden
       data-chip-rim={active ? "periwinkle" : "honey"}
     >
       <canvas
         ref={canvasRef}
-        className="absolute"
+        className="absolute max-w-none"
         style={{
           left: -CHIP_BLOOM_CSS,
           top: -CHIP_BLOOM_CSS,
-          width: `calc(100% + ${CHIP_BLOOM_CSS * 2}px)`,
-          height: `calc(100% + ${CHIP_BLOOM_CSS * 2}px)`,
         }}
         data-vgpu="chip-led-front createRenderer LEDS_PER_EDGE"
       />
