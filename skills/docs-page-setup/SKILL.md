@@ -1,6 +1,6 @@
 ---
 name: docs-page-setup
-description: Scaffolds a docs.page site with the CLI (docs.json and docs/), pushes to a public GitHub default branch, and verifies https://docs.page/{owner}/{repo} renders. Use when adding docs.page to a project for the first time, or when asked to add docs.page hosting. Do not use for auditing an existing docs.page site, link checks, Docusaurus, VitePress, GitBook, or writing documentation copy.
+description: Scaffolds a docs.page site with the CLI (docs.json and docs/), commits it and pushes to a public GitHub default branch only on the human's go-ahead, and verifies https://docs.page/{owner}/{repo} renders. Use when adding docs.page to a project for the first time, or when asked to add docs.page hosting. Do not use for auditing an existing docs.page site, link checks, Docusaurus, VitePress, GitBook, or writing documentation copy.
 ---
 
 # Set up docs.page in a repository
@@ -21,13 +21,11 @@ Read <https://use.docs.page/quickstart.md> and follow it — the canonical walkt
 npx --yes @docs.page/cli init --name "<Project Name>" --docs
 ```
 
-Keep `--yes` even though headless `init` will not prompt: npx prompts on its own before installing a package it has not already cached.
+Keep `--yes` even though headless `init` will not prompt: npx prompts on its own before installing a package it has not already cached. On Windows PowerShell, quote the package name: `npx --yes '@docs.page/cli' init`.
 
 - `--name` — written to `docs.json` as `name`, and also as `description`, in the form `"{name} documentation"`. Omit it and both are derived from `package.json`, `pubspec.yaml`, or the folder name.
 - `--docs` — starter pages are created by default, headless and interactive alike; passing `--docs` only makes that intent explicit. `--no-docs` is the flag that changes the outcome: it writes `docs.json` alone.
 - `--overwrite` — mandatory, not optional, when `docs.json` or `docs/` already exist. Without it `init` exits 1.
-
-On Windows PowerShell, quote the package name: `npx --yes '@docs.page/cli' init`.
 
 ## Edit docs.json
 
@@ -41,15 +39,11 @@ Then make the identifiable content edit the quickstart asks for — change the t
 npx --yes @docs.page/cli check --external-links off
 ```
 
-Expect `No documentation issues found.` and exit 0. This still checks internal links, assets, MDX rendering, and metadata — the deterministic, network-free signal. Keep external links off: the starter pages `init` scaffolds ship dead `use.docs.page` URLs, so a default `docs check` exits 1 on an untouched scaffold.
-
-Leave external-link checking to CI. `External link returned 404` is actionable, but DNS failures, refused connections, and timeouts all print the same inconclusive `Unable to reach external link: fetch failed`.
+Expect `No documentation issues found.` and exit 0. This still checks internal links, assets, MDX rendering, and metadata — the deterministic, network-free signal. Keep external links off: the starter pages `init` scaffolds ship dead `use.docs.page` URLs, so a default `docs check` exits 1 on an untouched scaffold. Leave external-link checking to CI. `External link returned 404` is actionable, but DNS failures, refused connections, and timeouts all print the same inconclusive `Unable to reach external link: fetch failed`.
 
 ## Confirm before pushing
 
-Commit locally, then stop. Never run `git push` on your own initiative, and never push to the default branch unless you are told to.
-
-First show the human the files the commit would push (`git show --stat HEAD`), the target remote and branch, and the consequence: docs.page serves public repositories only, so a push to the default branch publishes these docs at `https://docs.page/{owner}/{repo}` straight away — no build and no review step in between. Push only once they have said to; if they would rather not publish yet, offer a non-default branch, previewable at `https://docs.page/{owner}/{repo}~{branch}`.
+Commit locally, then stop. Never run `git push` on your own initiative, and never push to the default branch unless you are told to. First show the human the files the commit would push (`git show --stat HEAD`), the target remote and branch, and the consequence: docs.page serves public repositories only, so a push to the default branch publishes these docs at `https://docs.page/{owner}/{repo}` straight away — no build and no review step in between. Push only once they have said to; if they would rather not publish yet, offer a non-default branch, previewable at `https://docs.page/{owner}/{repo}~{branch}`.
 
 ## Done means the live site renders
 
@@ -70,3 +64,29 @@ Confirm the third by opening the URL yourself. It is a manual check by design �
 | `Private repositories cannot be hosted on docs.page. The repository <owner>/<repo> is private.` | docs.page serves public repositories only | Make the repository public |
 | `No configuration file was found in the repository. To get started, create a docs.json file at the root of your repository.` | `docs.json` is in a subdirectory | Move it to the repository root; a nested path is never read |
 | Same message, with `docs.json` correctly at the root | The push landed on a non-default branch | Merge into the default branch, or view that branch at `https://docs.page/{owner}/{repo}~{branch}` |
+
+## Offer the extras, then stop
+
+Only after the third done check has passed. This is an offer, not a plan: present the menu, then wait, and do nothing until the human names an item. On **not now**, stop — setup is already complete. Anything they pick is a `docs.json` change, so it is another commit and another push, and the confirm-before-push gate applies again.
+
+> Your docs are live at `https://docs.page/{owner}/{repo}`.
+> Before you start writing, want to **Customize** the site or set up **Agents**?
+>
+> **Customize**
+> • **Branding** — theme, colours, logo
+> • **SEO** — site name, description, social preview
+> • **Analytics** — Google Analytics, Tag Manager, Plausible
+>
+> **Agents**
+> • **Ask AI** (beta) — in-docs chat panel (needs GitHub admin + a provider API key)
+>
+> Or say **not now** and we stop here.
+
+Do not walk any of these through from memory. If they pick one, read its page first — and note where the real keys live:
+
+- **Branding** — `theme` (preset and hex colours), `logo`, `favicon`: <https://use.docs.page/customize/branding.md>
+- **SEO** — top-level `name`, `description`, `socialPreview`; the `seo` key itself holds only `noindex`: <https://use.docs.page/customize/seo.md>
+- **Analytics** — `scripts.googleAnalytics`, `scripts.googleTagManager`, `scripts.plausible`, injected on published pages only: <https://use.docs.page/customize/analytics.md>
+- **Ask AI** — `agent.key`, printed by `npx --yes @docs.page/cli agent create`, which needs GitHub admin on the repository and uploads an encrypted provider key to docs.page; the panel loads only on the default-branch production URL: <https://use.docs.page/ai-agents/ask-ai.md>
+
+None of this licenses writing documentation copy — that stays out of scope.
