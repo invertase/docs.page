@@ -181,7 +181,7 @@ function Terminal() {
               aria-pressed={snippet.id === active.id}
               onClick={() => setActiveId(snippet.id)}
               className={cn(
-                "cursor-pointer transition-colors",
+                "cursor-pointer transition-colors duration-300 ease-out motion-reduce:transition-none",
                 snippet.id === active.id
                   ? "text-foreground"
                   : "font-light text-muted-foreground hover:text-foreground",
@@ -192,10 +192,9 @@ function Terminal() {
           </Fragment>
         ))}
       </div>
-      {/* Keyed by tab so the copied tick and periwinkle rim never carry over
-          to a snippet the visitor has not copied. Width is always the humans
-          command hug; the agents prompt fades inside that box. */}
-      <Chip key={active.id} snippet={active} />
+      {/* Chip stays mounted across tabs so the LED rim does not restart and
+          the snippet can crossfade. Copied tick resets when the text changes. */}
+      <Chip snippet={active} />
     </div>
   );
 }
@@ -208,12 +207,16 @@ function Terminal() {
 function Chip({ snippet }: { snippet: HeroSnippet }) {
   const { copied, copy } = useCopy(snippet.text);
   const [held, setHeld] = useState(false);
-  const snippetRef = useRef<HTMLDivElement>(null);
+  const scrollRefs = useRef<Partial<Record<SnippetId, HTMLDivElement | null>>>(
+    {},
+  );
   const [overflowing, setOverflowing] = useState(false);
 
   useLayoutEffect(() => {
-    const node = snippetRef.current;
+    setHeld(false);
+    const node = scrollRefs.current[snippet.id];
     if (!node) return;
+    node.scrollLeft = 0;
     const update = () => {
       setOverflowing(node.scrollWidth - node.clientWidth > 1);
     };
@@ -221,7 +224,7 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
     const observer = new ResizeObserver(update);
     observer.observe(node);
     return () => observer.disconnect();
-  }, []);
+  }, [snippet.id]);
   // Pointerdown copies so the 2s tick starts on press (404 hold analogue, and
   // pointer-only automation that never synthesizes `click`). Click still
   // covers keyboard activation. The latch keeps the beacon to one fire.
@@ -257,19 +260,41 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
         <span className="size-7 shrink-0" />
       </div>
       <div className="absolute inset-0 z-10 flex items-center gap-2 px-3 py-2.5 sm:px-4">
-        <div
-          ref={snippetRef}
-          className={cn(
-            "min-w-0 flex-1 overflow-x-auto overscroll-x-contain touch-pan-x opacity-75 transition-opacity group-hover:opacity-100 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
-            overflowing &&
-              "[mask-image:linear-gradient(to_right,black_0%,black_calc(100%-1.25rem),transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,black_0%,black_calc(100%-1.25rem),transparent_100%)]",
-          )}
-        >
-          <SnippetLine
-            snippet={snippet}
-            prefixClassName="text-neutral-500"
-            textClassName="text-neutral-200"
-          />
+        <div className="relative min-h-6 min-w-0 flex-1 opacity-75 transition-opacity duration-300 ease-out group-hover:opacity-100 motion-reduce:transition-none">
+          {SNIPPETS.map((line) => {
+            const isActive = line.id === snippet.id;
+            return (
+              <div
+                key={line.id}
+                ref={(node) => {
+                  scrollRefs.current[line.id] = node;
+                }}
+                data-snippet-active={isActive}
+                aria-hidden={!isActive}
+                className={cn(
+                  "absolute inset-0 overflow-x-auto overscroll-x-contain touch-pan-x [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+                  "transition-[opacity,transform] duration-300 ease-out motion-reduce:transition-none motion-reduce:transform-none",
+                  isActive
+                    ? "z-1 translate-x-0 opacity-100"
+                    : cn(
+                        "pointer-events-none z-0 opacity-0",
+                        line.id === "agent"
+                          ? "translate-x-2"
+                          : "-translate-x-2",
+                      ),
+                  isActive &&
+                    overflowing &&
+                    "[mask-image:linear-gradient(to_right,black_0%,black_calc(100%-1.25rem),transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,black_0%,black_calc(100%-1.25rem),transparent_100%)]",
+                )}
+              >
+                <SnippetLine
+                  snippet={line}
+                  prefixClassName="text-neutral-500"
+                  textClassName="text-neutral-200"
+                />
+              </div>
+            );
+          })}
         </div>
         <Button
           variant="ghost"
