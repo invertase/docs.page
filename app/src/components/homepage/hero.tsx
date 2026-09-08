@@ -38,9 +38,9 @@ export function Hero() {
           gap-8 matches the hero stack's gap above this group, so the space
           under the subtext and the space above Get started stay the same.
 
-          w-full below `sm` so the chip still spans the hero column and shrinks
-          its snippet instead of pushing past the gutter; sm:w-auto puts the
-          group back to content width. */}
+          The group is full-width below `sm` only so it stays centred in the
+          hero column; the chip itself is content-sized (`w-fit`) so it does
+          not stretch the command across the viewport. */}
       <div className="flex w-full flex-col items-center gap-8 overflow-visible sm:w-auto">
         <Terminal />
         <Button
@@ -156,10 +156,9 @@ function Terminal() {
     SNIPPETS.find((snippet) => snippet.id === activeId) ?? SNIPPETS[0];
 
   // The labels and the chip are one column, centred at every width: they
-  // belong to each other, and the group they sit in is centred too. Full
-  // width below `sm` and content width from `sm` up, as the chip was before;
+  // belong to each other, and the group they sit in is centred too.
   // min-w-0 lets the column shrink to the hero's width rather than widen to
-  // fit the prompt.
+  // fit the prompt. The chip is `w-fit` so mobile does not stretch it.
   return (
     <div className="flex w-full min-w-0 flex-col items-center gap-2 overflow-visible sm:w-auto">
       <div
@@ -190,8 +189,9 @@ function Terminal() {
       </div>
       {/* Keyed by tab so the copied tick and periwinkle rim never carry over
           to a snippet the visitor has not copied. Chip keeps the `py-2.5`
-          that matches Get started's height; min-w-0 plus the snippet scroll
-          area keep the long agent prompt inside the box. */}
+          that matches Get started's height; `w-fit max-w-full` plus the
+          snippet scroll area keep the long agent prompt inside the box
+          without stretching the command to the viewport edges. */}
       <Chip key={active.id} snippet={active} />
     </div>
   );
@@ -227,13 +227,13 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
 
   return (
     <div
-      className="group relative flex w-full min-w-0 overflow-visible items-center gap-2 rounded-xl border border-transparent bg-periwinkle-950 px-3 py-2.5 sm:w-auto sm:px-4"
+      className="group relative flex w-fit max-w-full min-w-0 overflow-visible items-center gap-2 rounded-xl border border-transparent bg-periwinkle-950 px-3 py-2.5 sm:px-4"
       data-chip-rim={rimActive ? "periwinkle" : "honey"}
     >
       {/* Honey LED rim; periwinkle while copy is held or the copied tick shows.
           Replaces the flat `border-primary` so the chip matches the 404 hex. */}
       <ChipLedRim active={rimActive} />
-      <div className="relative z-10 flex min-w-0 max-w-64 flex-1 items-center gap-2 overflow-x-auto opacity-75 transition-opacity group-hover:opacity-100 sm:max-w-72 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="relative z-10 flex min-w-0 max-w-64 items-center gap-2 overflow-x-auto opacity-75 transition-opacity group-hover:opacity-100 sm:max-w-72 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {snippet.prefix && (
           <span className="shrink-0 text-neutral-500">{snippet.prefix}</span>
         )}
