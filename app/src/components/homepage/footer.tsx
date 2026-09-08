@@ -2,38 +2,40 @@ import { RiArrowRightSLine } from "@remixicon/react";
 import Link from "next/link";
 import { Button } from "../ui/button";
 
-export function Footer() {
+export function Footer({ showCloser = true }: { showCloser?: boolean }) {
   return (
     <>
-      <div className="flex flex-col items-center gap-10 px-6 py-16 text-center lg:grid lg:grid-cols-2 lg:items-center lg:gap-0 lg:px-20 lg:py-32 lg:text-left">
-        <div className="order-2 flex flex-col items-center gap-8 lg:order-1 lg:items-start">
-          <h3 className="text-4xl leading-14 font-heading font-extralight tracking-loose lg:text-5xl">
-            Bring your docs <br /> into the{" "}
-            <span className="font-normal">agentic age</span>
-          </h3>
+      {showCloser ? (
+        <div className="flex flex-col items-center gap-10 px-6 py-16 text-center lg:grid lg:grid-cols-2 lg:items-center lg:gap-0 lg:px-20 lg:py-32 lg:text-left">
+          <div className="order-2 flex flex-col items-center gap-8 lg:order-1 lg:items-start">
+            <h3 className="text-4xl leading-14 font-heading font-extralight tracking-loose lg:text-5xl">
+              Bring your docs <br /> into the{" "}
+              <span className="font-normal">agentic age</span>
+            </h3>
 
-          <Button
-            variant="default"
-            size="lg"
-            className="rounded-full px-4 py-5 group"
-            asChild
-          >
-            {/* prefetch off + nofollow: see the hero CTA — the tracked redirect
+            <Button
+              variant="default"
+              size="lg"
+              className="rounded-full px-4 py-5 group"
+              asChild
+            >
+              {/* prefetch off + nofollow: see the hero CTA — the tracked redirect
                 must not be requested on page view or followed by crawlers. */}
-            <Link href="/get-started" prefetch={false} rel="nofollow">
-              Get started{" "}
-              <RiArrowRightSLine className="size-5 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          </Button>
+              <Link href="/get-started" prefetch={false} rel="nofollow">
+                Get started{" "}
+                <RiArrowRightSLine className="size-5 group-hover:translate-x-1 transition-transform" />
+              </Link>
+            </Button>
+          </div>
+          <div className="order-1 flex items-center justify-center lg:order-2">
+            <img
+              src="/_docs.page/logo-icon.svg"
+              alt="Logo"
+              className="h-40 w-auto lg:h-60"
+            />
+          </div>
         </div>
-        <div className="order-1 flex items-center justify-center lg:order-2">
-          <img
-            src="/_docs.page/logo-icon.svg"
-            alt="Logo"
-            className="h-40 w-auto lg:h-60"
-          />
-        </div>
-      </div>
+      ) : null}
       <footer className="border-t">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4 p-6">
