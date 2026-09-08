@@ -23,5 +23,5 @@ Finish every Scan on the whole page. Classify each instance: violation, skip, or
 ### who-you-is
 
 - **Scan:** the first screen of the page (frontmatter + opening paragraphs)
-- **Finding if:** the page tells the reader to do something and never identifies who *you* is (developer, admin)
-- **Skip if:** a concept page with no reader task; audience is already named
+- **Finding if:** the page tells the reader to do something and never identifies who *you* is
+- **Skip if:** a concept page with no reader task; audience is already named (a role on the first screen, or the title/description already says what *you* do or own). Do not require a job title. If you recommend an edit, use only words already on the page.

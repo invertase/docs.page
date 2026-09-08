@@ -11,7 +11,7 @@ Work one page at a time. `checks/` and `logs/` are relative to this skill; `docs
 
 ## Gotchas
 
-- Do not invent pages, procedure steps, prerequisites, or information architecture.
+- Do not invent pages, procedure steps, prerequisites, audience, or information architecture.
 - Do not convert between equivalent docs.page forms (`<Info>` ↔ GitHub alerts; `![alt](src)` ↔ `<Image>`; `<Property>` ↔ a short markdown table; `<Tabs>` / `<TabItem>` naming).
 - Do not apply a fix that would make the page worse.
 - If the live page already shows steps, callouts, tabs, cards, or images, re-fetch raw MDX — missing tags in converted HTML are not findings.
@@ -53,7 +53,7 @@ Each worker prompt (`<skill>` is this skill directory):
 You are check-docs worker `<id>`.
 Read the page <path> and <skill>/checks/<id>.md.
 Do not edit. Do not read other checks. Do not write the log.
-Obey Gotchas (no invented steps/IA, no MDX conversion, no worse page, converted HTML is not a finding).
+Obey Gotchas (no invented steps/audience/IA, no MDX conversion, no worse page, converted HTML is not a finding).
 Finish every Scan on the whole page. Classify each instance: violation, skip, or clean.
 Return JSON only:
 {
