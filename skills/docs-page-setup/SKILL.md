@@ -45,11 +45,17 @@ Expect `No documentation issues found.` and exit 0. This still checks internal l
 
 Leave external-link checking to CI. `External link returned 404` is actionable, but DNS failures, refused connections, and timeouts all print the same inconclusive `Unable to reach external link: fetch failed`.
 
+## Confirm before pushing
+
+Commit locally, then stop. Never run `git push` on your own initiative, and never push to the default branch unless you are told to.
+
+First show the human the files the commit would push (`git show --stat HEAD`), the target remote and branch, and the consequence: docs.page serves public repositories only, so a push to the default branch publishes these docs at `https://docs.page/{owner}/{repo}` straight away — no build and no review step in between. Push only once they have said to; if they would rather not publish yet, offer a non-default branch, previewable at `https://docs.page/{owner}/{repo}~{branch}`.
+
 ## Done means the live site renders
 
-Setup is finished not when the files are written, but when all three hold:
+Setup is finished not when the files are written, but when all three hold — and the first only after the human has approved the push:
 
-1. `docs.json` and `docs/` are committed and pushed to the repository's **default** branch.
+1. You have committed `docs.json` and `docs/` and, on their explicit go-ahead, pushed them to the repository's **default** branch.
 2. The repository is **public**.
 3. `https://docs.page/{owner}/{repo}` loads and shows the edit you made.
 
