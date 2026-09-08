@@ -5,6 +5,8 @@ import { type PropsWithChildren, useEffect, useRef } from "react";
 import { features } from "./data";
 import { FeatureCard } from "./feature-card";
 
+const DOT_FIELD_FEATURES = new Set(["Agent-ready", "Modern Interface"]);
+
 function FeatureMedia({
   children,
   glow = true,
@@ -119,9 +121,9 @@ export function Features({ children }: PropsWithChildren) {
             title={feature.title}
             description={feature.description}
             link={feature.link}
-            dotField={feature.titleText === "Agent-ready"}
+            dotField={DOT_FIELD_FEATURES.has(feature.titleText)}
           >
-            <FeatureMedia glow={feature.titleText !== "Agent-ready"}>
+            <FeatureMedia glow={!DOT_FIELD_FEATURES.has(feature.titleText)}>
               {feature.video ? (
                 <video
                   src={feature.video}
