@@ -4,7 +4,8 @@ import {
   RiFileCopyLine,
 } from "@remixicon/react";
 import Link from "next/link";
-import { Fragment, useState } from "react";
+import { Fragment, useLayoutEffect, useRef, useState } from "react";
+import { ChipLedRim } from "@/components/homepage/chip-led-rim/chip-led-rim";
 import { Button } from "@/components/ui/button";
 import { useCopy } from "@/hooks/use-copy";
 import { SNIPPET_PARAM, type SnippetId } from "@/lib/prompt-copy";
@@ -13,7 +14,7 @@ import { UTM_KEYS } from "@/lib/utm";
 
 export function Hero() {
   return (
-    <div className="mx-auto flex w-full max-w-xl flex-col items-center justify-center gap-8 px-2 pt-12 pb-32 sm:px-0 sm:pt-16 sm:pb-44">
+    <div className="mx-auto flex w-full max-w-xl flex-col items-center justify-center gap-8 overflow-visible px-2 pt-12 pb-32 sm:px-0 sm:pt-16 sm:pb-44">
       {/* Title block keeps the hero section rhythm (space-y-6 / sm:space-y-8).
           The two CTA-adjacent gaps — subtext → tabs, and chip → Get started —
           share `gap-8` so they stay equal at every width. */}
@@ -37,10 +38,10 @@ export function Hero() {
           gap-8 matches the hero stack's gap above this group, so the space
           under the subtext and the space above Get started stay the same.
 
-          w-full below `sm` so the chip still spans the hero column and shrinks
-          its snippet instead of pushing past the gutter; sm:w-auto puts the
-          group back to content width. */}
-      <div className="flex w-full flex-col items-center gap-8 sm:w-auto">
+          The chip hugs its command (`inline-flex w-max`); this group is
+          `w-auto` so a full-column stretch size never becomes the chip’s
+          available width. */}
+      <div className="mx-auto flex w-auto max-w-full flex-col items-center gap-8 overflow-visible">
         <Terminal />
         <Button
           asChild
@@ -105,6 +106,20 @@ const SNIPPETS = [
   },
 ] as const satisfies readonly HeroSnippet[];
 
+const HUMANS_SNIPPET =
+  SNIPPETS.find((snippet) => snippet.id === "terminal") ?? SNIPPETS[0];
+
+const SNIPPET_LINE =
+  "flex w-max items-center gap-2 whitespace-nowrap leading-6 text-sm sm:text-base";
+
+/**
+ * Same per-glyph pace on both tabs — the humans rate from
+ * `clamp(round(520 / n), 6, 28)` when n is the humans command (23).
+ * Agents is longer, so it takes longer; we do not speed it up.
+ */
+const TYPE_GLYPH_MS = 23;
+const TYPE_CLEAR_MS = 70;
+
 const PROMPT_COPY_ENDPOINT = "/api/track/prompt-copy";
 
 /**
@@ -154,13 +169,11 @@ function Terminal() {
   const active =
     SNIPPETS.find((snippet) => snippet.id === activeId) ?? SNIPPETS[0];
 
-  // The labels and the chip are one column, centred at every width: they
-  // belong to each other, and the group they sit in is centred too. Full
-  // width below `sm` and content width from `sm` up, as the chip was before;
-  // min-w-0 lets the column shrink to the hero's width rather than widen to
-  // fit the prompt.
+  // The labels and the chip are one column, centred at every width.
+  // `w-auto` — not `w-full` — so the chip’s max-content hug is not computed
+  // against the hero column (that is what made `w-fit` grow with the page).
   return (
-    <div className="flex w-full min-w-0 flex-col items-center gap-2 sm:w-auto">
+    <div className="flex w-auto max-w-full flex-col items-center gap-2 overflow-visible">
       <div
         role="group"
         aria-label="Setup method"
@@ -176,7 +189,7 @@ function Terminal() {
               aria-pressed={snippet.id === active.id}
               onClick={() => setActiveId(snippet.id)}
               className={cn(
-                "cursor-pointer transition-colors",
+                "cursor-pointer transition-colors duration-500 ease-in-out motion-reduce:transition-none",
                 snippet.id === active.id
                   ? "text-foreground"
                   : "font-light text-muted-foreground hover:text-foreground",
@@ -187,53 +200,197 @@ function Terminal() {
           </Fragment>
         ))}
       </div>
-      {/* `py-2.5` at every width: around a `size="icon-sm"` copy button it
-          gives the chip the same height as the Get started button now below
-          it. Nothing is aligned side by side any more, so this is no longer
-          load-bearing — but two boxes of one height stacked on one axis is
-          the point, so if either size changes, this padding should follow.
-          min-w-0 plus the snippet's own scroll area is what keeps the long
-          agent prompt inside the chip. */}
-      <div className="group flex w-full min-w-0 items-center gap-2 rounded-xl border border-primary bg-periwinkle-950 px-3 py-2.5 sm:w-auto sm:px-4">
-        {/* Keyed by tab so the "copied" tick never carries over to the snippet
-            the visitor has not copied. */}
-        <Snippet key={active.id} snippet={active} />
-      </div>
+      {/* Chip stays mounted across tabs so the LED rim does not restart.
+          Copied tick resets when the text changes. */}
+      <Chip snippet={active} />
     </div>
   );
 }
 
-/** The snippet text and its copy button — one flex line inside the chip. */
-function Snippet({ snippet }: { snippet: HeroSnippet }) {
-  // useCopy takes the text as an argument, so the button copies whatever this
-  // tab is showing with no extra plumbing.
+/**
+ * The chip owns both the LED rim and `useCopy` so periwinkle tracks the 2s
+ * copied tick in the same render — no parent callback / effect cleanup that
+ * can drop the rim back to honey between pointerup and click.
+ */
+function Chip({ snippet }: { snippet: HeroSnippet }) {
   const { copied, copy } = useCopy(snippet.text);
+  const snippetRef = useRef<HTMLDivElement>(null);
+  const [overflowing, setOverflowing] = useState(false);
+  const [fillDimmed, setFillDimmed] = useState(false);
+  const [typedPrefix, setTypedPrefix] = useState<string | null>(snippet.prefix);
+  const [typedText, setTypedText] = useState(snippet.text);
+  const [typing, setTyping] = useState(false);
+  const typedTab = useRef<SnippetId | null>(null);
+  const typeGen = useRef(0);
+
+  useLayoutEffect(() => {
+    const node = snippetRef.current;
+    if (!node) return;
+    node.scrollLeft = 0;
+    // `typedText` is read so this re-runs as glyphs land. ResizeObserver
+    // only sees the scrollport box, which stays the same width.
+    const update = () => {
+      setOverflowing(
+        typedText.length > 0 && node.scrollWidth - node.clientWidth > 1,
+      );
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [typedText]);
+
+  useLayoutEffect(() => {
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const firstPaint = typedTab.current === null;
+    const sameTab = typedTab.current === snippet.id;
+    typedTab.current = snippet.id;
+
+    // First mount (and React Strict remounts of the same tab) show the full
+    // command. Type-in is only for an actual humans ↔ agents change.
+    if (firstPaint || sameTab || reduced) {
+      setTypedPrefix(snippet.prefix);
+      setTypedText(snippet.text);
+      setTyping(false);
+      if (reduced) setFillDimmed(false);
+      return;
+    }
+
+    const gen = ++typeGen.current;
+    setFillDimmed(true);
+    setTyping(true);
+    setTypedPrefix(null);
+    setTypedText("");
+
+    let i = 0;
+    let tick: number | undefined;
+    const start = window.setTimeout(() => {
+      if (typeGen.current !== gen) return;
+      if (snippet.prefix) setTypedPrefix(snippet.prefix);
+      tick = window.setInterval(() => {
+        if (typeGen.current !== gen) return;
+        i += 1;
+        setTypedText(snippet.text.slice(0, i));
+        if (i >= snippet.text.length) {
+          if (tick !== undefined) window.clearInterval(tick);
+          setTyping(false);
+          setFillDimmed(false);
+        }
+      }, TYPE_GLYPH_MS);
+    }, TYPE_CLEAR_MS);
+
+    return () => {
+      window.clearTimeout(start);
+      if (tick !== undefined) window.clearInterval(tick);
+    };
+  }, [snippet.id, snippet.prefix, snippet.text]);
+  // The clipboard write stays on `click`, which is the gesture that carries the
+  // user activation WebKit requires. The latch guards the beacon only — never
+  // the write, or a copy the latch swallows renders a tick with nothing behind it.
+  const copyLatch = useRef(false);
 
   const handleCopy = () => {
     copy();
+    if (copyLatch.current) return;
+    copyLatch.current = true;
+    window.setTimeout(() => {
+      copyLatch.current = false;
+    }, 400);
     // Both tabs are tracked, because a copy makes no request of its own and so
     // is invisible otherwise — there is no funnel an untracked one shows up in.
     // The snippet id on the beacon is what tells the two apart.
     trackPromptCopy(snippet.id);
   };
 
+  const rimActive = snippet.id === "agent";
+
   return (
-    <>
-      <div className="flex min-w-0 max-w-64 flex-1 items-center gap-2 overflow-x-auto opacity-75 transition-opacity group-hover:opacity-100 sm:max-w-72 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {snippet.prefix && (
-          <span className="shrink-0 text-neutral-500">{snippet.prefix}</span>
+    <div
+      className="group relative mx-auto inline-flex w-max max-w-full overflow-visible items-center justify-start gap-2 rounded-xl border border-transparent bg-periwinkle-950 px-3 py-2.5 sm:px-4"
+      data-chip-rim={rimActive ? "periwinkle" : "honey"}
+    >
+      {/* Honey on For humans, periwinkle on For agents. Copy tick is UI-only. */}
+      <ChipLedRim active={rimActive} />
+      {/* Interior fill dip bookends the type-in. Behind the snippet, inside
+          the pill — the page and LED rim stay put. */}
+      <div
+        aria-hidden
+        className={cn(
+          "pointer-events-none absolute inset-0 z-[1] rounded-[inherit] bg-black/25 motion-reduce:hidden",
+          "transition-opacity duration-250 ease-in-out",
+          fillDimmed ? "opacity-100" : "opacity-0",
         )}
-        <span className="whitespace-nowrap text-sm text-neutral-200 sm:text-base">
-          {snippet.text}
-        </span>
+      />
+      {/* Invisible humans command + icon spacer. This is the only in-flow
+          content, so both tabs hug this width and never grow with the page. */}
+      <div className="invisible flex items-center gap-2" aria-hidden>
+        <SnippetLine snippet={HUMANS_SNIPPET} />
+        <span className="size-7 shrink-0" />
       </div>
-      <Button variant="ghost" size="icon-sm" onClick={handleCopy}>
-        {copied ? (
-          <RiCheckLine className="text-green-500" />
-        ) : (
-          <RiFileCopyLine />
-        )}
-      </Button>
-    </>
+      <div className="absolute inset-0 z-10 flex items-center gap-2 px-3 py-2.5 sm:px-4">
+        <div
+          ref={snippetRef}
+          role="group"
+          aria-label={
+            snippet.prefix ? `${snippet.prefix} ${snippet.text}` : snippet.text
+          }
+          className={cn(
+            "min-h-6 min-w-0 flex-1 overflow-x-auto overscroll-x-contain touch-pan-x opacity-75 transition-opacity duration-300 ease-out group-hover:opacity-100 motion-reduce:transition-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+            overflowing &&
+              "[mask-image:linear-gradient(to_right,black_0%,black_calc(100%-1.25rem),transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,black_0%,black_calc(100%-1.25rem),transparent_100%)]",
+          )}
+        >
+          <SnippetLine
+            snippet={{ ...snippet, prefix: typedPrefix, text: typedText }}
+            prefixClassName="text-neutral-500"
+            textClassName="text-neutral-200"
+            caret={typing}
+          />
+        </div>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          className="shrink-0"
+          onClick={handleCopy}
+        >
+          {copied ? (
+            <RiCheckLine className="text-green-500" />
+          ) : (
+            <RiFileCopyLine />
+          )}
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+function SnippetLine({
+  snippet,
+  prefixClassName,
+  textClassName,
+  caret = false,
+}: {
+  snippet: HeroSnippet;
+  prefixClassName?: string;
+  textClassName?: string;
+  caret?: boolean;
+}) {
+  return (
+    <div className={SNIPPET_LINE}>
+      {snippet.prefix ? (
+        <span className={cn("shrink-0", prefixClassName)}>
+          {snippet.prefix}
+        </span>
+      ) : null}
+      <span className={textClassName}>{snippet.text}</span>
+      {caret ? (
+        <span
+          aria-hidden
+          className="chip-caret ml-px inline-block h-[0.85em] w-px shrink-0 translate-y-px bg-neutral-200/70 motion-reduce:hidden"
+        />
+      ) : null}
+    </div>
   );
 }
