@@ -65,18 +65,24 @@ export function FeatureCard({
       >
         <PaperCorner />
         {stage ? (
-          <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,2.5fr)_minmax(0,3.5fr)]">
-            <div className="flex flex-col gap-4 space-y-6 px-6 pt-8 pb-16 lg:px-20 lg:pt-28 lg:pb-40">
-              {copy}
+          <>
+            <div
+              aria-hidden
+              className="pointer-events-none absolute inset-y-0 right-0 hidden border-l border-periwinkle-500 bg-periwinkle-500/10 lg:block lg:left-[calc(100%*2.5/6)]"
+            />
+            <div className="relative grid grid-cols-1 lg:grid-cols-[minmax(0,2.5fr)_minmax(0,3.5fr)]">
+              <div className="flex flex-col gap-4 space-y-6 px-6 pt-8 pb-16 lg:px-20 lg:pt-28 lg:pb-40">
+                {copy}
+              </div>
+              <div className="relative flex items-center justify-center overflow-hidden border-l border-periwinkle-500 bg-periwinkle-500/10 lg:border-0 lg:bg-transparent">
+                <FeatureStage>
+                  <div className="px-6 py-8 lg:px-12 lg:py-12 lg:pr-20">
+                    {children}
+                  </div>
+                </FeatureStage>
+              </div>
             </div>
-            <div className="relative flex items-center justify-center overflow-hidden border-l border-periwinkle-500 bg-periwinkle-500/10">
-              <FeatureStage>
-                <div className="px-6 py-8 lg:px-12 lg:py-12 lg:pr-20">
-                  {children}
-                </div>
-              </FeatureStage>
-            </div>
-          </div>
+          </>
         ) : (
           <div className="mx-auto flex flex-col max-w-8xl space-y-8">
             <div className="px-6 pt-8 lg:pl-26 lg:pr-0"></div>
