@@ -61,21 +61,21 @@ export function ModernInterface() {
   const preset = THEME_PRESETS[activePreset];
 
   return (
-    <div className="relative isolate min-h-64">
+    <div className="relative isolate min-h-72 pb-8">
       <div
         className="pointer-events-none absolute left-1/2 top-1/2 size-72 -translate-x-1/2 -translate-y-1/2 rounded-full bg-periwinkle-500/20 blur-3xl"
         aria-hidden
       />
       <div
-        className="pointer-events-none absolute -right-4 -bottom-6 size-44 bg-contain bg-center bg-no-repeat opacity-25"
+        className="pointer-events-none absolute right-0 bottom-0 size-40 bg-contain bg-center bg-no-repeat opacity-25"
         style={{ backgroundImage: `url(${hexagon.src})` }}
         aria-hidden
       />
 
       <ConfigPane presetId={preset.id} fontFamily={preset.fontFamily} />
 
-      <div className="relative z-1 ml-auto w-full sm:w-[74%]">
-        <div className="overflow-hidden rounded-lg border border-border/60 bg-black shadow-[0_24px_60px_-12px_rgba(0,0,0,0.75)] ring-1 ring-white/5">
+      <div className="relative z-1 ml-auto w-full pt-6 sm:w-[70%] sm:pt-10">
+        <div className="overflow-hidden rounded-lg border border-border/60 bg-black shadow-2xl ring-1 ring-white/5">
           <Image
             src={preset.image}
             alt={preset.label}
@@ -124,7 +124,7 @@ function ConfigPane({
   return (
     <div
       aria-hidden
-      className="absolute top-[12%] left-0 z-0 hidden w-[58%] sm:block"
+      className="absolute top-2 left-0 z-0 hidden w-[56%] sm:block"
     >
       <div
         className="rounded-lg border border-border/50 bg-neutral-950/80 font-mono text-[10px] leading-5 shadow-2xl backdrop-blur-sm"
@@ -172,7 +172,7 @@ function PresetMenu({
   onShuffle: () => void;
 }) {
   return (
-    <div className="absolute top-[22%] left-2 z-2 w-40 sm:left-[10%] sm:w-44">
+    <div className="absolute top-[18%] left-2 z-2 w-40 sm:left-[8%] sm:w-44">
       <div className="flex flex-col gap-2 rounded-lg border border-border/70 bg-neutral-950/95 p-2 shadow-2xl backdrop-blur-md">
         <div className="truncate rounded-md bg-neutral-900 px-2 py-1.5 font-mono text-[11px] text-neutral-200">
           --preset {presetId}
@@ -189,6 +189,7 @@ function PresetMenu({
           variant="outline"
           size="sm"
           className="w-full justify-center font-light"
+          aria-label="Shuffle theme preset"
           onClick={onShuffle}
         >
           Shuffle
