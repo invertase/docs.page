@@ -39,8 +39,8 @@ export function Hero() {
           under the subtext and the space above Get started stay the same.
 
           The group is full-width below `sm` only so it stays centred in the
-          hero column; the chip itself is content-sized (`w-fit`) so it does
-          not stretch the command across the viewport. */}
+          hero column; the chip is a fixed `w-[22rem]` (natural humans-tab
+          command width) and does not grow with the column. */}
       <div className="flex w-full flex-col items-center gap-8 overflow-visible sm:w-auto">
         <Terminal />
         <Button
@@ -157,10 +157,10 @@ function Terminal() {
 
   // The labels and the chip are one column, centred at every width: they
   // belong to each other, and the group they sit in is centred too.
-  // min-w-0 lets the column shrink to the hero's width rather than widen to
-  // fit the prompt. The chip is `w-fit` so mobile does not stretch it.
+  // The chip is a fixed 22rem — same on mobile and desktop — so a full-width
+  // parent cannot stretch the command away from the copy icon.
   return (
-    <div className="flex w-full min-w-0 flex-col items-center gap-2 overflow-visible sm:w-auto">
+    <div className="flex w-auto max-w-full min-w-0 flex-col items-center gap-2 overflow-visible">
       <div
         role="group"
         aria-label="Setup method"
@@ -189,9 +189,9 @@ function Terminal() {
       </div>
       {/* Keyed by tab so the copied tick and periwinkle rim never carry over
           to a snippet the visitor has not copied. Chip keeps the `py-2.5`
-          that matches Get started's height; `w-fit max-w-full` plus the
-          snippet scroll area keep the long agent prompt inside the box
-          without stretching the command to the viewport edges. */}
+          that matches Get started's height. Width is a fixed 22rem (humans
+          command + icon + padding); `max-w-full` lets the long agent prompt
+          scroll inside on a narrow viewport instead of widening the pill. */}
       <Chip key={active.id} snippet={active} />
     </div>
   );
@@ -227,13 +227,13 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
 
   return (
     <div
-      className="group relative flex w-fit max-w-full min-w-0 overflow-visible items-center gap-2 rounded-xl border border-transparent bg-periwinkle-950 px-3 py-2.5 sm:px-4"
+      className="group relative mx-auto flex w-[22rem] max-w-full min-w-0 overflow-visible items-center justify-start gap-2 rounded-xl border border-transparent bg-periwinkle-950 px-3 py-2.5 sm:px-4"
       data-chip-rim={rimActive ? "periwinkle" : "honey"}
     >
       {/* Honey LED rim; periwinkle while copy is held or the copied tick shows.
           Replaces the flat `border-primary` so the chip matches the 404 hex. */}
       <ChipLedRim active={rimActive} />
-      <div className="relative z-10 flex min-w-0 max-w-64 items-center gap-2 overflow-x-auto opacity-75 transition-opacity group-hover:opacity-100 sm:max-w-72 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="relative z-10 flex min-w-0 items-center gap-2 overflow-x-auto opacity-75 transition-opacity group-hover:opacity-100 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {snippet.prefix && (
           <span className="shrink-0 text-neutral-500">{snippet.prefix}</span>
         )}
@@ -244,7 +244,7 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
       <Button
         variant="ghost"
         size="icon-sm"
-        className="relative z-10"
+        className="relative z-10 shrink-0"
         onClick={handleCopy}
         onPointerDown={(event) => {
           if (!event.isPrimary) return;
