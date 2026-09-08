@@ -1,5 +1,6 @@
 import { type CSSProperties, useEffect, useRef, useState } from "react";
 import { createRenderer } from "./triangle-led-front/renderer";
+import { TRIANGLE_HEIGHT_RATIO } from "./triangle-led-front/settings";
 
 /**
  * Fluid cap: rem / svh / vw. Floor: keep lockup width ≥ “Page Not Found”
@@ -26,12 +27,19 @@ const periwinkleGlow = [
   "0 0 1.35em rgba(83, 104, 189, 0.16)",
 ].join(", ");
 
-/** `--four` is the Lexend 4 height so the square canvas letterbox can collapse. */
+/** `--ink` is the visible 4/hex height so equal chrome is not measured to empty canvas. */
 const SLOT_STYLE = {
   "--slot": SLOT,
   "--canvas": CANVAS,
   "--four": FOUR_FONT_SIZE,
+  "--ink": `min(var(--four), calc(var(--canvas) * ${TRIANGLE_HEIGHT_RATIO}))`,
 } as CSSProperties;
+
+const CANVAS_STYLE = {
+  width: "var(--canvas)",
+  height: "var(--canvas)",
+  marginBlock: "calc((var(--ink) - var(--canvas)) / 2)",
+} satisfies CSSProperties;
 
 /** Stack above the hex canvas so its transparent box cannot darken the glyphs. */
 const FOUR_CLASS =
@@ -78,7 +86,7 @@ export function NotFoundTriangleLed() {
     <div
       role="img"
       aria-label="404"
-      className="relative isolate mx-auto flex w-fit cursor-pointer items-center justify-center gap-0 touch-none sm:gap-1"
+      className="relative isolate mx-auto flex h-[var(--ink)] w-fit cursor-pointer items-center justify-center gap-0 touch-none sm:gap-1"
       style={SLOT_STYLE}
       onPointerEnter={() => setHovered(true)}
       onPointerLeave={() => setHovered(false)}
@@ -106,8 +114,8 @@ export function NotFoundTriangleLed() {
       <LockupFour style={fourStyle} />
       <canvas
         ref={canvasRef}
-        className="relative z-0 -my-[calc((var(--canvas)-var(--four))/2)] block shrink-0 touch-none -mx-[calc(var(--canvas)*0.18)]"
-        style={{ width: "var(--canvas)", height: "var(--canvas)" }}
+        className="relative z-0 block shrink-0 touch-none -mx-[calc(var(--canvas)*0.18)]"
+        style={CANVAS_STYLE}
         data-vgpu="triangle-led-front createRenderer LEDS_PER_EDGE DIRECT_TRIANGLE_INTENSITY_SCALE"
       />
       <LockupFour style={fourStyle} />
