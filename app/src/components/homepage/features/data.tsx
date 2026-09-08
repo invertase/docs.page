@@ -14,8 +14,6 @@ export type Feature = {
   component?: ReactNode;
   /** Shared feature-stage backdrop behind the right-panel visual. */
   stage?: boolean;
-  /** Defined left copy panel (periwinkle fill + left border). */
-  copyPanel?: boolean;
 };
 
 export const features: Feature[] = [
@@ -32,7 +30,6 @@ export const features: Feature[] = [
     link: "/agent-access",
     /** First consumer of the shared feature-stage backdrop. */
     stage: true,
-    copyPanel: true,
   },
   {
     titleText: "Git Publishing",

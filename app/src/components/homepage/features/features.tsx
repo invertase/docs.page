@@ -120,7 +120,6 @@ export function Features({ children }: PropsWithChildren) {
             description={feature.description}
             link={feature.link}
             stage={feature.stage}
-            copyPanel={feature.copyPanel}
           >
             <FeatureMedia glow={!feature.stage}>
               {feature.video ? (
