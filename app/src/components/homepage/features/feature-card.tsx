@@ -69,15 +69,15 @@ export function FeatureCard({
             <div className="pointer-events-none absolute inset-y-0 right-0 hidden overflow-hidden border-l border-periwinkle-500 bg-periwinkle-500/10 lg:block lg:left-[calc(100%*2.5/6)]">
               <FeatureDotField />
             </div>
-            <div className="relative grid grid-cols-1 lg:grid-cols-[minmax(0,2.5fr)_minmax(0,3.5fr)]">
-              <div className="flex flex-col gap-4 space-y-6 px-6 pt-8 pb-16 lg:px-20 lg:pt-28 lg:pb-40">
+            <div className="relative grid min-h-0 grid-cols-1 lg:grid-cols-[minmax(0,2.5fr)_minmax(0,3.5fr)]">
+              <div className="flex flex-col justify-center gap-4 space-y-6 px-8 py-16 lg:px-12 lg:pl-32 lg:py-28">
                 {copy}
               </div>
-              <div className="relative flex items-center justify-center overflow-hidden border-l border-periwinkle-500 bg-periwinkle-500/10 lg:border-0 lg:bg-transparent">
+              <div className="relative flex min-h-0 items-center justify-center overflow-hidden border-l border-periwinkle-500 bg-periwinkle-500/10 lg:border-0 lg:bg-transparent">
                 <div className="lg:hidden">
                   <FeatureDotField />
                 </div>
-                <div className="relative z-1 w-full px-6 py-8 lg:px-12 lg:py-12 lg:pr-20">
+                <div className="relative z-1 flex size-full min-h-0 items-center justify-center p-8 lg:p-12 [&_img]:max-h-full [&_video]:max-h-full [&_video]:object-contain">
                   {children}
                 </div>
               </div>
