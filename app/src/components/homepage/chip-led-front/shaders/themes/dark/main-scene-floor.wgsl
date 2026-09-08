@@ -226,12 +226,12 @@ fn buffer_edge_fade(pixel_screen: vec2f) -> f32 {
 // fetch — is wasted. This margin keeps the ~1px anti-aliased silhouette on the full path.
 const OCCLUDER_INTERIOR_MARGIN: f32 = 4.0;
 // Chip-only bloom. Hex #542: 0.046 / 1.2 / 0.65 / 0.4.
-// Halfway between the 38f51b6 nudge (0.18 / 1.38 / 0.80 / 0.32) and the
-// 25633a7 push (0.40 / 2.8 / 1.7 / 0.20) — softer honey, not a white-hot box.
-const CHIP_NEAR_RADIUS_SCALE: f32 = 0.30;
-const CHIP_NEAR_INTENSITY: f32 = 2.15;
-const CHIP_FAR_INTENSITY: f32 = 1.28;
-const CHIP_FAR_POWER: f32 = 0.26;
+// Modest step down from b7f19e5 (0.30 / 2.15 / 1.28 / 0.26) so hero copy
+// stays clearer; still well above the invisible 38f51b6 nudge.
+const CHIP_NEAR_RADIUS_SCALE: f32 = 0.26;
+const CHIP_NEAR_INTENSITY: f32 = 1.90;
+const CHIP_FAR_INTENSITY: f32 = 1.12;
+const CHIP_FAR_POWER: f32 = 0.28;
 
 @fragment fn fs_main(in: VSOut) -> @location(0) vec4f {
   let pixel_screen = in.pos.xy;
