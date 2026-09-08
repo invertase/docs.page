@@ -43,3 +43,6 @@ tailwind.css*
 
 # Tests
 website/tests/screenshots/*
+
+# Local check-docs eval workspace (iteration outputs stay on disk)
+skills/check-docs-workspace/
