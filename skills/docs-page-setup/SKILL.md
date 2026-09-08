@@ -1,5 +1,5 @@
 ---
-name: install-docs-page
+name: docs-page-setup
 description: >-
   Turns a public GitHub repo into a live docs.page site, following Quickstart.
   Use when installing docs.page for the first time. Optional branding and agent feature set up included.
