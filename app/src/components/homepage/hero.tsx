@@ -112,6 +112,24 @@ const HUMANS_SNIPPET =
 const SNIPPET_LINE =
   "flex w-max items-center gap-2 whitespace-nowrap leading-6 text-sm sm:text-base";
 
+/**
+ * Per-glyph delay so a tab swap stays in the ~500ms cadence.
+ * Short humans land slower (readable); long agents hit the floor so they
+ * finish in the same ballpark instead of crawling.
+ */
+const TYPE_TARGET_MS = 520;
+const TYPE_MIN_MS = 6;
+const TYPE_MAX_MS = 28;
+const TYPE_CLEAR_MS = 70;
+
+function typeCharIntervalMs(length: number) {
+  const n = Math.max(length, 1);
+  return Math.min(
+    TYPE_MAX_MS,
+    Math.max(TYPE_MIN_MS, Math.round(TYPE_TARGET_MS / n)),
+  );
+}
+
 const PROMPT_COPY_ENDPOINT = "/api/track/prompt-copy";
 
 /**
@@ -192,8 +210,8 @@ function Terminal() {
           </Fragment>
         ))}
       </div>
-      {/* Chip stays mounted across tabs so the LED rim does not restart and
-          the snippet can crossfade. Copied tick resets when the text changes. */}
+      {/* Chip stays mounted across tabs so the LED rim does not restart.
+          Copied tick resets when the text changes. */}
       <Chip snippet={active} />
     </div>
   );
@@ -206,43 +224,79 @@ function Terminal() {
  */
 function Chip({ snippet }: { snippet: HeroSnippet }) {
   const { copied, copy } = useCopy(snippet.text);
-  const scrollRefs = useRef<Partial<Record<SnippetId, HTMLDivElement | null>>>(
-    {},
-  );
+  const snippetRef = useRef<HTMLDivElement>(null);
   const [overflowing, setOverflowing] = useState(false);
   const [fillDimmed, setFillDimmed] = useState(false);
-  const tabCycle = useRef(0);
+  const [typedPrefix, setTypedPrefix] = useState<string | null>(snippet.prefix);
+  const [typedText, setTypedText] = useState(snippet.text);
+  const [typing, setTyping] = useState(false);
+  const typedTab = useRef<SnippetId | null>(null);
+  const typeGen = useRef(0);
 
   useLayoutEffect(() => {
-    const node = scrollRefs.current[snippet.id];
+    const node = snippetRef.current;
     if (!node) return;
     node.scrollLeft = 0;
+    // `typedText` is read so this re-runs as glyphs land. ResizeObserver
+    // only sees the scrollport box, which stays the same width.
     const update = () => {
-      setOverflowing(node.scrollWidth - node.clientWidth > 1);
+      setOverflowing(
+        typedText.length > 0 && node.scrollWidth - node.clientWidth > 1,
+      );
     };
     update();
     const observer = new ResizeObserver(update);
     observer.observe(node);
     return () => observer.disconnect();
-  }, [snippet.id]);
+  }, [typedText]);
 
   useLayoutEffect(() => {
-    void snippet.id;
-    if (tabCycle.current === 0) {
-      tabCycle.current = 1;
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const firstPaint = typedTab.current === null;
+    const sameTab = typedTab.current === snippet.id;
+    typedTab.current = snippet.id;
+
+    // First mount (and React Strict remounts of the same tab) show the full
+    // command. Type-in is only for an actual humans ↔ agents change.
+    if (firstPaint || sameTab || reduced) {
+      setTypedPrefix(snippet.prefix);
+      setTypedText(snippet.text);
+      setTyping(false);
+      if (reduced) setFillDimmed(false);
       return;
     }
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      return;
-    }
-    // Peak at 250ms so the 250ms ease-in-out dip matches the 500ms swap.
+
+    const gen = ++typeGen.current;
     setFillDimmed(true);
-    const rest = window.setTimeout(() => setFillDimmed(false), 250);
+    setTyping(true);
+    setTypedPrefix(null);
+    setTypedText("");
+
+    const stepMs = typeCharIntervalMs(snippet.text.length);
+    let i = 0;
+    let tick: ReturnType<typeof setInterval> | undefined;
+    const start = window.setTimeout(() => {
+      if (typeGen.current !== gen) return;
+      if (snippet.prefix) setTypedPrefix(snippet.prefix);
+      tick = window.setInterval(() => {
+        if (typeGen.current !== gen) return;
+        i += 1;
+        setTypedText(snippet.text.slice(0, i));
+        if (i >= snippet.text.length) {
+          if (tick !== undefined) window.clearInterval(tick);
+          setTyping(false);
+          setFillDimmed(false);
+        }
+      }, stepMs);
+    }, TYPE_CLEAR_MS);
+
     return () => {
-      window.clearTimeout(rest);
-      setFillDimmed(false);
+      window.clearTimeout(start);
+      if (tick !== undefined) window.clearInterval(tick);
     };
-  }, [snippet.id]);
+  }, [snippet.id, snippet.prefix, snippet.text]);
   // Pointerdown copies so the 2s tick starts on press (404 hold analogue, and
   // pointer-only automation that never synthesizes `click`). Click still
   // covers keyboard activation. The latch keeps the beacon to one fire.
@@ -270,8 +324,8 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
     >
       {/* Honey on For humans, periwinkle on For agents. Copy tick is UI-only. */}
       <ChipLedRim active={rimActive} />
-      {/* Interior fill dip only — behind the snippet, inside the pill, so the
-          page and LED rim stay put. 250ms up / 250ms down with the 500ms swap. */}
+      {/* Interior fill dip bookends the type-in. Behind the snippet, inside
+          the pill — the page and LED rim stay put. */}
       <div
         aria-hidden
         className={cn(
@@ -287,41 +341,24 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
         <span className="size-7 shrink-0" />
       </div>
       <div className="absolute inset-0 z-10 flex items-center gap-2 px-3 py-2.5 sm:px-4">
-        <div className="relative min-h-6 min-w-0 flex-1 opacity-75 transition-opacity duration-300 ease-out group-hover:opacity-100 motion-reduce:transition-none">
-          {SNIPPETS.map((line) => {
-            const isActive = line.id === snippet.id;
-            return (
-              <div
-                key={line.id}
-                ref={(node) => {
-                  scrollRefs.current[line.id] = node;
-                }}
-                data-snippet-active={isActive}
-                aria-hidden={!isActive}
-                className={cn(
-                  "absolute inset-0 overflow-x-auto overscroll-x-contain touch-pan-x [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
-                  "transition-[opacity,transform] duration-500 ease-in-out motion-reduce:transition-none motion-reduce:transform-none",
-                  isActive
-                    ? "z-1 translate-x-0 opacity-100"
-                    : cn(
-                        "pointer-events-none z-0 opacity-0",
-                        line.id === "agent"
-                          ? "translate-x-2"
-                          : "-translate-x-2",
-                      ),
-                  isActive &&
-                    overflowing &&
-                    "[mask-image:linear-gradient(to_right,black_0%,black_calc(100%-1.25rem),transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,black_0%,black_calc(100%-1.25rem),transparent_100%)]",
-                )}
-              >
-                <SnippetLine
-                  snippet={line}
-                  prefixClassName="text-neutral-500"
-                  textClassName="text-neutral-200"
-                />
-              </div>
-            );
-          })}
+        <div
+          ref={snippetRef}
+          role="group"
+          aria-label={
+            snippet.prefix ? `${snippet.prefix} ${snippet.text}` : snippet.text
+          }
+          className={cn(
+            "min-h-6 min-w-0 flex-1 overflow-x-auto overscroll-x-contain touch-pan-x opacity-75 transition-opacity duration-300 ease-out group-hover:opacity-100 motion-reduce:transition-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+            overflowing &&
+              "[mask-image:linear-gradient(to_right,black_0%,black_calc(100%-1.25rem),transparent_100%)] [-webkit-mask-image:linear-gradient(to_right,black_0%,black_calc(100%-1.25rem),transparent_100%)]",
+          )}
+        >
+          <SnippetLine
+            snippet={{ ...snippet, prefix: typedPrefix, text: typedText }}
+            prefixClassName="text-neutral-500"
+            textClassName="text-neutral-200"
+            caret={typing}
+          />
         </div>
         <Button
           variant="ghost"
@@ -348,10 +385,12 @@ function SnippetLine({
   snippet,
   prefixClassName,
   textClassName,
+  caret = false,
 }: {
   snippet: HeroSnippet;
   prefixClassName?: string;
   textClassName?: string;
+  caret?: boolean;
 }) {
   return (
     <div className={SNIPPET_LINE}>
@@ -361,6 +400,12 @@ function SnippetLine({
         </span>
       ) : null}
       <span className={textClassName}>{snippet.text}</span>
+      {caret ? (
+        <span
+          aria-hidden
+          className="chip-caret ml-px inline-block h-[0.85em] w-px shrink-0 translate-y-px bg-neutral-200/70 motion-reduce:hidden"
+        />
+      ) : null}
     </div>
   );
 }
