@@ -181,7 +181,7 @@ function Terminal() {
               aria-pressed={snippet.id === active.id}
               onClick={() => setActiveId(snippet.id)}
               className={cn(
-                "cursor-pointer transition-colors duration-300 ease-out motion-reduce:transition-none",
+                "cursor-pointer transition-colors duration-500 ease-in-out motion-reduce:transition-none",
                 snippet.id === active.id
                   ? "text-foreground"
                   : "font-light text-muted-foreground hover:text-foreground",
@@ -235,9 +235,9 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return;
     }
-    // Peak at 150ms so the 150ms ease-in/out dip matches the 300ms swap.
+    // Peak at 250ms so the 250ms ease-in-out dip matches the 500ms swap.
     setFillDimmed(true);
-    const rest = window.setTimeout(() => setFillDimmed(false), 150);
+    const rest = window.setTimeout(() => setFillDimmed(false), 250);
     return () => {
       window.clearTimeout(rest);
       setFillDimmed(false);
@@ -271,12 +271,12 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
       {/* Honey on For humans, periwinkle on For agents. Copy tick is UI-only. */}
       <ChipLedRim active={rimActive} />
       {/* Interior fill dip only — behind the snippet, inside the pill, so the
-          page and LED rim stay put. 150ms up / 150ms down with the tab swap. */}
+          page and LED rim stay put. 250ms up / 250ms down with the 500ms swap. */}
       <div
         aria-hidden
         className={cn(
           "pointer-events-none absolute inset-0 z-[1] rounded-[inherit] bg-black/25 motion-reduce:hidden",
-          "transition-opacity duration-150 ease-in-out",
+          "transition-opacity duration-250 ease-in-out",
           fillDimmed ? "opacity-100" : "opacity-0",
         )}
       />
@@ -300,7 +300,7 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
                 aria-hidden={!isActive}
                 className={cn(
                   "absolute inset-0 overflow-x-auto overscroll-x-contain touch-pan-x [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
-                  "transition-[opacity,transform] duration-300 ease-out motion-reduce:transition-none motion-reduce:transform-none",
+                  "transition-[opacity,transform] duration-500 ease-in-out motion-reduce:transition-none motion-reduce:transform-none",
                   isActive
                     ? "z-1 translate-x-0 opacity-100"
                     : cn(

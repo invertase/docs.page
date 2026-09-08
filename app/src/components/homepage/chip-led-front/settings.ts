@@ -112,7 +112,8 @@ export const HOVER_RGB_TINT_DEFAULTS: HoverRgbTintSettings = {
   amount: 1,
   radius: 173,
   power: 3,
-  responseSmoothing: 0.2,
+  // ~3τ ≈ 510ms so the honey↔periwinkle lerp matches the 500ms tab swap.
+  responseSmoothing: 0.17,
   edgeRedLinear: { r: 0.896269, g: 0.027321, b: 0.051269 },
   edgeGreenLinear: { r: 0, g: 0.40724, b: 0.048172 },
   edgeBlueLinear: { r: 0, g: 0.278894, b: 1 },
