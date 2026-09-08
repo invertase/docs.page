@@ -59,7 +59,7 @@ Do not commit secrets, `.env`, or generated artifacts (`.next/`, `dist/`).
 
 Repo-wide skills live under [`skills/`](./skills/). Load a skill's `SKILL.md` when one exists for your task.
 
-- [check-docs](./skills/check-docs/SKILL.md) — review a `docs/*.mdx` page as a check scoreboard (failing, passing, muted) and loop until failing is 0. Use when the publisher names check-docs or asks to audit docs.
+- [check-docs](./skills/check-docs/SKILL.md) — review a `docs/*.mdx` page against writing checks (failing, passing, muted) and loop until failing is 0. Use when the publisher names check-docs or asks to audit docs.
 
 ## Safety
 

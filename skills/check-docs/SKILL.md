@@ -1,6 +1,6 @@
 ---
 name: check-docs
-description: Reviews a docs.page page as a check scoreboard (failing, passing, muted) and loops until failing is 0. Use when the publisher names check-docs or asks to audit docs/*.mdx.
+description: Reviews a docs.page page against writing checks (failing, passing, muted) and loops until failing is 0. Use when the publisher names check-docs or asks to audit docs/*.mdx.
 ---
 
 # check-docs
@@ -20,13 +20,13 @@ Work one page at a time. `checks/` and `logs/` are relative to this skill; `docs
 
 1. Read `logs/<page-slug>.json` if it exists (`docs/index.mdx` → `docs--index.mdx.json`).
 2. Run checks. Merge findings. Write the log (pending `decision: null` is OK until they choose).
-3. **Print** the **Scoreboard** as a user-visible message. If `failing > 0`, list violations under failing checks. Do this after **every** run — including reruns under **fix all**, the stop run, and the cap run. The log is not a substitute. Do not skip, defer, or collapse runs into a final-only summary. Do not wait until `failing == 0` or the loop ends.
+3. **Print** the **Results** as a user-visible message. If `failing > 0`, list violations under failing checks. Do this after **every** run — including reruns under **fix all**, the stop run, and the cap run. The log is not a substitute. Do not skip, defer, or collapse runs into a final-only summary. Do not wait until `failing == 0` or the loop ends.
 4. Do not edit yet unless they already chose **fix all**. If they have not chosen, offer **fix all** or **review each**. If they already said **fix all** or auto-fix in this request, still print this run first, then continue step 5.
-5. **Fix all:** set every unmuted finding to `accepted`, apply, and continue this loop (step 7). **Review each:** wait. Publisher marks `accepted` or `rejected` by id (`tone-1`). Reject mutes that instance. `mute check <id>` mutes every instance of that check in either mode.
+5. **Fix all:** set every unmuted finding to `accepted`, apply, and continue this loop (step 7). **Review each:** wait. Publisher marks `accepted` or `rejected` by id (`tone-1`). Reject mutes that instance. `mute check <id>` mutes every instance of that check in either mode. `unmute <id>` reopens that instance. `unmute check <id>` reopens that check.
 6. Apply only `accepted` edits. Do not edit completed runs. The only in-place update is `decision` / `feedback` while still `null`.
 7. If they ask again, or **fix all** is still in progress, and `failing > 0`, rerun **failing checks** and any check whose text sits in the accepted-edit **delta**. Do not rerun `passing` or `muted` on unchanged sentences. Then go to step 3 and print that run before applying or spawning another.
-8. **Stop** when `failing == 0`. Print the scoreboard with no violation list (still required). If they ask again, reprint that summary.
-9. Cap at **3 runs**. If still failing, stop, print the scoreboard and leftover failing checks.
+8. **Stop** when `failing == 0`. Print the results with no violation list (still required). If they ask again, reprint that summary.
+9. Cap at **3 runs**. If still failing, stop, print the results and leftover failing checks.
 
 ### Publisher example
 
@@ -39,6 +39,8 @@ review each
 accept tone-1
 reject links-2
 mute check tone
+unmute tone-1
+unmute check tone
 ```
 
 ## Run checks
@@ -79,11 +81,11 @@ Assign stable ids `<check>-1`, `<check>-2`, … (counter per check, **Checks** o
 
 A missing check in the log means it was not scanned. Do not reopen muted instances unless the publisher asks.
 
-## Scoreboard
+## Results
 
 Print this as a user-visible message after every run, **before** applying edits or starting the next run. Print it first in that message. Monospace columns, no grid. Zero counts in the table are `-`. If the host colors text, failing is red, muted is yellow, passing is green.
 
-A run that is not printed to the publisher is an orchestrator error. Fix-all already in the request, a planned later run, or an unchanged passing row is not a reason to hide this run's scoreboard.
+A run that is not printed to the publisher is an orchestrator error. Fix-all already in the request, a planned later run, or an unchanged passing row is not a reason to hide this run's results.
 
 ```text
 > 16 checks · 2 failing · 1 muted · 13 passing  docs/index.mdx
@@ -115,7 +117,7 @@ Every live run must include `summary` and a `checks` array with every id in **Ch
 
 ## Checks
 
-Scoreboard order. Spawn one worker per file; read that file only when that worker runs.
+Checks table order. Spawn one worker per file; read that file only when that worker runs.
 
 1. [person-and-voice](checks/person-and-voice.md) — you not we; one person; active voice
 2. [procedures](checks/procedures.md) — numbered sequences; one action per step

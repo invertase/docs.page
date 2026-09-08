@@ -1,26 +1,43 @@
 # check-docs
 
-A writing review for one docs.page page. Point it at a file under `docs/`, get a scoreboard of 16 checks, then auto-fix or accept and reject each finding.
+A writing review for one docs.page page. Name a file under `docs/`, get results for 16 checks, then auto-fix or accept and reject each violation.
 
-You work one page at a time. Paths are relative to the project root (`docs.json` lives there).
+Paths are relative to the project root (`docs.json` lives there).
 
-## Run a review
-
-In Cursor, name the page:
+## Review one page
 
 ```text
 use check-docs on docs/features/components.mdx
 ```
 
-Apply every unmuted finding in the same request:
+Apply every unmuted violation in the same request:
 
 ```text
 use check-docs on docs/index.mdx and auto fix findings
 ```
 
-## Read the scoreboard
+```text
+use check-docs on docs/index.mdx
+fix all
+```
 
-You get a scoreboard after **every** run — not only when the page is clean.
+## Review several pages
+
+Reviews are one page at a time. When a page is clean (or you stop), start a new review on the next file:
+
+```text
+use check-docs on docs/quickstart.mdx
+```
+
+```text
+use check-docs on docs/authoring/write.mdx
+```
+
+There is no folder-wide or glob run. Name each page you want reviewed.
+
+## Read the results
+
+You get results after **every** run — not only when the page is clean. The summary line and checks table come first; failing checks then list violations.
 
 ```text
 > 16 checks · 2 failing · 1 muted · 13 passing  docs/index.mdx
@@ -31,8 +48,6 @@ inline-formatting         failing     2           -      code font; UI bold; lis
 tone                      muted       -           1      no idioms, padding, or pre-announcement
 ```
 
-Failing checks then list each finding:
-
 ```markdown
 ## Violations
 1. `tone-1` — <what to change>
@@ -42,34 +57,57 @@ Failing checks then list each finding:
 
 If two checks disagree on the same quote, they share one item: `` `inline-formatting-1` (conflicts: `tone`) ``.
 
-When `failing` is 0, you get the table only.
+When `failing` is 0, you get the table only. Ask again on that page to reprint it.
 
-## Fix findings
+## Fix or skip violations
 
-After the first scoreboard, choose a mode (skip this if you already asked to auto-fix):
+After the first results, choose a mode unless you already asked to auto-fix.
+
+### Apply everything
 
 ```text
 fix all
 ```
 
+Every unmuted violation is accepted, applied to the page, and the review runs again. You still see results for the run that just finished, then the next run.
+
+A page stops after 3 runs. If failing is still above 0, the last results list what remains.
+
+### Decide one by one
+
 ```text
 review each
 accept tone-1
 reject links-2
-mute check tone
 ```
 
 | You say | What happens |
 | --- | --- |
-| `fix all` | Accept every unmuted finding, apply it to the page, and run again. |
-| `review each` | Pause. You decide per finding. |
-| `accept tone-1` | Apply that finding. |
-| `reject links-2` | Keep the current wording. That instance stays muted. |
-| `mute check tone` | Mute every instance of that check on this page. |
+| `review each` | Pause. Nothing is applied until you decide. |
+| `accept tone-1` | Apply that violation. |
+| `reject links-2` | Keep the current wording. That instance is muted and will not come back on later runs. |
 
-**Fix all** still shows the scoreboard for the run it just finished, then applies, then shows the next run.
+You can mix `accept` and `reject` in the same reply. Only accepted edits are written to the page.
 
-A review stops at 3 runs. If failing is still above 0, the last scoreboard lists what remains.
+### Mute a whole check
+
+```text
+mute check tone
+```
+
+Every instance of that check on this page is muted, in **fix all** or **review each**. Muted checks stay muted on later runs of the same page.
+
+### Unmute
+
+Muted instances stay muted unless you ask to reopen them, for example:
+
+```text
+unmute tone-1
+```
+
+```text
+unmute check tone
+```
 
 ## What it checks
 
@@ -96,11 +134,11 @@ A review stops at 3 runs. If failing is still above 0, the last scoreboard lists
 
 Each run appends to `logs/<page-slug>.json` (`docs/index.mdx` → `docs--index.mdx.json`). Field shape: [logs/example.json](logs/example.json).
 
-Live page logs stay local (gitignored). `example.json` is the schema specimen.
+Live page logs stay local (gitignored). `example.json` is the schema specimen. Mutes for a page live in that log, so a later review of the same file keeps them.
 
 ## What it will not change
 
 - Invented pages, procedure steps, prerequisites, or information architecture
 - Equivalent docs.page forms (`<Info>` ↔ GitHub alerts; `![alt](src)` ↔ `<Image>`; `<Property>` ↔ a short markdown table; `<Tabs>` / `<TabItem>` naming)
 - An edit that would make the page worse
-- Missing tags in converted HTML — those are not findings; the review uses raw MDX
+- Missing tags in converted HTML — those are not violations; the review uses raw MDX
