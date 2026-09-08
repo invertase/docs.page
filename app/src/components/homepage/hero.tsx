@@ -286,18 +286,18 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
       if (tick !== undefined) window.clearInterval(tick);
     };
   }, [snippet.id, snippet.prefix, snippet.text]);
-  // Pointerdown copies so the 2s tick starts on press (404 hold analogue, and
-  // pointer-only automation that never synthesizes `click`). Click still
-  // covers keyboard activation. The latch keeps the beacon to one fire.
+  // The clipboard write stays on `click`, which is the gesture that carries the
+  // user activation WebKit requires. The latch guards the beacon only — never
+  // the write, or a copy the latch swallows renders a tick with nothing behind it.
   const copyLatch = useRef(false);
 
   const handleCopy = () => {
+    copy();
     if (copyLatch.current) return;
     copyLatch.current = true;
     window.setTimeout(() => {
       copyLatch.current = false;
     }, 400);
-    copy();
     // Both tabs are tracked, because a copy makes no request of its own and so
     // is invisible otherwise — there is no funnel an untracked one shows up in.
     // The snippet id on the beacon is what tells the two apart.
@@ -354,10 +354,6 @@ function Chip({ snippet }: { snippet: HeroSnippet }) {
           size="icon-sm"
           className="shrink-0"
           onClick={handleCopy}
-          onPointerDown={(event) => {
-            if (!event.isPrimary) return;
-            handleCopy();
-          }}
         >
           {copied ? (
             <RiCheckLine className="text-green-500" />
