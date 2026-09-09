@@ -101,10 +101,22 @@ export function FeatureCard({
               </div>
               {/*
                 Mobile media is a straight-edged panel under the copy — no
-                PaperCorner, clip-path, or -mt-20 fold overlap.
+                PaperCorner, clip-path, or -mt-20 fold overlap. pb-20 keeps
+                the wash / lattice / pulse above the next card’s dog-ear.
               */}
-              <div className="relative min-h-0 border-t border-border bg-periwinkle-500/10 lg:col-start-2 lg:border-0 lg:bg-transparent">
-                <div className="lg:hidden">
+              <div
+                className={cn(
+                  "relative min-h-0 border-t border-border",
+                  STAGE_STACK_CLEARANCE_CLASS,
+                  "lg:col-start-2 lg:border-0 lg:bg-transparent lg:pb-0",
+                )}
+              >
+                <div
+                  className={cn(
+                    "absolute inset-x-0 top-0 bg-periwinkle-500/10 lg:hidden",
+                    STAGE_STACK_CLEARANCE_INSET_CLASS,
+                  )}
+                >
                   <FeatureDotField />
                 </div>
                 <div
