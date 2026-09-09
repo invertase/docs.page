@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { PropsWithChildren } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "../../ui/button";
+import styles from "../homepage.module.css";
 import {
   PAPER_SECTION_OVERLAP_CLASS,
   PAPER_SECTION_SHELL_CLASS,
@@ -36,6 +37,8 @@ const STAGE_STACK_CLEARANCE_INSET_CLASS = "bottom-20";
  * without a large empty gap.
  */
 const STAGE_MOBILE_WASH_PAD_CLASS = "h-24";
+/** Shared radial periwinkle wash — desktop column + mobile media panel. */
+const STAGE_WASH_CLASS = styles["homepage-feature-stage-wash"];
 
 type FeatureCardProps = PropsWithChildren<{
   title: React.ReactNode;
@@ -94,7 +97,8 @@ export function FeatureCard({
           <>
             <div
               className={cn(
-                "pointer-events-none absolute top-0 right-0 isolate hidden overflow-hidden border-l border-border bg-periwinkle-500/10 lg:block lg:left-[calc(100%*2.5/6)]",
+                "pointer-events-none absolute top-0 right-0 isolate hidden overflow-hidden border-l border-border lg:block lg:left-[calc(100%*2.5/6)]",
+                STAGE_WASH_CLASS,
                 STAGE_STACK_CLEARANCE_INSET_CLASS,
               )}
             >
@@ -117,7 +121,12 @@ export function FeatureCard({
                 card’s overlapping dog-ear (no hard seam above the fold).
               */}
               <div className="relative min-h-0 overflow-visible border-t border-border lg:col-start-2 lg:border-0 lg:bg-transparent">
-                <div className="absolute inset-0 isolate overflow-hidden bg-periwinkle-500/10 lg:hidden">
+                <div
+                  className={cn(
+                    "absolute inset-0 isolate overflow-hidden lg:hidden",
+                    STAGE_WASH_CLASS,
+                  )}
+                >
                   <FeatureDotField seed={index} />
                 </div>
                 <div
