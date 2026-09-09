@@ -20,16 +20,14 @@ const STAGE_MEDIA_INSET_CLASS = "p-8 lg:p-12";
 /** Agent-ready capture is 1900×1080; keep the inner box matching so contain === cover. */
 const STAGE_MEDIA_ASPECT_CLASS = "aspect-[1900/1080]";
 /**
- * Next paper card uses `-mt-20` (the dog-ear fold). Staged cards must clear that
- * overlap or the fill, divider, and bottom media inset sit under the next card.
+ * Next paper card uses `-mt-20` (the dog-ear fold). Desktop fill pins to
+ * `bottom-20` so the right-column wash meets that seam. Mobile leaves the
+ * shell unpadded so the stage wash can run to the card edge and under the fold.
  */
-const STAGE_STACK_CLEARANCE_CLASS = "pb-20";
+const STAGE_STACK_CLEARANCE_CLASS = "lg:pb-20";
 const STAGE_STACK_CLEARANCE_INSET_CLASS = "bottom-20";
-/**
- * Mobile wash continues this far past the media box into the next card’s
- * `-mt-20` fold so the periwinkle / lattice never hard-stop above it.
- */
-const STAGE_MOBILE_WASH_EXTEND_CLASS = "-bottom-20";
+/** Extra mobile stage height below the visual; wash fills this (not a black gap). */
+const STAGE_MOBILE_WASH_PAD_CLASS = "pb-32";
 
 type FeatureCardProps = PropsWithChildren<{
   title: React.ReactNode;
@@ -106,22 +104,18 @@ export function FeatureCard({
               </div>
               {/*
                 Mobile media is a straight-edged panel under the copy — no
-                PaperCorner or clip-path. Extra pb plus a fill that hangs
-                `-bottom-20` paints the wash under the next card’s fold.
+                PaperCorner or clip-path. The fill is inset-0 so wash /
+                lattice / pulse run through the extra pb and under the next
+                card’s overlapping dog-ear (no hard seam above the fold).
               */}
               <div
                 className={cn(
                   "relative min-h-0 overflow-visible border-t border-border",
-                  STAGE_STACK_CLEARANCE_CLASS,
+                  STAGE_MOBILE_WASH_PAD_CLASS,
                   "lg:col-start-2 lg:border-0 lg:bg-transparent lg:pb-0",
                 )}
               >
-                <div
-                  className={cn(
-                    "absolute inset-x-0 top-0 bg-periwinkle-500/10 lg:hidden",
-                    STAGE_MOBILE_WASH_EXTEND_CLASS,
-                  )}
-                >
+                <div className="absolute inset-0 bg-periwinkle-500/10 lg:hidden">
                   <FeatureDotField />
                 </div>
                 <div
