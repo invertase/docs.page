@@ -9,6 +9,11 @@ import {
   PaperCorner,
   paperCornerClipPath,
 } from "../paper-corner";
+
+/** Mobile-only dog-ear clip — must match `paperCornerClipPath()` / 5rem fold. */
+const STAGE_MOBILE_FOLD_CLIP_CLASS =
+  "max-lg:[clip-path:polygon(5rem_0,100%_0,100%_100%,0_100%,0_5rem)]";
+
 import { FeatureDotField } from "./feature-dot-field";
 
 /**
@@ -91,14 +96,23 @@ export function FeatureCard({
             </div>
             <div className="relative grid min-h-0 grid-cols-1 lg:grid-cols-[minmax(0,2.5fr)_minmax(0,3.5fr)]">
               {/*
-                L/R copy inset is unchanged. On desktop the copy is out of flow so
-                its py cannot stretch the row — height comes from media + equal inset.
+                Mobile: extra top/left inset clears the dog-ear; extra bottom
+                pad clears the stacked media fold. Desktop L/R is unchanged;
+                copy is out of flow so height comes from media + equal inset.
               */}
-              <div className="flex flex-col justify-center gap-4 space-y-6 px-8 py-16 lg:absolute lg:inset-y-0 lg:left-0 lg:z-1 lg:w-[calc(100%*2.5/6)] lg:px-12 lg:pl-32 lg:py-0">
+              <div className="flex flex-col justify-center gap-4 space-y-6 px-8 pl-24 pt-28 pb-24 lg:absolute lg:inset-y-0 lg:left-0 lg:z-1 lg:w-[calc(100%*2.5/6)] lg:px-12 lg:pl-32 lg:py-0">
                 {copy}
               </div>
-              <div className="relative min-h-0 border-l border-border bg-periwinkle-500/10 lg:col-start-2 lg:border-0 lg:bg-transparent">
+              <div
+                className={cn(
+                  "relative min-h-0 bg-periwinkle-500/10",
+                  "max-lg:-mt-20 max-lg:overflow-hidden max-lg:border-t max-lg:border-border",
+                  STAGE_MOBILE_FOLD_CLIP_CLASS,
+                  "lg:col-start-2 lg:border-0 lg:bg-transparent",
+                )}
+              >
                 <div className="lg:hidden">
+                  <PaperCorner />
                   <FeatureDotField />
                 </div>
                 <div
