@@ -16,8 +16,8 @@ const CELL = 22;
  */
 const EDGE = 2;
 /** Travelling bloom width, in cells. */
-const PULSE_SIGMA = 2.8;
-const CELLS_PER_SEC = 4;
+const PULSE_SIGMA = 2.1;
+const CELLS_PER_SEC = 8;
 /** Honey `#E69135` — brand token, not a new colour. */
 const HONEY_RGB = "230, 145, 53";
 
@@ -152,9 +152,9 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
           if (b < 0.04) continue;
           const gx = run.horizontal ? i : axis;
           const gy = run.horizontal ? axis : i;
-          const r = 2.4 + b * 2.2;
-          const a = 0.4 + b * 0.6;
-          drawDot(ctx, rect.left, rect.top, gx, gy, r * 2.1, a * 0.28);
+          const r = 1.2 + b * 0.55;
+          const a = 0.22 + b * 0.5;
+          drawDot(ctx, rect.left, rect.top, gx, gy, r * 1.55, a * 0.16);
           drawDot(ctx, rect.left, rect.top, gx, gy, r, a);
         }
       }
@@ -163,7 +163,7 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
     const paintRest = (now: number) => {
       const { rect } = bounds(root);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const pulse = 0.45 + 0.4 * (0.5 + 0.5 * Math.sin(now / 900));
+      const pulse = 0.28 + 0.28 * (0.5 + 0.5 * Math.sin(now / 900));
       const mid = ((run.from + run.to) / 2) | 0;
       for (let depth = 0; depth < EDGE; depth++) {
         const axis = run.axis0 + run.inward * depth;
@@ -171,8 +171,8 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
           if (i < run.from || i > run.to) continue;
           const gx = run.horizontal ? i : axis;
           const gy = run.horizontal ? axis : i;
-          drawDot(ctx, rect.left, rect.top, gx, gy, 3.2, pulse * 0.3);
-          drawDot(ctx, rect.left, rect.top, gx, gy, 2.6, pulse);
+          drawDot(ctx, rect.left, rect.top, gx, gy, 2.1, pulse * 0.18);
+          drawDot(ctx, rect.left, rect.top, gx, gy, 1.5, pulse);
         }
       }
     };
