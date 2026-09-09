@@ -1,8 +1,22 @@
+import type { StaticImageData } from "next/image";
+import type { ReactNode } from "react";
 import branches from "../assets/branches-versions.png";
 import gitPublishing from "../assets/git-publishing.png";
 import { ModernInterface } from "./modern-interface";
 
-export const features = [
+export type Feature = {
+  titleText: string;
+  title: ReactNode;
+  description: string;
+  link: string;
+  video?: string;
+  image?: StaticImageData;
+  component?: ReactNode;
+  /** Shared feature-stage backdrop behind the right-panel visual. */
+  stage?: boolean;
+};
+
+export const features: Feature[] = [
   {
     titleText: "Agent-ready",
     title: (
@@ -14,6 +28,8 @@ export const features = [
       "Let users' AI agents query your documentation. Built-in MCP servers alongside llms.txt files allow LLMs to ingest your product context instantly.",
     video: "/_docs.page/agent-ready.mp4?v=2",
     link: "/agent-access",
+    /** First consumer of the shared feature-stage backdrop. */
+    stage: true,
   },
   {
     titleText: "Git Publishing",

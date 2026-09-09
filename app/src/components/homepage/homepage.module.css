@@ -72,13 +72,15 @@
       circle,
       color-mix(
         in srgb,
-        var(--homepage-dot-color, white) 35%,
+        var(--homepage-dot-color, white) var(--homepage-dot-mix, 35%),
         transparent
       ) var(--homepage-dot-r),
       transparent var(--homepage-dot-r)
     );
     background-size: var(--homepage-dot-cell) var(--homepage-dot-cell);
+    background-position: var(--homepage-dot-position, 0 0);
     background-repeat: repeat;
+    background-attachment: var(--homepage-dot-attachment, scroll);
   }
 }
 
