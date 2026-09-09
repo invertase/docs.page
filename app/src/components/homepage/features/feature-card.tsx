@@ -26,8 +26,11 @@ const STAGE_MEDIA_ASPECT_CLASS = "aspect-[1900/1080]";
  */
 const STAGE_STACK_CLEARANCE_CLASS = "lg:pb-20";
 const STAGE_STACK_CLEARANCE_INSET_CLASS = "bottom-20";
-/** Extra mobile stage height below the visual; wash fills this (not a black gap). */
-const STAGE_MOBILE_WASH_PAD_CLASS = "pb-32";
+/**
+ * In-flow mobile spacer below the visual. Taller than the next card’s
+ * `-mt-20` fold so the inset-0 wash runs under Git Publishing (no black seam).
+ */
+const STAGE_MOBILE_WASH_PAD_CLASS = "h-40";
 
 type FeatureCardProps = PropsWithChildren<{
   title: React.ReactNode;
@@ -108,13 +111,7 @@ export function FeatureCard({
                 lattice / pulse run through the extra pb and under the next
                 card’s overlapping dog-ear (no hard seam above the fold).
               */}
-              <div
-                className={cn(
-                  "relative min-h-0 overflow-visible border-t border-border",
-                  STAGE_MOBILE_WASH_PAD_CLASS,
-                  "lg:col-start-2 lg:border-0 lg:bg-transparent lg:pb-0",
-                )}
-              >
+              <div className="relative min-h-0 overflow-visible border-t border-border lg:col-start-2 lg:border-0 lg:bg-transparent">
                 <div className="absolute inset-0 bg-periwinkle-500/10 lg:hidden">
                   <FeatureDotField />
                 </div>
@@ -132,6 +129,10 @@ export function FeatureCard({
                     {children}
                   </div>
                 </div>
+                <div
+                  className={cn(STAGE_MOBILE_WASH_PAD_CLASS, "lg:hidden")}
+                  aria-hidden
+                />
               </div>
             </div>
           </>
