@@ -149,18 +149,6 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
           drawDot(ctx, rect.left, rect.top, gx, gy, r * 1.55, a * 0.16);
           drawDot(ctx, rect.left, rect.top, gx, gy, r, a);
         }
-        const gx = run.horizontal ? head : axis;
-        const gy = run.horizontal ? axis : head;
-        const peak = falloff;
-        drawDot(
-          ctx,
-          rect.left,
-          rect.top,
-          gx,
-          gy,
-          1.2 + 0.55 * peak,
-          (0.22 + 0.5 * peak) * 0.7,
-        );
       }
     };
 
