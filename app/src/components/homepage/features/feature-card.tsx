@@ -25,6 +25,11 @@ const STAGE_MEDIA_ASPECT_CLASS = "aspect-[1900/1080]";
  */
 const STAGE_STACK_CLEARANCE_CLASS = "pb-20";
 const STAGE_STACK_CLEARANCE_INSET_CLASS = "bottom-20";
+/**
+ * Mobile wash continues this far past the media box into the next card’s
+ * `-mt-20` fold so the periwinkle / lattice never hard-stop above it.
+ */
+const STAGE_MOBILE_WASH_EXTEND_CLASS = "-bottom-20";
 
 type FeatureCardProps = PropsWithChildren<{
   title: React.ReactNode;
@@ -89,7 +94,7 @@ export function FeatureCard({
             >
               <FeatureDotField />
             </div>
-            <div className="relative grid min-h-0 grid-cols-1 lg:grid-cols-[minmax(0,2.5fr)_minmax(0,3.5fr)]">
+            <div className="relative grid min-h-0 overflow-visible grid-cols-1 lg:grid-cols-[minmax(0,2.5fr)_minmax(0,3.5fr)]">
               {/*
                 Mobile copy matches sibling horizontal inset (px-6). pt-24
                 sits the title a rem below the outer 5rem dog-ear. Desktop
@@ -101,12 +106,12 @@ export function FeatureCard({
               </div>
               {/*
                 Mobile media is a straight-edged panel under the copy — no
-                PaperCorner, clip-path, or -mt-20 fold overlap. pb-20 keeps
-                the wash / lattice / pulse above the next card’s dog-ear.
+                PaperCorner or clip-path. Extra pb plus a fill that hangs
+                `-bottom-20` paints the wash under the next card’s fold.
               */}
               <div
                 className={cn(
-                  "relative min-h-0 border-t border-border",
+                  "relative min-h-0 overflow-visible border-t border-border",
                   STAGE_STACK_CLEARANCE_CLASS,
                   "lg:col-start-2 lg:border-0 lg:bg-transparent lg:pb-0",
                 )}
@@ -114,7 +119,7 @@ export function FeatureCard({
                 <div
                   className={cn(
                     "absolute inset-x-0 top-0 bg-periwinkle-500/10 lg:hidden",
-                    STAGE_STACK_CLEARANCE_INSET_CLASS,
+                    STAGE_MOBILE_WASH_EXTEND_CLASS,
                   )}
                 >
                   <FeatureDotField />
