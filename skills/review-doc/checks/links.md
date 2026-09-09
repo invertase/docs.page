@@ -12,7 +12,7 @@ Finish every Scan on the whole page. Classify each instance: violation, skip, or
 
 - **Scan:** destinations on the page
 - **Finding if:** the same URL or path is linked more than once
-- **Skip if:** a long page with separate entry points (procedure vs troubleshooting)
+- **Skip if:** a long page with separate entry points (procedure vs troubleshooting); a navigational block at the end of the page (*Next steps*, *Related*, a `<CardGroup>`) repeating a destination the body already linked — that block is navigation, not a second inline reference
 
 ### in-site-url
 
