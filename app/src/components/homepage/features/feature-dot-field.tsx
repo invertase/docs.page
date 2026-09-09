@@ -39,8 +39,6 @@ function honey(alpha: number) {
 
 function drawDot(
   ctx: CanvasRenderingContext2D,
-  left: number,
-  top: number,
   gx: number,
   gy: number,
   r: number,
@@ -48,23 +46,20 @@ function drawDot(
 ) {
   ctx.beginPath();
   ctx.fillStyle = honey(alpha);
-  ctx.arc(
-    gx * CELL + CELL / 2 - left,
-    gy * CELL + CELL / 2 - top,
-    r,
-    0,
-    Math.PI * 2,
-  );
+  ctx.arc(gx * CELL + CELL / 2, gy * CELL + CELL / 2, r, 0, Math.PI * 2);
   ctx.fill();
 }
 
+/** Lattice in the field’s own box — not viewport cells — so it scrolls with the card. */
 function bounds(el: HTMLElement) {
-  const rect = el.getBoundingClientRect();
-  const minX = Math.floor(rect.left / CELL);
-  const minY = Math.floor(rect.top / CELL);
-  const maxX = Math.ceil(rect.right / CELL) - 1;
-  const maxY = Math.ceil(rect.bottom / CELL) - 1;
-  return { rect, minX, minY, maxX, maxY };
+  const width = el.clientWidth;
+  const height = el.clientHeight;
+  return {
+    minX: 0,
+    minY: 0,
+    maxX: Math.max(0, Math.ceil(width / CELL) - 1),
+    maxY: Math.max(0, Math.ceil(height / CELL) - 1),
+  };
 }
 
 /** Deterministic 0–1 from a per-card seed so reloads keep the same motion. */
@@ -153,7 +148,8 @@ export type FeatureDotFieldProps = {
  * blooms that pulse along rim strips (one H, one V; both EDGE rings).
  * `prefers-reduced-motion` keeps a gentle in-place pulse.
  *
- * Positioned `absolute inset-0` — drop behind any feature visual. Prefer
+ * Lattice and spot-grid are local to this box (not viewport-fixed) so they
+ * travel with the sticky paper card. Positioned `absolute inset-0`. Prefer
  * {@link FeatureStage} when you also need the stacking wrapper.
  */
 export function FeatureDotField({ className, seed = 0 }: FeatureDotFieldProps) {
@@ -189,7 +185,7 @@ export function FeatureDotField({ className, seed = 0 }: FeatureDotFieldProps) {
     let raf = 0;
     let visible = true;
 
-    const paintRun = (run: Run, head: number, rect: DOMRect) => {
+    const paintRun = (run: Run, head: number) => {
       for (let depth = 0; depth < EDGE; depth++) {
         const axis = run.axis0 + run.inward * depth;
         const falloff = 1 - depth * 0.12;
@@ -200,8 +196,8 @@ export function FeatureDotField({ className, seed = 0 }: FeatureDotFieldProps) {
           const gy = run.horizontal ? axis : i;
           const r = 1.25 + b * 0.28;
           const a = 0.16 + b * 0.52;
-          drawDot(ctx, rect.left, rect.top, gx, gy, r * 1.55, a * 0.16);
-          drawDot(ctx, rect.left, rect.top, gx, gy, r, a);
+          drawDot(ctx, gx, gy, r * 1.55, a * 0.16);
+          drawDot(ctx, gx, gy, r, a);
         }
       }
     };
@@ -219,7 +215,6 @@ export function FeatureDotField({ className, seed = 0 }: FeatureDotFieldProps) {
     };
 
     const paintTravel = (now: number) => {
-      const { rect } = bounds(root);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       if (pulses[0]!.started === 0) {
         pulses[0]!.started = now - durationOf(pulses[0]!.run) * phase0;
@@ -232,13 +227,11 @@ export function FeatureDotField({ className, seed = 0 }: FeatureDotFieldProps) {
           pulse.run = pickRun(root, !pulse.run.horizontal, rand, other.run);
           pulse.started = now;
         }
-        const head = headOf(pulse, now);
-        paintRun(pulse.run, head, rect);
+        paintRun(pulse.run, headOf(pulse, now));
       }
     };
 
     const paintRest = (now: number) => {
-      const { rect } = bounds(root);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const pulse = 0.28 + 0.28 * (0.5 + 0.5 * Math.sin(now / 900 + restPhase));
       for (const item of pulses) {
@@ -249,8 +242,8 @@ export function FeatureDotField({ className, seed = 0 }: FeatureDotFieldProps) {
             if (i < item.run.from || i > item.run.to) continue;
             const gx = item.run.horizontal ? i : axis;
             const gy = item.run.horizontal ? axis : i;
-            drawDot(ctx, rect.left, rect.top, gx, gy, 2.1, pulse * 0.18);
-            drawDot(ctx, rect.left, rect.top, gx, gy, 1.5, pulse);
+            drawDot(ctx, gx, gy, 2.1, pulse * 0.18);
+            drawDot(ctx, gx, gy, 1.5, pulse);
           }
         }
       }
@@ -315,7 +308,7 @@ export function FeatureDotField({ className, seed = 0 }: FeatureDotFieldProps) {
           {
             "--homepage-dot-color": "white",
             "--homepage-dot-mix": "8%",
-            "--homepage-dot-attachment": "fixed",
+            "--homepage-dot-attachment": "scroll",
             "--homepage-dot-position": "0 0",
           } as CSSProperties
         }

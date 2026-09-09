@@ -94,7 +94,7 @@ export function FeatureCard({
           <>
             <div
               className={cn(
-                "pointer-events-none absolute top-0 right-0 hidden overflow-hidden border-l border-border bg-periwinkle-500/10 lg:block lg:left-[calc(100%*2.5/6)]",
+                "pointer-events-none absolute top-0 right-0 isolate hidden overflow-hidden border-l border-border bg-periwinkle-500/10 lg:block lg:left-[calc(100%*2.5/6)]",
                 STAGE_STACK_CLEARANCE_INSET_CLASS,
               )}
             >
@@ -117,7 +117,7 @@ export function FeatureCard({
                 card’s overlapping dog-ear (no hard seam above the fold).
               */}
               <div className="relative min-h-0 overflow-visible border-t border-border lg:col-start-2 lg:border-0 lg:bg-transparent">
-                <div className="absolute inset-0 bg-periwinkle-500/10 lg:hidden">
+                <div className="absolute inset-0 isolate overflow-hidden bg-periwinkle-500/10 lg:hidden">
                   <FeatureDotField seed={index} />
                 </div>
                 <div
