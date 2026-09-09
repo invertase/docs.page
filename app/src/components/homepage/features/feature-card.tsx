@@ -91,11 +91,12 @@ export function FeatureCard({
             </div>
             <div className="relative grid min-h-0 grid-cols-1 lg:grid-cols-[minmax(0,2.5fr)_minmax(0,3.5fr)]">
               {/*
-                Mobile copy matches sibling cards (px-6; pt-16 = spacer + mt-8
-                so the title clears the outer 5rem dog-ear). Desktop L/R is
-                unchanged; copy is out of flow so height comes from media.
+                Mobile copy matches sibling horizontal inset (px-6). pt-24
+                sits the title a rem below the outer 5rem dog-ear. Desktop
+                L/R is unchanged; copy is out of flow so height comes from
+                media.
               */}
-              <div className="flex flex-col justify-center gap-4 space-y-6 px-6 pt-16 pb-10 lg:absolute lg:inset-y-0 lg:left-0 lg:z-1 lg:w-[calc(100%*2.5/6)] lg:px-12 lg:pl-32 lg:py-0">
+              <div className="flex flex-col justify-center gap-4 space-y-6 px-6 pt-24 pb-10 lg:absolute lg:inset-y-0 lg:left-0 lg:z-1 lg:w-[calc(100%*2.5/6)] lg:px-12 lg:pl-32 lg:py-0">
                 {copy}
               </div>
               {/*
