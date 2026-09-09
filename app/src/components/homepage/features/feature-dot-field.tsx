@@ -13,6 +13,11 @@ const CELL = 22;
 const TRAIL = 7;
 /** Time to glide one lattice cell — interpolated, not a discrete hop. */
 const STEP_MS = 280;
+/**
+ * How many lattice cells from the stage rim the trail may occupy.
+ * 2 × 22px ≈ the lg:p-12 media inset, so the snake stays in the wash.
+ */
+const EDGE = 2;
 /** Honey `#E69135` — brand token, not a new colour. */
 const HONEY_RGB = "230, 145, 53";
 
@@ -29,6 +34,23 @@ function same(a: Pt, b: Pt) {
   return a[0] === b[0] && a[1] === b[1];
 }
 
+function onRim(
+  x: number,
+  y: number,
+  minX: number,
+  minY: number,
+  maxX: number,
+  maxY: number,
+  edge: number,
+) {
+  return (
+    x <= minX + edge - 1 ||
+    x >= maxX - edge + 1 ||
+    y <= minY + edge - 1 ||
+    y >= maxY - edge + 1
+  );
+}
+
 function pickDir(
   dir: Pt,
   x: number,
@@ -41,7 +63,13 @@ function pickDir(
   const fits = ([dx, dy]: Pt) => {
     const nx = x + dx;
     const ny = y + dy;
-    return nx >= minX && ny >= minY && nx <= maxX && ny <= maxY;
+    return (
+      nx >= minX &&
+      ny >= minY &&
+      nx <= maxX &&
+      ny <= maxY &&
+      onRim(nx, ny, minX, minY, maxX, maxY, EDGE)
+    );
   };
   const opposite: Pt = [-dir[0], -dir[1]];
   const turns = DIRS.filter(
@@ -94,7 +122,8 @@ export type FeatureDotFieldProps = {
 /**
  * Shared feature-stage backdrop: the homepage spot-grid (same cell / mix /
  * fixed rhythm as `.homepage-spot-grid`) plus a short honey trail that
- * glides the lattice. Frozen when the user prefers reduced motion.
+ * glides the outer two lattice cells (the media inset / frame).
+ * Frozen when the user prefers reduced motion.
  *
  * Positioned `absolute inset-0` — drop behind any feature visual. Prefer
  * {@link FeatureStage} when you also need the stacking wrapper.
@@ -143,8 +172,21 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
 
     const seed = () => {
       const { minX, minY, maxX, maxY } = bounds(root);
-      x = ((minX + maxX) / 2) | 0;
-      y = ((minY + maxY) / 2) | 0;
+      const depth = (Math.random() * EDGE) | 0;
+      const side = (Math.random() * 4) | 0;
+      if (side === 0) {
+        x = minX + ((Math.random() * (maxX - minX + 1)) | 0);
+        y = minY + depth;
+      } else if (side === 1) {
+        x = maxX - depth;
+        y = minY + ((Math.random() * (maxY - minY + 1)) | 0);
+      } else if (side === 2) {
+        x = minX + ((Math.random() * (maxX - minX + 1)) | 0);
+        y = maxY - depth;
+      } else {
+        x = minX + depth;
+        y = minY + ((Math.random() * (maxY - minY + 1)) | 0);
+      }
       dir = DIRS[(Math.random() * DIRS.length) | 0]!;
       trail = [[x, y]];
       for (let i = 1; i < TRAIL; i++) {
@@ -169,6 +211,17 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
 
     const step = () => {
       const { minX, minY, maxX, maxY } = bounds(root);
+      if (!onRim(x, y, minX, minY, maxX, maxY, EDGE)) {
+        const toLeft = x - minX;
+        const toRight = maxX - x;
+        const toTop = y - minY;
+        const toBottom = maxY - y;
+        const nearest = Math.min(toLeft, toRight, toTop, toBottom);
+        if (nearest === toLeft) x = minX + EDGE - 1;
+        else if (nearest === toRight) x = maxX - EDGE + 1;
+        else if (nearest === toTop) y = minY + EDGE - 1;
+        else y = maxY - EDGE + 1;
+      }
       dir = pickDir(dir, x, y, minX, minY, maxX, maxY);
       x += dir[0];
       y += dir[1];
