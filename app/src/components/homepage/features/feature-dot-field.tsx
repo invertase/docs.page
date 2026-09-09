@@ -16,7 +16,7 @@ const CELL = 22;
  */
 const EDGE = 2;
 /** Travelling bloom width, in cells — wide enough to blend, not orb-sized. */
-const PULSE_SIGMA = 2.45;
+const PULSE_SIGMA = 3.15;
 const CELLS_PER_SEC = 8;
 /** Honey `#E69135` — brand token, not a new colour. */
 const HONEY_RGB = "230, 145, 53";
@@ -101,6 +101,15 @@ function bloom(dist: number) {
   return Math.exp(-(dist * dist) / (2 * PULSE_SIGMA * PULSE_SIGMA));
 }
 
+function smoothstep(t: number) {
+  const u = Math.min(1, Math.max(0, t));
+  return u * u * (3 - 2 * u);
+}
+
+function travelCells(run: Run) {
+  return run.to - run.from + PULSE_SIGMA * 4;
+}
+
 export type FeatureDotFieldProps = {
   /** Extra classes on the absolute-fill wrapper. */
   className?: string;
@@ -141,44 +150,46 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
         const falloff = 1 - depth * 0.12;
         for (let i = run.from; i <= run.to; i++) {
           const b = bloom(i - head) * falloff;
-          if (b < 0.02) continue;
+          if (b < 0.012) continue;
           const gx = run.horizontal ? i : axis;
           const gy = run.horizontal ? axis : i;
-          const r = 1.2 + b * 0.55;
-          const a = 0.22 + b * 0.5;
+          const r = 1.25 + b * 0.28;
+          const a = 0.16 + b * 0.52;
           drawDot(ctx, rect.left, rect.top, gx, gy, r * 1.55, a * 0.16);
           drawDot(ctx, rect.left, rect.top, gx, gy, r, a);
         }
       }
     };
 
-    const headOf = (pulse: Pulse, now: number) =>
-      pulse.run.start +
-      pulse.run.dir * ((now - pulse.started) / 1000) * CELLS_PER_SEC;
+    const headOf = (pulse: Pulse, now: number) => {
+      const travel = travelCells(pulse.run);
+      const duration = (travel / CELLS_PER_SEC) * 1000;
+      const e = smoothstep((now - pulse.started) / duration);
+      return pulse.run.start + pulse.run.dir * e * travel;
+    };
 
-    const pastEnd = (run: Run, head: number) =>
-      run.dir === 1
-        ? head > run.to + PULSE_SIGMA * 2
-        : head < run.from - PULSE_SIGMA * 2;
+    const pastEnd = (pulse: Pulse, now: number) => {
+      const travel = travelCells(pulse.run);
+      const duration = (travel / CELLS_PER_SEC) * 1000;
+      return now - pulse.started >= duration;
+    };
 
     const paintTravel = (now: number) => {
       const { rect } = bounds(root);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       if (pulses[0]!.started === 0) {
         pulses[0]!.started = now;
-        const span =
-          ((pulses[1]!.run.to - pulses[1]!.run.from) / CELLS_PER_SEC) * 1000;
+        const span = (travelCells(pulses[1]!.run) / CELLS_PER_SEC) * 1000;
         pulses[1]!.started = now - span * 0.45;
       }
       for (let n = 0; n < pulses.length; n++) {
         const pulse = pulses[n]!;
         const other = pulses[1 - n]!;
-        let head = headOf(pulse, now);
-        if (pastEnd(pulse.run, head)) {
+        if (pastEnd(pulse, now)) {
           pulse.run = pickRun(root, !pulse.run.horizontal, other.run);
           pulse.started = now;
-          head = pulse.run.start;
         }
+        const head = headOf(pulse, now);
         paintRun(pulse.run, head, rect);
       }
     };
