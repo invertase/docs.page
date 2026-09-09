@@ -15,8 +15,8 @@ const CELL = 22;
  * both rings of the active side light so the wash reads at a glance.
  */
 const EDGE = 2;
-/** Travelling bloom width, in cells. */
-const PULSE_SIGMA = 2.1;
+/** Travelling bloom width, in cells — wide enough to blend, not orb-sized. */
+const PULSE_SIGMA = 2.45;
 const CELLS_PER_SEC = 8;
 /** Honey `#E69135` — brand token, not a new colour. */
 const HONEY_RGB = "230, 145, 53";
@@ -67,11 +67,13 @@ function bounds(el: HTMLElement) {
   return { rect, minX, minY, maxX, maxY };
 }
 
-function pickRun(el: HTMLElement, horizontal: boolean): Run {
+function pickRun(el: HTMLElement, horizontal: boolean, avoid?: Run): Run {
   const { minX, minY, maxX, maxY } = bounds(el);
   const dir: 1 | -1 = Math.random() < 0.5 ? 1 : -1;
+  const flip = avoid && avoid.horizontal === horizontal;
   if (horizontal) {
-    const top = Math.random() < 0.5;
+    let top = Math.random() < 0.5;
+    if (flip && avoid) top = avoid.axis0 !== minY;
     return {
       horizontal,
       axis0: top ? minY : maxY,
@@ -82,7 +84,8 @@ function pickRun(el: HTMLElement, horizontal: boolean): Run {
       start: dir === 1 ? minX : maxX,
     };
   }
-  const left = Math.random() < 0.5;
+  let left = Math.random() < 0.5;
+  if (flip && avoid) left = avoid.axis0 !== minX;
   return {
     horizontal,
     axis0: left ? minX : maxX,
@@ -104,8 +107,8 @@ export type FeatureDotFieldProps = {
 };
 
 /**
- * Shared feature-stage backdrop: the homepage spot-grid plus honey dots that
- * pulse along one horizontal or vertical rim strip (both EDGE rings).
+ * Shared feature-stage backdrop: the homepage spot-grid plus two honey
+ * blooms that pulse along rim strips (one H, one V; both EDGE rings).
  * `prefers-reduced-motion` keeps a gentle in-place pulse.
  *
  * Positioned `absolute inset-0` — drop behind any feature visual. Prefer
@@ -124,32 +127,21 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
     if (!ctx) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let run = pickRun(root, Math.random() < 0.5);
-    let runStarted = 0;
+    type Pulse = { run: Run; started: number };
+    const pulses: Pulse[] = [
+      { run: pickRun(root, true), started: 0 },
+      { run: pickRun(root, false), started: 0 },
+    ];
     let raf = 0;
     let visible = true;
 
-    const paintTravel = (now: number) => {
-      const { rect } = bounds(root);
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      if (runStarted === 0) runStarted = now;
-      let head =
-        run.start + run.dir * ((now - runStarted) / 1000) * CELLS_PER_SEC;
-      const past =
-        run.dir === 1
-          ? head > run.to + PULSE_SIGMA * 2
-          : head < run.from - PULSE_SIGMA * 2;
-      if (past) {
-        run = pickRun(root, !run.horizontal);
-        runStarted = now;
-        head = run.start;
-      }
+    const paintRun = (run: Run, head: number, rect: DOMRect) => {
       for (let depth = 0; depth < EDGE; depth++) {
         const axis = run.axis0 + run.inward * depth;
         const falloff = 1 - depth * 0.12;
         for (let i = run.from; i <= run.to; i++) {
           const b = bloom(i - head) * falloff;
-          if (b < 0.04) continue;
+          if (b < 0.02) continue;
           const gx = run.horizontal ? i : axis;
           const gy = run.horizontal ? axis : i;
           const r = 1.2 + b * 0.55;
@@ -157,6 +149,49 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
           drawDot(ctx, rect.left, rect.top, gx, gy, r * 1.55, a * 0.16);
           drawDot(ctx, rect.left, rect.top, gx, gy, r, a);
         }
+        const gx = run.horizontal ? head : axis;
+        const gy = run.horizontal ? axis : head;
+        const peak = falloff;
+        drawDot(
+          ctx,
+          rect.left,
+          rect.top,
+          gx,
+          gy,
+          1.2 + 0.55 * peak,
+          (0.22 + 0.5 * peak) * 0.7,
+        );
+      }
+    };
+
+    const headOf = (pulse: Pulse, now: number) =>
+      pulse.run.start +
+      pulse.run.dir * ((now - pulse.started) / 1000) * CELLS_PER_SEC;
+
+    const pastEnd = (run: Run, head: number) =>
+      run.dir === 1
+        ? head > run.to + PULSE_SIGMA * 2
+        : head < run.from - PULSE_SIGMA * 2;
+
+    const paintTravel = (now: number) => {
+      const { rect } = bounds(root);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (pulses[0]!.started === 0) {
+        pulses[0]!.started = now;
+        const span =
+          ((pulses[1]!.run.to - pulses[1]!.run.from) / CELLS_PER_SEC) * 1000;
+        pulses[1]!.started = now - span * 0.45;
+      }
+      for (let n = 0; n < pulses.length; n++) {
+        const pulse = pulses[n]!;
+        const other = pulses[1 - n]!;
+        let head = headOf(pulse, now);
+        if (pastEnd(pulse.run, head)) {
+          pulse.run = pickRun(root, !pulse.run.horizontal, other.run);
+          pulse.started = now;
+          head = pulse.run.start;
+        }
+        paintRun(pulse.run, head, rect);
       }
     };
 
@@ -164,15 +199,17 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
       const { rect } = bounds(root);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const pulse = 0.28 + 0.28 * (0.5 + 0.5 * Math.sin(now / 900));
-      const mid = ((run.from + run.to) / 2) | 0;
-      for (let depth = 0; depth < EDGE; depth++) {
-        const axis = run.axis0 + run.inward * depth;
-        for (const i of [mid - 3, mid, mid + 3]) {
-          if (i < run.from || i > run.to) continue;
-          const gx = run.horizontal ? i : axis;
-          const gy = run.horizontal ? axis : i;
-          drawDot(ctx, rect.left, rect.top, gx, gy, 2.1, pulse * 0.18);
-          drawDot(ctx, rect.left, rect.top, gx, gy, 1.5, pulse);
+      for (const item of pulses) {
+        const mid = ((item.run.from + item.run.to) / 2) | 0;
+        for (let depth = 0; depth < EDGE; depth++) {
+          const axis = item.run.axis0 + item.run.inward * depth;
+          for (const i of [mid - 3, mid, mid + 3]) {
+            if (i < item.run.from || i > item.run.to) continue;
+            const gx = item.run.horizontal ? i : axis;
+            const gy = item.run.horizontal ? axis : i;
+            drawDot(ctx, rect.left, rect.top, gx, gy, 2.1, pulse * 0.18);
+            drawDot(ctx, rect.left, rect.top, gx, gy, 1.5, pulse);
+          }
         }
       }
     };
@@ -185,8 +222,8 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      run = pickRun(root, run.horizontal);
-      runStarted = 0;
+      pulses[0] = { run: pickRun(root, true), started: 0 };
+      pulses[1] = { run: pickRun(root, false, pulses[0].run), started: 0 };
     };
 
     const tick = (now: number) => {
