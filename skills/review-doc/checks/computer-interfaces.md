@@ -12,7 +12,7 @@ Finish every Scan on the whole page. Classify each instance: violation, skip, or
 
 - **Scan:** the line immediately before each fence
 - **Finding if:** the intro is missing or is not a complete sentence
-- **Skip if:** the fence is a child of `<CodeGroup>` whose intro is on the group
+- **Skip if:** the fence is a child of `<CodeGroup>` whose intro is on the group; the fence is the first content of a labelled container (`<Step title="…">`, `<Accordion title="…">`, fence `title="…"`) whose label already says what the code does
 
 ### placeholders
 
