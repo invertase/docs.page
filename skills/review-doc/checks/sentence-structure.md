@@ -12,4 +12,4 @@ Finish every Scan on the whole page. Classify each instance: violation, skip, or
 
 - **Scan:** sentences that bury the verb after a long setup
 - **Finding if:** the main subject and verb are not near the start, and the sentence is an instruction or a description of product behavior
-- **Skip if:** a short sentence that is already subject + verb + object
+- **Skip if:** a short sentence that is already subject + verb + object; a leading `if` / `when` / `after` / `to` / `for` clause that the rest of the sentence depends on — `condition-first` requires that order and wins; still a finding if that clause could stand on its own as a separate sentence
