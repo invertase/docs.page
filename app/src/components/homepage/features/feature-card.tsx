@@ -36,14 +36,6 @@ const STAGE_STACK_CLEARANCE_INSET_CLASS = "bottom-20";
  * without a large empty gap.
  */
 const STAGE_MOBILE_WASH_PAD_CLASS = "h-24";
-/**
- * Soft lift along the top fold so stacked cards read as separate layers
- * (wash still runs under the next dog-ear). Applied on a sibling caster —
- * clip-path eats box-shadow, and filtering the shell would re-rasterize
- * the honey canvas every frame.
- */
-const STAGE_STACK_LIFT_FILTER =
-  "drop-shadow(0 -1px 2px rgb(0 0 0 / 0.7)) drop-shadow(0 -8px 14px rgb(0 0 0 / 0.45))";
 
 type FeatureCardProps = PropsWithChildren<{
   title: React.ReactNode;
@@ -86,19 +78,9 @@ export function FeatureCard({
   return (
     <div
       data-stack-card
-      className={cn(PAPER_SECTION_OVERLAP_CLASS, "relative sticky")}
+      className={cn(PAPER_SECTION_OVERLAP_CLASS, "sticky")}
       style={{ top: `${index}rem`, zIndex: index + 1 }}
     >
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10"
-        style={{ filter: STAGE_STACK_LIFT_FILTER }}
-      >
-        <div
-          className="absolute inset-0 bg-black"
-          style={{ clipPath: paperCornerClipPath() }}
-        />
-      </div>
       <div
         className={cn(
           PAPER_SECTION_SHELL_CLASS,
