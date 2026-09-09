@@ -14,6 +14,7 @@ Work one page at a time. `checks/` and `logs/` are relative to this skill; `docs
 - Do not invent pages, procedure steps, prerequisites, audience, or information architecture.
 - Do not convert between equivalent docs.page forms (`<Info>` ↔ GitHub alerts; `![alt](src)` ↔ `<Image>`; `<Property>` ↔ a short markdown table; `<Tabs>` / `<TabItem>` naming).
 - Do not apply a fix that would make the page worse.
+- Do not apply a heading rewrite when another page links to that heading as an anchor (`/page#slug`) — the new wording changes the slug and breaks every inbound link. Report the finding and leave the heading; the publisher renames it and the links together.
 - If the live page already shows steps, callouts, tabs, cards, or images, re-fetch raw MDX — missing tags in converted HTML are not findings.
 
 ## Loop
