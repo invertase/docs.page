@@ -19,6 +19,12 @@ import { FeatureDotField } from "./feature-dot-field";
 const STAGE_MEDIA_INSET_CLASS = "p-8 lg:p-12";
 /** Agent-ready capture is 1900×1080; keep the inner box matching so contain === cover. */
 const STAGE_MEDIA_ASPECT_CLASS = "aspect-[1900/1080]";
+/**
+ * Next paper card uses `-mt-20` (the dog-ear fold). Staged cards must clear that
+ * overlap or the fill, divider, and bottom media inset sit under the next card.
+ */
+const STAGE_STACK_CLEARANCE_CLASS = "pb-20";
+const STAGE_STACK_CLEARANCE_INSET_CLASS = "bottom-20";
 
 type FeatureCardProps = PropsWithChildren<{
   title: React.ReactNode;
@@ -68,14 +74,19 @@ export function FeatureCard({
         className={cn(
           PAPER_SECTION_SHELL_CLASS,
           "bg-black",
-          !stage && "pb-20 lg:pb-40",
+          stage ? STAGE_STACK_CLEARANCE_CLASS : "pb-20 lg:pb-40",
         )}
         style={{ clipPath: paperCornerClipPath() }}
       >
         <PaperCorner />
         {stage ? (
           <>
-            <div className="pointer-events-none absolute inset-y-0 right-0 hidden overflow-hidden border-l border-periwinkle-500 bg-periwinkle-500/10 lg:block lg:left-[calc(100%*2.5/6)]">
+            <div
+              className={cn(
+                "pointer-events-none absolute top-0 right-0 hidden overflow-hidden border-l border-periwinkle-500 bg-periwinkle-500/10 lg:block lg:left-[calc(100%*2.5/6)]",
+                STAGE_STACK_CLEARANCE_INSET_CLASS,
+              )}
+            >
               <FeatureDotField />
             </div>
             <div className="relative grid min-h-0 grid-cols-1 lg:grid-cols-[minmax(0,2.5fr)_minmax(0,3.5fr)]">
@@ -86,7 +97,7 @@ export function FeatureCard({
               <div className="flex flex-col justify-center gap-4 space-y-6 px-8 py-16 lg:absolute lg:inset-y-0 lg:left-0 lg:z-1 lg:w-[calc(100%*2.5/6)] lg:px-12 lg:pl-32 lg:py-0">
                 {copy}
               </div>
-              <div className="relative min-h-0 overflow-hidden border-l border-periwinkle-500 bg-periwinkle-500/10 lg:col-start-2 lg:border-0 lg:bg-transparent">
+              <div className="relative min-h-0 border-l border-periwinkle-500 bg-periwinkle-500/10 lg:col-start-2 lg:border-0 lg:bg-transparent">
                 <div className="lg:hidden">
                   <FeatureDotField />
                 </div>
