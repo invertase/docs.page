@@ -84,6 +84,16 @@
   }
 }
 
+/** Soft periwinkle wash — brighter centre, fades to the rim. */
+.homepage-feature-stage-wash {
+  background-image: radial-gradient(
+    ellipse 78% 68% at 50% 46%,
+    color-mix(in srgb, var(--color-periwinkle-500) 18%, transparent) 0%,
+    color-mix(in srgb, var(--color-periwinkle-500) 10%, transparent) 46%,
+    color-mix(in srgb, var(--color-periwinkle-500) 3%, transparent) 100%
+  );
+}
+
 .homepage-spot-glow {
   position: fixed;
   inset: 0;

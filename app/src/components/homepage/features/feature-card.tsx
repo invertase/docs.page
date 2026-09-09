@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { PropsWithChildren } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "../../ui/button";
+import styles from "../homepage.module.css";
 import {
   PAPER_SECTION_OVERLAP_CLASS,
   PAPER_SECTION_SHELL_CLASS,
@@ -17,7 +18,11 @@ import { FeatureDotField } from "./feature-dot-field";
  * (no leftover column letterbox, no clip against the card).
  */
 const STAGE_MEDIA_INSET_CLASS = "p-8 lg:p-12";
-/** Agent-ready capture is 1900×1080; keep the inner box matching so contain === cover. */
+/**
+ * Feature videos are 1900×1080 (search/markdown are 1904×1080). Keep the
+ * inner box matching so contain ≈ cover for video. Wider stills letterbox
+ * into the periwinkle wash rather than cropping.
+ */
 const STAGE_MEDIA_ASPECT_CLASS = "aspect-[1900/1080]";
 /**
  * Next paper card uses `-mt-20` (the dog-ear fold). Desktop fill pins to
@@ -32,6 +37,8 @@ const STAGE_STACK_CLEARANCE_INSET_CLASS = "bottom-20";
  * without a large empty gap.
  */
 const STAGE_MOBILE_WASH_PAD_CLASS = "h-24";
+/** Shared radial periwinkle wash — desktop column + mobile media panel. */
+const STAGE_WASH_CLASS = styles["homepage-feature-stage-wash"];
 
 type FeatureCardProps = PropsWithChildren<{
   title: React.ReactNode;
@@ -90,11 +97,12 @@ export function FeatureCard({
           <>
             <div
               className={cn(
-                "pointer-events-none absolute top-0 right-0 hidden overflow-hidden border-l border-border bg-periwinkle-500/10 lg:block lg:left-[calc(100%*2.5/6)]",
+                "pointer-events-none absolute top-0 right-0 isolate hidden overflow-hidden border-l border-border lg:block lg:left-[calc(100%*2.5/6)]",
+                STAGE_WASH_CLASS,
                 STAGE_STACK_CLEARANCE_INSET_CLASS,
               )}
             >
-              <FeatureDotField />
+              <FeatureDotField seed={index} />
             </div>
             <div className="relative grid min-h-0 overflow-visible grid-cols-1 lg:grid-cols-[minmax(0,2.5fr)_minmax(0,3.5fr)]">
               {/*
@@ -113,8 +121,13 @@ export function FeatureCard({
                 card’s overlapping dog-ear (no hard seam above the fold).
               */}
               <div className="relative min-h-0 overflow-visible border-t border-border lg:col-start-2 lg:border-0 lg:bg-transparent">
-                <div className="absolute inset-0 bg-periwinkle-500/10 lg:hidden">
-                  <FeatureDotField />
+                <div
+                  className={cn(
+                    "absolute inset-0 isolate overflow-hidden lg:hidden",
+                    STAGE_WASH_CLASS,
+                  )}
+                >
+                  <FeatureDotField seed={index} />
                 </div>
                 <div
                   className={cn("relative z-1 w-full", STAGE_MEDIA_INSET_CLASS)}
@@ -123,8 +136,10 @@ export function FeatureCard({
                     className={cn(
                       "relative w-full min-w-0",
                       STAGE_MEDIA_ASPECT_CLASS,
-                      "[&_img]:absolute [&_img]:inset-0 [&_img]:size-full [&_img]:object-contain",
-                      "[&_video]:absolute [&_video]:inset-0 [&_video]:size-full [&_video]:object-contain",
+                      // Direct FeatureMedia children only — do not pierce
+                      // composite visuals (Modern Interface preset shots).
+                      "[&>*>img]:absolute [&>*>img]:inset-0 [&>*>img]:size-full [&>*>img]:object-contain",
+                      "[&>*>video]:absolute [&>*>video]:inset-0 [&>*>video]:size-full [&>*>video]:object-contain",
                     )}
                   >
                     {children}

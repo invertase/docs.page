@@ -15,9 +15,10 @@ const CELL = 22;
  * both rings of the active side light so the wash reads at a glance.
  */
 const EDGE = 2;
-/** Travelling bloom width, in cells — wide enough to blend, not orb-sized. */
-const PULSE_SIGMA = 3.15;
-const CELLS_PER_SEC = 8;
+/** Travelling bloom width, in cells — wider than the old 3.15 so the peak blends. */
+const PULSE_SIGMA = 4.5;
+/** Head speed; seed multiplies ~0.90–1.10 so cards stay ~12.6–15.4 cells/sec. */
+const CELLS_PER_SEC = 14;
 /** Honey `#E69135` — brand token, not a new colour. */
 const HONEY_RGB = "230, 145, 53";
 
@@ -39,8 +40,6 @@ function honey(alpha: number) {
 
 function drawDot(
   ctx: CanvasRenderingContext2D,
-  left: number,
-  top: number,
   gx: number,
   gy: number,
   r: number,
@@ -48,31 +47,55 @@ function drawDot(
 ) {
   ctx.beginPath();
   ctx.fillStyle = honey(alpha);
-  ctx.arc(
-    gx * CELL + CELL / 2 - left,
-    gy * CELL + CELL / 2 - top,
-    r,
-    0,
-    Math.PI * 2,
-  );
+  ctx.arc(gx * CELL + CELL / 2, gy * CELL + CELL / 2, r, 0, Math.PI * 2);
   ctx.fill();
 }
 
+/** Lattice in the field’s own box — not viewport cells — so it scrolls with the card. */
 function bounds(el: HTMLElement) {
-  const rect = el.getBoundingClientRect();
-  const minX = Math.floor(rect.left / CELL);
-  const minY = Math.floor(rect.top / CELL);
-  const maxX = Math.ceil(rect.right / CELL) - 1;
-  const maxY = Math.ceil(rect.bottom / CELL) - 1;
-  return { rect, minX, minY, maxX, maxY };
+  const width = el.clientWidth;
+  const height = el.clientHeight;
+  return {
+    minX: 0,
+    minY: 0,
+    maxX: Math.max(0, Math.ceil(width / CELL) - 1),
+    maxY: Math.max(0, Math.ceil(height / CELL) - 1),
+  };
 }
 
-function pickRun(el: HTMLElement, horizontal: boolean, avoid?: Run): Run {
+/** Deterministic 0–1 from a per-card seed so reloads keep the same motion. */
+function hashSeed(seed: number | string): number {
+  const str = String(seed);
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+function mulberry32(seed: number) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function pickRun(
+  el: HTMLElement,
+  horizontal: boolean,
+  rand: () => number,
+  avoid?: Run,
+): Run {
   const { minX, minY, maxX, maxY } = bounds(el);
-  const dir: 1 | -1 = Math.random() < 0.5 ? 1 : -1;
+  const dir: 1 | -1 = rand() < 0.5 ? 1 : -1;
   const flip = avoid && avoid.horizontal === horizontal;
   if (horizontal) {
-    let top = Math.random() < 0.5;
+    let top = rand() < 0.5;
     if (flip && avoid) top = avoid.axis0 !== minY;
     return {
       horizontal,
@@ -84,7 +107,7 @@ function pickRun(el: HTMLElement, horizontal: boolean, avoid?: Run): Run {
       start: dir === 1 ? minX : maxX,
     };
   }
-  let left = Math.random() < 0.5;
+  let left = rand() < 0.5;
   if (flip && avoid) left = avoid.axis0 !== minX;
   return {
     horizontal,
@@ -101,11 +124,6 @@ function bloom(dist: number) {
   return Math.exp(-(dist * dist) / (2 * PULSE_SIGMA * PULSE_SIGMA));
 }
 
-function smoothstep(t: number) {
-  const u = Math.min(1, Math.max(0, t));
-  return u * u * (3 - 2 * u);
-}
-
 function travelCells(run: Run) {
   return run.to - run.from + PULSE_SIGMA * 4;
 }
@@ -113,6 +131,12 @@ function travelCells(run: Run) {
 export type FeatureDotFieldProps = {
   /** Extra classes on the absolute-fill wrapper. */
   className?: string;
+  /**
+   * Stable per-card seed (feature index). Desktop + mobile washes on the
+   * same card must share this so one card stays internally consistent.
+   * Derives phase, lead axis, speed, and the rim-run sequence.
+   */
+  seed?: number | string;
 };
 
 /**
@@ -120,10 +144,11 @@ export type FeatureDotFieldProps = {
  * blooms that pulse along rim strips (one H, one V; both EDGE rings).
  * `prefers-reduced-motion` keeps a gentle in-place pulse.
  *
- * Positioned `absolute inset-0` — drop behind any feature visual. Prefer
+ * Lattice and spot-grid are local to this box (not viewport-fixed) so they
+ * travel with the sticky paper card. Positioned `absolute inset-0`. Prefer
  * {@link FeatureStage} when you also need the stacking wrapper.
  */
-export function FeatureDotField({ className }: FeatureDotFieldProps) {
+export function FeatureDotField({ className, seed = 0 }: FeatureDotFieldProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -136,68 +161,79 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
     if (!ctx) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    // Motion params and rim-run sequence use separate streams so a
+    // layout() re-seed does not replay the phase/speed draws as edges.
+    const motion = mulberry32(hashSeed(seed));
+    const cellsPerSec = CELLS_PER_SEC * (0.9 + motion() * 0.2);
+    const leadHorizontal = motion() < 0.5;
+    const phase0 = motion();
+    const phase1 = motion();
+    const restPhase = motion() * Math.PI * 2;
+    const makeRunRng = () => mulberry32(hashSeed(seed) ^ 0x9e3779b9);
+    let rand = makeRunRng();
+
     type Pulse = { run: Run; started: number };
+    const firstRun = pickRun(root, leadHorizontal, rand);
     const pulses: Pulse[] = [
-      { run: pickRun(root, true), started: 0 },
-      { run: pickRun(root, false), started: 0 },
+      { run: firstRun, started: 0 },
+      { run: pickRun(root, !leadHorizontal, rand, firstRun), started: 0 },
     ];
     let raf = 0;
     let visible = true;
 
-    const paintRun = (run: Run, head: number, rect: DOMRect) => {
+    const paintRun = (run: Run, head: number) => {
       for (let depth = 0; depth < EDGE; depth++) {
         const axis = run.axis0 + run.inward * depth;
         const falloff = 1 - depth * 0.12;
         for (let i = run.from; i <= run.to; i++) {
           const b = bloom(i - head) * falloff;
-          if (b < 0.012) continue;
+          if (b < 0.008) continue;
           const gx = run.horizontal ? i : axis;
           const gy = run.horizontal ? axis : i;
-          const r = 1.25 + b * 0.28;
-          const a = 0.16 + b * 0.52;
-          drawDot(ctx, rect.left, rect.top, gx, gy, r * 1.55, a * 0.16);
-          drawDot(ctx, rect.left, rect.top, gx, gy, r, a);
+          const soft = b * b * (3 - 2 * b);
+          const r = 1.2 + soft * 0.32;
+          const a = 0.1 + soft * 0.42;
+          drawDot(ctx, gx, gy, r * 1.55, a * 0.16);
+          drawDot(ctx, gx, gy, r, a);
         }
       }
     };
 
+    const durationOf = (run: Run) => (travelCells(run) / cellsPerSec) * 1000;
+
     const headOf = (pulse: Pulse, now: number) => {
       const travel = travelCells(pulse.run);
-      const duration = (travel / CELLS_PER_SEC) * 1000;
-      const e = smoothstep((now - pulse.started) / duration);
+      const e = Math.min(
+        1,
+        Math.max(0, (now - pulse.started) / durationOf(pulse.run)),
+      );
       return pulse.run.start + pulse.run.dir * e * travel;
     };
 
     const pastEnd = (pulse: Pulse, now: number) => {
-      const travel = travelCells(pulse.run);
-      const duration = (travel / CELLS_PER_SEC) * 1000;
-      return now - pulse.started >= duration;
+      return now - pulse.started >= durationOf(pulse.run);
     };
 
     const paintTravel = (now: number) => {
-      const { rect } = bounds(root);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       if (pulses[0]!.started === 0) {
-        pulses[0]!.started = now;
-        const span = (travelCells(pulses[1]!.run) / CELLS_PER_SEC) * 1000;
-        pulses[1]!.started = now - span * 0.45;
+        pulses[0]!.started = now - durationOf(pulses[0]!.run) * phase0;
+        pulses[1]!.started = now - durationOf(pulses[1]!.run) * phase1;
       }
       for (let n = 0; n < pulses.length; n++) {
         const pulse = pulses[n]!;
         const other = pulses[1 - n]!;
         if (pastEnd(pulse, now)) {
-          pulse.run = pickRun(root, !pulse.run.horizontal, other.run);
+          pulse.run = pickRun(root, !pulse.run.horizontal, rand, other.run);
           pulse.started = now;
         }
-        const head = headOf(pulse, now);
-        paintRun(pulse.run, head, rect);
+        paintRun(pulse.run, headOf(pulse, now));
       }
     };
 
     const paintRest = (now: number) => {
-      const { rect } = bounds(root);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const pulse = 0.28 + 0.28 * (0.5 + 0.5 * Math.sin(now / 900));
+      const pulse = 0.26 + 0.22 * (0.5 + 0.5 * Math.sin(now / 720 + restPhase));
       for (const item of pulses) {
         const mid = ((item.run.from + item.run.to) / 2) | 0;
         for (let depth = 0; depth < EDGE; depth++) {
@@ -206,8 +242,8 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
             if (i < item.run.from || i > item.run.to) continue;
             const gx = item.run.horizontal ? i : axis;
             const gy = item.run.horizontal ? axis : i;
-            drawDot(ctx, rect.left, rect.top, gx, gy, 2.1, pulse * 0.18);
-            drawDot(ctx, rect.left, rect.top, gx, gy, 1.5, pulse);
+            drawDot(ctx, gx, gy, 2.1, pulse * 0.18);
+            drawDot(ctx, gx, gy, 1.5, pulse);
           }
         }
       }
@@ -221,8 +257,12 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      pulses[0] = { run: pickRun(root, true), started: 0 };
-      pulses[1] = { run: pickRun(root, false, pulses[0].run), started: 0 };
+      rand = makeRunRng();
+      pulses[0] = { run: pickRun(root, leadHorizontal, rand), started: 0 };
+      pulses[1] = {
+        run: pickRun(root, !leadHorizontal, rand, pulses[0].run),
+        started: 0,
+      };
     };
 
     const tick = (now: number) => {
@@ -251,7 +291,7 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
       ro.disconnect();
       io.disconnect();
     };
-  }, []);
+  }, [seed]);
 
   return (
     <div
@@ -268,7 +308,7 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
           {
             "--homepage-dot-color": "white",
             "--homepage-dot-mix": "8%",
-            "--homepage-dot-attachment": "fixed",
+            "--homepage-dot-attachment": "scroll",
             "--homepage-dot-position": "0 0",
           } as CSSProperties
         }
@@ -280,6 +320,7 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
 
 export type FeatureStageProps = PropsWithChildren<{
   className?: string;
+  seed?: number | string;
 }>;
 
 /**
@@ -287,10 +328,10 @@ export type FeatureStageProps = PropsWithChildren<{
  * Parent must be `position: relative`. Later feature-visual PRs wrap their
  * media in this — do not fork the pulse.
  */
-export function FeatureStage({ children, className }: FeatureStageProps) {
+export function FeatureStage({ children, className, seed }: FeatureStageProps) {
   return (
     <>
-      <FeatureDotField className={className} />
+      <FeatureDotField className={className} seed={seed} />
       <div className="relative z-1 w-full">{children}</div>
     </>
   );
