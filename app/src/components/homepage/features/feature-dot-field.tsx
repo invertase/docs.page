@@ -15,9 +15,10 @@ const CELL = 22;
  * both rings of the active side light so the wash reads at a glance.
  */
 const EDGE = 2;
-/** Travelling bloom width, in cells — wide enough to blend, not orb-sized. */
-const PULSE_SIGMA = 3.15;
-const CELLS_PER_SEC = 8;
+/** Travelling bloom width, in cells — wider than the old 3.15 so the peak blends. */
+const PULSE_SIGMA = 4.5;
+/** Head speed; seed multiplies ~0.90–1.10 so cards stay ~12.6–15.4 cells/sec. */
+const CELLS_PER_SEC = 14;
 /** Honey `#E69135` — brand token, not a new colour. */
 const HONEY_RGB = "230, 145, 53";
 
@@ -123,11 +124,6 @@ function bloom(dist: number) {
   return Math.exp(-(dist * dist) / (2 * PULSE_SIGMA * PULSE_SIGMA));
 }
 
-function smoothstep(t: number) {
-  const u = Math.min(1, Math.max(0, t));
-  return u * u * (3 - 2 * u);
-}
-
 function travelCells(run: Run) {
   return run.to - run.from + PULSE_SIGMA * 4;
 }
@@ -168,7 +164,7 @@ export function FeatureDotField({ className, seed = 0 }: FeatureDotFieldProps) {
     // Motion params and rim-run sequence use separate streams so a
     // layout() re-seed does not replay the phase/speed draws as edges.
     const motion = mulberry32(hashSeed(seed));
-    const cellsPerSec = CELLS_PER_SEC * (0.86 + motion() * 0.28);
+    const cellsPerSec = CELLS_PER_SEC * (0.9 + motion() * 0.2);
     const leadHorizontal = motion() < 0.5;
     const phase0 = motion();
     const phase1 = motion();
@@ -191,11 +187,12 @@ export function FeatureDotField({ className, seed = 0 }: FeatureDotFieldProps) {
         const falloff = 1 - depth * 0.12;
         for (let i = run.from; i <= run.to; i++) {
           const b = bloom(i - head) * falloff;
-          if (b < 0.012) continue;
+          if (b < 0.008) continue;
           const gx = run.horizontal ? i : axis;
           const gy = run.horizontal ? axis : i;
-          const r = 1.25 + b * 0.28;
-          const a = 0.16 + b * 0.52;
+          const soft = b * b * (3 - 2 * b);
+          const r = 1.2 + soft * 0.32;
+          const a = 0.1 + soft * 0.42;
           drawDot(ctx, gx, gy, r * 1.55, a * 0.16);
           drawDot(ctx, gx, gy, r, a);
         }
@@ -206,7 +203,10 @@ export function FeatureDotField({ className, seed = 0 }: FeatureDotFieldProps) {
 
     const headOf = (pulse: Pulse, now: number) => {
       const travel = travelCells(pulse.run);
-      const e = smoothstep((now - pulse.started) / durationOf(pulse.run));
+      const e = Math.min(
+        1,
+        Math.max(0, (now - pulse.started) / durationOf(pulse.run)),
+      );
       return pulse.run.start + pulse.run.dir * e * travel;
     };
 
@@ -233,7 +233,7 @@ export function FeatureDotField({ className, seed = 0 }: FeatureDotFieldProps) {
 
     const paintRest = (now: number) => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const pulse = 0.28 + 0.28 * (0.5 + 0.5 * Math.sin(now / 900 + restPhase));
+      const pulse = 0.26 + 0.22 * (0.5 + 0.5 * Math.sin(now / 720 + restPhase));
       for (const item of pulses) {
         const mid = ((item.run.from + item.run.to) / 2) | 0;
         for (let depth = 0; depth < EDGE; depth++) {
