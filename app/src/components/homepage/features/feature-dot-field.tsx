@@ -10,75 +10,25 @@ import { cn } from "@/lib/utils";
 import styles from "../homepage.module.css";
 
 const CELL = 22;
-const TRAIL = 7;
-/** Time to glide one lattice cell — interpolated, not a discrete hop. */
-const STEP_MS = 280;
 /**
- * How many lattice cells from the stage rim the trail may occupy.
- * 2 × 22px ≈ the lg:p-12 media inset, so the snake stays in the wash.
+ * How many lattice cells from the stage rim a pulse may occupy.
+ * 2 × 22px ≈ the lg:p-12 media inset, so highlights stay in the wash.
  */
 const EDGE = 2;
+/** Travelling bloom width, in cells. */
+const PULSE_SIGMA = 1.55;
+const CELLS_PER_SEC = 5.2;
 /** Honey `#E69135` — brand token, not a new colour. */
 const HONEY_RGB = "230, 145, 53";
 
-type Pt = readonly [number, number];
-
-const DIRS: Pt[] = [
-  [1, 0],
-  [-1, 0],
-  [0, 1],
-  [0, -1],
-];
-
-function same(a: Pt, b: Pt) {
-  return a[0] === b[0] && a[1] === b[1];
-}
-
-function onRim(
-  x: number,
-  y: number,
-  minX: number,
-  minY: number,
-  maxX: number,
-  maxY: number,
-  edge: number,
-) {
-  return (
-    x <= minX + edge - 1 ||
-    x >= maxX - edge + 1 ||
-    y <= minY + edge - 1 ||
-    y >= maxY - edge + 1
-  );
-}
-
-function pickDir(
-  dir: Pt,
-  x: number,
-  y: number,
-  minX: number,
-  minY: number,
-  maxX: number,
-  maxY: number,
-): Pt {
-  const fits = ([dx, dy]: Pt) => {
-    const nx = x + dx;
-    const ny = y + dy;
-    return (
-      nx >= minX &&
-      ny >= minY &&
-      nx <= maxX &&
-      ny <= maxY &&
-      onRim(nx, ny, minX, minY, maxX, maxY, EDGE)
-    );
-  };
-  const opposite: Pt = [-dir[0], -dir[1]];
-  const turns = DIRS.filter(
-    (d) => !same(d, dir) && !same(d, opposite) && fits(d),
-  );
-  if (fits(dir) && (turns.length === 0 || Math.random() > 0.28)) return dir;
-  if (turns.length) return turns[(Math.random() * turns.length) | 0]!;
-  return fits(opposite) ? opposite : dir;
-}
+type Run = {
+  horizontal: boolean;
+  axis: number;
+  from: number;
+  to: number;
+  dir: 1 | -1;
+  start: number;
+};
 
 function honey(alpha: number) {
   return `rgba(${HONEY_RGB}, ${alpha})`;
@@ -114,16 +64,35 @@ function bounds(el: HTMLElement) {
   return { rect, minX, minY, maxX, maxY };
 }
 
+function pickRun(el: HTMLElement, horizontal: boolean): Run {
+  const { minX, minY, maxX, maxY } = bounds(el);
+  const depth = (Math.random() * EDGE) | 0;
+  const dir: 1 | -1 = Math.random() < 0.5 ? 1 : -1;
+  if (horizontal) {
+    const axis = Math.random() < 0.5 ? minY + depth : maxY - depth;
+    const from = minX;
+    const to = maxX;
+    return { horizontal, axis, from, to, dir, start: dir === 1 ? from : to };
+  }
+  const axis = Math.random() < 0.5 ? minX + depth : maxX - depth;
+  const from = minY;
+  const to = maxY;
+  return { horizontal, axis, from, to, dir, start: dir === 1 ? from : to };
+}
+
+function bloom(dist: number) {
+  return Math.exp(-(dist * dist) / (2 * PULSE_SIGMA * PULSE_SIGMA));
+}
+
 export type FeatureDotFieldProps = {
   /** Extra classes on the absolute-fill wrapper. */
   className?: string;
 };
 
 /**
- * Shared feature-stage backdrop: the homepage spot-grid (same cell / mix /
- * fixed rhythm as `.homepage-spot-grid`) plus a short honey trail that
- * glides the outer two lattice cells (the media inset / frame).
- * Frozen when the user prefers reduced motion.
+ * Shared feature-stage backdrop: the homepage spot-grid plus honey dots that
+ * pulse along one horizontal or vertical rim run (outer two lattice cells).
+ * `prefers-reduced-motion` keeps a gentle in-place pulse.
  *
  * Positioned `absolute inset-0` — drop behind any feature visual. Prefer
  * {@link FeatureStage} when you also need the stacking wrapper.
@@ -141,59 +110,45 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
     if (!ctx) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let x = 0;
-    let y = 0;
-    let dir: Pt = DIRS[0]!;
-    let trail: Pt[] = [];
-    let last = 0;
+    let run = pickRun(root, Math.random() < 0.5);
+    let runStarted = 0;
     let raf = 0;
     let visible = true;
 
-    const paint = (progress: number) => {
+    const paintTravel = (now: number) => {
       const { rect } = bounds(root);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const p = Math.min(1, Math.max(0, progress));
-      trail.forEach((to, i) => {
-        const from = trail[i + 1] ?? to;
-        const gx = from[0] + (to[0] - from[0]) * p;
-        const gy = from[1] + (to[1] - from[1]) * p;
-        const t = 1 - i / TRAIL;
-        drawDot(
-          ctx,
-          rect.left,
-          rect.top,
-          gx,
-          gy,
-          1.15 + t * 0.45,
-          0.22 + t * 0.78,
-        );
-      });
+      if (runStarted === 0) runStarted = now;
+      let head =
+        run.start + run.dir * ((now - runStarted) / 1000) * CELLS_PER_SEC;
+      const past =
+        run.dir === 1
+          ? head > run.to + PULSE_SIGMA * 2
+          : head < run.from - PULSE_SIGMA * 2;
+      if (past) {
+        run = pickRun(root, !run.horizontal);
+        runStarted = now;
+        head = run.start;
+      }
+      for (let i = run.from; i <= run.to; i++) {
+        const b = bloom(i - head);
+        if (b < 0.05) continue;
+        const gx = run.horizontal ? i : run.axis;
+        const gy = run.horizontal ? run.axis : i;
+        drawDot(ctx, rect.left, rect.top, gx, gy, 1.1 + b * 0.7, 0.1 + b * 0.9);
+      }
     };
 
-    const seed = () => {
-      const { minX, minY, maxX, maxY } = bounds(root);
-      const depth = (Math.random() * EDGE) | 0;
-      const side = (Math.random() * 4) | 0;
-      if (side === 0) {
-        x = minX + ((Math.random() * (maxX - minX + 1)) | 0);
-        y = minY + depth;
-      } else if (side === 1) {
-        x = maxX - depth;
-        y = minY + ((Math.random() * (maxY - minY + 1)) | 0);
-      } else if (side === 2) {
-        x = minX + ((Math.random() * (maxX - minX + 1)) | 0);
-        y = maxY - depth;
-      } else {
-        x = minX + depth;
-        y = minY + ((Math.random() * (maxY - minY + 1)) | 0);
-      }
-      dir = DIRS[(Math.random() * DIRS.length) | 0]!;
-      trail = [[x, y]];
-      for (let i = 1; i < TRAIL; i++) {
-        dir = pickDir(dir, x, y, minX, minY, maxX, maxY);
-        x += dir[0];
-        y += dir[1];
-        trail.unshift([x, y]);
+    const paintRest = (now: number) => {
+      const { rect } = bounds(root);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const pulse = 0.28 + 0.32 * (0.5 + 0.5 * Math.sin(now / 900));
+      const mid = ((run.from + run.to) / 2) | 0;
+      for (const i of [mid - 2, mid, mid + 2]) {
+        if (i < run.from || i > run.to) continue;
+        const gx = run.horizontal ? i : run.axis;
+        const gy = run.horizontal ? run.axis : i;
+        drawDot(ctx, rect.left, rect.top, gx, gy, 1.25, pulse);
       }
     };
 
@@ -205,56 +160,22 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      seed();
-      paint(1);
-    };
-
-    const step = () => {
-      const { minX, minY, maxX, maxY } = bounds(root);
-      if (!onRim(x, y, minX, minY, maxX, maxY, EDGE)) {
-        const toLeft = x - minX;
-        const toRight = maxX - x;
-        const toTop = y - minY;
-        const toBottom = maxY - y;
-        const nearest = Math.min(toLeft, toRight, toTop, toBottom);
-        if (nearest === toLeft) x = minX + EDGE - 1;
-        else if (nearest === toRight) x = maxX - EDGE + 1;
-        else if (nearest === toTop) y = minY + EDGE - 1;
-        else y = maxY - EDGE + 1;
-      }
-      dir = pickDir(dir, x, y, minX, minY, maxX, maxY);
-      x += dir[0];
-      y += dir[1];
-      trail.unshift([x, y]);
-      trail.length = TRAIL;
+      run = pickRun(root, run.horizontal);
+      runStarted = 0;
     };
 
     const tick = (now: number) => {
-      if (visible && !reduced.matches) {
-        if (last === 0) last = now;
-        const progress = Math.min(1, (now - last) / STEP_MS);
-        paint(progress);
-        if (progress >= 1) {
-          last = now;
-          step();
-        }
+      if (visible) {
+        if (reduced.matches) paintRest(now);
+        else paintTravel(now);
       }
-      raf = requestAnimationFrame(tick);
-    };
-
-    const syncMotion = () => {
-      cancelAnimationFrame(raf);
-      if (reduced.matches) {
-        paint(1);
-        return;
-      }
-      last = 0;
       raf = requestAnimationFrame(tick);
     };
 
     const ro = new ResizeObserver(layout);
     ro.observe(root);
     layout();
+    raf = requestAnimationFrame(tick);
 
     const io = new IntersectionObserver(
       ([entry]) => {
@@ -264,14 +185,10 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
     );
     io.observe(root);
 
-    reduced.addEventListener("change", syncMotion);
-    syncMotion();
-
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
       io.disconnect();
-      reduced.removeEventListener("change", syncMotion);
     };
   }, []);
 
@@ -305,9 +222,9 @@ export type FeatureStageProps = PropsWithChildren<{
 }>;
 
 /**
- * Right-panel feature stage: lattice + honey trail behind a floating visual.
+ * Right-panel feature stage: lattice + honey pulse behind a floating visual.
  * Parent must be `position: relative`. Later feature-visual PRs wrap their
- * media in this — do not fork the trail.
+ * media in this — do not fork the pulse.
  */
 export function FeatureStage({ children, className }: FeatureStageProps) {
   return (
