@@ -27,10 +27,11 @@ const STAGE_MEDIA_ASPECT_CLASS = "aspect-[1900/1080]";
 const STAGE_STACK_CLEARANCE_CLASS = "lg:pb-20";
 const STAGE_STACK_CLEARANCE_INSET_CLASS = "bottom-20";
 /**
- * In-flow mobile spacer below the visual. Taller than the next card’s
- * `-mt-20` fold so the inset-0 wash runs under Git Publishing (no black seam).
+ * In-flow mobile spacer below the visual. Just over the next card’s
+ * `-mt-20` fold (5rem) so the inset-0 wash still runs under Git Publishing
+ * without a large empty gap.
  */
-const STAGE_MOBILE_WASH_PAD_CLASS = "h-40";
+const STAGE_MOBILE_WASH_PAD_CLASS = "h-24";
 
 type FeatureCardProps = PropsWithChildren<{
   title: React.ReactNode;
