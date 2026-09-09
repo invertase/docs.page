@@ -11,19 +11,22 @@ import styles from "../homepage.module.css";
 
 const CELL = 22;
 /**
- * How many lattice cells from the stage rim a pulse may occupy.
- * 2 × 22px ≈ the lg:p-12 media inset, so highlights stay in the wash.
+ * Rim band depth in lattice cells. 2 × 22px sits in the lg:p-12 inset;
+ * both rings of the active side light so the wash reads at a glance.
  */
 const EDGE = 2;
 /** Travelling bloom width, in cells. */
-const PULSE_SIGMA = 1.55;
-const CELLS_PER_SEC = 5.2;
+const PULSE_SIGMA = 2.8;
+const CELLS_PER_SEC = 4;
 /** Honey `#E69135` — brand token, not a new colour. */
 const HONEY_RGB = "230, 145, 53";
 
 type Run = {
   horizontal: boolean;
-  axis: number;
+  /** Outer-rim cell on the chosen side. */
+  axis0: number;
+  /** +1 / −1 toward the stage interior. */
+  inward: 1 | -1;
   from: number;
   to: number;
   dir: 1 | -1;
@@ -66,18 +69,29 @@ function bounds(el: HTMLElement) {
 
 function pickRun(el: HTMLElement, horizontal: boolean): Run {
   const { minX, minY, maxX, maxY } = bounds(el);
-  const depth = (Math.random() * EDGE) | 0;
   const dir: 1 | -1 = Math.random() < 0.5 ? 1 : -1;
   if (horizontal) {
-    const axis = Math.random() < 0.5 ? minY + depth : maxY - depth;
-    const from = minX;
-    const to = maxX;
-    return { horizontal, axis, from, to, dir, start: dir === 1 ? from : to };
+    const top = Math.random() < 0.5;
+    return {
+      horizontal,
+      axis0: top ? minY : maxY,
+      inward: top ? 1 : -1,
+      from: minX,
+      to: maxX,
+      dir,
+      start: dir === 1 ? minX : maxX,
+    };
   }
-  const axis = Math.random() < 0.5 ? minX + depth : maxX - depth;
-  const from = minY;
-  const to = maxY;
-  return { horizontal, axis, from, to, dir, start: dir === 1 ? from : to };
+  const left = Math.random() < 0.5;
+  return {
+    horizontal,
+    axis0: left ? minX : maxX,
+    inward: left ? 1 : -1,
+    from: minY,
+    to: maxY,
+    dir,
+    start: dir === 1 ? minY : maxY,
+  };
 }
 
 function bloom(dist: number) {
@@ -91,7 +105,7 @@ export type FeatureDotFieldProps = {
 
 /**
  * Shared feature-stage backdrop: the homepage spot-grid plus honey dots that
- * pulse along one horizontal or vertical rim run (outer two lattice cells).
+ * pulse along one horizontal or vertical rim strip (both EDGE rings).
  * `prefers-reduced-motion` keeps a gentle in-place pulse.
  *
  * Positioned `absolute inset-0` — drop behind any feature visual. Prefer
@@ -130,25 +144,36 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
         runStarted = now;
         head = run.start;
       }
-      for (let i = run.from; i <= run.to; i++) {
-        const b = bloom(i - head);
-        if (b < 0.05) continue;
-        const gx = run.horizontal ? i : run.axis;
-        const gy = run.horizontal ? run.axis : i;
-        drawDot(ctx, rect.left, rect.top, gx, gy, 1.1 + b * 0.7, 0.1 + b * 0.9);
+      for (let depth = 0; depth < EDGE; depth++) {
+        const axis = run.axis0 + run.inward * depth;
+        const falloff = 1 - depth * 0.12;
+        for (let i = run.from; i <= run.to; i++) {
+          const b = bloom(i - head) * falloff;
+          if (b < 0.04) continue;
+          const gx = run.horizontal ? i : axis;
+          const gy = run.horizontal ? axis : i;
+          const r = 2.4 + b * 2.2;
+          const a = 0.4 + b * 0.6;
+          drawDot(ctx, rect.left, rect.top, gx, gy, r * 2.1, a * 0.28);
+          drawDot(ctx, rect.left, rect.top, gx, gy, r, a);
+        }
       }
     };
 
     const paintRest = (now: number) => {
       const { rect } = bounds(root);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const pulse = 0.28 + 0.32 * (0.5 + 0.5 * Math.sin(now / 900));
+      const pulse = 0.45 + 0.4 * (0.5 + 0.5 * Math.sin(now / 900));
       const mid = ((run.from + run.to) / 2) | 0;
-      for (const i of [mid - 2, mid, mid + 2]) {
-        if (i < run.from || i > run.to) continue;
-        const gx = run.horizontal ? i : run.axis;
-        const gy = run.horizontal ? run.axis : i;
-        drawDot(ctx, rect.left, rect.top, gx, gy, 1.25, pulse);
+      for (let depth = 0; depth < EDGE; depth++) {
+        const axis = run.axis0 + run.inward * depth;
+        for (const i of [mid - 3, mid, mid + 3]) {
+          if (i < run.from || i > run.to) continue;
+          const gx = run.horizontal ? i : axis;
+          const gy = run.horizontal ? axis : i;
+          drawDot(ctx, rect.left, rect.top, gx, gy, 3.2, pulse * 0.3);
+          drawDot(ctx, rect.left, rect.top, gx, gy, 2.6, pulse);
+        }
       }
     };
 
