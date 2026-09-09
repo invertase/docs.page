@@ -36,4 +36,4 @@ Finish every Scan on the whole page. Classify each instance: violation, skip, or
 
 - **Scan:** `and/or`, `he/she`, and `/` used as casual *or* in prose
 - **Finding if:** those forms appear in body copy
-- **Skip if:** paths, URLs, `application/json`
+- **Skip if:** paths, URLs, `application/json`; a slash inside a fixed term the product itself uses as one name — a paired setting or control such as previous/next navigation or read/write access — rather than a casual *or*
