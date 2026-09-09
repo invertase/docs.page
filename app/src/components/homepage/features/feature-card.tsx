@@ -17,7 +17,11 @@ import { FeatureDotField } from "./feature-dot-field";
  * (no leftover column letterbox, no clip against the card).
  */
 const STAGE_MEDIA_INSET_CLASS = "p-8 lg:p-12";
-/** Agent-ready capture is 1900×1080; keep the inner box matching so contain === cover. */
+/**
+ * Feature videos are 1900×1080 (search/markdown are 1904×1080). Keep the
+ * inner box matching so contain ≈ cover for video. Wider stills letterbox
+ * into the periwinkle wash rather than cropping.
+ */
 const STAGE_MEDIA_ASPECT_CLASS = "aspect-[1900/1080]";
 /**
  * Next paper card uses `-mt-20` (the dog-ear fold). Desktop fill pins to
@@ -123,8 +127,10 @@ export function FeatureCard({
                     className={cn(
                       "relative w-full min-w-0",
                       STAGE_MEDIA_ASPECT_CLASS,
-                      "[&_img]:absolute [&_img]:inset-0 [&_img]:size-full [&_img]:object-contain",
-                      "[&_video]:absolute [&_video]:inset-0 [&_video]:size-full [&_video]:object-contain",
+                      // Direct FeatureMedia children only — do not pierce
+                      // composite visuals (Modern Interface preset shots).
+                      "[&>*>img]:absolute [&>*>img]:inset-0 [&>*>img]:size-full [&>*>img]:object-contain",
+                      "[&>*>video]:absolute [&>*>video]:inset-0 [&>*>video]:size-full [&>*>video]:object-contain",
                     )}
                   >
                     {children}

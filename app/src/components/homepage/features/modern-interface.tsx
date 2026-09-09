@@ -53,15 +53,15 @@ export function ModernInterface() {
   const [activePreset, setActivePreset] = useState(0);
 
   return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-4 gap-3">
+    <div className="flex size-full min-h-0 flex-col gap-4">
+      <div className="grid shrink-0 grid-cols-4 gap-3">
         {THEME_PRESETS.map((preset, i) => (
           <button
             key={i}
             type="button"
             onClick={() => setActivePreset(i)}
             className={cn(
-              "flex items-center justify-center gap-3 border h-12 rounded-lg",
+              "flex h-12 items-center justify-center gap-3 rounded-lg border",
               activePreset === i && "bg-muted/50",
             )}
           >
@@ -83,11 +83,13 @@ export function ModernInterface() {
           </button>
         ))}
       </div>
-      <div className="border rounded-lg overflow-hidden">
+      <div className="relative min-h-0 flex-1 overflow-hidden rounded-lg border border-border/50 shadow-lg">
         <Image
           src={THEME_PRESETS[activePreset].image}
           alt={THEME_PRESETS[activePreset].label}
-          className="w-full h-full object-cover"
+          fill
+          sizes="(min-width: 1024px) 58vw, 100vw"
+          className="object-cover"
         />
       </div>
     </div>
