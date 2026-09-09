@@ -7,6 +7,7 @@ import {
   PAPER_SECTION_OVERLAP_CLASS,
   PAPER_SECTION_SHELL_CLASS,
   PaperCorner,
+  PaperFoldShadow,
   paperCornerClipPath,
 } from "../paper-corner";
 import { FeatureDotField } from "./feature-dot-field";
@@ -78,13 +79,14 @@ export function FeatureCard({
   return (
     <div
       data-stack-card
-      className={cn(PAPER_SECTION_OVERLAP_CLASS, "sticky")}
+      className={cn(PAPER_SECTION_OVERLAP_CLASS, "relative sticky")}
       style={{ top: `${index}rem`, zIndex: index + 1 }}
     >
+      <PaperFoldShadow />
       <div
         className={cn(
           PAPER_SECTION_SHELL_CLASS,
-          "bg-black",
+          "z-10 bg-black",
           stage ? STAGE_STACK_CLEARANCE_CLASS : "pb-20 lg:pb-40",
         )}
         style={{ clipPath: paperCornerClipPath() }}

@@ -44,6 +44,16 @@ const STROKE_SOLID_PROPS = {
 /** Feature cards: black tint + backdrop blur (matches landing-page-new-branding-v2). */
 const PAPER_FROSTED_CLASS = "bg-black/70 backdrop-blur-lg";
 
+/**
+ * Soft upward shadow along the paper top-fold + dog-ear.
+ * Lives on an unclipped sibling — clip-path on the shell eats box-shadow.
+ * Two stacked drop-shadows: a wide lift plus a tighter crease. Tint is
+ * black mixed with a whisper of periwinkle so it reads on the dark ground
+ * without a heavy all-around haze.
+ */
+const PAPER_FOLD_SHADOW_FILTER =
+  "drop-shadow(0 -8px 14px color-mix(in srgb, black 78%, var(--color-periwinkle-500))) drop-shadow(0 -2px 5px rgb(0 0 0 / 0.38))" as const;
+
 type PaperClippedPanelProps = {
   className?: string;
   /** When true (default), applies black frosted surface on the clipped panel. */
@@ -71,6 +81,28 @@ export function PaperClippedPanel({
     >
       <PaperCorner borderGradient={borderGradient} />
       <div className="relative">{children}</div>
+    </div>
+  );
+}
+
+/**
+ * Casts a lift shadow of the top fold (horizontal edge + diagonal dog-ear)
+ * onto the paper underneath. Place as a sibling *behind* the clipped shell.
+ */
+export function PaperFoldShadow() {
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-x-0 top-0 -z-10"
+      style={{
+        height: `${PAPER_FOLD_REM}rem`,
+        filter: PAPER_FOLD_SHADOW_FILTER,
+      }}
+    >
+      <div
+        className="size-full bg-black"
+        style={{ clipPath: paperCornerClipPath() }}
+      />
     </div>
   );
 }
