@@ -67,12 +67,39 @@ function bounds(el: HTMLElement) {
   return { rect, minX, minY, maxX, maxY };
 }
 
-function pickRun(el: HTMLElement, horizontal: boolean, avoid?: Run): Run {
+/** Deterministic 0–1 from a per-card seed so reloads keep the same motion. */
+function hashSeed(seed: number | string): number {
+  const str = String(seed);
+  let h = 2166136261;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+function mulberry32(seed: number) {
+  let a = seed >>> 0;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+function pickRun(
+  el: HTMLElement,
+  horizontal: boolean,
+  rand: () => number,
+  avoid?: Run,
+): Run {
   const { minX, minY, maxX, maxY } = bounds(el);
-  const dir: 1 | -1 = Math.random() < 0.5 ? 1 : -1;
+  const dir: 1 | -1 = rand() < 0.5 ? 1 : -1;
   const flip = avoid && avoid.horizontal === horizontal;
   if (horizontal) {
-    let top = Math.random() < 0.5;
+    let top = rand() < 0.5;
     if (flip && avoid) top = avoid.axis0 !== minY;
     return {
       horizontal,
@@ -84,7 +111,7 @@ function pickRun(el: HTMLElement, horizontal: boolean, avoid?: Run): Run {
       start: dir === 1 ? minX : maxX,
     };
   }
-  let left = Math.random() < 0.5;
+  let left = rand() < 0.5;
   if (flip && avoid) left = avoid.axis0 !== minX;
   return {
     horizontal,
@@ -113,6 +140,12 @@ function travelCells(run: Run) {
 export type FeatureDotFieldProps = {
   /** Extra classes on the absolute-fill wrapper. */
   className?: string;
+  /**
+   * Stable per-card seed (feature index). Desktop + mobile washes on the
+   * same card must share this so one card stays internally consistent.
+   * Derives phase, lead axis, speed, and the rim-run sequence.
+   */
+  seed?: number | string;
 };
 
 /**
@@ -123,7 +156,7 @@ export type FeatureDotFieldProps = {
  * Positioned `absolute inset-0` — drop behind any feature visual. Prefer
  * {@link FeatureStage} when you also need the stacking wrapper.
  */
-export function FeatureDotField({ className }: FeatureDotFieldProps) {
+export function FeatureDotField({ className, seed = 0 }: FeatureDotFieldProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -136,10 +169,22 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
     if (!ctx) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+    // Motion params and rim-run sequence use separate streams so a
+    // layout() re-seed does not replay the phase/speed draws as edges.
+    const motion = mulberry32(hashSeed(seed));
+    const cellsPerSec = CELLS_PER_SEC * (0.86 + motion() * 0.28);
+    const leadHorizontal = motion() < 0.5;
+    const phase0 = motion();
+    const phase1 = motion();
+    const restPhase = motion() * Math.PI * 2;
+    const makeRunRng = () => mulberry32(hashSeed(seed) ^ 0x9e3779b9);
+    let rand = makeRunRng();
+
     type Pulse = { run: Run; started: number };
+    const firstRun = pickRun(root, leadHorizontal, rand);
     const pulses: Pulse[] = [
-      { run: pickRun(root, true), started: 0 },
-      { run: pickRun(root, false), started: 0 },
+      { run: firstRun, started: 0 },
+      { run: pickRun(root, !leadHorizontal, rand, firstRun), started: 0 },
     ];
     let raf = 0;
     let visible = true;
@@ -161,32 +206,30 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
       }
     };
 
+    const durationOf = (run: Run) => (travelCells(run) / cellsPerSec) * 1000;
+
     const headOf = (pulse: Pulse, now: number) => {
       const travel = travelCells(pulse.run);
-      const duration = (travel / CELLS_PER_SEC) * 1000;
-      const e = smoothstep((now - pulse.started) / duration);
+      const e = smoothstep((now - pulse.started) / durationOf(pulse.run));
       return pulse.run.start + pulse.run.dir * e * travel;
     };
 
     const pastEnd = (pulse: Pulse, now: number) => {
-      const travel = travelCells(pulse.run);
-      const duration = (travel / CELLS_PER_SEC) * 1000;
-      return now - pulse.started >= duration;
+      return now - pulse.started >= durationOf(pulse.run);
     };
 
     const paintTravel = (now: number) => {
       const { rect } = bounds(root);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       if (pulses[0]!.started === 0) {
-        pulses[0]!.started = now;
-        const span = (travelCells(pulses[1]!.run) / CELLS_PER_SEC) * 1000;
-        pulses[1]!.started = now - span * 0.45;
+        pulses[0]!.started = now - durationOf(pulses[0]!.run) * phase0;
+        pulses[1]!.started = now - durationOf(pulses[1]!.run) * phase1;
       }
       for (let n = 0; n < pulses.length; n++) {
         const pulse = pulses[n]!;
         const other = pulses[1 - n]!;
         if (pastEnd(pulse, now)) {
-          pulse.run = pickRun(root, !pulse.run.horizontal, other.run);
+          pulse.run = pickRun(root, !pulse.run.horizontal, rand, other.run);
           pulse.started = now;
         }
         const head = headOf(pulse, now);
@@ -197,7 +240,7 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
     const paintRest = (now: number) => {
       const { rect } = bounds(root);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const pulse = 0.28 + 0.28 * (0.5 + 0.5 * Math.sin(now / 900));
+      const pulse = 0.28 + 0.28 * (0.5 + 0.5 * Math.sin(now / 900 + restPhase));
       for (const item of pulses) {
         const mid = ((item.run.from + item.run.to) / 2) | 0;
         for (let depth = 0; depth < EDGE; depth++) {
@@ -221,8 +264,12 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      pulses[0] = { run: pickRun(root, true), started: 0 };
-      pulses[1] = { run: pickRun(root, false, pulses[0].run), started: 0 };
+      rand = makeRunRng();
+      pulses[0] = { run: pickRun(root, leadHorizontal, rand), started: 0 };
+      pulses[1] = {
+        run: pickRun(root, !leadHorizontal, rand, pulses[0].run),
+        started: 0,
+      };
     };
 
     const tick = (now: number) => {
@@ -251,7 +298,7 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
       ro.disconnect();
       io.disconnect();
     };
-  }, []);
+  }, [seed]);
 
   return (
     <div
@@ -280,6 +327,7 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
 
 export type FeatureStageProps = PropsWithChildren<{
   className?: string;
+  seed?: number | string;
 }>;
 
 /**
@@ -287,10 +335,10 @@ export type FeatureStageProps = PropsWithChildren<{
  * Parent must be `position: relative`. Later feature-visual PRs wrap their
  * media in this — do not fork the pulse.
  */
-export function FeatureStage({ children, className }: FeatureStageProps) {
+export function FeatureStage({ children, className, seed }: FeatureStageProps) {
   return (
     <>
-      <FeatureDotField className={className} />
+      <FeatureDotField className={className} seed={seed} />
       <div className="relative z-1 w-full">{children}</div>
     </>
   );
