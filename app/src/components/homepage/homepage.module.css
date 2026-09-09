@@ -78,7 +78,9 @@
       transparent var(--homepage-dot-r)
     );
     background-size: var(--homepage-dot-cell) var(--homepage-dot-cell);
+    background-position: var(--homepage-dot-position, 0 0);
     background-repeat: repeat;
+    background-attachment: var(--homepage-dot-attachment, scroll);
   }
 }
 

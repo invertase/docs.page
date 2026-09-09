@@ -83,7 +83,7 @@ export function FeatureCard({
           <>
             <div
               className={cn(
-                "pointer-events-none absolute top-0 right-0 hidden overflow-hidden border-l border-periwinkle-500 bg-periwinkle-500/10 lg:block lg:left-[calc(100%*2.5/6)]",
+                "pointer-events-none absolute top-0 right-0 hidden overflow-hidden border-l border-border bg-periwinkle-500/10 lg:block lg:left-[calc(100%*2.5/6)]",
                 STAGE_STACK_CLEARANCE_INSET_CLASS,
               )}
             >
@@ -97,7 +97,7 @@ export function FeatureCard({
               <div className="flex flex-col justify-center gap-4 space-y-6 px-8 py-16 lg:absolute lg:inset-y-0 lg:left-0 lg:z-1 lg:w-[calc(100%*2.5/6)] lg:px-12 lg:pl-32 lg:py-0">
                 {copy}
               </div>
-              <div className="relative min-h-0 border-l border-periwinkle-500 bg-periwinkle-500/10 lg:col-start-2 lg:border-0 lg:bg-transparent">
+              <div className="relative min-h-0 border-l border-border bg-periwinkle-500/10 lg:col-start-2 lg:border-0 lg:bg-transparent">
                 <div className="lg:hidden">
                   <FeatureDotField />
                 </div>

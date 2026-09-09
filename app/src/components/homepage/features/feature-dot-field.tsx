@@ -11,7 +11,8 @@ import styles from "../homepage.module.css";
 
 const CELL = 22;
 const TRAIL = 7;
-const STEP_MS = 150;
+/** Time to glide one lattice cell — interpolated, not a discrete hop. */
+const STEP_MS = 280;
 /** Honey `#E69135` — brand token, not a new colour. */
 const HONEY_RGB = "230, 145, 53";
 
@@ -32,13 +33,15 @@ function pickDir(
   dir: Pt,
   x: number,
   y: number,
-  cols: number,
-  rows: number,
+  minX: number,
+  minY: number,
+  maxX: number,
+  maxY: number,
 ): Pt {
   const fits = ([dx, dy]: Pt) => {
     const nx = x + dx;
     const ny = y + dy;
-    return nx >= 0 && ny >= 0 && nx < cols && ny < rows;
+    return nx >= minX && ny >= minY && nx <= maxX && ny <= maxY;
   };
   const opposite: Pt = [-dir[0], -dir[1]];
   const turns = DIRS.filter(
@@ -49,33 +52,38 @@ function pickDir(
   return fits(opposite) ? opposite : dir;
 }
 
-function staticHighlights(cols: number, rows: number): Pt[] {
-  return (
-    [
-      [3, 2],
-      [cols - 4, 4],
-      [7, rows - 3],
-      [cols - 6, rows - 5],
-      [(cols * 0.4) | 0, (rows * 0.55) | 0],
-    ] as Pt[]
-  ).filter(([x, y]) => x > 0 && y > 0 && x < cols && y < rows);
-}
-
 function honey(alpha: number) {
   return `rgba(${HONEY_RGB}, ${alpha})`;
 }
 
 function drawDot(
   ctx: CanvasRenderingContext2D,
-  x: number,
-  y: number,
+  left: number,
+  top: number,
+  gx: number,
+  gy: number,
   r: number,
   alpha: number,
 ) {
   ctx.beginPath();
   ctx.fillStyle = honey(alpha);
-  ctx.arc(x * CELL + CELL / 2, y * CELL + CELL / 2, r, 0, Math.PI * 2);
+  ctx.arc(
+    gx * CELL + CELL / 2 - left,
+    gy * CELL + CELL / 2 - top,
+    r,
+    0,
+    Math.PI * 2,
+  );
   ctx.fill();
+}
+
+function bounds(el: HTMLElement) {
+  const rect = el.getBoundingClientRect();
+  const minX = Math.floor(rect.left / CELL);
+  const minY = Math.floor(rect.top / CELL);
+  const maxX = Math.ceil(rect.right / CELL) - 1;
+  const maxY = Math.ceil(rect.bottom / CELL) - 1;
+  return { rect, minX, minY, maxX, maxY };
 }
 
 export type FeatureDotFieldProps = {
@@ -84,9 +92,9 @@ export type FeatureDotFieldProps = {
 };
 
 /**
- * Shared feature-stage backdrop: periwinkle lattice (reuses
- * `homepage-spot-grid-card`) plus a short honey trail that walks the grid
- * horizontally and vertically. Frozen when the user prefers reduced motion.
+ * Shared feature-stage backdrop: the homepage spot-grid (same cell / mix /
+ * fixed rhythm as `.homepage-spot-grid`) plus a short honey trail that
+ * glides the lattice. Frozen when the user prefers reduced motion.
  *
  * Positioned `absolute inset-0` — drop behind any feature visual. Prefer
  * {@link FeatureStage} when you also need the stacking wrapper.
@@ -104,24 +112,47 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
     if (!ctx) return;
 
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
-    let cols = 0;
-    let rows = 0;
     let x = 0;
     let y = 0;
     let dir: Pt = DIRS[0]!;
     let trail: Pt[] = [];
-    let highlights: Pt[] = [];
     let last = 0;
     let raf = 0;
     let visible = true;
 
-    const paint = () => {
+    const paint = (progress: number) => {
+      const { rect } = bounds(root);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      for (const [hx, hy] of highlights) drawDot(ctx, hx, hy, 1.15, 0.55);
-      trail.forEach(([tx, ty], i) => {
+      const p = Math.min(1, Math.max(0, progress));
+      trail.forEach((to, i) => {
+        const from = trail[i + 1] ?? to;
+        const gx = from[0] + (to[0] - from[0]) * p;
+        const gy = from[1] + (to[1] - from[1]) * p;
         const t = 1 - i / TRAIL;
-        drawDot(ctx, tx, ty, 1.15 + t * 0.45, 0.22 + t * 0.78);
+        drawDot(
+          ctx,
+          rect.left,
+          rect.top,
+          gx,
+          gy,
+          1.15 + t * 0.45,
+          0.22 + t * 0.78,
+        );
       });
+    };
+
+    const seed = () => {
+      const { minX, minY, maxX, maxY } = bounds(root);
+      x = ((minX + maxX) / 2) | 0;
+      y = ((minY + maxY) / 2) | 0;
+      dir = DIRS[(Math.random() * DIRS.length) | 0]!;
+      trail = [[x, y]];
+      for (let i = 1; i < TRAIL; i++) {
+        dir = pickDir(dir, x, y, minX, minY, maxX, maxY);
+        x += dir[0];
+        y += dir[1];
+        trail.unshift([x, y]);
+      }
     };
 
     const layout = () => {
@@ -132,35 +163,28 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      cols = Math.max(2, Math.ceil(width / CELL));
-      rows = Math.max(2, Math.ceil(height / CELL));
-      x = (cols / 2) | 0;
-      y = (rows / 2) | 0;
-      dir = DIRS[(Math.random() * DIRS.length) | 0]!;
-      trail = [[x, y]];
-      for (let i = 1; i < TRAIL; i++) {
-        dir = pickDir(dir, x, y, cols, rows);
-        x += dir[0];
-        y += dir[1];
-        trail.unshift([x, y]);
-      }
-      highlights = staticHighlights(cols, rows);
-      paint();
+      seed();
+      paint(1);
     };
 
     const step = () => {
-      dir = pickDir(dir, x, y, cols, rows);
+      const { minX, minY, maxX, maxY } = bounds(root);
+      dir = pickDir(dir, x, y, minX, minY, maxX, maxY);
       x += dir[0];
       y += dir[1];
       trail.unshift([x, y]);
       trail.length = TRAIL;
-      paint();
     };
 
     const tick = (now: number) => {
-      if (visible && !reduced.matches && now - last >= STEP_MS) {
-        last = now;
-        step();
+      if (visible && !reduced.matches) {
+        if (last === 0) last = now;
+        const progress = Math.min(1, (now - last) / STEP_MS);
+        paint(progress);
+        if (progress >= 1) {
+          last = now;
+          step();
+        }
       }
       raf = requestAnimationFrame(tick);
     };
@@ -168,7 +192,7 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
     const syncMotion = () => {
       cancelAnimationFrame(raf);
       if (reduced.matches) {
-        paint();
+        paint(1);
         return;
       }
       last = 0;
@@ -211,8 +235,10 @@ export function FeatureDotField({ className }: FeatureDotFieldProps) {
         className={cn(styles["homepage-spot-grid-card"], "absolute inset-0")}
         style={
           {
-            "--homepage-dot-color": "var(--color-periwinkle-500)",
-            "--homepage-dot-mix": "10%",
+            "--homepage-dot-color": "white",
+            "--homepage-dot-mix": "8%",
+            "--homepage-dot-attachment": "fixed",
+            "--homepage-dot-position": "0 0",
           } as CSSProperties
         }
       />
