@@ -1,6 +1,6 @@
 ---
 name: review-doc
-description: Reviews a docs.page page against writing checks (failing, passing, muted) and loops until failing is 0. Use when the publisher names review-doc or review doc, or asks to review writing on a docs/*.mdx page. Not the docs check CLI (links, assets, render).
+description: Reviews a docs.page page against writing checks (failing, passing, muted), prints a results table, and applies unmuted findings by default so the publisher can review the diff. Loops until failing is 0. Use when the publisher names review-doc or review doc, or asks to review writing on a docs/*.mdx page. Not the docs check CLI (links, assets, render).
 ---
 
 # review-doc
@@ -21,9 +21,9 @@ Work one page at a time. `checks/` and `logs/` are relative to this skill; `docs
 
 1. Read `logs/<page-slug>.json` if it exists (`docs/index.mdx` → `docs--index.mdx.json`).
 2. Run checks. Merge findings. Write the log (pending `decision: null` is OK until they choose).
-3. **Print** the **Results** as a user-visible message. If `failing > 0`, list violations under failing checks. Do this after **every** run — including reruns under **fix all**, the stop run, and the cap run. The log is not a substitute. Do not skip, defer, or collapse runs into a final-only summary. Do not wait until `failing == 0` or the loop ends.
-4. Do not edit yet unless they already chose **fix all**. If they have not chosen, offer **fix all** or **review each**. If they already said **fix all** or auto-fix in this request, still print this run first, then continue step 5.
-5. **Fix all:** set every unmuted finding to `accepted`, apply, and continue this loop (step 7). **Review each:** wait. Publisher marks `accepted` or `rejected` by id (`tone-1`). Reject mutes that instance. `mute check <id>` mutes every instance of that check in either mode. `unmute <id>` reopens that instance. `unmute check <id>` reopens that check.
+3. **Print** the **Results** as a user-visible message. If `failing > 0`, list violations grouped under a heading per failing check. Do this after **every** run — including reruns under **fix all**, the stop run, and the cap run. The log is not a substitute. Do not skip, defer, or collapse runs into a final-only summary. Do not wait until `failing == 0` or the loop ends.
+4. Default is **fix all**. Print this run first, then continue step 5. Do not wait for a mode choice. **Review each** only if they asked to review each, not apply, or decide one by one. If they already said **fix all** or auto-fix, same path as the default.
+5. **Fix all:** set every unmuted finding to `accepted`, apply, and continue this loop (step 7). **Review each:** wait. Publisher marks `accepted` or `rejected` by id (`tone-1`). Reject mutes that instance. `mute check <id>` mutes every instance of that check in either mode. `unmute <id>` reopens that instance. `unmute check <id>` reopens that check. Mute does not revert edits already written; the publisher reverts the file.
 6. Apply only `accepted` edits. Do not edit completed runs. The only in-place update is `decision` / `feedback` while still `null`.
 7. If they ask again, or **fix all** is still in progress, and `failing > 0`, rerun **failing checks** and any check whose text sits in the accepted-edit **delta**. Do not rerun `passing` or `muted` on unchanged sentences. Then go to step 3 and print that run before applying or spawning another.
 8. **Stop** when `failing == 0`. Print the results with no violation list (still required). If they ask again, reprint that summary.
@@ -32,7 +32,7 @@ Work one page at a time. `checks/` and `logs/` are relative to this skill; `docs
 ### Publisher example
 
 ```text
-fix all
+use review-doc on docs/index.mdx
 ```
 
 ```text
@@ -93,22 +93,30 @@ A run that is not printed to the publisher is an orchestrator error. Fix-all alr
 
 CHECK                     STATUS      VIOLATIONS  MUTED  DESCRIPTION
 person-and-voice          passing     -           -      you not we; one person; active voice
-inline-formatting         failing     2           -      code font; UI bold; list shape
-tone                      muted       -           1      no idioms, padding, or pre-announcement
+inline-formatting         failing     1           -      code font; UI bold; list shape
+tone                      failing     1           -      no idioms, padding, or pre-announcement
+word-list                 muted       -           1      please, e.g., utilize, simply, easy
 ```
 
 One row per check in **Checks** order. Description is the one-liner in **Checks**, or the dominant violation.
 
-Then violations for **failing** checks only:
+Then violations for **failing** checks only, grouped under a `### <check>` heading per check, in **Checks** order. Restart numbering under each heading. Do not list muted checks here.
 
 ```markdown
 ## Violations
+
+### inline-formatting
+1. `inline-formatting-1` — <what to change>
+   Evidence: `<quote>`
+   Do this: <concrete edit>
+
+### tone
 1. `tone-1` — <what to change>
    Evidence: `<quote>`
    Do this: <concrete edit>
 ```
 
-When `conflicts` is non-empty: `` `inline-formatting-1` (conflicts: `tone`) ``.
+When `conflicts` is non-empty: `` `inline-formatting-1` (conflicts: `tone`) ``. List the item under the finding's `check` (the earlier id).
 
 ## Log
 

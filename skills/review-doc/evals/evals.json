@@ -4,17 +4,19 @@
     {
       "id": 1,
       "prompt": "use review-doc on page.mdx",
-      "expected_output": "A results table after the run, with planted writing issues called out as failing checks and no edits to the page.",
+      "expected_output": "A results table after the run, with planted writing issues called out as failing checks, then those issues fixed on the page.",
       "files": ["evals/files/planted-mechanical.mdx"],
       "assertions": [
         "Results include a checks table with CHECK and STATUS columns",
         "Results list at least one violation (failing is greater than 0)",
+        "Violations are grouped under a heading per failing check",
         "A finding quotes click here as evidence",
         "A finding flags the missing serial comma in red, green and blue",
         "A finding flags a fence with no language tag",
         "A finding flags please note or utilize as padding or word-list",
         "The review log is valid JSON with a checks array of length 16",
-        "page.mdx is unchanged from the original fixture"
+        "The edited page no longer contains click here",
+        "The edited page uses the serial comma: red, green, and blue"
       ]
     },
     {
@@ -41,6 +43,7 @@
       "files": ["evals/files/fix-all.mdx"],
       "assertions": [
         "Results include a checks table with CHECK and STATUS columns from the first run",
+        "Violations are grouped under a heading per failing check",
         "The edited page no longer contains click here",
         "The edited page uses the serial comma: red, green, and blue",
         "The edited page still contains an <Info> callout (not converted to a GitHub alert)",
@@ -51,18 +54,18 @@
     {
       "id": 4,
       "prompt": "use review-doc on page.mdx",
-      "expected_output": "One grouped finding for the overlapping click-here sentence, with conflicts named, and no edits.",
+      "expected_output": "One grouped finding for the overlapping click-here sentence, with conflicts named. Unmuted findings are applied after the results print.",
       "files": ["evals/files/conflicts.mdx"],
       "assertions": [
         "Results include a checks table with CHECK and STATUS columns",
+        "Violations are grouped under a heading per failing check",
         "A finding quotes click here as evidence",
-        "A finding lists conflicts (another check id in parentheses or a conflicts array)",
-        "page.mdx is unchanged from the original fixture"
+        "A finding lists conflicts (another check id in parentheses or a conflicts array)"
       ]
     },
     {
       "id": 5,
-      "prompt": "use review-doc on page.mdx then mute check tone and print the next run",
+      "prompt": "use review-doc on page.mdx then review each. Then mute check tone and print the next run",
       "expected_output": "First run flags the idiom; after mute check tone, tone is muted and that instance does not come back as failing.",
       "files": ["evals/files/mute-check.mdx"],
       "assertions": [
@@ -79,6 +82,7 @@
       "files": ["evals/files/review-each.mdx"],
       "assertions": [
         "The first results include a checks table",
+        "Violations are grouped under a heading per failing check",
         "The edited page no longer contains click here",
         "The edited page still contains red, green and blue (no serial comma)",
         "The rejected punctuation instance is muted in the log"

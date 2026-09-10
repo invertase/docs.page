@@ -1,6 +1,6 @@
 # review-doc
 
-A writing review for one docs.page page. Name a file under `docs/`, get results for 16 checks, then auto-fix or accept and reject each violation. This is not the `docs check` CLI command (broken links, assets, render).
+A writing review for one docs.page page. Name a file under `docs/`, get results for 16 checks, then unmuted findings are applied so you can review the page diff. This is not the `docs check` CLI command (broken links, assets, render).
 
 Paths are relative to the project root (`docs.json` lives there).
 
@@ -10,16 +10,7 @@ Paths are relative to the project root (`docs.json` lives there).
 use review-doc on docs/features/components.mdx
 ```
 
-Apply every unmuted violation in the same request:
-
-```text
-use review-doc on docs/index.mdx and auto fix findings
-```
-
-```text
-use review-doc on docs/index.mdx
-fix all
-```
+Results print first, then every unmuted violation is applied. Review the page diff. Say `review each` in the same request if you want to decide before anything is written.
 
 ## Review several pages
 
@@ -37,19 +28,27 @@ There is no folder-wide or glob run. Name each page you want reviewed.
 
 ## Read the results
 
-You get results after **every** run — not only when the page is clean. The summary line and checks table come first; failing checks then list violations.
+You get results after **every** run — not only when the page is clean. The summary line and checks table come first; failing checks then list violations grouped under a heading per check.
 
 ```text
 > 16 checks · 2 failing · 1 muted · 13 passing  docs/index.mdx
 
 CHECK                     STATUS      VIOLATIONS  MUTED  DESCRIPTION
 person-and-voice          passing     -           -      you not we; one person; active voice
-inline-formatting         failing     2           -      code font; UI bold; list shape
-tone                      muted       -           1      no idioms, padding, or pre-announcement
+inline-formatting         failing     1           -      code font; UI bold; list shape
+tone                      failing     1           -      no idioms, padding, or pre-announcement
+word-list                 muted       -           1      please, e.g., utilize, simply, easy
 ```
 
 ```markdown
 ## Violations
+
+### inline-formatting
+1. `inline-formatting-1` — <what to change>
+   Evidence: `<quote>`
+   Do this: <concrete edit>
+
+### tone
 1. `tone-1` — <what to change>
    Evidence: `<quote>`
    Do this: <concrete edit>
@@ -61,17 +60,11 @@ When `failing` is 0, you get the table only. Ask again on that page to reprint i
 
 ## Fix or skip violations
 
-After the first results, choose a mode unless you already asked to auto-fix.
-
-### Apply everything
-
-```text
-fix all
-```
-
-Every unmuted violation is accepted, applied to the page, and the review runs again. You still see results for the run that just finished, then the next run.
+By default, after the results print, every unmuted violation is accepted, applied, and the review runs again. You still see results for the run that just finished, then the next run. Review the page diff. Mute does not undo edits already written; revert the file.
 
 A page stops after 3 runs. If failing is still above 0, the last results list what remains.
+
+`fix all` is the same as the default.
 
 ### Decide one by one
 
@@ -87,7 +80,7 @@ reject links-2
 | `accept tone-1` | Apply that violation. |
 | `reject links-2` | Keep the current wording. That instance is muted and will not come back on later runs. |
 
-You can mix `accept` and `reject` in the same reply. Only accepted edits are written to the page.
+You can mix `accept` and `reject` in the same reply. Only accepted edits are written to the page. To mute a check before any edit, say `review each` first, or include `mute check <id>` in the review request.
 
 ### Mute a whole check
 
@@ -95,7 +88,7 @@ You can mix `accept` and `reject` in the same reply. Only accepted edits are wri
 mute check tone
 ```
 
-Every instance of that check on this page is muted, in **fix all** or **review each**. Muted checks stay muted on later runs of the same page.
+Every instance of that check on this page is muted, in the default apply path or **review each**. Muted checks stay muted on later runs of the same page.
 
 ### Unmute
 
