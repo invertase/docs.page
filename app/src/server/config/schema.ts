@@ -3,6 +3,7 @@ import { z } from "zod";
 import agent from "./models/agent";
 import anchors from "./models/anchors";
 import banner from "./models/banner";
+import check from "./models/check";
 import content from "./models/content";
 import favicon from "./models/favicon";
 import header from "./models/header";
@@ -46,6 +47,7 @@ export const ConfigSchema = z
     content,
     tabs,
     sidebar,
+    check,
   })
   .transform((config) => {
     const { $schema: _, ...rest } = config;

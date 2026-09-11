@@ -2,7 +2,7 @@ import { RiArrowRightSLine } from "@remixicon/react";
 import Link from "next/link";
 import { Button } from "../ui/button";
 
-export function Footer() {
+export function Footer({ utmQuery }: { utmQuery: string }) {
   return (
     <>
       <div className="flex flex-col items-center gap-10 px-6 py-16 text-center lg:grid lg:grid-cols-2 lg:items-center lg:gap-0 lg:px-20 lg:py-32 lg:text-left">
@@ -20,7 +20,11 @@ export function Footer() {
           >
             {/* prefetch off + nofollow: see the hero CTA — the tracked redirect
                 must not be requested on page view or followed by crawlers. */}
-            <Link href="/get-started" prefetch={false} rel="nofollow">
+            <Link
+              href={`/get-started${utmQuery}`}
+              prefetch={false}
+              rel="nofollow"
+            >
               Get started{" "}
               <RiArrowRightSLine className="size-5 group-hover:translate-x-1 transition-transform" />
             </Link>

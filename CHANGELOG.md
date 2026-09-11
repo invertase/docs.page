@@ -2,6 +2,21 @@
 
 Platform changes to docs.page. Release notes: [2.0.0](./docs/releases/v2.0.0.mdx) · [1.0.0](./docs/releases/v1.0.0.mdx).
 
+## [@docs.page/cli 2.1.0] - 04-09-2026
+
+CLI-only release. The hosted platform remains [2.0.0](#200---03-07-2026).
+
+### Added
+
+- Skip external hosts during `docs check` with `--ignore-external-hosts` or `check.ignoreExternalHosts` in `docs.json` ([#544](https://github.com/invertase/docs.page/pull/544))
+- Report bot-gate responses (`401`, `403`, `405`, `429`) as warnings so they do not fail CI ([#544](https://github.com/invertase/docs.page/pull/544))
+
+### Changed
+
+- Default API base URL is now `https://docs.page` instead of the Railway hostname ([#488](https://github.com/invertase/docs.page/pull/488))
+
+[2.1.0]: https://github.com/invertase/docs.page/releases/tag/cli-v2.1.0
+
 ## [2.0.0] - 03-07-2026
 
 ### Removed

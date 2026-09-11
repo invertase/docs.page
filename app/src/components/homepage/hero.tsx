@@ -11,7 +11,7 @@ import { SNIPPET_PARAM, type SnippetId } from "@/lib/prompt-copy";
 import { cn } from "@/lib/utils";
 import { UTM_KEYS } from "@/lib/utm";
 
-export function Hero() {
+export function Hero({ utmQuery }: { utmQuery: string }) {
   return (
     <div className="mx-auto flex w-full max-w-xl flex-col items-center justify-center space-y-6 px-2 pt-12 pb-32 sm:space-y-8 sm:px-0 sm:pt-16 sm:pb-44">
       <Eyebrow />
@@ -46,7 +46,11 @@ export function Hero() {
           {/* prefetch off: the tracked redirect must not be requested on page view.
               nofollow: a hint to keep crawlers from following the CTA and
               inflating clicks — best-effort, not a guarantee. */}
-          <Link href="/get-started" prefetch={false} rel="nofollow">
+          <Link
+            href={`/get-started${utmQuery}`}
+            prefetch={false}
+            rel="nofollow"
+          >
             <span>Get started</span>
             <RiArrowRightSLine className="size-6 group-hover:translate-x-1 transition-transform" />
           </Link>

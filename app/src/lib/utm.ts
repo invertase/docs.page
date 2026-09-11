@@ -1,7 +1,9 @@
 /**
- * The utm params we attribute on. Exported because the homepage hero forwards
- * whatever the page was loaded with onto its tracking beacon, and both ends
- * have to agree on which keys those are.
+ * The utm params we recognise. Single source of truth for every consumer: the
+ * event properties, the CTA link forwarding — so a param is never captured but
+ * silently dropped from links (or vice versa) — and the homepage hero, which
+ * forwards whatever the page was loaded with onto its copy-tracking beacon.
+ * Exported because that hero is the one consumer outside this module.
  */
 export const UTM_KEYS = [
   "utm_source",
@@ -21,4 +23,19 @@ export function utmProperties(url: URL): Record<string, string> {
   }
 
   return props;
+}
+
+/**
+ * The recognised utm params of a request, re-encoded as a query string
+ * (`"?utm_source=..."`), or `""` when the request carries none.
+ *
+ * Appended server-side to the homepage CTA links so a visitor who lands from an
+ * ad flight still carries that attribution into `/get-started`, which captures
+ * `homepage:cta_click` from its own request URL. Only the five known keys are
+ * forwarded — unknown query params are never reflected back into on-page links.
+ */
+export function utmQueryString(url: URL): string {
+  const query = new URLSearchParams(utmProperties(url)).toString();
+
+  return query ? `?${query}` : "";
 }
