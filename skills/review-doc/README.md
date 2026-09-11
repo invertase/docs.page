@@ -10,7 +10,7 @@ Paths are relative to the project root (`docs.json` lives there).
 use review-doc on docs/features/components.mdx
 ```
 
-Results print first, then every unmuted violation is applied. Review the page diff. Say `review each` in the same request if you want to decide before anything is written.
+Results print first, then every unmuted violation is applied except a heading rewrite that would change that section's in-page link (`#slug`). Those stay in the list until you `accept` them — update any `/page#slug` links in the same change. Review the page diff. Say `review each` in the same request if you want to decide before anything is written.
 
 ## Review several pages
 
@@ -60,9 +60,9 @@ When `failing` is 0, you get the table only. Ask again on that page to reprint i
 
 ## Fix or skip violations
 
-By default, after the results print, every unmuted violation is accepted, applied, and the review runs again. You still see results for the run that just finished, then the next run. Review the page diff. Mute does not undo edits already written; revert the file.
+By default, after the results print, every unmuted violation is accepted, applied, and the review runs again. A heading rewrite that would change its `#slug` is not auto-applied; it stays failing until you `accept <id>` (or reject/mute). You still see results for the run that just finished, then the next run. Review the page diff. Mute does not undo edits already written; revert the file.
 
-A page stops after 3 runs. If failing is still above 0, the last results list what remains.
+A page stops after 3 runs, or sooner if the only leftovers are those held headings. If failing is still above 0, the last results list what remains.
 
 `fix all` is the same as the default.
 

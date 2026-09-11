@@ -1,6 +1,6 @@
 ---
 name: review-doc
-description: Reviews a docs.page page against writing checks (failing, passing, muted), prints a results table, and applies unmuted findings by default so the publisher can review the diff. Loops until failing is 0. Use when the publisher names review-doc or review doc, or asks to review writing on a docs/*.mdx page. Not the docs check CLI (links, assets, render).
+description: Reviews a docs.page page against writing checks (failing, passing, muted), prints a results table, and applies unmuted findings by default so the publisher can review the diff. Loops until failing is 0, or until only heading rewrites that would change an anchor slug remain (those wait for accept). Use when the publisher names review-doc or review doc, or asks to review writing on a docs/*.mdx page. Not the docs check CLI (links, assets, render).
 ---
 
 # review-doc
@@ -14,7 +14,7 @@ Work one page at a time. `checks/` and `logs/` are relative to this skill; `docs
 - Do not invent pages, procedure steps, prerequisites, audience, or information architecture.
 - Do not convert between equivalent docs.page forms (`<Info>` ↔ GitHub alerts; `![alt](src)` ↔ `<Image>`; `<Property>` ↔ a short markdown table; `<Tabs>` / `<TabItem>` naming).
 - Do not apply a fix that would make the page worse.
-- Do not apply a heading rewrite when another page links to that heading as an anchor (`/page#slug`) — the new wording changes the slug and breaks every inbound link. Report the finding and leave the heading; the publisher renames it and the links together.
+- Do not auto-apply a **held heading rewrite**: an edit that changes a `##` / `###` / `#` line (any check, not only `headings`) to wording that slugifies to a different id. Slugify: lowercase, strip non-alphanumerics, spaces to hyphens (`Set up iOS` → `set-up-ios`; duplicates get `-1`, `-2`). Sentence case or a trailing period that keep the same id may apply. Leave the heading and `decision: null`; the publisher `accept`s it and renames the heading and the `/page#slug` links together.
 - If the live page already shows steps, callouts, tabs, cards, or images, re-fetch raw MDX — missing tags in converted HTML are not findings.
 
 ## Loop
@@ -23,11 +23,11 @@ Work one page at a time. `checks/` and `logs/` are relative to this skill; `docs
 2. Run checks. Merge findings. Write the log (pending `decision: null` is OK until they choose).
 3. **Print** the **Results** as a user-visible message. If `failing > 0`, list violations grouped under a heading per failing check. Do this after **every** run — including reruns under **fix all**, the stop run, and the cap run. The log is not a substitute. Do not skip, defer, or collapse runs into a final-only summary. Do not wait until `failing == 0` or the loop ends.
 4. Default is **fix all**. Print this run first, then continue step 5. Do not wait for a mode choice. **Review each** only if they asked to review each, not apply, or decide one by one. If they already said **fix all** or auto-fix, same path as the default.
-5. **Fix all:** set every unmuted finding to `accepted`, apply, and continue this loop (step 7). **Review each:** wait. Publisher marks `accepted` or `rejected` by id (`tone-1`). Reject mutes that instance. `mute check <id>` mutes every instance of that check in either mode. `unmute <id>` reopens that instance. `unmute check <id>` reopens that check. Mute does not revert edits already written; the publisher reverts the file.
-6. Apply only `accepted` edits. Do not edit completed runs. The only in-place update is `decision` / `feedback` while still `null`.
-7. If they ask again, or **fix all** is still in progress, and `failing > 0`, rerun **failing checks** and any check whose text sits in the accepted-edit **delta**. Do not rerun `passing` or `muted` on unchanged sentences. Then go to step 3 and print that run before applying or spawning another.
-8. **Stop** when `failing == 0`. Print the results with no violation list (still required). If they ask again, reprint that summary.
-9. Cap at **3 runs**. If still failing, stop, print the results and leftover failing checks.
+5. **Fix all:** set every unmuted finding except a held heading rewrite to `accepted`, apply, and continue this loop (step 7). If the only leftover unmuted findings are held heading rewrites, stop the auto-loop — do not rerun. **Review each:** wait. Publisher marks `accepted` or `rejected` by id (`tone-1`). Reject mutes that instance. `mute check <id>` mutes every instance of that check in either mode. `unmute <id>` reopens that instance. `unmute check <id>` reopens that check. Mute does not revert edits already written; the publisher reverts the file.
+6. Apply only `accepted` edits. Do not auto-apply a held heading rewrite. An explicit `accept <id>` applies even when the slug changes. Do not edit completed runs. The only in-place update is `decision` / `feedback` while still `null`.
+7. If they ask again, or **fix all** is still in progress, and `failing > 0` for reasons other than held heading rewrites, rerun **failing checks** and any check whose text sits in the accepted-edit **delta**. Do not rerun `passing` or `muted` on unchanged sentences. Then go to step 3 and print that run before applying or spawning another.
+8. **Stop** when `failing == 0`, or when the only remaining unmuted findings are held heading rewrites. Print the results; omit the violation list only when `failing == 0`. If they ask again, reprint that summary.
+9. Cap at **3 runs**. If still failing for reasons other than held heading rewrites, stop, print the results and leftover failing checks.
 
 ### Publisher example
 
@@ -117,6 +117,8 @@ Then violations for **failing** checks only, grouped under a `### <check>` headi
 ```
 
 When `conflicts` is non-empty: `` `inline-formatting-1` (conflicts: `tone`) ``. List the item under the finding's `check` (the earlier id).
+
+A held heading rewrite still lists under **Violations**. Mark it held (`accept headings-1` to apply; the new wording would change the `#slug`).
 
 ## Log
 
