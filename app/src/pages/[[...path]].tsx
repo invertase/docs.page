@@ -35,11 +35,12 @@ import { getPostHogClient, readVisitorHeaders, visitorId } from "@/lib/posthog";
 import type {
   DocPageProps,
   ErrorPageProps,
+  HomePageProps,
   NotFoundPageProps,
   PageProps,
   SiteNotFoundPageProps,
 } from "@/lib/types";
-import { utmProperties } from "@/lib/utm";
+import { utmProperties, utmQueryString } from "@/lib/utm";
 import {
   DOCS_HTML_CACHE_HEADERS,
   RAW_DOC_CACHE_HEADERS,
@@ -86,7 +87,11 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
     return {
       props: {
         kind: "home" as const,
-      },
+        // The CTAs point at `/get-started`, which reads utm params off its own
+        // request URL — so forward them onto the links to keep an ad flight's
+        // attribution attached to the click.
+        utmQuery: utmQueryString(requestUrl),
+      } satisfies HomePageProps,
     };
   }
 
@@ -457,7 +462,7 @@ export default function RepoDocsCatchAllPage(
   }
 
   if (props.kind === "home") {
-    return <Homepage />;
+    return <Homepage utmQuery={props.utmQuery} />;
   }
 
   if (props.kind === "siteNotFound") {

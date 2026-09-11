@@ -56,11 +56,26 @@ const jsonLd = {
   ],
 };
 
-export function Homepage() {
+export function Homepage({ utmQuery }: { utmQuery: string }) {
   return (
     <>
       <Head>
-        <link rel="icon" href="/_docs.page/logo-icon.svg" />
+        <link
+          rel="icon"
+          href="/_docs.page/logo-icon.svg"
+          type="image/svg+xml"
+        />
+        <link
+          rel="icon"
+          href="/_docs.page/logo-icon-512.png"
+          type="image/png"
+          sizes="512x512"
+        />
+        <link
+          rel="apple-touch-icon"
+          href="/_docs.page/logo-icon-512.png"
+          sizes="512x512"
+        />
         <title>{title}</title>
         <meta name="description" content={description} />
         <meta property="og:title" content={title} />
@@ -96,11 +111,12 @@ export function Homepage() {
               style={{ backgroundImage: `url(${hexagon.src})` }}
             />
             <Header />
-            <Hero />
+            <Hero utmQuery={utmQuery} />
             <Preview />
-            <Features />
-            <Explore />
-            <Footer />
+            <Features>
+              <Explore />
+              <Footer utmQuery={utmQuery} />
+            </Features>
           </div>
         </div>
       </div>

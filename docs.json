@@ -6,7 +6,7 @@
     "light": "https://static.invertase.io/assets/docs.page/docs-page-logo-v2.png",
     "dark": "https://static.invertase.io/assets/docs.page/docs-page-logo-v2.png"
   },
-  "favicon": "https://static.invertase.io/assets/docs.page/docs-page-logo-v2.png",
+  "favicon": "/assets/favicon.png",
   "theme": {
     "preset": "bcj0c6sa",
     "primary": "#E69135"

@@ -227,7 +227,7 @@ export function PreviewSource() {
   const showFile = !isMobile || mobileView === "file";
 
   return (
-    <div className="flex h-[min(680px,75dvh)] flex-col overflow-hidden rounded-2xl border bg-black p-1.5 sm:h-[800px] sm:rounded-xl sm:p-2 md:grid md:grid-cols-[minmax(0,300px)_minmax(0,1fr)] md:gap-2">
+    <div className="flex h-[min(680px,75dvh)] flex-col gap-1.5 overflow-hidden rounded-2xl border bg-black p-1.5 sm:h-[800px] sm:gap-2 sm:rounded-xl sm:p-2 md:grid md:grid-cols-[minmax(0,300px)_minmax(0,1fr)]">
       <div className="shrink-0 border-b px-2 py-1.5 md:hidden">
         <MobileViewTabs view={mobileView} onViewChange={setMobileView} />
       </div>

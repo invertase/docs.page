@@ -2,7 +2,13 @@ import { RiArrowRightSLine } from "@remixicon/react";
 import Link from "next/link";
 import { Button } from "../ui/button";
 
-export function Footer({ showCloser = true }: { showCloser?: boolean }) {
+export function Footer({
+  showCloser = true,
+  utmQuery = "",
+}: {
+  showCloser?: boolean;
+  utmQuery?: string;
+}) {
   return (
     <>
       {showCloser ? (
@@ -21,7 +27,11 @@ export function Footer({ showCloser = true }: { showCloser?: boolean }) {
             >
               {/* prefetch off + nofollow: see the hero CTA — the tracked redirect
                 must not be requested on page view or followed by crawlers. */}
-              <Link href="/get-started" prefetch={false} rel="nofollow">
+              <Link
+                href={`/get-started${utmQuery}`}
+                prefetch={false}
+                rel="nofollow"
+              >
                 Get started{" "}
                 <RiArrowRightSLine className="size-5 group-hover:translate-x-1 transition-transform" />
               </Link>
