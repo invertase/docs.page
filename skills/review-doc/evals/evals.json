@@ -87,6 +87,39 @@
         "The edited page still contains red, green and blue (no serial comma)",
         "The rejected punctuation instance is muted in the log"
       ]
+    },
+    {
+      "id": 7,
+      "prompt": "use review-doc on page.mdx",
+      "expected_output": "Results printed, then the click-here link is fixed. Creating a preview is held (slug would change). Install The CLI may be sentence-cased.",
+      "files": ["evals/files/headings-hold.mdx"],
+      "assertions": [
+        "Results include a checks table with CHECK and STATUS columns from the first run",
+        "Violations are grouped under a heading per failing check",
+        "A finding flags Creating a preview or task-ing",
+        "A held heading rewrite is reported (held, accept, or slug would change)",
+        "The edited page no longer contains click here",
+        "The edited page still contains the heading ## Creating a preview (not rewritten to Create a preview)",
+        "The heading ## Install The CLI is either unchanged or sentence-cased to ## Install the CLI; it is not rewritten to different wording",
+        "The review log is valid JSON and includes at least one run",
+        "The held Creating a preview finding has decision null (not accepted)"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "use review-doc on page.mdx then review each",
+      "expected_output": "Results printed with the planted issues listed. Nothing is written to the page.",
+      "files": ["evals/files/headings-hold.mdx"],
+      "assertions": [
+        "Results include a checks table with CHECK and STATUS columns",
+        "Violations are grouped under a heading per failing check",
+        "A finding quotes click here as evidence",
+        "A finding flags Creating a preview or task-ing",
+        "page.mdx is unchanged from the original fixture",
+        "The page still contains click here",
+        "The page still contains the heading ## Creating a preview",
+        "The page still contains the heading ## Install The CLI"
+      ]
     }
   ]
 }
