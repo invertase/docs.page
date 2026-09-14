@@ -6,6 +6,119 @@ import { cn } from "@/lib/utils";
 import { features } from "./data";
 import { FeatureCard } from "./feature-card";
 
+function applyPlaybackRate(el: HTMLVideoElement, rate: number) {
+  if (el.playbackRate !== rate) {
+    el.playbackRate = rate;
+  }
+}
+
+const SOFT_LOOP_FADE_MS = 180;
+/** Video-time lead before the end to start the opacity dip. */
+const SOFT_LOOP_LEAD_S = 0.2;
+
+function FeatureVideo({
+  src,
+  title,
+  playbackRate,
+  stage,
+}: {
+  src: string;
+  title: string;
+  playbackRate?: number;
+  stage?: boolean;
+}) {
+  const ref = useRef<HTMLVideoElement>(null);
+  const borderless = playbackRate != null;
+  const softLoop = playbackRate != null;
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || playbackRate == null) return;
+
+    const apply = () => applyPlaybackRate(el, playbackRate);
+    apply();
+    el.addEventListener("loadedmetadata", apply);
+    el.addEventListener("play", apply);
+    return () => {
+      el.removeEventListener("loadedmetadata", apply);
+      el.removeEventListener("play", apply);
+    };
+  }, [playbackRate]);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || !softLoop) return;
+
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    if (reduceMotion) {
+      el.loop = true;
+      return;
+    }
+
+    el.loop = false;
+    let fading = false;
+    let fadeTimer = 0;
+
+    const restartSoft = () => {
+      const onSeeked = () => {
+        el.removeEventListener("seeked", onSeeked);
+        requestAnimationFrame(() => {
+          el.style.opacity = "1";
+          fading = false;
+        });
+      };
+      el.addEventListener("seeked", onSeeked);
+      el.currentTime = 0;
+      void el.play();
+      if (playbackRate != null) applyPlaybackRate(el, playbackRate);
+    };
+
+    const beginFade = () => {
+      if (fading) return;
+      fading = true;
+      el.style.opacity = "0";
+      fadeTimer = window.setTimeout(restartSoft, SOFT_LOOP_FADE_MS);
+    };
+
+    const onTime = () => {
+      if (fading || !el.duration || Number.isNaN(el.duration)) return;
+      if (el.duration - el.currentTime > SOFT_LOOP_LEAD_S) return;
+      beginFade();
+    };
+
+    el.addEventListener("timeupdate", onTime);
+    el.addEventListener("ended", beginFade);
+    return () => {
+      el.removeEventListener("timeupdate", onTime);
+      el.removeEventListener("ended", beginFade);
+      window.clearTimeout(fadeTimer);
+      el.style.opacity = "";
+    };
+  }, [softLoop, playbackRate]);
+
+  return (
+    <video
+      ref={ref}
+      src={src}
+      autoPlay
+      loop={!softLoop}
+      muted
+      playsInline
+      title={title}
+      className={cn(
+        "relative z-1 w-full rounded-lg shadow-lg",
+        !borderless && "border border-border/50",
+        stage
+          ? "absolute inset-0 size-full object-contain"
+          : "aspect-auto object-cover",
+        softLoop && "motion-safe:transition-opacity motion-safe:duration-200",
+      )}
+    />
+  );
+}
+
 function FeatureMedia({
   children,
   glow = true,
@@ -130,18 +243,11 @@ export function Features({ children }: PropsWithChildren) {
               }
             >
               {feature.video ? (
-                <video
+                <FeatureVideo
                   src={feature.video}
-                  autoPlay
-                  loop
-                  muted
                   title={feature.titleText}
-                  className={cn(
-                    "relative z-1 w-full rounded-lg border border-border/50 shadow-lg",
-                    feature.stage
-                      ? "absolute inset-0 size-full object-contain"
-                      : "aspect-auto object-cover",
-                  )}
+                  playbackRate={feature.playbackRate}
+                  stage={feature.stage}
                 />
               ) : null}
               {feature.image ? (
