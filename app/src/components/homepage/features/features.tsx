@@ -190,7 +190,6 @@ export function Features({ children }: PropsWithChildren) {
                   className=""
                 />
               ) : null}
-              {feature.component ?? null}
             </FeatureMedia>
           </FeatureCard>
         ))}
