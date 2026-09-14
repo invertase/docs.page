@@ -72,7 +72,7 @@ export const features = [
     description:
       "Style your docs site using shadcn/ui design standards. Customize components easily to match your brand identity.",
     video: "/_docs.page/modern-interface.mp4",
-    playbackRate: 0.5,
+    playbackRate: 0.75,
     link: "/modern-interface",
   },
 ];
