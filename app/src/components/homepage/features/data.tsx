@@ -1,6 +1,5 @@
 import branches from "../assets/branches-versions.png";
 import gitPublishing from "../assets/git-publishing.png";
-import { ModernInterface } from "./modern-interface";
 
 export const features = [
   {
@@ -72,7 +71,8 @@ export const features = [
     ),
     description:
       "Style your docs site using shadcn/ui design standards. Customize components easily to match your brand identity.",
-    component: <ModernInterface />,
+    video: "/_docs.page/modern-interface.mp4",
+    playbackRate: 0.5,
     link: "/modern-interface",
   },
 ];

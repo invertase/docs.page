@@ -2,10 +2,61 @@
 
 import Image from "next/image";
 import { type PropsWithChildren, useEffect, useRef } from "react";
+import { cn } from "@/lib/utils";
 import { features } from "./data";
 import { FeatureCard } from "./feature-card";
 
 const DOT_FIELD_FEATURES = new Set(["Agent-ready", "Modern Interface"]);
+
+function applyPlaybackRate(el: HTMLVideoElement, rate: number) {
+  if (el.playbackRate !== rate) {
+    el.playbackRate = rate;
+  }
+}
+
+function FeatureVideo({
+  src,
+  title,
+  playbackRate,
+  contain,
+}: {
+  src: string;
+  title: string;
+  playbackRate?: number;
+  contain?: boolean;
+}) {
+  const ref = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el || playbackRate == null) return;
+
+    const apply = () => applyPlaybackRate(el, playbackRate);
+    apply();
+    el.addEventListener("loadedmetadata", apply);
+    el.addEventListener("play", apply);
+    return () => {
+      el.removeEventListener("loadedmetadata", apply);
+      el.removeEventListener("play", apply);
+    };
+  }, [playbackRate]);
+
+  return (
+    <video
+      ref={ref}
+      src={src}
+      autoPlay
+      loop
+      muted
+      playsInline
+      title={title}
+      className={cn(
+        "relative z-1 w-full rounded-lg border border-border/50 shadow-lg",
+        contain ? "aspect-auto object-contain" : "aspect-auto object-cover",
+      )}
+    />
+  );
+}
 
 function FeatureMedia({
   children,
@@ -125,13 +176,11 @@ export function Features({ children }: PropsWithChildren) {
           >
             <FeatureMedia glow={!DOT_FIELD_FEATURES.has(feature.titleText)}>
               {feature.video ? (
-                <video
+                <FeatureVideo
                   src={feature.video}
-                  autoPlay
-                  loop
-                  muted
                   title={feature.titleText}
-                  className="relative aspect-auto z-1 w-full rounded-lg object-cover border border-border/50 shadow-lg"
+                  playbackRate={feature.playbackRate}
+                  contain={feature.titleText === "Modern Interface"}
                 />
               ) : null}
               {feature.image ? (
