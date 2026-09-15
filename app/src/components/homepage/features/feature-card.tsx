@@ -28,8 +28,9 @@ const STAGE_MEDIA_ASPECT_CLASS = "aspect-[1900/1080]";
  * Next paper card uses `-mt-20` (the dog-ear fold). Desktop fill pins to
  * `bottom-20` so the right-column wash meets that seam. Mobile leaves the
  * shell unpadded so the stage wash can run to the card edge and under the fold.
- * The last stacked card has no following paper fold (Explore sits below) —
- * skip this clearance so the stage meets the card’s bottom edge.
+ * The last stacked card has no following paper fold (Explore sits below).
+ * Keep the 5rem clearance for sticky-stack scroll range, but run the wash
+ * to the card edge (`flush`) so that band is lattice, not solid black.
  */
 const STAGE_STACK_CLEARANCE_CLASS = "lg:pb-20";
 const STAGE_STACK_CLEARANCE_INSET_CLASS = "bottom-20";
@@ -50,8 +51,8 @@ type FeatureCardProps = PropsWithChildren<{
   /** Shared feature-stage backdrop behind the right-panel visual. */
   stage?: boolean;
   /**
-   * Last stacked card: no following paper fold, so drop the 5rem black
-   * clearance and run the stage wash to the card edge.
+   * Last stacked card: keep dog-ear scroll clearance, but paint it with
+   * the stage wash instead of leaving a solid black band.
    */
   flush?: boolean;
 }>;
@@ -96,11 +97,7 @@ export function FeatureCard({
         className={cn(
           PAPER_SECTION_SHELL_CLASS,
           "bg-black",
-          stage
-            ? flush
-              ? undefined
-              : STAGE_STACK_CLEARANCE_CLASS
-            : "pb-20 lg:pb-40",
+          stage ? STAGE_STACK_CLEARANCE_CLASS : "pb-20 lg:pb-40",
         )}
         style={{ clipPath: paperCornerClipPath() }}
       >
@@ -157,12 +154,10 @@ export function FeatureCard({
                     {children}
                   </div>
                 </div>
-                {flush ? null : (
-                  <div
-                    className={cn(STAGE_MOBILE_WASH_PAD_CLASS, "lg:hidden")}
-                    aria-hidden
-                  />
-                )}
+                <div
+                  className={cn(STAGE_MOBILE_WASH_PAD_CLASS, "lg:hidden")}
+                  aria-hidden
+                />
               </div>
             </div>
           </>
