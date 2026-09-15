@@ -28,9 +28,11 @@ const STAGE_MEDIA_ASPECT_CLASS = "aspect-[1900/1080]";
  * Next paper card uses `-mt-20` (the dog-ear fold). Desktop fill pins to
  * `bottom-20` so the right-column wash meets that seam. Mobile leaves the
  * shell unpadded so the stage wash can run to the card edge and under the fold.
- * The last stacked card has no following paper fold (Explore sits below).
- * Keep the 5rem clearance for sticky-stack scroll range, but run the wash
- * to the card edge (`flush`) so that band is lattice, not solid black.
+ * The last stacked card has no following paper fold. Keep the 5rem
+ * clearance for sticky-stack scroll range; Explore uses the same `-mt-20`
+ * overlap as sibling cards so that band sits under the next section.
+ * `flush` still runs the wash to the card edge so any peek is lattice,
+ * not a solid black plate.
  */
 const STAGE_STACK_CLEARANCE_CLASS = "lg:pb-20";
 const STAGE_STACK_CLEARANCE_INSET_CLASS = "bottom-20";
@@ -51,8 +53,8 @@ type FeatureCardProps = PropsWithChildren<{
   /** Shared feature-stage backdrop behind the right-panel visual. */
   stage?: boolean;
   /**
-   * Last stacked card: keep dog-ear scroll clearance, but paint it with
-   * the stage wash instead of leaving a solid black band.
+   * Last stacked card: paint the dog-ear clearance with the stage wash
+   * (Explore folds over it with the shared `-mt-20` overlap).
    */
   flush?: boolean;
 }>;
