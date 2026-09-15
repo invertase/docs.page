@@ -250,7 +250,9 @@ export function Features({ children }: PropsWithChildren) {
                   stage={feature.stage}
                 />
               ) : null}
-              {feature.image ? (
+              {typeof feature.image === "string" ? (
+                <img src={feature.image} alt={feature.titleText} />
+              ) : feature.image ? (
                 <Image
                   src={feature.image}
                   alt={feature.titleText}

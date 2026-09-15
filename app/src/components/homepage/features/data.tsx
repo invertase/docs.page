@@ -9,9 +9,10 @@ export type Feature = {
   description: string;
   link: string;
   video?: string;
-  /** Applied to `<video>` via loadedmetadata/play (Modern Interface). */
+  /** Applied to `<video>` via loadedmetadata/play. */
   playbackRate?: number;
-  image?: StaticImageData;
+  /** Static still or a public-path GIF (string) that loops natively. */
+  image?: StaticImageData | string;
   component?: ReactNode;
   /** Shared feature-stage backdrop behind the right-panel visual. */
   stage?: boolean;
@@ -92,8 +93,7 @@ export const features: Feature[] = [
     ),
     description:
       "Style your docs site using shadcn/ui design standards. Customize components easily to match your brand identity.",
-    video: "/_docs.page/modern-interface.mp4",
-    playbackRate: 0.75,
+    image: "/_docs.page/modern-interface.gif",
     link: "/modern-interface",
     stage: true,
   },
