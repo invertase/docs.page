@@ -235,6 +235,7 @@ export function Features({ children }: PropsWithChildren) {
             description={feature.description}
             link={feature.link}
             stage={feature.stage}
+            flush={i === features.length - 1}
           >
             <FeatureMedia
               glow={!feature.stage}
