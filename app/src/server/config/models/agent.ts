@@ -34,9 +34,6 @@ export default z
     placeholder: z.string().min(1).optional().catch(undefined),
     questions: z.array(z.string().min(1)).optional().catch(undefined),
     limits: limits.default(DEFAULT_AGENT_LIMITS),
-    // `.optional().catch(undefined)` rather than a bare `.catch({})`: a bare
-    // catch inherits its inner type's `optin`, which lands the field in the
-    // generated JSON schema's `required` list.
     models: models.optional().catch(undefined),
   })
   .catch({
