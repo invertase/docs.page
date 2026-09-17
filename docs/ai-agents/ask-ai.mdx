@@ -92,6 +92,24 @@ After the agent is enabled, tune reader-facing copy and limits in `docs.json` wi
 
 Field behavior and defaults are documented on [Ask AI on Features](/features/ask-ai#customize-the-reader-experience).
 
+## Override the model
+
+`agent.models` replaces the default model docs.page assigns to your provider. Use it to move to a newer model, or off one your provider has retired, without waiting on a docs.page release:
+
+```json
+"agent": {
+  "key": "value from cli",
+  "models": {
+    "google": "gemini-3.0-pro",
+    "openai": "gpt-5-mini"
+  }
+}
+```
+
+- **Keyed by provider name:** valid keys are `openai`, `anthropic`, `google`, and `xai`. Only the entry matching the provider you registered with create is ever read, so unused entries are ignored and the override survives a provider rotation with `--force`
+- **The id must be one your provider's API accepts for your key:** an unrecognised id makes the chat request fail with your provider's own error rather than silently reverting to the default model
+- **Read from the default branch:** like `agent.key`, the override is read from `docs.json` on your default branch
+
 ## Verify
 
 Open your production docs URL on the default branch, for example `https://docs.page/org/repo`. Confirm the **Agent** control appears in the site header (or press **Ctrl**+**I**), open the panel, and send a test question. You should see a streamed reply with links back to your pages.
@@ -108,6 +126,7 @@ If the control is missing, work through [Troubleshooting](#troubleshooting) befo
 | GitHub auth error during create | `gh` not logged in or token lacks access | Run `gh auth login` or pass `--gh-auth` with a token that has admin on the repo |
 | Agent creation failed (403) | Account is not a GitHub admin on the repository | Use an account with admin access |
 | Chat works locally in preview but not on the site | Local preview never loads the agent panel | Verify on the production default-branch URL after push |
+| Panel opens but every question fails | `agent.models` names a model id your provider does not accept for your key | Check the error the provider returns, correct the id under `agent.models`, or remove the entry to fall back to the default model |
 
 To remove stored credentials, run `npx @docs.page/cli agent delete --repo org/repo`. See [Manage the AI agent](/features/cli#manage-the-ai-agent) for delete workflows and API base URL options.
 
