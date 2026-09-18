@@ -31,6 +31,8 @@ const SEVERITIES = ["off", "warn", "error"] as const;
 const FRONTMATTER_LINK_FIELDS = ["redirect", "next", "previous"] as const;
 const EXTERNAL_LINK_TIMEOUT_MS = 10_000;
 const EXTERNAL_LINK_CONCURRENCY = 8;
+// Depth bound for walking `error.cause` chains when reporting a failure.
+const MAX_ERROR_CAUSE_DEPTH = 5;
 // Statuses a host returns when it refuses to serve an automated client rather
 // than because the target is missing. These are reported as warnings so a bot
 // gate never fails CI, while 404s, 5xxs, DNS failures and timeouts stay errors.
@@ -868,10 +870,14 @@ export async function checkExternalUrl(
 
 async function requestExternalUrl(url: string, method: "GET" | "HEAD") {
   const controller = new AbortController();
-  const timeout = setTimeout(
-    () => controller.abort(),
-    EXTERNAL_LINK_TIMEOUT_MS,
-  );
+  // Tracked separately from the signal so an abort raised by this timeout is
+  // never confused with one raised elsewhere. Abort errors are detected by
+  // name, never by message: the wording differs between Node and Bun.
+  let timedOut = false;
+  const timeout = setTimeout(() => {
+    timedOut = true;
+    controller.abort();
+  }, EXTERNAL_LINK_TIMEOUT_MS);
 
   try {
     const response = await fetch(url, {
@@ -892,14 +898,22 @@ async function requestExternalUrl(url: string, method: "GET" | "HEAD") {
       statusText: response.statusText,
       message: ok
         ? undefined
-        : `External link returned ${response.status} ${response.statusText}.`,
+        : `External link returned ${formatStatus(
+            response.status,
+            response.statusText,
+          )}.`,
     };
   } catch (error) {
     return {
       ok: false,
       status: undefined,
       statusText: undefined,
-      message: `Unable to reach external link: ${getErrorMessage(error)}`,
+      message:
+        timedOut && (controller.signal.aborted || isAbortError(error))
+          ? `External link timed out after ${formatTimeout(
+              EXTERNAL_LINK_TIMEOUT_MS,
+            )}.`
+          : `Unable to reach external link: ${getFetchErrorMessage(error)}`,
     };
   } finally {
     clearTimeout(timeout);
@@ -907,7 +921,19 @@ async function requestExternalUrl(url: string, method: "GET" | "HEAD") {
 }
 
 function formatStatus(status: number, statusText: string | undefined) {
-  return statusText ? `${status} ${statusText}` : `${status}`;
+  const reason = statusText?.trim();
+
+  return reason ? `${status} ${reason}` : `${status}`;
+}
+
+function formatTimeout(timeoutMs: number) {
+  const seconds = timeoutMs / 1000;
+
+  return `${Number.isInteger(seconds) ? seconds : seconds.toFixed(1)}s`;
+}
+
+function isAbortError(error: unknown) {
+  return error instanceof Error && error.name === "AbortError";
 }
 
 function getInternalLinkMessage(reference: Reference) {
@@ -1147,6 +1173,56 @@ function getErrorMessage(error: unknown) {
   }
 
   return "Unknown error";
+}
+
+/**
+ * Node's `fetch` reports every network-level failure as `TypeError: fetch
+ * failed` and hangs the real diagnosis off `error.cause` — a dropped socket, a
+ * DNS lookup failure, a TLS failure or a refused connection all arrive that
+ * way. The deepest describable cause is therefore the message worth printing.
+ *
+ * Only the link checker uses this: elsewhere the thrown error already carries
+ * the better message. The chain is walked defensively — depth-bounded,
+ * cycle-safe, and never throwing, so a reporting detail cannot fail a run.
+ */
+function getFetchErrorMessage(error: unknown) {
+  try {
+    const seen = new Set<object>();
+    let current: unknown = error;
+    let message: string | undefined;
+
+    for (let depth = 0; depth <= MAX_ERROR_CAUSE_DEPTH; depth += 1) {
+      if (!current || typeof current !== "object" || seen.has(current)) {
+        break;
+      }
+
+      seen.add(current);
+      message = describeErrorCause(current) ?? message;
+      current = (current as { cause?: unknown }).cause;
+    }
+
+    return message ?? getErrorMessage(error);
+  } catch {
+    return "Unknown error";
+  }
+}
+
+/**
+ * Describe a single link in an error chain, appending its `code` when one is
+ * set and the message does not already mention it.
+ */
+function describeErrorCause(error: object) {
+  const { message, code } = error as { message?: unknown; code?: unknown };
+  const text = typeof message === "string" ? message.trim() : "";
+
+  if (!text) {
+    return undefined;
+  }
+
+  const codeText =
+    typeof code === "string" || typeof code === "number" ? `${code}` : "";
+
+  return codeText && !text.includes(codeText) ? `${text} (${codeText})` : text;
 }
 
 function pathExists(filePath: string) {
