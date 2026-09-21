@@ -8,7 +8,9 @@
       "!**/dist",
       "!**/.next",
       "!**/*.css",
-      "!**/app/public"
+      "!**/app/public",
+      "!**/*.wgsl",
+      "!**/triangle-led-front"
     ]
   },
   "assist": { "actions": { "source": { "organizeImports": "on" } } },
