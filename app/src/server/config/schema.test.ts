@@ -82,3 +82,92 @@ describe("ConfigSchema scripts.googleSiteVerification", () => {
     expect(config.scripts.googleSiteVerification).toBe("aBcD1234exampleToken");
   });
 });
+
+describe("ConfigSchema agent.models", () => {
+  test("parses a single-provider override", () => {
+    const config = ConfigSchema.parse({
+      agent: { key: "value from cli", models: { google: "gemini-3.0-pro" } },
+    });
+
+    expect(config.agent.models).toEqual({ google: "gemini-3.0-pro" });
+  });
+
+  test("parses a multi-provider override", () => {
+    const config = ConfigSchema.parse({
+      agent: {
+        models: {
+          google: "gemini-3.0-pro",
+          openai: "gpt-5-mini",
+          anthropic: "claude-sonnet-4-5",
+          xai: "grok-4",
+        },
+      },
+    });
+
+    expect(config.agent.models).toEqual({
+      google: "gemini-3.0-pro",
+      openai: "gpt-5-mini",
+      anthropic: "claude-sonnet-4-5",
+      xai: "grok-4",
+    });
+  });
+
+  test("defaults to undefined when omitted", () => {
+    const config = ConfigSchema.parse({ agent: { key: "value from cli" } });
+    expect(config.agent.models).toBeUndefined();
+  });
+
+  test("forgives an invalid type for one provider without dropping siblings", () => {
+    const config = ConfigSchema.parse({
+      // the per-field `.catch(undefined)` is what keeps `openai` here: a
+      // record-level catch would discard every override over one bad entry.
+      agent: { models: { google: 123, openai: "gpt-5-mini" } },
+    });
+
+    expect(config.agent.models?.google).toBeUndefined();
+    expect(config.agent.models?.openai).toBe("gpt-5-mini");
+  });
+
+  test("forgives an empty string for one provider without dropping siblings", () => {
+    const config = ConfigSchema.parse({
+      agent: { models: { google: "", openai: "gpt-5-mini" } },
+    });
+
+    expect(config.agent.models?.google).toBeUndefined();
+    expect(config.agent.models?.openai).toBe("gpt-5-mini");
+  });
+
+  test("strips an unknown provider key and keeps the valid entries", () => {
+    const config = ConfigSchema.parse({
+      agent: { models: { gooogle: "gemini-3.0-pro", openai: "gpt-5-mini" } },
+    });
+
+    expect(config.agent.models).toEqual({ openai: "gpt-5-mini" });
+  });
+
+  test("forgives an invalid models value (falls back to undefined)", () => {
+    const config = ConfigSchema.parse({
+      agent: { key: "value from cli", models: "gemini-3.0-pro" },
+    });
+
+    expect(config.agent.models).toBeUndefined();
+    expect(config.agent.key).toBe("value from cli");
+  });
+
+  test("does not affect agent.key or agent.limits", () => {
+    const config = ConfigSchema.parse({
+      agent: {
+        key: "value from cli",
+        limits: { ip: 10, repo: 20 },
+        models: { google: "gemini-3.0-pro" },
+      },
+    });
+
+    expect(config.agent.key).toBe("value from cli");
+    expect(config.agent.limits).toEqual({ ip: 10, repo: 20 });
+
+    const defaults = ConfigSchema.parse({ agent: {} });
+    expect(defaults.agent.key).toBeUndefined();
+    expect(defaults.agent.limits).toEqual({ ip: 200, repo: 10_000 });
+  });
+});
