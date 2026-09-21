@@ -4,10 +4,18 @@ import type { CSSProperties } from "react";
 import { cn } from "@/lib/utils";
 
 import styles from "./homepage.module.css";
+import { PAPER_SECTION_OVERLAP_CLASS } from "./paper-corner";
 
 export function Explore() {
   return (
-    <div className="border-t border-b border-border lg:grid lg:grid-cols-[minmax(0,10fr)_minmax(0,6fr)_minmax(0,6fr)_minmax(0,6fr)_minmax(0,6fr)]">
+    <div
+      className={cn(
+        PAPER_SECTION_OVERLAP_CLASS,
+        // Above the last stacked card (z-index 6) so this fold covers the
+        // 5rem stage clearance instead of sliding under it and clipping.
+        "relative z-10 border-t border-b border-border lg:grid lg:grid-cols-[minmax(0,10fr)_minmax(0,6fr)_minmax(0,6fr)_minmax(0,6fr)_minmax(0,6fr)]",
+      )}
+    >
       <div className="border-b border-border py-8 px-6 text-center bg-black/60 lg:border-b-0 lg:border-r lg:px-10 lg:text-left">
         <p className="text-xl font-extralight">
           Explore <span className="text-honey-500">open-source</span> projects

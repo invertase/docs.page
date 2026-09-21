@@ -2,7 +2,6 @@ import type { StaticImageData } from "next/image";
 import type { ReactNode } from "react";
 import branches from "../assets/branches-versions.png";
 import gitPublishing from "../assets/git-publishing.png";
-import { ModernInterface } from "./modern-interface";
 
 export type Feature = {
   titleText: string;
@@ -10,7 +9,8 @@ export type Feature = {
   description: string;
   link: string;
   video?: string;
-  image?: StaticImageData;
+  /** Static still or a public-path GIF (string) that loops natively. */
+  image?: StaticImageData | string;
   component?: ReactNode;
   /** Shared feature-stage backdrop behind the right-panel visual. */
   stage?: boolean;
@@ -91,7 +91,7 @@ export const features: Feature[] = [
     ),
     description:
       "Style your docs site using shadcn/ui design standards. Customize components easily to match your brand identity.",
-    component: <ModernInterface />,
+    image: "/_docs.page/modern-interface.gif",
     link: "/modern-interface",
     stage: true,
   },
