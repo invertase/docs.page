@@ -30,6 +30,12 @@ export type RawPageProps = {
 
 export type HomePageProps = {
   kind: "home";
+  /** Recognised utm params of the inbound request, re-encoded for the CTA links. */
+  utmQuery: string;
+};
+
+export type SiteNotFoundPageProps = {
+  kind: "siteNotFound";
 };
 
 export type NotFoundPageProps = {
@@ -41,5 +47,6 @@ export type PageProps =
   | DocPageProps
   | ErrorPageProps
   | NotFoundPageProps
+  | SiteNotFoundPageProps
   | RawPageProps
   | HomePageProps;
