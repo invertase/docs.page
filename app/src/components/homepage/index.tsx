@@ -56,7 +56,7 @@ const jsonLd = {
   ],
 };
 
-export function Homepage() {
+export function Homepage({ utmQuery }: { utmQuery: string }) {
   return (
     <>
       <Head>
@@ -76,8 +76,10 @@ export function Homepage() {
           href="/_docs.page/logo-icon-512.png"
           sizes="512x512"
         />
+        <link rel="canonical" href="https://docs.page/" />
         <title>{title}</title>
         <meta name="description" content={description} />
+        <meta property="og:type" content="website" />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={image} />
@@ -111,11 +113,11 @@ export function Homepage() {
               style={{ backgroundImage: `url(${hexagon.src})` }}
             />
             <Header />
-            <Hero />
+            <Hero utmQuery={utmQuery} />
             <Preview />
             <Features>
               <Explore />
-              <Footer />
+              <Footer utmQuery={utmQuery} />
             </Features>
           </div>
         </div>

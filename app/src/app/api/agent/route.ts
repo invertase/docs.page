@@ -12,7 +12,11 @@ import { anonymizeIp, getPostHogClient } from "@/lib/posthog";
 import { getRequestClientIp } from "@/lib/request-client-ip";
 import { decryptAgentPayload } from "@/server/agent/encryption";
 import { checkAdminAccess, parseRepo } from "@/server/agent/github-admin";
-import { getModelForProvider, getProvider } from "@/server/agent/providers";
+import {
+  type AgentProvider,
+  getModelForProvider,
+  getProvider,
+} from "@/server/agent/providers";
 import { getDefaultBranchDocsConfig } from "@/server/agent/repository";
 import {
   AGENT_SESSION_COOKIE_NAME,
@@ -251,7 +255,12 @@ export async function POST(req: Request) {
     return Response.json({ error: "Invalid provider." }, { status: 400 });
   }
 
-  const modelName = getModelForProvider(provider);
+  // `agent.models` is read from the default branch, like `agent.key`. A
+  // syntactically valid but unknown model id is passed straight through so the
+  // provider SDK fails loudly instead of quietly reverting to the default.
+  const overrideModel =
+    defaultBranchConfig.agent.models?.[provider as AgentProvider];
+  const modelName = overrideModel ?? getModelForProvider(provider);
 
   if (!modelName) {
     return Response.json(
