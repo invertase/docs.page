@@ -1,0 +1,125 @@
+{
+  "skill_name": "review-doc",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "use review-doc on page.mdx",
+      "expected_output": "A results table after the run, with planted writing issues called out as failing checks, then those issues fixed on the page.",
+      "files": ["evals/files/planted-mechanical.mdx"],
+      "assertions": [
+        "Results include a checks table with CHECK and STATUS columns",
+        "Results list at least one violation (failing is greater than 0)",
+        "Violations are grouped under a heading per failing check",
+        "A finding quotes click here as evidence",
+        "A finding flags the missing serial comma in red, green and blue",
+        "A finding flags a fence with no language tag",
+        "A finding flags please note or utilize as padding or word-list",
+        "The review log is valid JSON with a checks array of length 16",
+        "The edited page no longer contains click here",
+        "The edited page uses the serial comma: red, green, and blue"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "use review-doc on page.mdx",
+      "expected_output": "A results table that does not treat docs.page idioms as violations and does not convert equivalent MDX forms.",
+      "files": ["evals/files/skip-idioms.mdx"],
+      "assertions": [
+        "Results include a checks table with CHECK and STATUS columns",
+        "The page still contains an <Info> callout (not converted to a GitHub alert)",
+        "The page still contains <Steps> / <Step> (not rewritten as a new procedure)",
+        "The page still contains the markdown image ![Docs.page logo](/assets/logo.svg)",
+        "No finding treats {owner}/{repo} as a placeholder violation",
+        "No finding treats never returns a body on `204` as an unverifiable claim",
+        "No finding treats existing <Steps> as an unnumbered sequence",
+        "The review log is valid JSON with a checks array of length 16",
+        "page.mdx is unchanged from the original fixture"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "use review-doc on page.mdx and auto fix findings",
+      "expected_output": "Results printed, then planted issues fixed on the page, with the Info callout left unchanged.",
+      "files": ["evals/files/fix-all.mdx"],
+      "assertions": [
+        "Results include a checks table with CHECK and STATUS columns from the first run",
+        "Violations are grouped under a heading per failing check",
+        "The edited page no longer contains click here",
+        "The edited page uses the serial comma: red, green, and blue",
+        "The edited page still contains an <Info> callout (not converted to a GitHub alert)",
+        "The edited page does not add a new ## heading or invented procedure",
+        "The review log is valid JSON and includes at least one run"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "use review-doc on page.mdx",
+      "expected_output": "One grouped finding for the overlapping click-here sentence, with conflicts named. Unmuted findings are applied after the results print.",
+      "files": ["evals/files/conflicts.mdx"],
+      "assertions": [
+        "Results include a checks table with CHECK and STATUS columns",
+        "Violations are grouped under a heading per failing check",
+        "A finding quotes click here as evidence",
+        "A finding lists conflicts (another check id in parentheses or a conflicts array)"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "use review-doc on page.mdx then review each. Then mute check tone and print the next run",
+      "expected_output": "First run flags the idiom; after mute check tone, tone is muted and that instance does not come back as failing.",
+      "files": ["evals/files/mute-check.mdx"],
+      "assertions": [
+        "The first results include a checks table",
+        "A finding quotes infrastructure tax as evidence on the first run",
+        "After mute, tone is muted (or failing is 0 for that check)",
+        "page.mdx is unchanged"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "use review-doc on page.mdx then review each: accept the links finding and reject the punctuation finding",
+      "expected_output": "click here is fixed; the missing serial comma remains; Info is not involved.",
+      "files": ["evals/files/review-each.mdx"],
+      "assertions": [
+        "The first results include a checks table",
+        "Violations are grouped under a heading per failing check",
+        "The edited page no longer contains click here",
+        "The edited page still contains red, green and blue (no serial comma)",
+        "The rejected punctuation instance is muted in the log"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "use review-doc on page.mdx",
+      "expected_output": "Results printed, then the click-here link is fixed. Creating a preview is held (slug would change). Install The CLI may be sentence-cased.",
+      "files": ["evals/files/headings-hold.mdx"],
+      "assertions": [
+        "Results include a checks table with CHECK and STATUS columns from the first run",
+        "Violations are grouped under a heading per failing check",
+        "A finding flags Creating a preview or task-ing",
+        "A held heading rewrite is reported (held, accept, or slug would change)",
+        "The edited page no longer contains click here",
+        "The edited page still contains the heading ## Creating a preview (not rewritten to Create a preview)",
+        "The heading ## Install The CLI is either unchanged or sentence-cased to ## Install the CLI; it is not rewritten to different wording",
+        "The review log is valid JSON and includes at least one run",
+        "The held Creating a preview finding has decision null (not accepted)"
+      ]
+    },
+    {
+      "id": 8,
+      "prompt": "use review-doc on page.mdx then review each",
+      "expected_output": "Results printed with the planted issues listed. Nothing is written to the page.",
+      "files": ["evals/files/headings-hold.mdx"],
+      "assertions": [
+        "Results include a checks table with CHECK and STATUS columns",
+        "Violations are grouped under a heading per failing check",
+        "A finding quotes click here as evidence",
+        "A finding flags Creating a preview or task-ing",
+        "page.mdx is unchanged from the original fixture",
+        "The page still contains click here",
+        "The page still contains the heading ## Creating a preview",
+        "The page still contains the heading ## Install The CLI"
+      ]
+    }
+  ]
+}
