@@ -1,8 +1,22 @@
+import type { StaticImageData } from "next/image";
+import type { ReactNode } from "react";
 import branches from "../assets/branches-versions.png";
 import gitPublishing from "../assets/git-publishing.png";
 import { ModernInterface } from "./modern-interface";
 
-export const features = [
+export type Feature = {
+  titleText: string;
+  title: ReactNode;
+  description: string;
+  link: string;
+  video?: string;
+  image?: StaticImageData;
+  component?: ReactNode;
+  /** Shared feature-stage backdrop behind the right-panel visual. */
+  stage?: boolean;
+};
+
+export const features: Feature[] = [
   {
     titleText: "Agent-ready",
     title: (
@@ -14,6 +28,7 @@ export const features = [
       "Let users' AI agents query your documentation. Built-in MCP servers alongside llms.txt files allow LLMs to ingest your product context instantly.",
     video: "/_docs.page/agent-ready.mp4?v=2",
     link: "/agent-access",
+    stage: true,
   },
   {
     titleText: "Git Publishing",
@@ -26,6 +41,7 @@ export const features = [
       "Deploy updates directly from your public GitHub repository. Eliminate build pipelines, hosting configuration, or infrastructure maintenance.",
     image: gitPublishing,
     link: "/git-publishing",
+    stage: true,
   },
   {
     titleText: "Intelligent Search",
@@ -38,6 +54,7 @@ export const features = [
       "Index content automatically and provide an embedded AI chat. Locate information instantly without third-party tracking scripts or external setup.",
     video: "/_docs.page/intelligent-search.mp4?v=2",
     link: "/intelligent-search",
+    stage: true,
   },
   {
     titleText: "Markdown Components",
@@ -50,6 +67,7 @@ export const features = [
       "Add interactive components to your docs with MDX for richer experiences than standard Markdown.",
     video: "/_docs.page/markdown-components.mp4",
     link: "/markdown-components?v=2",
+    stage: true,
   },
   {
     titleText: "Branches & versions",
@@ -62,6 +80,7 @@ export const features = [
       "Serve any Git branch, tag, or release as a distinct documentation site. Seamlessly organise versions and live staging previews on the fly.",
     image: branches,
     link: "/agent-ready",
+    stage: true,
   },
   {
     titleText: "Modern Interface",
@@ -74,5 +93,6 @@ export const features = [
       "Style your docs site using shadcn/ui design standards. Customize components easily to match your brand identity.",
     component: <ModernInterface />,
     link: "/modern-interface",
+    stage: true,
   },
 ];
