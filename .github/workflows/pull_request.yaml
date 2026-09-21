@@ -16,6 +16,22 @@ jobs:
       - name: Run Biome
         run: biome ci .
 
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+      - name: Install dependencies
+        run: bun install
+      - name: Typecheck mdx-bundler
+        run: bun run typecheck
+        working-directory: packages/mdx-bundler
+      - name: Typecheck CLI
+        run: bun run typecheck
+        working-directory: packages/cli
+
   test:
     runs-on: ubuntu-latest
     steps:
