@@ -1,0 +1,21 @@
+{
+  "name": "docs-page",
+  "owner": { "name": "Invertase", "url": "https://invertase.io" },
+  "metadata": {
+    "description": "Plugins for authoring docs.page documentation sites",
+    "version": "0.1.3"
+  },
+  "plugins": [
+    {
+      "name": "docs-page",
+      "source": "./plugins/docs-page",
+      "description": "Author, configure and validate a docs.page documentation site.",
+      "version": "0.1.3",
+      "author": { "name": "Invertase" },
+      "category": "documentation",
+      "keywords": ["docs", "documentation", "docs.page", "mdx"],
+      "license": "Apache-2.0",
+      "homepage": "https://docs.page"
+    }
+  ]
+}
