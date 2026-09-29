@@ -55,6 +55,59 @@ describe("checkExternalUrl", () => {
     expect(failure?.message).toContain("Unable to reach external link");
   });
 
+  test("treats AbortError as a timed-out external link", async () => {
+    globalThis.fetch = (() =>
+      Promise.reject(
+        new DOMException("The operation was aborted.", "AbortError"),
+      )) as typeof fetch;
+
+    const failure = await checkExternalUrl("https://example.com");
+
+    expect(failure?.kind).toBe("broken");
+    expect(failure?.message).toBe("External link timed out after 10000ms.");
+  });
+
+  test("includes a distinct underlying cause in unreachable errors", async () => {
+    const cause = new Error("connect ECONNREFUSED 127.0.0.1:443");
+    globalThis.fetch = (() =>
+      Promise.reject(new Error("fetch failed", { cause }))) as typeof fetch;
+
+    const failure = await checkExternalUrl("https://example.com");
+
+    expect(failure?.kind).toBe("broken");
+    expect(failure?.message).toBe(
+      "Unable to reach external link: fetch failed: connect ECONNREFUSED 127.0.0.1:443",
+    );
+  });
+
+  test("does not duplicate a cause already present in the message", async () => {
+    const cause = new Error("ENOTFOUND");
+    globalThis.fetch = (() =>
+      Promise.reject(
+        new Error("getaddrinfo ENOTFOUND", { cause }),
+      )) as typeof fetch;
+
+    const failure = await checkExternalUrl("https://example.invalid");
+
+    expect(failure?.kind).toBe("broken");
+    expect(failure?.message).toBe(
+      "Unable to reach external link: getaddrinfo ENOTFOUND",
+    );
+  });
+
+  test("ignores an empty cause message on unreachable errors", async () => {
+    const cause = new Error("");
+    globalThis.fetch = (() =>
+      Promise.reject(new Error("fetch failed", { cause }))) as typeof fetch;
+
+    const failure = await checkExternalUrl("https://example.com");
+
+    expect(failure?.kind).toBe("broken");
+    expect(failure?.message).toBe(
+      "Unable to reach external link: fetch failed",
+    );
+  });
+
   test("falls back to GET when HEAD is rejected", async () => {
     mockFetch((method) =>
       method === "HEAD"

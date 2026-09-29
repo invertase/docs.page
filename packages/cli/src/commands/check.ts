@@ -899,11 +899,32 @@ async function requestExternalUrl(url: string, method: "GET" | "HEAD") {
       ok: false,
       status: undefined,
       statusText: undefined,
-      message: `Unable to reach external link: ${getErrorMessage(error)}`,
+      message: formatExternalRequestError(error),
     };
   } finally {
     clearTimeout(timeout);
   }
+}
+
+function formatExternalRequestError(error: unknown) {
+  if (
+    (error instanceof Error || error instanceof DOMException) &&
+    error.name === "AbortError"
+  ) {
+    return `External link timed out after ${EXTERNAL_LINK_TIMEOUT_MS}ms.`;
+  }
+
+  const outer = getErrorMessage(error);
+  const cause =
+    error instanceof Error && error.cause instanceof Error
+      ? error.cause.message
+      : undefined;
+
+  if (cause && !outer.includes(cause)) {
+    return `Unable to reach external link: ${outer}: ${cause}`;
+  }
+
+  return `Unable to reach external link: ${outer}`;
 }
 
 function formatStatus(status: number, statusText: string | undefined) {
