@@ -171,3 +171,133 @@ describe("ConfigSchema agent.models", () => {
     expect(defaults.agent.limits).toEqual({ ip: 200, repo: 10_000 });
   });
 });
+
+describe("ConfigSchema check.severityOverrideHosts", () => {
+  test("accepts a host to warn|error map", () => {
+    const config = ConfigSchema.parse({
+      name: "fixture",
+      check: {
+        severityOverrideHosts: {
+          "rnfirebase.io": "error",
+          "stackoverflow.com": "warn",
+        },
+      },
+    });
+
+    expect(config.check?.severityOverrideHosts).toEqual({
+      "rnfirebase.io": "error",
+      "stackoverflow.com": "warn",
+    });
+  });
+
+  test("forgives a bad severityOverrideHosts shape without dropping siblings", () => {
+    const config = ConfigSchema.parse({
+      name: "fixture",
+      check: {
+        ignoreExternalHosts: ["example.com"],
+        severityOverrideHosts: "rnfirebase.io=error",
+      },
+    });
+
+    expect(config.check?.ignoreExternalHosts).toEqual(["example.com"]);
+    expect(config.check?.severityOverrideHosts).toBeUndefined();
+  });
+
+  test("forgives invalid severity values without dropping siblings", () => {
+    const config = ConfigSchema.parse({
+      name: "fixture",
+      check: {
+        ignoreExternalHosts: "example.com",
+        severityOverrideHosts: { "rnfirebase.io": "off" },
+      },
+    });
+
+    expect(config.check?.ignoreExternalHosts).toBe("example.com");
+    expect(config.check?.severityOverrideHosts).toBeUndefined();
+  });
+
+  test("normalizes valid hosts and drops invalid entries per key", () => {
+    const config = ConfigSchema.parse({
+      name: "fixture",
+      check: {
+        severityOverrideHosts: {
+          "RNFirebase.IO": "ERROR",
+          "https://StackOverflow.COM/questions/1": "warn",
+          "localhost:3000": "error",
+          "*.npmjs.org": "WARN",
+          ".example.org": "error",
+          "firebase.google.com.": "warn",
+          "bad.com": "off",
+          "also.com": "fatal",
+          "": "error",
+          "   ": "warn",
+          "not a host": "error",
+        },
+      },
+    });
+
+    expect(config.check?.severityOverrideHosts).toEqual({
+      "rnfirebase.io": "error",
+      "stackoverflow.com": "warn",
+      localhost: "error",
+      "npmjs.org": "warn",
+      "example.org": "error",
+      "firebase.google.com": "warn",
+    });
+  });
+
+  test("uses the later entry when normalized hosts collide", () => {
+    const config = ConfigSchema.parse({
+      name: "fixture",
+      check: {
+        severityOverrideHosts: {
+          "Example.COM": "warn",
+          "https://example.com/docs": "error",
+        },
+      },
+    });
+
+    expect(config.check?.severityOverrideHosts).toEqual({
+      "example.com": "error",
+    });
+  });
+
+  test("retains __proto__ as an own host property", () => {
+    const input = JSON.parse(`{
+      "name": "fixture",
+      "check": {
+        "severityOverrideHosts": {
+          "__proto__": "error",
+          "example.com": "warn"
+        }
+      }
+    }`);
+    const config = ConfigSchema.parse(input);
+    const overrides = config.check?.severityOverrideHosts;
+    const protoOverride = Object.getOwnPropertyDescriptor(
+      overrides ?? {},
+      "__proto__",
+    );
+
+    expect(protoOverride).toBeDefined();
+    expect(protoOverride?.value).toBe("error");
+    expect(overrides?.["example.com"]).toBe("warn");
+  });
+
+  test("lowercases uppercase WARN and ERROR severities", () => {
+    const config = ConfigSchema.parse({
+      name: "fixture",
+      check: {
+        severityOverrideHosts: {
+          "rnfirebase.io": "ERROR",
+          "stackoverflow.com": "WARN",
+        },
+      },
+    });
+
+    expect(config.check?.severityOverrideHosts).toEqual({
+      "rnfirebase.io": "error",
+      "stackoverflow.com": "warn",
+    });
+  });
+});

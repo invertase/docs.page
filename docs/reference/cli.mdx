@@ -140,6 +140,14 @@ docs check [path] [flags]
   Unioned with `check.ignoreExternalHosts` in `docs.json`. Neither replaces the other.
 </Property>
 
+<Property name="--severity-override-hosts" type="string" optional>
+  Comma-separated `host=severity` pairs that set the severity for every external-link failure on a matching host. Values are `warn` or `error` only.
+
+  Host spelling matches `--ignore-external-hosts`: a pasted URL, a `host:port`, a `*.` or `.` prefix, and a trailing dot are all accepted. Entries match on hostname and cover subdomains; a lookalike host does not match. When both a parent and a child hostname match, the longer hostname wins.
+
+  Unioned with `check.severityOverrideHosts` in `docs.json`. When the same host appears in both, the flag wins.
+</Property>
+
 <Property name="--debug" type="flag" optional>
   After external-link checks and before the normal summary, print plain-text debug lines for each HTTP attempt and a per-host totals line. No `docs.json` key.
 
@@ -174,9 +182,33 @@ Declare hosts once in `docs.json` so CI does not repeat the flag:
 
 Values from `docs.json` and `--ignore-external-hosts` are unioned. `--external-links off` still skips external checking entirely.
 
+### Override external-link severity per host from `docs.json`
+
+Declare per-host severity once in `docs.json` so CI does not repeat the flag:
+
+```json
+{
+  "check": {
+    "severityOverrideHosts": {
+      "rnfirebase.io": "error",
+      "stackoverflow.com": "warn"
+    }
+  }
+}
+```
+
+The flag and the map are unioned; the flag wins when the same host is in both.
+
+Severity for an external-link failure is resolved in this order:
+
+1. `--external-links off` skips the request. The map does not turn the check back on.
+2. If the host matches `severityOverrideHosts`, that severity is used for every failure: bot-gate (`401`, `403`, `405`, `429`), `404`, `5xx`, DNS, and timeout.
+3. Otherwise an unverified bot-gate stays a warning.
+4. Otherwise the failure uses `--external-links`.
+
 ### Bot gates
 
-Hosts that answer `401`, `403`, `405`, or `429` are refusing an automated request rather than reporting a missing page. Those responses are always reported as warnings, so they never fail CI, and the message says the link was not verified. Missing pages (`404`), server errors, DNS failures, and timeouts remain at the configured `--external-links` severity.
+Hosts that answer `401`, `403`, `405`, or `429` are refusing an automated request rather than reporting a missing page. For hosts not listed in `severityOverrideHosts`, those responses are reported as warnings so they never fail CI, and the message says the link was not verified. A host override of `error` makes the same responses fail CI. Missing pages (`404`), server errors, DNS failures, and timeouts use the override when the host matches, and otherwise remain at the configured `--external-links` severity.
 
 ### External link retries
 

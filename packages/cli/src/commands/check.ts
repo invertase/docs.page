@@ -15,17 +15,24 @@ import { unified } from "unified";
 
 import {
   CONFIG_IGNORE_HOSTS_PATH,
+  CONFIG_SEVERITY_OVERRIDE_HOSTS_PATH,
   type DocsConfigSource,
   hasNonLatin1,
   loadDocsConfig,
   parseConfigObject,
   readConfigIgnoredHosts,
+  readConfigSeverityOverrideHosts,
   resolveHeaderDepth,
   resolveVariables,
   usesAutoOgImage,
 } from "../lib/docs-config";
 import { isNodeError } from "../lib/errors";
 import { isIgnoredHost, parseIgnoredHosts } from "../lib/ignored-hosts";
+import {
+  type OverrideSeverity,
+  parseSeverityOverrideHosts,
+  resolveHostSeverityOverride,
+} from "../lib/severity-override-hosts";
 
 const SEVERITIES = ["off", "warn", "error"] as const;
 const FRONTMATTER_LINK_FIELDS = ["redirect", "next", "previous"] as const;
@@ -82,6 +89,7 @@ type CheckOptions = {
   render: Severity;
   metadata: Severity;
   ignoreExternalHosts?: string;
+  severityOverrideHosts?: string;
   debug?: boolean;
 };
 
@@ -172,6 +180,10 @@ export function registerCheckCommand(program: Command) {
     .option(
       "--ignore-external-hosts <hosts>",
       `Comma-separated hosts to skip when checking external links. Unioned with "${CONFIG_IGNORE_HOSTS_PATH}" from docs.json`,
+    )
+    .option(
+      "--severity-override-hosts <hosts>",
+      `Comma-separated host=warn|error pairs that override external-link severity for matching hosts. Unioned with "${CONFIG_SEVERITY_OVERRIDE_HOSTS_PATH}" from docs.json; the flag wins for the same host`,
     )
     .option(
       "--debug",
@@ -285,6 +297,10 @@ export async function runCheck(rootDir: string, options: CheckOptions) {
       readConfigIgnoredHosts(parsedConfig),
       options.ignoreExternalHosts,
     );
+    const severityOverrides = parseSeverityOverrideHosts(
+      readConfigSeverityOverrideHosts(parsedConfig),
+      options.severityOverrideHosts,
+    );
     const checkable: { reference: Reference; url: string }[] = [];
 
     for (const reference of externalReferences) {
@@ -323,7 +339,11 @@ export async function runCheck(rootDir: string, options: CheckOptions) {
 
         if (failure) {
           reporter.report({
-            severity: resolveExternalIssueSeverity(failure, externalSeverity),
+            severity: resolveExternalIssueSeverity(
+              failure,
+              externalSeverity,
+              resolveHostSeverityOverride(url, severityOverrides),
+            ),
             file: reference.file,
             line: reference.line,
             message: failure.message,
@@ -864,14 +884,23 @@ function classifyTarget(rawTarget: string): Target {
 }
 
 /**
- * A bot gate proves nothing about the link, so it is only ever reported as a
- * warning and never fails CI. An explicit `--external-links warn` is never
- * upgraded, and `--external-links off` skips the request entirely.
+ * Resolve the reported severity for an external-link failure.
+ *
+ * An explicit host override from `severityOverrideHosts` wins for every
+ * failure on that host (bot-gate and broken alike). Without an override, a bot
+ * gate stays a warning so it never fails CI, and broken links use
+ * `--external-links`. `--external-links off` skips the request before this
+ * runs.
  */
 export function resolveExternalIssueSeverity(
   failure: ExternalLinkFailure,
   severity: ReportableSeverity,
+  hostOverride?: OverrideSeverity,
 ): ReportableSeverity {
+  if (hostOverride) {
+    return hostOverride;
+  }
+
   return failure.kind === "unverified" ? "warn" : severity;
 }
 

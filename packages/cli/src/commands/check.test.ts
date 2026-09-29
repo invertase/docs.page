@@ -749,6 +749,24 @@ describe("resolveExternalIssueSeverity", () => {
     expect(resolveExternalIssueSeverity(failure, "error")).toBe("error");
     expect(resolveExternalIssueSeverity(failure, "warn")).toBe("warn");
   });
+
+  test("applies a host override to an unverified bot-gate", () => {
+    const failure = { kind: "unverified", message: "" } as const;
+
+    expect(resolveExternalIssueSeverity(failure, "warn", "error")).toBe(
+      "error",
+    );
+    expect(resolveExternalIssueSeverity(failure, "error", "warn")).toBe("warn");
+  });
+
+  test("applies a host override to a broken link", () => {
+    const failure = { kind: "broken", message: "" } as const;
+
+    expect(resolveExternalIssueSeverity(failure, "error", "warn")).toBe("warn");
+    expect(resolveExternalIssueSeverity(failure, "warn", "error")).toBe(
+      "error",
+    );
+  });
 });
 
 describe("getExternalLinkHostname", () => {
@@ -1483,5 +1501,132 @@ describe("runCheck external link per-host concurrency", () => {
     expect(await checkPromise).toBe(0);
     expect(maxInFlight).toBe(2);
     expect(inFlight).toBe(0);
+  });
+});
+
+describe("runCheck severityOverrideHosts", () => {
+  test("reads severityOverrideHosts from docs.json and upgrades a 403 to error", async () => {
+    const rootDir = await createTempProject("https://rnfirebase.io/docs");
+    await writeFile(
+      path.join(rootDir, "docs.json"),
+      JSON.stringify({
+        name: "override-fixture",
+        check: { severityOverrideHosts: { "rnfirebase.io": "error" } },
+      }),
+    );
+    mockFetch(
+      () => new Response(null, { status: 403, statusText: "Forbidden" }),
+    );
+    const lines = captureLogs();
+
+    const exitCode = await runCheck(rootDir, {
+      ...quietCheckOptions,
+      externalLinks: "warn",
+    });
+
+    expect(exitCode).toBe(1);
+    expect(
+      lines.some((line) => line.includes("error") && line.includes("403")),
+    ).toBe(true);
+  });
+
+  test("applies a CLI severity override flag for a 403", async () => {
+    const rootDir = await createTempProject("https://rnfirebase.io/docs");
+    mockFetch(
+      () => new Response(null, { status: 403, statusText: "Forbidden" }),
+    );
+    const lines = captureLogs();
+
+    const exitCode = await runCheck(rootDir, {
+      ...quietCheckOptions,
+      externalLinks: "warn",
+      severityOverrideHosts: "rnfirebase.io=error",
+    });
+
+    expect(exitCode).toBe(1);
+    expect(
+      lines.some((line) => line.includes("error") && line.includes("403")),
+    ).toBe(true);
+  });
+
+  test("downgrades a 404 to warn when the host is mapped to warn", async () => {
+    const rootDir = await createTempProject("https://stackoverflow.com/q/1");
+    mockFetch(
+      () => new Response(null, { status: 404, statusText: "Not Found" }),
+    );
+    const lines = captureLogs();
+
+    const exitCode = await runCheck(rootDir, {
+      ...quietCheckOptions,
+      externalLinks: "error",
+      severityOverrideHosts: "stackoverflow.com=warn",
+    });
+
+    expect(exitCode).toBe(0);
+    expect(
+      lines.some((line) => line.includes("warn") && line.includes("404")),
+    ).toBe(true);
+    expect(
+      lines.some((line) => /\berror\b/.test(line) && line.includes("404")),
+    ).toBe(false);
+  });
+
+  test("keeps an unlisted host 403 as warn when external-links is error", async () => {
+    const rootDir = await createTempProject("https://example.com/page");
+    mockFetch(
+      () => new Response(null, { status: 403, statusText: "Forbidden" }),
+    );
+    const lines = captureLogs();
+
+    const exitCode = await runCheck(rootDir, quietCheckOptions);
+
+    expect(exitCode).toBe(0);
+    expect(
+      lines.some((line) => line.includes("warn") && line.includes("403")),
+    ).toBe(true);
+  });
+
+  test("does not request a mapped host when external-links is off", async () => {
+    const rootDir = await createTempProject("https://rnfirebase.io/docs");
+    await writeFile(
+      path.join(rootDir, "docs.json"),
+      JSON.stringify({
+        name: "override-fixture",
+        check: { severityOverrideHosts: { "rnfirebase.io": "error" } },
+      }),
+    );
+    let fetchCalls = 0;
+    globalThis.fetch = ((..._args: unknown[]) => {
+      fetchCalls += 1;
+      return Promise.resolve(new Response(null, { status: 200 }));
+    }) as typeof fetch;
+    captureLogs();
+
+    const exitCode = await runCheck(rootDir, {
+      ...quietCheckOptions,
+      externalLinks: "off",
+    });
+
+    expect(exitCode).toBe(0);
+    expect(fetchCalls).toBe(0);
+  });
+
+  test("upgrades a 403 to error when external-links is warn and the host is mapped to error", async () => {
+    const rootDir = await createTempProject("https://example.com/page");
+    mockFetch(
+      () => new Response(null, { status: 403, statusText: "Forbidden" }),
+    );
+    const lines = captureLogs();
+
+    const exitCode = await runCheck(rootDir, {
+      ...quietCheckOptions,
+      externalLinks: "warn",
+      severityOverrideHosts: "example.com=error",
+    });
+
+    expect(exitCode).toBe(1);
+    expect(
+      lines.some((line) => line.includes("error") && line.includes("403")),
+    ).toBe(true);
   });
 });
