@@ -178,6 +178,16 @@ Values from `docs.json` and `--ignore-external-hosts` are unioned. `--external-l
 
 Hosts that answer `401`, `403`, `405`, or `429` are refusing an automated request rather than reporting a missing page. Those responses are always reported as warnings, so they never fail CI, and the message says the link was not verified. Missing pages (`404`), server errors, DNS failures, and timeouts remain at the configured `--external-links` severity.
 
+### External link retries
+
+Each external request is tried at most three times (the first attempt plus two retries) when the response is HTTP `429` or the connection drops (`ECONNRESET`, `ECONNREFUSED`, `EPIPE`, `ETIMEDOUT`, `UND_ERR_SOCKET`, `UND_ERR_CONNECT_TIMEOUT`). Responses such as `401`, `403`, `404`, `405`, and `5xx`, DNS failures like `ENOTFOUND`, and this check's own 10s timeout (`External link timed out after 10000ms.`) are not retried.
+
+On `429`, the wait follows `Retry-After` when it is a delta-seconds value or an HTTP-date. If that header is missing or unparseable, the waits are 200ms then 400ms. Dropped-connection retries use the same 200ms then 400ms backoff (there is no `Retry-After` for those). Every wait is capped at 2 seconds. There is no flag or `docs.json` key for this behavior.
+
+If HEAD returns `429` and retries are exhausted, the link is classified as unverified and no GET is sent. A dropped HEAD that still fails after retries falls through to GET, as does a `405` HEAD. That follow-up GET is only retried when the GET itself is a `429` or a dropped connection.
+
+With `--debug`, each try (including failed ones) produces one debug line.
+
 ### Exit codes
 
 | Code | Meaning |

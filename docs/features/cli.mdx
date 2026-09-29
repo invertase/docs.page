@@ -291,7 +291,7 @@ A clean run ends with no `error`-level output and exit code `0`. Re-run after ea
 
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |
-| External link failures in CI | Target is temporarily down | Set `--external-links warn` or `off` for that pipeline |
+| External link failures in CI | Target is temporarily down | `check` retries `429` and dropped connections (`ECONNRESET`, `ECONNREFUSED`, `EPIPE`, `ETIMEDOUT`, `UND_ERR_SOCKET`, `UND_ERR_CONNECT_TIMEOUT`) per method (at most 3 attempts); waits follow `Retry-After` or 200ms/400ms, capped at 2s. A HEAD `429` after retries does not send GET; a dropped or `405` HEAD can fall through to GET, and that GET has its own 3 attempts. If failures persist, set `--external-links warn` or `off` for that pipeline |
 | Unclear which hosts time out or fail | Aggregated summary only | Re-run with `--debug` for per-attempt and per-host lines |
 | Repeated warnings from one host | Host blocks automated requests | Add it to `--ignore-external-hosts` or `check.ignoreExternalHosts` |
 | False positive on internal link | Path typo or file not yet committed | Fix the path or add the missing file under `docs/` |

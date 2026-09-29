@@ -31,11 +31,43 @@ const SEVERITIES = ["off", "warn", "error"] as const;
 const FRONTMATTER_LINK_FIELDS = ["redirect", "next", "previous"] as const;
 const EXTERNAL_LINK_TIMEOUT_MS = 10_000;
 const EXTERNAL_LINK_CONCURRENCY = 8;
+/** Initial attempt plus up to two retries for 429 / dropped connections. */
+const EXTERNAL_RETRY_MAX_ATTEMPTS = 3;
+/** Cap applied to every retry wait, including large Retry-After values. */
+const EXTERNAL_RETRY_DELAY_CAP_MS = 2_000;
+/** Base for exponential backoff when Retry-After is missing or unparseable. */
+const EXTERNAL_RETRY_BACKOFF_BASE_MS = 200;
 // Statuses a host returns when it refuses to serve an automated client rather
 // than because the target is missing. These are reported as warnings so a bot
 // gate never fails CI, while 404s, 5xxs, DNS failures and timeouts stay errors.
 const BOT_GATE_STATUSES = new Set([401, 403, 405, 429]);
+const DROPPED_CONNECTION_CODES = new Set([
+  "ECONNRESET",
+  "ECONNREFUSED",
+  "EPIPE",
+  "ETIMEDOUT",
+  "UND_ERR_SOCKET",
+  "UND_ERR_CONNECT_TIMEOUT",
+]);
 const RENDER_CONCURRENCY = 4;
+
+/**
+ * Optional runtime hooks for external link checks. Tests inject `sleep` and
+ * `now` so retries stay offline and deterministic.
+ */
+export type ExternalCheckRuntime = {
+  sleep?: (ms: number) => Promise<void>;
+  now?: () => number;
+};
+
+type ExternalRequestResult = {
+  ok: boolean;
+  status: number | undefined;
+  statusText: string | undefined;
+  message: string | undefined;
+  retryAfter: string | null | undefined;
+  error: unknown;
+};
 
 type Severity = (typeof SEVERITIES)[number];
 type ReportableSeverity = Exclude<Severity, "off">;
@@ -859,14 +891,27 @@ async function getCachedExternalCheck(
 export async function checkExternalUrl(
   url: string,
   attempts?: ExternalLinkAttempt[],
+  runtime?: ExternalCheckRuntime,
 ): Promise<ExternalLinkFailure | undefined> {
-  const headResult = await requestExternalUrl(url, "HEAD", attempts);
+  const headResult = await requestExternalUrl(url, "HEAD", attempts, runtime);
 
   if (headResult.ok) {
     return undefined;
   }
 
-  const getResult = await requestExternalUrl(url, "GET", attempts);
+  // A 429 after HEAD retries means the host is rate-limiting automation; do
+  // not escalate to GET and double the request load.
+  if (headResult.status === 429) {
+    return {
+      kind: "unverified",
+      message: `External link host rejected an automated request (${formatStatus(
+        headResult.status,
+        headResult.statusText,
+      )}); the link was not verified.`,
+    };
+  }
+
+  const getResult = await requestExternalUrl(url, "GET", attempts, runtime);
 
   if (getResult.ok) {
     return undefined;
@@ -895,11 +940,137 @@ export async function checkExternalUrl(
   };
 }
 
+/**
+ * Compute the wait before the next external-link retry.
+ *
+ * `failedAttemptIndex` is zero-based for the attempt that just failed (0 after
+ * the first failure → 200ms backoff when Retry-After is absent).
+ */
+export function externalRetryDelayMs(
+  failedAttemptIndex: number,
+  retryAfterHeader: string | null | undefined,
+  nowMs: number,
+): number {
+  const fromHeader = parseRetryAfterMs(retryAfterHeader, nowMs);
+
+  if (fromHeader !== undefined) {
+    return Math.min(EXTERNAL_RETRY_DELAY_CAP_MS, Math.max(0, fromHeader));
+  }
+
+  const backoff =
+    EXTERNAL_RETRY_BACKOFF_BASE_MS * 2 ** Math.max(0, failedAttemptIndex);
+
+  return Math.min(EXTERNAL_RETRY_DELAY_CAP_MS, backoff);
+}
+
+function parseRetryAfterMs(
+  header: string | null | undefined,
+  nowMs: number,
+): number | undefined {
+  if (header === undefined || header === null) {
+    return undefined;
+  }
+
+  const trimmed = header.trim();
+
+  if (trimmed === "") {
+    return undefined;
+  }
+
+  if (/^\d+$/.test(trimmed)) {
+    return Number(trimmed) * 1_000;
+  }
+
+  const dateMs = Date.parse(trimmed);
+
+  if (Number.isNaN(dateMs)) {
+    return undefined;
+  }
+
+  return dateMs - nowMs;
+}
+
+function defaultSleep(ms: number) {
+  return new Promise<void>((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
 async function requestExternalUrl(
   url: string,
   method: "GET" | "HEAD",
   attempts?: ExternalLinkAttempt[],
-) {
+  runtime?: ExternalCheckRuntime,
+): Promise<ExternalRequestResult> {
+  const sleep = runtime?.sleep ?? defaultSleep;
+  const now = runtime?.now ?? Date.now;
+  let lastResult: ExternalRequestResult | undefined;
+
+  for (
+    let attemptIndex = 0;
+    attemptIndex < EXTERNAL_RETRY_MAX_ATTEMPTS;
+    attemptIndex += 1
+  ) {
+    // Each attempt owns its own abort timer; the retry wait runs after that
+    // timer is cleared so a long backoff cannot be aborted as a timeout.
+    lastResult = await requestExternalUrlOnce(url, method, attempts);
+
+    if (lastResult.ok || !shouldRetryExternalResult(lastResult)) {
+      return lastResult;
+    }
+
+    if (attemptIndex < EXTERNAL_RETRY_MAX_ATTEMPTS - 1) {
+      const delayMs = externalRetryDelayMs(
+        attemptIndex,
+        lastResult.retryAfter,
+        now(),
+      );
+      await sleep(delayMs);
+    }
+  }
+
+  // The loop always assigns lastResult (max attempts >= 1).
+  return lastResult as ExternalRequestResult;
+}
+
+function shouldRetryExternalResult(result: ExternalRequestResult) {
+  if (result.status === 429) {
+    return true;
+  }
+
+  return result.status === undefined && isDroppedConnectionError(result.error);
+}
+
+function isDroppedConnectionError(error: unknown) {
+  if (isAbortError(error)) {
+    return false;
+  }
+
+  const code =
+    getNodeErrorCode(error) ?? getNodeErrorCode(getErrorCause(error));
+
+  return code !== undefined && DROPPED_CONNECTION_CODES.has(code);
+}
+
+function getErrorCause(error: unknown) {
+  return error instanceof Error ? error.cause : undefined;
+}
+
+function getNodeErrorCode(error: unknown) {
+  if (typeof error !== "object" || error === null || !("code" in error)) {
+    return undefined;
+  }
+
+  const code = (error as { code: unknown }).code;
+
+  return typeof code === "string" ? code : undefined;
+}
+
+async function requestExternalUrlOnce(
+  url: string,
+  method: "GET" | "HEAD",
+  attempts?: ExternalLinkAttempt[],
+): Promise<ExternalRequestResult> {
   const controller = new AbortController();
   const timeout = setTimeout(
     () => controller.abort(),
@@ -929,6 +1100,8 @@ async function requestExternalUrl(
       message: ok
         ? undefined
         : `External link returned ${response.status} ${response.statusText}.`,
+      retryAfter: response.headers.get("Retry-After"),
+      error: undefined,
     };
   } catch (error) {
     recordExternalAttempt(
@@ -944,6 +1117,8 @@ async function requestExternalUrl(
       status: undefined,
       statusText: undefined,
       message: formatExternalRequestError(error),
+      retryAfter: undefined,
+      error,
     };
   } finally {
     clearTimeout(timeout);

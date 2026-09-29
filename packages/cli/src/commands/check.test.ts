@@ -5,7 +5,9 @@ import path from "node:path";
 
 import {
   checkExternalUrl,
+  type ExternalCheckRuntime,
   type ExternalLinkAttempt,
+  externalRetryDelayMs,
   formatDebugAttemptLine,
   formatDebugHostSummaryLines,
   formatDebugTrace,
@@ -16,6 +18,92 @@ import {
 const originalFetch = globalThis.fetch;
 const originalLog = console.log;
 const tempDirs: string[] = [];
+
+type ScriptedFetchItem =
+  | Response
+  | Error
+  | ((method: string) => Response | Error | Promise<Response | Error>);
+
+/**
+ * Offline external-check harness: scripted fetch queue, recorded sleeps, and
+ * injectable `now` so Retry-After HTTP-dates are deterministic.
+ */
+function createOfflineHarness(initialNowMs = 1_000_000) {
+  const waits: number[] = [];
+  const methods: string[] = [];
+  const queue: ScriptedFetchItem[] = [];
+  let nowMs = initialNowMs;
+
+  const runtime: ExternalCheckRuntime = {
+    sleep: async (ms: number) => {
+      waits.push(ms);
+    },
+    now: () => nowMs,
+  };
+
+  function installFetch() {
+    globalThis.fetch = ((input: unknown, init?: { method?: string }) => {
+      void input;
+      const method = init?.method ?? "GET";
+      methods.push(method);
+
+      const next = queue.shift();
+
+      if (next === undefined) {
+        return Promise.reject(new Error("unexpected fetch: queue empty"));
+      }
+
+      return Promise.resolve().then(async () => {
+        const resolved = typeof next === "function" ? await next(method) : next;
+
+        if (resolved instanceof Error) {
+          throw resolved;
+        }
+
+        return resolved;
+      });
+    }) as typeof fetch;
+  }
+
+  installFetch();
+
+  return {
+    waits,
+    methods,
+    runtime,
+    enqueue(...items: ScriptedFetchItem[]) {
+      queue.push(...items);
+    },
+    setNow(ms: number) {
+      nowMs = ms;
+    },
+    remaining() {
+      return queue.length;
+    },
+  };
+}
+
+function response(
+  status: number,
+  init?: { statusText?: string; retryAfter?: string },
+) {
+  const headers = new Headers();
+
+  if (init?.retryAfter !== undefined) {
+    headers.set("Retry-After", init.retryAfter);
+  }
+
+  return new Response(null, {
+    status,
+    statusText: init?.statusText,
+    headers,
+  });
+}
+
+function droppedConnectionError(code: string, message = "fetch failed"): Error {
+  const cause = Object.assign(new Error(`socket ${code}`), { code });
+  return new Error(message, { cause });
+}
 
 function mockFetch(respond: (method: string) => Response | Promise<Response>) {
   globalThis.fetch = ((input: unknown, init?: { method?: string }) => {
@@ -64,6 +152,12 @@ const quietCheckOptions = {
   metadata: "off",
 } as const;
 
+/** No-op sleep so any accidental retry path in older tests stays offline. */
+const instantRuntime: ExternalCheckRuntime = {
+  sleep: async () => undefined,
+  now: () => Date.now(),
+};
+
 afterEach(async () => {
   globalThis.fetch = originalFetch;
   console.log = originalLog;
@@ -77,6 +171,48 @@ afterEach(async () => {
   }
 });
 
+describe("externalRetryDelayMs", () => {
+  test("honours Retry-After delta-seconds", () => {
+    expect(externalRetryDelayMs(0, "1", 0)).toBe(1_000);
+  });
+
+  test("caps Retry-After delta-seconds at 2000ms", () => {
+    expect(externalRetryDelayMs(0, "120", 0)).toBe(2_000);
+  });
+
+  test("waits 0ms for Retry-After of 0", () => {
+    expect(externalRetryDelayMs(0, "0", 0)).toBe(0);
+  });
+
+  test("caps Retry-After HTTP-date far ahead at 2000ms", () => {
+    const nowMs = Date.parse("Wed, 01 Jan 2020 00:00:00 GMT");
+    const ahead = new Date(nowMs + 5_000).toUTCString();
+
+    expect(externalRetryDelayMs(0, ahead, nowMs)).toBe(2_000);
+  });
+
+  test("waits 0ms for Retry-After HTTP-date in the past", () => {
+    const nowMs = Date.parse("Wed, 01 Jan 2020 00:00:00 GMT");
+    const past = new Date(nowMs - 5_000).toUTCString();
+
+    expect(externalRetryDelayMs(0, past, nowMs)).toBe(0);
+  });
+
+  test("uses 200ms then 400ms when Retry-After is missing", () => {
+    expect(externalRetryDelayMs(0, null, 0)).toBe(200);
+    expect(externalRetryDelayMs(1, undefined, 0)).toBe(400);
+  });
+
+  test("uses exponential backoff when Retry-After is unparseable", () => {
+    expect(externalRetryDelayMs(0, "not-a-delay", 0)).toBe(200);
+    expect(externalRetryDelayMs(1, "soon", 0)).toBe(400);
+  });
+
+  test("treats blank Retry-After as missing", () => {
+    expect(externalRetryDelayMs(0, "   ", 0)).toBe(200);
+  });
+});
+
 describe("checkExternalUrl", () => {
   test("passes a reachable link", async () => {
     mockFetch(() => new Response(null, { status: 200 }));
@@ -88,7 +224,11 @@ describe("checkExternalUrl", () => {
     for (const status of [401, 403, 405, 429]) {
       mockFetch(() => new Response(null, { status }));
 
-      const failure = await checkExternalUrl("https://example.com");
+      const failure = await checkExternalUrl(
+        "https://example.com",
+        undefined,
+        instantRuntime,
+      );
 
       expect(failure?.kind).toBe("unverified");
       expect(failure?.message).toContain("rejected an automated request");
@@ -274,6 +414,284 @@ describe("checkExternalUrl", () => {
         outcome: 200,
       }),
     ]);
+  });
+
+  test("retries 429 then succeeds on 200 and records the wait", async () => {
+    const harness = createOfflineHarness();
+    harness.enqueue(response(429), response(200));
+
+    expect(
+      await checkExternalUrl("https://example.com", undefined, harness.runtime),
+    ).toBeUndefined();
+    expect(harness.methods).toEqual(["HEAD", "HEAD"]);
+    expect(harness.waits).toEqual([200]);
+    expect(harness.remaining()).toBe(0);
+  });
+
+  test("waits 1000ms for Retry-After: 1 on 429", async () => {
+    const harness = createOfflineHarness();
+    harness.enqueue(response(429, { retryAfter: "1" }), response(200));
+
+    expect(
+      await checkExternalUrl("https://example.com", undefined, harness.runtime),
+    ).toBeUndefined();
+    expect(harness.waits).toEqual([1_000]);
+  });
+
+  test("caps Retry-After: 120 wait at 2000ms", async () => {
+    const harness = createOfflineHarness();
+    harness.enqueue(response(429, { retryAfter: "120" }), response(200));
+
+    expect(
+      await checkExternalUrl("https://example.com", undefined, harness.runtime),
+    ).toBeUndefined();
+    expect(harness.waits).toEqual([2_000]);
+  });
+
+  test("caps Retry-After HTTP-date 5s ahead at 2000ms", async () => {
+    const nowMs = Date.parse("Wed, 01 Jan 2020 00:00:00 GMT");
+    const harness = createOfflineHarness(nowMs);
+    const ahead = new Date(nowMs + 5_000).toUTCString();
+    harness.enqueue(response(429, { retryAfter: ahead }), response(200));
+
+    expect(
+      await checkExternalUrl("https://example.com", undefined, harness.runtime),
+    ).toBeUndefined();
+    expect(harness.waits).toEqual([2_000]);
+  });
+
+  test("waits 0ms for Retry-After HTTP-date in the past", async () => {
+    const nowMs = Date.parse("Wed, 01 Jan 2020 00:00:00 GMT");
+    const harness = createOfflineHarness(nowMs);
+    const past = new Date(nowMs - 5_000).toUTCString();
+    harness.enqueue(response(429, { retryAfter: past }), response(200));
+
+    expect(
+      await checkExternalUrl("https://example.com", undefined, harness.runtime),
+    ).toBeUndefined();
+    expect(harness.waits).toEqual([0]);
+  });
+
+  test("uses 200ms then 400ms for unparseable Retry-After across retries", async () => {
+    const harness = createOfflineHarness();
+    harness.enqueue(
+      response(429, { retryAfter: "nope" }),
+      response(429, { retryAfter: "still-nope" }),
+      response(200),
+    );
+
+    expect(
+      await checkExternalUrl("https://example.com", undefined, harness.runtime),
+    ).toBeUndefined();
+    expect(harness.waits).toEqual([200, 400]);
+  });
+
+  test("stops after three 429 HEAD attempts without calling GET", async () => {
+    const harness = createOfflineHarness();
+    harness.enqueue(response(429), response(429), response(429));
+
+    const failure = await checkExternalUrl(
+      "https://example.com",
+      undefined,
+      harness.runtime,
+    );
+
+    expect(failure?.kind).toBe("unverified");
+    expect(failure?.message).toContain("429");
+    expect(harness.methods).toEqual(["HEAD", "HEAD", "HEAD"]);
+    expect(harness.waits).toEqual([200, 400]);
+    expect(harness.remaining()).toBe(0);
+  });
+
+  test("does not retry non-retryable statuses", async () => {
+    for (const status of [401, 403, 404, 500, 503]) {
+      const harness = createOfflineHarness();
+      harness.enqueue(response(status), response(status));
+
+      await checkExternalUrl("https://example.com", undefined, harness.runtime);
+
+      expect(harness.methods).toEqual(["HEAD", "GET"]);
+      expect(harness.waits).toEqual([]);
+      expect(harness.remaining()).toBe(0);
+    }
+
+    const harness405 = createOfflineHarness();
+    harness405.enqueue(response(405), response(405));
+
+    await checkExternalUrl(
+      "https://example.com",
+      undefined,
+      harness405.runtime,
+    );
+
+    expect(harness405.methods).toEqual(["HEAD", "GET"]);
+    expect(harness405.waits).toEqual([]);
+  });
+
+  test("does not retry AbortError", async () => {
+    const harness = createOfflineHarness();
+    harness.enqueue(
+      new DOMException("The operation was aborted.", "AbortError"),
+      new DOMException("The operation was aborted.", "AbortError"),
+    );
+
+    const failure = await checkExternalUrl(
+      "https://example.com",
+      undefined,
+      harness.runtime,
+    );
+
+    expect(failure?.kind).toBe("broken");
+    expect(failure?.message).toBe("External link timed out after 10000ms.");
+    expect(harness.methods).toEqual(["HEAD", "GET"]);
+    expect(harness.waits).toEqual([]);
+  });
+
+  test("does not retry ENOTFOUND", async () => {
+    const harness = createOfflineHarness();
+    const notFound = Object.assign(new Error("getaddrinfo ENOTFOUND"), {
+      code: "ENOTFOUND",
+    });
+    harness.enqueue(notFound, notFound);
+
+    const failure = await checkExternalUrl(
+      "https://example.invalid",
+      undefined,
+      harness.runtime,
+    );
+
+    expect(failure?.kind).toBe("broken");
+    expect(harness.methods).toEqual(["HEAD", "GET"]);
+    expect(harness.waits).toEqual([]);
+  });
+
+  test("retries ECONNRESET on error.cause then succeeds", async () => {
+    const harness = createOfflineHarness();
+    harness.enqueue(droppedConnectionError("ECONNRESET"), response(200));
+
+    expect(
+      await checkExternalUrl("https://example.com", undefined, harness.runtime),
+    ).toBeUndefined();
+    expect(harness.methods).toEqual(["HEAD", "HEAD"]);
+    expect(harness.waits).toEqual([200]);
+  });
+
+  test("retries when dropped-connection code is on the error itself", async () => {
+    const harness = createOfflineHarness();
+    const reset = Object.assign(new Error("read ECONNRESET"), {
+      code: "ECONNRESET",
+    });
+    harness.enqueue(reset, response(200));
+
+    expect(
+      await checkExternalUrl("https://example.com", undefined, harness.runtime),
+    ).toBeUndefined();
+    expect(harness.methods).toEqual(["HEAD", "HEAD"]);
+    expect(harness.waits).toEqual([200]);
+  });
+
+  test("uses the production sleep path for a zero Retry-After wait", async () => {
+    const methods: string[] = [];
+    globalThis.fetch = ((input: unknown, init?: { method?: string }) => {
+      void input;
+      methods.push(init?.method ?? "GET");
+      const next =
+        methods.length === 1
+          ? response(429, { retryAfter: "0" })
+          : response(200);
+      return Promise.resolve(next);
+    }) as typeof fetch;
+
+    expect(await checkExternalUrl("https://example.com")).toBeUndefined();
+    expect(methods).toEqual(["HEAD", "HEAD"]);
+  });
+
+  test("falls through to GET after exhausted ECONNRESET on HEAD", async () => {
+    const harness = createOfflineHarness();
+    harness.enqueue(
+      droppedConnectionError("ECONNRESET"),
+      droppedConnectionError("ECONNRESET"),
+      droppedConnectionError("ECONNRESET"),
+      response(200),
+    );
+
+    expect(
+      await checkExternalUrl("https://example.com", undefined, harness.runtime),
+    ).toBeUndefined();
+    expect(harness.methods).toEqual(["HEAD", "HEAD", "HEAD", "GET"]);
+    expect(harness.waits).toEqual([200, 400]);
+  });
+
+  test("retries GET 429 after a non-retryable HEAD 405 fallthrough", async () => {
+    const harness = createOfflineHarness();
+    harness.enqueue(response(405), response(429), response(200));
+
+    expect(
+      await checkExternalUrl("https://example.com", undefined, harness.runtime),
+    ).toBeUndefined();
+    expect(harness.methods).toEqual(["HEAD", "GET", "GET"]);
+    expect(harness.waits).toEqual([200]);
+    expect(harness.remaining()).toBe(0);
+  });
+
+  test("records one debug attempt per try including failed retries", async () => {
+    const harness = createOfflineHarness();
+    harness.enqueue(response(429), response(429), response(200));
+    const attempts: ExternalLinkAttempt[] = [];
+
+    expect(
+      await checkExternalUrl("https://example.com", attempts, harness.runtime),
+    ).toBeUndefined();
+    expect(attempts).toEqual([
+      expect.objectContaining({ method: "HEAD", outcome: 429 }),
+      expect.objectContaining({ method: "HEAD", outcome: 429 }),
+      expect.objectContaining({ method: "HEAD", outcome: 200 }),
+    ]);
+  });
+
+  test("reports last 429 as unverified after HEAD retries are exhausted", async () => {
+    const harness = createOfflineHarness();
+    harness.enqueue(
+      response(429, { statusText: "Too Many Requests" }),
+      response(429, { statusText: "Too Many Requests" }),
+      response(429, { statusText: "Too Many Requests" }),
+    );
+
+    const failure = await checkExternalUrl(
+      "https://example.com",
+      undefined,
+      harness.runtime,
+    );
+
+    expect(failure).toEqual({
+      kind: "unverified",
+      message:
+        "External link host rejected an automated request (429 Too Many Requests); the link was not verified.",
+    });
+  });
+
+  test("reports last dropped connection as broken after retries are exhausted", async () => {
+    const harness = createOfflineHarness();
+    const reset = droppedConnectionError("ECONNRESET");
+    harness.enqueue(reset, reset, reset, reset, reset, reset);
+
+    const failure = await checkExternalUrl(
+      "https://example.com",
+      undefined,
+      harness.runtime,
+    );
+
+    expect(failure?.kind).toBe("broken");
+    expect(failure?.message).toContain("Unable to reach external link");
+    expect(harness.methods).toEqual([
+      "HEAD",
+      "HEAD",
+      "HEAD",
+      "GET",
+      "GET",
+      "GET",
+    ]);
+    expect(harness.waits).toEqual([200, 400, 200, 400]);
   });
 });
 
