@@ -5,12 +5,16 @@ import path from "node:path";
 
 import {
   checkExternalUrl,
+  createExternalLinkScheduler,
+  EXTERNAL_LINK_CONCURRENCY,
+  EXTERNAL_LINK_PER_HOST_CONCURRENCY,
   type ExternalCheckRuntime,
   type ExternalLinkAttempt,
   externalRetryDelayMs,
   formatDebugAttemptLine,
   formatDebugHostSummaryLines,
   formatDebugTrace,
+  getExternalLinkHostname,
   resolveExternalIssueSeverity,
   runCheck,
 } from "./check";
@@ -103,6 +107,42 @@ function response(
 function droppedConnectionError(code: string, message = "fetch failed"): Error {
   const cause = Object.assign(new Error(`socket ${code}`), { code });
   return new Error(message, { cause });
+}
+
+function createDeferred<T = void>() {
+  let resolve!: (value: T | PromiseLike<T>) => void;
+  let reject!: (reason?: unknown) => void;
+  const promise = new Promise<T>((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
+
+  return { promise, resolve, reject };
+}
+
+/** Flush queued microtasks so scheduler acquire/run progress settles. */
+async function flushMicrotasks(times = 8) {
+  for (let index = 0; index < times; index += 1) {
+    await Promise.resolve();
+  }
+}
+
+/** Yield to the event loop so fs work in `runCheck` can progress. */
+async function waitUntil(
+  predicate: () => boolean,
+  attempts = 500,
+): Promise<void> {
+  for (let index = 0; index < attempts; index += 1) {
+    if (predicate()) {
+      return;
+    }
+
+    await new Promise<void>((resolve) => {
+      setImmediate(resolve);
+    });
+  }
+
+  throw new Error("condition was not met");
 }
 
 function mockFetch(respond: (method: string) => Response | Promise<Response>) {
@@ -711,6 +751,343 @@ describe("resolveExternalIssueSeverity", () => {
   });
 });
 
+describe("getExternalLinkHostname", () => {
+  test("returns a lowercase hostname without port or path", () => {
+    expect(getExternalLinkHostname("https://WWW.Example.COM:8443/path")).toBe(
+      "www.example.com",
+    );
+  });
+
+  test("treats www and apex as distinct hosts", () => {
+    expect(getExternalLinkHostname("https://www.example.com/a")).toBe(
+      "www.example.com",
+    );
+    expect(getExternalLinkHostname("https://example.com/a")).toBe(
+      "example.com",
+    );
+  });
+
+  test("falls back to a lowercased raw string when URL parsing fails", () => {
+    expect(getExternalLinkHostname("NOT A URL")).toBe("not a url");
+  });
+});
+
+describe("createExternalLinkScheduler", () => {
+  test("defaults match the exported concurrency constants", () => {
+    expect(EXTERNAL_LINK_CONCURRENCY).toBe(8);
+    expect(EXTERNAL_LINK_PER_HOST_CONCURRENCY).toBe(2);
+  });
+
+  test("caps one host at two in-flight checks until slots are released", async () => {
+    const scheduler = createExternalLinkScheduler();
+    const gates = Array.from({ length: 6 }, () => createDeferred<void>());
+    let inFlight = 0;
+    let maxInFlight = 0;
+    const started: number[] = [];
+
+    const tasks = gates.map((gate, index) =>
+      scheduler.run("example.com", async () => {
+        started.push(index);
+        inFlight += 1;
+        maxInFlight = Math.max(maxInFlight, inFlight);
+        await gate.promise;
+        inFlight -= 1;
+      }),
+    );
+
+    await flushMicrotasks();
+    expect(started).toEqual([0, 1]);
+    expect(maxInFlight).toBe(2);
+    expect(inFlight).toBe(2);
+
+    gates[0]?.resolve();
+    await flushMicrotasks();
+    expect(started).toEqual([0, 1, 2]);
+    expect(inFlight).toBe(2);
+
+    for (const gate of gates) {
+      gate.resolve();
+    }
+
+    await Promise.all(tasks);
+    expect(started).toEqual([0, 1, 2, 3, 4, 5]);
+    expect(maxInFlight).toBe(2);
+    expect(inFlight).toBe(0);
+  });
+
+  test("keeps global capacity at 8 while capping each host at 2", async () => {
+    const scheduler = createExternalLinkScheduler();
+    const hosts = ["a.test", "b.test", "c.test", "d.test"];
+    // 4 hosts × 3 URLs = 12 tasks; global 8 and per-host 2 can both bind.
+    const gates = hosts.flatMap((host) =>
+      [0, 1, 2].map((index) => ({
+        host,
+        index,
+        gate: createDeferred<void>(),
+      })),
+    );
+
+    let globalInFlight = 0;
+    let maxGlobalInFlight = 0;
+    let sawMoreThanTwoGlobal = false;
+    const hostInFlight = new Map<string, number>();
+    const maxHostInFlight = new Map<string, number>();
+
+    const tasks = gates.map(({ host, gate }) =>
+      scheduler.run(host, async () => {
+        globalInFlight += 1;
+        maxGlobalInFlight = Math.max(maxGlobalInFlight, globalInFlight);
+        if (globalInFlight > 2) {
+          sawMoreThanTwoGlobal = true;
+        }
+
+        const nextHost = (hostInFlight.get(host) ?? 0) + 1;
+        hostInFlight.set(host, nextHost);
+        maxHostInFlight.set(
+          host,
+          Math.max(maxHostInFlight.get(host) ?? 0, nextHost),
+        );
+
+        await gate.promise;
+
+        globalInFlight -= 1;
+        hostInFlight.set(host, (hostInFlight.get(host) ?? 1) - 1);
+      }),
+    );
+
+    await flushMicrotasks();
+    expect(maxGlobalInFlight).toBe(8);
+    expect(globalInFlight).toBe(8);
+    expect(sawMoreThanTwoGlobal).toBe(true);
+
+    for (const host of hosts) {
+      expect(maxHostInFlight.get(host)).toBe(2);
+      expect(hostInFlight.get(host)).toBe(2);
+    }
+
+    for (const { gate } of gates) {
+      gate.resolve();
+    }
+
+    await Promise.all(tasks);
+    expect(maxGlobalInFlight).toBe(8);
+    expect(globalInFlight).toBe(0);
+  });
+
+  test("duplicate URL cache hits do not take a second slot or start a second fetch", async () => {
+    const scheduler = createExternalLinkScheduler({
+      globalLimit: 2,
+      perHostLimit: 2,
+    });
+    const cache = new Map<string, Promise<string>>();
+    const gate = createDeferred<void>();
+    let fetchStarts = 0;
+    let inFlight = 0;
+    let maxInFlight = 0;
+
+    const runCached = (url: string) => {
+      const existing = cache.get(url);
+
+      if (existing) {
+        return existing;
+      }
+
+      const check = scheduler.run(getExternalLinkHostname(url), async () => {
+        fetchStarts += 1;
+        inFlight += 1;
+        maxInFlight = Math.max(maxInFlight, inFlight);
+        await gate.promise;
+        inFlight -= 1;
+        return "ok";
+      });
+      cache.set(url, check);
+      return check;
+    };
+
+    const first = runCached("https://example.com/same");
+    const second = runCached("https://example.com/same");
+    // A distinct URL should still obtain the second per-host slot.
+    const otherGate = createDeferred<void>();
+    const other = scheduler.run("example.com", async () => {
+      inFlight += 1;
+      maxInFlight = Math.max(maxInFlight, inFlight);
+      await otherGate.promise;
+      inFlight -= 1;
+      return "other";
+    });
+
+    await flushMicrotasks();
+    expect(fetchStarts).toBe(1);
+    expect(first).toBe(second);
+    expect(inFlight).toBe(2);
+    expect(maxInFlight).toBe(2);
+
+    gate.resolve();
+    otherGate.resolve();
+    expect(await first).toBe("ok");
+    expect(await second).toBe("ok");
+    expect(await other).toBe("other");
+    expect(fetchStarts).toBe(1);
+    expect(maxInFlight).toBe(2);
+  });
+
+  test("waits on the host queue then resumes after a host slot frees", async () => {
+    const scheduler = createExternalLinkScheduler({
+      globalLimit: 8,
+      perHostLimit: 1,
+    });
+    const firstGate = createDeferred<void>();
+    const order: string[] = [];
+
+    const first = scheduler.run("host.example", async () => {
+      order.push("first-start");
+      await firstGate.promise;
+      order.push("first-end");
+    });
+    const second = scheduler.run("host.example", async () => {
+      order.push("second-start");
+    });
+
+    await flushMicrotasks();
+    expect(order).toEqual(["first-start"]);
+
+    firstGate.resolve();
+    await Promise.all([first, second]);
+    expect(order).toEqual(["first-start", "first-end", "second-start"]);
+  });
+
+  test("releases the host slot after rejection without swallowing the error", async () => {
+    const scheduler = createExternalLinkScheduler({
+      globalLimit: 8,
+      perHostLimit: 1,
+    });
+    const firstGate = createDeferred<void>();
+    const failure = new Error("first check failed");
+    const order: string[] = [];
+
+    const first = scheduler.run("host.example", async () => {
+      order.push("first-start");
+      await firstGate.promise;
+      order.push("first-reject");
+      throw failure;
+    });
+    const second = scheduler.run("host.example", async () => {
+      order.push("second-start");
+      return "second-ok";
+    });
+
+    await flushMicrotasks();
+    expect(order).toEqual(["first-start"]);
+
+    firstGate.resolve();
+    await expect(first).rejects.toBe(failure);
+    expect(await second).toBe("second-ok");
+    expect(order).toEqual(["first-start", "first-reject", "second-start"]);
+  });
+
+  test("waits on the global pool then resumes after a global slot frees", async () => {
+    const scheduler = createExternalLinkScheduler({
+      globalLimit: 1,
+      perHostLimit: 2,
+    });
+    const firstGate = createDeferred<void>();
+    const order: string[] = [];
+
+    const first = scheduler.run("a.example", async () => {
+      order.push("a-start");
+      await firstGate.promise;
+      order.push("a-end");
+    });
+    const second = scheduler.run("b.example", async () => {
+      order.push("b-start");
+    });
+
+    await flushMicrotasks();
+    expect(order).toEqual(["a-start"]);
+
+    firstGate.resolve();
+    await Promise.all([first, second]);
+    expect(order).toEqual(["a-start", "a-end", "b-start"]);
+  });
+
+  test("skips a host-blocked waiter when a global slot frees for another host", async () => {
+    const scheduler = createExternalLinkScheduler({
+      globalLimit: 2,
+      perHostLimit: 1,
+    });
+    const aGate = createDeferred<void>();
+    const bGate = createDeferred<void>();
+    const order: string[] = [];
+
+    const a1 = scheduler.run("a.example", async () => {
+      order.push("a1-start");
+      await aGate.promise;
+      order.push("a1-end");
+    });
+    const b1 = scheduler.run("b.example", async () => {
+      order.push("b1-start");
+      await bGate.promise;
+      order.push("b1-end");
+    });
+
+    await flushMicrotasks();
+    expect(order).toEqual(["a1-start", "b1-start"]);
+
+    // A2 is host-blocked; C waits only on the global pool.
+    const a2 = scheduler.run("a.example", async () => {
+      order.push("a2-start");
+    });
+    const c1 = scheduler.run("c.example", async () => {
+      order.push("c1-start");
+    });
+
+    await flushMicrotasks();
+    expect(order).toEqual(["a1-start", "b1-start"]);
+
+    // Freeing B's global slot cannot start A2 (host still full), so C runs.
+    bGate.resolve();
+    await flushMicrotasks();
+    expect(order).toEqual(["a1-start", "b1-start", "b1-end", "c1-start"]);
+
+    aGate.resolve();
+    await Promise.all([a1, b1, a2, c1]);
+    expect(order).toEqual([
+      "a1-start",
+      "b1-start",
+      "b1-end",
+      "c1-start",
+      "a1-end",
+      "a2-start",
+    ]);
+  });
+
+  test("holds a slot across an in-check wait so another URL on the host cannot start", async () => {
+    const scheduler = createExternalLinkScheduler({
+      globalLimit: 8,
+      perHostLimit: 1,
+    });
+    const retryWait = createDeferred<void>();
+    const order: string[] = [];
+
+    const first = scheduler.run("retry.example", async () => {
+      order.push("first-start");
+      // Simulate a retry backoff while still holding the host slot.
+      await retryWait.promise;
+      order.push("first-end");
+    });
+    const second = scheduler.run("retry.example", async () => {
+      order.push("second-start");
+    });
+
+    await flushMicrotasks();
+    expect(order).toEqual(["first-start"]);
+
+    retryWait.resolve();
+    await Promise.all([first, second]);
+    expect(order).toEqual(["first-start", "first-end", "second-start"]);
+  });
+});
+
 describe("formatDebugAttemptLine", () => {
   test("formats a 2xx attempt", () => {
     expect(
@@ -1038,5 +1415,73 @@ describe("runCheck debug output", () => {
     expect(
       baselineLines.some((line) => line.includes("External link returned 404")),
     ).toBe(true);
+  });
+});
+
+describe("runCheck external link per-host concurrency", () => {
+  test("caps concurrent fetches for one host at two via the command path", async () => {
+    const urls = [
+      "https://example.com/a",
+      "https://example.com/b",
+      "https://example.com/c",
+      "https://example.com/d",
+      "https://example.com/e",
+      "https://example.com/f",
+    ];
+    const rootDir = await createTempProject(urls);
+    const gates = new Map<
+      string,
+      ReturnType<typeof createDeferred<Response>>
+    >();
+    let inFlight = 0;
+    let maxInFlight = 0;
+
+    for (const url of urls) {
+      gates.set(url, createDeferred<Response>());
+    }
+
+    globalThis.fetch = ((input: unknown, init?: { method?: string }) => {
+      const url = String(input);
+      const method = init?.method ?? "GET";
+
+      // Only the first attempt (HEAD) participates in the concurrency sample.
+      if (method !== "HEAD") {
+        return Promise.resolve(new Response(null, { status: 200 }));
+      }
+
+      inFlight += 1;
+      maxInFlight = Math.max(maxInFlight, inFlight);
+
+      const gate = gates.get(url);
+
+      if (!gate) {
+        inFlight -= 1;
+        return Promise.reject(new Error(`unexpected url ${url}`));
+      }
+
+      return gate.promise.finally(() => {
+        inFlight -= 1;
+      });
+    }) as typeof fetch;
+
+    captureLogs();
+    const checkPromise = runCheck(rootDir, quietCheckOptions);
+
+    await waitUntil(() => maxInFlight === 2 && inFlight === 2);
+    expect(maxInFlight).toBe(2);
+    expect(inFlight).toBe(2);
+
+    // While the first two stay open, no additional host fetches may start.
+    await flushMicrotasks(16);
+    expect(inFlight).toBe(2);
+    expect(maxInFlight).toBe(2);
+
+    for (const gate of gates.values()) {
+      gate.resolve(new Response(null, { status: 200 }));
+    }
+
+    expect(await checkPromise).toBe(0);
+    expect(maxInFlight).toBe(2);
+    expect(inFlight).toBe(0);
   });
 });

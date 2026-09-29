@@ -188,6 +188,10 @@ If HEAD returns `429` and retries are exhausted, the link is classified as unver
 
 With `--debug`, each try (including failed ones) produces one debug line.
 
+### External link concurrency
+
+External link checks run at most 8 at once, and at most 2 against the same hostname. The cap is the hostname only (`www.example.com` and `example.com` are different hosts). A slot is held for the whole check of one URL, including retry waits; checking the same URL twice does not take a second slot. There is no flag or `docs.json` key for this behavior.
+
 ### Exit codes
 
 | Code | Meaning |

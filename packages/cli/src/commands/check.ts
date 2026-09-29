@@ -30,7 +30,10 @@ import { isIgnoredHost, parseIgnoredHosts } from "../lib/ignored-hosts";
 const SEVERITIES = ["off", "warn", "error"] as const;
 const FRONTMATTER_LINK_FIELDS = ["redirect", "next", "previous"] as const;
 const EXTERNAL_LINK_TIMEOUT_MS = 10_000;
-const EXTERNAL_LINK_CONCURRENCY = 8;
+/** Global cap on in-flight external link checks across all hosts. */
+export const EXTERNAL_LINK_CONCURRENCY = 8;
+/** Cap on in-flight external link checks against a single hostname. */
+export const EXTERNAL_LINK_PER_HOST_CONCURRENCY = 2;
 /** Initial attempt plus up to two retries for 429 / dropped connections. */
 const EXTERNAL_RETRY_MAX_ATTEMPTS = 3;
 /** Cap applied to every retry wait, including large Retry-After values. */
@@ -305,13 +308,16 @@ export async function runCheck(rootDir: string, options: CheckOptions) {
       checkable.push({ reference, url: target.url });
     }
 
-    await runLimited(
-      checkable,
-      EXTERNAL_LINK_CONCURRENCY,
-      async ({ reference, url }) => {
+    const scheduler = createExternalLinkScheduler();
+
+    // Every URL is scheduled; the limiter gates real checks. Cache hits only
+    // await the in-flight promise and never take a slot.
+    await Promise.all(
+      checkable.map(async ({ reference, url }) => {
         const failure = await getCachedExternalCheck(
           externalCheckCache,
           url,
+          scheduler,
           debugAttempts,
         );
 
@@ -324,7 +330,7 @@ export async function runCheck(rootDir: string, options: CheckOptions) {
             target: reference.target,
           });
         }
-      },
+      }),
     );
   }
 
@@ -872,16 +878,130 @@ export function resolveExternalIssueSeverity(
 async function getCachedExternalCheck(
   cache: Map<string, Promise<ExternalLinkFailure | undefined>>,
   url: string,
+  scheduler: ExternalLinkScheduler,
   attempts?: ExternalLinkAttempt[],
 ) {
-  let check = cache.get(url);
+  const existing = cache.get(url);
 
-  if (!check) {
-    check = checkExternalUrl(url, attempts);
-    cache.set(url, check);
+  if (existing) {
+    return existing;
   }
 
+  // Register the promise before the first await so concurrent callers for the
+  // same URL share it and do not acquire a second slot.
+  const check = scheduler.run(getExternalLinkHostname(url), () =>
+    checkExternalUrl(url, attempts),
+  );
+  cache.set(url, check);
+
   return check;
+}
+
+type ExternalLinkAcquireWaiter = {
+  hostname: string;
+  resolve: () => void;
+};
+
+export type ExternalLinkScheduler = {
+  /**
+   * Acquire a global slot and a per-host slot, run `fn`, then release both.
+   * The slots stay held for the full lifetime of `fn`, including any waits.
+   */
+  run: <T>(hostname: string, fn: () => Promise<T>) => Promise<T>;
+  /** Acquire both slots. Exported for tests that drive wait/resume branches. */
+  acquire: (hostname: string) => Promise<void>;
+  /** Release both slots for a prior `acquire`. */
+  release: (hostname: string) => void;
+};
+
+/**
+ * Dual-limit scheduler for external link checks: at most
+ * `EXTERNAL_LINK_CONCURRENCY` checks in flight globally, and at most
+ * `EXTERNAL_LINK_PER_HOST_CONCURRENCY` per hostname.
+ *
+ * A slot is only taken when both limits have capacity, so one saturated host
+ * cannot starve other hosts of the global pool.
+ */
+export function createExternalLinkScheduler(options?: {
+  globalLimit?: number;
+  perHostLimit?: number;
+}): ExternalLinkScheduler {
+  const globalLimit = options?.globalLimit ?? EXTERNAL_LINK_CONCURRENCY;
+  const perHostLimit =
+    options?.perHostLimit ?? EXTERNAL_LINK_PER_HOST_CONCURRENCY;
+  let globalActive = 0;
+  const hostActive = new Map<string, number>();
+  const waitQueue: ExternalLinkAcquireWaiter[] = [];
+
+  function tryAcquire(hostname: string): boolean {
+    const hostCount = hostActive.get(hostname) ?? 0;
+
+    if (globalActive >= globalLimit || hostCount >= perHostLimit) {
+      return false;
+    }
+
+    globalActive += 1;
+    hostActive.set(hostname, hostCount + 1);
+    return true;
+  }
+
+  function wakeNextWaiter() {
+    for (let index = 0; index < waitQueue.length; index += 1) {
+      const waiter = waitQueue[index]!;
+
+      if (tryAcquire(waiter.hostname)) {
+        waitQueue.splice(index, 1);
+        waiter.resolve();
+        return;
+      }
+    }
+  }
+
+  async function acquire(hostname: string): Promise<void> {
+    if (tryAcquire(hostname)) {
+      return;
+    }
+
+    await new Promise<void>((resolve) => {
+      waitQueue.push({ hostname, resolve });
+    });
+  }
+
+  function release(hostname: string) {
+    globalActive = Math.max(0, globalActive - 1);
+    const hostCount = (hostActive.get(hostname) ?? 1) - 1;
+
+    if (hostCount <= 0) {
+      hostActive.delete(hostname);
+    } else {
+      hostActive.set(hostname, hostCount);
+    }
+
+    wakeNextWaiter();
+  }
+
+  async function run<T>(hostname: string, fn: () => Promise<T>): Promise<T> {
+    await acquire(hostname);
+
+    try {
+      return await fn();
+    } finally {
+      release(hostname);
+    }
+  }
+
+  return { run, acquire, release };
+}
+
+/**
+ * Hostname used for per-host concurrency: lowercase, no port, no path.
+ */
+export function getExternalLinkHostname(url: string): string {
+  try {
+    return new URL(url).hostname.toLowerCase();
+  } catch {
+    return url.toLowerCase();
+  }
 }
 
 /**
