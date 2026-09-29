@@ -47,6 +47,16 @@ type CheckOptions = {
   render: Severity;
   metadata: Severity;
   ignoreExternalHosts?: string;
+  debug?: boolean;
+};
+
+export type ExternalLinkAttemptOutcome = number | "timeout" | "unreachable";
+
+export type ExternalLinkAttempt = {
+  hostname: string;
+  method: "GET" | "HEAD";
+  outcome: ExternalLinkAttemptOutcome;
+  durationMs: number;
 };
 
 type CheckEntry = {
@@ -128,6 +138,10 @@ export function registerCheckCommand(program: Command) {
       "--ignore-external-hosts <hosts>",
       `Comma-separated hosts to skip when checking external links. Unioned with "${CONFIG_IGNORE_HOSTS_PATH}" from docs.json`,
     )
+    .option(
+      "--debug",
+      "Print an external-link request trace and per-host summary",
+    )
     .action(async (inputPath: string, options: CheckOptions) => {
       const exitCode = await runCheck(path.resolve(inputPath), options);
 
@@ -137,11 +151,14 @@ export function registerCheckCommand(program: Command) {
     });
 }
 
-async function runCheck(rootDir: string, options: CheckOptions) {
+export async function runCheck(rootDir: string, options: CheckOptions) {
   const reporter = createReporter();
   const mdxFiles = await findMdxFiles(rootDir);
   const configSource = await loadDocsConfig(rootDir);
   const parsedConfig = parseConfigObject(configSource);
+  const debugAttempts = options.debug
+    ? ([] as ExternalLinkAttempt[])
+    : undefined;
 
   console.log(chalk.cyan("Checking docs.page project:"), rootDir);
 
@@ -260,7 +277,11 @@ async function runCheck(rootDir: string, options: CheckOptions) {
       checkable,
       EXTERNAL_LINK_CONCURRENCY,
       async ({ reference, url }) => {
-        const failure = await getCachedExternalCheck(externalCheckCache, url);
+        const failure = await getCachedExternalCheck(
+          externalCheckCache,
+          url,
+          debugAttempts,
+        );
 
         if (failure) {
           reporter.report({
@@ -273,6 +294,12 @@ async function runCheck(rootDir: string, options: CheckOptions) {
         }
       },
     );
+  }
+
+  if (debugAttempts && debugAttempts.length > 0) {
+    for (const line of formatDebugTrace(debugAttempts)) {
+      console.log(line);
+    }
   }
 
   reporter.summary();
@@ -813,11 +840,12 @@ export function resolveExternalIssueSeverity(
 async function getCachedExternalCheck(
   cache: Map<string, Promise<ExternalLinkFailure | undefined>>,
   url: string,
+  attempts?: ExternalLinkAttempt[],
 ) {
   let check = cache.get(url);
 
   if (!check) {
-    check = checkExternalUrl(url);
+    check = checkExternalUrl(url, attempts);
     cache.set(url, check);
   }
 
@@ -830,14 +858,15 @@ async function getCachedExternalCheck(
  */
 export async function checkExternalUrl(
   url: string,
+  attempts?: ExternalLinkAttempt[],
 ): Promise<ExternalLinkFailure | undefined> {
-  const headResult = await requestExternalUrl(url, "HEAD");
+  const headResult = await requestExternalUrl(url, "HEAD", attempts);
 
   if (headResult.ok) {
     return undefined;
   }
 
-  const getResult = await requestExternalUrl(url, "GET");
+  const getResult = await requestExternalUrl(url, "GET", attempts);
 
   if (getResult.ok) {
     return undefined;
@@ -866,12 +895,17 @@ export async function checkExternalUrl(
   };
 }
 
-async function requestExternalUrl(url: string, method: "GET" | "HEAD") {
+async function requestExternalUrl(
+  url: string,
+  method: "GET" | "HEAD",
+  attempts?: ExternalLinkAttempt[],
+) {
   const controller = new AbortController();
   const timeout = setTimeout(
     () => controller.abort(),
     EXTERNAL_LINK_TIMEOUT_MS,
   );
+  const startedAt = Date.now();
 
   try {
     const response = await fetch(url, {
@@ -886,6 +920,8 @@ async function requestExternalUrl(url: string, method: "GET" | "HEAD") {
 
     await response.body?.cancel().catch(() => undefined);
 
+    recordExternalAttempt(attempts, url, method, response.status, startedAt);
+
     return {
       ok,
       status: response.status,
@@ -895,6 +931,14 @@ async function requestExternalUrl(url: string, method: "GET" | "HEAD") {
         : `External link returned ${response.status} ${response.statusText}.`,
     };
   } catch (error) {
+    recordExternalAttempt(
+      attempts,
+      url,
+      method,
+      isAbortError(error) ? "timeout" : "unreachable",
+      startedAt,
+    );
+
     return {
       ok: false,
       status: undefined,
@@ -906,11 +950,132 @@ async function requestExternalUrl(url: string, method: "GET" | "HEAD") {
   }
 }
 
-function formatExternalRequestError(error: unknown) {
-  if (
+function recordExternalAttempt(
+  attempts: ExternalLinkAttempt[] | undefined,
+  url: string,
+  method: "GET" | "HEAD",
+  outcome: ExternalLinkAttemptOutcome,
+  startedAt: number,
+) {
+  if (!attempts) {
+    return;
+  }
+
+  attempts.push({
+    hostname: getUrlHostname(url),
+    method,
+    outcome,
+    durationMs: Math.max(0, Date.now() - startedAt),
+  });
+}
+
+function getUrlHostname(url: string) {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return url;
+  }
+}
+
+function isAbortError(error: unknown) {
+  return (
     (error instanceof Error || error instanceof DOMException) &&
     error.name === "AbortError"
-  ) {
+  );
+}
+
+/**
+ * Format a single external-link attempt for `--debug` output.
+ */
+export function formatDebugAttemptLine(attempt: ExternalLinkAttempt): string {
+  return `debug ${attempt.hostname} ${attempt.method} ${attempt.outcome} ${attempt.durationMs}ms`;
+}
+
+/**
+ * Format per-host `--debug` summary lines. Hosts are sorted by hostname.
+ */
+export function formatDebugHostSummaryLines(
+  attempts: readonly ExternalLinkAttempt[],
+): string[] {
+  const byHost = new Map<
+    string,
+    {
+      requests: number;
+      ok: number;
+      unverified: number;
+      broken: number;
+      timeouts: number;
+      rateLimited: number;
+    }
+  >();
+
+  for (const attempt of attempts) {
+    let counts = byHost.get(attempt.hostname);
+
+    if (!counts) {
+      counts = {
+        requests: 0,
+        ok: 0,
+        unverified: 0,
+        broken: 0,
+        timeouts: 0,
+        rateLimited: 0,
+      };
+      byHost.set(attempt.hostname, counts);
+    }
+
+    counts.requests += 1;
+
+    if (attempt.outcome === "timeout") {
+      counts.timeouts += 1;
+      continue;
+    }
+
+    if (attempt.outcome === "unreachable") {
+      counts.broken += 1;
+      continue;
+    }
+
+    if (attempt.outcome >= 100 && attempt.outcome < 300) {
+      counts.ok += 1;
+      continue;
+    }
+
+    if (BOT_GATE_STATUSES.has(attempt.outcome)) {
+      counts.unverified += 1;
+
+      if (attempt.outcome === 429) {
+        counts.rateLimited += 1;
+      }
+
+      continue;
+    }
+
+    counts.broken += 1;
+  }
+
+  return [...byHost.entries()]
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(
+      ([hostname, counts]) =>
+        `debug host ${hostname} requests=${counts.requests} ok=${counts.ok} unverified=${counts.unverified} broken=${counts.broken} timeouts=${counts.timeouts} 429s=${counts.rateLimited}`,
+    );
+}
+
+/**
+ * Format the full `--debug` trace: attempt lines followed by host summaries.
+ */
+export function formatDebugTrace(
+  attempts: readonly ExternalLinkAttempt[],
+): string[] {
+  return [
+    ...attempts.map(formatDebugAttemptLine),
+    ...formatDebugHostSummaryLines(attempts),
+  ];
+}
+
+function formatExternalRequestError(error: unknown) {
+  if (isAbortError(error)) {
     return `External link timed out after ${EXTERNAL_LINK_TIMEOUT_MS}ms.`;
   }
 

@@ -292,6 +292,7 @@ A clean run ends with no `error`-level output and exit code `0`. Re-run after ea
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |
 | External link failures in CI | Target is temporarily down | Set `--external-links warn` or `off` for that pipeline |
+| Unclear which hosts time out or fail | Aggregated summary only | Re-run with `--debug` for per-attempt and per-host lines |
 | Repeated warnings from one host | Host blocks automated requests | Add it to `--ignore-external-hosts` or `check.ignoreExternalHosts` |
 | False positive on internal link | Path typo or file not yet committed | Fix the path or add the missing file under `docs/` |
 | Check passes locally but fails in CI | CI checks a different directory | Pass the correct `[path]` argument or set the job working directory |

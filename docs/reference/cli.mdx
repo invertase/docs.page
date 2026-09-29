@@ -140,6 +140,16 @@ docs check [path] [flags]
   Unioned with `check.ignoreExternalHosts` in `docs.json`. Neither replaces the other.
 </Property>
 
+<Property name="--debug" type="flag" optional>
+  After external-link checks and before the normal summary, print plain-text debug lines for each HTTP attempt and a per-host totals line. No `docs.json` key.
+
+  Per-attempt lines look like `debug <hostname> <METHOD> <outcome> <duration>ms`, where `<outcome>` is the HTTP status, `timeout`, or `unreachable`.
+
+  Then one line per host, sorted by hostname: `debug host <hostname> requests=<n> ok=<n> unverified=<n> broken=<n> timeouts=<n> 429s=<n>`. Counts are per HTTP attempt (HEAD and GET are separate). `ok` is status 100–299. `unverified` is 401, 403, 405, or 429. `429s` counts status 429 and is also included in `unverified`. `timeouts` are AbortError from this check's own timer. `broken` is every other failure.
+
+  Ignored hosts and `--external-links off` make no requests and print no debug lines. Without `--debug`, nothing extra is printed.
+</Property>
+
 <Property name="--render" type="off | warn | error" optional>
   Validate that each page's MDX renders without errors. Default: `error`.
 </Property>
