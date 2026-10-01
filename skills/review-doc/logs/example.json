@@ -1,0 +1,78 @@
+{
+  "skill": "review-doc",
+  "page": "docs/index.mdx",
+  "runs": [
+    {
+      "runId": "2026-08-28T120000Z",
+      "projectRoot": ".",
+      "sourceRoot": ".",
+      "startedAt": "2026-08-28T12:00:00Z",
+      "completedAt": "2026-08-28T12:06:00Z",
+      "summary": {
+        "checks": 4,
+        "failing": 2,
+        "muted": 1,
+        "passing": 1
+      },
+      "checks": [
+        {
+          "id": "headings",
+          "status": "passing",
+          "violations": 0,
+          "muted": 0,
+          "description": "frontmatter; sentence case; no # in the body"
+        },
+        {
+          "id": "text-formatting",
+          "status": "failing",
+          "violations": 1,
+          "muted": 0,
+          "description": "bold, italics, &"
+        },
+        {
+          "id": "general-principles",
+          "status": "failing",
+          "violations": 1,
+          "muted": 0,
+          "description": "claims, jargon, inclusive language"
+        },
+        {
+          "id": "tone",
+          "status": "muted",
+          "violations": 0,
+          "muted": 1,
+          "description": "no idioms, padding, or pre-announcement"
+        }
+      ],
+      "findings": [
+        {
+          "id": "text-formatting-1",
+          "check": "text-formatting",
+          "evidence": "is a **docs-as-code platform with no hosting setup**",
+          "recommendation": "Drop the bold. Italicize docs-as-code if defining it.",
+          "conflicts": [],
+          "decision": "accepted",
+          "feedback": ""
+        },
+        {
+          "id": "general-principles-1",
+          "check": "general-principles",
+          "evidence": "the live site refreshes instantly",
+          "recommendation": "Drop instantly. Say the live site updates when you push.",
+          "conflicts": [],
+          "decision": null,
+          "feedback": ""
+        },
+        {
+          "id": "tone-1",
+          "check": "tone",
+          "evidence": "without the infrastructure tax",
+          "recommendation": "Replace the idiom with a concrete hosting phrase.",
+          "conflicts": [],
+          "decision": "rejected",
+          "feedback": "Keep the metaphor; it matches the product voice on this page."
+        }
+      ]
+    }
+  ]
+}
