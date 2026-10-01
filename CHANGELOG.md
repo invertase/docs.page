@@ -2,6 +2,22 @@
 
 Platform changes to docs.page. Release notes: [2.0.0](./docs/releases/v2.0.0.mdx) · [1.0.0](./docs/releases/v1.0.0.mdx).
 
+## [@docs.page/cli 2.2.0] - 01-10-2026
+
+CLI-only release. The hosted platform remains [2.0.0](#200---03-07-2026).
+
+### Added
+
+- Pin external-link severity per host with `--severity-override-hosts` or `check.severityOverrideHosts` in `docs.json` ([#571](https://github.com/invertase/docs.page/pull/571))
+- Print per-attempt and per-host external-link debug lines with `--debug` ([#571](https://github.com/invertase/docs.page/pull/571))
+
+### Changed
+
+- Retry external link checks on `429` and dropped connections, and limit concurrency to 8 requests overall and 2 per hostname ([#571](https://github.com/invertase/docs.page/pull/571))
+- Bot-gate responses (`401`, `403`, `405`, `429`) stay warnings unless a host severity override says otherwise ([#571](https://github.com/invertase/docs.page/pull/571))
+
+[2.2.0]: https://github.com/invertase/docs.page/releases/tag/cli-v2.2.0
+
 ## [@docs.page/cli 2.1.0] - 04-09-2026
 
 CLI-only release. The hosted platform remains [2.0.0](#200---03-07-2026).
