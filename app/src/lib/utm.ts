@@ -1,7 +1,11 @@
-// The utm params we recognise. Single source of truth: both the event
-// properties and the CTA link forwarding read this list, so a param is never
-// captured but silently dropped from links (or vice versa).
-const UTM_KEYS = [
+/**
+ * The utm params we recognise. Single source of truth for every consumer: the
+ * event properties, the CTA link forwarding — so a param is never captured but
+ * silently dropped from links (or vice versa) — and the homepage hero, which
+ * forwards whatever the page was loaded with onto its copy-tracking beacon.
+ * Exported because that hero is the one consumer outside this module.
+ */
+export const UTM_KEYS = [
   "utm_source",
   "utm_medium",
   "utm_campaign",
