@@ -1,0 +1,18 @@
+{
+  "$schema": "https://anthropic.com/claude-code/plugin.schema.json",
+  "name": "docs-page",
+  "version": "0.1.3",
+  "description": "Author, configure and validate a docs.page documentation site: MDX components, docs.json, the @docs.page/cli init/preview/check workflow.",
+  "author": { "name": "Invertase" },
+  "homepage": "https://docs.page",
+  "repository": "https://github.com/invertase/docs.page",
+  "license": "Apache-2.0",
+  "keywords": [
+    "docs",
+    "documentation",
+    "docs-as-code",
+    "docs.page",
+    "mdx",
+    "invertase"
+  ]
+}
