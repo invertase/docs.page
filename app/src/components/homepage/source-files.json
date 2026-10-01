@@ -68,6 +68,7 @@
   "app/src/components/homepage/explore.tsx",
   "app/src/components/homepage/features/data.tsx",
   "app/src/components/homepage/features/feature-card.tsx",
+  "app/src/components/homepage/features/feature-dot-field.tsx",
   "app/src/components/homepage/features/features.tsx",
   "app/src/components/homepage/features/modern-interface.tsx",
   "app/src/components/homepage/footer.tsx",
