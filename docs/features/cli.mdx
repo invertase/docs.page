@@ -250,7 +250,7 @@ Run `docs check` after preview looks right and before you push. The command read
     Each category accepts `off`, `warn`, or `error`. All three default to `error`.
   </Step>
   <Step title="Skip hosts that block automated requests">
-    Some hosts answer a link checker with a bot gate instead of the page. Those responses are always reported as warnings, never errors, so they cannot fail CI on their own.
+    Some hosts answer a link checker with a bot gate instead of the page. For hosts not listed in a severity override, those responses are warnings, never errors, so they cannot fail CI on their own.
 
     To drop a host from external checking entirely, list it:
 
@@ -269,6 +269,28 @@ Run `docs check` after preview looks right and before you push. The command read
     ```
 
     The flag and the config value are unioned. Entries match on hostname and cover subdomains, so `npmjs.org` also covers `www.npmjs.org`. Skipped links appear as `skip` in the output and in the summary count.
+  </Step>
+  <Step title="Override severity for specific hosts">
+    Keep a named host at a fixed severity for every failure (bot-gate, `404`, `5xx`, DNS, timeout), so your own docs host can stay `error` while another host stays `warn`:
+
+    ```bash
+    npx @docs.page/cli check --severity-override-hosts rnfirebase.io=error,stackoverflow.com=warn
+    ```
+
+    Declare the same map in `docs.json`:
+
+    ```json
+    {
+      "check": {
+        "severityOverrideHosts": {
+          "rnfirebase.io": "error",
+          "stackoverflow.com": "warn"
+        }
+      }
+    }
+    ```
+
+    The flag and the map are unioned; the flag wins when the same host is in both. See [CLI: check](/reference/cli#docs-check) for the full resolution order against `--external-links`.
   </Step>
   <Step title="Check a subdirectory or monorepo package">
     ```bash
@@ -291,8 +313,9 @@ A clean run ends with no `error`-level output and exit code `0`. Re-run after ea
 
 | Symptom | Likely cause | Fix |
 | --- | --- | --- |
-| External link failures in CI | Target is temporarily down | Set `--external-links warn` or `off` for that pipeline |
-| Repeated warnings from one host | Host blocks automated requests | Add it to `--ignore-external-hosts` or `check.ignoreExternalHosts` |
+| External link failures in CI | Target is temporarily down | `check` retries `429` and dropped connections (`ECONNRESET`, `ECONNREFUSED`, `EPIPE`, `ETIMEDOUT`, `UND_ERR_SOCKET`, `UND_ERR_CONNECT_TIMEOUT`) per method (at most 3 attempts); waits follow `Retry-After` or 200ms/400ms, capped at 2s. A HEAD `429` after retries does not send GET; a dropped or `405` HEAD can fall through to GET, and that GET has its own 3 attempts. Each host is checked at most 2 at a time (8 overall). If failures persist, set `--external-links warn` or `off` for that pipeline |
+| Unclear which hosts time out or fail | Aggregated summary only | Re-run with `--debug` for per-attempt and per-host lines |
+| Repeated warnings from one host | Host blocks automated requests | Add it to `--ignore-external-hosts` / `check.ignoreExternalHosts`, or pin severity with `--severity-override-hosts` / `check.severityOverrideHosts` |
 | False positive on internal link | Path typo or file not yet committed | Fix the path or add the missing file under `docs/` |
 | Check passes locally but fails in CI | CI checks a different directory | Pass the correct `[path]` argument or set the job working directory |
 

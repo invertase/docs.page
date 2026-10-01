@@ -10,6 +10,10 @@ import { isNodeError } from "./errors";
 // cannot drift apart.
 export const CONFIG_IGNORE_HOSTS_PATH = "check.ignoreExternalHosts";
 
+// Same idea for the per-host severity override map.
+export const CONFIG_SEVERITY_OVERRIDE_HOSTS_PATH =
+  "check.severityOverrideHosts";
+
 export type DocsConfigSource = {
   json: string | null;
   yaml: string | null;
@@ -74,6 +78,18 @@ export function readConfigIgnoredHosts(
   const check = isRecord(config.check) ? config.check : undefined;
 
   return check?.ignoreExternalHosts;
+}
+
+/**
+ * Read the per-host severity override map. Untyped on purpose: parsing and
+ * validation live in `parseSeverityOverrideHosts`.
+ */
+export function readConfigSeverityOverrideHosts(
+  config: Record<string, unknown>,
+): unknown {
+  const check = isRecord(config.check) ? config.check : undefined;
+
+  return check?.severityOverrideHosts;
 }
 
 export function usesAutoOgImage(
