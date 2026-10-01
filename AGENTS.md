@@ -59,6 +59,8 @@ Do not commit secrets, `.env`, or generated artifacts (`.next/`, `dist/`).
 
 Repo-wide skills live under [`skills/`](./skills/). Load a skill's `SKILL.md` when one exists for your task.
 
+- [`install-docs-page`](./skills/install-docs-page/SKILL.md) — first-time docs.page install via Quickstart only.
+
 ## Safety
 
 - Do not disable security checks (webhook verification, sanitization, rate limits) without explicit maintainer approval.
