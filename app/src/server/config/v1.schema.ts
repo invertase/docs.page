@@ -39,10 +39,6 @@ export const V1ConfigSchema = z
     experimentalMath: z.boolean().catch(false),
     automaticallyDisplayName: z.boolean().catch(true),
     automaticallyInferNextPrevious: z.boolean().catch(true),
-    plausibleAnalytics: z.boolean().catch(false),
-    plausibleAnalyticsScript: z
-      .string()
-      .catch("https://plausible.io/js/script.js"),
     anchors: z
       .array(
         z
@@ -136,11 +132,6 @@ export const V1ConfigSchema = z
       scripts: {
         googleTagManager: v1.googleTagManager,
         googleAnalytics: v1.googleAnalytics,
-        plausible: v1.plausibleAnalytics
-          ? v1.plausibleAnalyticsScript
-            ? v1.plausibleAnalyticsScript
-            : true
-          : undefined,
       },
       content: {
         headerDepth: v1.headerDepth,

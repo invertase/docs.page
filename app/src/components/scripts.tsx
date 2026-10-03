@@ -58,19 +58,6 @@ export function Scripts() {
           />
         </>
       )}
-
-      {"domain" in ctx && !!ctx.domain && !!scripts?.plausible && (
-        <Script
-          async
-          defer
-          data-domain={ctx.domain}
-          src={
-            typeof scripts.plausible === "boolean"
-              ? "https://plausible.io/js/script.js"
-              : scripts.plausible
-          }
-        />
-      )}
     </>
   );
 }

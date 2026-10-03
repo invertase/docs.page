@@ -3,17 +3,16 @@ title: Analytics
 description: See how docs.page injects analytics on live sites and why local preview stays script-free.
 ---
 
-You want page views in Google Analytics or Plausible without maintaining a custom HTML shell or sprinkling `<script>` tags through MDX. docs.page loads tracking from `docs.json` on published pages only. Your local preview never sends events to production dashboards.
+You want page views in Google Analytics without maintaining a custom HTML shell or sprinkling `<script>` tags through MDX. docs.page loads tracking from `docs.json` on published pages only. Your local preview never sends events to production dashboards.
 
 ## Overview
 
 The `scripts` object in `docs.json` declares which analytics provider to use. docs.page injects the matching snippets when it renders a **published** page: production on the default branch, a vanity subdomain, or a custom domain.
 
-Three providers are supported:
+Two providers are supported:
 
 - **Google Tag Manager:** bootstrap a GTM container by container ID
 - **Google Analytics (GA4):** load `gtag.js` with a measurement ID when Tag Manager is not configured
-- **Plausible:** load Plausible's hosted script or a self-hosted URL, scoped to your site domain
 
 Configuration is declarative. You do not edit page templates or MDX to add tracking code.
 
@@ -49,15 +48,9 @@ This applies whether GA loads directly from `googleAnalytics` or through a GA ta
 
 See [Page frontmatter](/reference/page-frontmatter) and [Write: Frontmatter](/authoring/write#frontmatter).
 
-### Plausible and site domains
-
-Plausible requires a `data-domain` attribute that matches the hostname readers use. docs.page loads the Plausible script only when the request resolves to a configured **custom domain** or **vanity subdomain**. On the default `docs.page/{owner}/{repo}` path with no mapped domain, Plausible config has no effect.
-
-Set `plausible` to `true` for Plausible's hosted script endpoint, or pass a string URL for self-hosted Plausible.
-
 ### No scripts during local preview
 
-`docs preview` serves pages in preview request mode. In that mode, the script injector returns nothing: no GTM, GA, or Plausible tags are added to the document.
+`docs preview` serves pages in preview request mode. In that mode, the script injector returns nothing: no GTM or GA tags are added to the document.
 
 That keeps local editing and QA from inflating production analytics. Merge and push to your default branch (or open a hosted preview URL) to verify tags on a live-rendered page.
 

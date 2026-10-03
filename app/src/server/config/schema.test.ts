@@ -6,6 +6,7 @@ import { describe, expect, mock, test } from "bun:test";
 mock.module("@/lib/fonts", () => ({ fonts: {} }));
 
 const { ConfigSchema } = await import("./schema");
+const { V1ConfigSchema } = await import("./v1.schema");
 
 describe("ConfigSchema redirects", () => {
   test("parses a redirects map of string -> string", () => {
@@ -80,6 +81,37 @@ describe("ConfigSchema scripts.googleSiteVerification", () => {
 
     expect(config.scripts.googleTagManager).toBe("GTM-ABC123");
     expect(config.scripts.googleSiteVerification).toBe("aBcD1234exampleToken");
+  });
+});
+
+describe("removed scripts.plausible option", () => {
+  test("strips scripts.plausible from existing configs without failing", () => {
+    const result = ConfigSchema.safeParse({
+      scripts: { googleTagManager: "GTM-ABC123", plausible: true },
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.data?.scripts.googleTagManager).toBe("GTM-ABC123");
+    expect(result.data?.scripts).not.toHaveProperty("plausible");
+  });
+
+  test("strips a self-hosted scripts.plausible URL", () => {
+    const config = ConfigSchema.parse({
+      scripts: { plausible: "https://plausible.example.com/js/script.js" },
+    });
+
+    expect(config.scripts).not.toHaveProperty("plausible");
+  });
+
+  test("ignores v1 plausibleAnalytics keys when converting", () => {
+    const config = V1ConfigSchema.parse({
+      googleAnalytics: "G-ABC123",
+      plausibleAnalytics: true,
+      plausibleAnalyticsScript: "https://plausible.example.com/js/script.js",
+    });
+
+    expect(config.scripts.googleAnalytics).toBe("G-ABC123");
+    expect(config.scripts).not.toHaveProperty("plausible");
   });
 });
 
