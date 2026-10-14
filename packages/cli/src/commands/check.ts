@@ -41,7 +41,7 @@ const EXTERNAL_LINK_TIMEOUT_MS = 10_000;
 export const EXTERNAL_LINK_CONCURRENCY = 8;
 /** Cap on in-flight external link checks against a single hostname. */
 export const EXTERNAL_LINK_PER_HOST_CONCURRENCY = 2;
-/** Initial attempt plus up to two retries for 429 / dropped connections. */
+/** Initial attempt plus up to two retries for 429 / drops / timeouts. */
 const EXTERNAL_RETRY_MAX_ATTEMPTS = 3;
 /** Cap applied to every retry wait, including large Retry-After values. */
 const EXTERNAL_RETRY_DELAY_CAP_MS = 2_000;
@@ -1187,7 +1187,12 @@ function shouldRetryExternalResult(result: ExternalRequestResult) {
     return true;
   }
 
-  return result.status === undefined && isDroppedConnectionError(result.error);
+  if (result.status !== undefined) {
+    return false;
+  }
+
+  // AbortError is this check's own 10s timer, not a dropped-connection code.
+  return isAbortError(result.error) || isDroppedConnectionError(result.error);
 }
 
 function isDroppedConnectionError(error: unknown) {
