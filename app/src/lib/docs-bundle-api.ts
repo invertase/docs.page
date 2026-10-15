@@ -195,6 +195,9 @@ export async function loadDocsBundleFromApi(
       headers: {
         Accept: "application/json",
       },
+      // Fail before the Cloudflare 120s 524 window so a hung origin cannot
+      // pin the Pages router request that called us.
+      signal: AbortSignal.timeout(20_000),
     });
   } catch (error) {
     const message =
