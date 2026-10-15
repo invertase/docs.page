@@ -22,6 +22,7 @@ import {
   resolvePublicDocsPublishingContext,
 } from "@/lib/docs-canonical";
 import { getDeploymentOrigin } from "@/lib/docs-environment";
+import { InvalidDocPathError, normalizeDocPath } from "@/lib/docs-paths";
 import {
   resolveConfigRedirectDestination,
   resolveFrontmatterRedirectDestination,
@@ -265,6 +266,26 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
   res.setHeader("Vary", "Accept");
   setDocsCacheHeaders(res, DOCS_HTML_CACHE_HEADERS);
 
+  const requestedDocPath = route.docPath || "index";
+  try {
+    normalizeDocPath(requestedDocPath);
+  } catch (error) {
+    if (error instanceof InvalidDocPathError) {
+      res.statusCode = 400;
+
+      return {
+        props: {
+          kind: "notFound" as const,
+          notFound: {
+            description: error.message,
+          },
+        } satisfies NotFoundPageProps,
+      };
+    }
+
+    throw error;
+  }
+
   const bundleApiPath = buildDocsBundleApiPath(route);
   const bundleResult = await loadDocsBundleFromApi(
     getDeploymentOrigin() + bundleApiPath,
@@ -296,7 +317,10 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
   if (bundleResult.kind === "error") {
     const { payload: errorResponse, error } = bundleResult;
 
-    if (isDocsBundleNotFoundResponse(errorResponse)) {
+    if (
+      isDocsBundleNotFoundResponse(errorResponse) ||
+      error.name === "INVALID_DOC_PATH"
+    ) {
       // A deleted `.mdx` surfaces here as a 404. The bundler already fetched the
       // config blob in the same GraphQL query and parsed it onto the error
       // payload, so honour any config-level `redirects` (e.g. an old URL pointing
@@ -304,10 +328,14 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
       // Api-style routes (mcp / llms.txt / sitemap.xml / robots.txt / search.json
       // / og) live in the App Router (`app/api/...`) and never reach this Pages
       // Router catch-all, so they are excluded by construction.
-      const configRedirectDestination = await resolveConfigRedirectDestination(
-        route,
-        error.config?.redirects,
-      );
+      // Invalid paths never reached GitHub, so there is no config to consult.
+      const configRedirectDestination =
+        error.name === "INVALID_DOC_PATH"
+          ? null
+          : await resolveConfigRedirectDestination(
+              route,
+              error.config?.redirects,
+            );
 
       if (configRedirectDestination) {
         return {
@@ -332,7 +360,11 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
         },
       });
 
-      res.statusCode = 404;
+      res.statusCode =
+        error.name === "INVALID_DOC_PATH" &&
+        typeof errorResponse.code === "number"
+          ? errorResponse.code
+          : 404;
 
       return {
         props: {
