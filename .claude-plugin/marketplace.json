@@ -3,14 +3,14 @@
   "owner": { "name": "Invertase", "url": "https://invertase.io" },
   "metadata": {
     "description": "Plugins for authoring docs.page documentation sites",
-    "version": "0.1.3"
+    "version": "0.1.4"
   },
   "plugins": [
     {
       "name": "docs-page",
       "source": "./plugins/docs-page",
       "description": "Author, configure and validate a docs.page documentation site.",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "author": { "name": "Invertase" },
       "category": "documentation",
       "keywords": ["docs", "documentation", "docs.page", "mdx"],

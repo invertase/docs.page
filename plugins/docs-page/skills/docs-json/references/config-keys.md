@@ -129,9 +129,18 @@ All strings, all optional: `message`, `href`, `backgroundColor`, `foregroundColo
 
 ## `check` (CLI only)
 
-One key: `ignoreExternalHosts: string | string[]`. There is **no
-`errorExternalHosts`**. The hosted app does not read this block; only
-`@docs.page/cli check` does, and it **unions** it with `--ignore-external-hosts`.
+Two keys:
+
+- `ignoreExternalHosts: string | string[]`, **unioned** with
+  `--ignore-external-hosts`.
+- `severityOverrideHosts: { [host]: "warn" | "error" }`, **unioned** with
+  `--severity-override-hosts` (the flag wins for the same host). The mapped
+  severity applies to every external-link failure on that host and its
+  subdomains, bot gates (401/403/405/429) included. `off` is not a valid value.
+  Invalid entries are dropped one by one; valid siblings survive.
+
+There is **no `errorExternalHosts`**. The hosted app does not read this block;
+only `@docs.page/cli check` does.
 
 ## The v1 legacy trap
 

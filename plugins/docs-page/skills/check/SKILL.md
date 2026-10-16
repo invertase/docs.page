@@ -24,6 +24,14 @@ Five flags, each `off | warn | error`, **each defaulting to `error`**:
 Plus `--ignore-external-hosts <csv>`, which is **unioned** with
 `check.ignoreExternalHosts` from `docs.json` — never replaced.
 
+Plus `--severity-override-hosts <host=warn|error,...>`, **unioned** with
+`check.severityOverrideHosts` from `docs.json`; the flag wins for the same host.
+Entries cover subdomains and the longest matching host wins. `off` is not
+accepted, so an override can never turn a check off.
+
+Plus `--debug` (CLI only, no `docs.json` key), which prints one line per HTTP
+attempt and a per-host summary after the external-link checks.
+
 It also checks that `docs.json`/`docs.yaml` **parses**, and that at least one
 `docs/**/*.mdx` file exists.
 
@@ -31,12 +39,17 @@ It also checks that `docs.json`/`docs.yaml` **parses**, and that at least one
 
 - Exit **1** only if there is at least one **error**-level issue. Warnings and
   skips never fail the run.
-- HTTP **401, 403, 405 and 429 are always downgraded to warn**, so a bot-gated link
-  can never fail CI. 404, 5xx, DNS failures and timeouts keep the configured
-  severity.
-- External fetches run at concurrency 8 with a 10-second timeout, and a failed GET
-  is **not retried** — a network blip reads as a broken link. Re-run before
-  believing a one-off external failure.
+- HTTP **401, 403, 405 and 429 are downgraded to warn unless the host has a
+  severity override**. A host listed in `check.severityOverrideHosts` (or the
+  flag) takes the mapped severity for every failure, bot gates included — that
+  is how a team makes a specific host's failures fail CI. Otherwise 404, 5xx, DNS
+  failures and timeouts keep the configured severity.
+- Each HEAD/GET is tried up to **3 times, only on 429 or a dropped connection**
+  (`ECONNRESET` and similar). Waits are 200ms then 400ms, or `Retry-After`,
+  capped at 2s. A HEAD that stays 429 skips the GET. 404, 5xx, DNS failures and
+  the 10-second timeout are **not retried** — re-run before believing a one-off
+  404/5xx/timeout.
+- External fetches run at most 8 at once, and at most 2 per hostname.
 - Inside a locked-down network every external host may 403 and be downgraded to
   warn. A green external-link result there **proves nothing**.
 

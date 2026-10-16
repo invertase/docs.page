@@ -52,4 +52,4 @@ To confirm the plugin loads and its four skills register, run `claude --plugin-d
 
 ---
 
-Verified against docs.page `main` @ `dd56091` and `@docs.page/cli` 2.1.0.
+Verified against docs.page `main` @ `ef1a1fa` and `@docs.page/cli` 2.2.0.

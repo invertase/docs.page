@@ -45,8 +45,9 @@ npx @docs.page/cli preview
   `googleSiteVerification`, `plausible`.
 - `redirects` is a **top-level** `string -> string` map. It is consulted only on the
   404 branch, so it never shadows a page that still exists.
-- `check` holds exactly `ignoreExternalHosts` (there is no `errorExternalHosts`),
-  and only the CLI reads it — the hosted site ignores the block.
+- `check` holds exactly `ignoreExternalHosts` and `severityOverrideHosts` (there
+  is no `errorExternalHosts`), and only the CLI reads it — the hosted site ignores
+  the block.
 
 ## Theme
 
