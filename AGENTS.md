@@ -38,6 +38,7 @@ skills/                 Agent skills (SKILL.md per skill)
 - **UI** — shadcn/ui components live in `app/src/components/ui/`. Use existing primitives before adding dependencies.
 - **Next.js** — Read `app/AGENTS.md` and `node_modules/next/dist/docs/` for Next.js 16 APIs (breaking vs training data).
 - **Shared markdown pipeline** — Changes to doc rendering belong in `packages/mdx-bundler/` when they affect both app and CLI preview.
+- **Claude Code plugin** — `plugins/docs-page/` is a user-facing Claude Code plugin that restates the MDX component set, the `docs.json` schema and the CLI flags; changes to those should update it in the same PR.
 - **Scope** — Minimal diffs; match existing patterns; update `docs/` for user-visible behavior.
 
 ## Environment
