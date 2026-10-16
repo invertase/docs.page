@@ -2,16 +2,23 @@
 
 import Image from "next/image";
 import { type PropsWithChildren, useEffect, useRef } from "react";
+import { cn } from "@/lib/utils";
 import { features } from "./data";
 import { FeatureCard } from "./feature-card";
 
-function FeatureMedia({ children }: PropsWithChildren) {
+function FeatureMedia({
+  children,
+  glow = true,
+  className,
+}: PropsWithChildren<{ glow?: boolean; className?: string }>) {
   return (
-    <div className="relative w-full">
-      <div
-        className="pointer-events-none absolute left-1/2 top-1/2 -z-10 aspect-5/3 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-full bg-periwinkle-400/25 blur-3xl"
-        aria-hidden
-      />
+    <div className={cn("relative w-full", className)}>
+      {glow ? (
+        <div
+          className="pointer-events-none absolute left-1/2 top-1/2 -z-10 aspect-5/3 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-full bg-periwinkle-400/25 blur-3xl"
+          aria-hidden
+        />
+      ) : null}
       {children}
     </div>
   );
@@ -114,8 +121,14 @@ export function Features({ children }: PropsWithChildren) {
             title={feature.title}
             description={feature.description}
             link={feature.link}
+            stage={feature.stage}
           >
-            <FeatureMedia>
+            <FeatureMedia
+              glow={!feature.stage}
+              className={
+                feature.stage ? "absolute inset-0 size-full" : undefined
+              }
+            >
               {feature.video ? (
                 <video
                   src={feature.video}
@@ -123,7 +136,12 @@ export function Features({ children }: PropsWithChildren) {
                   loop
                   muted
                   title={feature.titleText}
-                  className="relative aspect-auto z-1 w-full rounded-lg object-cover border border-border/50 shadow-lg"
+                  className={cn(
+                    "relative z-1 w-full rounded-lg border border-border/50 shadow-lg",
+                    feature.stage
+                      ? "absolute inset-0 size-full object-contain"
+                      : "aspect-auto object-cover",
+                  )}
                 />
               ) : null}
               {feature.image ? (

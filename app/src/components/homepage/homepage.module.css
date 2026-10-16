@@ -72,14 +72,26 @@
       circle,
       color-mix(
         in srgb,
-        var(--homepage-dot-color, white) 35%,
+        var(--homepage-dot-color, white) var(--homepage-dot-mix, 35%),
         transparent
       ) var(--homepage-dot-r),
       transparent var(--homepage-dot-r)
     );
     background-size: var(--homepage-dot-cell) var(--homepage-dot-cell);
+    background-position: var(--homepage-dot-position, 0 0);
     background-repeat: repeat;
+    background-attachment: var(--homepage-dot-attachment, scroll);
   }
+}
+
+/** Soft periwinkle wash — brighter centre, fades to the rim. */
+.homepage-feature-stage-wash {
+  background-image: radial-gradient(
+    ellipse 78% 68% at 50% 46%,
+    color-mix(in srgb, var(--color-periwinkle-500) 18%, transparent) 0%,
+    color-mix(in srgb, var(--color-periwinkle-500) 10%, transparent) 46%,
+    color-mix(in srgb, var(--color-periwinkle-500) 3%, transparent) 100%
+  );
 }
 
 .homepage-spot-glow {
