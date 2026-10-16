@@ -44,6 +44,10 @@ the renderer's component map, so it renders the red error box. Use markdown `##`
   fence with a `title`. Non-code children are ignored.
 - **Raw HTML is sanitised against an allowlist.** Unknown tags and attributes are
   stripped silently.
+- **No file or folder name under `docs/` may start with `.` or end in a blocked
+  extension** (`.js`, `.ts`, `.php`, `.zip`, `.png`, `.pdf`, `.env`, etc., any case)
+  — the page is never served, so `next.js.mdx` returns a 400 "Invalid documentation
+  path." page.
 
 ## Free wins
 
