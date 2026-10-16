@@ -15,27 +15,69 @@ import { unified } from "unified";
 
 import {
   CONFIG_IGNORE_HOSTS_PATH,
+  CONFIG_SEVERITY_OVERRIDE_HOSTS_PATH,
   type DocsConfigSource,
   hasNonLatin1,
   loadDocsConfig,
   parseConfigObject,
   readConfigIgnoredHosts,
+  readConfigSeverityOverrideHosts,
   resolveHeaderDepth,
   resolveVariables,
   usesAutoOgImage,
 } from "../lib/docs-config";
 import { isNodeError } from "../lib/errors";
 import { isIgnoredHost, parseIgnoredHosts } from "../lib/ignored-hosts";
+import {
+  type OverrideSeverity,
+  parseSeverityOverrideHosts,
+  resolveHostSeverityOverride,
+} from "../lib/severity-override-hosts";
 
 const SEVERITIES = ["off", "warn", "error"] as const;
 const FRONTMATTER_LINK_FIELDS = ["redirect", "next", "previous"] as const;
 const EXTERNAL_LINK_TIMEOUT_MS = 10_000;
-const EXTERNAL_LINK_CONCURRENCY = 8;
+/** Global cap on in-flight external link checks across all hosts. */
+export const EXTERNAL_LINK_CONCURRENCY = 8;
+/** Cap on in-flight external link checks against a single hostname. */
+export const EXTERNAL_LINK_PER_HOST_CONCURRENCY = 2;
+/** Initial attempt plus up to two retries for 429 / dropped connections. */
+const EXTERNAL_RETRY_MAX_ATTEMPTS = 3;
+/** Cap applied to every retry wait, including large Retry-After values. */
+const EXTERNAL_RETRY_DELAY_CAP_MS = 2_000;
+/** Base for exponential backoff when Retry-After is missing or unparseable. */
+const EXTERNAL_RETRY_BACKOFF_BASE_MS = 200;
 // Statuses a host returns when it refuses to serve an automated client rather
 // than because the target is missing. These are reported as warnings so a bot
 // gate never fails CI, while 404s, 5xxs, DNS failures and timeouts stay errors.
 const BOT_GATE_STATUSES = new Set([401, 403, 405, 429]);
+const DROPPED_CONNECTION_CODES = new Set([
+  "ECONNRESET",
+  "ECONNREFUSED",
+  "EPIPE",
+  "ETIMEDOUT",
+  "UND_ERR_SOCKET",
+  "UND_ERR_CONNECT_TIMEOUT",
+]);
 const RENDER_CONCURRENCY = 4;
+
+/**
+ * Optional runtime hooks for external link checks. Tests inject `sleep` and
+ * `now` so retries stay offline and deterministic.
+ */
+export type ExternalCheckRuntime = {
+  sleep?: (ms: number) => Promise<void>;
+  now?: () => number;
+};
+
+type ExternalRequestResult = {
+  ok: boolean;
+  status: number | undefined;
+  statusText: string | undefined;
+  message: string | undefined;
+  retryAfter: string | null | undefined;
+  error: unknown;
+};
 
 type Severity = (typeof SEVERITIES)[number];
 type ReportableSeverity = Exclude<Severity, "off">;
@@ -47,6 +89,17 @@ type CheckOptions = {
   render: Severity;
   metadata: Severity;
   ignoreExternalHosts?: string;
+  severityOverrideHosts?: string;
+  debug?: boolean;
+};
+
+export type ExternalLinkAttemptOutcome = number | "timeout" | "unreachable";
+
+export type ExternalLinkAttempt = {
+  hostname: string;
+  method: "GET" | "HEAD";
+  outcome: ExternalLinkAttemptOutcome;
+  durationMs: number;
 };
 
 type CheckEntry = {
@@ -128,6 +181,14 @@ export function registerCheckCommand(program: Command) {
       "--ignore-external-hosts <hosts>",
       `Comma-separated hosts to skip when checking external links. Unioned with "${CONFIG_IGNORE_HOSTS_PATH}" from docs.json`,
     )
+    .option(
+      "--severity-override-hosts <hosts>",
+      `Comma-separated host=warn|error pairs that override external-link severity for matching hosts. Unioned with "${CONFIG_SEVERITY_OVERRIDE_HOSTS_PATH}" from docs.json; the flag wins for the same host`,
+    )
+    .option(
+      "--debug",
+      "Print an external-link request trace and per-host summary",
+    )
     .action(async (inputPath: string, options: CheckOptions) => {
       const exitCode = await runCheck(path.resolve(inputPath), options);
 
@@ -137,11 +198,14 @@ export function registerCheckCommand(program: Command) {
     });
 }
 
-async function runCheck(rootDir: string, options: CheckOptions) {
+export async function runCheck(rootDir: string, options: CheckOptions) {
   const reporter = createReporter();
   const mdxFiles = await findMdxFiles(rootDir);
   const configSource = await loadDocsConfig(rootDir);
   const parsedConfig = parseConfigObject(configSource);
+  const debugAttempts = options.debug
+    ? ([] as ExternalLinkAttempt[])
+    : undefined;
 
   console.log(chalk.cyan("Checking docs.page project:"), rootDir);
 
@@ -233,6 +297,10 @@ async function runCheck(rootDir: string, options: CheckOptions) {
       readConfigIgnoredHosts(parsedConfig),
       options.ignoreExternalHosts,
     );
+    const severityOverrides = parseSeverityOverrideHosts(
+      readConfigSeverityOverrideHosts(parsedConfig),
+      options.severityOverrideHosts,
+    );
     const checkable: { reference: Reference; url: string }[] = [];
 
     for (const reference of externalReferences) {
@@ -256,23 +324,40 @@ async function runCheck(rootDir: string, options: CheckOptions) {
       checkable.push({ reference, url: target.url });
     }
 
-    await runLimited(
-      checkable,
-      EXTERNAL_LINK_CONCURRENCY,
-      async ({ reference, url }) => {
-        const failure = await getCachedExternalCheck(externalCheckCache, url);
+    const scheduler = createExternalLinkScheduler();
+
+    // Every URL is scheduled; the limiter gates real checks. Cache hits only
+    // await the in-flight promise and never take a slot.
+    await Promise.all(
+      checkable.map(async ({ reference, url }) => {
+        const failure = await getCachedExternalCheck(
+          externalCheckCache,
+          url,
+          scheduler,
+          debugAttempts,
+        );
 
         if (failure) {
           reporter.report({
-            severity: resolveExternalIssueSeverity(failure, externalSeverity),
+            severity: resolveExternalIssueSeverity(
+              failure,
+              externalSeverity,
+              resolveHostSeverityOverride(url, severityOverrides),
+            ),
             file: reference.file,
             line: reference.line,
             message: failure.message,
             target: reference.target,
           });
         }
-      },
+      }),
     );
+  }
+
+  if (debugAttempts && debugAttempts.length > 0) {
+    for (const line of formatDebugTrace(debugAttempts)) {
+      console.log(line);
+    }
   }
 
   reporter.summary();
@@ -799,29 +884,153 @@ function classifyTarget(rawTarget: string): Target {
 }
 
 /**
- * A bot gate proves nothing about the link, so it is only ever reported as a
- * warning and never fails CI. An explicit `--external-links warn` is never
- * upgraded, and `--external-links off` skips the request entirely.
+ * Resolve the reported severity for an external-link failure.
+ *
+ * An explicit host override from `severityOverrideHosts` wins for every
+ * failure on that host (bot-gate and broken alike). Without an override, a bot
+ * gate stays a warning so it never fails CI, and broken links use
+ * `--external-links`. `--external-links off` skips the request before this
+ * runs.
  */
 export function resolveExternalIssueSeverity(
   failure: ExternalLinkFailure,
   severity: ReportableSeverity,
+  hostOverride?: OverrideSeverity,
 ): ReportableSeverity {
+  if (hostOverride) {
+    return hostOverride;
+  }
+
   return failure.kind === "unverified" ? "warn" : severity;
 }
 
 async function getCachedExternalCheck(
   cache: Map<string, Promise<ExternalLinkFailure | undefined>>,
   url: string,
+  scheduler: ExternalLinkScheduler,
+  attempts?: ExternalLinkAttempt[],
 ) {
-  let check = cache.get(url);
+  const existing = cache.get(url);
 
-  if (!check) {
-    check = checkExternalUrl(url);
-    cache.set(url, check);
+  if (existing) {
+    return existing;
   }
 
+  // Register the promise before the first await so concurrent callers for the
+  // same URL share it and do not acquire a second slot.
+  const check = scheduler.run(getExternalLinkHostname(url), () =>
+    checkExternalUrl(url, attempts),
+  );
+  cache.set(url, check);
+
   return check;
+}
+
+type ExternalLinkAcquireWaiter = {
+  hostname: string;
+  resolve: () => void;
+};
+
+export type ExternalLinkScheduler = {
+  /**
+   * Acquire a global slot and a per-host slot, run `fn`, then release both.
+   * The slots stay held for the full lifetime of `fn`, including any waits.
+   */
+  run: <T>(hostname: string, fn: () => Promise<T>) => Promise<T>;
+  /** Acquire both slots. Exported for tests that drive wait/resume branches. */
+  acquire: (hostname: string) => Promise<void>;
+  /** Release both slots for a prior `acquire`. */
+  release: (hostname: string) => void;
+};
+
+/**
+ * Dual-limit scheduler for external link checks: at most
+ * `EXTERNAL_LINK_CONCURRENCY` checks in flight globally, and at most
+ * `EXTERNAL_LINK_PER_HOST_CONCURRENCY` per hostname.
+ *
+ * A slot is only taken when both limits have capacity, so one saturated host
+ * cannot starve other hosts of the global pool.
+ */
+export function createExternalLinkScheduler(options?: {
+  globalLimit?: number;
+  perHostLimit?: number;
+}): ExternalLinkScheduler {
+  const globalLimit = options?.globalLimit ?? EXTERNAL_LINK_CONCURRENCY;
+  const perHostLimit =
+    options?.perHostLimit ?? EXTERNAL_LINK_PER_HOST_CONCURRENCY;
+  let globalActive = 0;
+  const hostActive = new Map<string, number>();
+  const waitQueue: ExternalLinkAcquireWaiter[] = [];
+
+  function tryAcquire(hostname: string): boolean {
+    const hostCount = hostActive.get(hostname) ?? 0;
+
+    if (globalActive >= globalLimit || hostCount >= perHostLimit) {
+      return false;
+    }
+
+    globalActive += 1;
+    hostActive.set(hostname, hostCount + 1);
+    return true;
+  }
+
+  function wakeNextWaiter() {
+    for (let index = 0; index < waitQueue.length; index += 1) {
+      const waiter = waitQueue[index]!;
+
+      if (tryAcquire(waiter.hostname)) {
+        waitQueue.splice(index, 1);
+        waiter.resolve();
+        return;
+      }
+    }
+  }
+
+  async function acquire(hostname: string): Promise<void> {
+    if (tryAcquire(hostname)) {
+      return;
+    }
+
+    await new Promise<void>((resolve) => {
+      waitQueue.push({ hostname, resolve });
+    });
+  }
+
+  function release(hostname: string) {
+    globalActive = Math.max(0, globalActive - 1);
+    const hostCount = (hostActive.get(hostname) ?? 1) - 1;
+
+    if (hostCount <= 0) {
+      hostActive.delete(hostname);
+    } else {
+      hostActive.set(hostname, hostCount);
+    }
+
+    wakeNextWaiter();
+  }
+
+  async function run<T>(hostname: string, fn: () => Promise<T>): Promise<T> {
+    await acquire(hostname);
+
+    try {
+      return await fn();
+    } finally {
+      release(hostname);
+    }
+  }
+
+  return { run, acquire, release };
+}
+
+/**
+ * Hostname used for per-host concurrency: lowercase, no port, no path.
+ */
+export function getExternalLinkHostname(url: string): string {
+  try {
+    return new URL(url).hostname.toLowerCase();
+  } catch {
+    return url.toLowerCase();
+  }
 }
 
 /**
@@ -830,14 +1039,28 @@ async function getCachedExternalCheck(
  */
 export async function checkExternalUrl(
   url: string,
+  attempts?: ExternalLinkAttempt[],
+  runtime?: ExternalCheckRuntime,
 ): Promise<ExternalLinkFailure | undefined> {
-  const headResult = await requestExternalUrl(url, "HEAD");
+  const headResult = await requestExternalUrl(url, "HEAD", attempts, runtime);
 
   if (headResult.ok) {
     return undefined;
   }
 
-  const getResult = await requestExternalUrl(url, "GET");
+  // A 429 after HEAD retries means the host is rate-limiting automation; do
+  // not escalate to GET and double the request load.
+  if (headResult.status === 429) {
+    return {
+      kind: "unverified",
+      message: `External link host rejected an automated request (${formatStatus(
+        headResult.status,
+        headResult.statusText,
+      )}); the link was not verified.`,
+    };
+  }
+
+  const getResult = await requestExternalUrl(url, "GET", attempts, runtime);
 
   if (getResult.ok) {
     return undefined;
@@ -866,12 +1089,143 @@ export async function checkExternalUrl(
   };
 }
 
-async function requestExternalUrl(url: string, method: "GET" | "HEAD") {
+/**
+ * Compute the wait before the next external-link retry.
+ *
+ * `failedAttemptIndex` is zero-based for the attempt that just failed (0 after
+ * the first failure → 200ms backoff when Retry-After is absent).
+ */
+export function externalRetryDelayMs(
+  failedAttemptIndex: number,
+  retryAfterHeader: string | null | undefined,
+  nowMs: number,
+): number {
+  const fromHeader = parseRetryAfterMs(retryAfterHeader, nowMs);
+
+  if (fromHeader !== undefined) {
+    return Math.min(EXTERNAL_RETRY_DELAY_CAP_MS, Math.max(0, fromHeader));
+  }
+
+  const backoff =
+    EXTERNAL_RETRY_BACKOFF_BASE_MS * 2 ** Math.max(0, failedAttemptIndex);
+
+  return Math.min(EXTERNAL_RETRY_DELAY_CAP_MS, backoff);
+}
+
+function parseRetryAfterMs(
+  header: string | null | undefined,
+  nowMs: number,
+): number | undefined {
+  if (header === undefined || header === null) {
+    return undefined;
+  }
+
+  const trimmed = header.trim();
+
+  if (trimmed === "") {
+    return undefined;
+  }
+
+  if (/^\d+$/.test(trimmed)) {
+    return Number(trimmed) * 1_000;
+  }
+
+  const dateMs = Date.parse(trimmed);
+
+  if (Number.isNaN(dateMs)) {
+    return undefined;
+  }
+
+  return dateMs - nowMs;
+}
+
+function defaultSleep(ms: number) {
+  return new Promise<void>((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+async function requestExternalUrl(
+  url: string,
+  method: "GET" | "HEAD",
+  attempts?: ExternalLinkAttempt[],
+  runtime?: ExternalCheckRuntime,
+): Promise<ExternalRequestResult> {
+  const sleep = runtime?.sleep ?? defaultSleep;
+  const now = runtime?.now ?? Date.now;
+  let lastResult: ExternalRequestResult | undefined;
+
+  for (
+    let attemptIndex = 0;
+    attemptIndex < EXTERNAL_RETRY_MAX_ATTEMPTS;
+    attemptIndex += 1
+  ) {
+    // Each attempt owns its own abort timer; the retry wait runs after that
+    // timer is cleared so a long backoff cannot be aborted as a timeout.
+    lastResult = await requestExternalUrlOnce(url, method, attempts);
+
+    if (lastResult.ok || !shouldRetryExternalResult(lastResult)) {
+      return lastResult;
+    }
+
+    if (attemptIndex < EXTERNAL_RETRY_MAX_ATTEMPTS - 1) {
+      const delayMs = externalRetryDelayMs(
+        attemptIndex,
+        lastResult.retryAfter,
+        now(),
+      );
+      await sleep(delayMs);
+    }
+  }
+
+  // The loop always assigns lastResult (max attempts >= 1).
+  return lastResult as ExternalRequestResult;
+}
+
+function shouldRetryExternalResult(result: ExternalRequestResult) {
+  if (result.status === 429) {
+    return true;
+  }
+
+  return result.status === undefined && isDroppedConnectionError(result.error);
+}
+
+function isDroppedConnectionError(error: unknown) {
+  if (isAbortError(error)) {
+    return false;
+  }
+
+  const code =
+    getNodeErrorCode(error) ?? getNodeErrorCode(getErrorCause(error));
+
+  return code !== undefined && DROPPED_CONNECTION_CODES.has(code);
+}
+
+function getErrorCause(error: unknown) {
+  return error instanceof Error ? error.cause : undefined;
+}
+
+function getNodeErrorCode(error: unknown) {
+  if (typeof error !== "object" || error === null || !("code" in error)) {
+    return undefined;
+  }
+
+  const code = (error as { code: unknown }).code;
+
+  return typeof code === "string" ? code : undefined;
+}
+
+async function requestExternalUrlOnce(
+  url: string,
+  method: "GET" | "HEAD",
+  attempts?: ExternalLinkAttempt[],
+): Promise<ExternalRequestResult> {
   const controller = new AbortController();
   const timeout = setTimeout(
     () => controller.abort(),
     EXTERNAL_LINK_TIMEOUT_MS,
   );
+  const startedAt = Date.now();
 
   try {
     const response = await fetch(url, {
@@ -886,6 +1240,8 @@ async function requestExternalUrl(url: string, method: "GET" | "HEAD") {
 
     await response.body?.cancel().catch(() => undefined);
 
+    recordExternalAttempt(attempts, url, method, response.status, startedAt);
+
     return {
       ok,
       status: response.status,
@@ -893,17 +1249,171 @@ async function requestExternalUrl(url: string, method: "GET" | "HEAD") {
       message: ok
         ? undefined
         : `External link returned ${response.status} ${response.statusText}.`,
+      retryAfter: response.headers.get("Retry-After"),
+      error: undefined,
     };
   } catch (error) {
+    recordExternalAttempt(
+      attempts,
+      url,
+      method,
+      isAbortError(error) ? "timeout" : "unreachable",
+      startedAt,
+    );
+
     return {
       ok: false,
       status: undefined,
       statusText: undefined,
-      message: `Unable to reach external link: ${getErrorMessage(error)}`,
+      message: formatExternalRequestError(error),
+      retryAfter: undefined,
+      error,
     };
   } finally {
     clearTimeout(timeout);
   }
+}
+
+function recordExternalAttempt(
+  attempts: ExternalLinkAttempt[] | undefined,
+  url: string,
+  method: "GET" | "HEAD",
+  outcome: ExternalLinkAttemptOutcome,
+  startedAt: number,
+) {
+  if (!attempts) {
+    return;
+  }
+
+  attempts.push({
+    hostname: getUrlHostname(url),
+    method,
+    outcome,
+    durationMs: Math.max(0, Date.now() - startedAt),
+  });
+}
+
+function getUrlHostname(url: string) {
+  try {
+    return new URL(url).hostname;
+  } catch {
+    return url;
+  }
+}
+
+function isAbortError(error: unknown) {
+  return (
+    (error instanceof Error || error instanceof DOMException) &&
+    error.name === "AbortError"
+  );
+}
+
+/**
+ * Format a single external-link attempt for `--debug` output.
+ */
+export function formatDebugAttemptLine(attempt: ExternalLinkAttempt): string {
+  return `debug ${attempt.hostname} ${attempt.method} ${attempt.outcome} ${attempt.durationMs}ms`;
+}
+
+/**
+ * Format per-host `--debug` summary lines. Hosts are sorted by hostname.
+ */
+export function formatDebugHostSummaryLines(
+  attempts: readonly ExternalLinkAttempt[],
+): string[] {
+  const byHost = new Map<
+    string,
+    {
+      requests: number;
+      ok: number;
+      unverified: number;
+      broken: number;
+      timeouts: number;
+      rateLimited: number;
+    }
+  >();
+
+  for (const attempt of attempts) {
+    let counts = byHost.get(attempt.hostname);
+
+    if (!counts) {
+      counts = {
+        requests: 0,
+        ok: 0,
+        unverified: 0,
+        broken: 0,
+        timeouts: 0,
+        rateLimited: 0,
+      };
+      byHost.set(attempt.hostname, counts);
+    }
+
+    counts.requests += 1;
+
+    if (attempt.outcome === "timeout") {
+      counts.timeouts += 1;
+      continue;
+    }
+
+    if (attempt.outcome === "unreachable") {
+      counts.broken += 1;
+      continue;
+    }
+
+    if (attempt.outcome >= 100 && attempt.outcome < 300) {
+      counts.ok += 1;
+      continue;
+    }
+
+    if (BOT_GATE_STATUSES.has(attempt.outcome)) {
+      counts.unverified += 1;
+
+      if (attempt.outcome === 429) {
+        counts.rateLimited += 1;
+      }
+
+      continue;
+    }
+
+    counts.broken += 1;
+  }
+
+  return [...byHost.entries()]
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(
+      ([hostname, counts]) =>
+        `debug host ${hostname} requests=${counts.requests} ok=${counts.ok} unverified=${counts.unverified} broken=${counts.broken} timeouts=${counts.timeouts} 429s=${counts.rateLimited}`,
+    );
+}
+
+/**
+ * Format the full `--debug` trace: attempt lines followed by host summaries.
+ */
+export function formatDebugTrace(
+  attempts: readonly ExternalLinkAttempt[],
+): string[] {
+  return [
+    ...attempts.map(formatDebugAttemptLine),
+    ...formatDebugHostSummaryLines(attempts),
+  ];
+}
+
+function formatExternalRequestError(error: unknown) {
+  if (isAbortError(error)) {
+    return `External link timed out after ${EXTERNAL_LINK_TIMEOUT_MS}ms.`;
+  }
+
+  const outer = getErrorMessage(error);
+  const cause =
+    error instanceof Error && error.cause instanceof Error
+      ? error.cause.message
+      : undefined;
+
+  if (cause && !outer.includes(cause)) {
+    return `Unable to reach external link: ${outer}: ${cause}`;
+  }
+
+  return `Unable to reach external link: ${outer}`;
 }
 
 function formatStatus(status: number, statusText: string | undefined) {

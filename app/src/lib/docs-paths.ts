@@ -154,8 +154,77 @@ export class InvalidDocPathError extends Error {
   }
 }
 
+/** Compound suffixes scanners use that a single-dot extension check would miss. */
+const REJECTED_COMPOUND_SUFFIXES = [".tar.gz", ".tar.bz2", ".tar.xz"] as const;
+
 /**
- * Normalize a user-supplied docs page path and reject traversal attempts.
+ * File extensions that are never documentation pages. Version-like segments
+ * such as `v2.0.0` stay allowed because the final token is numeric.
+ */
+const REJECTED_DOC_PATH_EXTENSIONS = new Set([
+  "7z",
+  "apk",
+  "asp",
+  "aspx",
+  "bak",
+  "bin",
+  "bz2",
+  "cgi",
+  "class",
+  "dll",
+  "dmg",
+  "env",
+  "exe",
+  "gif",
+  "gz",
+  "ico",
+  "ipa",
+  "iso",
+  "jar",
+  "jpeg",
+  "jpg",
+  "js",
+  "jsp",
+  "map",
+  "pdf",
+  "php",
+  "png",
+  "rar",
+  "so",
+  "sql",
+  "svg",
+  "tar",
+  "tgz",
+  "ts",
+  "war",
+  "wasm",
+  "webp",
+  "xz",
+  "zip",
+]);
+
+function isRejectedDocPathSegment(segment: string): boolean {
+  if (segment.startsWith(".") || /[*?<>|]/.test(segment)) {
+    return true;
+  }
+
+  const lower = segment.toLowerCase();
+
+  if (REJECTED_COMPOUND_SUFFIXES.some((suffix) => lower.endsWith(suffix))) {
+    return true;
+  }
+
+  const dot = lower.lastIndexOf(".");
+  if (dot <= 0 || dot === lower.length - 1) {
+    return false;
+  }
+
+  return REJECTED_DOC_PATH_EXTENSIONS.has(lower.slice(dot + 1));
+}
+
+/**
+ * Normalize a user-supplied docs page path and reject traversal attempts
+ * and non-documentation probes (archives, scripts, hidden files).
  */
 export function normalizeDocPath(path: string): string {
   if (!path || path.includes("\0")) {
@@ -188,9 +257,13 @@ export function normalizeDocPath(path: string): string {
     .replace(/\/+/g, "/")
     .replace(/\/$/, "");
 
+  const segments = normalized.split("/");
+
   if (
     !normalized ||
-    normalized.split("/").some((segment) => segment === "..")
+    segments.some(
+      (segment) => segment === ".." || isRejectedDocPathSegment(segment),
+    )
   ) {
     throw new InvalidDocPathError();
   }

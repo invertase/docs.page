@@ -6,9 +6,10 @@ import { isExternalLink } from "@/lib/docs-links";
 
 export type LinkProps = Omit<ComponentProps<"a">, "href"> & {
   href: string;
+  prefetch?: boolean;
 };
 
-export function Link({ href, ...props }: LinkProps) {
+export function Link({ href, prefetch = false, ...props }: LinkProps) {
   const resolvedHref = useDocHref(href);
 
   if (isExternalLink(href)) {
@@ -33,5 +34,7 @@ export function Link({ href, ...props }: LinkProps) {
     return <a {...props} href={resolvedHref} />;
   }
 
-  return <NextLink {...props} href={resolvedHref} />;
+  // Docs pages are GSSP and uncached at the edge. Viewport prefetch of a
+  // sidebar (or any large link list) stampedes `/_next/data` + `/api/bundle`.
+  return <NextLink {...props} href={resolvedHref} prefetch={prefetch} />;
 }
