@@ -292,3 +292,18 @@
     0 0 10px var(--color-primary),
     0 0 5px var(--color-primary) !important;
 }
+
+@keyframes chip-caret {
+  0%,
+  46% {
+    opacity: 0.7;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.chip-caret {
+  animation: chip-caret 530ms step-end infinite;
+}
