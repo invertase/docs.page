@@ -37,6 +37,8 @@ When someone requests a page that does not exist, docs.page briefly remembers th
 
 That protects the service when scrapers probe many junk URLs, and it is why a page you just added under a previously missing path can take a short moment to show up.
 
+Paths that are not documentation at all — archives, scripts, hidden files, or glob-like probes — are rejected immediately and never reach GitHub or that miss cache. Version-like segments such as `v2.0.0` are still valid page paths.
+
 Repository-level misses (for example an unknown repo or a missing `docs.json`) are also remembered briefly, usually for about a minute.
 
 ## Preview and local development
