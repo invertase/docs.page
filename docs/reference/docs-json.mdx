@@ -411,6 +411,10 @@ Ask AI chat panel configuration. **Beta.**
   Agent credential key returned by `docs agent create`. Required to enable the in-docs chat panel.
 </Property>
 
+<Property name="agent.models" type="object">
+  Model id to use for each provider, replacing the default docs.page assigns. Valid keys are `openai`, `anthropic`, `google`, and `xai`; only the entry matching the provider registered with `docs agent create` is read. See [Override the model](/ai-agents/ask-ai#override-the-model).
+</Property>
+
 <Property name="agent.placeholder" type="string">
   Placeholder text in the empty question input.
 </Property>

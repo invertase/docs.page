@@ -34,6 +34,10 @@ export type HomePageProps = {
   utmQuery: string;
 };
 
+export type SiteNotFoundPageProps = {
+  kind: "siteNotFound";
+};
+
 export type NotFoundPageProps = {
   kind: "notFound";
   notFound: DocsNotFoundPageData;
@@ -43,5 +47,6 @@ export type PageProps =
   | DocPageProps
   | ErrorPageProps
   | NotFoundPageProps
+  | SiteNotFoundPageProps
   | RawPageProps
   | HomePageProps;
