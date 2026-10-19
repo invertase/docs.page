@@ -44,6 +44,14 @@ const STROKE_SOLID_PROPS = {
 /** Feature cards: black tint + backdrop blur (matches landing-page-new-branding-v2). */
 const PAPER_FROSTED_CLASS = "bg-black/70 backdrop-blur-lg";
 
+/**
+ * Silhouette bloom of the clipped top fold. Zero-offset blur falls into the
+ * dog-ear cutout (wash-under-fold); the upward pair lifts the straight edge.
+ * Plain rgb() only — color-mix() inside drop-shadow can no-op the filter.
+ */
+const PAPER_FOLD_SHADOW_FILTER =
+  "drop-shadow(0 0 8px rgb(0 0 0 / 0.55)) drop-shadow(0 -6px 12px rgb(0 0 0 / 0.4))" as const;
+
 type PaperClippedPanelProps = {
   className?: string;
   /** When true (default), applies black frosted surface on the clipped panel. */
@@ -71,6 +79,46 @@ export function PaperClippedPanel({
     >
       <PaperCorner borderGradient={borderGradient} />
       <div className="relative">{children}</div>
+    </div>
+  );
+}
+
+/**
+ * Layer separation along the paper top-fold. Sibling of the clipped shell
+ * (clip-path eats box-shadow). The silhouette follows the dog-ear; extra
+ * gradients darken the wash in the cutout and the straight edge above.
+ */
+export function PaperFoldShadow() {
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-x-0 top-0 -z-10 overflow-visible"
+      style={{ height: `${PAPER_FOLD_REM}rem` }}
+    >
+      <div
+        className="absolute inset-0"
+        style={{ filter: PAPER_FOLD_SHADOW_FILTER }}
+      >
+        <div
+          className="size-full bg-black"
+          style={{ clipPath: paperCornerClipPath() }}
+        />
+      </div>
+      {/* Straight top edge — band sits above the fold onto the card beneath. */}
+      <div
+        className="absolute -top-10 right-0 left-20 h-10"
+        style={{
+          background: "linear-gradient(to top, rgb(0 0 0 / 0.32), transparent)",
+        }}
+      />
+      {/* Dog-ear cutout — darkest at the diagonal, fading into the wash. */}
+      <div
+        className="absolute top-0 left-0 size-20"
+        style={{
+          background:
+            "linear-gradient(to top left, rgb(0 0 0 / 0.38) 10%, transparent 68%)",
+        }}
+      />
     </div>
   );
 }
