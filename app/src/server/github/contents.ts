@@ -139,6 +139,7 @@ async function fetchTextFromJsDelivr(metadata: {
         ref: metadata.ref,
         path: metadata.path,
       }),
+      { signal: AbortSignal.timeout(5_000) },
     );
 
     if (!response.ok) {
