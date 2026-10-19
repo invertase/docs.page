@@ -49,7 +49,7 @@ export function tryParseGithubAlert(
   }
 
   const first = children[0];
-  if (first.type !== "paragraph") {
+  if (first?.type !== "paragraph") {
     return null;
   }
 
@@ -91,6 +91,10 @@ function buildAlertBodyNodes(
   alertType: string,
 ): MdastNode[] {
   const [first, ...rest] = blockquoteChildren;
+  if (!first) {
+    return [];
+  }
+
   const strippedParagraph = stripAlertMarkerFromParagraph(first, alertType);
   const body: MdastNode[] = [];
 

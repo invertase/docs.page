@@ -8,6 +8,7 @@ import {
 } from "@/components/docs-debug";
 import { DocsNotFoundPage } from "@/components/docs-not-found";
 import { Homepage } from "@/components/homepage";
+import { SiteNotFoundPage } from "@/components/homepage/not-found";
 import { Preset } from "@/components/preset";
 import { DocPageContext } from "@/hooks/use-doc-page-context";
 import { getAgentPanelCookieName } from "@/lib/agent-panel-state";
@@ -21,6 +22,7 @@ import {
   resolvePublicDocsPublishingContext,
 } from "@/lib/docs-canonical";
 import { getDeploymentOrigin } from "@/lib/docs-environment";
+import { InvalidDocPathError, normalizeDocPath } from "@/lib/docs-paths";
 import {
   resolveConfigRedirectDestination,
   resolveFrontmatterRedirectDestination,
@@ -34,10 +36,12 @@ import { getPostHogClient, readVisitorHeaders, visitorId } from "@/lib/posthog";
 import type {
   DocPageProps,
   ErrorPageProps,
+  HomePageProps,
   NotFoundPageProps,
   PageProps,
+  SiteNotFoundPageProps,
 } from "@/lib/types";
-import { utmProperties } from "@/lib/utm";
+import { utmProperties, utmQueryString } from "@/lib/utm";
 import {
   DOCS_HTML_CACHE_HEADERS,
   RAW_DOC_CACHE_HEADERS,
@@ -84,7 +88,11 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
     return {
       props: {
         kind: "home" as const,
-      },
+        // The CTAs point at `/get-started`, which reads utm params off its own
+        // request URL — so forward them onto the links to keep an ad flight's
+        // attribution attached to the click.
+        utmQuery: utmQueryString(requestUrl),
+      } satisfies HomePageProps,
     };
   }
 
@@ -94,27 +102,35 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
     };
   }
 
+  // Single-segment paths are not valid docs routes (`/owner/repo/...`).
+  // Do not return `{ notFound: true }`: with a mixed App + Pages tree, Next.js
+  // 16 serves the App Router builtin 404 instead of `pages/404.tsx`. Render
+  // the site 404 from this catch-all (same pattern as docs misses) and set 404.
   if (chunks.length === 1) {
     res.statusCode = 404;
 
+    if (isDebug) {
+      return {
+        props: {
+          kind: "notFound" as const,
+          notFound: {
+            debug: {
+              pathChunks: chunks,
+              error: {
+                code: 404,
+                message:
+                  "Incomplete docs route. Expected /owner/repository/...",
+              },
+            },
+          },
+        } satisfies NotFoundPageProps,
+      };
+    }
+
     return {
       props: {
-        kind: "notFound" as const,
-        notFound: {
-          ...(isDebug
-            ? {
-                debug: {
-                  pathChunks: chunks,
-                  error: {
-                    code: 404,
-                    message:
-                      "Incomplete docs route. Expected /owner/repository/...",
-                  },
-                },
-              }
-            : {}),
-        },
-      } satisfies NotFoundPageProps,
+        kind: "siteNotFound" as const,
+      } satisfies SiteNotFoundPageProps,
     };
   }
 
@@ -250,6 +266,26 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
   res.setHeader("Vary", "Accept");
   setDocsCacheHeaders(res, DOCS_HTML_CACHE_HEADERS);
 
+  const requestedDocPath = route.docPath || "index";
+  try {
+    normalizeDocPath(requestedDocPath);
+  } catch (error) {
+    if (error instanceof InvalidDocPathError) {
+      res.statusCode = 400;
+
+      return {
+        props: {
+          kind: "notFound" as const,
+          notFound: {
+            description: error.message,
+          },
+        } satisfies NotFoundPageProps,
+      };
+    }
+
+    throw error;
+  }
+
   const bundleApiPath = buildDocsBundleApiPath(route);
   const bundleResult = await loadDocsBundleFromApi(
     getDeploymentOrigin() + bundleApiPath,
@@ -281,7 +317,10 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
   if (bundleResult.kind === "error") {
     const { payload: errorResponse, error } = bundleResult;
 
-    if (isDocsBundleNotFoundResponse(errorResponse)) {
+    if (
+      isDocsBundleNotFoundResponse(errorResponse) ||
+      error.name === "INVALID_DOC_PATH"
+    ) {
       // A deleted `.mdx` surfaces here as a 404. The bundler already fetched the
       // config blob in the same GraphQL query and parsed it onto the error
       // payload, so honour any config-level `redirects` (e.g. an old URL pointing
@@ -289,10 +328,14 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
       // Api-style routes (mcp / llms.txt / sitemap.xml / robots.txt / search.json
       // / og) live in the App Router (`app/api/...`) and never reach this Pages
       // Router catch-all, so they are excluded by construction.
-      const configRedirectDestination = await resolveConfigRedirectDestination(
-        route,
-        error.config?.redirects,
-      );
+      // Invalid paths never reached GitHub, so there is no config to consult.
+      const configRedirectDestination =
+        error.name === "INVALID_DOC_PATH"
+          ? null
+          : await resolveConfigRedirectDestination(
+              route,
+              error.config?.redirects,
+            );
 
       if (configRedirectDestination) {
         return {
@@ -317,7 +360,11 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
         },
       });
 
-      res.statusCode = 404;
+      res.statusCode =
+        error.name === "INVALID_DOC_PATH" &&
+        typeof errorResponse.code === "number"
+          ? errorResponse.code
+          : 404;
 
       return {
         props: {
@@ -447,7 +494,11 @@ export default function RepoDocsCatchAllPage(
   }
 
   if (props.kind === "home") {
-    return <Homepage />;
+    return <Homepage utmQuery={props.utmQuery} />;
+  }
+
+  if (props.kind === "siteNotFound") {
+    return <SiteNotFoundPage />;
   }
 
   if (props.kind === "notFound") {

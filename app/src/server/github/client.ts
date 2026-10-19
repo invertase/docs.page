@@ -30,6 +30,13 @@ export function getGitHubGraphQLClient(): typeof graphql {
     headers: {
       authorization: `token ${token}`,
     },
+    request: {
+      fetch: (url: RequestInfo | URL, init?: RequestInit) =>
+        fetch(url, {
+          ...init,
+          signal: AbortSignal.timeout(8_000),
+        }),
+    },
   });
 }
 
