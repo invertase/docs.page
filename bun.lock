@@ -98,7 +98,7 @@
     },
     "packages/cli": {
       "name": "@docs.page/cli",
-      "version": "2.0.0",
+      "version": "2.2.0",
       "bin": {
         "docs.page": "./dist/cli.js",
         "docs": "./dist/cli.js",

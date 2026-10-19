@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { InvalidDocPathError, normalizeDocPath } from "@/lib/docs-paths";
 import { stripRawDocRequestSuffix } from "@/lib/docs-routing";
 import {
   getNegativeDocsFileCache,
@@ -21,7 +22,20 @@ export async function getRawDocSource(
   options?: { resolvedSha?: string; skipAccessCheck?: boolean },
 ) {
   const input = RawDocSchema.parse(args);
-  const normalizedPath = stripRawDocRequestSuffix(input.path);
+  let normalizedPath: string;
+  try {
+    normalizedPath = normalizeDocPath(stripRawDocRequestSuffix(input.path));
+  } catch (error) {
+    if (error instanceof InvalidDocPathError) {
+      throw new BundlerError({
+        code: 400,
+        name: ERROR_CODES.INVALID_DOC_PATH,
+        message: error.message,
+      });
+    }
+
+    throw error;
+  }
 
   if (
     await getNegativeDocsFileCache(

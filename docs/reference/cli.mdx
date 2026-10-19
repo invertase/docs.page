@@ -140,6 +140,24 @@ docs check [path] [flags]
   Unioned with `check.ignoreExternalHosts` in `docs.json`. Neither replaces the other.
 </Property>
 
+<Property name="--severity-override-hosts" type="string" optional>
+  Comma-separated `host=severity` pairs that set the severity for every external-link failure on a matching host. Values are `warn` or `error` only.
+
+  Host spelling matches `--ignore-external-hosts`: a pasted URL, a `host:port`, a `*.` or `.` prefix, and a trailing dot are all accepted. Entries match on hostname and cover subdomains; a lookalike host does not match. When both a parent and a child hostname match, the longer hostname wins.
+
+  Unioned with `check.severityOverrideHosts` in `docs.json`. When the same host appears in both, the flag wins.
+</Property>
+
+<Property name="--debug" type="flag" optional>
+  After external-link checks and before the normal summary, print plain-text debug lines for each HTTP attempt and a per-host totals line. No `docs.json` key.
+
+  Per-attempt lines look like `debug <hostname> <METHOD> <outcome> <duration>ms`, where `<outcome>` is the HTTP status, `timeout`, or `unreachable`.
+
+  Then one line per host, sorted by hostname: `debug host <hostname> requests=<n> ok=<n> unverified=<n> broken=<n> timeouts=<n> 429s=<n>`. Counts are per HTTP attempt (HEAD and GET are separate). `ok` is status 100–299. `unverified` is 401, 403, 405, or 429. `429s` counts status 429 and is also included in `unverified`. `timeouts` are AbortError from this check's own timer. `broken` is every other failure.
+
+  Ignored hosts and `--external-links off` make no requests and print no debug lines. Without `--debug`, nothing extra is printed.
+</Property>
+
 <Property name="--render" type="off | warn | error" optional>
   Validate that each page's MDX renders without errors. Default: `error`.
 </Property>
@@ -164,9 +182,47 @@ Declare hosts once in `docs.json` so CI does not repeat the flag:
 
 Values from `docs.json` and `--ignore-external-hosts` are unioned. `--external-links off` still skips external checking entirely.
 
+### Override external-link severity per host from `docs.json`
+
+Declare per-host severity once in `docs.json` so CI does not repeat the flag:
+
+```json
+{
+  "check": {
+    "severityOverrideHosts": {
+      "rnfirebase.io": "error",
+      "stackoverflow.com": "warn"
+    }
+  }
+}
+```
+
+The flag and the map are unioned; the flag wins when the same host is in both.
+
+Severity for an external-link failure is resolved in this order:
+
+1. `--external-links off` skips the request. The map does not turn the check back on.
+2. If the host matches `severityOverrideHosts`, that severity is used for every failure: bot-gate (`401`, `403`, `405`, `429`), `404`, `5xx`, DNS, and timeout.
+3. Otherwise an unverified bot-gate stays a warning.
+4. Otherwise the failure uses `--external-links`.
+
 ### Bot gates
 
-Hosts that answer `401`, `403`, `405`, or `429` are refusing an automated request rather than reporting a missing page. Those responses are always reported as warnings, so they never fail CI, and the message says the link was not verified. Missing pages (`404`), server errors, DNS failures, and timeouts remain at the configured `--external-links` severity.
+Hosts that answer `401`, `403`, `405`, or `429` are refusing an automated request rather than reporting a missing page. For hosts not listed in `severityOverrideHosts`, those responses are reported as warnings so they never fail CI, and the message says the link was not verified. A host override of `error` makes the same responses fail CI. Missing pages (`404`), server errors, DNS failures, and timeouts use the override when the host matches, and otherwise remain at the configured `--external-links` severity.
+
+### External link retries
+
+Each external request is tried at most three times (the first attempt plus two retries) when the response is HTTP `429` or the connection drops (`ECONNRESET`, `ECONNREFUSED`, `EPIPE`, `ETIMEDOUT`, `UND_ERR_SOCKET`, `UND_ERR_CONNECT_TIMEOUT`). Responses such as `401`, `403`, `404`, `405`, and `5xx`, DNS failures like `ENOTFOUND`, and this check's own 10s timeout (`External link timed out after 10000ms.`) are not retried.
+
+On `429`, the wait follows `Retry-After` when it is a delta-seconds value or an HTTP-date. If that header is missing or unparseable, the waits are 200ms then 400ms. Dropped-connection retries use the same 200ms then 400ms backoff (there is no `Retry-After` for those). Every wait is capped at 2 seconds. There is no flag or `docs.json` key for this behavior.
+
+If HEAD returns `429` and retries are exhausted, the link is classified as unverified and no GET is sent. A dropped HEAD that still fails after retries falls through to GET, as does a `405` HEAD. That follow-up GET is only retried when the GET itself is a `429` or a dropped connection.
+
+With `--debug`, each try (including failed ones) produces one debug line.
+
+### External link concurrency
+
+External link checks run at most 8 at once, and at most 2 against the same hostname. The cap is the hostname only (`www.example.com` and `example.com` are different hosts). A slot is held for the whole check of one URL, including retry waits; checking the same URL twice does not take a second slot. There is no flag or `docs.json` key for this behavior.
 
 ### Exit codes
 
@@ -186,6 +242,7 @@ Hosts that answer `401`, `403`, `405`, or `429` are refusing an automated reques
 | Broken internal link | `Internal link points to a missing docs page.` (or frontmatter variant) |
 | Missing asset | `Referenced asset does not exist.` |
 | Unreachable external URL | `Unable to reach external link: …` or `External link returned &lt;status&gt; …` |
+| Timed out external URL | `External link timed out after 10000ms.` |
 | Host refused an automated request (warning) | `External link host rejected an automated request (&lt;status&gt;); the link was not verified.` |
 | Host in the ignore list (skipped) | `External link host is in the ignore list.` |
 
