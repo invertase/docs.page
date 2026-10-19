@@ -36,7 +36,7 @@ const MODEL_BY_PROVIDER: Record<AgentProvider, string> = {
   xai: "grok-3-mini",
   openai: "gpt-4.1-mini",
   anthropic: "claude-haiku-4-5",
-  google: "gemini-2.5-flash",
+  google: "gemini-3.6-flash",
 };
 
 export const PROVIDERS = AGENT_PROVIDERS;
