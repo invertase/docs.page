@@ -1,4 +1,4 @@
-import { clock, frameLoop, type Gpu, type Surface, surface } from "vgpu";
+import { clock, frameLoop, type Gpu, init, type Surface, surface } from "vgpu";
 import { createHeroRenderer, type HeroRenderer } from "./scene-renderer";
 import { DEFAULT_BRUSH, type RenderSize } from "./settings";
 import { brushState } from "./sim-sizing";
@@ -8,6 +8,8 @@ interface RendererOptions {
   /** Tab colour: true = periwinkle (agents), false = honey (humans). */
   readonly rgbDeployActive?: () => boolean;
 }
+
+export type ChipRenderer = ReturnType<typeof createRenderer>;
 
 export function createRenderer(options: RendererOptions) {
   let disposed = false;
@@ -20,6 +22,7 @@ export function createRenderer(options: RendererOptions) {
   let resizeGeneration = 0;
   let pendingSize: RenderSize | undefined;
   let lastDpr = typeof window === "undefined" ? 1 : window.devicePixelRatio;
+  let visible = true;
 
   const fail = (error: unknown): never => {
     dispose();
@@ -61,6 +64,27 @@ export function createRenderer(options: RendererOptions) {
     lastDpr = window.devicePixelRatio;
     measure();
   };
+  const startLoop = () => {
+    if (loop || disposed || !visible || !gpu || !scene) return;
+    const time = clock(gpu);
+    const idleBrush = brushState(DEFAULT_BRUSH);
+    loop = frameLoop(gpu, (currentFrame) => {
+      if (disposed || !scene || !gpu) return;
+      scene.setBrush(idleBrush);
+      scene.setRgbDeployActive(options.rgbDeployActive?.() === true);
+      scene.renderFrame(currentFrame, { time: time.time, dt: time.deltaTime });
+    });
+  };
+  /** Offscreen: stop the loop. The dt jump on resume is clamped downstream. */
+  const setVisible = (next: boolean) => {
+    visible = next;
+    if (visible) {
+      startLoop();
+      return;
+    }
+    loop?.stop();
+    loop = undefined;
+  };
   const dispose = () => {
     if (disposed) return;
     disposed = true;
@@ -82,8 +106,6 @@ export function createRenderer(options: RendererOptions) {
     gpu = undefined;
   };
   const initialize = async () => {
-    const { init } = await import("vgpu");
-    if (disposed) return;
     const nextGpu = await init();
     if (disposed) {
       nextGpu.dispose();
@@ -113,20 +135,13 @@ export function createRenderer(options: RendererOptions) {
     observer?.observe(options.canvas);
     window.addEventListener("resize", onWindowResize);
     measure();
-    const time = clock(gpu);
-    const idleBrush = brushState(DEFAULT_BRUSH);
-    loop = frameLoop(gpu, (currentFrame) => {
-      if (disposed || !scene || !gpu) return;
-      scene.setBrush(idleBrush);
-      scene.setRgbDeployActive(options.rgbDeployActive?.() === true);
-      scene.renderFrame(currentFrame, { time: time.time, dt: time.deltaTime });
-    });
+    startLoop();
   };
   const ready = initialize().catch((error: unknown) => {
     if (disposed) return;
     fail(error);
   });
-  return { ready, resize, dispose };
+  return { ready, resize, setVisible, dispose };
 }
 
 function cssSizeOf(canvas: HTMLCanvasElement, dpr: Surface["dpr"]) {

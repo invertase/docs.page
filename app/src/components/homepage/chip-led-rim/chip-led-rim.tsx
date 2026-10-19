@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { createRenderer } from "../chip-led-front/renderer";
+import type { ChipRenderer } from "../chip-led-front/renderer";
 import { CHIP_BLOOM_CSS, setChipFrame } from "../chip-led-front/settings";
 
 /**
@@ -74,29 +74,76 @@ export function ChipLedRim({ active }: { active: boolean }) {
       });
     };
 
-    syncFrame();
-    const renderer = createRenderer({
-      canvas,
-      rgbDeployActive: () => activeRef.current,
-    });
-    void renderer.ready.catch((error: unknown) => {
-      console.error("[docs.page hero] chip LED rim failed to start", error);
+    // vgpu and the scene load only once WebGPU and motion are allowed; a stale
+    // `run` drops an import that lands after unmount or a reduced-motion flip.
+    let renderer: ChipRenderer | undefined;
+    let run = 0;
+    let running = false;
+    let visible = true;
+
+    const start = async () => {
+      if (running) return;
+      running = true;
+      const current = ++run;
+      setFallback(false);
+      try {
+        const { createRenderer } = await import("../chip-led-front/renderer");
+        if (current !== run) return;
+        syncFrame();
+        renderer = createRenderer({
+          canvas,
+          rgbDeployActive: () => activeRef.current,
+        });
+        renderer.setVisible(visible);
+        await renderer.ready;
+      } catch (error) {
+        if (current !== run) return;
+        console.error("[docs.page hero] chip LED rim failed to start", error);
+        setFallback(true);
+      }
+    };
+    const stop = () => {
+      run++;
+      running = false;
+      renderer?.dispose();
+      renderer = undefined;
+    };
+
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const sync = () => {
+      if ("gpu" in navigator && !reducedMotion.matches) {
+        void start();
+        return;
+      }
+      stop();
       setFallback(true);
-    });
+    };
 
     const onResize = () => {
       syncFrame();
       const box = canvas.getBoundingClientRect();
-      renderer.resize({ width: box.width, height: box.height });
+      renderer?.resize({ width: box.width, height: box.height });
     };
+    // The canvas (chip + bloom pad) is what draws, so it decides visibility.
+    const visibility = new IntersectionObserver((entries) => {
+      visible = entries.at(-1)?.isIntersecting ?? true;
+      renderer?.setVisible(visible);
+    });
+
+    syncFrame();
+    sync();
+    reducedMotion.addEventListener("change", sync);
+    visibility.observe(canvas);
     const observer = new ResizeObserver(onResize);
     observer.observe(host);
     window.addEventListener("resize", onResize);
 
     return () => {
+      reducedMotion.removeEventListener("change", sync);
+      visibility.disconnect();
       observer.disconnect();
       window.removeEventListener("resize", onResize);
-      renderer.dispose();
+      stop();
     };
   }, []);
 
