@@ -219,15 +219,20 @@ function Snippet({ snippet }: { snippet: HeroSnippet }) {
 
   return (
     <>
-      <div className="flex min-w-0 max-w-64 flex-1 items-center gap-2 overflow-x-auto opacity-75 transition-opacity group-hover:opacity-100 sm:max-w-72 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="flex min-w-0 flex-1 items-center gap-2 opacity-75 transition-opacity group-hover:opacity-100 sm:max-w-72 sm:overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         {snippet.prefix && (
           <span className="shrink-0 text-neutral-500">{snippet.prefix}</span>
         )}
-        <span className="whitespace-nowrap text-sm text-neutral-200 sm:text-base">
+        <span className="min-w-0 break-words text-sm text-neutral-200 sm:whitespace-nowrap sm:text-base">
           {snippet.text}
         </span>
       </div>
-      <Button variant="ghost" size="icon-sm" onClick={handleCopy}>
+      <Button
+        variant="ghost"
+        size="icon-sm"
+        className="shrink-0"
+        onClick={handleCopy}
+      >
         {copied ? (
           <RiCheckLine className="text-green-500" />
         ) : (
