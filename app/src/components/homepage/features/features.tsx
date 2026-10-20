@@ -122,6 +122,7 @@ export function Features({ children }: PropsWithChildren) {
             description={feature.description}
             link={feature.link}
             stage={feature.stage}
+            flush={i === features.length - 1}
           >
             <FeatureMedia
               glow={!feature.stage}
@@ -144,7 +145,9 @@ export function Features({ children }: PropsWithChildren) {
                   )}
                 />
               ) : null}
-              {feature.image ? (
+              {typeof feature.image === "string" ? (
+                <img src={feature.image} alt={feature.titleText} />
+              ) : feature.image ? (
                 <Image
                   src={feature.image}
                   alt={feature.titleText}
