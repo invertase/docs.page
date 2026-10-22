@@ -1,8 +1,10 @@
 import { describe, expect, test } from "bun:test";
+import matter from "gray-matter";
 import {
   agentDocsIndexLinkHeader,
   agentLlmsTxtUrl,
   buildAgentMarkdownResponse,
+  prependAgentDocsIndex,
 } from "./agent-docs-index";
 
 const handbook = {
@@ -49,27 +51,66 @@ describe("agentLlmsTxtUrl", () => {
   });
 });
 
+describe("prependAgentDocsIndex", () => {
+  test("inserts the index after frontmatter so parsers still see it", () => {
+    const body = prependAgentDocsIndex(
+      "---\ntitle: Start\ndescription: Hello\n---\n\n# Start\n",
+      "https://docs.page/acme/handbook/llms.txt",
+    );
+
+    expect(body).toBe(
+      [
+        "---",
+        "title: Start",
+        "description: Hello",
+        "---",
+        "> ## Documentation Index",
+        "> Fetch the complete documentation index at: https://docs.page/acme/handbook/llms.txt",
+        "> Use this file to discover all available pages before exploring further.",
+        "",
+        "# Start",
+        "",
+      ].join("\n"),
+    );
+    expect(matter(body).data).toEqual({
+      title: "Start",
+      description: "Hello",
+    });
+    expect(matter(body).content.startsWith("> ## Documentation Index")).toBe(
+      true,
+    );
+  });
+
+  test("keeps the index first when the page has no frontmatter", () => {
+    expect(
+      prependAgentDocsIndex(
+        "# Start\n",
+        "https://docs.page/acme/handbook/llms.txt",
+      ),
+    ).toBe(
+      [
+        "> ## Documentation Index",
+        "> Fetch the complete documentation index at: https://docs.page/acme/handbook/llms.txt",
+        "> Use this file to discover all available pages before exploring further.",
+        "",
+        "# Start",
+        "",
+      ].join("\n"),
+    );
+  });
+});
+
 describe("buildAgentMarkdownResponse", () => {
-  test("points agents at llms.txt before the page source", () => {
+  test("points agents at llms.txt before the page body", () => {
     const response = buildAgentMarkdownResponse({
       content: "---\ntitle: Start\n---\n\n# Start\n",
       route: { ...handbook, requestMode: "canonical" },
       origin: "https://docs.page",
     });
 
-    expect(response.body).toBe(
-      [
-        "> ## Documentation Index",
-        "> Fetch the complete documentation index at: https://docs.page/acme/handbook/llms.txt",
-        "> Use this file to discover all available pages before exploring further.",
-        "",
-        "---",
-        "title: Start",
-        "---",
-        "",
-        "# Start",
-        "",
-      ].join("\n"),
+    expect(response.body.startsWith("---\ntitle: Start\n---\n")).toBe(true);
+    expect(response.body).toContain(
+      "> Fetch the complete documentation index at: https://docs.page/acme/handbook/llms.txt",
     );
     expect(response.headers["Content-Type"]).toBe(
       "text/markdown; charset=utf-8",

@@ -68,12 +68,17 @@ See [Branch preview](/features/branch-preview), [Vanity subdomains](/features/va
 
 Send `Accept: text/markdown` (or `text/x-markdown`) with a weight at least as high as `text/html` to receive that page as markdown instead of the rendered site. `Accept: */*` also matches, except on `/_next/data` requests, which stay JSON.
 
-The response uses `Content-Type: text/markdown; charset=utf-8` and `Vary: Accept`. The body opens with a documentation index, then the raw page source:
+The response uses `Content-Type: text/markdown; charset=utf-8` and `Vary: Accept`. YAML frontmatter stays at the top of the file. The documentation index is the first body content, then the rest of the raw page source:
 
 ```markdown
+---
+title: Getting started
+---
 > ## Documentation Index
 > Fetch the complete documentation index at: https://docs.page/acme/handbook/llms.txt
 > Use this file to discover all available pages before exploring further.
+
+# Getting started
 ```
 
 `x-llms-txt` is that absolute index URL. The `Link` header lists the same URL with `rel="llms-txt"` and the matching `llms-full.txt` URL with `rel="llms-full-txt"`. The index path follows the host: `/{owner}/{repo}/llms.txt` on docs.page, `/{repo}/llms.txt` on a vanity subdomain, and `/llms.txt` on a custom domain. Ref previews keep the `~{ref}` segment.

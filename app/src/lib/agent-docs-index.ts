@@ -21,13 +21,59 @@ export function agentLlmsFullTxtUrl(route: DocsIndexRoute, origin: string) {
   return absoluteUtilityUrl(getLlmsFullTxtPathname(route), origin);
 }
 
+function agentDocsIndexNotice(llmsTxtUrl: string) {
+  return `> ## Documentation Index\n> Fetch the complete documentation index at: ${llmsTxtUrl}\n> Use this file to discover all available pages before exploring further.\n`;
+}
+
 /**
- * Mintlify-style catalog pointer. Prepended to markdown returned when an
- * agent prefers `text/markdown` over HTML, so the first thing it reads is
- * where to fetch the rest of the site.
+ * Split a leading YAML frontmatter block the same way gray-matter does.
+ * The opening `---` must be the first bytes, and the block must close.
+ */
+function splitLeadingFrontmatter(content: string) {
+  const bom = content.startsWith("\uFEFF") ? "\uFEFF" : "";
+  const source = bom ? content.slice(bom.length) : content;
+
+  if (!source.startsWith("---") || source.charAt(3) === "-") {
+    return null;
+  }
+
+  const rest = source.slice(3);
+  const closeIndex = rest.indexOf("\n---");
+  if (closeIndex === -1) {
+    return null;
+  }
+
+  let end = 3 + closeIndex + "\n---".length;
+  if (source[end] === "\r") {
+    end += 1;
+  }
+  if (source[end] === "\n") {
+    end += 1;
+  }
+
+  return {
+    frontmatter: `${bom}${source.slice(0, end)}`,
+    body: source.slice(end),
+  };
+}
+
+/**
+ * Catalog pointer for markdown returned when an agent prefers `text/markdown`.
+ * Inserted after YAML frontmatter so the opening `---` stays at the start of
+ * the file and parsers still read title and description.
  */
 export function prependAgentDocsIndex(content: string, llmsTxtUrl: string) {
-  return `> ## Documentation Index\n> Fetch the complete documentation index at: ${llmsTxtUrl}\n> Use this file to discover all available pages before exploring further.\n\n${content}`;
+  const notice = agentDocsIndexNotice(llmsTxtUrl);
+  const split = splitLeadingFrontmatter(content);
+
+  if (!split) {
+    return `${notice}\n${content}`;
+  }
+
+  const spacer =
+    split.body.startsWith("\n") || split.body.startsWith("\r") ? "" : "\n";
+
+  return `${split.frontmatter}${notice}${spacer}${split.body}`;
 }
 
 export function agentDocsIndexLinkHeader(

@@ -76,7 +76,7 @@ On [vanity subdomains](/features/vanity-subdomains) and [custom domains](/featur
 
 ### Discovering the index from a page
 
-An agent that requests any documentation page with `Accept: text/markdown` receives that page as markdown. The body starts with a documentation index that links to this site's `llms.txt`, and `x-llms-txt` carries the same absolute URL. The agent reads one page, then fetches the catalog from that URL. See [HTTP endpoints: Agent markdown](/reference/http-endpoints#agent-markdown).
+An agent that requests any documentation page with `Accept: text/markdown` receives that page as markdown. YAML frontmatter stays at the top of the file. The first body content is a documentation index that links to this site's `llms.txt`, and `x-llms-txt` carries the same absolute URL. The agent reads one page, then fetches the catalog from that URL. See [HTTP endpoints: Agent markdown](/reference/http-endpoints#agent-markdown).
 
 Readers can also open one page as raw markdown from the **View markdown** item in the [page action menu](/features/public-github-hosting#page-actions), or by appending `.md` to the page URL. See [HTTP endpoints: Raw markdown](/reference/http-endpoints#raw-markdown).
 
