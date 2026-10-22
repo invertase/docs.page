@@ -69,6 +69,7 @@ Typical workflows:
 1. **Prompt context:** include the `llms.txt` URL so the model knows where to find your catalog
 2. **Scheduled ingestion:** a job fetches `llms.txt` or `llms-full.txt` and loads content into a vector store
 3. **On-demand fetch:** an agent curls the index at the start of a session, then retrieves individual pages by URL
+4. **From any page:** a request for a documentation URL with `Accept: text/markdown` returns that page as markdown. Frontmatter stays first. The page body starts with a documentation index that links to `llms.txt`. The `x-llms-txt` header is the same absolute URL. See [HTTP endpoints: Agent markdown](/reference/http-endpoints#agent-markdown)
 
 RAG pipelines parse the **Docs** links from `llms.txt` and fetch pages selectively. One-shot pipelines ingest `llms-full.txt` when a single markdown blob is simpler than many requests.
 
