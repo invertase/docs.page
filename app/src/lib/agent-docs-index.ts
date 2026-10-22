@@ -1,3 +1,4 @@
+import matter from "gray-matter";
 import { getLlmsFullTxtPathname, getLlmsTxtPathname } from "@/lib/docs-paths";
 import type { DocsRequestMode } from "@/lib/docs-routing";
 
@@ -22,58 +23,32 @@ export function agentLlmsFullTxtUrl(route: DocsIndexRoute, origin: string) {
 }
 
 function agentDocsIndexNotice(llmsTxtUrl: string) {
-  return `> ## Documentation Index\n> Fetch the complete documentation index at: ${llmsTxtUrl}\n> Use this file to discover all available pages before exploring further.\n`;
-}
-
-/**
- * Split a leading YAML frontmatter block the same way gray-matter does.
- * The opening `---` must be the first bytes, and the block must close.
- */
-function splitLeadingFrontmatter(content: string) {
-  const bom = content.startsWith("\uFEFF") ? "\uFEFF" : "";
-  const source = bom ? content.slice(bom.length) : content;
-
-  if (!source.startsWith("---") || source.charAt(3) === "-") {
-    return null;
-  }
-
-  const rest = source.slice(3);
-  const closeIndex = rest.indexOf("\n---");
-  if (closeIndex === -1) {
-    return null;
-  }
-
-  let end = 3 + closeIndex + "\n---".length;
-  if (source[end] === "\r") {
-    end += 1;
-  }
-  if (source[end] === "\n") {
-    end += 1;
-  }
-
-  return {
-    frontmatter: `${bom}${source.slice(0, end)}`,
-    body: source.slice(end),
-  };
+  return [
+    "> ## Documentation Index",
+    `> Fetch the complete documentation index at: ${llmsTxtUrl}`,
+    "> Use this file to discover all available pages before exploring further.",
+    "",
+  ].join("\n");
 }
 
 /**
  * Catalog pointer for markdown returned when an agent prefers `text/markdown`.
- * Inserted after YAML frontmatter so the opening `---` stays at the start of
- * the file and parsers still read title and description.
+ * gray-matter splits any leading frontmatter so the index is the first body
+ * content and title and description still parse.
  */
 export function prependAgentDocsIndex(content: string, llmsTxtUrl: string) {
   const notice = agentDocsIndexNotice(llmsTxtUrl);
-  const split = splitLeadingFrontmatter(content);
+  const parsed = matter(content);
+  const hasFrontmatter =
+    parsed.matter.trim() !== "" || parsed.content !== content;
 
-  if (!split) {
+  if (!hasFrontmatter) {
     return `${notice}\n${content}`;
   }
 
-  const spacer =
-    split.body.startsWith("\n") || split.body.startsWith("\r") ? "" : "\n";
+  const body = parsed.content.replace(/^\r?\n/, "");
 
-  return `${split.frontmatter}${notice}${spacer}${split.body}`;
+  return matter.stringify(`${notice}\n${body}`, parsed.data);
 }
 
 export function agentDocsIndexLinkHeader(
