@@ -142,6 +142,14 @@ export function getSitemapPathname(route: DocsPathRoute) {
   return getDocsRepoUtilityPathname(route, "sitemap.xml");
 }
 
+export function getLlmsTxtPathname(route: DocsPathRoute) {
+  return getDocsRepoUtilityPathname(route, "llms.txt");
+}
+
+export function getLlmsFullTxtPathname(route: DocsPathRoute) {
+  return getDocsRepoUtilityPathname(route, "llms-full.txt");
+}
+
 export function getMcpEndpointUrl(route: DocsPathRoute, origin: string) {
   return new URL(getMcpEndpointPathname(route), origin).toString();
 }

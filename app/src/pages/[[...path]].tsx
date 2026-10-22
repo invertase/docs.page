@@ -11,6 +11,7 @@ import { Homepage } from "@/components/homepage";
 import { SiteNotFoundPage } from "@/components/homepage/not-found";
 import { Preset } from "@/components/preset";
 import { DocPageContext } from "@/hooks/use-doc-page-context";
+import { buildAgentMarkdownResponse } from "@/lib/agent-docs-index";
 import { getAgentPanelCookieName } from "@/lib/agent-panel-state";
 import {
   buildDocsBundleApiPath,
@@ -232,12 +233,18 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
         ref: route.ref ?? undefined,
         path: route.docPath || "index",
       });
+      const agentMarkdown = buildAgentMarkdownResponse({
+        content: source.content,
+        route: publicPathRoute,
+        origin: requestOrigin,
+      });
 
-      res.setHeader("Content-Type", "text/markdown; charset=utf-8");
-      res.setHeader("Vary", "Accept");
+      for (const [name, value] of Object.entries(agentMarkdown.headers)) {
+        res.setHeader(name, value);
+      }
       setDocsCacheHeaders(res, RAW_DOC_CACHE_HEADERS);
       res.statusCode = 200;
-      res.end(source.content);
+      res.end(agentMarkdown.body);
 
       return {
         props: {
