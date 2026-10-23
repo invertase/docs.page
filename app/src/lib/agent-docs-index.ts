@@ -1,6 +1,22 @@
-import matter from "gray-matter";
+import grayMatter from "gray-matter";
+import yaml from "js-yaml";
 import { getLlmsFullTxtPathname, getLlmsTxtPathname } from "@/lib/docs-paths";
 import type { DocsRequestMode } from "@/lib/docs-routing";
+
+const matter =
+  typeof grayMatter === "function"
+    ? grayMatter
+    : (grayMatter as unknown as { default: typeof grayMatter }).default;
+
+const yamlEngine = {
+  parse(input: string) {
+    const data = yaml.load(input);
+    return data && typeof data === "object" ? data : {};
+  },
+  stringify(data: object) {
+    return yaml.dump(data).trim();
+  },
+};
 
 type DocsIndexRoute = {
   requestMode: DocsRequestMode;
@@ -40,18 +56,22 @@ export function prependAgentDocsIndex(content: string, llmsTxtUrl: string) {
   const notice = agentDocsIndexNotice(llmsTxtUrl);
 
   try {
-    const parsed = matter(content);
+    const parsed = matter(content, { engines: { yaml: yamlEngine } });
+    const rawMatter = typeof parsed.matter === "string" ? parsed.matter : "";
     const hasFrontmatter =
-      parsed.matter.trim() !== "" || parsed.content !== content;
+      rawMatter.trim() !== "" || parsed.content !== content;
 
     if (!hasFrontmatter) {
       return `${notice}\n${content}`;
     }
 
     const body = parsed.content.replace(/^\r?\n/, "");
-    return matter.stringify(`${notice}\n${body}`, parsed.data);
+    return matter.stringify(`${notice}\n${body}`, parsed.data, {
+      engines: { yaml: yamlEngine },
+    });
   } catch {
-    return `${notice}\n${content}`;
+    // Never put the index above YAML. If the file cannot be split, leave it.
+    return content;
   }
 }
 

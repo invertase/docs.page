@@ -81,7 +81,7 @@ describe("prependAgentDocsIndex", () => {
     );
   });
 
-  test("falls back to the notice plus source when frontmatter is not YAML", () => {
+  test("leaves the source unchanged when frontmatter is not YAML", () => {
     const content = "---\ntitle: [unclosed\n---\n\n# Start\n";
 
     expect(
@@ -89,15 +89,8 @@ describe("prependAgentDocsIndex", () => {
         content,
         "https://docs.page/acme/handbook/llms.txt",
       ),
-    ).toBe(
-      [
-        "> ## Documentation Index",
-        "> Fetch the complete documentation index at: https://docs.page/acme/handbook/llms.txt",
-        "> Use this file to discover all available pages before exploring further.",
-        "",
-        content,
-      ].join("\n"),
-    );
+    ).toBe(content);
+    expect(content.startsWith("---\n")).toBe(true);
   });
 
   test("keeps the index first when the page has no frontmatter", () => {
