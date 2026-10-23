@@ -13,11 +13,11 @@ export type HeadingTagProps = ComponentProps<HeadingTag> & {
 
 const styles = {
   h1: "text-3xl md:text-4xl",
-  h2: "text-3xl pt-8",
-  h3: "text-2xl pt-8",
-  h4: "text-xl pt-3",
-  h5: "text-lg pt-3",
-  h6: "text-base pt-2",
+  h2: "text-2xl pt-8",
+  h3: "text-xl pt-6",
+  h4: "text-lg pt-3",
+  h5: "text-base pt-3",
+  h6: "text-sm pt-2",
 } satisfies Record<HeadingTag, string>;
 
 export function Heading(props: HeadingTagProps) {
@@ -27,7 +27,7 @@ export function Heading(props: HeadingTagProps) {
   return (
     <div
       className={cn(
-        "group relative flex items-center gap-3 font-heading text-balance text-foreground",
+        "group relative flex items-center gap-3 font-heading font-semibold tracking-tight text-balance text-foreground",
         styles[type],
         // Raw FA icons in markdown headings inherit the heading font size (huge).
         "[&_i.fa-solid]:text-[0.7em] [&_i.fa-brands]:text-[0.7em] [&_i]:leading-none",
