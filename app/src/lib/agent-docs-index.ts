@@ -1,4 +1,3 @@
-import matter from "gray-matter";
 import { getLlmsFullTxtPathname, getLlmsTxtPathname } from "@/lib/docs-paths";
 import type { DocsRequestMode } from "@/lib/docs-routing";
 
@@ -31,24 +30,22 @@ function agentDocsIndexNotice(llmsTxtUrl: string) {
   ].join("\n");
 }
 
+const LEADING_FRONTMATTER = /^---\r?\n[\s\S]*?\r?\n---\r?\n/;
+
 /**
  * Catalog pointer for markdown returned when an agent prefers `text/markdown`.
- * gray-matter splits any leading frontmatter so the index is the first body
- * content and title and description still parse.
+ * Leading YAML fences are left untouched so title and description still parse.
  */
 export function prependAgentDocsIndex(content: string, llmsTxtUrl: string) {
   const notice = agentDocsIndexNotice(llmsTxtUrl);
-  const parsed = matter(content);
-  const hasFrontmatter =
-    parsed.matter.trim() !== "" || parsed.content !== content;
+  const frontmatter = content.match(LEADING_FRONTMATTER)?.[0];
 
-  if (!hasFrontmatter) {
+  if (!frontmatter) {
     return `${notice}\n${content}`;
   }
 
-  const body = parsed.content.replace(/^\r?\n/, "");
-
-  return matter.stringify(`${notice}\n${body}`, parsed.data);
+  const body = content.slice(frontmatter.length).replace(/^\r?\n/, "");
+  return `${frontmatter}${notice}\n${body}`;
 }
 
 export function agentDocsIndexLinkHeader(
@@ -61,20 +58,33 @@ export function agentDocsIndexLinkHeader(
   return `<${llmsTxtUrl}>; rel="llms-txt", <${llmsFullTxtUrl}>; rel="llms-full-txt"`;
 }
 
+function rawMarkdownHeaders() {
+  return {
+    "Content-Type": "text/markdown; charset=utf-8",
+    Vary: "Accept",
+  };
+}
+
 export function buildAgentMarkdownResponse(args: {
   content: string;
   route: DocsIndexRoute;
   origin: string;
 }) {
-  const llmsTxtUrl = agentLlmsTxtUrl(args.route, args.origin);
+  try {
+    const llmsTxtUrl = agentLlmsTxtUrl(args.route, args.origin);
 
-  return {
-    body: prependAgentDocsIndex(args.content, llmsTxtUrl),
-    headers: {
-      "Content-Type": "text/markdown; charset=utf-8",
-      Vary: "Accept",
-      Link: agentDocsIndexLinkHeader(args.route, args.origin),
-      "x-llms-txt": llmsTxtUrl,
-    },
-  };
+    return {
+      body: prependAgentDocsIndex(args.content, llmsTxtUrl),
+      headers: {
+        ...rawMarkdownHeaders(),
+        Link: agentDocsIndexLinkHeader(args.route, args.origin),
+        "x-llms-txt": llmsTxtUrl,
+      },
+    };
+  } catch {
+    return {
+      body: args.content,
+      headers: rawMarkdownHeaders(),
+    };
+  }
 }
