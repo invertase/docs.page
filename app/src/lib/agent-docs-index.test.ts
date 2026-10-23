@@ -81,15 +81,23 @@ describe("prependAgentDocsIndex", () => {
     );
   });
 
-  test("keeps unparseable YAML fences so the index still follows them", () => {
-    const body = prependAgentDocsIndex(
-      "---\ntitle: [unclosed\n---\n\n# Start\n",
-      "https://docs.page/acme/handbook/llms.txt",
-    );
+  test("falls back to the notice plus source when frontmatter is not YAML", () => {
+    const content = "---\ntitle: [unclosed\n---\n\n# Start\n";
 
-    expect(body.startsWith("---\ntitle: [unclosed\n---\n")).toBe(true);
-    expect(body).toContain("> ## Documentation Index");
-    expect(body).toContain("# Start");
+    expect(
+      prependAgentDocsIndex(
+        content,
+        "https://docs.page/acme/handbook/llms.txt",
+      ),
+    ).toBe(
+      [
+        "> ## Documentation Index",
+        "> Fetch the complete documentation index at: https://docs.page/acme/handbook/llms.txt",
+        "> Use this file to discover all available pages before exploring further.",
+        "",
+        content,
+      ].join("\n"),
+    );
   });
 
   test("keeps the index first when the page has no frontmatter", () => {

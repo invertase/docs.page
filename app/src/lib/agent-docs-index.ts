@@ -1,3 +1,4 @@
+import matter from "gray-matter";
 import { getLlmsFullTxtPathname, getLlmsTxtPathname } from "@/lib/docs-paths";
 import type { DocsRequestMode } from "@/lib/docs-routing";
 
@@ -30,22 +31,28 @@ function agentDocsIndexNotice(llmsTxtUrl: string) {
   ].join("\n");
 }
 
-const LEADING_FRONTMATTER = /^---\r?\n[\s\S]*?\r?\n---\r?\n/;
-
 /**
  * Catalog pointer for markdown returned when an agent prefers `text/markdown`.
- * Leading YAML fences are left untouched so title and description still parse.
+ * gray-matter splits any leading frontmatter so the index is the first body
+ * content and title and description still parse.
  */
 export function prependAgentDocsIndex(content: string, llmsTxtUrl: string) {
   const notice = agentDocsIndexNotice(llmsTxtUrl);
-  const frontmatter = content.match(LEADING_FRONTMATTER)?.[0];
 
-  if (!frontmatter) {
+  try {
+    const parsed = matter(content);
+    const hasFrontmatter =
+      parsed.matter.trim() !== "" || parsed.content !== content;
+
+    if (!hasFrontmatter) {
+      return `${notice}\n${content}`;
+    }
+
+    const body = parsed.content.replace(/^\r?\n/, "");
+    return matter.stringify(`${notice}\n${body}`, parsed.data);
+  } catch {
     return `${notice}\n${content}`;
   }
-
-  const body = content.slice(frontmatter.length).replace(/^\r?\n/, "");
-  return `${frontmatter}${notice}\n${body}`;
 }
 
 export function agentDocsIndexLinkHeader(
