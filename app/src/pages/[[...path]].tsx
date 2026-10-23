@@ -233,18 +233,27 @@ export const getServerSideProps = (async ({ params, req, res, query }) => {
         ref: route.ref ?? undefined,
         path: route.docPath || "index",
       });
-      const agentMarkdown = buildAgentMarkdownResponse({
-        content: source.content,
-        route: publicPathRoute,
-        origin: requestOrigin,
-      });
+      try {
+        const agentMarkdown = buildAgentMarkdownResponse({
+          content: source.content,
+          route: publicPathRoute,
+          origin: requestOrigin,
+        });
 
-      for (const [name, value] of Object.entries(agentMarkdown.headers)) {
-        res.setHeader(name, value);
+        for (const [name, value] of Object.entries(agentMarkdown.headers)) {
+          res.setHeader(name, value);
+        }
+        setDocsCacheHeaders(res, RAW_DOC_CACHE_HEADERS);
+        res.statusCode = 200;
+        res.end(agentMarkdown.body);
+      } catch (error) {
+        console.error("Failed to decorate agent markdown response", error);
+        res.setHeader("Content-Type", "text/markdown; charset=utf-8");
+        res.setHeader("Vary", "Accept");
+        setDocsCacheHeaders(res, RAW_DOC_CACHE_HEADERS);
+        res.statusCode = 200;
+        res.end(source.content);
       }
-      setDocsCacheHeaders(res, RAW_DOC_CACHE_HEADERS);
-      res.statusCode = 200;
-      res.end(agentMarkdown.body);
 
       return {
         props: {

@@ -22,6 +22,19 @@ function firstHeaderValue(value: string | string[] | null | undefined) {
   return Array.isArray(value) ? value[0] : value;
 }
 
+/**
+ * Cloudflare and Railway each append `X-Forwarded-*`. Web `Headers#get`
+ * joins those hops with `", "`, which is not a valid URL origin.
+ */
+function firstForwardedToken(value: string | undefined) {
+  if (!value) {
+    return undefined;
+  }
+
+  const token = value.split(",")[0]?.trim();
+  return token || undefined;
+}
+
 function isWebHeaders(
   headers: Headers | IncomingHttpHeaders,
 ): headers is Headers {
@@ -42,10 +55,11 @@ function getHeaderValue(headers: Headers | IncomingHttpHeaders, name: string) {
 export function getRequestOriginFromHeaders(
   headers: Headers | IncomingHttpHeaders,
 ) {
-  const protocol = getHeaderValue(headers, "x-forwarded-proto") ?? "http";
+  const protocol =
+    firstForwardedToken(getHeaderValue(headers, "x-forwarded-proto")) ?? "http";
   const host =
-    getHeaderValue(headers, "x-forwarded-host") ??
-    getHeaderValue(headers, "host") ??
+    firstForwardedToken(getHeaderValue(headers, "x-forwarded-host")) ??
+    firstForwardedToken(getHeaderValue(headers, "host")) ??
     "localhost";
 
   return `${protocol}://${host}`;

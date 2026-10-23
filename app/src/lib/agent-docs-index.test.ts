@@ -81,6 +81,18 @@ describe("prependAgentDocsIndex", () => {
     );
   });
 
+  test("leaves the source unchanged when frontmatter is not YAML", () => {
+    const content = "---\ntitle: [unclosed\n---\n\n# Start\n";
+
+    expect(
+      prependAgentDocsIndex(
+        content,
+        "https://docs.page/acme/handbook/llms.txt",
+      ),
+    ).toBe(content);
+    expect(content.startsWith("---\n")).toBe(true);
+  });
+
   test("keeps the index first when the page has no frontmatter", () => {
     expect(
       prependAgentDocsIndex(
@@ -131,5 +143,20 @@ describe("buildAgentMarkdownResponse", () => {
     expect(response.headers.Link).toContain(
       '<https://docs.page/acme/handbook/llms-full.txt>; rel="llms-full-txt"',
     );
+  });
+
+  test("returns raw markdown when the request origin is not a valid URL", () => {
+    const content = "---\ntitle: Start\n---\n\n# Start\n";
+    const response = buildAgentMarkdownResponse({
+      content,
+      route: { ...handbook, requestMode: "canonical" },
+      origin: "https, https://docs.page",
+    });
+
+    expect(response.body).toBe(content);
+    expect(response.headers).toEqual({
+      "Content-Type": "text/markdown; charset=utf-8",
+      Vary: "Accept",
+    });
   });
 });
