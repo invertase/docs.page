@@ -35,7 +35,7 @@ const lexend = Lexend({
 
 const geistSans = Geist({
   subsets: ["latin"],
-  variable: "--font-geist-sans",
+  variable: "--font-geist",
 });
 
 const inter = Inter({
