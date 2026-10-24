@@ -1,13 +1,11 @@
-import { describe, expect, mock, test } from "bun:test";
+import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 
 // `@/lib/fonts` (next/font/google) only loads inside the Next.js bundler, so
-// stub it and read the font declarations from the source instead.
-mock.module("@/lib/fonts", () => ({ fonts: {} }));
-
-const { fontCssVariable } = await import("./theme");
-
+// read the font declarations from the source instead. `theme.ts` maps each
+// preset font key to `var(--font-${key})`, so every font must declare that
+// variable.
 const source = readFileSync(
   join(import.meta.dir, "../../../lib/fonts.ts"),
   "utf8",
@@ -36,6 +34,6 @@ describe("theme preset font mapping", () => {
     key,
     name,
   }) => {
-    expect(declaredVariables.get(name)).toBe(fontCssVariable(key));
+    expect(declaredVariables.get(name)).toBe(`--font-${key}`);
   });
 });

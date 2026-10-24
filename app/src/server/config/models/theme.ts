@@ -2,11 +2,8 @@ import { presetToShadcnThemeCss } from "shadcn-presets";
 import { z } from "zod";
 import { fonts } from "@/lib/fonts";
 
-// Each font in `@/lib/fonts` must declare `variable: fontCssVariable(key)`.
-export const fontCssVariable = (key: string) => `--font-${key}`;
-
 const mapping = Object.fromEntries(
-  Object.keys(fonts).map((key) => [key, `var(${fontCssVariable(key)})`]),
+  Object.entries(fonts).map(([key, _value]) => [key, `var(--font-${key})`]),
 );
 
 const hexColor = z
