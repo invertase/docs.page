@@ -3,13 +3,15 @@
   "scripts": {
     "dev": "cd app && bun dev",
     "check": "bunx @biomejs/biome check --write .",
-    "test": "bun test --coverage"
+    "test": "bun test --coverage",
+    "eval": "reeval run"
   },
   "dependencies": {
     "typescript": "^6.0.3"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.0"
+    "@biomejs/biome": "2.5.0",
+    "reeval": "^0.14.0"
   },
   "workspaces": [
     "app",
