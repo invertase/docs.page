@@ -57,7 +57,8 @@ export function Header() {
         )}
       </div>
       <div
-        className={cn("mt-2 h-px bg-border transition-all duration-500", {
+        className={cn("h-px bg-border transition-all duration-500", {
+          "mt-2": hasTabs,
           "opacity-0": !scrolled,
           "opacity-100": scrolled,
         })}
