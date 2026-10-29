@@ -1,16 +1,18 @@
 ---
-title: MCP server
-description: Connect MCP clients to your per-repo server, learn what the endpoint exposes, and how to disable it.
+title: MCP server for agents
+description: docs.page runs a per-repo MCP server so agents can list and read your public Git docs.
 ---
 
-When an assistant can pull raw MDX from your repository (not a one-time HTML scrape), it answers with the same wording, examples, and structure your team published. docs.page runs a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for every hosted public repository.
+**docs.page** runs a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for every hosted public repository so assistants can list and read raw MDX from Git — not a one-time HTML scrape. Answers stay aligned with the wording, examples, and structure your team published.
+
+This is the canonical page for connecting clients to your docs.page MCP endpoint. For server descriptor, access control, and URL pattern detail, see the [platform reference](/features/mcp-server).
 
 **Before you begin**
 
 - A published docs URL you can open in a browser (see [Agent-ready docs](/ai-agents/overview))
 - A **public** GitHub repository; private repos return `404` for MCP
 
-MCP is **on by default**. You only edit `docs.json` when you want to turn the endpoint off. For server design, tools, and access control detail, see [MCP server on Features](/features/mcp-server).
+MCP is **on by default**. You only edit `docs.json` when you want to turn the endpoint off. For server design, tools, and access control detail, see [MCP server platform reference](/features/mcp-server).
 
 ---
 
@@ -120,6 +122,6 @@ Commit and publish. The MCP route returns `404`, **Install MCP** disappears from
 
 - [Agent-ready docs](/ai-agents/overview): how MCP fits alongside llms.txt and Ask AI
 - [Page actions](/features/public-github-hosting#page-actions): **Install with MCP**, **Connect to Cursor**, and **Connect to VSCode** in the header menu
-- [MCP server on Features](/features/mcp-server): server descriptor, access control, and URL patterns
+- [MCP server platform reference](/features/mcp-server): server descriptor, access control, and URL patterns
 - [Agent skills](/ai-agents/agent-skills): expose `.agents/skills` as MCP resources
 - [HTTP endpoints](/reference/http-endpoints): MCP route lookup
