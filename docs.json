@@ -417,6 +417,10 @@
           "href": "/comparisons",
           "pages": [
             {
+              "title": "GitHub Pages",
+              "href": "/comparisons/github-pages"
+            },
+            {
               "title": "Mintlify",
               "href": "/comparisons/mintlify"
             },
@@ -431,10 +435,6 @@
             {
               "title": "Jekyll",
               "href": "/comparisons/jekyll"
-            },
-            {
-              "title": "GitHub Pages",
-              "href": "/comparisons/github-pages"
             }
           ]
         }

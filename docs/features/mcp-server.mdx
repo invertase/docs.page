@@ -1,13 +1,13 @@
 ---
-title: MCP server
-description: Connect Cursor or Claude to list and read your hosted docs through a per-repo MCP endpoint.
+title: MCP server platform reference
+description: Understand the docs.page MCP endpoint, and start with the agent guide to connect clients.
 ---
 
-When an AI assistant can pull raw MDX from your repository (not a one-time HTML scrape), it answers with the same wording, examples, and structure your team published. docs.page runs a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for every hosted repository so compatible clients can discover pages and read source files on demand.
+Start with **[MCP server for agents](/ai-agents/mcp-server)** if you want to connect Cursor, Claude, or another client. This page is the **platform reference**: server descriptor, tools, access control, and URL patterns.
 
 ## Overview
 
-Each docs.page site gets its own MCP endpoint, scoped to that repository's owner, name, and optional ref (branch, commit, or pull request). The server speaks streamable HTTP MCP and exposes read-only tools plus static resources. There is no write access to your GitHub repo or `docs.json`.
+Each docs.page site gets its own [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) endpoint, scoped to that repository's owner, name, and optional ref (branch, commit, or pull request). The server speaks streamable HTTP MCP and exposes read-only tools plus static resources. There is no write access to your GitHub repo or `docs.json`.
 
 Production sites on `docs.page` use a URL like:
 
