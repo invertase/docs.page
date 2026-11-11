@@ -1,0 +1,59 @@
+---
+title: Margin
+description: Decide between push-to-publish docs.page and Margin, Manicule's Mintlify-compatible docs framework.
+---
+
+You are choosing free, open-source docs hosting, and you are weighing docs.page's push-to-publish model against Margin's Mintlify-compatible framework.
+
+## Overview
+
+Both products are free, licensed under Apache-2.0, and serve `llms.txt` and an MCP server on every site. The split is **how a site goes live** and **where you start from**.
+
+Margin is Manicule's open-source docs framework. It reads Mintlify `docs.json` and MDX as they are, and you either host the site on Manicule or run the app yourself. docs.page is hosting for **public GitHub repositories**: configuration in `docs.json`, pages in `docs/**/*.mdx`, and a live site at `https://docs.page/{owner}/{repo}` on every push, with no account, dashboard, or CI.
+
+See [Introduction](/) for the docs.page file layout and publish model.
+
+## How it works
+
+### Setup: push to GitHub vs deploy on Manicule or your own server
+
+On docs.page, push `docs.json` and `docs/` to a public GitHub repository and open `https://docs.page/{owner}/{repo}`. There is no hosting project, deploy step, or dashboard. Run `npx @docs.page/cli init` to scaffold the files, or follow the [Quickstart](/quickstart).
+
+Margin sites deploy on Manicule, or you self-host the app on Vercel or any Node server with your own database and domain. Choose Margin when you want to run the docs app on infrastructure you control. Choose docs.page when you want a site from Git alone, with nothing to deploy or operate.
+
+### Existing Mintlify docs
+
+Margin's lead feature is Mintlify compatibility. Margin states that existing Mintlify `docs.json` and MDX deploy unchanged, and that unknown fields produce warnings rather than errors.
+
+docs.page uses its own [`docs.json`](/reference/docs-json) and [MDX components](/features/components), and it is not a Mintlify-compatible host. If you are moving a Mintlify site as-is, Margin is the more direct path. If you are starting from markdown already in a public repository, docs.page needs only a `docs.json` beside it.
+
+### Previews
+
+docs.page serves any branch or tag at `https://docs.page/{owner}/{repo}~{ref}`, with [local preview](/features/local-preview) via the CLI and an optional [GitHub App](/features/github-app) that comments on pull requests. See [Branch preview](/features/branch-preview).
+
+Margin's hosted plan creates a preview for every pull request.
+
+### AI and agents
+
+Both products treat agents as readers. docs.page generates [llms.txt](/ai-agents/llms-txt) and `llms-full.txt`, runs a per-repo [MCP server](/ai-agents/mcp-server) at `/{owner}/{repo}/mcp` (on by default), serves raw page source at the page URL plus `.mdx`, and exposes [agent skills](/ai-agents/agent-skills) from `.agents/skills/` as MCP resources. [Ask AI](/ai-agents/ask-ai) (**beta**) is optional and runs on your own API key.
+
+Margin serves `/llms.txt`, `/llms-full.txt`, an MCP server at `/api/mcp`, and `/AGENTS.md`, `/skill.md`, and `/page.pdf` on every site, plus Ask AI that cites the pages it used. Hosted Margin sites also report agent traffic and AI citations in Manicule. docs.page does not offer an agent analytics dashboard.
+
+### API reference
+
+Margin generates an API playground from an OpenAPI spec, with a page for every endpoint. docs.page optimizes for **markdown documentation sites** (guides, handbooks, SDK prose, and navigation) and does not generate API reference from OpenAPI.
+
+Choose Margin, or a dedicated API reference product, when you need an interactive API explorer beside your prose docs.
+
+### Built for public, open documentation
+
+docs.page hosts **public GitHub repositories** only, the model open-source maintainers and SDK authors use when docs belong beside code. Branch previews, `~ref` URLs, and agent surfaces all assume that public Git source.
+
+Margin states that it does not offer private docs or a web editor. If your docs must stay private or be written outside the repository, neither product targets that workflow.
+
+## Related
+
+- [Introduction](/): docs.page hosting model and who it is for
+- [Public GitHub hosting](/features/public-github-hosting): push-to-publish and page actions
+- [Agent-ready docs](/ai-agents/overview): llms.txt, MCP, and Ask AI
+- [docs.page vs Mintlify](/comparisons/mintlify): comparing to a hosted SaaS docs platform
