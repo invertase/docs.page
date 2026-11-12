@@ -27,7 +27,7 @@ export const features: Feature[] = [
     description:
       "Let users' AI agents query your documentation. Built-in MCP servers alongside llms.txt files allow LLMs to ingest your product context instantly.",
     video: "/_docs.page/agent-ready.mp4?v=2",
-    link: "/agent-access",
+    link: "https://use.docs.page/ai-agents/overview",
     stage: true,
   },
   {
@@ -40,7 +40,7 @@ export const features: Feature[] = [
     description:
       "Deploy updates directly from your public GitHub repository. Eliminate build pipelines, hosting configuration, or infrastructure maintenance.",
     image: gitPublishing,
-    link: "/git-publishing",
+    link: "https://use.docs.page/features/public-github-hosting",
     stage: true,
   },
   {
@@ -53,7 +53,7 @@ export const features: Feature[] = [
     description:
       "Index content automatically and provide an embedded AI chat. Locate information instantly without third-party tracking scripts or external setup.",
     video: "/_docs.page/intelligent-search.mp4?v=2",
-    link: "/intelligent-search",
+    link: "https://use.docs.page/features/search",
     stage: true,
   },
   {
@@ -66,7 +66,7 @@ export const features: Feature[] = [
     description:
       "Add interactive components to your docs with MDX for richer experiences than standard Markdown.",
     video: "/_docs.page/markdown-components.mp4",
-    link: "/markdown-components?v=2",
+    link: "https://use.docs.page/features/components",
     stage: true,
   },
   {
@@ -79,7 +79,7 @@ export const features: Feature[] = [
     description:
       "Serve any Git branch, tag, or release as a distinct documentation site. Seamlessly organise versions and live staging previews on the fly.",
     image: branches,
-    link: "/agent-ready",
+    link: "https://use.docs.page/features/branch-preview",
     stage: true,
   },
   {
@@ -92,7 +92,7 @@ export const features: Feature[] = [
     description:
       "Style your docs site using shadcn/ui design standards. Customize components easily to match your brand identity.",
     image: "/_docs.page/modern-interface.gif",
-    link: "/modern-interface",
+    link: "https://use.docs.page/features/theme",
     stage: true,
   },
 ];
