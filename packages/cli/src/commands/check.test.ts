@@ -109,6 +109,10 @@ function droppedConnectionError(code: string, message = "fetch failed"): Error {
   return new Error(message, { cause });
 }
 
+function abortTimeoutError() {
+  return new DOMException("The operation was aborted.", "AbortError");
+}
+
 function createDeferred<T = void>() {
   let resolve!: (value: T | PromiseLike<T>) => void;
   let reject!: (reason?: unknown) => void;
@@ -298,12 +302,15 @@ describe("checkExternalUrl", () => {
   });
 
   test("treats AbortError as a timed-out external link", async () => {
-    globalThis.fetch = (() =>
-      Promise.reject(
-        new DOMException("The operation was aborted.", "AbortError"),
-      )) as typeof fetch;
+    const harness = createOfflineHarness();
+    const abort = abortTimeoutError();
+    harness.enqueue(abort, abort, abort, abort, abort, abort);
 
-    const failure = await checkExternalUrl("https://example.com");
+    const failure = await checkExternalUrl(
+      "https://example.com",
+      undefined,
+      harness.runtime,
+    );
 
     expect(failure?.kind).toBe("broken");
     expect(failure?.message).toBe("External link timed out after 10000ms.");
@@ -400,15 +407,34 @@ describe("checkExternalUrl", () => {
   });
 
   test("records timeout and unreachable outcomes on attempts", async () => {
+    const timeoutHarness = createOfflineHarness();
+    timeoutHarness.enqueue(
+      abortTimeoutError(),
+      abortTimeoutError(),
+      abortTimeoutError(),
+      abortTimeoutError(),
+      abortTimeoutError(),
+      abortTimeoutError(),
+    );
     const timeoutAttempts: ExternalLinkAttempt[] = [];
-    globalThis.fetch = (() =>
-      Promise.reject(
-        new DOMException("The operation was aborted.", "AbortError"),
-      )) as typeof fetch;
 
-    await checkExternalUrl("https://example.com", timeoutAttempts);
+    await checkExternalUrl(
+      "https://example.com",
+      timeoutAttempts,
+      timeoutHarness.runtime,
+    );
 
     expect(timeoutAttempts).toEqual([
+      expect.objectContaining({
+        hostname: "example.com",
+        method: "HEAD",
+        outcome: "timeout",
+      }),
+      expect.objectContaining({
+        hostname: "example.com",
+        method: "HEAD",
+        outcome: "timeout",
+      }),
       expect.objectContaining({
         hostname: "example.com",
         method: "HEAD",
@@ -419,6 +445,24 @@ describe("checkExternalUrl", () => {
         method: "GET",
         outcome: "timeout",
       }),
+      expect.objectContaining({
+        hostname: "example.com",
+        method: "GET",
+        outcome: "timeout",
+      }),
+      expect.objectContaining({
+        hostname: "example.com",
+        method: "GET",
+        outcome: "timeout",
+      }),
+    ]);
+    expect(timeoutHarness.methods).toEqual([
+      "HEAD",
+      "HEAD",
+      "HEAD",
+      "GET",
+      "GET",
+      "GET",
     ]);
 
     const unreachableAttempts: ExternalLinkAttempt[] = [];
@@ -568,23 +612,65 @@ describe("checkExternalUrl", () => {
     expect(harness405.waits).toEqual([]);
   });
 
-  test("does not retry AbortError", async () => {
+  test("retries AbortError then succeeds on 200 and records the wait", async () => {
+    const harness = createOfflineHarness();
+    harness.enqueue(abortTimeoutError(), response(200));
+
+    expect(
+      await checkExternalUrl("https://example.com", undefined, harness.runtime),
+    ).toBeUndefined();
+    expect(harness.methods).toEqual(["HEAD", "HEAD"]);
+    expect(harness.waits).toEqual([200]);
+    expect(harness.remaining()).toBe(0);
+  });
+
+  test("falls through to GET after exhausted AbortError on HEAD", async () => {
     const harness = createOfflineHarness();
     harness.enqueue(
-      new DOMException("The operation was aborted.", "AbortError"),
-      new DOMException("The operation was aborted.", "AbortError"),
+      abortTimeoutError(),
+      abortTimeoutError(),
+      abortTimeoutError(),
+      response(200),
     );
+
+    expect(
+      await checkExternalUrl("https://example.com", undefined, harness.runtime),
+    ).toBeUndefined();
+    expect(harness.methods).toEqual(["HEAD", "HEAD", "HEAD", "GET"]);
+    expect(harness.waits).toEqual([200, 400]);
+  });
+
+  test("reports last AbortError as broken after retries are exhausted", async () => {
+    const harness = createOfflineHarness();
+    const abort = abortTimeoutError();
+    harness.enqueue(abort, abort, abort, abort, abort, abort);
+    const attempts: ExternalLinkAttempt[] = [];
 
     const failure = await checkExternalUrl(
       "https://example.com",
-      undefined,
+      attempts,
       harness.runtime,
     );
 
     expect(failure?.kind).toBe("broken");
     expect(failure?.message).toBe("External link timed out after 10000ms.");
-    expect(harness.methods).toEqual(["HEAD", "GET"]);
-    expect(harness.waits).toEqual([]);
+    expect(harness.methods).toEqual([
+      "HEAD",
+      "HEAD",
+      "HEAD",
+      "GET",
+      "GET",
+      "GET",
+    ]);
+    expect(harness.waits).toEqual([200, 400, 200, 400]);
+    expect(attempts).toEqual([
+      expect.objectContaining({ method: "HEAD", outcome: "timeout" }),
+      expect.objectContaining({ method: "HEAD", outcome: "timeout" }),
+      expect.objectContaining({ method: "HEAD", outcome: "timeout" }),
+      expect.objectContaining({ method: "GET", outcome: "timeout" }),
+      expect.objectContaining({ method: "GET", outcome: "timeout" }),
+      expect.objectContaining({ method: "GET", outcome: "timeout" }),
+    ]);
   });
 
   test("does not retry ENOTFOUND", async () => {
