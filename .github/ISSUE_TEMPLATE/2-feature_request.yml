@@ -38,7 +38,7 @@ body:
       options:
         - Hosted platform (docs.page)
         - CLI (`@docs.page/cli`)
-        - `docs.json` / configuration
+        - "`docs.json` / configuration"
         - Search / analytics
         - Preview mode
         - MCP / agent / AI features
