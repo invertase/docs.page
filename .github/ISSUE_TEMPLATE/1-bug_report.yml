@@ -72,7 +72,7 @@ body:
         - Search
         - Preview mode (hosted PR/branch previews)
         - CLI (`@docs.page/cli`)
-        - `docs.json` / configuration
+        - "`docs.json` / configuration"
         - MCP / agent features
         - Product docs (use.docs.page content)
         - Other
