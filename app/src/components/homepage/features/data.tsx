@@ -51,7 +51,7 @@ export const features: Feature[] = [
       </>
     ),
     description:
-      "Index content automatically and provide an embedded AI chat. Locate information instantly without third-party tracking scripts or external setup.",
+      "Index content automatically and provide an embedded AI chat. Locate information instantly without a third-party search service or external setup.",
     video: "/_docs.page/intelligent-search.mp4?v=2",
     link: "https://use.docs.page/features/search",
     stage: true,
